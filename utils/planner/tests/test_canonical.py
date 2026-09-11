@@ -657,3 +657,122 @@ def test_relations_between_reads_both_directions():
     assert relations_between("Prerequisite", "AttackPattern", "capec") == (
         "HAS_PREREQUISITE",
     )
+
+
+# -- the requested slots (EXP-2026-09-018 Step 4) ----------------------------
+#
+# What the plan does not carry: which property the answer must state, and which
+# filter it must apply. Both are read from the question's own words against the
+# card's declared vocabulary, so the benchmark and the shipped path derive them
+# the same way. Extending the plan schema instead would hand the system a
+# perfectly-filled slot the live planner does not produce, and the measured gain
+# would not transfer (operator decision, 2026-09-11).
+
+
+def _capec_card():
+    from utils.planner.cards import load_source_cards
+
+    cards = load_source_cards("data")
+    if "capec" not in cards:
+        pytest.skip("generated source cards not built in this checkout")
+    return cards
+
+
+def _live_registry():
+    from utils.specialists.schema import get_registry
+
+    return get_registry()
+
+
+def test_a_property_is_bound_from_the_question_s_own_words() -> None:
+    from utils.planner.canonical import requested_slots
+
+    cards = _capec_card()
+    slots = requested_slots(
+        "Which platforms does the detection analytic AN0307 apply to?",
+        ["Analytic"],
+        cards["attack"],
+        _live_registry(),
+    )
+    assert slots.property == "x_mitre_platforms"
+
+
+def test_a_property_word_matches_across_ordinary_inflection() -> None:
+    """"describe" is the question's word and ``description`` is the card's."""
+    from utils.planner.canonical import requested_slots
+
+    cards = _capec_card()
+    slots = requested_slots(
+        "What does C0005 describe?", ["Campaign"], cards["attack"], _live_registry()
+    )
+    assert slots.property == "description"
+
+
+def test_a_filter_is_bound_from_a_value_the_data_carries() -> None:
+    """The question names the value and usually not the field.
+
+    "Which techniques used by APT1 apply to macOS" says ``macOS`` and never says
+    ``platform``; 26 of the 27 platform-filtered development questions are that
+    shape. So the binding is on the value, and what keeps it from guessing is
+    that the value must be one the registry has *observed* on that property.
+    """
+    from utils.planner.canonical import requested_slots
+
+    cards = _capec_card()
+    slots = requested_slots(
+        "Which attack patterns at the Meta abstraction level can precede CAPEC-234?",
+        ["AttackPattern", "CanFollow", "AttackPattern"],
+        cards["capec"],
+        _live_registry(),
+    )
+    assert slots.filter == ("AttackPattern", "Abstraction", "Meta")
+
+
+def test_a_value_inside_a_hyphenated_name_is_not_a_filter() -> None:
+    """``Meta`` inside "Using Meta-characters in E-mail Headers" is a name.
+
+    The default word boundary treats a hyphen as a break, so this bound an
+    abstraction-level filter to a question about severity — the only wrong
+    binding either bank produced, and it is now zero on both.
+    """
+    from utils.planner.canonical import requested_slots
+
+    cards = _capec_card()
+    slots = requested_slots(
+        "Which attack patterns with a typical severity of High is Using "
+        "Meta-characters in E-mail Headers to Inject Malicious Payloads, "
+        "CAPEC-41, a more specific case of?",
+        ["AttackPattern", "ChildOf", "AttackPattern"],
+        cards["capec"],
+        _live_registry(),
+    )
+    assert slots.filter is None
+
+
+def test_a_property_that_restates_the_record_s_kind_is_not_a_filter() -> None:
+    """``stix_type`` duplicates the label, so every question matches it.
+
+    31 of the development half's 39 spurious bindings were exactly that, and the
+    noise then tripped the ambiguity guard and suppressed 12 real filters too.
+    """
+    from utils.planner.canonical import requested_slots
+
+    cards = _capec_card()
+    slots = requested_slots(
+        "Which malware and tools used in campaign C0026 run on Windows?",
+        ["Campaign", "USES", "Software"],
+        cards["attack"],
+        _live_registry(),
+    )
+    assert slots.filter == ("Software", "x_mitre_platforms", "Windows")
+
+
+def test_an_unreadable_question_binds_nothing() -> None:
+    from utils.planner.canonical import RequestedSlots, requested_slots
+
+    cards = _capec_card()
+    slots = requested_slots(
+        "Tell me about CAPEC-66.", ["AttackPattern"], cards["capec"], _live_registry()
+    )
+    assert slots.property is None and slots.filter is None
+    assert not RequestedSlots().any_bound()

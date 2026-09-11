@@ -1265,3 +1265,223 @@ def load_slot_gold(path: str | Any) -> list[dict[str, Any]]:
 
     data = json.loads(Path(path).read_text())
     return data["records"] if isinstance(data, dict) else list(data)
+
+
+# -- the requested slots ----------------------------------------------------
+#
+# What the plan does not carry. The gold plan, and the LLM-drafted plan the
+# shipped path uses, both carry the ordered graph vocabulary, the seed ids and
+# the limits and nothing else — no requested property, no filter. So the
+# composer enumerates whatever came back and never states the field that was
+# asked for, and no builder filters anything. On the development half that is
+# `Q52` (39 questions, 13.2% of the judged loss) and half of `Q53`.
+#
+# These are bound from the question's own words against the card's declared
+# property names and the registry's observed values, so the benchmark and the
+# shipped path derive them the same way. Extending the plan schema instead was
+# considered and rejected: it would hand the system a perfectly-filled slot the
+# live planner does not produce, and the measured gain would not transfer
+# (operator decision, 2026-09-11).
+
+#: Words in a property identifier that carry no meaning to match on. The vendor
+#: prefix ``x_mitre`` is not a word a question uses, and the rest are too common
+#: to distinguish one property from another.
+_PROPERTY_STOPWORDS = frozenset(
+    {"x", "mitre", "of", "is", "a", "the", "and", "or", "id", "ref", "refs"}
+)
+
+#: Properties whose values restate what a record *is* rather than describe it,
+#: and which therefore carry no filter. ``stix_type`` duplicates the label
+#: ("malware", "campaign", "tool"), so any question that names the kind of thing
+#: it is asking about matches it — 31 of the development half's 39 spurious
+#: bindings were exactly that, and the noise then tripped the ambiguity guard and
+#: suppressed 12 real platform filters as well. The identity and bookkeeping
+#: fields are here for the same reason: a question naming an identifier is
+#: anchoring on it, not filtering by it.
+_NON_FILTER_PROPERTIES = frozenset(
+    {
+        "stix_type",
+        "id",
+        "attack_id",
+        "name",
+        "source_path",
+        "created",
+        "modified",
+        "revoked",
+        "description",
+        "external_references",
+        "x_mitre_deprecated",
+        "x_mitre_version",
+    }
+)
+
+#: The shortest shared prefix that counts as the same word. Five characters is
+#: what the questions need — "how severe" for ``Typical_Severity``, "how likely"
+#: for ``Likelihood_Of_Attack``, "what does it describe" for ``description`` —
+#: and short enough not to collide: "status" and "state" share four.
+_MIN_STEM = 5
+
+
+@dataclass(frozen=True)
+class RequestedSlots:
+    """What the question asked for, beyond which records to fetch.
+
+    Every field may be ``None``, and ``None`` means *not bound* rather than
+    *not present*. Nothing here is guessed: a property is bound only when the
+    question's words match one declared property and no other, and a filter
+    value only when the registry has observed that exact value on that property.
+    """
+
+    #: The property the answer must state, e.g. ``x_mitre_platforms``.
+    property: str | None = None
+    #: ``(label, property, value)`` the answer must be restricted to.
+    filter: tuple[str, str, str] | None = None
+    #: The relationship the question asked about, from the plan's ordered
+    #: entities — what an empty result must be reported as empty *of*.
+    relation: str | None = None
+
+    def any_bound(self) -> bool:
+        """True when the question said something the plan did not carry.
+
+        A method rather than a ``@property``: the field below is *named*
+        ``property``, which shadows the builtin inside the class body.
+        """
+        return bool(self.property or self.filter or self.relation)
+
+
+def _question_words(text: str) -> frozenset[str]:
+    return frozenset(w for w in re.findall(r"[A-Za-z_]+", (text or "").lower()) if w)
+
+
+def _same_word(a: str, b: str) -> bool:
+    """Equal, or sharing a stem long enough to be the same word.
+
+    "platforms"/"platform", "severe"/"severity", "likely"/"likelihood",
+    "typically"/"typical", "describe"/"description". The stem bound is what
+    stops "status"/"state" and "count"/"country".
+    """
+    if a == b:
+        return True
+    shorter, longer = (a, b) if len(a) <= len(b) else (b, a)
+    if len(shorter) < _MIN_STEM:
+        return False
+    common = 0
+    for x, y in zip(shorter, longer):
+        if x != y:
+            break
+        common += 1
+    return common >= _MIN_STEM
+
+
+def _property_words(prop: str) -> frozenset[str]:
+    return frozenset(
+        word for word in _split_identifier(prop) if word not in _PROPERTY_STOPWORDS
+    )
+
+
+def _matching_properties(
+    words: frozenset[str], properties: Iterable[str]
+) -> list[str]:
+    """Declared properties whose identifier words the question uses."""
+    hits: list[str] = []
+    for prop in sorted(properties):
+        prop_words = _property_words(prop)
+        if not prop_words:
+            continue
+        if any(_same_word(w, p) for w in words for p in prop_words):
+            hits.append(prop)
+    return hits
+
+
+def requested_slots(
+    text: str,
+    entities: Iterable[str],
+    card: SourceCardView,
+    registry: Any = None,
+    *,
+    labels: Iterable[str] = (),
+) -> RequestedSlots:
+    """Bind what the question asked for, or leave it unbound.
+
+    ``labels`` are the card-declared labels the plan named, in order; the first
+    is the anchor's label and the ones after it are where a filter may sit. When
+    omitted they are read off ``entities``.
+
+    **Ambiguity is refusal, not a coin toss.** If the question's words match two
+    declared properties the slot stays unbound and the answer behaves exactly as
+    it does today. `EXP-2026-09-018` Step 3 measured the alternative: breaking a
+    tie by preference scored *worse* than not acting, because a confident wrong
+    answer displaces a fallback that was sometimes right.
+    """
+    entities = list(entities or ())
+    words = _question_words(text)
+    label_list = [label for label in (labels or entities) if card.has_label(label)]
+    relations = [rel for rel in entities if card.has_relationship(rel)]
+
+    # -- the requested property, read off the anchor's declared properties ----
+    prop: str | None = None
+    if label_list:
+        candidates = _matching_properties(
+            words, card.label_property_keys(label_list[0])
+        )
+        if len(candidates) == 1:
+            prop = candidates[0]
+
+    # -- the filter: a value the data carries, on a declared property --------
+    #
+    # Bound from the VALUE, not from the property's name. A filtered question
+    # names the value and usually not the field: "which techniques used by APT1
+    # apply to macOS" says ``macOS`` and never says ``platform``. Twenty-six of
+    # the twenty-seven platform-filtered development questions are that shape, so
+    # requiring the property word would bind almost none of them.
+    #
+    # What keeps this from guessing is that the value must be one the registry
+    # has *observed* on that property, and must name exactly one property across
+    # every label the plan mentions. A value that two properties could carry is
+    # not read at all.
+    bound_filter: tuple[str, str, str] | None = None
+    if registry is not None:
+        matches: list[tuple[str, str, str]] = []
+        for label in label_list:
+            for candidate in sorted(card.label_property_keys(label)):
+                if candidate in _NON_FILTER_PROPERTIES:
+                    continue
+                for value in registry.observed_values(
+                    label, candidate, dataset=card.dataset
+                ):
+                    if _value_in_text(value, text):
+                        matches.append((label, candidate, value))
+        # One reading only. Two properties, or two values of one property, is a
+        # question this cannot read and must not answer wrongly.
+        if len({(label, candidate) for label, candidate, _ in matches}) == 1:
+            values = {value for _, _, value in matches}
+            if len(values) == 1:
+                bound_filter = matches[0]
+
+    return RequestedSlots(
+        property=prop,
+        filter=bound_filter,
+        relation=relations[-1] if relations else None,
+    )
+
+
+def _value_in_text(value: str, text: str) -> bool:
+    """Is ``value`` present in ``text`` as a whole word or phrase?
+
+    Case-sensitive, because the values that matter are proper nouns and category
+    names — ``Meta``, ``Windows``, ``Stable`` — and matching case-insensitively
+    would bind "meta" in "metadata" or the ordinary English "stable".
+
+    A hyphen does not end a word here. The default word boundary matched ``Meta``
+    inside the attack pattern *named* "Using Meta-characters in E-mail Headers",
+    and bound an abstraction-level filter to a question about severity. A
+    hyphenated compound is one word.
+    """
+    if not value:
+        return False
+    pattern = (
+        r"(?<![\w-])"
+        + r"\s+".join(re.escape(part) for part in value.split())
+        + r"(?![\w-])"
+    )
+    return re.search(pattern, text or "") is not None

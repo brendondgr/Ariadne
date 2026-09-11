@@ -156,3 +156,54 @@ def test_genuine_empty_still_requires_the_executed_query_wording():
     answer = verify_answer(SynthesizedAnswer(request="q"), _empty_evidence())
     assert "ran cleanly" in answer.abstentions[0].statement
     assert answer.abstentions[0].query == _QUERY
+
+
+# -- the absence claim (EXP-2026-09-018 Step 4) ------------------------------
+
+
+def test_an_absence_claim_is_admitted_only_off_a_clean_query() -> None:
+    """Asserting that nothing is there is the one claim a record cannot ground.
+
+    Its proof is the query, so the verifier checks the query instead: the result
+    must have run clean and carried no error. Without this the composer could
+    state "X has no execution steps" off a failed lookup — a falsehood with full
+    provenance, which is the single worst thing a grounded system can emit.
+    """
+    from utils.synthesis.composer import _absence_claim
+    from utils.synthesis.verifier import _verify_claim
+
+    record = make_record("CAPEC-513", source="capec", label="Category", related=[])
+    clean = make_result(source="capec", records=[record])
+    claim = _absence_claim(clean, "HAS_EXECUTION_STEP")
+
+    by_source = {"capec": [record]}
+    ok = _verify_claim(claim, by_source, set(), None, make_evidence([clean]))
+    assert ok.verdict == "supported", ok.reasons
+
+    broken = make_result(source="capec", records=[record], ok=False,
+                         error="connection reset")
+    bad = _verify_claim(claim, by_source, set(), None, make_evidence([broken]))
+    assert bad.verdict == "unsupported"
+    assert any("did not run clean" in r for r in bad.reasons)
+
+
+def test_an_absence_claim_is_refused_when_the_evidence_contradicts_it() -> None:
+    """Related records in the evidence mean the set is not empty."""
+    from utils.synthesis.composer import _absence_claim
+    from utils.synthesis.verifier import _verify_claim
+
+    empty = make_record("CAPEC-513", source="capec", label="Category", related=[])
+    claim = _absence_claim(make_result(source="capec", records=[empty]),
+                           "HAS_EXECUTION_STEP")
+
+    populated = make_record(
+        "CAPEC-513", source="capec", label="Category",
+        related=[{"id": "capec:step:1", "label": "ExecutionStep",
+                  "type": "HAS_EXECUTION_STEP"}],
+    )
+    result = make_result(source="capec", records=[populated])
+    verdict = _verify_claim(claim, {"capec": [populated]}, set(), None,
+                            make_evidence([result]))
+
+    assert verdict.verdict == "unsupported"
+    assert any("contradicted by related records" in r for r in verdict.reasons)

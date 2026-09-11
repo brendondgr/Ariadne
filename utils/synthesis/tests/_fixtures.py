@@ -58,6 +58,7 @@ def make_result(
     source: str = "attack",
     sub_question_id: str = "q1",
     text: str = "what mitigations apply?",
+    entities: tuple[str, ...] = (),
     records: list[EvidenceRecord] | None = None,
     query: str = "MATCH (t:Technique) RETURN t",
     summary: str = "",
@@ -69,6 +70,7 @@ def make_result(
         sub_question_id=sub_question_id,
         source=source,
         text=text,
+        entities=entities,
         limits={"max_traversal_depth": 3, "max_result_rows": 300, "query_timeout_ms": 5000},
     )
     return SpecialistResult(

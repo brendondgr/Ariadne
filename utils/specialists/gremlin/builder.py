@@ -912,6 +912,47 @@ class GremlinQueryBuilder:
     # it is used by the default cascade, so arms A-F and production are
     # unaffected — see utils/specialists/tests/test_generic_only_isolation.py.
 
+    def _bound_filter(self, resolved: ResolvedTask):
+        """``(label, property, value)`` the question asked to restrict to.
+
+        Read from the sub-question's words against the card's declared
+        properties and the registry's observed values
+        (``utils.planner.canonical.requested_slots``). A CAPEC filter is always
+        a scalar — ``Abstraction``, ``Status`` — so the emitted predicate is a
+        plain ``has(prop, value)``; the list-valued properties are ATT&CK's and
+        live on the Cypher side.
+        """
+        try:
+            from utils.planner.cards import load_source_cards
+            from utils.planner.canonical import requested_slots
+            from utils.specialists.schema import get_registry
+
+            card = load_source_cards().get(resolved.dataset)
+            if card is None:
+                return None
+            registry = get_registry()
+            slots = requested_slots(
+                resolved.task.text or "",
+                resolved.task.entities or (),
+                card,
+                registry,
+                labels=resolved.labels,
+            )
+        except Exception:  # noqa: BLE001 — no filter is the old behaviour
+            return None
+        if slots.filter is None:
+            return None
+        label, prop, value = slots.filter
+        try:
+            if registry.is_list_property(label, prop, dataset=resolved.dataset):
+                # A list-valued property needs membership, not equality, and
+                # `has(prop, value)` compares the whole value. Emitting it would
+                # match nothing silently, which is worse than not filtering.
+                return None
+        except Exception:  # noqa: BLE001
+            return None
+        return label, prop, value
+
     def _chain_route(
         self, resolved: ResolvedTask
     ) -> tuple[str, tuple[tuple[str, str], ...]] | None:
@@ -1135,18 +1176,48 @@ class GremlinQueryBuilder:
 
         ids = _walk_candidate_ids(resolved.seed_ids)
         lim = resolved.task.max_rows()
+        bound = self._bound_filter(resolved)
         union = ", ".join(f"__.{b}" for b in branches)
+        # The filter restricts the neighbours the question asked to restrict,
+        # and ONLY those. Applied to every branch it also kills the ones landing
+        # on another label: "which patterns can precede CAPEC-107, and what WASC
+        # entries does each correspond to" restricts the taxonomy entries, and
+        # appending `has("taxonomy_name", …)` to the pattern branch too deleted
+        # the patterns, which cost five questions their whole gold coverage in
+        # the first measurement of this step.
+        #
+        # So the predicate is "if it is one of these, it must match; otherwise
+        # keep it", applied once after the union. `has`/`hasLabel` are filters
+        # rather than traversal steps, so this costs nothing against the
+        # traversal-depth cap.
+        #
+        # The property name is interpolated and guarded like every other
+        # facet-sourced identifier; the VALUE is bound as a parameter and never
+        # inlined, because Groovy rejects some escapes outright and a quoted
+        # literal is a class of failure this does not need to have.
+        scope = ""
+        if bound is not None:
+            filter_label, prop, _value = bound
+            safe_prop = _safe_gremlin_ident(prop, "property")
+            safe_label = _safe_gremlin_ident(filter_label, "filter label")
+            scope = (
+                f'.or(__.not(__.hasLabel("{safe_label}")), '
+                f'__.has("{safe_prop}", filterValue))'
+            )
         # Anchored by identifier alone. The canonical vertex id is unique across
         # labels, so a hasLabel() filter adds nothing but a way to be wrong: it
         # matches zero vertices whenever the guessed label is not the seed's.
         query = (
             'g.V().has("id", within(ids)).as("ap")'
-            f".union({union}).as(\"nbr\")"
+            f".union({union}){scope}.as(\"nbr\")"
             f'.select("ap","nbr").by(elementMap()).limit({lim})'
         )
+        walk_params: dict = {"ids": ids}
+        if bound is not None:
+            walk_params["filterValue"] = bound[2]
         return QueryDraft(
             query=query,
-            params={"ids": ids},
+            params=walk_params,
             template="generic_walk",
             expected_nonempty=False,
             meta={
@@ -1169,6 +1240,7 @@ class GremlinQueryBuilder:
                     if chain
                     else {}
                 ),
+                **({"filter": f"{bound[0]}.{bound[1]}={bound[2]}"} if bound else {}),
             },
         )
 

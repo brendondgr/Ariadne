@@ -23,6 +23,31 @@ from ..validation import QueryDraft
 
 _SAFE_LABEL_RE = re.compile(r"^[A-Za-z][A-Za-z0-9_]*$")
 _SAFE_REL_RE = re.compile(r"^[A-Za-z][A-Za-z0-9_]*$")
+#: The properties this project's Neo4j loader writes as real node properties.
+#: Everything else a canonical node carries is packed into a single
+#: ``properties_json`` string (``utils/graph_loader/stores/neo4j.py``
+#: ``node_merge_cypher``), so it is invisible to a Cypher ``WHERE`` clause.
+#:
+#: This is why the filter push-down does nothing on the ATT&CK side, and the
+#: check is not defensive: emitting ``$v IN coalesce(m.x_mitre_platforms, [])``
+#: against a store that has no such property matches **nothing**, silently. It
+#: cost 23 development questions their entire gold coverage in the first
+#: measurement of this step, which is how it was found. The derived schema
+#: registry reads the canonical node files and correctly reports the property as
+#: real; what it cannot know is that the loader flattened it. Filed as `Q55`.
+#:
+#: Note that all four are in ``_NON_FILTER_PROPERTIES``, so today this gate
+#: refuses every Cypher filter. It is written as a property check rather than a
+#: blanket ``return None`` so that the day the loader stores scalars and
+#: lists-of-scalars natively, the push-down starts working without a second
+#: change here.
+_NEO4J_NATIVE_PROPERTIES = frozenset({"id", "name", "attack_id", "stix_type"})
+
+#: A property identifier safe to backtick-quote into a query. The property name
+#: comes from the card's declared keys, never from the question, but it is
+#: interpolated rather than parameterised (Cypher does not bind property names)
+#: so it is guarded the same way a label or a relationship type is.
+_SAFE_PROPERTY_RE = re.compile(r"^[A-Za-z][A-Za-z0-9_]*$")
 
 # How far the generic branch will chase a declared path. Three hops covers every
 # shape in the golden catalogue while keeping the emitted MATCH bounded; the
@@ -985,6 +1010,66 @@ class CypherQueryBuilder:
                 merged.setdefault((anchor, prefix), None)
         return sorted(merged, key=lambda item: (len(item[1]), item[0])) or None
 
+    def _bound_filter(self, resolved: ResolvedTask):
+        """``(label, property, value, is_list)`` the question asked to restrict to.
+
+        Read from the sub-question's own words against the card's declared
+        properties and the registry's observed values — see
+        ``utils.planner.canonical.requested_slots``. The plan carries no filter,
+        so 39 development questions retrieved the unfiltered set and enumerated
+        it (`Q52`, 13.2% of the judged loss).
+
+        Pushing it into the query rather than filtering afterwards is not an
+        optimisation. A related neighbour is normalised to id, name, label, type
+        and description and carries **no properties**, so a composer that wanted
+        to filter a related set has nothing to filter on. Retrieval is the only
+        place the predicate can be applied, which is why it belongs in the same
+        step as the composer's half of the contract.
+        """
+        try:
+            from utils.planner.cards import load_source_cards
+            from utils.planner.canonical import requested_slots
+            from utils.specialists.schema import get_registry
+
+            card = load_source_cards().get(resolved.dataset)
+            if card is None:
+                return None
+            registry = get_registry()
+            slots = requested_slots(
+                resolved.task.text or "",
+                resolved.task.entities or (),
+                card,
+                registry,
+                labels=resolved.labels,
+            )
+        except Exception:  # noqa: BLE001 — no filter is the old behaviour
+            return None
+        if slots.filter is None:
+            return None
+        label, prop, value = slots.filter
+        if prop not in _NEO4J_NATIVE_PROPERTIES:
+            return None
+        try:
+            is_list = registry.is_list_property(label, prop, dataset=resolved.dataset)
+        except Exception:  # noqa: BLE001
+            is_list = False
+        return label, prop, value, is_list
+
+    def _filter_predicate(self, bound, var: str) -> str:
+        """The Cypher predicate restricting ``var`` to the bound filter.
+
+        Two shapes, because getting it wrong silently matches nothing rather
+        than erroring: ``x_mitre_platforms`` holds a list and the question means
+        membership; ``Abstraction`` holds a string and it means equality.
+        """
+        if not bound or not var:
+            return ""
+        _, prop, _, is_list = bound
+        safe_prop = _safe_ident(prop, _SAFE_PROPERTY_RE, "property")
+        if is_list:
+            return f"$filterValue IN coalesce({var}.`{safe_prop}`, [])"
+        return f"{var}.`{safe_prop}` = $filterValue"
+
     def _chain_route(
         self, resolved: ResolvedTask
     ) -> tuple[str, tuple[tuple[str, str], ...]] | None:
@@ -1062,6 +1147,7 @@ class CypherQueryBuilder:
         # matches no candidate at all, every branch is allowed rather than none.
         candidates = sorted({label for label, _ in paths})
         candidate_test = " OR ".join(f"n:{label}" for label in candidates)
+        bound = self._bound_filter(resolved)
         blocks: list[str] = []
         collected: list[str] = []
         for i, (root, path) in enumerate(paths):
@@ -1080,6 +1166,8 @@ class CypherQueryBuilder:
             terminal_rel = _safe_ident(path[-1][0], _SAFE_REL_RE, "relationship type")
             carry = ", ".join(["n", *collected])
             guard = f"n:{root} OR NOT ({candidate_test})"
+            if bound is not None:
+                guard = f"({guard}) AND {self._filter_predicate(bound, f'm{i}')}"
             blocks.append(
                 f"OPTIONAL MATCH (n){''.join(pattern)} WHERE {guard} "
                 f"WITH {carry}, collect(DISTINCT {{m: m{i}, r: '{terminal_rel}'}}) AS h{i}"
@@ -1118,8 +1206,14 @@ class CypherQueryBuilder:
                     pattern.append(f"{arrow}({var})")
                 terminal = _safe_ident(legs[i - 1][0], _SAFE_REL_RE, "relationship type")
                 carry = ", ".join(["n", *collected, *chain_collected])
+                # The filter restricts the LAST leg only: the intermediate legs
+                # are the route, and filtering them would drop the path to the
+                # answer rather than the answer's non-matches.
+                where = chain_guard
+                if bound is not None and i == len(legs):
+                    where = f"({chain_guard}) AND {self._filter_predicate(bound, f'c{i - 1}')}"
                 blocks.append(
-                    f"OPTIONAL MATCH (n){''.join(pattern)} WHERE {chain_guard} "
+                    f"OPTIONAL MATCH (n){''.join(pattern)} WHERE {where} "
                     f"WITH {carry}, "
                     f"collect(DISTINCT {{m: c{i - 1}, r: '{terminal}'}}) AS k{i - 1}"
                 )
@@ -1163,9 +1257,13 @@ class CypherQueryBuilder:
             meta["chain"] = (
                 f"{chain[0]}|" + "->".join(f"{r}:{d}" for r, d in chain[1])
             )
+        params: dict = {"ids": list(resolved.seed_ids)}
+        if bound is not None:
+            params["filterValue"] = bound[2]
+            meta["filter"] = f"{bound[0]}.{bound[1]}={bound[2]}"
         return QueryDraft(
             query=query,
-            params={"ids": list(resolved.seed_ids)},
+            params=params,
             template="generic_chain",
             expected_nonempty=False,
             meta=meta,

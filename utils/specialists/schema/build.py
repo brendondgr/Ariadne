@@ -47,6 +47,47 @@ def _iter_jsonl(path: Path):
                 yield json.loads(line)
 
 
+#: A property is filter vocabulary only if it takes few, short values. Both
+#: bounds matter and neither is arbitrary. The 32 admits every categorical
+#: property the two catalogues carry — CAPEC ``Abstraction`` and ``Status`` have
+#: three values each, ATT&CK ``x_mitre_platforms`` eleven to fourteen — and
+#: excludes the free-text and per-record fields that are not filters at all
+#: (``Campaign.name`` has 56). The 48 characters keeps a description out even
+#: where a small corpus happens to have few of them.
+_MAX_VOCABULARY_VALUES = 32
+_MAX_VOCABULARY_VALUE_CHARS = 48
+
+
+def _observe_values(
+    vocabulary: dict[str, set[str] | None], properties: Any
+) -> None:
+    """Record one node's short string values, dropping a property that overflows.
+
+    A list-valued property contributes each of its entries: ``x_mitre_platforms``
+    is a list and the thing a question filters on is one platform, not the tuple.
+    A property that passes the cap is set to ``None`` and stays ``None``, so the
+    vocabulary never holds a partial value set that a caller could mistake for a
+    complete one.
+    """
+    if not isinstance(properties, dict):
+        return
+    for key, value in properties.items():
+        if vocabulary.get(key, ...) is None:
+            continue
+        items = value if isinstance(value, (list, tuple)) else [value]
+        seen = vocabulary.setdefault(key, set())
+        for item in items:
+            if not isinstance(item, str):
+                continue
+            text = item.strip()
+            if not text or len(text) > _MAX_VOCABULARY_VALUE_CHARS:
+                continue
+            seen.add(text)
+            if len(seen) > _MAX_VOCABULARY_VALUES:
+                vocabulary[key] = None
+                break
+
+
 def build_dataset_schema(
     dataset: str,
     nodes_path: str | Path,
@@ -60,6 +101,11 @@ def build_dataset_schema(
     """
     id_to_label: dict[str, str] = {}
     label_property_keys: dict[str, set[str]] = defaultdict(set)
+    # ``{label: {property: set(values) | None}}``. ``None`` marks a property that
+    # exceeded the cardinality cap and is therefore dropped from the vocabulary
+    # rather than truncated — see ``DatasetSchema.label_value_vocabulary``.
+    value_vocabulary: dict[str, dict[str, set[str] | None]] = defaultdict(dict)
+    list_properties: dict[str, set[str]] = defaultdict(set)
     learner = SchemeLearner()
 
     for node in _iter_jsonl(Path(nodes_path)):
@@ -89,6 +135,11 @@ def build_dataset_schema(
         # source (EXP-2026-08-011).
         if node.get("name"):
             label_property_keys[label].add("name")
+        _observe_values(value_vocabulary[label], properties)
+        if isinstance(properties, dict):
+            for key, value in properties.items():
+                if isinstance(value, (list, tuple)):
+                    list_properties[label].add(key)
 
     triples: set[tuple[str, str, str]] = set()
     for edge in _iter_jsonl(Path(relationships_path)):
@@ -107,6 +158,17 @@ def build_dataset_schema(
         },
         triples=frozenset(triples),
         label_id_schemes=learner.result(),
+        label_value_vocabulary={
+            label: {
+                prop: frozenset(values)
+                for prop, values in properties.items()
+                if values is not None
+            }
+            for label, properties in value_vocabulary.items()
+        },
+        label_list_properties={
+            label: frozenset(keys) for label, keys in list_properties.items()
+        },
     )
 
 

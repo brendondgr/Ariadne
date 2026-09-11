@@ -99,6 +99,7 @@ def _verify_claim(
     by_source: dict[str, list[EvidenceRecord]],
     cross_values: set[str],
     config: SynthesisConfig | None = None,
+    evidence: FederatedEvidence | None = None,
 ) -> ClaimVerdict:
     """Rule on one claim through four gates, any of which may be ablated.
 
@@ -147,6 +148,27 @@ def _verify_claim(
                     f"entity {entity} is not grounded in the cited records",
                 )
 
+    if claim.kind == "absence" and not reasons:
+        # An absence claim asserts that nothing is there, so its proof is the
+        # query rather than a record: admitted only when the result it came from
+        # RAN CLEAN and returned no rows for the requested relation. Without this
+        # the composer could assert "X has no execution steps" off a failed
+        # lookup, which is the one way a grounded system can state a falsehood
+        # with full provenance.
+        result = _result_for(claim, evidence) if evidence is not None else None
+        if result is None:
+            object_to(cfg.gate_grounded, "absence claim has no matching result")
+        elif not result.ok or result.error:
+            object_to(
+                cfg.gate_grounded,
+                "absence claim rests on a query that did not run clean",
+            )
+        elif any(_related_entries(record) for record in result.records):
+            object_to(
+                cfg.gate_grounded,
+                "absence claim contradicted by related records in the evidence",
+            )
+
     if claim.kind == "correlation" and not reasons:
         for entity in claim.entity_ids:
             if normalize_id(entity) not in cross_values:
@@ -161,6 +183,18 @@ def _verify_claim(
             verdict="unsupported", reasons=reasons, waived=tuple(waived)
         )
     return ClaimVerdict(verdict="supported", waived=tuple(waived))
+
+
+def _related_entries(record: EvidenceRecord) -> list[dict]:
+    return [rel for rel in (record.related or ()) if isinstance(rel, dict)]
+
+
+def _result_for(claim: Claim, evidence: FederatedEvidence) -> SpecialistResult | None:
+    """The result this claim was composed from, by sub-question id."""
+    for result in evidence.results:
+        if result.task.sub_question_id == claim.sub_question_id:
+            return result
+    return None
 
 
 def _empty_ok_results(evidence: FederatedEvidence) -> list[SpecialistResult]:
@@ -354,7 +388,8 @@ def verify_answer(
     cross_values = {normalize_id(v) for v in evidence.cross_source_join_values()}
 
     verdicts = [
-        _verify_claim(claim, by_source, cross_values, cfg) for claim in answer.claims
+        _verify_claim(claim, by_source, cross_values, cfg, evidence)
+        for claim in answer.claims
     ]
 
     # Consistency axis: reconcile corroborating records against each other, then

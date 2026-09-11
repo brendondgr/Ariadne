@@ -242,6 +242,115 @@ the edge type is still checked and the endpoint check is deferred to the next
 0.9161 unchanged. 1,170 tests pass, with the same pre-existing `ORCH_MAX_HOPS`
 failure as Steps 1 and 2.
 
+## Step 4 — the answer contract (complete, 2026-09-11)
+
+No model. `Q52` and `Q53`; 19.1% of the dev loss between them.
+
+The plan carries the ordered graph vocabulary, the seed ids and the limits and
+nothing else, so the composer never stated the field that was asked for and no
+builder filtered anything. `requested_slots` binds three things from the
+question's own words against the card's declared vocabulary: the requested
+property, a filter, and the relation an empty result must be reported as empty
+*of*. Reading the text rather than extending the plan schema is an operator
+decision of 2026-09-11 — a filled-in slot the live planner does not produce
+would raise the benchmark without improving the shipped system.
+
+**Nothing is guessed.** A property binds only when the question's words match
+one declared property and no other; a filter value only when the registry has
+*observed* that exact value on that property. Ambiguity is refusal, which is
+Step 3's lesson applied. Over both banks the binder produces **zero wrong
+filters**.
+
+| | dev | holdout |
+|---|---:|---:|
+| gold filters bound correctly | 30 of 47 | 33 of 58 |
+| of the misses, unanswerable as loaded (`Q54`) | 10 | 16 |
+| wrong bindings | **0** | **0** |
+| spurious bindings on unfiltered questions | 8 | 8 |
+
+Six or seven of the spurious bindings on each bank are `taxonomy_name = WASC` on
+a question that does ask for WASC entries; the gold encodes that in the
+predicate rather than as a filter, so it is a bookkeeping disagreement, not a
+wrong answer.
+
+### H4 is met
+
+The requested property now reaches a claim whatever shape its value is, which is
+the gap the independent panel exhibited: the platforms of T1027.006 and the
+contributors of T1530 were in the evidence and absent from the claims, because
+the composer's attribute projection skips lists.
+
+| requested values present in evidence, and rendered in the claims | before | after |
+|---|---:|---:|
+| dev, `generic_composed` | 11 of 27 | **30 of 30** |
+| dev, `deterministic` | 15 of 31 | **31 of 31** |
+| holdout, `generic_composed` | — | **22 of 22** |
+
+The pre-registered threshold was 100% and it is met on both arms and both banks.
+This is the claim `C-017` needed: the value no longer depends on a narrator that
+had timed out on 43% of the run.
+
+### H5 is met on one side of the system and cannot be on the other
+
+The composer states what an enumeration was restricted to — 38 dev and 41
+holdout answers carry the scope line — and the filter is pushed into the query
+on the CAPEC side, where it removes out-of-filter records and loses no gold. On
+the ATT&CK side it cannot be pushed at all, for a reason worth naming (`Q55`).
+
+### Results
+
+| | reference | Step 1 | Step 2 | Step 3 | Step 4 |
+|---|---:|---:|---:|---:|---:|
+| dev `generic_composed` mean gold coverage | 0.599039 | 0.632121 | 0.654044 | 0.667281 | **0.695685** |
+| dev zero-record (n=284) | 77 | 56 | 33 | 31 | **31** |
+| holdout `generic_composed` | 0.636105 | 0.667945 | 0.688673 | 0.706696 | **0.717691** |
+| holdout zero-record (n=288) | 68 | 50 | 33 | 28 | **28** |
+| dev `deterministic` mean gold coverage | 0.504786 | 0.504786 | 0.504786 | 0.504786 | **0.533190** |
+
+Coverage is lost on **no answer** on either bank or either arm. The 240
+adversarial probes block at 1.0000. `scripts/catalogue_regression.py`: 0 of 120
+moved, gold recall 0.9161 unchanged. 1,296 tests pass, with the same
+pre-existing `ORCH_MAX_HOPS` failure as Steps 1 to 3.
+
+### `H6`'s byte-identity clause does not survive this step, and should not
+
+`H6` says `deterministic` stays byte-identical. It does not: 141 of its 284 dev
+answers change. **That is the repair, not a regression.** The answer contract is
+a property of the shared deterministic composer, which is exactly what `C-017`
+rests on, so gating it to the generic arm would have meant fixing the claim
+everywhere except where the claim is made. The plan assumed the template path
+would bind no slots; it reads the same question text and binds the same ones.
+
+What is preserved, and is the right reading of the clause, is stronger than
+"nothing moved": **the template arm's retrieval is untouched — record counts are
+identical on all 284 and all 288** — and its composition changes only by gaining
+claims, never losing coverage. The builders' filter push-down is gated on the
+generic path, so no query changed for the template arm.
+
+### Two data-layer defects this step found and did not fix
+
+Both change the graph, so both carry a re-baseline of this experiment's
+references and are decisions rather than fixes. They are filed and left open.
+
+**`Q54` — two CAPEC properties were never parsed.** `Typical_Severity` and
+`Likelihood_Of_Attack` appear 490 and 345 times in the pinned v3.9 catalogue by
+this project's own discovery report, and the parser reads only XML *attributes*
+plus `Description`, so neither reaches the graph. Ten dev and 16 holdout
+filtered questions are unanswerable as loaded, and they are exactly the filters
+the binder could not bind.
+
+**`Q55` — Neo4j keeps four real properties and packs the rest into a string.**
+`node_merge_cypher` writes `id`, `name`, `attack_id` and `stix_type`, and
+serialises everything else into `properties_json`. The first filter push-down
+emitted `$v IN coalesce(m.x_mitre_platforms, [])` against a store with no such
+property; it matched nothing, silently, and cost 23 dev questions their whole
+gold coverage. The push-down is now gated on the four native properties, which
+means it refuses every Cypher filter today and will start working unchanged if
+the loader is fixed.
+
+Both were found by the regression rather than by review, which is the third time
+in this experiment. The recorded-answer diff is the instrument.
+
 ## Serving capacity for Steps 5–8
 
 Granted 2026-09-11: one endpoint, `default-model` on `:9090`, at **16
@@ -251,6 +360,6 @@ configuration, so Steps 6 and 7 are separate nights, and the `gemma4-31B`
 ordering pass is dropped for want of a second healthy endpoint. The final result
 will therefore rest on one grader family, which belongs in threats to validity.
 
-## Steps 4–8
+## Steps 5–8
 
-Not started.
+Not started. Steps 5 to 8 need the judge.

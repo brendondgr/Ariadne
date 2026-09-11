@@ -294,6 +294,137 @@ _MAX_ATTRIBUTES_PER_RECORD = 12
 _MAX_ATTRIBUTE_VALUE_CHARS = 120
 
 
+# -- the answer contract ----------------------------------------------------
+#
+# What the question asked for, as opposed to which records to fetch. The plan
+# carries neither, so the composer used to enumerate whatever came back and
+# never state the field that was asked for. Three gaps, one cause:
+#
+#   * a requested property whose value is a LIST (``x_mitre_platforms``,
+#     ``x_mitre_contributors``) is skipped by ``_attribute_pairs``, so the value
+#     sits in the evidence and never reaches a claim;
+#   * a bound filter is never mentioned, so a reader cannot tell a filtered
+#     answer from an unfiltered one;
+#   * when the requested relation returns nothing, the answer lists whatever
+#     else came back and never says the requested set is EMPTY.
+#
+# The narrator usually papered over the first. That is not a property `C-017`
+# can rest on, and 43% of the development run's narrators had timed out
+# (`EXP-2026-09-016` A-8). Stating it as a verified claim is what turns a habit
+# into a construction guarantee.
+
+#: A list-valued property is joined into one readable value, capped so a
+#: 40-platform list does not become the answer.
+_MAX_REQUESTED_VALUES = 12
+
+
+def _slots_for(result: SpecialistResult):
+    """The requested slots for this result's sub-question, or all-unbound.
+
+    Loaded lazily and failing soft: a missing card or registry must degrade to
+    the composer's previous behaviour, never to an exception in the one path
+    that is supposed to work without anything else being up.
+    """
+    from utils.planner.canonical import RequestedSlots
+
+    try:
+        from utils.planner.cards import load_source_cards
+        from utils.specialists.schema import get_registry
+        from utils.planner.canonical import requested_slots
+
+        card = load_source_cards().get(result.task.source)
+        if card is None:
+            return RequestedSlots()
+        return requested_slots(
+            result.task.text or "",
+            result.task.entities or (),
+            card,
+            get_registry(),
+        )
+    except Exception:  # noqa: BLE001 — no slots is the old behaviour, not an error
+        return RequestedSlots()
+
+
+def _requested_values(record: EvidenceRecord, prop: str) -> list[str]:
+    """The record's value(s) for ``prop``, list-valued or not, as strings."""
+    value = (record.properties or {}).get(prop)
+    if value is None:
+        return []
+    items = value if isinstance(value, (list, tuple)) else [value]
+    out: list[str] = []
+    for item in items:
+        text = str(item).strip()
+        if text and text not in out:
+            out.append(text)
+    return out[:_MAX_REQUESTED_VALUES]
+
+
+def _requested_property_claim(
+    result: SpecialistResult, record: EvidenceRecord, prop: str
+) -> Claim | None:
+    """State the property the question asked for, whatever shape its value is.
+
+    ``_attribute_pairs`` deliberately skips lists — a generic attribute listing
+    of every list a record carries is noise. But the *requested* property is the
+    answer, and two of the development half's exhibited failures are exactly
+    this: the platforms of T1027.006 and the contributors of T1530 were in the
+    evidence and absent from the claims.
+    """
+    values = _requested_values(record, prop)
+    if not values:
+        return None
+    anchor = f"{record.primary_id} ({record.name})" if record.name else record.primary_id
+    label = " ".join(w for w in _PROPERTY_LABEL_RE.split(prop) if w and w != "x") or prop
+    return Claim(
+        text=f"{anchor} {label}: {', '.join(values)}.",
+        citations=(
+            Citation(
+                source=result.task.source,
+                primary_id=record.primary_id,
+                record_id=record.provenance.record_id if record.provenance else "",
+            ),
+        ),
+        entity_ids=(record.primary_id,),
+        kind="fact",
+        sub_question_id=result.task.sub_question_id,
+    )
+
+
+#: ``x_mitre_platforms`` -> "mitre platforms"; ``Typical_Severity`` -> "Typical
+#: Severity". The property's own identifier, not a gloss, for the same reason the
+#: renderer uses the identifier: it is the vocabulary the source declares.
+_PROPERTY_LABEL_RE = re.compile(r"[_\s]+")
+
+
+def _absence_claim(result: SpecialistResult, relation: str) -> Claim:
+    """State that the requested set is empty, with the executed query as proof.
+
+    An anchor that resolved and a requested relation that returned no rows is a
+    real answer — "CAPEC-513 has no execution steps" — and the composer used to
+    list whatever else came back instead. It carries its query exactly as an
+    ``Abstention`` does, and the verifier admits it only when that query ran
+    clean, so an absence can never be asserted from a failed lookup.
+    """
+    anchor_ids = [r.primary_id for r in result.records if r.primary_id]
+    anchor = anchor_ids[0] if anchor_ids else (result.task.seed_ids or ("the anchor",))[0]
+    phrase = " ".join(w.lower() for w in _PROPERTY_LABEL_RE.split(relation) if w)
+    return Claim(
+        text=f"{anchor} has no {phrase} in this catalogue.",
+        citations=tuple(
+            Citation(
+                source=result.task.source,
+                primary_id=record.primary_id,
+                record_id=record.provenance.record_id if record.provenance else "",
+            )
+            for record in result.records[:1]
+            if record.primary_id
+        ),
+        entity_ids=tuple(anchor_ids[:1]),
+        kind="absence",
+        sub_question_id=result.task.sub_question_id,
+    )
+
+
 def _attribute_pairs(record: EvidenceRecord) -> list[tuple[str, str]]:
     """The record's own short scalar attributes, in a stable order."""
     pairs: list[tuple[str, str]] = []
@@ -605,7 +736,11 @@ def _description_claim(result: SpecialistResult, record: EvidenceRecord) -> Clai
     )
 
 
-def _enumeration_claim(result: SpecialistResult, record: EvidenceRecord) -> Claim:
+def _enumeration_claim(
+    result: SpecialistResult,
+    record: EvidenceRecord,
+    bound_filter: tuple[str, str, str] | None = None,
+) -> Claim:
     """A structured claim naming *every* id in a record's related set.
 
     The completeness surface for "which techniques / what mitigations /
@@ -637,7 +772,17 @@ def _enumeration_claim(result: SpecialistResult, record: EvidenceRecord) -> Clai
             break
     noun = _related_noun(record, len(ids))
     anchor = record.name and f"{record.primary_id} ({record.name})" or record.primary_id
-    text = f"{anchor} has {len(ids)} {noun}: {', '.join(parts)}."
+    # Say what the set was restricted to. An enumeration that silently applies a
+    # filter reads as a complete set and is not one, which is a worse failure
+    # than not filtering: the reader cannot tell.
+    scope = ""
+    if bound_filter is not None:
+        _, prop, value = bound_filter
+        label = " ".join(
+            w for w in _PROPERTY_LABEL_RE.split(prop) if w and w != "x"
+        ) or prop
+        scope = f", restricted to {label} {value}"
+    text = f"{anchor} has {len(ids)} {noun}{scope}: {', '.join(parts)}."
     return Claim(
         text=text,
         citations=(
@@ -687,7 +832,11 @@ def _primary_enumeration_claim(result: SpecialistResult) -> Claim:
     )
 
 
-def _enumeration_claims(result: SpecialistResult, cap: int) -> list[Claim]:
+def _enumeration_claims(
+    result: SpecialistResult,
+    cap: int,
+    bound_filter: tuple[str, str, str] | None = None,
+) -> list[Claim]:
     """Enumeration claims for a single-source result, when the answer must list a
     full set the fact claim only samples. Two shapes:
 
@@ -721,7 +870,7 @@ def _enumeration_claims(result: SpecialistResult, cap: int) -> list[Claim]:
     for record in result.records:
         ids = _related_ids(record)
         if ids:
-            claims.append(_enumeration_claim(result, record))
+            claims.append(_enumeration_claim(result, record, bound_filter))
         if len(claims) >= _enum_bound(
             "MAX_ENUMERATION_CLAIMS", _MAX_ENUMERATION_CLAIMS_PER_RESULT
         ):
@@ -750,6 +899,7 @@ class DeterministicComposer:
         notes: list[str] = []
 
         for result in evidence.results:
+            slots = _slots_for(result)
             if result.records:
                 claims.append(_fact_claim(result, cap))
                 # A result about exactly one entity should say what that entity
@@ -759,7 +909,23 @@ class DeterministicComposer:
                     if described is not None:
                         claims.append(described)
                 claims.extend(_attribute_claims(result))
-                claims.extend(_enumeration_claims(result, cap))
+                # The requested property, whatever shape its value is. Placed
+                # after the generic attribute listing so the answer reads
+                # "what it is, then what you asked about".
+                if slots.property:
+                    for record in result.records[:_MAX_ATTRIBUTE_RECORDS]:
+                        requested = _requested_property_claim(
+                            result, record, slots.property
+                        )
+                        if requested is not None:
+                            claims.append(requested)
+                claims.extend(_enumeration_claims(result, cap, slots.filter))
+                # The requested relation came back empty while the anchor
+                # resolved: an answer, not an absence of one.
+                if slots.relation and not any(
+                    _related_ids(record) for record in result.records
+                ):
+                    claims.append(_absence_claim(result, slots.relation))
             elif result.ok:
                 abstentions.append(abstention_for(result))
             else:

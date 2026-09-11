@@ -93,6 +93,21 @@ class DatasetSchema:
     label_id_schemes: dict[str, dict[str, PropertySchemes]] = field(
         default_factory=dict
     )
+    # ``{label: {property: frozenset(values)}}`` — the distinct values observed
+    # for *low-cardinality* properties, which is what a filter can be bound
+    # against. A property with more distinct values than the cap is absent
+    # rather than truncated: a partial vocabulary would let a caller conclude a
+    # value is not real when the walk simply stopped early. Defaulted so a
+    # schema may be constructed without it; an empty map binds nothing, which is
+    # the correct behaviour for a caller that refuses to guess.
+    label_value_vocabulary: dict[str, dict[str, frozenset[str]]] = field(
+        default_factory=dict
+    )
+    # ``{label: frozenset(properties)}`` — properties observed holding a *list*
+    # rather than a scalar. A filter on ``x_mitre_platforms`` is membership in a
+    # list; one on ``Abstraction`` is equality with a string. The predicate a
+    # builder emits differs, and getting it wrong silently matches nothing.
+    label_list_properties: dict[str, frozenset[str]] = field(default_factory=dict)
     # How ``triples`` was obtained — :data:`OBSERVED` or :data:`DECLARED`. See
     # the constants for why the difference is carried rather than flattened.
     # Defaulted to OBSERVED so every existing construction keeps its meaning.
@@ -130,6 +145,19 @@ class DatasetSchema:
     def id_schemes(self, label: str, prop: str = ID_PROPERTY) -> PropertySchemes | None:
         """The learned shapes for ``label.prop``, or ``None`` if never observed."""
         return self.label_id_schemes.get(label, {}).get(prop)
+
+    def observed_values(self, label: str, prop: str) -> frozenset[str]:
+        """Distinct values observed for ``label.prop``, when few enough to list.
+
+        Empty means "cannot say", never "none exist": a high-cardinality
+        property is omitted from the vocabulary entirely, so a caller must read
+        an empty set as an absence of evidence rather than evidence of absence.
+        """
+        return self.label_value_vocabulary.get(label, {}).get(prop, frozenset())
+
+    def is_list_property(self, label: str, prop: str) -> bool:
+        """Was ``label.prop`` observed holding a list rather than a scalar?"""
+        return prop in self.label_list_properties.get(label, frozenset())
 
     def value_verdict(self, label: str, prop: str, value: Any) -> str:
         """Can ``value`` inhabit ``label.prop``? Three-valued; see ``idscheme``.
@@ -266,6 +294,23 @@ class SchemaRegistry:
         return combine_verdicts(
             schema.value_verdict(label, prop, value) for schema in self._select(dataset)
         )
+
+    def is_list_property(
+        self, label: str, prop: str, dataset: str | None = None
+    ) -> bool:
+        """True when any selected dataset observed ``label.prop`` as a list."""
+        return any(
+            schema.is_list_property(label, prop) for schema in self._select(dataset)
+        )
+
+    def observed_values(
+        self, label: str, prop: str, dataset: str | None = None
+    ) -> frozenset[str]:
+        """Union :meth:`DatasetSchema.observed_values` across the selected dataset(s)."""
+        values: set[str] = set()
+        for schema in self._select(dataset):
+            values.update(schema.observed_values(label, prop))
+        return frozenset(values)
 
     def labels_for_id(self, value: Any, dataset: str | None = None) -> frozenset[str]:
         """Union of :meth:`DatasetSchema.labels_for_id` across the selected dataset(s)."""

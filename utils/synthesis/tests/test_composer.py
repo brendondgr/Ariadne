@@ -3,7 +3,11 @@
 
 from __future__ import annotations
 
-from utils.synthesis.composer import DeterministicComposer, abstention_statement
+from utils.synthesis.composer import (
+    DeterministicComposer,
+    _attribute_pairs,
+    abstention_statement,
+)
 from utils.synthesis.config import SynthesisConfig
 from utils.synthesis.verifier import verify_answer
 
@@ -483,3 +487,98 @@ def test_a_long_description_is_cut_at_a_sentence_boundary():
     assert claim.text.rstrip().endswith(".")
     assert "…" not in claim.text
     assert len(claim.text) < 900
+
+
+# -- the answer contract (EXP-2026-09-018 Step 4) ----------------------------
+
+
+def test_a_list_valued_requested_property_reaches_a_claim() -> None:
+    """``x_mitre_platforms`` is a list, and lists were dropped.
+
+    ``_attribute_pairs`` skips list values on purpose — a generic listing of
+    every list a record carries is noise. But the *requested* property is the
+    answer. Two of the development half's exhibited failures are exactly this:
+    the platforms of T1027.006 and the contributors of T1530 sat in the evidence
+    and never reached a claim, and the narrator that would have said it anyway
+    had timed out on 43% of the run.
+    """
+    from utils.synthesis.composer import _requested_property_claim
+
+    record = make_record(
+        "AN0307",
+        label="Analytic",
+        properties={"x_mitre_platforms": ["Linux", "Windows", "macOS"]},
+    )
+    result = make_result(records=[record])
+
+    generic = [key for key, _ in _attribute_pairs(record)]
+    assert "x_mitre_platforms" not in generic, "the generic listing still skips lists"
+
+    claim = _requested_property_claim(result, record, "x_mitre_platforms")
+    assert claim is not None
+    for platform in ("Linux", "Windows", "macOS"):
+        assert platform in claim.text
+    assert claim.citations and claim.entity_ids == ("AN0307",)
+
+
+def test_a_scalar_requested_property_also_reaches_a_claim() -> None:
+    from utils.synthesis.composer import _requested_property_claim
+
+    record = make_record("CAPEC-66", source="capec", label="AttackPattern",
+                         properties={"Abstraction": "Standard"})
+    claim = _requested_property_claim(make_result(source="capec", records=[record]),
+                                      record, "Abstraction")
+    assert claim is not None and "Standard" in claim.text
+
+
+def test_a_missing_requested_property_produces_no_claim() -> None:
+    """Nothing is invented: an absent value yields no claim at all."""
+    from utils.synthesis.composer import _requested_property_claim
+
+    record = make_record("T1055", properties={"name": "Process Injection"})
+    assert _requested_property_claim(make_result(records=[record]), record,
+                                     "x_mitre_platforms") is None
+
+
+def test_an_enumeration_says_what_it_was_restricted_to() -> None:
+    """A filtered set that reads as a complete one is worse than an unfiltered one.
+
+    The reader has no way to tell. So the scope goes in the claim text beside
+    the count it qualifies.
+    """
+    from utils.synthesis.composer import _enumeration_claim
+
+    record = make_record(
+        "G0006",
+        label="Group",
+        related=[{"id": "T1055", "label": "Technique", "type": "USES"},
+                 {"id": "T1059", "label": "Technique", "type": "USES"}],
+    )
+    result = make_result(records=[record])
+
+    plain = _enumeration_claim(result, record)
+    assert "restricted to" not in plain.text
+
+    scoped = _enumeration_claim(
+        result, record, ("Technique", "x_mitre_platforms", "macOS")
+    )
+    assert "restricted to mitre platforms macOS" in scoped.text
+    assert scoped.entity_ids == plain.entity_ids
+
+
+def test_an_empty_requested_relation_is_stated_as_an_answer() -> None:
+    """"CAPEC-513 has no execution steps" is a real answer, not a missing one.
+
+    The composer used to list whatever else came back. The claim carries the
+    executed query as its proof exactly as an abstention does, and the verifier
+    admits it only when that query ran clean — see test_abstention.py.
+    """
+    from utils.synthesis.composer import _absence_claim
+
+    record = make_record("CAPEC-513", source="capec", label="Category", related=[])
+    claim = _absence_claim(make_result(source="capec", records=[record]),
+                           "HAS_EXECUTION_STEP")
+
+    assert claim.kind == "absence"
+    assert "CAPEC-513" in claim.text and "no has execution step" in claim.text
+    assert claim.citations

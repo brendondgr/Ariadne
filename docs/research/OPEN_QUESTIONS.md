@@ -49,6 +49,8 @@ below.)
 | Q51 | Two-hop requests collapse to the shortest schema path from the anchor | EXP-2026-09-017 A-2 | 30.9% of the dev loss; every D4 and D6 figure *(open)* |
 | Q52 | A declared property filter reaches neither the query nor the composer | EXP-2026-09-017 A-2 | 13.2% of the dev loss; every D5 figure *(open)* |
 | Q53 | The composer drops list-valued requested properties and never states an empty set | EXP-2026-09-017 A-2 | 5.9% of the dev loss; `C-017`'s construction claim *(open)* |
+| Q54 | Two CAPEC properties the questions filter on were never parsed from the source | EXP-2026-09-018 Step 4 | 10 dev and 16 holdout filtered questions; part of Q52's slice *(open)* |
+| Q55 | The Neo4j loader packs every non-core property into a JSON string, so no Cypher filter can see it | EXP-2026-09-018 Step 4 | every ATT&CK-side filter push-down *(open)* |
 
 ---
 
@@ -933,3 +935,70 @@ list (joined, capped) while the generic attribute listing keeps skipping lists;
 add an `absence` claim kind that the verifier admits only when its query ran
 clean and returned no rows for that relation. **From:** `EXP-2026-09-017` `A-2`.
 **Cost:** a day. **Where it lands:** `EXP-2026-09-018` Steps 4 and 5.
+
+### Q54 — Two CAPEC properties the questions filter on were never parsed
+
+**Why it matters:** `Typical_Severity` and `Likelihood_Of_Attack` are published
+by CAPEC on every attack pattern — the pinned v3.9 catalogue carries **490** and
+**345** of them, counted by this project's own discovery report
+(`data/processed/discovery/capec-inventory.json`). Neither reaches the graph.
+`utils/kg_builder/preprocess/capec_parse.py` reads an attack pattern's XML
+*attributes* (`Name`, `Abstraction`, `Status`) and its `Description` child, and
+these two are child *elements*, so they are silently dropped. The node's whole
+property set in the canonical snapshot is `Abstraction`, `Status`, `description`.
+
+This is the same class as the five node labels added on 2026-09-01
+(`EXP-2026-09-001` A-2): a field the source publishes and the load discards, so
+no question can reach it. It is not a retrieval defect, a composer defect or a
+gold defect — the data is simply not there.
+
+**What it costs.** 10 development and 16 holdout questions filter on one of the
+two, and they are unanswerable as loaded. Their share of `Q52`'s slice is exactly
+the part `EXP-2026-09-018` Step 4 could not bind: 30 of the 37 *answerable*
+development filters bind, and the 10 that do not are all these. The D1 property
+questions "how severe is CAPEC-543 typically" and "how likely is an attack using
+CAPEC-32" are in the same position.
+
+**What resolves it:** read the two elements in `normalize_attack_pattern`, like
+`Description`. The change is small; what is not small is that it **changes the
+graph**, so every arm's retrieval moves and `EXP-2026-09-018`'s reference
+captures must be re-taken. That makes it a decision with a re-baseline attached,
+not a quiet fix. **From:** `EXP-2026-09-018` Step 4. **Cost:** an hour, plus a
+full re-baseline of the experiment's model-free references.
+
+### Q55 — The Neo4j loader packs every non-core property into a JSON string
+
+**Why it matters:** `utils/graph_loader/stores/neo4j.py` `node_merge_cypher`
+writes exactly four real node properties — `id`, `name`, `attack_id`,
+`stix_type` — and serialises everything else into a single `properties_json`
+string. So `x_mitre_platforms`, `x_mitre_contributors` and every other field are
+invisible to a Cypher `WHERE` clause. The derived schema registry reads the
+canonical node files and correctly reports them as real properties; what it
+cannot know is that the loader flattened them.
+
+**How it was found, and why it matters that it was found this way.** The Step 4
+filter push-down emitted `$v IN coalesce(m.x_mitre_platforms, [])` against a
+store with no such property. That matches **nothing**, silently, and it cost 23
+development questions their entire gold coverage in the first measurement of the
+step. Neo4j does warn ("property key does not exist"), but the warning is
+attached to the driver's result summary and nothing reads it.
+
+**Not a Gremlin problem.** The CAPEC store keeps real properties, so the filter
+push-down works there and loses nothing: `Abstraction` and `Status` filter
+correctly on both banks.
+
+**What it costs.** Every ATT&CK-side filter — 27 development and 33 holdout
+questions — cannot be applied at retrieval. Step 4 therefore gates the Cypher
+push-down on the four native properties, all of which are non-filterable for
+other reasons, so today it refuses every Cypher filter. Composition still states
+what a filtered answer was restricted to, but the set itself is unfiltered on
+that side.
+
+**What resolves it:** store scalar and list-of-scalar properties natively and
+keep the JSON blob only for nested structures, which Neo4j cannot hold. Neo4j
+stores lists of strings directly, so nothing is lost. Like `Q54` this changes the
+graph and needs a re-baseline. A cheaper partial alternative is to project the
+neighbour's `properties_json` into the generic queries and filter in the
+composer, but that ships a full description blob per neighbour row and was
+rejected on payload size. **From:** `EXP-2026-09-018` Step 4. **Cost:** a day,
+plus a re-baseline.
