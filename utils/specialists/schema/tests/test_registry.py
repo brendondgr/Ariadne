@@ -214,3 +214,63 @@ def test_real_attack_technique_facets_and_labels() -> None:
     assert PlausibleFacet("MITIGATES", "in", "Mitigation") in tech
     assert PlausibleFacet("DETECTS", "in", "DetectionStrategy") in tech
     assert "description" in schema.label_properties("Technique")
+
+
+# -- native properties: one rule, two readers (Q55) --------------------------
+
+
+def test_native_property_rule_is_the_loader_s_own() -> None:
+    """The registry must not disagree with the store about what is queryable.
+
+    A builder emits a ``WHERE`` clause only for a property the registry calls
+    native. If that rule ever drifts from the loader's, the clause matches
+    nothing rather than erroring — which is exactly how 23 development questions
+    lost their whole gold coverage before this was tied together.
+    """
+    from utils.graph_loader.stores.neo4j import _native_property_values
+    from utils.specialists.schema.build import build_dataset_schema  # noqa: F401
+
+    props = {
+        "Abstraction": "Standard",           # scalar
+        "x_mitre_platforms": ["Windows"],    # list of scalars
+        "x_mitre_version": 2,                # numeric scalar
+        "revoked": False,                    # boolean scalar
+        "external_references": [{"a": 1}],   # list of maps — not storable
+        "nested": {"a": 1},                  # map — not storable
+        "id": "T1055",                       # core, set explicitly
+    }
+    native = set(_native_property_values(props))
+    assert native == {
+        "Abstraction",
+        "x_mitre_platforms",
+        "x_mitre_version",
+        "revoked",
+    }
+
+
+def test_a_property_seen_once_as_a_map_is_not_native_anywhere() -> None:
+    """One non-storable observation disqualifies the property for that label.
+
+    The store cannot hold it for *that* node, so a filter on it would silently
+    miss the node rather than report it. All-or-nothing is the only reading that
+    cannot produce a quiet wrong answer.
+    """
+    import json
+    import tempfile
+    from pathlib import Path
+
+    from utils.specialists.schema.build import build_dataset_schema
+
+    with tempfile.TemporaryDirectory() as tmp:
+        nodes = Path(tmp) / "nodes.jsonl"
+        edges = Path(tmp) / "relationships.jsonl"
+        nodes.write_text(
+            json.dumps({"id": "a", "label": "L", "properties": {"p": "scalar"}})
+            + "\n"
+            + json.dumps({"id": "b", "label": "L", "properties": {"p": {"k": 1}}})
+            + "\n"
+        )
+        edges.write_text("")
+        schema = build_dataset_schema("d", nodes, edges)
+
+    assert not schema.is_native_property("L", "p")

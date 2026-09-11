@@ -18,6 +18,8 @@ from functools import lru_cache
 from pathlib import Path
 from typing import Any
 
+from utils.graph_loader.stores.neo4j import _native_property_values
+
 from .idscheme import SchemeLearner
 from .registry import DECLARED, DatasetSchema, SchemaRegistry
 
@@ -106,6 +108,8 @@ def build_dataset_schema(
     # rather than truncated — see ``DatasetSchema.label_value_vocabulary``.
     value_vocabulary: dict[str, dict[str, set[str] | None]] = defaultdict(dict)
     list_properties: dict[str, set[str]] = defaultdict(set)
+    # ``None`` marks a property seen holding something no store can index.
+    native_properties: dict[str, dict[str, bool]] = defaultdict(dict)
     learner = SchemeLearner()
 
     for node in _iter_jsonl(Path(nodes_path)):
@@ -137,9 +141,15 @@ def build_dataset_schema(
             label_property_keys[label].add("name")
         _observe_values(value_vocabulary[label], properties)
         if isinstance(properties, dict):
+            native = _native_property_values(properties)
             for key, value in properties.items():
                 if isinstance(value, (list, tuple)):
                     list_properties[label].add(key)
+                # One non-native observation disqualifies the property: the
+                # store cannot hold it for THAT node, so a filter on it would
+                # silently miss that node.
+                was = native_properties[label].get(key, True)
+                native_properties[label][key] = was and key in native
 
     triples: set[tuple[str, str, str]] = set()
     for edge in _iter_jsonl(Path(relationships_path)):
@@ -168,6 +178,10 @@ def build_dataset_schema(
         },
         label_list_properties={
             label: frozenset(keys) for label, keys in list_properties.items()
+        },
+        label_native_properties={
+            label: frozenset(key for key, ok in keys.items() if ok)
+            for label, keys in native_properties.items()
         },
     )
 

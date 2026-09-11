@@ -49,6 +49,45 @@ def _sanitize_rel_type(rel_type: str) -> str:
     return rel_type
 
 
+#: Property names the loader sets explicitly. A canonical property with one of
+#: these names is already carried and must not be written twice.
+_CORE_NODE_PROPERTIES = frozenset({"id", "name", "attack_id", "stix_type"})
+
+#: Property names safe to backtick-quote into a SET clause. Same allowlist
+#: rule, and the same reason, as :data:`_SAFE_LABEL`.
+_SAFE_PROPERTY = re.compile(r"^[A-Za-z][A-Za-z0-9_]*$")
+
+
+def _native_property_values(props: dict[str, Any]) -> dict[str, Any]:
+    """The canonical properties Neo4j can hold as real, queryable properties.
+
+    Neo4j stores scalars and homogeneous lists of scalars directly; it cannot
+    store a nested map or a list of maps. Until 2026-09-11 the loader wrote
+    **four** real properties and serialised everything else into one
+    ``properties_json`` string, which made every other field invisible to a
+    ``WHERE`` clause. The derived schema registry reads the canonical node files
+    and reports those fields as real, so a query built from the schema filtered
+    on a property the store did not have and matched nothing, silently — 23
+    development questions lost their whole gold coverage to that before it was
+    found (`Q55`, `EXP-2026-09-018` Step 4).
+
+    ``properties_json`` is still written, unchanged and complete, so
+    :func:`unpack_properties` and every reader built on it keep working. This
+    only *adds* the queryable copy.
+    """
+    native: dict[str, Any] = {}
+    for key, value in props.items():
+        if key in _CORE_NODE_PROPERTIES or not _SAFE_PROPERTY.match(key):
+            continue
+        if isinstance(value, (str, int, float, bool)):
+            native[key] = value
+        elif isinstance(value, (list, tuple)):
+            items = list(value)
+            if items and all(isinstance(i, (str, int, float, bool)) for i in items):
+                native[key] = items
+    return native
+
+
 def node_merge_cypher(node: dict[str, Any]) -> tuple[str, dict[str, Any]]:
     """Build a parameterized MERGE statement for one canonical node."""
     label = _sanitize_label(node["label"])
@@ -65,6 +104,10 @@ def node_merge_cypher(node: dict[str, Any]) -> tuple[str, dict[str, Any]]:
         "SET n.name = $name, n.attack_id = $attack_id, "
         "n.stix_type = $stix_type, n.properties_json = $properties_json"
     )
+    for key, value in sorted(_native_property_values(props).items()):
+        param = f"p_{key}"
+        params[param] = value
+        query += f" SET n.`{key}` = ${param}"
     for extra in node.get("labels", [])[1:]:
         extra_label = _sanitize_label(extra)
         query += f" SET n:{extra_label}"

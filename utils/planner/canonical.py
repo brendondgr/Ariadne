@@ -1451,6 +1451,21 @@ def requested_slots(
                 ):
                     if _value_in_text(value, text):
                         matches.append((label, candidate, value))
+        # A value that two properties share is ambiguous on its own — "Medium"
+        # is both a `Typical_Severity` and a `Likelihood_Of_Attack`. The
+        # question does say which: "rated Medium likelihood", "with a typical
+        # severity of Medium". So the property's OWN name breaks the tie, which
+        # is the same declared vocabulary the property slot is bound from, not a
+        # second guess. When it cannot break it, nothing is bound.
+        if len({(label, candidate) for label, candidate, _ in matches}) > 1:
+            named = [
+                match
+                for match in matches
+                if _matching_properties(words, [match[1]])
+            ]
+            if len({(label, candidate) for label, candidate, _ in named}) == 1:
+                matches = named
+
         # One reading only. Two properties, or two values of one property, is a
         # question this cannot read and must not answer wrongly.
         if len({(label, candidate) for label, candidate, _ in matches}) == 1:
@@ -1479,9 +1494,41 @@ def _value_in_text(value: str, text: str) -> bool:
     """
     if not value:
         return False
-    pattern = (
-        r"(?<![\w-])"
-        + r"\s+".join(re.escape(part) for part in value.split())
-        + r"(?![\w-])"
-    )
-    return re.search(pattern, text or "") is not None
+    body = r"\s+".join(re.escape(part) for part in value.split())
+    pattern = re.compile(r"(?<![\w-])" + body + r"(?![\w-])")
+    haystack = text or ""
+    for match in pattern.finditer(haystack):
+        if not _inside_a_name(haystack, match.start(), match.end()):
+            return True
+    return False
+
+
+#: A capitalised word that is not the value itself. Used to tell a filter value
+#: from the same word inside a proper name.
+_TITLE_WORD_RE = re.compile(r"[A-Z][A-Za-z0-9]*")
+
+
+def _inside_a_name(text: str, start: int, end: int) -> bool:
+    """Is this occurrence part of a longer Title Case run?
+
+    "Boot Integrity" is the *name* of mitigation M1046, and ``Integrity`` is
+    also an observed value of ``Technique.x_mitre_impact_type``. Binding it as a
+    filter restricted a question about that mitigation to impact-type Integrity
+    and halved its gold coverage — the only regression the data-layer step
+    produced.
+
+    A filter value is introduced by an ordinary word: "apply **to** Windows",
+    "**at the** Meta abstraction level", "rated Medium likelihood". A value
+    sitting immediately beside another capitalised word is part of a name.
+    """
+    before = text[:start].rstrip()
+    if before:
+        tail = before.rsplit(" ", 1)[-1]
+        if _TITLE_WORD_RE.fullmatch(tail) and not before.endswith((".", "?", "!", ":")):
+            return True
+    after = text[end:].lstrip()
+    if after:
+        head = after.split(" ", 1)[0].rstrip(",.?!;:")
+        if _TITLE_WORD_RE.fullmatch(head):
+            return True
+    return False

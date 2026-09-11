@@ -71,6 +71,26 @@ ever written under the `repair-reference-` prefix.
 | holdout, `deterministic` (gitignored) | `docs/evaluation/experiments/repair-after-step4-holdout/deterministic/answers` | 25691265 | `sha256:cdf65e1f75248ad083629ecadc00d1db0abfd412fe1c7a1722e96d1c838bba17` | 288 answers, mean gold coverage 0.550581 |
 | holdout, `generic_composed` (gitignored) | `docs/evaluation/experiments/repair-after-step4-holdout/generic_composed/answers` | 8687856 | `sha256:12b67b50075a696c145a2c947785d7575a8eecf4e639084a34a663342d5e9c15` | 288 answers, mean gold coverage 0.717691, 28 zero-record, coverage lost on none |
 
+## Step 4b — the data-matched control, and the run after the data fixes
+
+`Q54` and `Q55` changed the graph, so the Step 0 reference no longer differs
+from the repaired arms in code alone. A **second** pre-repair capture was taken
+at `e09c2571` against the fixed data. Diffing against the Step 0 reference gives
+the programme's whole effect, code and data together; diffing against this one
+isolates the code. Both are kept, because collapsing them would make it
+impossible to say which moved a number.
+
+| Artifact | Path (repo-relative) | Bytes | SHA-256 | What it is |
+|---|---|---:|---|---|
+| control, dev `deterministic` | `docs/evaluation/experiments/repair-reference-datafix-2026-09-11-dev/deterministic/answers` | 22804326 | `sha256:201e6680675431c077d92bcfaae0d2a2e62ff37090d674f40c37d06f91154ffa` | pre-repair code at `e09c2571`, post-fix data; mean gold coverage 0.510067 |
+| control, dev `generic_composed` | `docs/evaluation/experiments/repair-reference-datafix-2026-09-11-dev/generic_composed/answers` | 6561547 | `sha256:afb1bc32db48eb4e65bdb2a0499d0205e07cdec5cf038673bcdcee304547ad8b` | 0.626244, 60 zero-record |
+| control, holdout `deterministic` | `docs/evaluation/experiments/repair-reference-datafix-2026-09-11-holdout/deterministic/answers` | 26384734 | `sha256:60746f3f74d7950b0e39f978f69ac11c6a69e4757b4dff0f0e444792103e64cf` | 0.541321 |
+| control, holdout `generic_composed` | `docs/evaluation/experiments/repair-reference-datafix-2026-09-11-holdout/generic_composed/answers` | 7907390 | `sha256:fb87a7e91d484f771477838b4a9776a4829a3af9d1c13d13476e48706e6678a1` | 0.658569, 53 zero-record |
+| after 4b, dev `deterministic` | `docs/evaluation/experiments/repair-after-step4b-dev/deterministic/answers` | 22890346 | `sha256:75c6bf1914f069c4fb2b400d02624bda9515e5b7727e90ca03a2075470be2818` | 0.538471 |
+| after 4b, dev `generic_composed` | `docs/evaluation/experiments/repair-after-step4b-dev/generic_composed/answers` | 6557712 | `sha256:b895fb26913fb707bd9684b3c33785392d7d47aa1bc3e88f2a5a433daf9ec7ca` | 0.700967, 31 zero-record, coverage lost on none |
+| after 4b, holdout `deterministic` | `docs/evaluation/experiments/repair-after-step4b-holdout/deterministic/answers` | 26561023 | `sha256:c8449ca6ff3fcd1de819a374c26fc21d07bc404d058c91d0c9f90390a60bb587` | 0.552317 |
+| after 4b, holdout `generic_composed` | `docs/evaluation/experiments/repair-after-step4b-holdout/generic_composed/answers` | 7945103 | `sha256:02f1a5c29711184e87ae4ea6a1f2da85090ea6ddde7693aa772cc22ad64d8436` | 0.719427, 28 zero-record, coverage lost on none |
+
 ## Inputs read from other experiments
 
 | Artifact | Path (repo-relative) | Bytes | SHA-256 | What it is |

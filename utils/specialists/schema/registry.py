@@ -108,6 +108,14 @@ class DatasetSchema:
     # list; one on ``Abstraction`` is equality with a string. The predicate a
     # builder emits differs, and getting it wrong silently matches nothing.
     label_list_properties: dict[str, frozenset[str]] = field(default_factory=dict)
+    # ``{label: frozenset(properties)}`` — properties a store can hold as real,
+    # queryable properties rather than packing into a blob: scalars and
+    # homogeneous lists of scalars. The rule is the loader's
+    # (``utils/graph_loader/stores/neo4j.py`` ``_native_property_values``) and
+    # a contract test asserts the two agree. A builder must not emit a WHERE
+    # clause on a property the store cannot answer for: it matches nothing,
+    # silently, which is `Q55`.
+    label_native_properties: dict[str, frozenset[str]] = field(default_factory=dict)
     # How ``triples`` was obtained — :data:`OBSERVED` or :data:`DECLARED`. See
     # the constants for why the difference is carried rather than flattened.
     # Defaulted to OBSERVED so every existing construction keeps its meaning.
@@ -158,6 +166,10 @@ class DatasetSchema:
     def is_list_property(self, label: str, prop: str) -> bool:
         """Was ``label.prop`` observed holding a list rather than a scalar?"""
         return prop in self.label_list_properties.get(label, frozenset())
+
+    def is_native_property(self, label: str, prop: str) -> bool:
+        """Can a store hold ``label.prop`` as a real, queryable property?"""
+        return prop in self.label_native_properties.get(label, frozenset())
 
     def value_verdict(self, label: str, prop: str, value: Any) -> str:
         """Can ``value`` inhabit ``label.prop``? Three-valued; see ``idscheme``.
@@ -301,6 +313,19 @@ class SchemaRegistry:
         """True when any selected dataset observed ``label.prop`` as a list."""
         return any(
             schema.is_list_property(label, prop) for schema in self._select(dataset)
+        )
+
+    def is_native_property(
+        self, label: str, prop: str, dataset: str | None = None
+    ) -> bool:
+        """True only when EVERY selected dataset can hold it natively.
+
+        All, not any: a filter emitted against a store that cannot answer for
+        the property matches nothing rather than erroring.
+        """
+        schemas = list(self._select(dataset))
+        return bool(schemas) and all(
+            schema.is_native_property(label, prop) for schema in schemas
         )
 
     def observed_values(

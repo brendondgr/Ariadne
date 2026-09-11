@@ -45,6 +45,27 @@ def attributes_dict(element: ET.Element, keys: tuple[str, ...]) -> dict[str, str
     return {key: value for key in keys if (value := element.attrib.get(key))}
 
 
+def _optional_child_texts(
+    element: ET.Element, keys: tuple[str, ...]
+) -> dict[str, str]:
+    """Single-valued child elements, keyed by their own tag, omitted when absent.
+
+    The attribute counterpart of ``attributes_dict`` for fields CAPEC models as
+    child elements. Absent rather than ``None`` when missing, so a pattern
+    without the element carries no key at all and the derived schema does not
+    learn a property that is empty everywhere it appears.
+    """
+    out: dict[str, str] = {}
+    for key in keys:
+        children = child_elements(element, key)
+        if not children:
+            continue
+        text = element_text(children[0])
+        if text:
+            out[key] = text
+    return out
+
+
 def record_unmapped(
     unmapped_fields: list[dict[str, Any]],
     *,
@@ -79,6 +100,15 @@ def normalize_attack_pattern(
         "description": element_text(child_elements(element, "Description")[0])
         if child_elements(element, "Description")
         else None,
+        # Added 2026-09-11 (EXP-2026-09-018 Step 4b, Q54). CAPEC publishes these
+        # as child ELEMENTS, not as attributes on Attack_Pattern, so reading the
+        # attribute list never saw them: the pinned v3.9 catalogue carries 490
+        # `Typical_Severity` and 345 `Likelihood_Of_Attack` values and none of
+        # them reached the graph. Ten development and 16 holdout questions filter
+        # on one of the two and were unanswerable as loaded. Same class as the
+        # five node labels added 2026-09-01 — a field the source publishes and
+        # the load discards.
+        **_optional_child_texts(element, ("Typical_Severity", "Likelihood_Of_Attack")),
         "related_attack_patterns": [],
         "execution_steps": [],
         "skills": [],

@@ -15,6 +15,7 @@ from statistics import mean
 HERE = pathlib.Path(__file__).resolve().parent
 ROOT = HERE.parents[5]
 SUMMARY = HERE / 'reference.json'
+DATA_FIXED_SUMMARY = HERE / 'reference-datafix.json'
 
 #: The pre-repair capture. **Never write a repaired run here.** Step 1's first
 #: attempt re-ran the arms into this prefix and destroyed the baseline it was
@@ -22,6 +23,14 @@ SUMMARY = HERE / 'reference.json'
 #: hash mismatch. `--diff` therefore takes the prefix of the run being compared,
 #: and refuses to read this one.
 REFERENCE_PREFIX = 'docs/evaluation/experiments/repair-reference-2026-09-11'
+
+#: A SECOND pre-repair capture, taken at the same commit after Step 4b fixed two
+#: data-layer defects (`Q54`, `Q55`). The first reference is the programme's
+#: baseline and holds the data as it was; this one holds the repaired data, so a
+#: diff against it isolates the CODE changes from the data change. Both are kept,
+#: because collapsing them would make it impossible to say which of the two
+#: moved a number.
+DATA_FIXED_PREFIX = 'docs/evaluation/experiments/repair-reference-datafix-2026-09-11'
 SPLITS = ('dev', 'holdout')
 ARMS = ('deterministic', 'generic_composed')
 
@@ -85,9 +94,9 @@ def summarise(directory):
     return cases
 
 
-def build():
+def build(prefix=REFERENCE_PREFIX, summary=SUMMARY):
     out = {'note': __doc__.strip().splitlines()[0], 'captures': {}}
-    for (split, arm), directory in captures(REFERENCE_PREFIX).items():
+    for (split, arm), directory in captures(prefix).items():
         cases = summarise(directory)
         covs = [c['coverage'] for c in cases.values() if c['coverage'] is not None]
         out['captures'][f'{split}/{arm}'] = {
@@ -98,19 +107,21 @@ def build():
             'fallbacks': sum(1 for c in cases.values() if c['fallback_reason']),
             'cases': cases,
         }
-    SUMMARY.write_text(json.dumps(out, indent=1, sort_keys=True) + '\n')
+    summary.write_text(json.dumps(out, indent=1, sort_keys=True) + '\n')
     for name, cap in out['captures'].items():
         print(f"{name:28s} n={cap['n']:3d} mean_coverage={cap['mean_coverage']} "
               f"zero_record={cap['zero_record_cases']:3d} fallbacks={cap['fallbacks']}")
 
 
-def diff(prefix):
-    """Compare a repaired run against the committed pre-repair reference."""
-    if pathlib.Path(prefix).name == pathlib.Path(REFERENCE_PREFIX).name:
+def diff(prefix, summary=SUMMARY):
+    """Compare a repaired run against a committed pre-repair reference."""
+    if pathlib.Path(prefix).name in {
+        pathlib.Path(REFERENCE_PREFIX).name, pathlib.Path(DATA_FIXED_PREFIX).name
+    }:
         raise SystemExit(
-            f'refusing to diff the reference against itself: {prefix}\n'
+            f'refusing to diff a reference against itself: {prefix}\n'
             'pass --after <prefix> for the run you want compared')
-    reference = json.loads(SUMMARY.read_text())['captures']
+    reference = json.loads(summary.read_text())['captures']
     changed_total = 0
     for (split, arm), directory in captures(prefix).items():
         name = f'{split}/{arm}'
@@ -134,12 +145,22 @@ if __name__ == '__main__':
              'docs/evaluation/experiments/repair-after-step1 — compares it '
              'against the committed pre-repair reference')
     parser.add_argument(
+        '--against-data-fixed', action='store_true',
+        help='diff against the post-Step-4b reference (code changes only) '
+             'instead of the programme baseline (code + data)')
+    parser.add_argument(
+        '--build-data-fixed', action='store_true',
+        help='build the post-Step-4b reference summary from its capture')
+    parser.add_argument(
         '--verify', action='store_true',
         help='re-read the reference capture itself and assert it still '
              'reproduces the committed digests')
     args = parser.parse_args()
+    if args.build_data_fixed:
+        raise SystemExit(build(DATA_FIXED_PREFIX, DATA_FIXED_SUMMARY) or 0)
     if args.after:
-        raise SystemExit(min(diff(args.after), 1))
+        summary = DATA_FIXED_SUMMARY if args.against_data_fixed else SUMMARY
+        raise SystemExit(min(diff(args.after, summary), 1))
     if args.verify:
         reference = json.loads(SUMMARY.read_text())['captures']
         bad = 0

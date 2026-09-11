@@ -351,6 +351,89 @@ the loader is fixed.
 Both were found by the regression rather than by review, which is the third time
 in this experiment. The recorded-answer diff is the instrument.
 
+## Step 4b — the two data-layer defects, repaired (complete, 2026-09-11)
+
+No model. `Q54` and `Q55`, both found by Step 4's regression. Done now, on the
+operator's decision of 2026-09-11, because the cost while the steps are
+model-free is a re-baseline; after the judged runs it would be a re-judge.
+
+**`Q54`.** `normalize_attack_pattern` read an attack pattern's XML *attributes*
+plus its `Description` child. `Typical_Severity` and `Likelihood_Of_Attack` are
+child elements, so neither reached the graph. They are now read the same way
+`Description` is: **488** severity and **344** likelihood values on
+AttackPattern nodes, against 490 and 345 in the source, the difference being
+patterns retired at load.
+
+**`Q55`.** The Neo4j loader wrote four real node properties and packed the rest
+into a `properties_json` string. It now also writes every scalar and every
+homogeneous list of scalars as a real property, which Neo4j holds natively;
+`properties_json` is still written complete, so every existing reader is
+untouched. The rule lives in one place and the schema registry derives its
+`is_native_property` from it, with a contract test asserting the two agree —
+a builder must never emit a `WHERE` clause a store cannot answer, because that
+matches nothing rather than erroring.
+
+With the store able to answer, the Cypher filter push-down is enabled. The
+check for the M1022 question is exact: 43 techniques mitigated by M1022 carry
+the Windows platform, and the bank's gold for that question is 43 ids.
+
+### The control had to be re-taken, and both are kept
+
+A data change means the Step 0 reference no longer differs from the repaired
+arms in *code* alone. A second pre-repair capture was taken at `e09c2571`
+against the fixed data, so:
+
+- against the **Step 0 reference** is the programme's whole effect, code and
+  data together;
+- against the **data-matched control** is the code alone.
+
+| | Step 0 baseline | data-matched control | after Step 4b |
+|---|---:|---:|---:|
+| dev `generic_composed` mean gold coverage | 0.599039 | 0.626244 | **0.700967** |
+| dev `deterministic` | 0.504786 | 0.510067 | **0.538471** |
+| holdout `generic_composed` | 0.636105 | 0.658569 | **0.719427** |
+| holdout `deterministic` | 0.539585 | 0.541321 | **0.552317** |
+
+So the data fixes alone are worth **+0.027** on the development half and
+**+0.022** on the holdout for `generic_composed`, and the code changes carry the
+rest. Zero-record questions end at 31 of 284 and 28 of 288, from 77 and 68.
+**Coverage is lost on no answer**, against either control, on either bank, on
+either arm.
+
+### One regression the step produced, and the rule that fixed it
+
+Enabling the push-down made more properties bindable, and one bound wrongly:
+"Which campaigns use the techniques mitigated by the **Boot Integrity**
+mitigation, M1046?" bound `x_mitre_impact_type = Integrity`, because `Integrity`
+is an observed value of that property and also half the mitigation's *name*. The
+question's gold coverage halved.
+
+A filter value is introduced by an ordinary word — "apply **to** Windows",
+"**at the** Meta abstraction level", "rated Medium likelihood". A value sitting
+immediately beside another capitalised word is part of a name. With that rule
+the binder improves on both counts at once:
+
+| | before Step 4b | after |
+|---|---|---|
+| dev gold filters bound | 30 of 47 | **37 of 47** |
+| holdout gold filters bound | 33 of 58 | **40 of 58** |
+| wrong bindings, either bank | 0 | **0** |
+| spurious bindings, each bank | 8 | **4** |
+
+Most of the remaining gain came from a second rule the fixed data made
+possible: `Medium` is a value of both `Typical_Severity` and
+`Likelihood_Of_Attack`, so the value alone is ambiguous and the binder refused
+it. The question does say which — "rated Medium likelihood", "with a typical
+severity of Medium" — so the property's own name breaks the tie. That is the
+same declared vocabulary the property slot is bound from, not a second guess.
+
+**No regression.** 240 adversarial probes block at 1.0000, 0 leaks, 0 breaches.
+`scripts/catalogue_regression.py`: 0 of 120 moved, gold recall 0.9161 unchanged.
+1,416 tests pass, with the same pre-existing `ORCH_MAX_HOPS` failure.
+`EXP-2026-08-017`'s federation-isolation count was re-run because its pinned
+CAPEC node file was rebuilt, and is unchanged at 0 rewritten nodes with 1,083
+public ids promoted.
+
 ## Serving capacity for Steps 5–8
 
 Granted 2026-09-11: one endpoint, `default-model` on `:9090`, at **16

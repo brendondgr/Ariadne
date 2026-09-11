@@ -23,26 +23,6 @@ from ..validation import QueryDraft
 
 _SAFE_LABEL_RE = re.compile(r"^[A-Za-z][A-Za-z0-9_]*$")
 _SAFE_REL_RE = re.compile(r"^[A-Za-z][A-Za-z0-9_]*$")
-#: The properties this project's Neo4j loader writes as real node properties.
-#: Everything else a canonical node carries is packed into a single
-#: ``properties_json`` string (``utils/graph_loader/stores/neo4j.py``
-#: ``node_merge_cypher``), so it is invisible to a Cypher ``WHERE`` clause.
-#:
-#: This is why the filter push-down does nothing on the ATT&CK side, and the
-#: check is not defensive: emitting ``$v IN coalesce(m.x_mitre_platforms, [])``
-#: against a store that has no such property matches **nothing**, silently. It
-#: cost 23 development questions their entire gold coverage in the first
-#: measurement of this step, which is how it was found. The derived schema
-#: registry reads the canonical node files and correctly reports the property as
-#: real; what it cannot know is that the loader flattened it. Filed as `Q55`.
-#:
-#: Note that all four are in ``_NON_FILTER_PROPERTIES``, so today this gate
-#: refuses every Cypher filter. It is written as a property check rather than a
-#: blanket ``return None`` so that the day the loader stores scalars and
-#: lists-of-scalars natively, the push-down starts working without a second
-#: change here.
-_NEO4J_NATIVE_PROPERTIES = frozenset({"id", "name", "attack_id", "stix_type"})
-
 #: A property identifier safe to backtick-quote into a query. The property name
 #: comes from the card's declared keys, never from the question, but it is
 #: interpolated rather than parameterised (Cypher does not bind property names)
@@ -1047,7 +1027,15 @@ class CypherQueryBuilder:
         if slots.filter is None:
             return None
         label, prop, value = slots.filter
-        if prop not in _NEO4J_NATIVE_PROPERTIES:
+        # The store must be able to answer for the property. A WHERE clause on a
+        # property Neo4j never stored matches NOTHING — silently — which cost 23
+        # development questions their whole gold coverage the first time this
+        # push-down ran (`Q55`). The registry derives this with the loader's own
+        # rule, and a contract test asserts the two agree.
+        try:
+            if not registry.is_native_property(label, prop, dataset=resolved.dataset):
+                return None
+        except Exception:  # noqa: BLE001
             return None
         try:
             is_list = registry.is_list_property(label, prop, dataset=resolved.dataset)
