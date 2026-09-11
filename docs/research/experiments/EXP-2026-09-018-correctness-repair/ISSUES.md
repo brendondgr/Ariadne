@@ -57,3 +57,32 @@ predicted counts (34 `capec`, 21 `ns`, 16 `chain`).
 indistinguishable downstream from a system that retrieves nothing — the same
 failure shape as `EXP-2026-09-016` `I-1` and `I-4` — and because every run in
 this experiment must be preceded by a fixture check for that reason.
+
+## I-3 — Step 1's first regression run overwrote the reference it was measured against
+
+**Impact:** none on any number. Every Step 1 figure was re-derived after the
+reference was rebuilt, and the rebuilt reference reproduces all 1,144 committed
+digests exactly.
+
+**Cause:** the Step 1 model-free regression re-ran the four arms into the same
+`--root` the Step 0 reference occupies, so the "before" capture was replaced by
+the "after" one. The diff then compared each capture against the committed
+`reference.json` digests and reported the right answer by luck: the digests were
+already committed, so the comparison survived the loss of the files behind them.
+
+**Caught by:** the pre-commit research-record hook, as four
+`pointer-hash-mismatch` findings against `data/POINTERS.md`. The hashes in that
+file were the only thing that noticed, which is the case for hashing raw output
+at all.
+
+**Resolution:** the repaired capture moved to `repair-after-step1-*`; the
+reference re-created by stashing the repair and re-running the four arms at
+`e09c2571`; `capture.py --verify` confirms 284/284, 284/284, 288/288 and 288/288
+reproduce. `capture.py` now takes `--after <prefix>` and **refuses** to diff the
+reference prefix against itself, so the same mistake fails loudly. Every later
+step writes to its own `repair-after-step<n>-*` prefix.
+
+**Paper implication:** none. It is recorded because the reference's ability to
+regenerate is itself a result worth having — the model-free arms are
+byte-reproducible from a clean checkout, which is what makes them usable as a
+control at all.

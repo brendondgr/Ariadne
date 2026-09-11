@@ -18,7 +18,7 @@ stored output `data/recompute-audit.json` is the record of what was read.
 
 | Artifact | Path (repo-relative) | Bytes | SHA-256 | What it is |
 |---|---|---|---|---|
-| Judgment sidecar tree (input) | `docs/evaluation/experiments` | 464056694 | `sha256:f7a37fa9a8e776e28d30d202691c1a32fea3c93ea453953ce63b4ae579d69d41` | Tree, **re-hashed 2026-09-11** (was `sha256:c7b9993b1d90…`, 401843103 bytes, 2026-09-09 — see ISSUES). Every `**/answers/*.judgment*.json` is a candidate cell; sidecars whose suffix itself contains `.judgment`, or that sit under a `_contaminated*` directory, are excluded (30 on 2026-09-07). Cells with fewer than 20 judgments are dropped. A future hash mismatch here means grading passes were added or removed since 2026-09-09, not that any recorded figure changed. |
+| Judgment sidecar tree (input) | `docs/evaluation/experiments` | 527128749 | `sha256:1d207905bd6d4f5fb216df12687a2341291c0712afc80a159597c8b471091659` | Tree, **re-hashed 2026-09-11** (was `sha256:c7b9993b1d90…`, 401843103 bytes, 2026-09-09 — see ISSUES; every `EXP-2026-09-018` step writes a capture under this tree and moves this hash without touching this experiment's input). Every `**/answers/*.judgment*.json` is a candidate cell; sidecars whose suffix itself contains `.judgment`, or that sit under a `_contaminated*` directory, are excluded (30 on 2026-09-07). Cells with fewer than 20 judgments are dropped. A future hash mismatch here means grading passes were added or removed since 2026-09-09, not that any recorded figure changed. |
 
 The canonical output is `data/recompute-audit.json` (inside `docs/research/`,
 no pointer needed). `data/2026-09-07-recompute-audit.json` is an earlier copy

@@ -135,6 +135,30 @@ def _capec_id_bindings(param: str = "ids") -> list[dict[str, str]]:
     ]
 
 
+def _anchor_id_bindings(
+    seed_ids: Iterable[str], anchor_label: str, param: str = "ids"
+) -> list[dict[str, str]]:
+    """Declared bindings for a label-free, id-anchored walk or bridge.
+
+    Same reason as `_capec_id_bindings`: dropping ``hasLabel`` from an anchor
+    makes the id filter invisible to the Gremlin parser's
+    ``hasLabel(...).has(prop, ...)`` shape, so without a declaration the draft
+    turns "unchecked" -- the audit's name for a query filtering on values
+    nothing verified. The difference here is that a walk is not CAPEC-only: a
+    ``CWE-<n>`` seed anchors on ``Weakness``, so the label the plan resolved is
+    declared alongside the three CAPEC kinds a bare CAPEC number could name.
+
+    `unsatisfiable_bindings` groups by parameter, so the filter is satisfiable
+    when *any* declared label admits the seeds -- which is what the query means.
+    """
+    labels = list(_CAPEC_DESCRIBE_LABELS) if any(
+        _CAPEC_NUM_RE.fullmatch(str(s).strip()) for s in seed_ids
+    ) else []
+    if anchor_label and anchor_label not in labels:
+        labels.append(anchor_label)
+    return [{"label": label, "property": "id", "param": param} for label in labels]
+
+
 def _capec_gremlin_id(capec_id: str) -> str:
     """Convert 'CAPEC-66' -> 'capec:attack-pattern:66'.
 
@@ -171,6 +195,42 @@ def _capec_candidate_ids(seeds: Iterable[str]) -> list[str]:
         match = _CAPEC_NUM_RE.fullmatch(raw)
         candidates = (
             [f"{ns}{match.group(1)}" for ns in _CAPEC_ID_NAMESPACES] if match else [raw]
+        )
+        for candidate in candidates:
+            if candidate not in seen:
+                seen.add(candidate)
+                out.append(candidate)
+    return out
+
+
+def _walk_candidate_ids(seeds: Iterable[str]) -> list[str]:
+    """Every vertex id a walk's seeds could name, across both catalogues.
+
+    The generic walk used to build its anchor with ``_gremlin_vertex_id``, which
+    sends every bare CAPEC number to ``capec:attack-pattern:<n>``. A Category or
+    a View does not carry that id, so the anchor bound to nothing and the walk
+    returned zero records before a single traversal step ran: all 21
+    Category-anchored and 18 of the 20 View-anchored development questions
+    (`EXP-2026-09-017` A-2, mechanism `ns`, 12.6% of the judged loss).
+
+    The template path was given ``_capec_candidate_ids`` in July
+    (`EXP-2026-09-003`) and the walk never adopted it. Swapping in that function
+    alone would have been a regression, because it passes a ``CWE-<n>`` seed
+    through untouched where ``_gremlin_vertex_id`` maps it to ``cwe:<n>`` -- the
+    join-owner traversal depends on that. This composes the two: CAPEC seeds
+    offer all three namespaces, everything else keeps the single canonical form.
+
+    Nothing here guesses. Ids are unique across the CAPEC store, so at most one
+    candidate can match and the graph does the disambiguating.
+    """
+    out: list[str] = []
+    seen: set[str] = set()
+    for seed in seeds:
+        raw = str(seed).strip()
+        candidates = (
+            _capec_candidate_ids([raw])
+            if _CAPEC_NUM_RE.fullmatch(raw)
+            else [_gremlin_vertex_id(raw)]
         )
         for candidate in candidates:
             if candidate not in seen:
@@ -1004,7 +1064,7 @@ class GremlinQueryBuilder:
         if not branches:
             return None
 
-        ids = [_gremlin_vertex_id(s) for s in resolved.seed_ids]
+        ids = _walk_candidate_ids(resolved.seed_ids)
         lim = resolved.task.max_rows()
         union = ", ".join(f"__.{b}" for b in branches)
         # Anchored by identifier alone. The canonical vertex id is unique across
@@ -1031,6 +1091,9 @@ class GremlinQueryBuilder:
                 ],
                 "dropped_branches": dropped,
                 "seed_ids": list(resolved.seed_ids),
+                "bindings": _anchor_id_bindings(
+                    resolved.seed_ids, resolved.primary_label() or ""
+                ),
             },
         )
 
@@ -1091,7 +1154,7 @@ class GremlinQueryBuilder:
                 },
             )
 
-        ids = [_gremlin_vertex_id(s) for s in resolved.seed_ids]
+        ids = _walk_candidate_ids(resolved.seed_ids)
 
         # The seed need not sit on the edge that carries the key. A CWE-seeded
         # question anchors on Weakness, and the pattern that owns the MAPS_TO
@@ -1111,7 +1174,14 @@ class GremlinQueryBuilder:
             # is still returned — CAPEC-116 is exactly that, and the inner join
             # was silently deleting it.
             query = (
-                f'g.V().hasLabel("{anchor_label}").has("id", within(ids)).as("w")'
+                # Anchored by identifier alone, as the generic walk is. The
+                # canonical vertex id is unique across labels, so hasLabel() on
+                # the *seed* adds nothing but a way to be wrong: a Category seed
+                # whose plan says "AttackPattern" matches zero vertices. The
+                # label filter on the far side of the hop stays, because that one
+                # constrains where the traversal may land rather than where it
+                # starts.
+                f'g.V().has("id", within(ids)).as("w")'
                 f'.{prefix}.hasLabel("{owner_label}").as("ap")'
                 f'.project("w","ap","tax")'
                 f'.by(__.select("w").elementMap()).by(__.select("ap").elementMap())'
@@ -1127,7 +1197,8 @@ class GremlinQueryBuilder:
             # ATT&CK mapping" is a real answer, and an inner join cannot return
             # the record needed to ground it.
             query = (
-                f'g.V().hasLabel("{anchor_label}").has("id", within(ids))'
+                # Identifier-only anchor, for the same reason as the branch above.
+                f'g.V().has("id", within(ids))'
                 f'.project("ap","tax").by(elementMap())'
                 f'.by(__.out("{edge}").hasLabel("{key_label}").elementMap().fold())'
                 f".limit({lim})"
@@ -1143,6 +1214,7 @@ class GremlinQueryBuilder:
                 "neighbor_label": key_label,
                 "rel": endpoint.via_edge,
                 "direction": "out",
+                "bindings": _anchor_id_bindings(resolved.seed_ids, anchor_label),
             },
         )
 

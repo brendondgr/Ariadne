@@ -16,12 +16,19 @@ HERE = pathlib.Path(__file__).resolve().parent
 ROOT = HERE.parents[5]
 SUMMARY = HERE / 'reference.json'
 
-CAPTURES = {
-    ('dev', 'deterministic'): 'docs/evaluation/experiments/repair-reference-2026-09-11-dev/deterministic/answers',
-    ('dev', 'generic_composed'): 'docs/evaluation/experiments/repair-reference-2026-09-11-dev/generic_composed/answers',
-    ('holdout', 'deterministic'): 'docs/evaluation/experiments/repair-reference-2026-09-11-holdout/deterministic/answers',
-    ('holdout', 'generic_composed'): 'docs/evaluation/experiments/repair-reference-2026-09-11-holdout/generic_composed/answers',
-}
+#: The pre-repair capture. **Never write a repaired run here.** Step 1's first
+#: attempt re-ran the arms into this prefix and destroyed the baseline it was
+#: supposed to be compared against; the pre-commit hook caught it as a pointer
+#: hash mismatch. `--diff` therefore takes the prefix of the run being compared,
+#: and refuses to read this one.
+REFERENCE_PREFIX = 'docs/evaluation/experiments/repair-reference-2026-09-11'
+SPLITS = ('dev', 'holdout')
+ARMS = ('deterministic', 'generic_composed')
+
+
+def captures(prefix):
+    return {(split, arm): f'{prefix}-{split}/{arm}/answers'
+            for split in SPLITS for arm in ARMS}
 
 # Keys whose value moves between identical runs. Stripped before digesting, so a
 # digest difference means the ANSWER changed, not that the clock did.
@@ -80,7 +87,7 @@ def summarise(directory):
 
 def build():
     out = {'note': __doc__.strip().splitlines()[0], 'captures': {}}
-    for (split, arm), directory in CAPTURES.items():
+    for (split, arm), directory in captures(REFERENCE_PREFIX).items():
         cases = summarise(directory)
         covs = [c['coverage'] for c in cases.values() if c['coverage'] is not None]
         out['captures'][f'{split}/{arm}'] = {
@@ -97,11 +104,15 @@ def build():
               f"zero_record={cap['zero_record_cases']:3d} fallbacks={cap['fallbacks']}")
 
 
-def diff():
-    """Compare the current captures against the committed reference."""
+def diff(prefix):
+    """Compare a repaired run against the committed pre-repair reference."""
+    if pathlib.Path(prefix).name == pathlib.Path(REFERENCE_PREFIX).name:
+        raise SystemExit(
+            f'refusing to diff the reference against itself: {prefix}\n'
+            'pass --after <prefix> for the run you want compared')
     reference = json.loads(SUMMARY.read_text())['captures']
     changed_total = 0
-    for (split, arm), directory in CAPTURES.items():
+    for (split, arm), directory in captures(prefix).items():
         name = f'{split}/{arm}'
         now, before = summarise(directory), reference[name]['cases']
         changed = [cid for cid in before if before[cid]['digest'] != now.get(cid, {}).get('digest')]
@@ -117,7 +128,26 @@ def diff():
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument('--diff', action='store_true',
-                        help='compare current captures against the committed reference')
+    parser.add_argument(
+        '--after', metavar='PREFIX',
+        help='run-directory prefix of a repaired capture, e.g. '
+             'docs/evaluation/experiments/repair-after-step1 — compares it '
+             'against the committed pre-repair reference')
+    parser.add_argument(
+        '--verify', action='store_true',
+        help='re-read the reference capture itself and assert it still '
+             'reproduces the committed digests')
     args = parser.parse_args()
-    raise SystemExit(min(diff(), 1) if args.diff else (build() or 0))
+    if args.after:
+        raise SystemExit(min(diff(args.after), 1))
+    if args.verify:
+        reference = json.loads(SUMMARY.read_text())['captures']
+        bad = 0
+        for (split, arm), directory in captures(REFERENCE_PREFIX).items():
+            name, now = f'{split}/{arm}', summarise(directory)
+            before = reference[name]['cases']
+            moved = [c for c in before if before[c]['digest'] != now.get(c, {}).get('digest')]
+            bad += len(moved)
+            print(f'{name:28s} {len(before) - len(moved)}/{len(before)} reproduce')
+        raise SystemExit(min(bad, 1))
+    raise SystemExit(build() or 0)

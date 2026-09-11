@@ -54,10 +54,30 @@ run for all three arms and disclosed as a protocol change.
 comparable to the published cost table.
 
 **Judge.** `qwen38-27B-v2` on `:9090`, two counterbalanced positions per answer,
-`max_tokens 32768`, 16 workers per healthy instance. `gemma4-31B` grades a
-second pass for **ordering only**; its scores are never averaged with qwen's
-(`EXP-2026-09-009`). Q48's abstention-boilerplate artefact is left in place for
+`max_tokens 32768`. Q48's abstention-boilerplate artefact is left in place for
 comparability with the published runs and is reported separately.
+
+**Serving capacity, granted 2026-09-11 and pinned here.** One endpoint,
+`default-model`, at **16 concurrent requests**. The relay exposes four ids; only
+`default-model` reports `health: healthy` and it is the only one this experiment
+may use. This changes two things the plan assumed and they are recorded rather
+than quietly absorbed:
+
+- `EXP-2026-09-016` `A-5` judged at 16 workers *per instance across two
+  instances*. Half that capacity means roughly double the wall clock for every
+  judged step, so Steps 6 and 7 are one night each and cannot be run the same
+  night.
+- The `gemma4-31B` ordering pass (`EXP-2026-09-009`) needs a second model and
+  there is no second healthy endpoint. It is **dropped** unless one is granted.
+  Its purpose was a cross-family check on *ordering only* — its scores were
+  never averaged with qwen's — so dropping it costs a robustness check, not a
+  figure. This must appear in the threats-to-validity section: the final result
+  rests on one grader family, and `EXP-2026-09-021` is what bounds that risk.
+
+Generation concurrency stays at the 24 workers of `scripts/holdout_run.py`: it
+is graph-bound, not model-bound, and the model calls inside it are the planner
+replan, the specialist seam and the narrator, which the 16-request ceiling
+governs on its own.
 
 ## Data
 

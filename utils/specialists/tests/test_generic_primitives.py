@@ -62,7 +62,11 @@ def test_generic_bridge_walks_the_declared_join_edge(generic_only: None) -> None
     assert draft.template == "generic_bridge"
     assert '.out("MAPS_TO")' in draft.query
     assert 'hasLabel("TaxonomyEntry")' in draft.query
-    assert draft.params["ids"] == ["capec:attack-pattern:150"]
+    assert draft.params["ids"] == [
+        "capec:attack-pattern:150",
+        "capec:view:150",
+        "capec:category:150",
+    ]
 
 
 def test_generic_bridge_reverses_when_seeded_on_the_key(generic_only: None) -> None:
@@ -277,6 +281,13 @@ def test_generic_bridge_anchors_on_the_seeds_own_label(generic_only: None) -> No
 
     Anchoring on the pattern matches zero vertices and returns nothing, which is
     exactly how five F-CWE questions scored zero in Arm G.
+
+    Since the Category/View namespace repair the anchor carries no ``hasLabel``
+    at all — it matches on the canonical id, which is unique across labels, so a
+    label filter on the *seed* can only be a way to be wrong. The property this
+    test protects is now carried by two things instead of one: the id resolves in
+    the CWE namespace, and the draft *declares* the Weakness binding so the
+    pre-run gate still checks the filter the parser can no longer see.
     """
     resolved = _capec(
         "Which CAPEC patterns exploit CWE-522, and which techniques do they map to?",
@@ -285,10 +296,16 @@ def test_generic_bridge_anchors_on_the_seeds_own_label(generic_only: None) -> No
     )
     draft = GremlinQueryBuilder().build(resolved)
 
-    assert draft.query.startswith('g.V().hasLabel("Weakness")')
+    assert draft.query.startswith('g.V().has("id", within(ids))')
+    assert 'hasLabel("Weakness")' not in draft.query
     # The pattern that owns the join edge is reached, not assumed.
     assert '.in("EXPLOITS_WEAKNESS").hasLabel("AttackPattern").as("ap")' in draft.query
     assert draft.params["ids"] == ["cwe:522"]
+    # A CWE seed is not a CAPEC number, so it offers one candidate, not three,
+    # and the declared binding says which label the gate should check it against.
+    assert draft.meta["bindings"] == [
+        {"label": "Weakness", "property": "id", "param": "ids"}
+    ]
 
 
 def test_generic_walk_resolves_direction_from_the_registry(
@@ -303,7 +320,14 @@ def test_generic_walk_resolves_direction_from_the_registry(
     assert draft.template == "generic_walk"
     assert '__.hasLabel("AttackPattern"), __.not(' in draft.query
     assert '.out("HAS_MITIGATION")' in draft.query
-    assert draft.params["ids"] == ["capec:attack-pattern:66"]
+    # All three CAPEC namespaces, because a bare CAPEC number cannot say which
+    # kind it names — CAPEC-66 is a pattern, CAPEC-118 a category, CAPEC-284 a
+    # view. Ids are unique across the store, so at most one can match.
+    assert draft.params["ids"] == [
+        "capec:attack-pattern:66",
+        "capec:view:66",
+        "capec:category:66",
+    ]
     # Anchored by identifier alone: a hasLabel filter on the anchor can only be
     # wrong, since the canonical vertex id is already unique across labels.
     assert draft.query.startswith('g.V().has("id", within(ids))')
@@ -494,3 +518,90 @@ def test_bridge_outer_normalizer_carries_the_chain_seed() -> None:
     assert records[0].primary_id == "CAPEC-116"
     assert {r.get("id") for r in records[0].related} == {"CWE-1243"}
     assert records[0].join_values == ()
+
+
+# -- anchor namespace: Category and View seeds ------------------------------
+
+
+def test_generic_walk_binds_a_category_seed_in_every_capec_namespace(
+    generic_only: None,
+) -> None:
+    """CAPEC numbers one sequence across patterns, categories and views.
+
+    ``CAPEC-687`` is a Category. The walk used to send every bare CAPEC number to
+    ``capec:attack-pattern:<n>``, which no Category vertex carries, so the anchor
+    bound to nothing and the walk returned zero records before a single traversal
+    step ran. All 21 Category-anchored development questions failed this way
+    (`EXP-2026-09-017` A-2, mechanism ``ns``).
+    """
+    resolved = _capec(
+        "Which attack patterns are members of CAPEC-687?",
+        ("Category", "HAS_MEMBER", "AttackPattern"),
+    )
+    draft = GremlinQueryBuilder().build(resolved)
+
+    assert draft.params["ids"] == [
+        "capec:attack-pattern:687",
+        "capec:view:687",
+        "capec:category:687",
+    ]
+    # Identifier-only anchor: ids are unique across the store, so at most one of
+    # the three can match and the graph does the disambiguating.
+    assert draft.query.startswith('g.V().has("id", within(ids))')
+
+
+def test_generic_walk_binds_a_view_seed_in_every_capec_namespace(
+    generic_only: None,
+) -> None:
+    """``CAPEC-703`` is a View, and 18 of 20 View anchors returned nothing."""
+    resolved = _capec(
+        "Which attack patterns does CAPEC-703 contain?",
+        ("View", "HAS_MEMBER", "AttackPattern"),
+    )
+    draft = GremlinQueryBuilder().build(resolved)
+
+    assert draft.params["ids"] == [
+        "capec:attack-pattern:703",
+        "capec:view:703",
+        "capec:category:703",
+    ]
+    assert draft.query.startswith('g.V().has("id", within(ids))')
+
+
+def test_generic_walk_declares_the_binding_the_parser_cannot_see(
+    generic_only: None,
+) -> None:
+    """A label-free anchor must declare its binding or the gate stops checking it.
+
+    ``extract_bindings`` reads ``hasLabel(...).has(prop, ...)``. Dropping the
+    label makes the id filter invisible to that parser, and an undeclared filter
+    is what the pre-run audit calls "unchecked" — a query filtering on values
+    nothing verified. One entry per candidate label, all on the same parameter,
+    so the filter is satisfiable when any of them admits the seeds.
+    """
+    resolved = _capec(
+        "Which mitigations apply to CAPEC-66?", ("AttackPattern", "Mitigation")
+    )
+    draft = GremlinQueryBuilder().build(resolved)
+
+    assert draft.meta["bindings"] == [
+        {"label": "AttackPattern", "property": "id", "param": "ids"},
+        {"label": "View", "property": "id", "param": "ids"},
+        {"label": "Category", "property": "id", "param": "ids"},
+    ]
+
+
+def test_a_cwe_seed_keeps_its_own_namespace(generic_only: None) -> None:
+    """The namespace repair must not undo the CWE one.
+
+    ``_capec_candidate_ids`` alone would pass ``CWE-522`` through untouched,
+    where the walk needs ``cwe:522``. Five F-CWE questions scored exactly zero in
+    Arm G for the mirror image of this mistake, so it is asserted rather than
+    assumed.
+    """
+    resolved = _capec(
+        "Which CAPEC patterns exploit CWE-522?", ("Weakness", "AttackPattern")
+    )
+    draft = GremlinQueryBuilder().build(resolved)
+
+    assert draft.params["ids"] == ["cwe:522"]

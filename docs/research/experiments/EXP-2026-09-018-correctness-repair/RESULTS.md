@@ -56,6 +56,65 @@ byte-identical to the 2026-09-03 run and the difference is facet metadata
 (`ISSUES` I-1), and the first capture ran against an empty CAPEC store and was
 discarded (`ISSUES` I-2).
 
-## Steps 1–8
+## Step 1 — Category and View seeds resolve in their own namespace (complete, 2026-09-11)
+
+No model. `Q50`; the `ns` mechanism, 12.6% of the dev loss.
+
+The generic Gremlin walk built its anchor with `_gremlin_vertex_id`, which sends
+every bare CAPEC number to `capec:attack-pattern:<n>`. A Category or View vertex
+does not carry that id. Both walk call sites now use a `_walk_candidate_ids`
+that offers all three CAPEC namespaces for a CAPEC seed while keeping the single
+canonical form for everything else — swapping in `_capec_candidate_ids` alone
+would have been a regression, because it passes a `CWE-<n>` seed through
+untouched where the join-owner traversal needs `cwe:<n>`. The join-owner query's
+seed anchor also drops its `hasLabel`, since the canonical id is unique across
+labels; both drafts now declare their id binding so the pre-run gate still
+checks a filter the Gremlin parser can no longer see.
+
+**H2 is read as pre-registered and it is not met.** The threshold was "zero-record
+on the 23 non-D0 Category/View anchors falls from 21 to **0**". It falls to **1**.
+
+| | before | after |
+|---|---:|---:|
+| `ns` slice, zero-record (n=23) | 21 | **1** |
+| dev `generic_composed` mean gold coverage | 0.599039 | **0.632121** |
+| dev `generic_composed` zero-record (n=284) | 77 | **56** |
+| holdout `generic_composed` mean gold coverage | 0.636105 | **0.667945** |
+| holdout `generic_composed` zero-record (n=288) | 68 | **50** |
+
+The residual case has a cause, not an excuse. `D4-HAS_MEMBER-ChildOf-CAPEC-687`
+is a Category-rooted **two-hop** question: the anchor now binds, and the walk's
+branches are still guarded by `AttackPattern`, so nothing fires. That is the
+`chain` mechanism (`Q51`), which Step 3 repairs — and it is why the plan orders
+Step 3 after Step 1.
+
+**No regression.** `deterministic` is byte-identical on both banks (0 of 284 and
+0 of 288 changed). Of the 26 dev and 27 holdout `generic_composed` answers that
+moved, coverage was **lost on none**; 20 of the 26 dev changes are `ns` cases and
+5 are the join-owner anchor. `scripts/catalogue_regression.py` over a fresh
+variant capture: 0 of 120 catalogue answers moved, gold recall 0.9161 unchanged.
+
+The reference itself regenerates. Re-running the four model-free arms from a
+clean checkout at the Step 0 commit reproduces **all 1,144** committed per-case
+digests, so the control these repairs are measured against is not a one-off
+capture. `ISSUES` I-3 records how that was established: Step 1's first
+regression run overwrote the reference directory, the pre-commit hook caught it
+as a pointer-hash mismatch, and the rebuild is what proved the reproducibility.
+
+Tests: 1,156 passed across the specialist, synthesis, planner and kg_builder
+suites. The one failure, `test_event_order_matches_streaming_contract`, fails
+identically on the pre-repair tree and passes under `ORCH_MAX_HOPS=5`; the
+committed `.env` pins it to 1. Pre-existing and unrelated.
+
+## Serving capacity for Steps 5–8
+
+Granted 2026-09-11: one endpoint, `default-model` on `:9090`, at **16
+concurrent requests**. `PROTOCOL.md` records what that changes — roughly double
+the wall clock for every judged step against `EXP-2026-09-016`'s two-instance
+configuration, so Steps 6 and 7 are separate nights, and the `gemma4-31B`
+ordering pass is dropped for want of a second healthy endpoint. The final result
+will therefore rest on one grader family, which belongs in threats to validity.
+
+## Steps 2–8
 
 Not started.
