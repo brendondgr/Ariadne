@@ -64,3 +64,7 @@ make index
 make validate-research
 make check-docs
 ```
+
+## AMENDMENT A-1 — portable CSV hashing (2026-09-11)
+
+The CSV writer initially emitted CRLF, which Git normalized to LF when staging. The in-workspace hash therefore differed from the committed bytes. The extractor now explicitly writes LF; the data hash and pointer use those portable bytes. No case, score, metric, figure or interpretation changed.

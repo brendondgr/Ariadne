@@ -45,7 +45,7 @@ def main():
         actual = mean(mean(r[f'{arm}_{p}'] for p in (1, 2)) for r in extracted)
         assert round(actual, 4) == published[arm]['mean_correctness']
     with (HERE / 'cases.csv').open('w') as f:
-        writer = csv.DictWriter(f, fieldnames=list(extracted[0]))
+        writer = csv.DictWriter(f, fieldnames=list(extracted[0]), lineterminator='\n')
         writer.writeheader()
         writer.writerows(extracted)
     (HERE / 'source_hashes.json').write_text(json.dumps(sources, indent=2) + '\n')
