@@ -810,3 +810,9 @@ identifiers that appear inside a recognised abstention. The first is cleaner and
 changes shipped output; both need the recorded-answer regression. Then recount
 every judge-derived hallucination figure in the record. **From:**
 `EXP-2026-09-016` `A-6`. **Cost:** an hour, plus a recount.
+
+### Q49 — Which intervention converts development-score headroom into better answers?
+
+EXP-2026-09-017 re-aggregates the original paired judgments by question type and supplies a reproducible figure and scenario explorer. Two-hop questions offer the largest category contribution to the score deficit; selected property questions also show evidence present but omitted from the answer. The D6 template advantage in earlier prose describes retrieval, not judged correctness.
+
+Next candidates: Q45's CAPEC card repair, a frozen-evidence requested-field rendering comparison, typed multi-hop intent with execution feedback, and joint entity/label selection (Q35–Q36). Test each against a concurrent control before combining them; use unchanged answers to measure grader drift. Any scoring repair (Q44/Q48) must be reported separately from capability gains. The existing holdout has been spent, so confirm the selected configuration on a newly sealed set. See the experiment's RESULTS for provenance and threats to validity.

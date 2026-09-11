@@ -1,0 +1,863 @@
+[
+  {
+    "id": "D1-Technique-x_mitre_platforms-T1027.006-28b01d::formal",
+    "question": "Which platforms does the ATT&CK technique HTML Smuggling (T1027.006) apply to?",
+    "answer": {
+      "headline": "Gathered 3 record(s) from 1 source(s).",
+      "narrative": "Found 1 record in MITRE ATT&CK: HTML Smuggling (T1027.006). T1027.006 (HTML Smuggling): Adversaries may smuggle data and files past content filters by hiding malicious payloads inside of seemingly benign HTML files. HTML documents can store large binary objects known as JavaScript Blobs (immutable data that represents raw bytes) that can later be constructed into file-like objects. Data may also be stored in Data URLs, which enable embedding media type or MIME files inline of HTML documents. T1027.006 (HTML Smuggling) has revoked: False; stix_type: attack-pattern; x_mitre_deprecated: False; x_mitre_is_subtechnique: True; x_mitre_version: 2.0. Found 1 item(s) related to T1027.006 (e.g. T1027) in MITRE ATT&CK. T1027.006 (HTML Smuggling) has 1 technique: T1027. Found 1 item(s) related to T1027.006 (e.g. TA0005) in MITRE ATT&CK. T1027.006 (HTML Smuggling) has 1 tactic: TA0005.",
+      "composer": "deterministic",
+      "fallback_reason": "LLM narrator unavailable (request failed: HTTPConnectionPool(host='localhost', port=4000): Read timed out. (read timeout=120.0))",
+      "claims": [
+        {
+          "text": "Found 1 record in MITRE ATT&CK: HTML Smuggling (T1027.006).",
+          "kind": "fact",
+          "entity_ids": [
+            "T1027.006"
+          ],
+          "citations": [
+            {
+              "source": "attack",
+              "primary_id": "T1027.006"
+            }
+          ]
+        },
+        {
+          "text": "T1027.006 (HTML Smuggling): Adversaries may smuggle data and files past content filters by hiding malicious payloads inside of seemingly benign HTML files. HTML documents can store large binary objects known as JavaScript Blobs (immutable data that represents raw bytes) that can later be constructed into file-like objects. Data may also be stored in Data URLs, which enable embedding media type or MIME files inline of HTML documents.",
+          "kind": "fact",
+          "entity_ids": [
+            "T1027.006"
+          ],
+          "citations": [
+            {
+              "source": "attack",
+              "primary_id": "T1027.006"
+            }
+          ]
+        },
+        {
+          "text": "T1027.006 (HTML Smuggling) has revoked: False; stix_type: attack-pattern; x_mitre_deprecated: False; x_mitre_is_subtechnique: True; x_mitre_version: 2.0.",
+          "kind": "fact",
+          "entity_ids": [
+            "T1027.006"
+          ],
+          "citations": [
+            {
+              "source": "attack",
+              "primary_id": "T1027.006"
+            }
+          ]
+        },
+        {
+          "text": "Found 1 item(s) related to T1027.006 (e.g. T1027) in MITRE ATT&CK.",
+          "kind": "fact",
+          "entity_ids": [
+            "T1027.006"
+          ],
+          "citations": [
+            {
+              "source": "attack",
+              "primary_id": "T1027.006"
+            }
+          ]
+        },
+        {
+          "text": "T1027.006 (HTML Smuggling) has 1 technique: T1027.",
+          "kind": "enumeration",
+          "entity_ids": [
+            "T1027"
+          ],
+          "citations": [
+            {
+              "source": "attack",
+              "primary_id": "T1027.006"
+            }
+          ]
+        },
+        {
+          "text": "Found 1 item(s) related to T1027.006 (e.g. TA0005) in MITRE ATT&CK.",
+          "kind": "fact",
+          "entity_ids": [
+            "T1027.006"
+          ],
+          "citations": [
+            {
+              "source": "attack",
+              "primary_id": "T1027.006"
+            }
+          ]
+        },
+        {
+          "text": "T1027.006 (HTML Smuggling) has 1 tactic: TA0005.",
+          "kind": "enumeration",
+          "entity_ids": [
+            "TA0005"
+          ],
+          "citations": [
+            {
+              "source": "attack",
+              "primary_id": "T1027.006"
+            }
+          ]
+        }
+      ],
+      "abstentions": [],
+      "notes": []
+    },
+    "logic_flow": {
+      "task": {
+        "sub_question_id": "q1",
+        "source": "attack",
+        "text": "Which platforms does the ATT&CK technique HTML Smuggling (T1027.006) apply to?",
+        "entities": [
+          "Technique"
+        ],
+        "limits": {
+          "max_traversal_depth": 3,
+          "max_result_rows": 20000,
+          "query_timeout_ms": 5000
+        },
+        "join_key": null,
+        "seed_ids": [
+          "T1027.006"
+        ],
+        "rationale": "generated from the schema census"
+      },
+      "results": [
+        {
+          "source": "attack",
+          "sub_question_id": "q1",
+          "sub_question": "Which platforms does the ATT&CK technique HTML Smuggling (T1027.006) apply to?",
+          "query": "MATCH (n:SubTechnique) WHERE coalesce(n.attack_id, n.id) IN $ids OPTIONAL MATCH (n)-[r]-(m) WITH n, CASE WHEN m IS NULL THEN NULL ELSE type(r) END AS rel, CASE WHEN m IS NULL THEN NULL ELSE startNode(r) = n END AS outgoing, CASE WHEN m IS NULL THEN NULL ELSE head(labels(m)) END AS neighbour_label, count(m) AS cnt WITH n, collect(CASE WHEN rel IS NULL THEN NULL ELSE {rel: rel, outgoing: outgoing, label: neighbour_label, count: cnt} END) AS raw WITH n, [f IN raw WHERE f IS NOT NULL] AS facets RETURN coalesce(n.attack_id, n.id) AS id, n.name AS name, n.properties_json AS properties_json, facets AS facets LIMIT 20000",
+          "ok": true,
+          "partial": false,
+          "error": null,
+          "summary": "Found 1 record in MITRE ATT&CK: HTML Smuggling (T1027.006).",
+          "traces": [
+            {
+              "step": "intake",
+              "ok": true,
+              "reasons": [],
+              "detail": {
+                "source": "attack",
+                "card": "attack"
+              }
+            },
+            {
+              "step": "resolve",
+              "ok": true,
+              "reasons": [],
+              "detail": {
+                "labels": [
+                  "Technique"
+                ],
+                "relationships": [],
+                "seed_ids": [
+                  "T1027.006"
+                ],
+                "join_key": null
+              }
+            },
+            {
+              "step": "gate",
+              "ok": true,
+              "reasons": [],
+              "detail": {
+                "attempt": 1,
+                "template": "describe",
+                "query": "MATCH (n:SubTechnique) WHERE coalesce(n.attack_id, n.id) IN $ids OPTIONAL MATCH (n)-[r]-(m) WITH n, CASE WHEN m IS NULL THEN NULL ELSE type(r) END AS rel, CASE WHEN m IS NULL THEN NULL ELSE startNode(r) = n END AS outgoing, CASE WHEN m IS NULL THEN NULL ELSE head(labels(m)) END AS neighbour_label, count(m) AS cnt WITH n, collect(CASE WHEN rel IS NULL THEN NULL ELSE {rel: rel, outgoing: outgoing, label: neighbour_label, count: cnt} END) AS raw WITH n, [f IN raw WHERE f IS NOT NULL] AS facets RETURN coalesce(n.attack_id, n.id) AS id, n.name AS name, n.properties_json AS properties_json, facets AS facets LIMIT 20000",
+                "injected": [
+                  "LIMIT 20000 appended (none present)"
+                ],
+                "timing_ms": 0.27
+              }
+            },
+            {
+              "step": "execute",
+              "ok": true,
+              "reasons": [],
+              "detail": {
+                "row_count": 1,
+                "timing_ms": 3.0
+              }
+            },
+            {
+              "step": "assess",
+              "ok": true,
+              "reasons": [],
+              "detail": {
+                "row_count": 1,
+                "timing_ms": 0.012
+              }
+            },
+            {
+              "step": "normalize",
+              "ok": true,
+              "reasons": [],
+              "detail": {
+                "record_count": 1,
+                "timing_ms": 0.28
+              }
+            }
+          ],
+          "records": [
+            {
+              "primary_id": "T1027.006",
+              "name": "HTML Smuggling",
+              "label": "SubTechnique",
+              "description": "Adversaries may smuggle data and files past content filters by hiding malicious payloads inside of seemingly benign HTML files. HTML documents can store large binary objects known as JavaScript Blobs (immutable data that represents raw bytes) that can later be constructed into file-like objects. Data may also be stored in Data URLs, which enable embedding media type or MIME files inline of HTML documents. HTML5 also introduced a download attribute that may be used to initiate file downloads.(Citation: HTML Smuggling Menlo Security 2020)(Citation: Outlflank HTML Smuggling 2018)\n\nAdversaries may deliver payloads to victims that bypass security controls through HTML Smuggling by abusing JavaScript Blobs and/or HTML5 download attributes. Security controls such as web content filters may not identify smuggled malicious files inside of HTML/JS files, as the content may be based on typically benign MIME types such as <code>text/plain</code> and/or <code>text/html</code>. Malicious files or data can be obfuscated and hidden inside of HTML files through Data URLs and/or JavaScript Blobs and can be deobfuscated when they reach the victim (i.e. [Deobfuscate/Decode Files or Information](https://attack.mitre.org/techniques/T1140)), potentially bypassing content filters.\n\nFor example, JavaScript Blobs can be abused to dynamically generate malicious files in the victim machine and may be dropped to disk by abusing JavaScript functions such as <code>msSaveBlob</code>.(Citation: HTML Smuggling Menlo Security 2020)(Citation: MSTIC NOBELIUM May 2021)(Citation: Outlflank HTML Smuggling 2018)(Citation: nccgroup Smuggling HTA 2017)",
+              "properties": {
+                "attack_id": "T1027.006",
+                "created": "2021-05-20T12:20:42.219Z",
+                "description": "Adversaries may smuggle data and files past content filters by hiding malicious payloads inside of seemingly benign HTML files. HTML documents can store large binary objects known as JavaScript Blobs (immutable data that represents raw bytes) that can later be constructed into file-like objects. Data may also be stored in Data URLs, which enable embedding media type or MIME files inline of HTML documents. HTML5 also introduced a download attribute that may be used to initiate file downloads.(Citation: HTML Smuggling Menlo Security 2020)(Citation: Outlflank HTML Smuggling 2018)\n\nAdversaries may deliver payloads to victims that bypass security controls through HTML Smuggling by abusing JavaScript Blobs and/or HTML5 download attributes. Security controls such as web content filters may not identify smuggled malicious files inside of HTML/JS files, as the content may be based on typically benign MIME types such as <code>text/plain</code> and/or <code>text/html</code>. Malicious files or data can be obfuscated and hidden inside of HTML files through Data URLs and/or JavaScript Blobs and can be deobfuscated when they reach the victim (i.e. [Deobfuscate/Decode Files or Information](https://attack.mitre.org/techniques/T1140)), potentially bypassing content filters.\n\nFor example, JavaScript Blobs can be abused to dynamically generate malicious files in the victim machine and may be dropped to disk by abusing JavaScript functions such as <code>msSaveBlob</code>.(Citation: HTML Smuggling Menlo Security 2020)(Citation: MSTIC NOBELIUM May 2021)(Citation: Outlflank HTML Smuggling 2018)(Citation: nccgroup Smuggling HTA 2017)",
+                "id": "attack-pattern--d4dc46e3-5ba5-45b9-8204-010867cacfcb",
+                "modified": "2026-04-15T22:19:27.839Z",
+                "name": "HTML Smuggling",
+                "revoked": false,
+                "stix_type": "attack-pattern",
+                "x_mitre_contributors": [
+                  "Jonathan Boucher, @crash_wave, Bank of Canada",
+                  "Krishnan Subramanian, @krish203",
+                  "Stan Hegt, Outflank",
+                  "Vinay Pidathala"
+                ],
+                "x_mitre_deprecated": false,
+                "x_mitre_domains": [
+                  "enterprise-attack"
+                ],
+                "x_mitre_is_subtechnique": true,
+                "x_mitre_platforms": [
+                  "Linux",
+                  "macOS",
+                  "Windows"
+                ],
+                "x_mitre_version": "2.0",
+                "_omitted_properties": [
+                  "external_references"
+                ]
+              },
+              "facets": [
+                {
+                  "rel": "DETECTS",
+                  "direction": "in",
+                  "neighbour_label": "DetectionStrategy",
+                  "count": 1
+                },
+                {
+                  "rel": "HAS_SUBTECHNIQUE",
+                  "direction": "in",
+                  "neighbour_label": "Technique",
+                  "count": 1
+                },
+                {
+                  "rel": "HAS_TECHNIQUE",
+                  "direction": "in",
+                  "neighbour_label": "Tactic",
+                  "count": 1
+                },
+                {
+                  "rel": "MITIGATES",
+                  "direction": "in",
+                  "neighbour_label": "Mitigation",
+                  "count": 1
+                },
+                {
+                  "rel": "USES",
+                  "direction": "in",
+                  "neighbour_label": "Campaign",
+                  "count": 0
+                },
+                {
+                  "rel": "USES",
+                  "direction": "in",
+                  "neighbour_label": "Group",
+                  "count": 1
+                },
+                {
+                  "rel": "USES",
+                  "direction": "in",
+                  "neighbour_label": "Software",
+                  "count": 2
+                }
+              ],
+              "join_values": [
+                "T1027.006"
+              ],
+              "related": []
+            }
+          ]
+        },
+        {
+          "source": "attack",
+          "sub_question_id": "q2",
+          "sub_question": "In attack, list all Technique reached from T1027.006 via HAS_SUBTECHNIQUE",
+          "query": "MATCH (n) WHERE coalesce(n.attack_id, n.id) IN $ids OPTIONAL MATCH (n)-[r:HAS_SUBTECHNIQUE]-(m) RETURN coalesce(n.attack_id, n.id) AS anchor_id, n.name AS anchor_name, labels(n)[0] AS anchor_label, coalesce(m.attack_id, m.id) AS neighbour_id, m.name AS neighbour_name, labels(m)[0] AS neighbour_label, type(r) AS rel_type LIMIT 1000",
+          "ok": true,
+          "partial": false,
+          "error": null,
+          "summary": "Found 1 item(s) related to T1027.006 (e.g. T1027) in MITRE ATT&CK.",
+          "traces": [
+            {
+              "step": "intake",
+              "ok": true,
+              "reasons": [],
+              "detail": {
+                "source": "attack",
+                "card": "attack"
+              }
+            },
+            {
+              "step": "resolve",
+              "ok": true,
+              "reasons": [],
+              "detail": {
+                "labels": [
+                  "Technique"
+                ],
+                "relationships": [
+                  "HAS_SUBTECHNIQUE"
+                ],
+                "seed_ids": [
+                  "T1027.006"
+                ],
+                "join_key": null
+              }
+            },
+            {
+              "step": "gate",
+              "ok": true,
+              "reasons": [],
+              "detail": {
+                "attempt": 1,
+                "template": "generic_neighbors",
+                "query": "MATCH (n) WHERE coalesce(n.attack_id, n.id) IN $ids OPTIONAL MATCH (n)-[r:HAS_SUBTECHNIQUE]-(m) RETURN coalesce(n.attack_id, n.id) AS anchor_id, n.name AS anchor_name, labels(n)[0] AS anchor_label, coalesce(m.attack_id, m.id) AS neighbour_id, m.name AS neighbour_name, labels(m)[0] AS neighbour_label, type(r) AS rel_type LIMIT 1000",
+                "injected": [
+                  "LIMIT 1000 appended (none present)"
+                ],
+                "timing_ms": 0.198
+              }
+            },
+            {
+              "step": "execute",
+              "ok": true,
+              "reasons": [],
+              "detail": {
+                "row_count": 1,
+                "timing_ms": 3.9
+              }
+            },
+            {
+              "step": "assess",
+              "ok": true,
+              "reasons": [],
+              "detail": {
+                "row_count": 1,
+                "timing_ms": 0.006
+              }
+            },
+            {
+              "step": "normalize",
+              "ok": true,
+              "reasons": [],
+              "detail": {
+                "record_count": 1,
+                "timing_ms": 1.547
+              }
+            }
+          ],
+          "records": [
+            {
+              "primary_id": "T1027.006",
+              "name": "HTML Smuggling",
+              "label": "SubTechnique",
+              "description": "",
+              "properties": {},
+              "facets": [],
+              "join_values": [
+                "T1027.006"
+              ],
+              "related": [
+                {
+                  "id": "T1027",
+                  "name": "Obfuscated Files or Information",
+                  "label": "Technique",
+                  "type": "HAS_SUBTECHNIQUE",
+                  "description": "Adversaries may attempt to make an executable or file difficult to discover or analyze by encrypting, encoding, or otherwise obfuscating its contents on the system or in transit. This is common behavior that can be used across different platforms and the network to evade defenses. \n\nPayloads may be compressed, archived, or encrypted in order to avoid detection. These payloads may be used during Initial Access or later to mitigate detection. Sometimes a user's action may be required to open and [Deobfuscate/Decode Files or Information](https://attack.mitre.org/techniques/T1140) for [User Execution](https://attack.mitre.org/techniques/T1204). The user may also be required to input a password to open a password protected compressed/encrypted file that was provided by the adversary.(Citation: Volexity PowerDuke November 2016) Adversaries may also use compressed or archived scripts, such as JavaScript. \n\nPortions of files can also be encoded to hide the plain-text strings that would otherwise help defenders with discovery.(Citation: Linux/Cdorked.A We Live Security Analysis) Payloads may also be split into separate, seemingly benign files that only reveal malicious functionality when reassembled.(Citation: Carbon Black Obfuscation Sept 2016)\n\nAdversaries may also abuse [Command Obfuscation](https://attack.mitre.org/techniques/T1027/010) to obscure commands executed from payloads or directly via [Command and Scripting Interpreter](https://attack.mitre.org/techniques/T1059). Environment variables, aliases, characters, and other platform/language specific semantics can be used to evade signature based detections and application control mechanisms.(Citation: FireEye Obfuscation June 2017)(Citation: FireEye Revoke-Obfuscation July 2017)(Citation: PaloAlto EncodedCommand March 2017) "
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "source": "attack",
+          "sub_question_id": "q3",
+          "sub_question": "In attack, list all Tactic reached from T1027.006 via HAS_TECHNIQUE",
+          "query": "MATCH (n) WHERE coalesce(n.attack_id, n.id) IN $ids OPTIONAL MATCH (n)-[r:HAS_TECHNIQUE]-(m) RETURN coalesce(n.attack_id, n.id) AS anchor_id, n.name AS anchor_name, labels(n)[0] AS anchor_label, coalesce(m.attack_id, m.id) AS neighbour_id, m.name AS neighbour_name, labels(m)[0] AS neighbour_label, type(r) AS rel_type LIMIT 1000",
+          "ok": true,
+          "partial": false,
+          "error": null,
+          "summary": "Found 1 item(s) related to T1027.006 (e.g. TA0005) in MITRE ATT&CK.",
+          "traces": [
+            {
+              "step": "intake",
+              "ok": true,
+              "reasons": [],
+              "detail": {
+                "source": "attack",
+                "card": "attack"
+              }
+            },
+            {
+              "step": "resolve",
+              "ok": true,
+              "reasons": [],
+              "detail": {
+                "labels": [
+                  "Tactic"
+                ],
+                "relationships": [
+                  "HAS_TECHNIQUE"
+                ],
+                "seed_ids": [
+                  "T1027.006"
+                ],
+                "join_key": null
+              }
+            },
+            {
+              "step": "gate",
+              "ok": true,
+              "reasons": [],
+              "detail": {
+                "attempt": 1,
+                "template": "generic_neighbors",
+                "query": "MATCH (n) WHERE coalesce(n.attack_id, n.id) IN $ids OPTIONAL MATCH (n)-[r:HAS_TECHNIQUE]-(m) RETURN coalesce(n.attack_id, n.id) AS anchor_id, n.name AS anchor_name, labels(n)[0] AS anchor_label, coalesce(m.attack_id, m.id) AS neighbour_id, m.name AS neighbour_name, labels(m)[0] AS neighbour_label, type(r) AS rel_type LIMIT 1000",
+                "injected": [
+                  "LIMIT 1000 appended (none present)"
+                ],
+                "timing_ms": 0.171
+              }
+            },
+            {
+              "step": "execute",
+              "ok": true,
+              "reasons": [],
+              "detail": {
+                "row_count": 1,
+                "timing_ms": 2.5
+              }
+            },
+            {
+              "step": "assess",
+              "ok": true,
+              "reasons": [],
+              "detail": {
+                "row_count": 1,
+                "timing_ms": 0.004
+              }
+            },
+            {
+              "step": "normalize",
+              "ok": true,
+              "reasons": [],
+              "detail": {
+                "record_count": 1,
+                "timing_ms": 1.163
+              }
+            }
+          ],
+          "records": [
+            {
+              "primary_id": "T1027.006",
+              "name": "HTML Smuggling",
+              "label": "SubTechnique",
+              "description": "",
+              "properties": {},
+              "facets": [],
+              "join_values": [
+                "T1027.006"
+              ],
+              "related": [
+                {
+                  "id": "TA0005",
+                  "name": "Stealth",
+                  "label": "Tactic",
+                  "type": "HAS_TECHNIQUE",
+                  "description": "The adversary is trying to hide and conceal their actions, appearing as normal behavior.\n\nStealth consists of techniques that reduce the likelihood of detection by blending in with legitimate activity or minimizing observable signals. These techniques are characterized by concealment behaviors, such as avoiding, obfuscating, or mimicking normal operations, without modifying security controls or compromising collection and monitoring feeds. The goal is to remain indistinguishable from benign activity while leaving defensive systems intact."
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "source": "docs/evaluation/experiments/post-repair-2026-09-03/generic/answers/D1-Technique-x_mitre_platforms-T1027.006-28b01d::formal.json",
+    "source_sha256": "ce0e539b7622f544372324db3fc960058b0db18cd792906494f1eaec230131aa"
+  },
+  {
+    "id": "D1-Technique-x_mitre_contributors-T1530-347700::formal",
+    "question": "Who contributed the ATT&CK technique Data from Cloud Storage (T1530)?",
+    "answer": {
+      "headline": "Gathered 2 record(s) from 1 source(s).",
+      "narrative": "Found 1 record in MITRE ATT&CK: Data from Cloud Storage (T1530). T1530 (Data from Cloud Storage): Adversaries may access data from cloud storage.\n\nMany IaaS providers offer solutions for online data object storage such as Amazon S3, Azure Storage, and Google Cloud Storage. Similarly, SaaS enterprise platforms such as Office 365 and Google Workspace provide cloud-based document storage to users through services such as OneDrive and Google Drive, while SaaS application providers such as Slack, Confluence, Salesforce, and Dropbox may provide cloud storage solutions as a peripheral or primary use case of their platform. T1530 (Data from Cloud Storage) has revoked: False; stix_type: attack-pattern; x_mitre_deprecated: False; x_mitre_is_subtechnique: False; x_mitre_version: 2.2. Found 1 item(s) related to T1530 (e.g. TA0009) in MITRE ATT&CK. T1530 (Data from Cloud Storage) has 1 tactic: TA0009.",
+      "composer": "deterministic",
+      "fallback_reason": "LLM narrator unavailable (request failed: HTTPConnectionPool(host='localhost', port=4000): Read timed out. (read timeout=120.0))",
+      "claims": [
+        {
+          "text": "Found 1 record in MITRE ATT&CK: Data from Cloud Storage (T1530).",
+          "kind": "fact",
+          "entity_ids": [
+            "T1530"
+          ],
+          "citations": [
+            {
+              "source": "attack",
+              "primary_id": "T1530"
+            }
+          ]
+        },
+        {
+          "text": "T1530 (Data from Cloud Storage): Adversaries may access data from cloud storage.\n\nMany IaaS providers offer solutions for online data object storage such as Amazon S3, Azure Storage, and Google Cloud Storage. Similarly, SaaS enterprise platforms such as Office 365 and Google Workspace provide cloud-based document storage to users through services such as OneDrive and Google Drive, while SaaS application providers such as Slack, Confluence, Salesforce, and Dropbox may provide cloud storage solutions as a peripheral or primary use case of their platform.",
+          "kind": "fact",
+          "entity_ids": [
+            "T1530"
+          ],
+          "citations": [
+            {
+              "source": "attack",
+              "primary_id": "T1530"
+            }
+          ]
+        },
+        {
+          "text": "T1530 (Data from Cloud Storage) has revoked: False; stix_type: attack-pattern; x_mitre_deprecated: False; x_mitre_is_subtechnique: False; x_mitre_version: 2.2.",
+          "kind": "fact",
+          "entity_ids": [
+            "T1530"
+          ],
+          "citations": [
+            {
+              "source": "attack",
+              "primary_id": "T1530"
+            }
+          ]
+        },
+        {
+          "text": "Found 1 item(s) related to T1530 (e.g. TA0009) in MITRE ATT&CK.",
+          "kind": "fact",
+          "entity_ids": [
+            "T1530"
+          ],
+          "citations": [
+            {
+              "source": "attack",
+              "primary_id": "T1530"
+            }
+          ]
+        },
+        {
+          "text": "T1530 (Data from Cloud Storage) has 1 tactic: TA0009.",
+          "kind": "enumeration",
+          "entity_ids": [
+            "TA0009"
+          ],
+          "citations": [
+            {
+              "source": "attack",
+              "primary_id": "T1530"
+            }
+          ]
+        }
+      ],
+      "abstentions": [],
+      "notes": []
+    },
+    "logic_flow": {
+      "task": {
+        "sub_question_id": "q1",
+        "source": "attack",
+        "text": "Who contributed the ATT&CK technique Data from Cloud Storage (T1530)?",
+        "entities": [
+          "Technique"
+        ],
+        "limits": {
+          "max_traversal_depth": 3,
+          "max_result_rows": 20000,
+          "query_timeout_ms": 5000
+        },
+        "join_key": null,
+        "seed_ids": [
+          "T1530"
+        ],
+        "rationale": "generated from the schema census"
+      },
+      "results": [
+        {
+          "source": "attack",
+          "sub_question_id": "q1",
+          "sub_question": "Who contributed the ATT&CK technique Data from Cloud Storage (T1530)?",
+          "query": "MATCH (n:Technique) WHERE coalesce(n.attack_id, n.id) IN $ids OPTIONAL MATCH (n)-[r]-(m) WITH n, CASE WHEN m IS NULL THEN NULL ELSE type(r) END AS rel, CASE WHEN m IS NULL THEN NULL ELSE startNode(r) = n END AS outgoing, CASE WHEN m IS NULL THEN NULL ELSE head(labels(m)) END AS neighbour_label, count(m) AS cnt WITH n, collect(CASE WHEN rel IS NULL THEN NULL ELSE {rel: rel, outgoing: outgoing, label: neighbour_label, count: cnt} END) AS raw WITH n, [f IN raw WHERE f IS NOT NULL] AS facets RETURN coalesce(n.attack_id, n.id) AS id, n.name AS name, n.properties_json AS properties_json, facets AS facets LIMIT 20000",
+          "ok": true,
+          "partial": false,
+          "error": null,
+          "summary": "Found 1 record in MITRE ATT&CK: Data from Cloud Storage (T1530).",
+          "traces": [
+            {
+              "step": "intake",
+              "ok": true,
+              "reasons": [],
+              "detail": {
+                "source": "attack",
+                "card": "attack"
+              }
+            },
+            {
+              "step": "resolve",
+              "ok": true,
+              "reasons": [],
+              "detail": {
+                "labels": [
+                  "Technique"
+                ],
+                "relationships": [],
+                "seed_ids": [
+                  "T1530"
+                ],
+                "join_key": null
+              }
+            },
+            {
+              "step": "gate",
+              "ok": true,
+              "reasons": [],
+              "detail": {
+                "attempt": 1,
+                "template": "describe",
+                "query": "MATCH (n:Technique) WHERE coalesce(n.attack_id, n.id) IN $ids OPTIONAL MATCH (n)-[r]-(m) WITH n, CASE WHEN m IS NULL THEN NULL ELSE type(r) END AS rel, CASE WHEN m IS NULL THEN NULL ELSE startNode(r) = n END AS outgoing, CASE WHEN m IS NULL THEN NULL ELSE head(labels(m)) END AS neighbour_label, count(m) AS cnt WITH n, collect(CASE WHEN rel IS NULL THEN NULL ELSE {rel: rel, outgoing: outgoing, label: neighbour_label, count: cnt} END) AS raw WITH n, [f IN raw WHERE f IS NOT NULL] AS facets RETURN coalesce(n.attack_id, n.id) AS id, n.name AS name, n.properties_json AS properties_json, facets AS facets LIMIT 20000",
+                "injected": [
+                  "LIMIT 20000 appended (none present)"
+                ],
+                "timing_ms": 0.213
+              }
+            },
+            {
+              "step": "execute",
+              "ok": true,
+              "reasons": [],
+              "detail": {
+                "row_count": 1,
+                "timing_ms": 2.5
+              }
+            },
+            {
+              "step": "assess",
+              "ok": true,
+              "reasons": [],
+              "detail": {
+                "row_count": 1,
+                "timing_ms": 0.005
+              }
+            },
+            {
+              "step": "normalize",
+              "ok": true,
+              "reasons": [],
+              "detail": {
+                "record_count": 1,
+                "timing_ms": 0.111
+              }
+            }
+          ],
+          "records": [
+            {
+              "primary_id": "T1530",
+              "name": "Data from Cloud Storage",
+              "label": "Technique",
+              "description": "Adversaries may access data from cloud storage.\n\nMany IaaS providers offer solutions for online data object storage such as Amazon S3, Azure Storage, and Google Cloud Storage. Similarly, SaaS enterprise platforms such as Office 365 and Google Workspace provide cloud-based document storage to users through services such as OneDrive and Google Drive, while SaaS application providers such as Slack, Confluence, Salesforce, and Dropbox may provide cloud storage solutions as a peripheral or primary use case of their platform. \n\nIn some cases, as with IaaS-based cloud storage, there exists no overarching application (such as SQL or Elasticsearch) with which to interact with the stored objects: instead, data from these solutions is retrieved directly though the [Cloud API](https://attack.mitre.org/techniques/T1059/009). In SaaS applications, adversaries may be able to collect this data directly from APIs or backend cloud storage objects, rather than through their front-end application or interface (i.e., [Data from Information Repositories](https://attack.mitre.org/techniques/T1213)). \n\nAdversaries may collect sensitive data from these cloud storage solutions. Providers typically offer security guides to help end users configure systems, though misconfigurations are a common problem.(Citation: Amazon S3 Security, 2019)(Citation: Microsoft Azure Storage Security, 2019)(Citation: Google Cloud Storage Best Practices, 2019) There have been numerous incidents where cloud storage has been improperly secured, typically by unintentionally allowing public access to unauthenticated users, overly-broad access by all users, or even access for any anonymous person outside the control of the Identity Access Management system without even needing basic user permissions.\n\nThis open access may expose various types of sensitive data, such as credit cards, personally identifiable information, or medical records.(Citation: Trend Micro S3 Exposed PII, 2017)(Citation: Wired Magecart S3 Buckets, 2019)(Citation: HIPAA Journal S3 Breach, 2017)(Citation: Rclone-mega-extortion_05_2021)\n\nAdversaries may also obtain then abuse leaked credentials from source repositories, logs, or other means as a way to gain access to cloud storage objects.",
+              "properties": {
+                "attack_id": "T1530",
+                "created": "2019-08-30T18:07:27.741Z",
+                "description": "Adversaries may access data from cloud storage.\n\nMany IaaS providers offer solutions for online data object storage such as Amazon S3, Azure Storage, and Google Cloud Storage. Similarly, SaaS enterprise platforms such as Office 365 and Google Workspace provide cloud-based document storage to users through services such as OneDrive and Google Drive, while SaaS application providers such as Slack, Confluence, Salesforce, and Dropbox may provide cloud storage solutions as a peripheral or primary use case of their platform. \n\nIn some cases, as with IaaS-based cloud storage, there exists no overarching application (such as SQL or Elasticsearch) with which to interact with the stored objects: instead, data from these solutions is retrieved directly though the [Cloud API](https://attack.mitre.org/techniques/T1059/009). In SaaS applications, adversaries may be able to collect this data directly from APIs or backend cloud storage objects, rather than through their front-end application or interface (i.e., [Data from Information Repositories](https://attack.mitre.org/techniques/T1213)). \n\nAdversaries may collect sensitive data from these cloud storage solutions. Providers typically offer security guides to help end users configure systems, though misconfigurations are a common problem.(Citation: Amazon S3 Security, 2019)(Citation: Microsoft Azure Storage Security, 2019)(Citation: Google Cloud Storage Best Practices, 2019) There have been numerous incidents where cloud storage has been improperly secured, typically by unintentionally allowing public access to unauthenticated users, overly-broad access by all users, or even access for any anonymous person outside the control of the Identity Access Management system without even needing basic user permissions.\n\nThis open access may expose various types of sensitive data, such as credit cards, personally identifiable information, or medical records.(Citation: Trend Micro S3 Exposed PII, 2017)(Citation: Wired Magecart S3 Buckets, 2019)(Citation: HIPAA Journal S3 Breach, 2017)(Citation: Rclone-mega-extortion_05_2021)\n\nAdversaries may also obtain then abuse leaked credentials from source repositories, logs, or other means as a way to gain access to cloud storage objects.",
+                "id": "attack-pattern--3298ce88-1628-43b1-87d9-0b5336b193d7",
+                "modified": "2025-10-24T17:48:37.187Z",
+                "name": "Data from Cloud Storage",
+                "revoked": false,
+                "stix_type": "attack-pattern",
+                "x_mitre_contributors": [
+                  "Netskope",
+                  "Praetorian",
+                  "AppOmni",
+                  "Arun Seelagan, CISA"
+                ],
+                "x_mitre_deprecated": false,
+                "x_mitre_domains": [
+                  "enterprise-attack"
+                ],
+                "x_mitre_is_subtechnique": false,
+                "x_mitre_platforms": [
+                  "IaaS",
+                  "Office Suite",
+                  "SaaS"
+                ],
+                "x_mitre_version": "2.2",
+                "_omitted_properties": [
+                  "external_references"
+                ]
+              },
+              "facets": [
+                {
+                  "rel": "DETECTS",
+                  "direction": "in",
+                  "neighbour_label": "DetectionStrategy",
+                  "count": 1
+                },
+                {
+                  "rel": "HAS_SUBTECHNIQUE",
+                  "direction": "out",
+                  "neighbour_label": "SubTechnique",
+                  "count": 0
+                },
+                {
+                  "rel": "HAS_TECHNIQUE",
+                  "direction": "in",
+                  "neighbour_label": "Tactic",
+                  "count": 1
+                },
+                {
+                  "rel": "MITIGATES",
+                  "direction": "in",
+                  "neighbour_label": "Mitigation",
+                  "count": 6
+                },
+                {
+                  "rel": "USES",
+                  "direction": "in",
+                  "neighbour_label": "Campaign",
+                  "count": 2
+                },
+                {
+                  "rel": "USES",
+                  "direction": "in",
+                  "neighbour_label": "Group",
+                  "count": 5
+                },
+                {
+                  "rel": "USES",
+                  "direction": "in",
+                  "neighbour_label": "Software",
+                  "count": 4
+                }
+              ],
+              "join_values": [
+                "T1530"
+              ],
+              "related": []
+            }
+          ]
+        },
+        {
+          "source": "attack",
+          "sub_question_id": "q2",
+          "sub_question": "In attack, list all Tactic reached from T1530 via HAS_TECHNIQUE",
+          "query": "MATCH (n) WHERE coalesce(n.attack_id, n.id) IN $ids OPTIONAL MATCH (n)-[r:HAS_TECHNIQUE]-(m) RETURN coalesce(n.attack_id, n.id) AS anchor_id, n.name AS anchor_name, labels(n)[0] AS anchor_label, coalesce(m.attack_id, m.id) AS neighbour_id, m.name AS neighbour_name, labels(m)[0] AS neighbour_label, type(r) AS rel_type LIMIT 1000",
+          "ok": true,
+          "partial": false,
+          "error": null,
+          "summary": "Found 1 item(s) related to T1530 (e.g. TA0009) in MITRE ATT&CK.",
+          "traces": [
+            {
+              "step": "intake",
+              "ok": true,
+              "reasons": [],
+              "detail": {
+                "source": "attack",
+                "card": "attack"
+              }
+            },
+            {
+              "step": "resolve",
+              "ok": true,
+              "reasons": [],
+              "detail": {
+                "labels": [
+                  "Tactic"
+                ],
+                "relationships": [
+                  "HAS_TECHNIQUE"
+                ],
+                "seed_ids": [
+                  "T1530"
+                ],
+                "join_key": null
+              }
+            },
+            {
+              "step": "gate",
+              "ok": true,
+              "reasons": [],
+              "detail": {
+                "attempt": 1,
+                "template": "generic_neighbors",
+                "query": "MATCH (n) WHERE coalesce(n.attack_id, n.id) IN $ids OPTIONAL MATCH (n)-[r:HAS_TECHNIQUE]-(m) RETURN coalesce(n.attack_id, n.id) AS anchor_id, n.name AS anchor_name, labels(n)[0] AS anchor_label, coalesce(m.attack_id, m.id) AS neighbour_id, m.name AS neighbour_name, labels(m)[0] AS neighbour_label, type(r) AS rel_type LIMIT 1000",
+                "injected": [
+                  "LIMIT 1000 appended (none present)"
+                ],
+                "timing_ms": 0.134
+              }
+            },
+            {
+              "step": "execute",
+              "ok": true,
+              "reasons": [],
+              "detail": {
+                "row_count": 1,
+                "timing_ms": 2.0
+              }
+            },
+            {
+              "step": "assess",
+              "ok": true,
+              "reasons": [],
+              "detail": {
+                "row_count": 1,
+                "timing_ms": 0.002
+              }
+            },
+            {
+              "step": "normalize",
+              "ok": true,
+              "reasons": [],
+              "detail": {
+                "record_count": 1,
+                "timing_ms": 1.156
+              }
+            }
+          ],
+          "records": [
+            {
+              "primary_id": "T1530",
+              "name": "Data from Cloud Storage",
+              "label": "Technique",
+              "description": "",
+              "properties": {},
+              "facets": [],
+              "join_values": [
+                "T1530"
+              ],
+              "related": [
+                {
+                  "id": "TA0009",
+                  "name": "Collection",
+                  "label": "Tactic",
+                  "type": "HAS_TECHNIQUE",
+                  "description": "The adversary is trying to gather data of interest to their goal.\n\nCollection consists of techniques adversaries may use to gather information and the sources information is collected from that are relevant to following through on the adversary's objectives. Frequently, the next goal after collecting data is to either steal (exfiltrate) the data or to use the data to gain more information about the target environment. Common target sources include various drive types, browsers, audio, video, and email. Common collection methods include capturing screenshots and keyboard input."
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "source": "docs/evaluation/experiments/post-repair-2026-09-03/generic/answers/D1-Technique-x_mitre_contributors-T1530-347700::formal.json",
+    "source_sha256": "13fc03b6863af3d416d7cad7e9c543c5d830e8a7b71d7c189c2a4cd87c0a3856"
+  }
+]

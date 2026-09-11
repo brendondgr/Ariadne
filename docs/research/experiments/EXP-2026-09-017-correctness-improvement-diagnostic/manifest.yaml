@@ -1,0 +1,177 @@
+id: EXP-2026-09-017
+slug: correctness-improvement-diagnostic
+title: Where is the headroom beyond the current judged correctness?
+status: complete
+date_started: '2026-09-11'
+date_completed: '2026-09-11'
+authors:
+- Codex
+purpose: Retrospective paired development-score diagnostic and visualization to prioritize
+  improvement experiments.
+hypothesis: Exploratory — no prior hypothesis.
+code:
+  commit: c5b3b100965692371dda124d408c403085c200bc
+  branch: main
+  entrypoint: uv run --with matplotlib==3.11.1 python docs/research/experiments/EXP-2026-09-017-correctness-improvement-diagnostic/figures/make_figures.py
+  dirty: true
+config:
+  path: null
+  hash: null
+data:
+  name: EXP-005 paired original qwen development judgments
+  version: original two-position judgments, extracted 2026-09-11
+  split: dev
+  n_examples: 284
+  dvc_path: null
+  hash: sha256:3561babdb1feccda5081e7530253d13a81598f60a451b0eca00d91cc68085d94
+seeds: []
+n_runs: 1
+environment:
+  python: 3.13.13
+  lockfile: null
+  container: null
+compute:
+  hardware: CPU only; hardware details not collected
+  wall_clock_hours: null
+  estimated_cost_usd: 0
+metrics:
+  primary: D4_generic_headroom
+  values:
+    generic_judged:
+      mean: 0.6568661971830986
+      std: null
+      n: 284
+    deterministic_judged:
+      mean: 0.4945774647887324
+      std: null
+      n: 284
+    D0_generic:
+      mean: 0.7229166666666667
+      std: null
+      n: 36
+    D0_deterministic:
+      mean: 0.5340277777777778
+      std: null
+      n: 36
+    D0_generic_headroom:
+      mean: 0.03512323943661972
+      std: null
+      n: 36
+    D1_generic:
+      mean: 0.7042857142857143
+      std: null
+      n: 35
+    D1_deterministic:
+      mean: 0.585
+      std: null
+      n: 35
+    D1_generic_headroom:
+      mean: 0.036443661971830986
+      std: null
+      n: 35
+    D2_generic:
+      mean: 0.785625
+      std: null
+      n: 40
+    D2_deterministic:
+      mean: 0.605375
+      std: null
+      n: 40
+    D2_generic_headroom:
+      mean: 0.030193661971830984
+      std: null
+      n: 40
+    D3_generic:
+      mean: 0.8914772727272727
+      std: null
+      n: 44
+    D3_deterministic:
+      mean: 0.6279545454545454
+      std: null
+      n: 44
+    D3_generic_headroom:
+      mean: 0.01681338028169014
+      std: null
+      n: 44
+    D4_generic:
+      mean: 0.42363636363636364
+      std: null
+      n: 55
+    D4_deterministic:
+      mean: 0.28500000000000003
+      std: null
+      n: 55
+    D4_generic_headroom:
+      mean: 0.11161971830985916
+      std: null
+      n: 55
+    D5_generic:
+      mean: 0.6468085106382979
+      std: null
+      n: 47
+    D5_deterministic:
+      mean: 0.5035106382978723
+      std: null
+      n: 47
+    D5_generic_headroom:
+      mean: 0.05845070422535212
+      std: null
+      n: 47
+    D6_generic:
+      mean: 0.42685185185185187
+      std: null
+      n: 27
+    D6_deterministic:
+      mean: 0.35462962962962963
+      std: null
+      n: 27
+    D6_generic_headroom:
+      mean: 0.05448943661971831
+      std: null
+      n: 27
+    missing_pattern_generic:
+      mean: 0.42867647058823527
+      std: null
+      n: 34
+    other_generic:
+      mean: 0.6879
+      std: null
+      n: 250
+    scenario_slice_0.50:
+      mean: 0.6654049295774648
+      std: null
+      n: 284
+    scenario_slice_0.75:
+      mean: 0.6953345070422535
+      std: null
+      n: 284
+    scenario_slice_1.00:
+      mean: 0.7252640845070423
+      std: null
+      n: 284
+    generic_D6_retrieval_context:
+      mean: 0.0717
+      std: null
+      n: 27
+    deterministic_D6_retrieval_context:
+      mean: 0.3548
+      std: null
+      n: 27
+  withdrawn: {}
+baselines_compared:
+- generic
+- deterministic
+statistical_test: Descriptive re-aggregation of one historical system run per arm;
+  two original grading positions averaged per case. No new system runs, confidence
+  intervals or significance tests.
+supports_claims: []
+figures:
+- fig-correctness-opportunities
+supersedes: null
+superseded_by: null
+related:
+- EXP-2026-09-005
+- EXP-2026-09-007
+- EXP-2026-09-014
+- EXP-2026-09-015
+- EXP-2026-09-016

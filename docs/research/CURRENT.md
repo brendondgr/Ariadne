@@ -101,5 +101,6 @@ this file says which number is *current*.
 | [`EXP-2026-09-014`](experiments/EXP-2026-09-014-hybrid-rewrite-stage/) | 2026-09-08 | `R2_T5_records_exact` | 0.1635 ± 0.0089 (n=3) | — | — |
 | [`EXP-2026-09-015`](experiments/EXP-2026-09-015-relation-slot-derivation/) | 2026-09-10 | `slot_relation_T4` | 0.1304 ± 0.0000 (n=3) | — | — |
 | [`EXP-2026-09-016`](experiments/EXP-2026-09-016-arm-cost-and-latency/) | 2026-09-10 | `cost_ratio_wall_clock_llm_query_over_deterministic` | 3083.2000 ± 0.0000 (n=284) | C-012, C-004 | — |
+| [`EXP-2026-09-017`](experiments/EXP-2026-09-017-correctness-improvement-diagnostic/) | 2026-09-11 | `D4_generic_headroom` | 0.1116 (n=55) | — | — |
 
-**24 withdrawn figure(s), 6 superseded experiment(s), 43 current headline(s).**
+**24 withdrawn figure(s), 6 superseded experiment(s), 44 current headline(s).**
