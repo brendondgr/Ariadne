@@ -68,3 +68,94 @@ make check-docs
 ## AMENDMENT A-1 — portable CSV hashing (2026-09-11)
 
 The CSV writer initially emitted CRLF, which Git normalized to LF when staging. The in-workspace hash therefore differed from the committed bytes. The extractor now explicitly writes LF; the data hash and pointer use those portable bytes. No case, score, metric, figure or interpretation changed.
+
+## AMENDMENT A-2 — the same 284 cases, assigned to mechanisms (2026-09-11)
+
+The body of this experiment groups the dev half by **question type** and prices
+the headroom per type. A second diagnostic of the same 284 answers, written
+independently on the same day, instead joined each case to the bank's anchor
+label, predicate chain and filter, and to the answer's own retrieval outcome
+and narrator status, then assigned every question to the first *defect
+mechanism* that applies. It is recorded here, rather than as its own
+experiment, because it regrades nothing: its per-case scores are the committed
+`cases.csv` values, and it reproduces the published 0.6569 and 0.4946 exactly.
+
+`data/mechanisms.py` performs the join and writes `data/mechanisms.csv` (one
+row per case: mechanism, anchor label, predicate chain, filter, record count,
+gold coverage, fallback reason, both arms' scores). It reads only `cases.csv`,
+`bank-dev.json` and the saved EXP-2026-09-005 generic answers.
+
+**The assignment is first match, in a fixed order, and the order is a claim.**
+A case is attributed to the defect that would have to be repaired *first* for
+the next one to become observable: an edge the gate forbids never reaches a
+builder (`capec` before everything), a seed that binds to the wrong namespace
+retrieves nothing to chain (`ns` before `chain`), a filter can only be
+mis-applied to records that came back (`chain` before `filter`), and a narrator
+time-out is the whole story only when no retrieval defect is present
+(`narrator` last). A different order would move cases between rows; it would
+not change the total, and the two largest rows are dominated by cases that
+match one predicate only.
+
+| Mechanism | n | generic mean | points lost | share of the 97.45 lost | Where |
+|---|---:|---:|---:|---:|---|
+| `capec` — five declared CAPEC edges not allowlisted | 34 | 0.4287 | 19.43 | 19.9% | `kg_builder/schema/capec.py`, `gremlin/validator.py` |
+| `ns` — Category/View seed mapped to the attack-pattern namespace | 23 | 0.4674 | 12.25 | 12.6% | `gremlin/builder.py` `_gremlin_vertex_id` |
+| `chain` — two-hop request collapsed to the shortest schema path | 56 | 0.4625 | 30.10 | 30.9% | `cypher/builder.py` `_generic_chain`, `gremlin/builder.py` |
+| `filter` — declared property filter reaches neither query nor composer | 39 | 0.6699 | 12.88 | 13.2% | plan carries no filter; builders and composer ignore the text |
+| `empty` — composer never states that the requested set is empty | 16 | 0.6406 | 5.75 | 5.9% | `synthesis/composer.py` |
+| `narrator` — narrator fell back, no other defect | 49 | 0.6964 | 14.88 | 15.3% | `SYNTHESIS_LLM_TIMEOUT_S` default |
+| `none` — no known defect and the narrator ran | 67 | **0.9675** | 2.18 | 2.2% | — |
+
+The last row is the finding that gives the rest its force. When none of the six
+mechanisms fires, the generic arm scores **0.9675** on 67 questions. The gap
+between that and the 0.6569 headline is not a capability ceiling; it is six
+located defects.
+
+### Retrieval outcome
+
+| Split | n | generic mean |
+|---|---:|---:|
+| zero records returned | 86 | 0.5038 |
+| one or more records | 198 | 0.7234 |
+
+All 34 `capec` cases and 21 of the 23 `ns` cases returned zero records. The two
+`ns` exceptions are the D1 `View-Type` property questions, which read a
+property off the seed and score 1.0000; they are assigned to `ns` because the
+walk's namespace defect applies to their seed too, and excluding them would
+raise the row's mean, not lower it.
+
+### Narrator split
+
+122 of the 284 answers carry a `fallback_reason` — see the Q47 correction
+below, filed as `EXP-2026-09-016` `A-7`, for why that is 0.43 and not 0.04.
+
+| Split | n | generic mean |
+|---|---:|---:|
+| narrator fell back | 122 | 0.6268 |
+| narrator ran | 162 | 0.6795 |
+
+The 0.0527 difference is small next to the mechanism spread, and within the
+`none` bucket no answer fell back at all. A time-out therefore costs about five
+points where retrieval succeeded, and the 49 cases where it is the *only*
+defect average 0.6964 — real, but a fifth of the chain row.
+
+### Relation to the body of this experiment
+
+The two diagnostics agree on every number they share and disagree on nothing;
+they differ in resolution. This amendment's `chain` row is the mechanism behind
+the two-hop headroom priced in the Results table. The "answer contract"
+proposed in the Interpretation section is the general form of the `filter` and
+`empty` rows, and of the D1 property examples exhibited there: those answers'
+evidence carried the requested value and their claims dropped it, because the
+composer's attribute projection skips list-valued properties and their narrator
+had timed out. The measurement protocol prescribed in the body — concurrent
+paired control, unchanged answers as a grader-drift control, counterbalanced
+grading, paired intervals, latency at the shipped budget, scoring corrections
+reported apart from capability gains, and a freshly sealed set for the final
+read — is unchanged by this amendment and governs the repair programme that
+follows from it.
+
+**Reproduce:** `.venv/bin/python docs/research/experiments/EXP-2026-09-017-correctness-improvement-diagnostic/data/mechanisms.py`
+(asserts the 0.6569 / 0.4946 means and prints the table above).
+
+**Follows on to:** `EXP-2026-09-018-correctness-repair`; open questions Q50–Q53.

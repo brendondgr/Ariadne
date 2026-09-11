@@ -2,34 +2,49 @@
   "reference": {
     "degraded_30s": {
       "fallback": 198,
-      "n": 284,
-      "rate": 0.7
+      "answers": 284,
+      "rate": 0.6972
     },
     "healthy_4096s": {
       "fallback": 39,
-      "n": 284,
-      "rate": 0.14
+      "answers": 284,
+      "rate": 0.1373
     }
   },
   "audited": {
     "EXP-2026-09-005 post-repair dev": {
-      "answers": 3407,
+      "files_in_directory": 3407,
+      "answers": 284,
       "fallback_reason": 122,
-      "rate": 0.0358,
-      "verdict": "healthy"
+      "rate": 0.4296,
+      "rate_over_files_2026_09_10": 0.0358,
+      "reasons": {
+        "LLM narrator unavailable": 122
+      },
+      "verdict": "above the healthy reference"
     },
     "EXP-2026-09-007 holdout": {
-      "answers": 1440,
+      "files_in_directory": 1440,
+      "answers": 288,
       "fallback_reason": 86,
-      "rate": 0.0597,
-      "verdict": "healthy"
+      "rate": 0.2986,
+      "rate_over_files_2026_09_10": 0.0597,
+      "reasons": {
+        "LLM narrator unavailable": 86
+      },
+      "verdict": "above the healthy reference"
     },
     "EXP-2026-09-002 expansion": {
-      "answers": 852,
+      "files_in_directory": 852,
+      "answers": 284,
       "fallback_reason": 19,
-      "rate": 0.0223,
+      "rate": 0.0669,
+      "rate_over_files_2026_09_10": 0.0223,
+      "reasons": {
+        "LLM narrator unavailable": 19
+      },
       "verdict": "healthy"
     }
   },
-  "conclusion": "All three published generic runs behind C-023 carry fallback rates of 0.02-0.06, below even the healthy reference of 0.14 and far from the degraded 0.70. Their model seams were live. No published figure is affected."
+  "conclusion": "Corrected 2026-09-11 (A-8). The 2026-09-10 issue of this file divided the fallback count by the number of FILES in each answer directory, which also holds two or more judgment sidecars per answer. Against answer denominators the rates are 0.43 (dev), 0.30 (holdout) and 0.07 (expansion) against a healthy reference of 0.14 and a degraded one of 0.70. Two of the three runs behind C-023 sit above the healthy reference, so the earlier sentence \"no published figure is affected\" was reached by arithmetic that does not hold. Every fallback in all three runs is a narrator read time-out at the 120 s SYNTHESIS_LLM_TIMEOUT_S default; none is a planner or specialist seam failure, so the arm identity finding of I-4 is not what these rates show."
 }

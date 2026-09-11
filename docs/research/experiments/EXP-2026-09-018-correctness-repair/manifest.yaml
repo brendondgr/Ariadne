@@ -1,0 +1,90 @@
+# Filled by scripts/new_experiment.py. Every field below is required unless
+# marked optional. Do not delete a field you do not know — record it as null or
+# "unknown" and explain in ISSUES.md. Inventing a value is worse than admitting
+# a gap.
+id: EXP-2026-09-018
+slug: correctness-repair
+title: "Correctness repair: six located defects, measured against a concurrent control"
+status: planned            # planned | running | complete | failed | superseded
+date_started: 2026-09-11
+date_completed: null       # null until status is complete/failed
+authors:
+- Claude Opus 5
+- brendondgr
+
+purpose: >
+  The generic arm scores 0.6569 on the 284 development questions and 0.9675 on
+  the 67 where none of six located defects fires (EXP-2026-09-017 A-2). This
+  experiment repairs those six defects and measures whether the judged mean
+  moves, against a concurrent reference-commit control, a grader-drift control
+  and a freshly sealed evaluation set. It amends the evidence for C-023 and
+  extends C-017 with a verified absence claim; it does not replace either.
+
+hypothesis: >
+  Each defect is a coding error with an identified location rather than a
+  capability limit, so repairing it raises the judged mean on the questions it
+  owns and leaves the others alone. Six hypotheses H1-H6 with pre-registered
+  thresholds and a kill gate are in PROTOCOL.md, written before any repair.
+
+# --- Reproducibility block (all fields mandatory) ---
+code:
+  commit: cbb4850226e9fc737262c6474e6b161665d75043          # 40-char sha, or "unknown" for a back-filled experiment
+  branch: main
+  entrypoint: "see PROTOCOL.md Procedure; per-step entrypoints recorded in RESULTS.md"
+  dirty: true             # uncommitted changes at run time? if true, explain in ISSUES.md
+config:
+  path: null               # repo-relative path, or null if the run takes no config file
+  hash: null               # sha256:... of that file
+data:
+  name: composition bank - dev half, spent holdout, and a freshly sealed set
+  version: bank.json split of 2026-09-05 plus a new-seed bank minted in Step 7
+  split: dev (selection and paired control); holdout (regression only); fresh (final read)
+  n_examples: 284
+  dvc_path: null           # this repository does not use DVC; leave null
+  hash: sha256:a4ca6702029cae7784574b0307b9f76d4718a039f3254f2c0ff708a2fa1a4119
+seeds: []                  # [] means seeds were not recorded — say so in ISSUES.md
+n_runs: 1                  # SYSTEM runs over the question set — grading passes are not runs
+environment:
+  python: "3.13"
+  lockfile: env/requirements.lock
+  container: null
+compute:
+  hardware: "CPU for Steps 0-4; the :9090 relay for Steps 5-8"
+  wall_clock_hours: 0.0
+  estimated_cost_usd: 0.0
+
+# --- LLM / agentic block (delete entirely if no model was in the loop) ---
+llm:
+  model: "local-relay/qwen38-27B-v2@2026-09-11"   # judge and narrator; Steps 5-8 only
+  temperature: 0.0
+  top_p: 1.0
+  max_tokens: 32768
+  prompt_files: []
+  prompt_hash: null
+  tool_schema_hash: null
+  total_input_tokens: null
+  total_output_tokens: null
+  nondeterminism_note: >
+    Provider-side nondeterminism remains even at temperature 0; results
+    are reported as mean ± std over n_runs.
+
+# --- Results block ---
+metrics:
+  primary: generic_judged_correctness_dev
+  values: {}               # {metric: {mean: 0.0, std: 0.0, n: 1}} — must be non-empty when status: complete
+  withdrawn: {}            # values later retracted by amendment: {metric: {mean, std, n, withdrawn_on, reason, replaced_by}}
+baselines_compared: []
+statistical_test: null
+
+# --- Linkage ---
+supports_claims:
+- C-017
+- C-023        # every ID here must exist in ../../CLAIMS.md
+figures: []                # every name here must have a file in figures/ and vice versa
+supersedes: null           # set in BOTH manifests or in neither; the validator checks symmetry
+superseded_by: null
+related:
+- EXP-2026-09-017
+- EXP-2026-09-016
+- EXP-2026-09-005
+- EXP-2026-09-010

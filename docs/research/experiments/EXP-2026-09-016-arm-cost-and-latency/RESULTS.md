@@ -160,3 +160,55 @@ this judge's hallucination count. Filed as `Q48`.
 Regimes reported apart, as pre-registered. No dollar figure: the models are
 served on hardware this project does not pay for per token, so seconds and
 tokens are the honest units and a dollar amount would be invented.
+
+## A-8 — The `I-4` fallback audit divided by the wrong denominator (2026-09-11)
+
+**Correction. The audit filed on 2026-09-10 against `Q47` is arithmetically
+wrong, and its conclusion points the wrong way.**
+
+The audit counted answers carrying a `fallback_reason` in each committed
+`generic` run and divided by the number of **files** in the answer directory.
+Those directories hold two or more judgment sidecars per answer — the two
+counterbalanced qwen passes, and later the gemma re-grades — so the denominators
+were three to five times too large and every rate came out three to five times
+too small.
+
+The plan for the repair programme predicted this correction would be filed as
+`A-7`; that identifier was already taken by this experiment's reporting-
+discipline note, so it is `A-8`.
+
+| run | answers | carrying a fallback reason | rate (answers) | rate as published (files) |
+|---|---:|---:|---:|---:|
+| `EXP-2026-09-005` post-repair dev | 284 | 122 | **0.43** | 0.04 (÷ 3,407) |
+| `EXP-2026-09-007` holdout | 288 | 86 | **0.30** | 0.06 (÷ 1,440) |
+| `EXP-2026-09-002` expansion | 284 | 19 | **0.07** | 0.02 (÷ 852) |
+
+The two references in the same file were always computed over answers and are
+unchanged: degraded 198/284 = **0.70**, healthy 39/284 = **0.14**. So two of the
+three runs behind `C-023` sit *above* the healthy reference, and the dev run —
+the one the 0.6569 comes from — sits nearer the degraded end than the healthy
+one. The sentence "no published figure is affected" was reached by arithmetic
+that does not hold and is withdrawn.
+
+**What this does not say.** It is not a second instance of `I-4`. Every one of
+the 227 fallbacks across the three runs is the same reason: *LLM narrator
+unavailable*, a read time-out at the 120 s `SYNTHESIS_LLM_TIMEOUT_S` default
+(121 of the dev run's 122; the remaining one is a context-length rejection).
+None is a planner or specialist seam failure. The specialist seam that `I-4` is
+about was live in all three runs. What fell over is the narrator, which is the
+defect `EXP-2026-09-010` independently found and fixed by raising the budget to
+600 s with a `degraded()` health check.
+
+**What it does say.** On the dev run behind the headline, 43% of answers were
+composed without the narrator. `EXP-2026-09-017` `A-2` prices that: the 49
+questions where a narrator fallback is the *only* defect average 0.6964, and the
+fallback / no-fallback split across all 284 is 0.6268 against 0.6795. So the
+budget is worth fixing and it is not where most of the loss is — but any future
+`generic` figure must report its fallback rate over answers, and a run above
+0.14 should be re-run rather than published.
+
+**Re-issued:** `data/generic_fallback_audit.json` now carries answer
+denominators, the per-seam reason breakdown, the superseded file-denominator
+rate for traceability, and the corrected conclusion. Regenerate with
+`.venv/bin/python docs/research/experiments/EXP-2026-09-016-arm-cost-and-latency/data/fallback_audit.py`.
+`Q47` is re-stated as *partly answered, in the wrong direction*.

@@ -47,3 +47,25 @@ read on 2026-09-07.
 ## 2026-09-09 — the manifest was a scaffold until the record repair
 See RESULTS.md A-1 for every field filled on 2026-09-09 (old → new). The
 `llm:` block was deleted; two metric keys were added.
+
+## 2026-09-11 — Tree pointer re-hashed; this experiment's input is unchanged
+
+**Impact:** none. No cell, no figure, no metric moves.
+
+**Cause:** this experiment's pointer hashes `docs/evaluation/experiments` as a
+whole tree, so any run written anywhere under it changes the hash.
+`EXP-2026-09-018` Step 0 captured four pre-repair model-free reference runs
+(`repair-reference-2026-09-11-dev`, `-holdout`) under that tree, adding roughly
+62 MB and moving the hash from `sha256:c7b9993b1d90…` to
+`sha256:f7a37fa9a8e7…`.
+
+**Why the input is unchanged:** this experiment reads only
+`**/answers/*.judgment*.json`. The four new directories contain **zero**
+judgment sidecars — they are model-free answers that were never graded — and the
+tree's sidecar count is **25,318**, exactly the count recorded on 2026-09-09.
+The audited population is bit-for-bit what it was.
+
+**Resolution:** pointer re-hashed with the superseded hash kept inline. The
+underlying fragility — a whole-tree pointer that any unrelated run invalidates —
+is not fixed here; the row's own note already says a mismatch means passes were
+added or removed, and that reading now needs this entry to stay true.

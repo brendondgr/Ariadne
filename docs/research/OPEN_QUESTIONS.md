@@ -42,8 +42,13 @@ below.)
 | Q44 | The understanding-gold names edges the graph does not have | EXP-2026-09-015 | `EXP-2026-09-014`'s reading of the relation slot; any future slot-accuracy figure *(open)* |
 | Q45 | Five CAPEC relationships are declared but not allowlisted; the generic arm scores 0.0000 on the 34 dev questions that need them | diagnostic 2026-09-09 | `C-023`'s margin; any generic-arm figure on CAPEC *(open)* |
 | Q46 | A metric moved 0.0503 between sessions while both sessions reported near-zero internal spread | EXP-2026-09-015 A-7 | every cross-session comparison; the error bars used throughout *(open)* |
-| Q47 | The `generic` arm silently runs model-free at the default timeout | EXP-2026-09-016 I-4 | audited: no published figure affected; the fragility is *(partly)* open |
+| Q47 | The `generic` arm silently runs model-free at the default timeout | EXP-2026-09-016 I-4, A-8 | the 2026-09-10 audit was wrong by its denominator: dev fallback is 0.43, not 0.04 *(partly)* |
 | Q48 | The judge counts the abstention template's example ids as fabricated claims, hardest on the arm that abstains most | EXP-2026-09-016 A-6 | any judge-derived hallucination figure *(open)* |
+| Q49 | Which intervention converts development-score headroom into better answers? | EXP-2026-09-017 | the repair programme's ordering; `EXP-2026-09-018` *(open)* |
+| Q50 | Category and View seeds are rewritten into the attack-pattern namespace by the generic walk | EXP-2026-09-017 A-2 | 12.6% of the dev loss; every CAPEC hierarchy question *(open)* |
+| Q51 | Two-hop requests collapse to the shortest schema path from the anchor | EXP-2026-09-017 A-2 | 30.9% of the dev loss; every D4 and D6 figure *(open)* |
+| Q52 | A declared property filter reaches neither the query nor the composer | EXP-2026-09-017 A-2 | 13.2% of the dev loss; every D5 figure *(open)* |
+| Q53 | The composer drops list-valued requested properties and never states an empty set | EXP-2026-09-017 A-2 | 5.9% of the dev loss; `C-017`'s construction claim *(open)* |
 
 ---
 
@@ -760,23 +765,45 @@ no timeout at all.
 that this arm's narrator does call a model, so at least that run was configured.
 It says the arm's identity turns on a variable nothing in the call path sets.
 
-**ANSWERED, 2026-09-10, in the good direction.** The audit was run against the
-committed answers of every `generic` run behind `C-023`:
+**PARTLY ANSWERED — and the 2026-09-10 answer was arithmetically wrong.**
+Corrected 2026-09-11 as `EXP-2026-09-016` `A-8`.
 
-| run | answers | carrying a fallback reason | rate |
-|---|---|---|---|
-| `EXP-2026-09-005` post-repair dev | 3,407 | 122 | 0.04 |
-| `EXP-2026-09-007` holdout | 1,440 | 86 | 0.06 |
-| `EXP-2026-09-002` expansion | 852 | 19 | 0.02 |
+The audit divided each run's fallback count by the number of **files** in its
+answer directory. Those directories also hold two or more judgment sidecars per
+answer, so the denominators were three to five times too large. Against answer
+denominators:
 
-Against a degraded reference of 0.70 and a healthy one of 0.14, all three sit at
-or below 0.06. **Their model seams were live and no published figure is
-affected.** Data in `EXP-2026-09-016/data/generic_fallback_audit.json`.
+| run | answers | carrying a fallback reason | rate | as published |
+|---|---|---|---|---|
+| `EXP-2026-09-005` post-repair dev | 284 | 122 | **0.43** | 0.04 |
+| `EXP-2026-09-007` holdout | 288 | 86 | **0.30** | 0.06 |
+| `EXP-2026-09-002` expansion | 284 | 19 | **0.07** | 0.02 |
 
-What remains open is the fragility, not a figure: nothing in the CLI, the arm
-definition or the shared runner sets the timeout that decides which arm runs,
-and getting it wrong is silent. The cheap guard is to assert a fallback-rate
-ceiling in the runner, which is a behaviour change and is not made tonight.
+The two references were always over answers and are unchanged: degraded 0.70,
+healthy 0.14. Two of the three runs behind `C-023` are therefore *above* the
+healthy reference, and the dev run the 0.6569 comes from is nearer the degraded
+end. **"No published figure is affected" is withdrawn.**
+
+**The seam that failed is not the one this question is about.** All 227
+fallbacks across the three runs read *LLM narrator unavailable* — a read
+time-out at the 120 s `SYNTHESIS_LLM_TIMEOUT_S` default. None is a planner or
+specialist failure, so the arm-identity fragility of `I-4` is untouched by these
+rates: the specialist seam was live. What fell over is the narrator, which
+`EXP-2026-09-010` fixed independently by raising the budget to 600 s with a
+`degraded()` health check.
+
+**What it costs.** `EXP-2026-09-017` `A-2` prices it on the dev half: the 49
+questions where a narrator fallback is the only defect average 0.6964, and the
+fallback / no-fallback split across all 284 is 0.6268 against 0.6795 — real, and
+about a fifth of the largest defect. See `Q51`.
+
+**Still open:** the fragility, not a figure. Nothing in the CLI, the arm
+definition or the shared runner sets the timeouts that decide which arm runs,
+and getting either wrong is silent. The guard is to assert a fallback-rate
+ceiling over *answers* in the runner and re-run any arm above 0.14 rather than
+publish it; `EXP-2026-09-018` pre-registers exactly that and is where it lands.
+Data in `EXP-2026-09-016/data/generic_fallback_audit.json`, regenerated by
+`data/fallback_audit.py`.
 
 ### Q48 — The judge counts the abstention template's example ids as fabricated claims
 
@@ -816,3 +843,93 @@ every judge-derived hallucination figure in the record. **From:**
 EXP-2026-09-017 re-aggregates the original paired judgments by question type and supplies a reproducible figure and scenario explorer. Two-hop questions offer the largest category contribution to the score deficit; selected property questions also show evidence present but omitted from the answer. The D6 template advantage in earlier prose describes retrieval, not judged correctness.
 
 Next candidates: Q45's CAPEC card repair, a frozen-evidence requested-field rendering comparison, typed multi-hop intent with execution feedback, and joint entity/label selection (Q35–Q36). Test each against a concurrent control before combining them; use unchanged answers to measure grader drift. Any scoring repair (Q44/Q48) must be reported separately from capability gains. The existing holdout has been spent, so confirm the selected configuration on a newly sealed set. See the experiment's RESULTS for provenance and threats to validity.
+
+### Q50 — Category and View seeds are rewritten into the attack-pattern namespace
+
+**Why it matters:** the generic Gremlin walk builds its seed vertex ids through
+`_gremlin_vertex_id`, which maps every CAPEC identifier into
+`capec:attack-pattern:<n>`. A CAPEC **Category** or **View** vertex does not
+carry that id, so the anchor binds to nothing and the walk returns zero records
+before any traversal runs. The template path was given
+`_capec_candidate_ids` — which tries all three CAPEC namespaces — in July
+(`EXP-2026-09-003`); the walk never adopted it, and the docstring on
+`_capec_candidate_ids` already describes this exact failure.
+
+On the dev half this costs **12.6% of the 97.45 judged points lost**: all 21
+Category-anchored questions and 18 of the 20 View-anchored ones returned zero
+records, and the 23 non-D0 cases the mechanism owns average **0.4674** against
+0.9675 for cases with no known defect. The holdout carries 30 such anchors.
+
+**What resolves it:** switch the two walk call sites that build `ids` to
+`_capec_candidate_ids`, keeping the anchor identifier-only (no `hasLabel` on the
+seed), with a Category-seeded and a View-seeded walk test. **From:**
+`EXP-2026-09-017` `A-2`. **Cost:** an hour, plus the model-free regression.
+**Where it lands:** `EXP-2026-09-018` Step 1.
+
+### Q51 — Two-hop requests collapse to the shortest schema path from the anchor
+
+**Why it matters:** both generic builders resolve the plan's ordered `entities`
+to a set of wanted labels, compute the shortest declared path from the **anchor**
+to each label independently, and union the results around the seed. A request
+shaped `Campaign → Software → Technique` is therefore answered with the
+campaign's own techniques over the direct `Campaign –USES→ Technique` edge, not
+with the techniques used by the campaign's tools. The intermediate is never
+bound, so the answer is well-formed, cited, and about a different question.
+
+This is the largest single mechanism on the dev half: **30.9% of the points
+lost**, 56 questions at a mean of **0.4625**. The holdout carries 95 two-hop
+questions. The plan's `entities` list is already in path order, so the input
+needed to fix it is present and unused.
+
+**What resolves it:** a `chain_paths()` that resolves the shortest hop sequence
+between each *consecutive* label pair, and builders that emit one leg per pair
+from the previous leg's variable while keeping the existing per-label star as
+the fallback when a chain returns nothing. This is the minimum form of the typed
+multi-hop chain of Guo et al. (EMNLP 2023); the execution-feedback replanning
+they describe is not attempted. **From:** `EXP-2026-09-017` `A-2`. **Cost:** a
+day, plus judged confirmation. **Where it lands:** `EXP-2026-09-018` Step 3.
+
+### Q52 — A declared property filter reaches neither the query nor the composer
+
+**Why it matters:** 47 dev questions and 105 bank questions carry a `filters`
+entry in their spec ("…with high typical severity", "…rated Medium
+likelihood"). The gold plan does not carry it, no builder emits a `WHERE` or a
+`has()` for it, and the composer enumerates every record it was handed. The
+answer lists the unfiltered set and the judge marks it incomplete or wrong.
+
+**39 questions, 13.2% of the points lost, mean 0.6699.** The mechanism is
+cheaper than the chain and is the same defect as `Q53` viewed from the query
+side: nothing downstream of the planner knows what was asked.
+
+**What resolves it:** bind the filter from the sub-question text against the
+card's declared property names and the registry's observed values — nothing
+guessed, an unbound slot stays unbound — then push a bound `eq` filter into the
+query *and* apply it in the composer's enumeration, so retrieval and composition
+agree. The alternative is to extend the bank task and plan schema with a
+`filters` slot, which is more general and is a protocol change affecting every
+arm. **From:** `EXP-2026-09-017` `A-2`. **Cost:** a day. **Where it lands:**
+`EXP-2026-09-018` Step 4.
+
+### Q53 — The composer drops list-valued requested properties and never states an empty set
+
+**Why it matters:** `C-017` rests on the deterministic composer being able to
+answer without a model. It cannot currently say two things. First, a requested
+property whose value is a **list** — `x_mitre_platforms`, `x_mitre_contributors`
+— is skipped by `_attribute_pairs`, so the value sits in the evidence and never
+reaches a claim; the narrator usually says it anyway, which is why this looked
+fine until 43% of the dev run's narrators timed out (`Q47`). Second, when the
+anchor resolves and the requested relation returns nothing, the composer lists
+whatever else came back and never states that the requested set is **empty** —
+16 dev questions, mean 0.6406, 5.9% of the points lost.
+
+**Why it is a construction question, not a bug report:** "the narrator usually
+says it" is not a property `C-017` can rest on. Projecting the requested value
+and asserting the empty set as a *verified claim*, with the executed query as
+its proof exactly as an abstention carries one, is what turns a habit into a
+construction guarantee.
+
+**What resolves it:** project the requested property even when its value is a
+list (joined, capped) while the generic attribute listing keeps skipping lists;
+add an `absence` claim kind that the verifier admits only when its query ran
+clean and returned no rows for that relation. **From:** `EXP-2026-09-017` `A-2`.
+**Cost:** a day. **Where it lands:** `EXP-2026-09-018` Steps 4 and 5.
