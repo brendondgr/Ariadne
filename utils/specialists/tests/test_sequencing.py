@@ -192,3 +192,109 @@ def test_gremlin_maps_to_scoped_by_concept() -> None:
     )
     draft2 = GremlinQueryBuilder().build(resolve(broad, card))
     assert "TextP" not in draft2.query
+
+
+# -- routing by what each store can express (EXP-2026-09-018, I-11) ----------
+
+
+def _bridge_sub(qid: str, source: str, text: str, entities: list[str]) -> SubQuestion:
+    return SubQuestion(
+        id=qid, source=source, text=text, entities=entities,
+        limits=Limits(3, 1000, 5000), join_key="attack-technique-id",
+    )
+
+
+def _reversed_plan() -> Plan:
+    """"Which CAPEC patterns correspond to T1555, and which CWE do those exploit"."""
+    return Plan(
+        request=(
+            "Which CAPEC attack patterns correspond to Credentials from Password "
+            "Stores (T1555), and which CWE weaknesses do those exploit?"
+        ),
+        sub_questions=[
+            _bridge_sub("q1", "attack",
+                        "For T1555: the CAPEC attack patterns that correspond to it.",
+                        ["Technique", "MAPS_TO", "AttackPattern"]),
+            _bridge_sub("q2", "capec",
+                        "For each of those: the CWE weaknesses each of those exploits.",
+                        ["AttackPattern", "EXPLOITS_WEAKNESS", "Weakness"]),
+        ],
+        joins=[JoinDeclaration("attack-technique-id", ["capec", "attack"])],
+    )
+
+
+def test_a_hop_goes_to_the_store_that_models_most_of_what_it_names() -> None:
+    from utils.specialists.federation import reroute_source, rerouted
+
+    cards = {"attack": fixture_card("attack"), "capec": fixture_card("capec")}
+    first, second = _reversed_plan().sub_questions
+    # NO card models all three entities — the hop spans both catalogues — so the
+    # test has to be comparative rather than all-or-nothing.
+    assert cards["capec"].unknown_entities(list(first.entities)) == ["Technique"]
+    assert reroute_source(first, cards) == "capec"
+    moved = rerouted(first, cards)
+    assert moved is not None and moved.source == "capec"
+    # `Technique` is the far end of the declared join, not a boundary: carrying
+    # it would trip the specialist's schema refusal on the way to a question
+    # CAPEC can answer.
+    assert "Technique" not in moved.entities
+    # A hop its own store fully models is never moved.
+    assert reroute_source(second, cards) is None
+
+
+def test_the_declared_join_direction_flips_for_a_self_anchored_hop() -> None:
+    plan = _reversed_plan()
+    # The key says CAPEC produces and ATT&CK consumes. Here the ATT&CK-side hop
+    # names the only identifier in the question and the CAPEC-side hop says
+    # "each of those", so the declared direction is backwards.
+    assert dependency_map(plan) == {"q2": ("q1",)}
+    assert [sq.id for sq in execution_order(plan)] == ["q1", "q2"]
+
+
+def test_two_hops_in_one_store_still_chain() -> None:
+    """`dependency_map` is keyed by source, so a same-store join declared nothing."""
+    plan = Plan(
+        request="Which patterns sit inside CAPEC-513, and what do those map to?",
+        sub_questions=[
+            _bridge_sub("q1", "capec", "For CAPEC-513: the patterns it contains.",
+                        ["Category", "MEMBER_OF", "AttackPattern"]),
+            _bridge_sub("q2", "capec", "For each of those: the techniques each corresponds to.",
+                        ["AttackPattern", "MAPS_TO", "Technique"]),
+        ],
+        joins=[JoinDeclaration("attack-technique-id", ["capec", "attack"])],
+    )
+    assert dependency_map(plan) == {"q2": ("q1",)}
+
+
+def test_a_same_store_consumer_takes_the_ids_of_the_label_it_anchors_on() -> None:
+    """The category's 52 members, not the category the walk anchored on."""
+    anchor = EvidenceRecord(
+        primary_id="CAPEC-513", id_scheme="capec-id", label="Category", name="Software",
+        related=[
+            {"id": "CAPEC-272", "name": "Protocol Manipulation", "label": "AttackPattern"},
+            {"id": "CAPEC-100", "name": "Overflow Buffers", "label": "AttackPattern"},
+        ],
+        provenance=_prov("capec", "gremlin"),
+    )
+    producer = SpecialistResult(
+        task=SpecialistTask(sub_question_id="q1", source="capec", text=""),
+        query="q", records=[anchor], summary="s", ok=True,
+    )
+    seeds, _ = harvest_seed_ids(
+        producer, cap=100, prefer_primary_ids=True, wanted_labels=["AttackPattern"]
+    )
+    assert seeds == ("CAPEC-100", "CAPEC-272")
+    # With no label to steer by it falls back to the anchors themselves.
+    plain, _ = harvest_seed_ids(producer, cap=100, prefer_primary_ids=True)
+    assert plain == ("CAPEC-513",)
+
+
+def test_two_independent_asks_are_not_chained_by_adjacency() -> None:
+    from utils.specialists.federation import refers_back
+
+    plan = Plan(
+        request="two independent asks",
+        sub_questions=[_sub("q1", "attack", None), _sub("q2", "capec", None)],
+    )
+    assert dependency_map(plan) == {}
+    assert refers_back(plan.sub_questions[1]) is False

@@ -1,0 +1,112 @@
+{
+  "experiment": "EXP-2026-09-018-correctness-repair",
+  "measure": "gold_text_recall",
+  "measure_definition": "The fraction of a question's gold assertions (must_include_ids plus must_include_related) whose text appears in the composed answer. deterministic_scores.coverage matches by identifier only and is therefore blind to every gold item the catalogue publishes as text \u2014 prerequisites, consequences, execution steps, examples, indicators, mitigations.",
+  "arm": "generic_composed (model-free; the same primitives the LLM arm uses)",
+  "dev_before": {
+    "n": 284,
+    "mean": 0.7108,
+    "by_tier": {
+      "D0": {
+        "n": 36,
+        "mean": 0.5556
+      },
+      "D1": {
+        "n": 35,
+        "mean": 0.9129
+      },
+      "D2": {
+        "n": 40,
+        "mean": 0.8018
+      },
+      "D3": {
+        "n": 44,
+        "mean": 0.9205
+      },
+      "D4": {
+        "n": 55,
+        "mean": 0.5381
+      },
+      "D5": {
+        "n": 47,
+        "mean": 0.9674
+      },
+      "D6": {
+        "n": 27,
+        "mean": 0.0849
+      }
+    }
+  },
+  "dev_after": {
+    "n": 284,
+    "mean": 0.8994,
+    "by_tier": {
+      "D0": {
+        "n": 36,
+        "mean": 0.75
+      },
+      "D1": {
+        "n": 35,
+        "mean": 0.9414
+      },
+      "D2": {
+        "n": 40,
+        "mean": 0.9062
+      },
+      "D3": {
+        "n": 44,
+        "mean": 1.0
+      },
+      "D4": {
+        "n": 55,
+        "mean": 0.8293
+      },
+      "D5": {
+        "n": 47,
+        "mean": 1.0
+      },
+      "D6": {
+        "n": 27,
+        "mean": 0.8377
+      }
+    }
+  },
+  "dev_regressions": 0,
+  "dev_improvements": 84,
+  "holdout_after": {
+    "n": 288,
+    "mean": 0.9253,
+    "by_tier": {
+      "D0": {
+        "n": 25,
+        "mean": 0.8
+      },
+      "D1": {
+        "n": 28,
+        "mean": 0.9464
+      },
+      "D2": {
+        "n": 37,
+        "mean": 0.9392
+      },
+      "D3": {
+        "n": 45,
+        "mean": 1.0
+      },
+      "D4": {
+        "n": 62,
+        "mean": 0.8501
+      },
+      "D5": {
+        "n": 58,
+        "mean": 1.0
+      },
+      "D6": {
+        "n": 33,
+        "mean": 0.895
+      }
+    }
+  },
+  "holdout_note": "Run ONCE, after the fixes, as a generalisation check. Nothing was tuned against it. It is not a judged number and must not be quoted as one.",
+  "commit_before": "46652efc"
+}

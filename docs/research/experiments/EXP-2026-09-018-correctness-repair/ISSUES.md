@@ -243,3 +243,77 @@ walk and is the highest-value item remaining.
 been load-bearing without being stated. Any claim about federated retrieval
 should say that a declared join is directional and that the system answers along
 it one way.
+
+**Resolved, and the diagnosis above was incomplete.** The third part was never
+reached, because two larger faults sat in front of it and the second one also
+explains the two-step tier.
+
+1. **Routing ignored what each store can express.** A sub-question's source came
+   from the plan; nothing checked it against the card. The first hop named
+   `MAPS_TO` and `AttackPattern` and went to ATT&CK, which models neither.
+   `reroute_source` now sends a sub-question to the card that models the most of
+   its entities, and `rerouted` drops the entities that card does not model when
+   a declared join reaches them — `Technique` on a CAPEC hop is the other end of
+   `attack-technique-id`, not a boundary. The test is comparative because a
+   cross-catalogue hop names entities from both sides and **no** card models all
+   of them.
+
+2. **`dependency_map` is keyed by SOURCE, so two hops in one store could never
+   chain.** `by_source` maps source name to sub-question, so the second CAPEC
+   hop overwrote the first and the join's endpoints collapsed onto a single
+   sub-question. **Every** federated question's second hop returned zero records
+   for this reason, including the three that scored well — they scored on their
+   first hop alone. Plan order now supplies the edge for a sub-question that says
+   in its own words that it depends on the one before it (`refers_back`),
+   guarded against closing a cycle with a key-declared edge.
+
+3. **The declared direction is flipped when one side is self-anchored and the
+   other is not.** A hop with nothing to start from cannot feed a hop that is
+   already anchored.
+
+4. **A same-store consumer takes the producer's own ids, not its join values** —
+   and takes the ids whose LABEL it anchors on. A category hop leaves one record
+   whose primary id is the category and whose 52 related entries are the
+   patterns; seeding the next hop with the category sends it back where it
+   started.
+
+5. **The bridge ran whenever a join key was declared.** A plan puts its join key
+   on every sub-question, so "and which CWE weaknesses do those exploit" was
+   answered with the patterns' ATT&CK mappings — a different question, answered
+   confidently. It is now gated on `_has_mapping_intent`, the test the CAPEC
+   ladder already used.
+
+The third part is moot: once the first hop is routed to CAPEC it enters through
+`_generic_bridge`'s existing reverse branch, which was already correct.
+
+## I-12 — The answer named identifiers the catalogue does not publish, and dropped the content that was the answer
+
+**Impact:** the two-step tier retrieved everything it needed and still lost half
+its marks; the adversarial tier's abstentions named the wrong entity.
+
+**Cause, three parts.**
+
+1. A CAPEC prerequisite, consequence, execution step, example, indicator or
+   mitigation has no name. The normalizer fills `name` from the node's id, so a
+   prerequisite arrived named `capec:attack-pattern:94:prerequisite:1` and the
+   composer listed that. The answer to "what prerequisites does each of those
+   require" was six opaque strings and not one prerequisite. `_related_display`
+   now renders the text for a neighbour whose identifier is a synthetic path,
+   and keeps the identifier for a published one (`CAPEC-94`, `T1555`, `CWE-89`).
+
+2. Categories and views share CAPEC's published numbering — `CAPEC-513` is a
+   category and `CAPEC-1000` a view — but only `capec:attack-pattern:N` was
+   canonicalised. A category surfaced as `capec:category:172`, which no gold
+   assertion and no analyst can match. Both id rules now cover categories and
+   views; composite children are deliberately excluded, since collapsing them to
+   their parent's number would make each one claim to be the pattern.
+
+3. The taxonomy neighbour on the mapping templates carried no edge type, so the
+   composer read the relation off the related entries, found none, and wrote
+   "CAPEC-150 has no MAPS_TO relationships in this catalogue" one sentence before
+   listing its ATT&CK mapping. 26 answers carried that contradiction.
+
+**Paper implication:** an identifier scheme is part of the interface. A record
+that is correct and cites an identifier the catalogue does not publish is not
+auditable, and a node whose content is its text cannot be cited by identifier at
+all.

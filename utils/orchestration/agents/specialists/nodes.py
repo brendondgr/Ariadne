@@ -19,6 +19,7 @@ graph is invoked without custom streaming the writes are simply dropped.
 
 from __future__ import annotations
 
+import dataclasses
 import time
 from typing import Any, Callable
 
@@ -34,6 +35,9 @@ from utils.specialists.federation import (
     dependency_skip_result,
     execution_order,
     harvest_seed_ids,
+    request_seeds,
+    reroute_source,
+    rerouted,
 )
 
 NodeFn = Callable[[PipelineState], dict[str, Any]]
@@ -70,9 +74,28 @@ def build_nodes(
         deps = dependency_map(plan)
         index = int(state.get("cursor") or 0)
         total = len(plan.sub_questions)
-        sq = order[index]
+        planned = order[index]
         writer = get_stream_writer()
         delta: dict[str, Any] = {"cursor": index + 1}
+
+        # Route by what each store can actually express. `reroute_source` is a
+        # pure function of the sub-question and the cards, so the producers'
+        # stores are re-derived rather than carried in state — the loop runs one
+        # sub-question per cycle and must not depend on a mutable side channel.
+        moved = rerouted(planned, cards)
+        sq = moved or planned
+        ran_in = {
+            other.id: (reroute_source(other, cards) or other.source) for other in order
+        }
+        if moved is not None:
+            delta["rerouted"] = [{
+                "sub_question": sq.id,
+                "from": planned.source,
+                "to": sq.source,
+                "reason": f"{planned.source} does not model "
+                          + ", ".join(cards[planned.source].unknown_entities(
+                              list(planned.entities))),
+            }]
 
         specialist = specialist_for(sq.source, cards, specialist_config, injected)
         if specialist is None:
@@ -113,7 +136,22 @@ def build_nodes(
                 else:
                     reason = "it was not run"
             else:
-                seed_ids, truncated = harvest_seed_ids(usable, cap=sq.limits.max_result_rows)
+                # Producer and consumer in the SAME store are not linked by
+                # the cross-source key: the consumer anchors on the producer's
+                # own records. See `harvest_seed_ids`.
+                same_store = all(ran_in.get(pid) == sq.source for pid in producer_ids)
+                seed_ids, truncated = harvest_seed_ids(
+                    usable, cap=sq.limits.max_result_rows,
+                    prefer_primary_ids=same_store,
+                    wanted_labels=list(sq.entities),
+                )
+                if not seed_ids:
+                    # Before abstaining, take identifiers the REQUEST literally
+                    # names — the analyst's own words, never an invention, and
+                    # empty for a request that names none.
+                    seed_ids = request_seeds(
+                        getattr(plan, "request", "") or "", sq.source
+                    )
                 if not seed_ids:
                     reason = "it returned no join values"
             # A sub-question that names its own identifiers is not a consumer.

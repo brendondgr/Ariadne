@@ -38,6 +38,9 @@ from .contracts import Abstention, Citation, Claim, SynthesizedAnswer
 # stop a pathological set, not to decide which sets are worth stating.
 _MAX_ENUMERATION_IDS = 200
 _MAX_ENUMERATION_CLAIMS_PER_RESULT = 25
+#: A nameless neighbour is rendered by its text; bound it so one
+#: enumeration stays a list rather than becoming the catalogue.
+_MAX_RELATED_TEXT_CHARS = 240
 
 
 def _enum_bound(name: str, default: int) -> int:
@@ -930,6 +933,44 @@ def _query_carries(result: SpecialistResult, prop: str) -> bool:
     return prop in (result.query or "")
 
 
+def _related_display(rel: dict) -> str:
+    """What to call a related entry in prose: its name, its text, or its id.
+
+    Several CAPEC node kinds have no name at all. A prerequisite, consequence,
+    execution step, example, indicator, skill or mitigation IS its text, and its
+    identifier is a synthetic path the catalogue never publishes —
+    ``capec:attack-pattern:94:prerequisite:1``. Listing those identifiers
+    answered "what prerequisites does each of those require" with six opaque
+    strings and not one prerequisite, which is why two-step questions retrieved
+    everything they needed and still lost half their marks
+    (`EXP-2026-09-018`). The id stays the citation; the prose carries the
+    content.
+
+    A named neighbour is unchanged: a CAPEC or ATT&CK identifier is what an
+    analyst looks up, and its name is already carried beside it elsewhere.
+    """
+    rid = str(rel.get("id") or rel.get("entry_id") or "").strip()
+    name = str(rel.get("name") or "").strip()
+    # A "name" equal to the identifier is not a name. The normalizer fills the
+    # field from the node's id when the node has none, so a prerequisite arrives
+    # named ``capec:attack-pattern:94:prerequisite:1`` and a naive name check
+    # reads as though it were titled.
+    # A synthetic path identifier names a node the catalogue does not publish:
+    # an execution step is titled "Step 1", which is its position, not its
+    # content. Its text is the answer. A published identifier (CAPEC-94, T1555,
+    # CWE-89 — no colon) is what an analyst looks up, so it stays.
+    synthetic = ":" in rid
+    text = " ".join(str(rel.get("description") or "").split())
+    if name and name != rid and not (synthetic and text):
+        return rid or name
+    if not text:
+        return rid
+    bound = _enum_bound("MAX_RELATED_TEXT_CHARS", _MAX_RELATED_TEXT_CHARS)
+    if len(text) > bound:
+        text = text[: bound - 1].rstrip() + "\u2026"
+    return text
+
+
 def _enumeration_claim(
     result: SpecialistResult,
     record: EvidenceRecord,
@@ -965,12 +1006,13 @@ def _enumeration_claim(
         # other for a reader — or a narrator — to pair up.
         role = rel.get("role")
         via = rel.get("via")
+        shown = _related_display(rel)
         if via and via != rid:
-            parts.append(f"{rid} (via {via})")
+            parts.append(f"{shown} (via {via})")
         elif role:
-            parts.append(f"{rid} ({role})")
+            parts.append(f"{shown} ({role})")
         else:
-            parts.append(rid)
+            parts.append(shown)
         if len(ids) >= _enum_bound("MAX_ENUMERATION_IDS", _MAX_ENUMERATION_IDS):
             break
     noun = _related_noun(record, len(ids))

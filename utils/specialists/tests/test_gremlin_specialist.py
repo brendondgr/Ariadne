@@ -1239,3 +1239,31 @@ class TestContainmentRouting:
         # facet, so this must keep routing there rather than being swallowed.
         d = self._draft(("AttackPattern", "MEMBER_OF", "Weakness"), ("CAPEC-66",))
         assert (d.meta["rel"], d.meta["direction"]) == ("EXPLOITS_WEAKNESS", "out")
+
+
+def test_categories_and_views_use_capecs_published_numbering() -> None:
+    """`capec:category:172` is an identifier the catalogue never publishes.
+
+    Patterns, categories and views share one CAPEC numbering space — CAPEC-513
+    is a category and CAPEC-1000 a view — but only patterns were canonicalised,
+    so a category answered as `capec:category:172` and no gold assertion, and no
+    analyst, could match it. The adversarial abstentions were the worst case:
+    naming the entity found nothing for IS the claim.
+    """
+    from utils.specialists.gremlin.normalizer import (
+        _expand_member_id,
+        _primary_id_from_gremlin_id,
+    )
+
+    assert _expand_member_id("capec:category:172") == "CAPEC-172"
+    assert _expand_member_id("capec:view:1000") == "CAPEC-1000"
+    assert _primary_id_from_gremlin_id("capec:category:223") == "CAPEC-223"
+    assert _primary_id_from_gremlin_id("capec:view:703") == "CAPEC-703"
+    # Unchanged: patterns and weaknesses.
+    assert _expand_member_id("capec:attack-pattern:66") == "CAPEC-66"
+    assert _expand_member_id("cwe:89") == "CWE-89"
+    # A composite child keeps its own identity. Collapsing it to the parent's
+    # number would make each step claim to be the pattern.
+    assert _expand_member_id("capec:attack-pattern:66:mitigation:0") == (
+        "capec:attack-pattern:66:mitigation:0"
+    )

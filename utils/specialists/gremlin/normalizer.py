@@ -23,7 +23,13 @@ from utils.specialists.primitives.expand import ExpandRequest, ExpandResult, pag
 from utils.specialists.resolve import ResolvedTask
 from utils.specialists.schema.registry import PlausibleFacet
 
-_CAPEC_ID_FROM_STR_RE = re.compile(r"capec:attack-pattern:(\d+)")
+#: Prefix match, so a composite child (``capec:attack-pattern:66:mitigation:0``)
+#: collapses to the pattern that owns it. Categories and views are included for
+#: the same reason they are in `_CAPEC_AP_FULL_RE`: they share the published
+#: CAPEC numbering, and an anchor that answers as ``capec:category:223`` names
+#: an identifier the catalogue does not publish — which an abstention cannot
+#: afford, since naming the entity it found nothing for is the whole claim.
+_CAPEC_ID_FROM_STR_RE = re.compile(r"capec:(?:attack-pattern|category|view):(\d+)")
 _CWE_GREMLIN_RE = re.compile(r"^cwe:(\d+)$")
 
 try:
@@ -115,7 +121,14 @@ def _traversal_edge(query: str) -> str:
     return unique[0] if len(unique) == 1 else ""
 
 
-_CAPEC_AP_FULL_RE = re.compile(r"^capec:attack-pattern:(\d+)$")
+#: A CAPEC vertex whose number IS its published identifier. Patterns, categories
+#: and views share one numbering space — CAPEC-513 is a category and CAPEC-1000
+#: a view — so a category surfaced as ``capec:category:172`` is an identifier the
+#: catalogue never publishes and no gold assertion can match. Composite children
+#: (``…:mitigation:0``, ``…:step:1``) are deliberately excluded: they have no
+#: published number of their own and collapsing them to their parent's would
+#: make each one claim to be the pattern.
+_CAPEC_AP_FULL_RE = re.compile(r"^capec:(?:attack-pattern|category|view):(\d+)$")
 
 
 def _expand_member_id(gremlin_id: str) -> str:
@@ -456,6 +469,14 @@ class GremlinNormalizer:
                 "id": _safe_str(tax_m.get("id", "")),
                 "name": _safe_str(tax_m.get("name", "")),
                 "label": _get_label(tax_m) or "TaxonomyEntry",
+                # The edge this neighbour was reached through. Without it the
+                # record shows a TaxonomyEntry beside the pattern but never says
+                # the pattern MAPS_TO it, and the composer — which reads the
+                # relation off the related entries — then wrote "CAPEC-150 has
+                # no MAPS_TO relationships in this catalogue" one sentence
+                # before listing its ATT&CK mapping. 26 answers carried that
+                # contradiction (`EXP-2026-09-018`).
+                "type": "MAPS_TO",
                 "entry_id": entry_id,
                 "taxonomy_name": taxonomy_name,
             }
@@ -530,6 +551,7 @@ class GremlinNormalizer:
                         "id": _safe_str(tax_m.get("id", "")),
                         "name": _safe_str(tax_m.get("name", "")),
                         "label": _get_label(tax_m) or "TaxonomyEntry",
+                        "type": "MAPS_TO",  # see `_normalize_maps_to`
                         "entry_id": entry_id,
                         "taxonomy_name": taxonomy_name,
                     }

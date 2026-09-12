@@ -15,6 +15,8 @@ synthesis agent's job, kept deliberately out of scope here.
 
 from __future__ import annotations
 
+import dataclasses
+
 from dataclasses import dataclass, field
 from typing import Any, Sequence
 
@@ -101,6 +103,26 @@ class FederatedEvidence:
 # construction. Independent sub-questions keep the existing order unchanged.
 
 
+#: Words with which a sub-question points back at the one before it. Deliberately
+#: narrow: "it"/"its" are excluded because a hop that names its own anchor uses
+#: them too ("the patterns that correspond to it"), and that hop is not a
+#: consumer.
+_ANAPHORA = ("those", "these", "them", "their", "each of", "the resulting")
+
+
+def refers_back(sq: SubQuestion) -> bool:
+    """Does this sub-question's text point at the previous hop's result?
+
+    "For each of THOSE: the CWE weaknesses each of those exploits" cannot be
+    executed on its own — it has no anchor until the hop before it supplies one.
+    That is what makes it a consumer, and it is stated in the plan's own words
+    rather than derived from a join key whose direction is declared once and
+    fixed.
+    """
+    text = (getattr(sq, "text", "") or "").lower()
+    return any(word in text for word in _ANAPHORA)
+
+
 def dependency_map(plan: Plan) -> dict[str, tuple[str, ...]]:
     """Map consumer sub-question id -> **every** producer it depends on.
 
@@ -137,9 +159,48 @@ def dependency_map(plan: Plan) -> dict[str, tuple[str, ...]]:
         producer = by_source.get(producer_ds or "")
         consumer = by_source.get(consumer_ds or "")
         if producer is not None and consumer is not None and producer.id != consumer.id:
+            # The key's direction is declared once; a question can run either
+            # way along it. `attack-technique-id` says CAPEC produces technique
+            # ids and ATT&CK consumes them — right for "which techniques does
+            # CAPEC-66 map to", backwards for "which CAPEC patterns correspond
+            # to T1555, and which CWE weaknesses do those exploit", where the
+            # ATT&CK hop holds the only identifier in the question and the CAPEC
+            # hop says "each of THOSE".
+            #
+            # One side naming its own anchors while the other names none settles
+            # it: a hop with nothing to start from cannot feed a hop that is
+            # already anchored. Both self-anchored or neither leaves the
+            # declared direction untouched, so the forward case is unchanged.
+            if carries_its_own_seeds(consumer) and not carries_its_own_seeds(producer):
+                producer, consumer = consumer, producer
             found = deps.setdefault(consumer.id, [])
             if producer.id not in found:
                 found.append(producer.id)
+    # A join between two hops that live in the SAME source declares nothing
+    # here: `by_source` is keyed by source name, so the second hop overwrites
+    # the first and the join's endpoints collapse onto one sub-question. Every
+    # D6 question's second hop returned zero records for this reason, and so
+    # does a two-step question inside one catalogue — the shape that holds the
+    # largest single block of remaining loss (`EXP-2026-09-018`).
+    #
+    # Plan order supplies what the key cannot, for a sub-question that says in
+    # its own words that it depends on the one before it — "the CWE weaknesses
+    # each of THOSE exploits" (`refers_back`). Without this it runs unanchored,
+    # which is a label scan: the catalogue-dump failure, not an answer. A
+    # sub-question that names its own anchor, or that points at nothing, is
+    # never given a producer here, so an independent pair is unaffected.
+    #
+    # A sub-question the key already made a PRODUCER is never given a producer
+    # of its own here: the declared join has already placed it, and adding the
+    # plan-order edge on top would close a two-question cycle and destroy the
+    # ordering the key established.
+    produces = {pid for pids in deps.values() for pid in pids}
+    for earlier, sq in zip(plan.sub_questions, plan.sub_questions[1:]):
+        if sq.id in deps or sq.id in produces or carries_its_own_seeds(sq):
+            continue
+        if not refers_back(sq):
+            continue  # two independent asks, not a chain
+        deps[sq.id] = [earlier.id]
     return {consumer: tuple(producers) for consumer, producers in deps.items()}
 
 
@@ -165,7 +226,11 @@ def execution_order(plan: Plan) -> list[SubQuestion]:
 
 
 def harvest_seed_ids(
-    producer: SpecialistResult | Sequence[SpecialistResult], *, cap: int
+    producer: SpecialistResult | Sequence[SpecialistResult],
+    *,
+    cap: int,
+    prefer_primary_ids: bool = False,
+    wanted_labels: Sequence[str] = (),
 ) -> tuple[tuple[str, ...], bool]:
     """The producers' join values as consumer seeds, deterministic and bounded.
 
@@ -178,10 +243,138 @@ def harvest_seed_ids(
     inside its own ``max_result_rows`` bound.
     """
     producers = [producer] if isinstance(producer, SpecialistResult) else list(producer)
-    values = sorted({v for p in producers for r in p.records for v in r.join_values})
+    if prefer_primary_ids:
+        # Which of the producer's ids the consumer anchors on is decided by the
+        # LABEL it names, not by where the id sits in the record. "Which attack
+        # patterns sit inside the Software category, and what techniques does
+        # each of those correspond to" leaves one record whose primary id is the
+        # CATEGORY and whose 52 related entries are the patterns; seeding the
+        # second hop with the category sends it back to where it started.
+        wanted = set(wanted_labels)
+        if wanted:
+            picked = {
+                rid
+                for p in producers
+                for r in p.records
+                for rid, label in (
+                    [(r.primary_id, r.label)]
+                    + [(x.get("id"), x.get("label")) for x in r.related]
+                )
+                if rid and label in wanted
+            }
+            if picked:
+                values = sorted(picked)
+                if cap and len(values) > cap:
+                    return tuple(values[:cap]), True
+                return tuple(values), False
+        # The producer and the consumer ended up in the SAME store, so the
+        # cross-source key is not what links them: the consumer anchors on the
+        # producer's own records. "Which CAPEC patterns correspond to T1555, and
+        # which CWE weaknesses do those exploit" resolves both hops inside CAPEC
+        # once the first is routed there, and the second hop needs the pattern
+        # ids the first returned — its join values are the ATT&CK ids it was
+        # seeded with, which would send it back where it started.
+        values = sorted({r.primary_id for p in producers for r in p.records if r.primary_id})
+    else:
+        values = sorted({v for p in producers for r in p.records for v in r.join_values})
     if cap and len(values) > cap:
         return tuple(values[:cap]), True
     return tuple(values), False
+
+
+def reroute_source(
+    sq: SubQuestion, cards: dict[str, Any]
+) -> str | None:
+    """The source that models this sub-question's entities, when its own does not.
+
+    Routing is a structural question and the source card answers it: a card
+    either declares a label or relationship type or it does not
+    (:meth:`SourceCardView.unknown_entities`). When the assigned card models
+    none of what the sub-question names, and exactly one other loaded card
+    models **all** of it, the sub-question belongs to that card.
+
+    This is the routing half of the reversed-join fault. "Which CAPEC attack
+    patterns correspond to T1555" names ``MAPS_TO`` and ``AttackPattern``;
+    ATT&CK models neither, so the specialist refuses at its schema boundary and
+    returns nothing, and the dependent second hop is then skipped for want of
+    seeds. Every one of the 27 federated development questions had its second
+    hop return zero records for this reason (`EXP-2026-09-018`, I-11).
+
+    The test is comparative, not all-or-nothing, because a cross-catalogue hop
+    names entities from both sides: "the CAPEC attack patterns that correspond
+    to T1555" names ``Technique`` (ATT&CK's) as well as ``MAPS_TO`` and
+    ``AttackPattern`` (CAPEC's), and NO single card models all three. The store
+    that models the most of them is the one that can execute the hop; CAPEC
+    holds the technique too, as a ``TaxonomyEntry``.
+
+    Deliberately narrow. It fires only when the assigned card cannot express the
+    whole sub-question, only when another card expresses strictly more of it,
+    and only when that destination is unique — so it can only convert a
+    boundary refusal into an attempt.
+
+    Returns ``None`` when the assignment stands.
+    """
+    entities = list(getattr(sq, "entities", ()) or ())
+    if not entities:
+        return None
+    # Structural routing is a property a card declares. A stand-in that does not
+    # (the injected doubles in the orchestration tests) opts out, and the
+    # sub-question stays exactly where the plan put it.
+    modelled = {
+        name: len(entities) - len(card.unknown_entities(entities))
+        for name, card in cards.items()
+        if callable(getattr(card, "unknown_entities", None))
+    }
+    if sq.source not in modelled:
+        return None
+    mine = modelled[sq.source]
+    if mine == len(entities):
+        return None  # its own store expresses the whole sub-question
+    best = max(modelled.values())
+    if best <= mine:
+        return None  # nowhere better to send it
+    winners = [name for name, n in modelled.items() if n == best]
+    return winners[0] if len(winners) == 1 else None
+
+
+def rerouted(sq: SubQuestion, cards: dict[str, Any]) -> SubQuestion | None:
+    """``sq`` moved to the store that can execute it, or ``None`` to leave it.
+
+    The moved sub-question carries only the entities its new card models. The
+    ones left behind are the *other* catalogue's — ``Technique`` on a hop that
+    asks CAPEC which patterns correspond to ``T1555`` — and the declared join
+    key is exactly the bridge to them, so naming them would trip the
+    specialist's schema-boundary refusal on the way to a question the store can
+    in fact answer. Seeds and limits are untouched; nothing is invented.
+    """
+    entities = list(getattr(sq, "entities", ()) or ())
+    moved = reroute_source(sq, cards)
+    source = moved or sq.source
+    card = cards.get(source)
+    if card is None or not callable(getattr(card, "unknown_entities", None)):
+        return None
+    missing = card.unknown_entities(entities)
+    # An entity the executing store does not model is normally a hard boundary:
+    # answering with what the rest can express answers a different question. It
+    # is not a boundary when the sub-question DECLARES A JOIN KEY and another
+    # loaded store models the missing entity — that is precisely a hop across
+    # the declared bridge, and `_generic_bridge` is the primitive that walks it.
+    # "What ATT&CK techniques does each of those correspond to" names
+    # ``Technique``, which CAPEC does not model as a label and does reach
+    # through ``MAPS_TO``.
+    bridgeable = bool(missing) and getattr(sq, "join_key", None) and all(
+        any(
+            name != source and other.has_entity(e)
+            for name, other in cards.items()
+        )
+        for e in missing
+    )
+    if moved is None and not bridgeable:
+        return None
+    keep = [e for e in entities if card.has_entity(e)] if bridgeable else entities
+    if not keep:
+        return None
+    return dataclasses.replace(sq, source=source, entities=keep)
 
 
 def request_seeds(request: str, source: str) -> tuple[str, ...]:
@@ -367,10 +560,35 @@ class SpecialistRouter:
         results: list[SpecialistResult] = []
         skipped: list[dict[str, Any]] = []
         sequencing: list[dict[str, Any]] = []
+        # Dependencies come from the plan AS WRITTEN, before any re-route. The
+        # join key decides which hop feeds which, and moving a hop to the store
+        # that can execute it does not change that order — it only changes who
+        # runs it. Re-deriving deps after the move would collapse two hops that
+        # now share a source into one entry and lose the dependency entirely.
         deps = dependency_map(plan)
         by_id: dict[str, SpecialistResult] = {}
+        ran_in: dict[str, str] = {}
 
-        for sq in execution_order(plan):
+        for planned in execution_order(plan):
+            moved = rerouted(planned, self._cards)
+            sq = moved or planned
+            if moved is not None:
+                sequencing.append(
+                    {
+                        "sub_question": sq.id,
+                        "rerouted_from": planned.source,
+                        "rerouted_to": sq.source,
+                        "reason": (
+                            f"{planned.source} does not model "
+                            + ", ".join(
+                                self._cards[planned.source].unknown_entities(
+                                    list(planned.entities)
+                                )
+                            )
+                        ),
+                    }
+                )
+            ran_in[sq.id] = sq.source
             specialist = self._specialist_for(sq.source)
             if specialist is None:
                 skipped.append(
@@ -418,8 +636,14 @@ class SpecialistRouter:
                          "seed_count": 0, "truncated": False, "skipped": reason}
                     )
                     continue
+                same_store = all(
+                    ran_in.get(pid) == sq.source for pid in producer_ids
+                )
                 seed_ids, truncated = harvest_seed_ids(
-                    usable, cap=sq.limits.max_result_rows
+                    usable,
+                    cap=sq.limits.max_result_rows,
+                    prefer_primary_ids=same_store,
+                    wanted_labels=list(sq.entities),
                 ) if usable else ((), False)
                 if not seed_ids:
                     # The producer gave nothing. Before abstaining, look for

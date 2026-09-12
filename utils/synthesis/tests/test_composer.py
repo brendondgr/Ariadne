@@ -594,3 +594,49 @@ def test_an_empty_requested_relation_is_stated_as_an_answer() -> None:
     # rendering it literally gave "has no has execution step".
     assert "CAPEC-513" in claim.text and "has no execution steps" in claim.text
     assert claim.citations
+
+
+# -- nameless neighbours carry their text (EXP-2026-09-018, I-12) ------------
+
+
+def test_a_nameless_neighbour_is_listed_by_its_text_not_its_internal_id():
+    """A CAPEC prerequisite IS its text; its identifier is a path nobody publishes.
+
+    The normalizer fills `name` from the node's id when the node has none, so a
+    naive name check reads `capec:attack-pattern:94:prerequisite:1` as a title
+    and lists it. That answered "what prerequisites does each of those require"
+    with six opaque strings and not one prerequisite.
+    """
+    text = "An attacker can eavesdrop on the communication between the components."
+    anchor = make_record(
+        "CAPEC-271",
+        name="Schema Poisoning",
+        label="AttackPattern",
+        related=[
+            {"id": "CAPEC-94", "name": "Adversary in the Middle",
+             "label": "AttackPattern", "description": "A different thing entirely."},
+            {"id": "capec:attack-pattern:94:prerequisite:3",
+             "name": "capec:attack-pattern:94:prerequisite:3",
+             "label": "Prerequisite", "description": text},
+            {"id": "capec:attack-pattern:28:step:1", "name": "Step 1",
+             "label": "ExecutionStep", "description": "[Observe] The attacker observes."},
+        ],
+    )
+    evidence = make_evidence(
+        [make_result(
+            text="Which patterns can precede CAPEC-271, and what prerequisites do those require?",
+            records=[anchor], summary="Found 1 CAPEC record(s): CAPEC-271.")]
+    )
+    answer = _compose(evidence)
+    enum = [c for c in answer.claims if c.kind == "enumeration"]
+    assert len(enum) == 1
+    body = enum[0].text
+    assert text in body
+    assert "[Observe] The attacker observes." in body
+    # A published identifier is what an analyst looks up, so it survives…
+    assert "CAPEC-94" in body
+    # …and a synthetic path never reaches the reader.
+    assert "prerequisite:3" not in body
+    assert "step:1" not in body
+    # The ids stay on the claim for auditing even when the prose shows text.
+    assert "capec:attack-pattern:94:prerequisite:3" in enum[0].entity_ids

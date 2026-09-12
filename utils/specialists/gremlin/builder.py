@@ -504,7 +504,15 @@ class GremlinQueryBuilder:
             # describe that reports only facet COUNTS loses the second half of
             # the question. Walking the declared join edge is what turns the
             # anchor into seed identifiers the consumer can use.
-            if has_seeds and resolved.has_join:
+            # …but only when the sub-question is ABOUT the mapping. A plan
+            # declares its join key on every one of its sub-questions, so
+            # `has_join` alone routed the second hop of a two-step question
+            # through the bridge as well: "and which CWE weaknesses do those
+            # exploit" was answered with the patterns' ATT&CK mappings, which is
+            # a different question with a confidently wrong answer. The
+            # sub-question's own entities settle it — `_has_mapping_intent` is
+            # the same test the CAPEC ladder below already uses.
+            if has_seeds and resolved.has_join and _has_mapping_intent(resolved):
                 bridge = self._generic_bridge(resolved)
                 if bridge is not None:
                     return bridge
