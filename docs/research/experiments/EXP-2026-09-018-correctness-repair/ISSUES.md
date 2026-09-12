@@ -108,3 +108,50 @@ stores before any harness capture that follows a test run:
 **Paper implication:** none. Worth noting that the preflight did its job — it
 refused to measure against a store it could not verify, which is the opposite of
 the silent-empty-store failure in `I-2`.
+
+## I-5 — The scope line asserted a restriction the evidence could not carry
+
+**Impact:** the first judged pass of Step 5 is discarded and re-run. Its numbers
+appear nowhere except as the before column of the fix's own table.
+
+**Cause:** Step 4's enumeration claim appended ", restricted to <property>
+<value>" whenever a filter slot was bound, without checking that the filter had
+been applied. On the frozen evidence — retrieved before the filter push-down
+existed — it had not, so the claim stated a restriction that was simply false.
+The grader recorded 2 `fabricated_mapping` flags against a pre-repair 0, and
+flagged statements rose from 36 to 202 beyond the `Q48` boilerplate trio.
+
+**Resolution:** the scope line is emitted only when the property appears in the
+executed query. A related neighbour carries no properties, so a neighbour-side
+filter can never be verified from the cited records; the warrant is the query.
+The test is one-way — a property absent from the query cannot have been filtered
+on — so it can withhold a true scope line but never assert a false one. 0 scope
+lines on the frozen evidence, 41 on the live post-Step-4b run. Re-graded in both
+positions: `fabricated_mapping` back to 0, flagged statements 494 against a
+pre-repair 484.
+
+**Paper implication:** none for the figures, but the kill gate's value is worth
+stating. It was pre-registered before any number was seen, it fired on the one
+thing that mattered, and it cost three hours of re-grading — which is what a
+gate is for.
+
+## I-6 — The judge's per-answer noise is twenty times its reported repeatability
+
+**Impact:** bounds every tier-level reading in this experiment, including
+Step 6's.
+
+**Cause:** not a defect, a measurement. Of the 258 answers whose claims did not
+change between the two frozen compositions — identical text, same judge, same
+sitting — **169 received a different score**, with a paired per-answer SD of
+**0.1424**. `EXP-2026-09-012`'s 0.0066 is the repeatability of a *mean*; this is
+the repeatability of an *answer*, and the two are not the same quantity.
+
+**Consequence:** a tier of 50 has a standard error near 0.020, so a tier
+difference under roughly 0.06 is indistinguishable from the grader. D4 moved
+−0.0591 in Step 5 with 53 of its 55 answers unchanged; that is noise and is
+reported as noise.
+
+**Resolution:** not resolved and not resolvable by this experiment. Recorded so
+that `H1`'s +0.10 threshold on 56 questions is read as about five standard
+errors rather than as a bare number, and so that no smaller per-tier movement is
+claimed in Step 6.

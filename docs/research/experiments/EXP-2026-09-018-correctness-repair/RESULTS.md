@@ -434,6 +434,99 @@ same declared vocabulary the property slot is bound from, not a second guess.
 CAPEC node file was rebuilt, and is unchanged at 0 rewritten nodes with 1,083
 public ids promoted.
 
+## Step 5 — the frozen-evidence comparison (complete, 2026-09-11)
+
+The judge, `default-model` on `:9090` probed as `qwen38-27B-v2`, 16 workers.
+One sitting, both compositions, each answer in both counterbalanced positions.
+
+Every other step changes what is *retrieved*, so a judged difference could
+always be retrieval. This one holds the evidence fixed: each saved
+`EXP-2026-09-005` generic answer's `FederatedEvidence` is rebuilt from its own
+`logic_flow.results` verbatim and recomposed. The same rows, two composers.
+
+### The drift control passes, and the instrument reproduces itself
+
+| | |
+|---|---:|
+| unchanged answers graded in both sets | 258 |
+| paired mean difference | **+0.0020** |
+| grader-repeatability SD (`EXP-2026-09-012`) | 0.0066 |
+
+The re-graded original's **position-1 mean is 0.6569** — the published
+`EXP-2026-09-005` figure to four decimal places, from a different session eight
+days later. The two-position mean is 0.6588.
+
+### Result
+
+| | before | after | paired |
+|---|---:|---:|---:|
+| all 284 answers | 0.6588 | 0.6794 | **+0.0206** |
+| the 26 whose claims changed | 0.6933 | **0.8981** | **+0.2048** |
+| D1, property questions (19 of 35 changed) | 0.7057 | 0.8293 | **+0.1236** |
+| D0 (3 changed) | 0.7007 | 0.8132 | +0.1125 |
+
+**H4 is met on the judge as well as on the construction check.** The
+deterministic half, on this same frozen evidence: requested values present in
+the evidence and rendered in the claims go from **6 of 19 to 19 of 19**.
+
+**H5 is not testable here and moves to Step 6.** The frozen evidence was
+retrieved before the filter push-down existed, so no query carries a filter, so
+the composer correctly states no restriction and **no D5 answer changed**. D5's
++0.0158 is 47 unchanged answers and means nothing. This is the honest reading:
+the composer half of `H5` cannot be isolated on evidence that was never filtered.
+
+### The kill gate tripped, and the defect was mine
+
+The first judged pass recorded **2 `fabricated_mapping` flags against a
+pre-repair 0** — the first non-zero this project has produced — and flagged
+statements rose from 36 to 202 beyond the `Q48` boilerplate trio, which stayed
+flat at 448 and 441.
+
+One defect explained both. The enumeration claim stated *"restricted to
+taxonomy name WASC"* over records that were not WASC, because the scope line was
+emitted from the **bound filter** rather than from what the query had actually
+done. On frozen evidence the filter was never applied, so the claim was simply
+false, and the grader was right to call it fabricated.
+
+A claim's warrant here is the **query**, not the records: a related neighbour
+carries no properties, so a neighbour-side filter can never be verified from the
+cited evidence. The scope line is now emitted only when the property appears in
+the executed query — a necessary condition for the filter to have run, so its
+absence is proof the restriction did not happen. One-way and conservative: it
+can withhold a true scope line, never assert a false one.
+
+Verified both ways: **0** scope lines on the frozen pre-push-down evidence,
+**41** on the live post-Step-4b run where the filter is in the query. The
+recomposed set was re-graded in both positions after the fix.
+
+| | first pass | after the fix |
+|---|---:|---:|
+| `fabricated_mapping` | 2 | **0** |
+| flagged statements | 643 | **494** (pre-repair 484) |
+| answers whose claims changed | 62 | 26 |
+
+The kill gate did its job. It was pre-registered before any number was seen, it
+fired on the one thing that mattered, and the fix was to stop making a claim the
+evidence could not carry rather than to soften the gate.
+
+### What the control also measured, and it is a constraint on Step 6
+
+**169 of the 258 unchanged answers moved in score.** Identical text, same judge,
+same session, and a per-answer paired SD of **0.1424**. The aggregate is stable —
+the mean of those 258 differences is +0.0020 — but the per-answer noise is
+twenty times the repeatability figure `EXP-2026-09-012` reports, because that
+figure is about a *mean* and this is about an *answer*.
+
+The consequence is arithmetic. A tier of 50 answers has a standard error of
+about 0.020, so a tier difference below roughly 0.06 is not distinguishable from
+the judge. **D4's −0.0591 is exactly that**: 53 of its 55 answers were
+unchanged, and the tier moved anyway. It is not a regression and must not be
+read as one.
+
+For Step 6 this bounds what can be claimed. `H1` asks for +0.10 on the 56-question
+chain slice, which is about five standard errors and comfortably detectable.
+Anything smaller than 0.06 on a single tier is not.
+
 ## Serving capacity for Steps 5–8
 
 Granted 2026-09-11: one endpoint, `default-model` on `:9090`, at **16
@@ -443,6 +536,7 @@ configuration, so Steps 6 and 7 are separate nights, and the `gemma4-31B`
 ordering pass is dropped for want of a second healthy endpoint. The final result
 will therefore rest on one grader family, which belongs in threats to validity.
 
-## Steps 5–8
+## Steps 6–8
 
-Not started. Steps 5 to 8 need the judge.
+Not started. `scripts/repair_control_run.py` is written and awaits the operator's
+confirmation of the ship rule; Step 7 awaits approval of the spend and a seed.

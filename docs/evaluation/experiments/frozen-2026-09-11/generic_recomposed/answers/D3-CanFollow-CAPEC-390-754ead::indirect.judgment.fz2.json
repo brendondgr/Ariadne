@@ -1,0 +1,26 @@
+{
+ "case_id": "D3-CanFollow-CAPEC-390-754ead::indirect",
+ "verdict": "CORRECT",
+ "correctness": 0.9,
+ "faithfulness": 0.9,
+ "groundedness": 0.95,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "The direction/predecessor status of CAPEC-665 relative to CAPEC-390 is not explicit in the shown related record."
+ ],
+ "rationale": "The answer identifies CAPEC-665 as the expected related CAPEC pattern for CAPEC-390, satisfying the single gold expectation. It is grounded in the CAPEC-390 record and its CAN_FOLLOW related entry. The only weakness is that it calls CAPEC-665 a 'predecessor,' a direction not explicit in the shown evidence, so faithfulness is slightly reduced.",
+ "judge": {
+  "model": "default-model",
+  "alias": "default-model",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

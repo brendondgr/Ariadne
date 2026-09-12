@@ -1,0 +1,27 @@
+{
+ "case_id": "D2-ChildOf-CAPEC-182-15f8e0::formal",
+ "verdict": "PARTIAL",
+ "correctness": 0.6,
+ "faithfulness": 0.7,
+ "groundedness": 0.8,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "CAPEC-174 is asserted as a ChildOf parent of CAPEC-182",
+  "CAPEC-178 is asserted as a ChildOf parent of CAPEC-182"
+ ],
+ "rationale": "The answer includes the expected gold identifier CAPEC-137 as a more general pattern for CAPEC-182. However, it also asserts CAPEC-174 and CAPEC-178 as ChildOf parents, while the evidence only lists them as CHILD_OF-related neighbors and CAPEC-182's description treats cross-site flashing as an example rather than a parent. This makes the answer partially correct but overreaching.",
+ "judge": {
+  "model": "default-model",
+  "alias": "default-model",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

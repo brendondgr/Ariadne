@@ -1,0 +1,28 @@
+{
+ "case_id": "D0-Category-REQUIRES_RESOURCE-CAPEC-685-bbd4d7::analyst",
+ "verdict": "CORRECT",
+ "correctness": 0.9,
+ "faithfulness": 0.85,
+ "groundedness": 0.8,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": true,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "T1566",
+  "M1017",
+  "CAPEC-98"
+ ],
+ "rationale": "The expected identifier is CAPEC-685, and the answer is tied to that request while reporting no records returned. The capec specialist failure and empty result set support an honest no-result abstention, though the narrative's example identifiers T1566, M1017, and CAPEC-98 are not present in the evidence. No cross-source mapping is asserted.",
+ "judge": {
+  "model": "default-model",
+  "alias": "default-model",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

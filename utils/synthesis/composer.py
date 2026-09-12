@@ -736,6 +736,24 @@ def _description_claim(result: SpecialistResult, record: EvidenceRecord) -> Clai
     )
 
 
+def _query_carries(result: SpecialistResult, prop: str) -> bool:
+    """Did the query that produced this result filter on ``prop``?
+
+    Necessary, not sufficient: a property named nowhere in the executed query
+    cannot have been filtered on, which is the direction that matters. Used to
+    decide whether an enumeration may *state* a restriction, never to decide
+    whether one was applied.
+    """
+    if not prop:
+        return False
+    queries = [result.query or ""]
+    queries += [
+        str((trace.detail or {}).get("query") or "")
+        for trace in (result.traces or ())
+    ]
+    return any(prop in query for query in queries if query)
+
+
 def _enumeration_claim(
     result: SpecialistResult,
     record: EvidenceRecord,
@@ -772,11 +790,26 @@ def _enumeration_claim(
             break
     noun = _related_noun(record, len(ids))
     anchor = record.name and f"{record.primary_id} ({record.name})" or record.primary_id
-    # Say what the set was restricted to. An enumeration that silently applies a
-    # filter reads as a complete set and is not one, which is a worse failure
-    # than not filtering: the reader cannot tell.
+    # Say what the set was restricted to — but only when the executed query
+    # actually carried the restriction.
+    #
+    # Stating it unconditionally was wrong and the judge caught it. On evidence
+    # retrieved before the filter push-down existed, the claim "restricted to
+    # taxonomy name WASC" sat over records that were not WASC, and the grader
+    # correctly recorded a fabricated mapping — the first non-zero
+    # `fabricated_mapping` this project has produced, and the same defect
+    # accounts for the rise in flagged statements from 36 to 202
+    # (`EXP-2026-09-018` Step 5).
+    #
+    # A claim's warrant here is the QUERY, not the records: a related neighbour
+    # carries no properties, so the composer can never verify a neighbour-side
+    # filter from the evidence it cites. The property name appearing in the
+    # executed query is a necessary condition for the filter to have been
+    # applied, so its absence is proof the restriction did not happen. One-way
+    # and conservative: it can only withhold a true scope line, never assert a
+    # false one.
     scope = ""
-    if bound_filter is not None:
+    if bound_filter is not None and _query_carries(result, bound_filter[1]):
         _, prop, value = bound_filter
         label = " ".join(
             w for w in _PROPERTY_LABEL_RE.split(prop) if w and w != "x"

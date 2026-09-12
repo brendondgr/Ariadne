@@ -1,0 +1,24 @@
+{
+ "case_id": "D4-detects-x_mitre_analytic_refs-T1003.005-a591fa::indirect",
+ "verdict": "CORRECT",
+ "correctness": 0.95,
+ "faithfulness": 0.95,
+ "groundedness": 0.9,
+ "completeness": 1.0,
+ "gold_expected": 2,
+ "gold_present": 2,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer correctly identifies DET0513 as the detection strategy for T1003.005 and includes both expected analytics, AN1417 and AN1418. These identifiers are supported by the T1003.005 evidence record, which lists DET0513 via DETECTS and AN1417/AN1418 via HAS_ANALYTIC. The only minor weakness is that it frames the analytics as associated with coverage rather than explicitly stating they implement DET0513.",
+ "judge": {
+  "model": "default-model",
+  "alias": "default-model",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

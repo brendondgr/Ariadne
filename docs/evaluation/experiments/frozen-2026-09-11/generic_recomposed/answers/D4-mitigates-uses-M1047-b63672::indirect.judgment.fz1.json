@@ -1,0 +1,26 @@
+{
+ "case_id": "D4-mitigates-uses-M1047-b63672::indirect",
+ "verdict": "PARTIAL",
+ "correctness": 0.3,
+ "faithfulness": 0.6,
+ "groundedness": 0.55,
+ "completeness": 0.11,
+ "gold_expected": 46,
+ "gold_present": 5,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "M1047 has 200 related item(s)"
+ ],
+ "rationale": "The answer correctly anchors M1047 and lists many mitigated techniques, but it only states five of the expected campaign identifiers: C0022, C0024, C0025, C0046, and C0049. It does not map campaigns to the individual techniques they used, so the second part of the question is only weakly addressed. Faithfulness is reduced because the evidence reports 855 related items while the answer asserts a 200-item related set.",
+ "judge": {
+  "model": "default-model",
+  "alias": "default-model",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

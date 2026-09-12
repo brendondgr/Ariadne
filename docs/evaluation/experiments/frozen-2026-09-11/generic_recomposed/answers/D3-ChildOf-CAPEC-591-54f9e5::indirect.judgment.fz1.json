@@ -1,0 +1,26 @@
+{
+ "case_id": "D3-ChildOf-CAPEC-591-54f9e5::indirect",
+ "verdict": "PARTIAL",
+ "correctness": 0.8,
+ "faithfulness": 0.85,
+ "groundedness": 0.9,
+ "completeness": 1.0,
+ "gold_expected": 9,
+ "gold_present": 9,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "CAPEC-591 has 11 ChildOf parents (the evidence shows 11 CHILD_OF-related neighbors, but not that all 11 are parents)"
+ ],
+ "rationale": "The answer includes the anchor CAPEC-591 and all nine expected related patterns: CAPEC-18, CAPEC-198, CAPEC-199, CAPEC-243, CAPEC-244, CAPEC-245, CAPEC-247, CAPEC-32, and CAPEC-86. However, it also includes CAPEC-63 and CAPEC-242 and frames all 11 as \"ChildOf parents\" rather than specifically identifying the more specific variants. The evidence supports the 11 CHILD_OF neighbors, but the parent direction for all of them is not fully established.",
+ "judge": {
+  "model": "default-model",
+  "alias": "default-model",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

@@ -1,0 +1,28 @@
+{
+ "case_id": "D0-Category-CanAlsoBe-CAPEC-223-85585c::indirect",
+ "verdict": "CORRECT",
+ "correctness": 1.0,
+ "faithfulness": 0.9,
+ "groundedness": 0.9,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "T1566",
+  "M1017",
+  "CAPEC-98"
+ ],
+ "rationale": "The answer is an honest abstention: it states that the CAPEC source returned no records for CAPEC-223 and includes the executed query. The only expected identifier, CAPEC-223, is present, and no related CAPEC patterns are asserted. The illustrative identifiers T1566, M1017, and CAPEC-98 are not supported by the evidence, so minor faithfulness and groundedness deductions apply.",
+ "judge": {
+  "model": "default-model",
+  "alias": "default-model",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

@@ -1,0 +1,28 @@
+{
+ "case_id": "D4-HAS_MEMBER-ChildOf-CAPEC-687-97e860::analyst",
+ "verdict": "CORRECT",
+ "correctness": 1.0,
+ "faithfulness": 0.9,
+ "groundedness": 0.8,
+ "completeness": 0.0,
+ "gold_expected": 1,
+ "gold_present": 0,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "T1566",
+  "M1017",
+  "CAPEC-98"
+ ],
+ "rationale": "The CAPEC query seeded with CAPEC-687 returned zero records, and the abstention explicitly includes the executed query, so this is an honest abstention under rule 1. It does not state the expected related pattern CAPEC-176, so completeness is low despite the correct abstention. The only unsupported items are the example identifiers T1566, M1017, and CAPEC-98 in the narrative.",
+ "judge": {
+  "model": "default-model",
+  "alias": "default-model",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

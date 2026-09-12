@@ -149,8 +149,12 @@ class LLMQueryBuilder:
 
     card: Any
     language: str                      # "cypher" | "gremlin"
-    base_url: str = "http://localhost:4000/v1"
-    model: str = "skynet"
+    # Only :9090 with `default-model` (operator directive, 2026-09-11). The old
+    # default pointed at a relay that no longer serves `skynet`, and asking for
+    # it returns 404 — which this seam turns into a silent deterministic
+    # fallback rather than an error.
+    base_url: str = "http://localhost:9090/v1"
+    model: str = "default-model"
     timeout_s: float = 180.0
     #: ``None`` means "resolve from the environment at call time" -- see
     #: `default_max_tokens`. An explicit value still wins, so a caller that

@@ -1,0 +1,24 @@
+{
+ "case_id": "D0-Campaign-mitigates-C0046-56b839::analyst",
+ "verdict": "PARTIAL",
+ "correctness": 0.35,
+ "faithfulness": 0.9,
+ "groundedness": 0.85,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer correctly names C0046 (ArcaneDoor) and lists 27 related ATT&CK items, but it says 'related' rather than 'mitigates' and includes software S1188/S1186, so it only partially answers the requested MITIGATES question. The evidence shows the returned neighbours are typed USES, while the expected related set is empty, so a better answer would have stated that C0046 mitigates no techniques or abstained with the query. The statements are largely grounded in the C0046 record, but the answer does not explicitly tie the listed technique IDs to the MITIGATES relation.",
+ "judge": {
+  "model": "default-model",
+  "alias": "default-model",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

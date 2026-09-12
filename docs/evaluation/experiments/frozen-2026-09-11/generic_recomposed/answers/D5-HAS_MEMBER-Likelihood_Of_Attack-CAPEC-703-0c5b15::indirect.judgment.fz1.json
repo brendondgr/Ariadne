@@ -1,0 +1,28 @@
+{
+ "case_id": "D5-HAS_MEMBER-Likelihood_Of_Attack-CAPEC-703-0c5b15::indirect",
+ "verdict": "PARTIAL",
+ "correctness": 0.2,
+ "faithfulness": 0.85,
+ "groundedness": 0.75,
+ "completeness": 0.14,
+ "gold_expected": 7,
+ "gold_present": 1,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "T1566",
+  "M1017",
+  "CAPEC-98"
+ ],
+ "rationale": "The answer is an honest abstention and shows the executed query, and the evidence supports that the query returned no records. However, the expected gold set includes CAPEC-703 plus CAPEC-457, CAPEC-540, CAPEC-573, CAPEC-580, CAPEC-649, and CAPEC-65, while the answer only mentions CAPEC-703 and omits all six expected related patterns. The illustrative identifiers T1566, M1017, and CAPEC-98 are not supported by the shown evidence, so there is a minor faithfulness deduction.",
+ "judge": {
+  "model": "default-model",
+  "alias": "default-model",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

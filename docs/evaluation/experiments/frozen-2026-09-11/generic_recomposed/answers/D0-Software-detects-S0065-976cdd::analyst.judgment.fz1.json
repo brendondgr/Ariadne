@@ -1,0 +1,24 @@
+{
+ "case_id": "D0-Software-detects-S0065-976cdd::analyst",
+ "verdict": "PARTIAL",
+ "correctness": 0.6,
+ "faithfulness": 1.0,
+ "groundedness": 1.0,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer correctly states S0065 (4H RAT) and lists six supported USes neighbours: T1071.001, T1059.003, T1057, T1083, T1082, and T1573.001. However, it frames them as used techniques rather than the requested DETECTS techniques, and the evidence contains no DETECTS edges for S0065. Thus it is faithful and grounded but only partially answers the asked relation. No fabricated mapping or hallucinated identifiers are present.",
+ "judge": {
+  "model": "default-model",
+  "alias": "default-model",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

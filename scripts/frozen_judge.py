@@ -83,6 +83,11 @@ def _probe() -> str:
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--positions", nargs="*", type=int, default=None)
+    parser.add_argument(
+        "--arms", nargs="*", default=None, choices=list(ARMS),
+        help="re-grade only these sets. Used when one side's claims changed and "
+             "the other's did not: the drift control is what then says whether "
+             "the judge moved between the two sittings.")
     args = parser.parse_args()
 
     from utils.evaluation.grading_order import counterbalanced
@@ -99,6 +104,8 @@ def main() -> int:
         if args.positions and position not in args.positions:
             continue
         order = counterbalanced(list(ARMS), position - 1)
+        if args.arms:
+            order = [a for a in order if a in args.arms]
         print(f"[position {position}] order: {order}", flush=True)
         for arm in order:
             answers = sum(

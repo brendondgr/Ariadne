@@ -51,6 +51,7 @@ below.)
 | Q53 | The composer drops list-valued requested properties and never states an empty set | EXP-2026-09-017 A-2 | 5.9% of the dev loss; `C-017`'s construction claim *(open)* |
 | Q54 | Two CAPEC properties the questions filter on were never parsed from the source | EXP-2026-09-018 Step 4 | 10 dev and 16 holdout filtered questions; part of Q52's slice *(open)* |
 | Q55 | The Neo4j loader packs every non-core property into a JSON string, so no Cypher filter can see it | EXP-2026-09-018 Step 4 | every ATT&CK-side filter push-down *(open)* |
+| Q56 | The arm runner's default model was one the configured endpoint does not serve, so an LLM arm ran model-free and finished | EXP-2026-09-018 Step 5 preflight | answered and fixed; archived runners still carry the old default *(partly)* |
 
 ---
 
@@ -1002,3 +1003,45 @@ neighbour's `properties_json` into the generic queries and filter in the
 composer, but that ships a full description blob per neighbour row and was
 rejected on payload size. **From:** `EXP-2026-09-018` Step 4. **Cost:** a day,
 plus a re-baseline.
+
+### Q56 — The arm runner's default model was one the configured endpoint does not serve
+
+**ANSWERED and fixed the same day, 2026-09-11. Recorded because the failure
+shape is the one this project keeps meeting, not because the fix was hard.**
+
+`utils/evaluation/experiment_untruncated.py` defaulted `--llm-model` to
+`skynet`. The pipeline's configured endpoint is `:9090`, which serves
+`default-model` and does **not** serve `skynet`: the request returns HTTP 404.
+Every LLM seam turns that into `LLMUnavailable`, falls back to its deterministic
+path, and the run *completes* — 284 answers, no error, every one of them
+composed without the narrator.
+
+That is `I-4` again, and `Q47` again: a run that finishes and reports a number
+which is not the arm's. It was found by smoke-testing four questions before
+`EXP-2026-09-018` Step 6 rather than by the step's own output, which would have
+looked entirely normal.
+
+**Two aliases, two relays, one confusable name.** A second relay on `:4000`
+*does* serve `skynet`, and `scripts/model_identity.py` — the tool whose whole
+purpose is to say which weights a figure came from — defaulted to that port. So
+the provenance tool reported `skynet` healthy while the pipeline was getting 404
+from it. The tool was describing a relay nothing in the pipeline talks to.
+
+**Fixed.** `--llm-model` now defaults to `default-model`;
+`utils/specialists/llm_builder.py`'s defaults move from `:4000`/`skynet` to
+`:9090`/`default-model`; `model_identity.py` defaults to `:9090` and probes
+`default-model` first. **Operator directive, 2026-09-11: only `:9090` with
+`default-model`.**
+
+**And made loud.** `_preflight_llm` now probes the configured endpoint for the
+configured model before an LLM arm starts, and refuses to run if it 404s or the
+endpoint is unreachable. Model-free arms are exempt, because a preflight against
+a relay they never call would fail a run the relay cannot affect. One 32-token
+completion buys the difference between a loud stop and a plausible wrong number.
+
+**What remains open:** the archived overnight runners
+(`scripts/overnight_*.py`, `measure_arms.py`, `merged_sweep.py`,
+`expansion_overnight.py`, `overnight_two_track.py`) still default to
+`:4000`/`skynet`. They are the recorded entrypoints of finished experiments, so
+they are left alone rather than rewritten; anything re-run through them needs
+its endpoint passed explicitly. **From:** `EXP-2026-09-018` Step 5 preflight.

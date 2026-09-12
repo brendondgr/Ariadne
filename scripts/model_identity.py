@@ -35,12 +35,20 @@ import sys
 import urllib.error
 import urllib.request
 
-DEFAULT_BASE_URL = "http://localhost:4000/v1"
+#: The relay this project uses. It was ``:4000`` until 2026-09-11, when probing
+#: that port reported ``skynet`` healthy while the pipeline's own endpoint,
+#: ``:9090``, returned HTTP 404 for it — so the provenance tool was describing a
+#: relay nothing in the pipeline talks to. Operator directive: only ``:9090``
+#: with ``default-model``.
+DEFAULT_BASE_URL = "http://localhost:9090/v1"
 
 #: Aliases worth probing by default even if the relay does not list them. These
 #: are the three roles a model plays in this project — answer path, grader, bank
 #: author — and they can be pointed at different endpoints.
-INTERESTING = ("skynet", "local", "auto")
+#: Aliases worth probing when none is named. ``default-model`` first, because
+#: it is the one every figure in this project now comes through; the others are
+#: kept so a relay that still exposes them is still described.
+INTERESTING = ("default-model", "auto", "skynet", "local")
 
 
 def _base_url() -> str:

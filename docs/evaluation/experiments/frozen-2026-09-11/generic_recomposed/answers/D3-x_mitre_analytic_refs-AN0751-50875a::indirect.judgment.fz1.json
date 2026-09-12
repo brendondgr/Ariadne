@@ -1,0 +1,24 @@
+{
+ "case_id": "D3-x_mitre_analytic_refs-AN0751-50875a::indirect",
+ "verdict": "CORRECT",
+ "correctness": 1.0,
+ "faithfulness": 1.0,
+ "groundedness": 1.0,
+ "completeness": 0.0,
+ "gold_expected": 1,
+ "gold_present": 0,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer abstains and shows the executed query that returned no records for AN0751, which matches the evidence showing row_count 0 and records 0. It does not state the expected detection strategy DET0269, so completeness is 0, but a query-backed honest abstention is correct. No cross-source mapping is fabricated and no asserted result identifiers are unsupported.",
+ "judge": {
+  "model": "default-model",
+  "alias": "default-model",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

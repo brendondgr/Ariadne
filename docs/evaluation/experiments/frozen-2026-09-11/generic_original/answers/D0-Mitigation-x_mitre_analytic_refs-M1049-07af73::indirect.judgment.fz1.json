@@ -1,0 +1,24 @@
+{
+ "case_id": "D0-Mitigation-x_mitre_analytic_refs-M1049-07af73::indirect",
+ "verdict": "PARTIAL",
+ "correctness": 0.7,
+ "faithfulness": 0.95,
+ "groundedness": 0.9,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer correctly anchors M1049 and enumerates 122 related ATT&CK items, including analytics such as AN0784 and DET0281. However, it frames them as 'related' rather than explicitly stating which detection analytics implement M1049, and it mixes in non-analytic technique IDs such as T1027.015 and T1566.003. The explicit gold identifier M1049 is present and the claims are tied to the M1049 record, but the relation and filtering are imprecise.",
+ "judge": {
+  "model": "default-model",
+  "alias": "default-model",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

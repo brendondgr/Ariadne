@@ -1,0 +1,26 @@
+{
+ "case_id": "D3-CanFollow-CAPEC-98-d9b3e3::analyst",
+ "verdict": "CORRECT",
+ "correctness": 0.9,
+ "faithfulness": 0.9,
+ "groundedness": 0.95,
+ "completeness": 1.0,
+ "gold_expected": 2,
+ "gold_present": 2,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "CAPEC-186 and CAPEC-701 are characterized as CanFollow predecessors of CAPEC-98"
+ ],
+ "rationale": "The answer states the expected related CAPEC patterns CAPEC-186 and CAPEC-701 for the anchor CAPEC-98, which directly answers the question. It also includes the anchor record and its supported description, abstraction, and status. The minor issue is that it calls the related patterns \"predecessors,\" a directional role not explicitly present in the evidence, so faithfulness is slightly reduced.",
+ "judge": {
+  "model": "default-model",
+  "alias": "default-model",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

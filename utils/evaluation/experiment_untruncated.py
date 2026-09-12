@@ -858,6 +858,70 @@ def run_arm(
     return doc
 
 
+#: Arms with no model seam. A preflight against a relay they never call would
+#: fail a run that cannot be affected by the relay at all.
+_MODEL_FREE_ARMS = frozenset({"deterministic", "generic_composed", "merged"})
+
+
+def _preflight_llm(arm: str, model: str) -> None:
+    """Refuse to start an LLM arm whose endpoint does not serve the model.
+
+    The default was ``skynet`` and the configured endpoint is ``:9090``, which
+    serves ``default-model``. Asking :9090 for ``skynet`` returns HTTP 404, the
+    pipeline raises ``LLMUnavailable``, every seam falls back to its
+    deterministic path, and the run **completes** — 284 answers, no error, a
+    plausible wrong number. That is `I-4`'s failure shape and it is the third
+    time this project has hit it, so it is now a hard stop rather than a habit.
+
+    Probing costs one 32-token completion. The served model is read off the
+    *response* envelope, never from the alias, because this project's aliases
+    have pointed at three different architectures (`D-028`, `Q12`).
+    """
+    if arm in _MODEL_FREE_ARMS:
+        return
+    import json as _json
+    import urllib.error
+    import urllib.request
+
+    base = (
+        os.environ.get("SYNTHESIS_LLM_BASE_URL")
+        or os.environ.get("ARIADNE_LLM_BASE_URL")
+        or "http://localhost:9090/v1"
+    ).rstrip("/")
+    request = urllib.request.Request(
+        f"{base}/chat/completions",
+        data=_json.dumps(
+            {
+                "model": model,
+                "max_tokens": 32,
+                "temperature": 0.0,
+                "messages": [{"role": "user", "content": "ready"}],
+            }
+        ).encode(),
+        headers={"Content-Type": "application/json"},
+    )
+    try:
+        served = _json.loads(urllib.request.urlopen(request, timeout=300).read())
+    except urllib.error.HTTPError as exc:
+        detail = exc.read().decode("utf-8", "replace")[:200]
+        raise SystemExit(
+            f"LLM preflight failed: {base} returned HTTP {exc.code} for model "
+            f"{model!r}: {detail}\n"
+            f"Arm {arm!r} has live model seams; running it now would fall back "
+            f"silently on every question and report a number that is not this "
+            f"arm's. Pass --llm-model with a model this endpoint serves."
+        ) from exc
+    except Exception as exc:  # noqa: BLE001
+        raise SystemExit(
+            f"LLM preflight failed: {base} unreachable for arm {arm!r}: {exc}"
+        ) from exc
+    print(
+        f"[preflight] {base} model {model!r} serves "
+        f"{served.get('model')!r} — ok",
+        flush=True,
+    )
+
+
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--arm", choices=ARMS, required=True)
@@ -872,8 +936,8 @@ def main(argv: list[str] | None = None) -> int:
     )
     parser.add_argument(
         "--llm-model",
-        default="skynet",
-        help="model id for ARM B (the .env default; the relay also exposes 'local')",
+        default="default-model",
+        help="model id for every LLM seam. Default 'default-model' on :9090.",
     )
     parser.add_argument("--llm-max-tokens", type=int, default=16384)
     args = parser.parse_args(argv)
@@ -884,6 +948,7 @@ def main(argv: list[str] | None = None) -> int:
     apply_env(untruncated_env(
         arm=args.arm, llm_model=args.llm_model, llm_max_tokens=args.llm_max_tokens
     ))
+    _preflight_llm(args.arm, args.llm_model)
     only = {s.strip() for s in args.only.split(",")} if args.only else None
     run_arm(
         args.arm, root=args.root, workers=args.workers,

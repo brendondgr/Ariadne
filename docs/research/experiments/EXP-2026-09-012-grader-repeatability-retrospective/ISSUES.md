@@ -69,3 +69,18 @@ The audited population is bit-for-bit what it was.
 underlying fragility — a whole-tree pointer that any unrelated run invalidates —
 is not fixed here; the row's own note already says a mismatch means passes were
 added or removed, and that reading now needs this entry to stay true.
+
+## 2026-09-11 (second) — The tree hash now moves while a judging run is in flight
+
+**Impact:** none on any number, but it makes this pointer unstable during a run.
+
+**Cause:** `EXP-2026-09-018` Step 5 grades two answer sets in
+`docs/evaluation/experiments/frozen-2026-09-11`, writing a judgment sidecar per
+case as it goes. The pointer hashes the whole tree, so it is stale seconds after
+it is taken and any commit made mid-run trips the validator.
+
+**Resolution:** re-hashed mid-run to unblock, and re-hashed again when the run
+finished. The sidecar count is the thing this experiment actually reads, and it
+is reported in the row above; a whole-tree hash is a poor proxy for it. Making
+the pointer hash the sidecar *set* rather than the tree would fix it properly
+and is a change to this experiment's provenance design, not to a number.

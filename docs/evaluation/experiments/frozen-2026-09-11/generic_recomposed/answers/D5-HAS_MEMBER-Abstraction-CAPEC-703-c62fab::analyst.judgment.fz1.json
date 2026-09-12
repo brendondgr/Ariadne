@@ -1,0 +1,28 @@
+{
+ "case_id": "D5-HAS_MEMBER-Abstraction-CAPEC-703-c62fab::analyst",
+ "verdict": "PARTIAL",
+ "correctness": 0.2,
+ "faithfulness": 0.9,
+ "groundedness": 0.8,
+ "completeness": 0.08,
+ "gold_expected": 13,
+ "gold_present": 1,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "T1566",
+  "M1017",
+  "CAPEC-98"
+ ],
+ "rationale": "The answer abstains and shows a zero-row query seeded on CAPEC-703, but the gold expects 12 related CAPEC patterns such as CAPEC-158, CAPEC-163, and CAPEC-177. It states only the anchor CAPEC-703 and no related patterns, so completeness is low. The abstention is largely supported by the shown query result, though the narrative's example identifiers T1566, M1017, and CAPEC-98 are not in the evidence.",
+ "judge": {
+  "model": "default-model",
+  "alias": "default-model",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

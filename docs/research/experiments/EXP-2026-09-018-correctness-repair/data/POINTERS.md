@@ -91,6 +91,18 @@ impossible to say which moved a number.
 | after 4b, holdout `deterministic` | `docs/evaluation/experiments/repair-after-step4b-holdout/deterministic/answers` | 26561023 | `sha256:c8449ca6ff3fcd1de819a374c26fc21d07bc404d058c91d0c9f90390a60bb587` | 0.552317 |
 | after 4b, holdout `generic_composed` | `docs/evaluation/experiments/repair-after-step4b-holdout/generic_composed/answers` | 7945103 | `sha256:02f1a5c29711184e87ae4ea6a1f2da85090ea6ddde7693aa772cc22ad64d8436` | 0.719427, 28 zero-record, coverage lost on none |
 
+## Step 5 — the frozen-evidence pair
+
+Two compositions over byte-identical evidence, graded by one judge in one
+sitting, each in both counterbalanced positions.
+
+| Artifact | Path (repo-relative) | Bytes | SHA-256 | What it is |
+|---|---|---:|---|---|
+| original composition + judgments | `docs/evaluation/experiments/frozen-2026-09-11/generic_original/answers` | 7268861 | `sha256:5f9c0315ce400f4f97d0c4208431584c13e2980fde7742ac3539e6dcbff906f5` | the 284 saved `EXP-2026-09-005` generic answers, re-graded here rather than quoted; paired mean 0.6588 |
+| repaired composition + judgments | `docs/evaluation/experiments/frozen-2026-09-11/generic_recomposed/answers` | 7288196 | `sha256:60d7309dbd051df044e5ae7d5a3a07e8ad51017195f7651974378ac99087ba45` | the same evidence recomposed; paired mean 0.6794 |
+| recomposition summary (committed) | `docs/evaluation/experiments/frozen-2026-09-11/recompose-summary.json` | 339 | `sha256:8136ab25ebaafc8a0a2a775ce4550f24b72ce8f7177dcf93dcc0bc38a184a658` | 26 changed, 258 unchanged, requested values 6 of 19 → 19 of 19 |
+| judged metrics (committed) | `docs/evaluation/experiments/frozen-2026-09-11/frozen-metrics.json` | 1991 | `sha256:9d7e8b40f2ef56b41a871a31975db31efe88c0c3064d3a1d7796e24403e5e378` | drift control, paired means, tier table, kill gate |
+
 ## Inputs read from other experiments
 
 | Artifact | Path (repo-relative) | Bytes | SHA-256 | What it is |

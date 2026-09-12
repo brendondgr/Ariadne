@@ -1,0 +1,26 @@
+{
+ "case_id": "D5-mitigates-x_mitre_platforms-M1042-ad62f1::formal",
+ "verdict": "PARTIAL",
+ "correctness": 0.7,
+ "faithfulness": 0.85,
+ "groundedness": 0.8,
+ "completeness": 1.0,
+ "gold_expected": 4,
+ "gold_present": 4,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "The full 71-item list of M1042-related techniques is not fully visible in the provided related records, although the related count is supported."
+ ],
+ "rationale": "The answer includes M1042 and all expected related techniques T1059, T1098, T1098.001, and T1671. However, it presents them as part of a broad 71-item M1042 mitigation list rather than explicitly identifying the SaaS-applicable subset. The claims are grounded in the M1042 MITIGATES records, but the SaaS filter is not explicitly addressed.",
+ "judge": {
+  "model": "default-model",
+  "alias": "default-model",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

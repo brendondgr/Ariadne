@@ -1,0 +1,26 @@
+{
+ "case_id": "D0-Mitigation-x_mitre_analytic_refs-M1049-07af73::indirect",
+ "verdict": "PARTIAL",
+ "correctness": 0.7,
+ "faithfulness": 0.7,
+ "groundedness": 0.6,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "The specific DET/AN identifiers in the 122-item enumeration (e.g., DET0281, AN0784) are not individually shown in the visible evidence records, although the 122-related count is supported."
+ ],
+ "rationale": "The answer correctly anchors M1049 (Antivirus/Antimalware) and reports 122 related ATT&CK items, including DET and AN identifiers that plausibly correspond to detection analytics. However, it frames them as generic related items rather than explicitly stating which detection analytics implement M1049, and it also includes T-technique identifiers. The visible evidence supports the count and anchor but not every enumerated DET/AN ID individually.",
+ "judge": {
+  "model": "default-model",
+  "alias": "default-model",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

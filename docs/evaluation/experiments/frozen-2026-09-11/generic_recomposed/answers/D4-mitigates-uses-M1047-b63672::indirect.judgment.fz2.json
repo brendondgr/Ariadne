@@ -1,0 +1,28 @@
+{
+ "case_id": "D4-mitigates-uses-M1047-b63672::indirect",
+ "verdict": "PARTIAL",
+ "correctness": 0.3,
+ "faithfulness": 0.75,
+ "groundedness": 0.7,
+ "completeness": 0.11,
+ "gold_expected": 46,
+ "gold_present": 5,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "M1047 has 200 related item(s)",
+  "C0025, C0022, C0046, C0024, C0049 are related to M1047",
+  "T1505.006, T1566.003, T1556, T1053.002, T1550.001, T1686, T1686.001, T1578.001, T1484, T1021.001, T1653, T1548.006, T1563.002, T1505, T1036.010, T1213, T1213.003, T1578.002, T1059.006, T1578.005, T1671, T1095, T1574.009, T1213.004, T1685, T1564.006, T1505.004, T1556.006, T1027, T1204.003, T1059.011, T1036.012, T1574, T1542.004, T1566, T1686.002, T1593, T1574.010, T1552.008, T1606, T1556.008, T1087.004, T1552.006, T1528, T1606.001, T1552.001, T1612, T1542, T1649, T1114.003, T1213.001, T1482, T1059, T1574.005, T1593.003, T1578.003, T1548, T1053.005, T1560.001, T1021.005, T1027.011, T1574.007, T1213.002, T1666, T1564.008, T1543, T1546.006, T1539, T1548.002, T1685.001, T1578, T1114, T1606.002, T1564, T1685.004, T1213.006, T1176.001, T1542.005, T1686.003, T1543.003, T1053.003, T1566.002, T1566.001, T1574.001, T1530, T1552.002, T1505.002, T1053, T1505.005, T1176, T1558.005, T1558.004, T1558, T1684, T1036, T1552, T1070.008, T1525, T1550, T1560, T1021, T1556.007, T1610, T1543.004, T1574.008, T1484.001, T1552.004, G0129, S9009, G1004, G0117, G1015, S0603, S1218, G1048, S1100, G0130, G0059, G1036, G0032, G1022, G0112, G0070, G0016, G0049, G1052, G1012, G1046, G0037, G1011, S0692, S9013, S0377, S0487, G1016, S0488, S0110, S0233, G0027, G0060, G0026, S0683, S9008, S1023, G0007, G0125, S0108, S0031, S0492, S0412, S0336, S0531, S1161, S0013, S0260, S0376, S1178, S1223, S1032, S1211, S0088, G1047, G1051, G0008, G0106, G0046, G0139, G0035, G1045, G0094, G1043, G0082, S1091, G0102, S0262, S0192, S0250, S0434, S0670, S0283, S0385, S0379, S0382, S0154, S0583, S0461, S0030, S0350, S0334, S1187, G0061, G0051 are related to M1047"
+ ],
+ "rationale": "The answer anchors M1047 and lists many related ATT&CK items, but it only states five expected campaign identifiers: C0025, C0022, C0046, C0024, and C0049, out of 46 expected. It also does not clearly map campaigns to the specific mitigated techniques, so it only partially answers the question. The 200-item related list is only partially visible in the provided evidence, which reduces faithfulness.",
+ "judge": {
+  "model": "default-model",
+  "alias": "default-model",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}
