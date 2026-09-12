@@ -195,14 +195,17 @@ def guards(skip_seal: bool) -> None:
     if dirty:
         raise SystemExit("working tree is dirty; commit so every figure has a commit")
 
-    from scripts.model_identity import probe  # noqa: PLC0415
+    from scripts.model_identity import resolve  # noqa: PLC0415
 
-    try:
-        served = probe(MODEL)
-    except Exception as exc:  # noqa: BLE001
-        raise SystemExit(f"model identity probe failed: {exc}") from exc
-    if EXPECT not in str(served):
-        raise SystemExit(f"{MODEL} serves {served!r}, expected {EXPECT}")
+    identity = resolve("http://localhost:9090/v1", MODEL, 300.0)
+    served = identity.get("served_model")
+    if identity.get("error") or EXPECT not in str(served):
+        raise SystemExit(
+            f"{MODEL} serves {served!r}, expected {EXPECT} "
+            f"({identity.get('error') or 'no error'}). The alias has served three "
+            "different models; a control whose sides ran against different "
+            "weights measures nothing."
+        )
     print(f"[guard] {MODEL} serves {served}", flush=True)
 
     if not skip_seal and not FRESH_BANK.is_file():
