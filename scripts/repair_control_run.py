@@ -22,7 +22,28 @@ the model-free version of the same decision.
 
 Only `:9090` with `default-model` (operator directive, 2026-09-11). The arm
 runner preflights it and refuses to start if the endpoint does not serve it,
-which is `Q56`.
+which is `Q56` — and the reference commit predates that preflight, its
+`--llm-model` still defaulting to the dead `skynet` alias, so the model is
+passed explicitly on both sides and the fallback rate is asserted after every
+arm.
+
+**Hardened 2026-09-12** for the close-out's Step 3, in four ways the Step 6 run
+did without:
+
+* the reference commit is checked out into a **worktree**, not over the top of
+  the working tree. A `git checkout` mid-run leaves the repository unusable for
+  hours and loses everything if the process dies between the two checkouts.
+  Note `data/versions.json` is tracked, so `data/` itself must not be replaced
+  by a symlink — the *subdirectories* are linked, or the schema registry
+  discovers no datasets and the run reports "no specialist for source 'attack'"
+  on most cases while still exiting zero;
+* every arm asserts `ok == count` from its own manifest. The failure above is
+  silent otherwise: 33 of 288 answers written, exit code 0;
+* cells resume. A completed cell is skipped on restart, so a kill costs only
+  the in-flight requests;
+* `--stage dry` runs eight questions through **both** sides first and refuses
+  the full chain unless the reference side resolves its data, serves the right
+  model and falls back on nothing.
 """
 
 from __future__ import annotations
@@ -43,9 +64,18 @@ from utils.config import load_env  # noqa: E402
 
 load_env()
 
-ROOT = REPO / "docs/evaluation/experiments/repair-control-2026-09-11"
-LOGS = REPO / "logs/repair-control-2026-09-11"
+#: Overridable so a later control does not overwrite an earlier one's record.
+RUN = os.environ.get("PAIRED_CONTROL_RUN", "paired-control-2026-09-12")
+ROOT = REPO / "docs/evaluation/experiments" / RUN
+LOGS = REPO / "logs" / RUN
 STATE = ROOT / "state.json"
+#: Where the reference commit is checked out. Outside the repository, so a
+#: failed run cannot leave the working tree on a detached head.
+WORKTREE = Path(
+    os.environ.get("PAIRED_CONTROL_WORKTREE", f"/tmp/ariadne-reference-{RUN}")
+)
+#: Two per hard tier, one per easy tier: the dry run's slice.
+DRY_TIERS = {"D0": 1, "D1": 1, "D2": 1, "D3": 1, "D4": 2, "D5": 1, "D6": 2}
 BANK = REPO / "docs/evaluation/composition/bank/bank-dev.json"
 
 #: The commit the repairs are measured against: Step 0, before any repair.
@@ -104,7 +134,30 @@ def _fallback_rate(root: Path, arm: str) -> dict:
     }
 
 
-def _run_arm(arm: str, root: Path, workers: int, limit: int | None = None) -> dict:
+def _completeness(root: Path, arm: str) -> dict:
+    """``ok`` against ``count`` from the arm's own manifest.
+
+    The reference side failed 255 of 288 cases once, with "no specialist for
+    source 'attack'", and reported it as a one-line "wrote 33/288" before
+    exiting zero. A number derived from that run would have looked like a
+    catastrophic regression at the reference commit. Read the manifest.
+    """
+    path = root / arm / "manifest.json"
+    if not path.is_file():
+        return {"ok": 0, "count": 0, "complete": False, "reason": "no manifest"}
+    doc = json.loads(path.read_text())
+    ok, count = int(doc.get("ok", 0)), int(doc.get("count", 0))
+    errors: dict[str, int] = {}
+    for case in doc.get("cases", []):
+        if not case.get("ok"):
+            key = str(case.get("error") or "unknown")[:80]
+            errors[key] = errors.get(key, 0) + 1
+    return {"ok": ok, "count": count, "complete": count > 0 and ok == count,
+            "errors": dict(sorted(errors.items(), key=lambda kv: -kv[1])[:3])}
+
+
+def _run_arm(arm: str, root: Path, workers: int, limit: int | None = None,
+             cwd: Path | None = None, only: str | None = None) -> dict:
     root.mkdir(parents=True, exist_ok=True)
     LOGS.mkdir(parents=True, exist_ok=True)
     cmd = [
@@ -114,17 +167,20 @@ def _run_arm(arm: str, root: Path, workers: int, limit: int | None = None) -> di
     ]
     if limit:
         cmd += ["--limit", str(limit)]
+    if only:
+        cmd += ["--only", only]
     tag = f"{root.name}-{arm}"
     began = time.time()
     with (LOGS / f"{tag}.log").open("w") as handle:
         code = subprocess.call(
-            cmd, cwd=REPO, env={**os.environ, **ENV},
+            cmd, cwd=str(cwd or REPO), env={**os.environ, **ENV},
             stdout=handle, stderr=subprocess.STDOUT,
         )
     return {
         "arm": arm, "root": str(root.relative_to(REPO)), "returncode": code,
         "elapsed_s": round(time.time() - began, 1),
         "health": _fallback_rate(root, arm),
+        "completeness": _completeness(root, arm),
         "finished": datetime.now().isoformat(timespec="seconds"),
     }
 
@@ -133,40 +189,121 @@ def _git(*args: str) -> str:
     return subprocess.check_output(["git", *args], cwd=REPO, text=True).strip()
 
 
+def _ensure_worktree() -> Path:
+    """The reference commit, checked out beside the repo rather than over it.
+
+    `data/` is NOT replaced by a symlink: `data/versions.json` is tracked, so a
+    link would either be refused or land inside the checked-out directory. Its
+    subdirectories are linked individually, which is the difference between a
+    reference run and 255 silent failures.
+    """
+    if not (WORKTREE / ".git").exists():
+        WORKTREE.parent.mkdir(parents=True, exist_ok=True)
+        subprocess.check_call(
+            ["git", "worktree", "add", "--detach", str(WORKTREE), REFERENCE_COMMIT],
+            cwd=REPO,
+        )
+    for child in sorted((REPO / "data").iterdir()):
+        if child.name == "versions.json":
+            continue  # tracked; the checkout's own copy is correct
+        link = WORKTREE / "data" / child.name
+        if link.is_symlink():
+            link.unlink()
+        elif link.exists():
+            continue
+        link.symlink_to(child)
+    env = WORKTREE / ".env"
+    if env.is_symlink():
+        env.unlink()
+    if not env.exists():
+        env.symlink_to(REPO / ".env")
+    graphs = WORKTREE / "data" / "graphs"
+    if not (graphs / "attack" / "canonical" / "nodes.jsonl").is_file():
+        raise SystemExit(
+            f"reference worktree cannot see the canonical artifacts under {graphs}; "
+            "the schema registry would discover no datasets and every case would "
+            "fail with \"no specialist for source 'attack'\""
+        )
+    return WORKTREE
+
+
+def _dry_ids() -> list[str]:
+    """Two questions per hard tier, one per easy tier, deterministically."""
+    bank = json.loads(BANK.read_text())
+    entries = bank if isinstance(bank, list) else bank.get("questions") or bank.get("cases")
+    picked: list[str] = []
+    for tier, want in DRY_TIERS.items():
+        ids = sorted(e["id"] for e in entries if str(e["id"]).startswith(f"{tier}-"))
+        picked.extend(ids[:want])
+    return picked
+
+
+def dry(state: dict) -> None:
+    """Eight questions through both sides before five hours are committed to it.
+
+    Generation only. What it is really testing is the reference side: that the
+    worktree resolves `data/` and `.env`, that the endpoint serves the model it
+    is told to use, and that nothing falls back. A reference number produced by
+    a broken checkout looks exactly like a catastrophic pre-repair score.
+    """
+    only = ",".join(_dry_ids())
+    print(f"-- dry run, {len(only.split(','))} questions --\n   {only}", flush=True)
+    root = ROOT / "_dry"
+    worktree = _ensure_worktree()
+    rows = {}
+    for side, cwd in (("repaired", REPO), ("reference", worktree)):
+        for arm in ARMS:
+            row = _run_arm(arm, root / side, WORKERS, cwd=cwd, only=only)
+            rows[f"{side}/{arm}"] = row
+            print(f"  {side}/{arm}: {row['completeness']} {row['health']}", flush=True)
+    state["dry"] = rows
+    STATE.write_text(json.dumps(state, indent=2) + "\n")
+
+    bad = [name for name, row in rows.items() if not row["completeness"]["complete"]]
+    if bad:
+        raise SystemExit(
+            f"dry run incomplete on {bad} — do NOT start the full chain.\n"
+            + json.dumps({k: rows[k]["completeness"] for k in bad}, indent=2)
+        )
+    hot = [name for name, row in rows.items()
+           if name.endswith("/generic") and row["health"]["fallbacks"]]
+    if hot:
+        raise SystemExit(f"dry run fell back on {hot}: {json.dumps(rows, indent=2)}")
+    print("dry run clean: both sides resolve their data and nothing fell back")
+
+
 def generate(state: dict) -> None:
     """Both commits, one sitting. The reference is checked out, never quoted."""
     if _git("status", "--porcelain", "--untracked-files=no"):
         raise SystemExit(
-            "working tree has uncommitted tracked changes; the reference "
-            "checkout would lose them. Commit first."
+            "working tree has uncommitted tracked changes; commit first so the "
+            "cell this run measures is identified by a commit."
         )
     head = _git("rev-parse", "HEAD")
     state["head"] = head
     state["reference_commit"] = _git("rev-parse", REFERENCE_COMMIT)
+    worktree = _ensure_worktree()
+    state["reference_worktree"] = str(worktree)
 
-    for arm in ARMS:
-        state.setdefault("cells", {})[f"repaired/{arm}"] = _run_arm(
-            arm, ROOT / "repaired", WORKERS
-        )
-        STATE.write_text(json.dumps(state, indent=2) + "\n")
-        print(f"  repaired/{arm}: {state['cells'][f'repaired/{arm}']['health']}", flush=True)
-
-    print(f"-- checking out reference {REFERENCE_COMMIT} --", flush=True)
-    subprocess.check_call(["git", "checkout", "-q", REFERENCE_COMMIT], cwd=REPO)
-    try:
+    for side, cwd in (("repaired", REPO), ("reference", worktree)):
         for arm in ARMS:
-            state["cells"][f"reference/{arm}"] = _run_arm(
-                arm, ROOT / "reference", WORKERS
-            )
+            cell = f"{side}/{arm}"
+            done = (state.get("cells") or {}).get(cell)
+            if done and done.get("completeness", {}).get("complete"):
+                print(f"  {cell}: already complete, skipping", flush=True)
+                continue
+            row = _run_arm(arm, ROOT / side, WORKERS, cwd=cwd)
+            state.setdefault("cells", {})[cell] = row
             STATE.write_text(json.dumps(state, indent=2) + "\n")
-            print(
-                f"  reference/{arm}: {state['cells'][f'reference/{arm}']['health']}",
-                flush=True,
-            )
-    finally:
-        subprocess.check_call(["git", "checkout", "-q", head], cwd=REPO)
-        print(f"-- back at {head[:8]} --", flush=True)
+            print(f"  {cell}: {row['completeness']} {row['health']}", flush=True)
 
+    incomplete = [cell for cell, row in state["cells"].items()
+                  if not row["completeness"]["complete"]]
+    if incomplete:
+        raise SystemExit(
+            f"INCOMPLETE cells: {incomplete}. Every case must be answered on both "
+            "sides or the pair is not a pair. Do not judge these."
+        )
     unhealthy = [
         cell for cell, row in state["cells"].items()
         if cell.endswith("/generic") and not row["health"]["healthy"]
@@ -217,14 +354,16 @@ def judge(state: dict) -> None:
 
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--stage", choices=("generate", "judge"), required=True)
+    parser.add_argument("--stage", choices=("dry", "generate", "judge"), required=True)
     args = parser.parse_args()
 
     ROOT.mkdir(parents=True, exist_ok=True)
     state = json.loads(STATE.read_text()) if STATE.is_file() else {}
     state["started"] = state.get("started") or datetime.now().isoformat(timespec="seconds")
 
-    if args.stage == "generate":
+    if args.stage == "dry":
+        dry(state)
+    elif args.stage == "generate":
         generate(state)
     else:
         judge(state)
