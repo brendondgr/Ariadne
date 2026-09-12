@@ -208,7 +208,44 @@ def test_narrative_is_honest_when_no_evidence():
     # Honest AND actionable: no grounded fact, so it says the sources don't cover
     # the request and how to disambiguate (name it / give an id).
     assert "cover this request" in answer.narrative
-    assert "give its id" in answer.narrative
+    assert "give its catalogue id" in answer.narrative
+
+
+def test_no_answer_ever_names_an_example_identifier():
+    """I-15. The advice survives; the examples do not.
+
+    "give its id (e.g. T1566, M1017, or CAPEC-98)" put three real catalogue
+    identifiers into an answer whose subject was something else, and the grader
+    flagged them exactly as it would flag an invention — 58 of the LLM arm's 291
+    hallucination flags on the development half, and 96 of the template arm's
+    308. There is no way for a grader, or a reader, to tell an example from an
+    assertion, so the answer surface must not carry one.
+    """
+    from utils.synthesis import composer as composer_module
+
+    # No module constant carries one. (Comments and docstrings still name them —
+    # the history is worth keeping; only the answer surface must be clean.)
+    for name in dir(composer_module):
+        value = getattr(composer_module, name)
+        if isinstance(value, str):
+            for example in ("T1566", "M1017", "CAPEC-98"):
+                assert example not in value, (name, value)
+
+    # And nothing reaches the analyst, on every path that used to offer one.
+    for evidence in (
+        make_evidence([make_result(records=[], summary="", ok=False)]),
+        make_evidence([make_result(records=[], summary="", ok=True)]),
+        make_evidence([], unsupported=[{"description": "d", "reason": "unclear"}]),
+    ):
+        answer = _compose(evidence)
+        surface = " ".join(
+            [answer.headline or "", answer.narrative or ""]
+            + [c.text for c in answer.claims]
+            + [a.statement for a in answer.abstentions]
+            + [str(n) for n in (answer.notes or [])]
+        )
+        for example in ("T1566", "M1017", "CAPEC-98"):
+            assert example not in surface, (example, surface)
 
 
 def test_missing_summary_gets_generated_text_still_cited():
@@ -792,6 +829,87 @@ def test_text_items_are_not_listed_as_though_they_were_identifiers():
     assert "related item" not in patterns.text and "related item" not in consequences.text
     assert "CAPEC-182" not in consequences.text
     assert "; " in consequences.text, "multi-word items are semicolon-separated"
+
+
+# -- I-15: text is quoted and labelled, never listed as an identifier -------
+
+
+def test_text_valued_neighbours_are_quoted_and_never_share_the_id_list():
+    """Separating the two kinds by punctuation was not enough.
+
+    A CAPEC consequence, execution step, prerequisite or indicator has no
+    published identifier — its text IS its identity — and any item sitting where
+    identifiers sit gets parsed as an asserted identifier. That was 47 of the
+    LLM arm's 291 hallucination flags on the development half, and it made one
+    answer score 1.0 with 24 of them. So text gets quotation marks and a clause
+    that says what it is, and identifiers keep their list to themselves.
+    """
+    anchor = make_record(
+        "CAPEC-248", name="Command Injection", source="capec", label="AttackPattern",
+        related=[
+            {"id": "capec:attack-pattern:248:consequence:1",
+             "name": "capec:attack-pattern:248:consequence:1", "label": "Consequence",
+             "type": "HAS_CONSEQUENCE",
+             "impacts": '["Modify Data"]', "scopes": '["Integrity"]'},
+            {"id": "capec:attack-pattern:248:consequence:2",
+             "name": "capec:attack-pattern:248:consequence:2", "label": "Consequence",
+             "type": "HAS_CONSEQUENCE",
+             "impacts": '["Read Data"]', "scopes": '["Confidentiality"]'},
+        ],
+    )
+    evidence = make_evidence(
+        [make_result(source="capec", text="What consequences can CAPEC-248 have?",
+                     records=[anchor], summary="Found 1 CAPEC record(s).")]
+    )
+    claim = next(c for c in _compose(evidence).claims if c.kind == "enumeration")
+    assert "named only as text" in claim.text
+    for text in ("Modify Data Integrity", "Read Data Confidentiality"):
+        assert f"\u201c{text}\u201d" in claim.text, claim.text
+    # The internal path stays out of the prose and stays in the grounding.
+    assert "capec:attack-pattern:248:consequence:1" not in claim.text
+    assert "capec:attack-pattern:248:consequence:1" in claim.entity_ids
+
+
+def test_identifiers_and_text_never_appear_in_the_same_list():
+    """The mixed group still adds up, and the two kinds still do not mix."""
+    from utils.synthesis.composer import _enumeration_claim
+
+    anchor = make_record(
+        "CAPEC-248", name="Command Injection", source="capec", label="AttackPattern",
+        related=[
+            {"id": "CAPEC-182", "name": "Flash Injection", "label": "Mixed",
+             "type": "CAN_ALSO_BE"},
+            {"id": "capec:attack-pattern:248:consequence:1",
+             "name": "capec:attack-pattern:248:consequence:1", "label": "Mixed",
+             "type": "HAS_CONSEQUENCE",
+             "impacts": '["Modify Data"]', "scopes": '["Integrity"]'},
+        ],
+    )
+    claim = _enumeration_claim(make_result(source="capec", records=[anchor]), anchor)
+    assert "has 2 " in claim.text
+    identifiers, _, tail = claim.text.partition("; and ")
+    assert "CAPEC-182" in identifiers and "Modify Data" not in identifiers
+    assert tail.startswith("1 named only as text: \u201cModify Data Integrity\u201d")
+    assert set(claim.entity_ids) == {
+        "CAPEC-182", "capec:attack-pattern:248:consequence:1"
+    }
+
+
+def test_an_identifier_only_enumeration_is_unchanged():
+    """The suppression is surgical: nothing happens to a list of real ids."""
+    ids = [f"T{1000 + i}" for i in range(5)]
+    anchor = make_record(
+        "S0266", name="TrickBot", label="Software",
+        related=[{"id": t, "label": "Technique", "type": "USES"} for t in ids],
+    )
+    claim = next(
+        c for c in _compose(make_evidence([make_result(records=[anchor])])).claims
+        if c.kind == "enumeration"
+    )
+    assert "named only as text" not in claim.text
+    assert "\u201c" not in claim.text
+    for t in ids:
+        assert t in claim.text
 
 
 # -- I-16: an absence is judged against the edge the store resolved ----------

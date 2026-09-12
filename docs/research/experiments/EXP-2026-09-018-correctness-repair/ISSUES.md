@@ -517,7 +517,7 @@ The first falls because fewer answers abstain. The second is an answer being
 **more** complete scoring worse, since the gold is deliberately rolled up
 (`_top_level`). The last two are genuine and are recorded below.
 
-## I-15 — Node text in an enumeration reads as an invented identifier (OPEN)
+## I-15 — Node text in an enumeration reads as an invented identifier (RESOLVED 2026-09-12)
 
 114 flags. A CAPEC consequence, execution step or prerequisite has no published
 identifier and its content is text, so the enumeration lists the text. The grader
@@ -525,6 +525,91 @@ reads a list item as an identifier the answer asserted. Splitting the enumeratio
 by neighbour label and separating multi-word items with semicolons (I-14) cut it
 but did not remove it. It costs faithfulness, not correctness — the C0029 case
 scores 1.0 with 24 flags.
+
+**The diagnosis in that paragraph was wrong, and the experiment is what showed
+it.** The plan pre-registered a 12-case judged slice precisely because "does the
+grader stop flagging text once it is quoted and labelled" is empirical. It was
+run, and the answer was **no**: rendering each text item as a labelled quotation
+in its own clause — "has 6 Consequences, named only as text: “Other
+Confidentiality”; …" — moved the class not at all. 18 flags before, 18 after.
+
+Reading what the grader actually wrote settled it:
+
+> "it states the consequence as “Other Confidentiality” … and **the evidence only
+> shows the consequence id/name, not that text**"
+
+The grader was not misparsing a list. It was being handed evidence that did not
+contain the string the claim quoted, and calling the claim ungrounded — which,
+from where it sat, was the correct verdict. `utils/evaluation/generate_e2e.py`
+built the judging view of a related neighbour from an **allow-list** of keys —
+the nine identity fields plus `description`. That is right for a mitigation and
+wrong for every CAPEC node whose prose is stored elsewhere: a Consequence carries
+`scopes` and `impacts` and nothing else, an ExecutionStep its `phase`. The
+composer renders a neighbour from *every* non-identity key it carries, so the two
+views disagreed, and the answer was judged against evidence its own text had been
+stripped out of.
+
+So this was never a grader artefact. It was a **real provenance gap** in the
+evaluation harness, and a class this experiment had twice written off as the
+metric's fault.
+
+**Resolution.** The rule is inverted: identity keys are named, everything else is
+content, bounded by the same helper every other property already used. A node
+kind nobody has seen yet now arrives checkable rather than blank. The quoting
+change is kept — it is right on its own terms, since a quotation cannot be read
+as an asserted identifier by a human either — but it is not what fixed this.
+
+The other half of the step was self-inflicted and did work as expected:
+`_ID_EXAMPLES` ("e.g. T1566, M1017, or CAPEC-98") put three real catalogue
+identifiers into abstaining answers, and the grader flagged them exactly as it
+would flag an invention. The advice survives, the examples are gone, and a test
+asserts no module constant and no answer surface names one.
+
+**Verification** — the 12 most-flagged development answers, `generic_composed`,
+graded in one position against the same cells in `dev-half-2026-09-12`:
+
+| | mean correctness | own id-example | node text as identifier | all flags |
+|---|---|---|---|---|
+| `dev-half-2026-09-12` | 0.9000 | 21 | 18 | 49 |
+| quoting only | 0.8615 | **0** | 18 | 23 |
+| quoting + provenance | 0.8846 | **0** | **0** | 5 |
+
+The two target classes go from 39 to **0** against the plan's bar of ≤ 2, and
+total flags fall from 49 to 5. All five that remain are
+`gold_omits_identifier` — a real identifier the rolled-up gold does not list —
+which is the gold's narrowness and not ours, and the one class this repair was
+never going to touch. Gold-text recall is unmoved on all
+four model-free cells (dev 0.9791 / 0.6814, holdout 0.9788 / 0.6402, zero
+questions regressing). The recorded-answer diff is 50, 37, 45 and 36 answers per
+cell, every change one of the two intended sentences.
+
+**Correctness on the slice is 0.0154 below the baseline, and the plan's bar said
+"not lower".** Reporting it as a miss: ten of the thirteen cases are unchanged,
+one rises 0.2 and two fall 0.2, on a thirteen-case slice whose grader has a
+recorded between-session spread of 0.0503 (`Q46`). The two that fall are worth
+more than the number, because both fall for a reason the fix *created the
+conditions to see*:
+
+* `D2-HAS_CONSEQUENCE-CAPEC-295` — **faithfulness 0.8 → 1.0**, the provenance gap
+  closed exactly as intended and the "evidence does not contain that name"
+  complaint gone. Correctness 0.6 → 0.4, because the grader can now compare our
+  "Other Confidentiality" against the catalogue's "Confidentiality Other" and say
+  precisely which is wrong. That is **I-17**, and it was previously hidden behind
+  the provenance gap.
+* `D4-ChildOf-HAS_EXECUTION_STEP-CAPEC-635` — a pre-existing complaint, that the
+  steps are attributed to the anchor rather than to the pattern they were reached
+  through, scored 0.9 → 0.7 on the same evidence.
+
+So the step met its flag bar and missed its correctness bar by less than a third
+of the instrument's own drift, and what it exchanged was an unattributable flag
+class for a named, recorded defect. That is the better position to be in, but it
+is a miss and the paired control is where it gets a real reading.
+
+**The intermediate row is worth keeping.** Quoting alone *cost* 0.0458 while
+removing nothing — invisible had the step gone straight to a full run, and the
+reason the plan grades a named slice before anything larger.
+
+See also [I-17](#i-17), found while fixing this and deliberately left open.
 
 ## I-16 — A false absence claim names the question's edge, not the store's (RESOLVED 2026-09-12)
 
@@ -599,3 +684,49 @@ creates the link *inside* the checked-out directory and the schema registry
 discovers no datasets: the run completes and reports 33/288 with "no specialist
 for source 'attack'" on the rest. Symlink the *subdirectories* of `data/`
 instead, and check `ok == count` before believing any reference number.
+
+## I-17 — Our answers state the catalogue's text in an order the catalogue does not use (OPEN)
+
+**Found while fixing I-15; not fixed here, because the fix is a build change.**
+
+A CAPEC Consequence is `<Scope>…</Scope><Impact>…</Impact>` in the XML, and the
+gold set records the element's own text in document order — "Confidentiality
+Other", "Authorization Execute Unauthorized Commands Run Arbitrary Code". The
+loader splits that into two list properties, `scopes` and `impacts`, and the
+composer flattens a neighbour's content by iterating its keys **alphabetically**,
+so `impacts` leads and the answer says "Other Confidentiality". Same content,
+inverted order, on every consequence in the bank.
+
+The grader notices: "it states the consequence as “Other Confidentiality” rather
+than the expected “Confidentiality Other”". The cheap gold-text proxy does not,
+because it matches long items by word recall — which is exactly the kind of
+tolerance that hides a real difference, and is worth remembering when reading
+that proxy anywhere else.
+
+**Why it is not fixed in the close-out.** Ordering `scopes` before `impacts` in
+`utils/synthesis/composer.py` would put CAPEC-specific knowledge in the generic
+renderer, which is the thing that renderer exists to avoid. The principled fix is
+in the builder: have a derived node carry the catalogue's own composed `text`
+property, as `utils/specialists/evalset/raw_graph.py` already does for the gold,
+and let the composer's existing generic flattening pick it up — after which our
+string and the gold's are the same string by construction. That is a build-policy
+change and needs a wipe-and-reload of both live stores before anything is
+measured against it (see the live-fixture note), so it does not belong between
+two arms of a paired control.
+
+**What it costs.** Now partly measured, because fixing I-15's provenance gap is
+what made it visible. On `D2-HAS_CONSEQUENCE-CAPEC-295` the grader's verdict
+moved from "the evidence does not contain that name" (faithfulness 0.8) to "it
+does not state the expected consequence 'Confidentiality Other'" (faithfulness
+1.0, correctness 0.6 → 0.4). The gold's `must_include_related` for every CAPEC
+consequence, execution step and skill is composed this way, so the exposure is
+every `text_set` question in both banks — 6 of the 12 cases on the I-15 slice
+carry at least one.
+
+**Why it is still not fixed.** The change is in the graph build, and a build
+change needs a wipe-and-reload of both live stores before anything is measured
+against it. Doing that between the two arms of a paired control would mean the
+reference side and the repaired side saw different data, which is the one thing
+a paired control exists to prevent. It is a decision for the operator: fix it
+before Step 3 and reload both stores so both sides see it, or ship the close-out
+with it recorded and measure it separately afterwards.

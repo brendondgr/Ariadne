@@ -57,8 +57,16 @@ def _enum_bound(name: str, default: int) -> int:
 
     return env_int(f"SYNTHESIS_{name}", default)
 
-# Example ids offered when asking the analyst to disambiguate by identifier.
-_ID_EXAMPLES = "e.g. T1566, M1017, or CAPEC-98"
+# How to ask the analyst to disambiguate by identifier — WITHOUT naming any.
+#
+# This used to read "e.g. T1566, M1017, or CAPEC-98", and those three real
+# identifiers were the single largest source of hallucination flags against the
+# repaired arm: 58 of `generic`'s 291 on the development half and 96 of the
+# template arm's 308. The grader has no way to tell an example from an
+# assertion — the sentence puts three catalogue identifiers into an answer whose
+# subject is something else entirely — and it was right to flag them. The advice
+# survives; the examples do not. See I-15.
+_CATALOGUE_ID = "catalogue id"
 
 # Markers of a clean, source-availability unsupported reason authored by the
 # deterministic drafter (safe to surface verbatim). Anything else is treated as
@@ -117,11 +125,13 @@ def _sources_phrase(evidence: FederatedEvidence) -> str:
     return "the live " + ", ".join(routed[:-1]) + f" and {routed[-1]} graphs"
 
 
-def _id_hint(evidence: FederatedEvidence) -> str:
-    """`" or tell me its id (…)"`-style clause, only where ids mean something."""
-    if any(s in _ID_BEARING_SOURCES for s in _routed_sources(evidence)):
-        return f" ({_ID_EXAMPLES})"
-    return ""
+def _ids_are_quotable(evidence: FederatedEvidence) -> bool:
+    """Is "give me its id" advice an analyst could actually follow here?
+
+    False on a source keyed by opaque GUIDs, where the instruction cannot be
+    carried out and names a catalogue that was never consulted.
+    """
+    return any(s in _ID_BEARING_SOURCES for s in _routed_sources(evidence))
 
 
 def _name_lookup_terms(evidence: FederatedEvidence) -> tuple[str, ...]:
@@ -199,7 +209,7 @@ def _name_miss_statement(source: str, names: tuple[str, ...]) -> str:
     if source in _ID_BEARING_SOURCES:
         return (
             f"No entity named {quoted} was found in the {source} source. Check the "
-            f"name, or give its id ({_ID_EXAMPLES})."
+            f"name, or give its {_CATALOGUE_ID}."
         )
     return f"No entity named {quoted} was found in the {source} source. Check the name."
 
@@ -1164,6 +1174,38 @@ def _related_by_label(record: EvidenceRecord) -> list[list[dict]]:
     return [g for g in groups.values() if g]
 
 
+def _enumeration_text(
+    anchor: str,
+    total: int,
+    noun: str,
+    scope: str,
+    parts: list[str],
+    quoted: list[str],
+    sep: str,
+) -> str:
+    """One sentence for identifiers, one clause for text, never one list.
+
+    Groups are split by neighbour label before they get here, so in practice a
+    group is all identifiers (AttackPatterns, Techniques) or all text (CAPEC
+    Consequences, ExecutionSteps). The mixed case still has to read correctly
+    and still has to add up, so it states the total, lists the identifiers, and
+    says how many of the set are named only as text.
+    """
+    head = f"{anchor} has {total} {noun}{scope}"
+    if parts and not quoted:
+        return f"{head}: {sep.join(parts)}."
+    if quoted and not parts:
+        # "named only as text" is the honest description: the catalogue
+        # publishes no identifier for these nodes, so the text is the answer.
+        return f"{head}, named only as text: {'; '.join(quoted)}."
+    if parts and quoted:
+        return (
+            f"{head}: {sep.join(parts)}; and {len(quoted)} named only as text: "
+            f"{'; '.join(quoted)}."
+        )
+    return f"{head}."
+
+
 def _enumeration_claim(
     result: SpecialistResult,
     record: EvidenceRecord,
@@ -1180,6 +1222,7 @@ def _enumeration_claim(
     """
     ids: list[str] = []
     parts: list[str] = []
+    quoted_parts: list[str] = []
     seen: set[str] = set()
     entries = record.related if related is None else related
     for rel in entries:
@@ -1202,12 +1245,16 @@ def _enumeration_claim(
         role = rel.get("role")
         via = rel.get("via")
         shown = _related_display(rel)
+        # A published identifier and a node's text are different kinds of thing
+        # and must not share a list — see below.
+        published = not _is_composite_child(rid)
+        if not published:
+            shown = f"\u201c{shown}\u201d"
         if via and via != rid:
-            parts.append(f"{shown} (via {via})")
+            shown = f"{shown} (via {via})"
         elif role:
-            parts.append(f"{shown} ({role})")
-        else:
-            parts.append(shown)
+            shown = f"{shown} ({role})"
+        (parts if published else quoted_parts).append(shown)
         if len(ids) >= _enum_bound("MAX_ENUMERATION_IDS", _MAX_ENUMERATION_IDS):
             break
     noun = _related_noun(record, len(ids), entries)
@@ -1242,8 +1289,17 @@ def _enumeration_claim(
     # scope and impact, rendered as text because the node has no published id —
     # were recorded as invented identifiers in three answers. A semicolon keeps
     # a multi-word item legible as one item rather than two.
+    #
+    # I-15: separating them by punctuation was not enough. A CAPEC consequence,
+    # execution step, prerequisite or indicator has no published id — its text
+    # IS its identity — and any item sitting where identifiers sit gets parsed
+    # as an asserted identifier, which cost 47 of the LLM arm's 291 flags on the
+    # development half and made one answer score 1.0 with 24 of them. So the two
+    # kinds never share a list: identifiers keep theirs, and text is quoted and
+    # given its own clause, where neither a reader nor a grader can mistake a
+    # quotation for a claim about an identifier.
     sep = "; " if any(" " in part for part in parts) else ", "
-    text = f"{anchor} has {len(ids)} {noun}{scope}: {sep.join(parts)}."
+    text = _enumeration_text(anchor, len(ids), noun, scope, parts, quoted_parts, sep)
     return Claim(
         text=text,
         citations=(
@@ -1492,8 +1548,8 @@ def _unsupported_note(part: dict[str, str], request: str) -> str:
         return f"Unsupported by the available sources: {desc or request} ({reason})"
     return (
         f"The available graph sources could not be matched to this request: "
-        f"'{request}'. If you meant a specific entity, name it or give its id "
-        f"({_ID_EXAMPLES})."
+        f"'{request}'. If you meant a specific entity, name it or give its "
+        f"{_CATALOGUE_ID}."
     )
 
 
@@ -1516,18 +1572,21 @@ def _clarification_narrative(
         else ()
     )
     where = _sources_phrase(evidence)
-    hint = _id_hint(evidence)
+    quotable = _ids_are_quotable(evidence)
     if names:
         quoted = " or ".join(f"'{n}'" for n in names)
-        tail = f", or tell me the entity's id{hint} and I'll look it up" if hint else ""
+        tail = (
+            f", or tell me the entity's {_CATALOGUE_ID} and I'll look it up"
+            if quotable else ""
+        )
         return f"I couldn't find {quoted} in {where}. Check the name{tail}."
     if abstentions:
-        tail = f" or give its id{hint}" if hint else ""
+        tail = f" or give its {_CATALOGUE_ID}" if quotable else ""
         return (
             f"The routed sources returned no matching records for this question. "
             f"If you're after a specific entity, name it{tail}."
         )
-    tail = f" or give its id{hint}" if hint else ""
+    tail = f" or give its {_CATALOGUE_ID}" if quotable else ""
     return (
         f"None of the live graph sources cover this request. If you meant a "
         f"specific entity, name it{tail}."

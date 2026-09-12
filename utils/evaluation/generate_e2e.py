@@ -104,14 +104,42 @@ def _bounded_properties(properties: Any) -> dict[str, Any]:
     return out
 
 
+#: Keys a related entry carries for IDENTITY and provenance rather than content.
+#: Everything else is the neighbour's content and must reach the judge — see
+#: `_record_dict`.
+_RELATED_IDENTITY_KEYS = frozenset(
+    # ``via`` is the hop a chained neighbour was reached THROUGH. Without it the
+    # judge sees two sets and no mapping — five tools and 34 techniques, nothing
+    # saying which tool reached which — which is the gap a narrator filled by
+    # inventing one (EXP-2026-09-018 ISSUES I-8).
+    {"id", "entry_id", "name", "label", "step", "role", "abstraction", "type",
+     "direction", "via"}
+)
+
+
 def _record_dict(r: EvidenceRecord) -> dict[str, Any]:
     """A judging-oriented view of one record: identity + its neighbours' text.
 
-    Keeps each related neighbour's *description* — the actual step / mitigation /
+    Keeps each related neighbour's content — the actual step / mitigation /
     consequence prose — plus the record's own bounded ``properties`` (so an
     attribute question's answer is checkable) and the ``facets`` adjacency counts
-    (so a "how many sub-techniques" claim is grounded). These last two were
-    dropped before, which under-served the judge, not the pipeline.
+    (so a "how many sub-techniques" claim is grounded).
+
+    **The content keys were an allow-list until 2026-09-12, and that was I-15.**
+    It named ``description`` and nine identity fields, which is right for a
+    mitigation and wrong for every CAPEC node whose prose is stored elsewhere: a
+    Consequence carries ``scopes`` and ``impacts`` and nothing else, an
+    ExecutionStep its ``phase``. The composer renders a neighbour from *every*
+    non-identity key it carries, so an answer said "CAPEC-295 has 1 consequence:
+    Other Confidentiality" over evidence that reached the judge as nothing but
+    ``capec:attack-pattern:295:consequence:1``. The judge flagged the text as
+    unsupported, and it was right to: from where it sat, the claim had no
+    warrant. That accounted for the "node text read as an identifier" class,
+    which is not a grader artefact at all but a real provenance gap.
+
+    So the rule is inverted. Identity keys are named; everything else is
+    content, bounded and passed through, and a node kind nobody has seen yet
+    arrives checkable rather than blank.
     """
     props = _bounded_properties(r.properties)
     related = []
@@ -119,18 +147,10 @@ def _record_dict(r: EvidenceRecord) -> dict[str, Any]:
         if not isinstance(rel, dict):
             related.append({"value": _bound(rel, 200)})
             continue
-        entry = {
-            k: rel.get(k)
-            # ``via`` is the hop a chained neighbour was reached THROUGH. Without
-            # it the judge sees two sets and no mapping — five tools and 34
-            # techniques, nothing saying which tool reached which — which is the
-            # gap a narrator filled by inventing one (EXP-2026-09-018 ISSUES I-8).
-            for k in ("id", "entry_id", "name", "label", "step", "role",
-                      "abstraction", "type", "direction", "via")
-            if k in rel
-        }
-        if rel.get("description"):
-            entry["description"] = _bound(rel["description"])
+        entry = {k: rel.get(k) for k in rel if k in _RELATED_IDENTITY_KEYS}
+        entry.update(_bounded_properties(
+            {k: v for k, v in rel.items() if k not in _RELATED_IDENTITY_KEYS}
+        ))
         related.append(entry)
     return {
         "primary_id": r.primary_id,

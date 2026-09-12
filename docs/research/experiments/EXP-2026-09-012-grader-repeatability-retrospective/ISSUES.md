@@ -134,3 +134,24 @@ named on 2026-09-11 — hash the sidecar *set* this experiment reads rather than
 the tree it lives in — is still the right one and is still not done. It is now
 the single largest source of pointless churn in the record, and the remaining
 close-out steps will each move it again.
+
+## 2026-09-12 (third) — Fourth re-hash in two days; step 2 of the close-out added three more captures
+
+**Impact:** none on any recorded number, for the reason the four entries above
+give.
+
+**Cause:** `EXP-2026-09-018`'s close-out step 2 (I-15) wrote `i15-full-2026-09-12`
+(both banks, both model-free arms) and the two 12-case acceptance slices
+`i15-slice-2026-09-12` and `i15-slice2-2026-09-12`.
+
+**This one is not sidecar-free.** The two slices were *graded* — 24 judgment
+sidecars in one position — so the candidate count rises from **31,566** to
+**31,592**. Those sidecars sit in two new capture directories and form new
+cells; they add nothing to the 218 cells `data/recompute-audit.json` audited,
+and every cell below the 20-judgment floor is dropped by this experiment's own
+rule in any case. The audited population is unchanged.
+
+**Resolution:** re-hashed, superseded hash kept inline. Fourth time in two days,
+and this entry is the first where the tree's *sidecar* count moved as well — so
+the fix named on 2026-09-11 would not have avoided this particular re-hash, only
+the three before it. It remains worth doing.

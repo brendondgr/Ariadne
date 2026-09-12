@@ -77,3 +77,44 @@ def test_bounded_properties_trims_long_list():
 def test_record_cap_matches_narrator():
     """The record cap is lifted to the narrator's 50 so nothing it saw is hidden."""
     assert _MAX_RECORDS_PER_RESULT == 50
+
+
+def test_a_neighbour_whose_content_is_not_a_description_still_reaches_the_judge():
+    """I-15. The content keys were an allow-list, and it named only `description`.
+
+    That is right for a mitigation and wrong for every CAPEC node whose prose
+    lives elsewhere: a Consequence carries `scopes` and `impacts` and nothing
+    else, an ExecutionStep its `phase`. The composer renders a neighbour from
+    every non-identity key it carries, so the answer said "CAPEC-295 has 1
+    consequence: Other Confidentiality" over evidence that reached the judge as
+    nothing but `capec:attack-pattern:295:consequence:1` — and the judge flagged
+    the text as unsupported, correctly, because from where it sat the claim had
+    no warrant. Identity keys are named; everything else is content.
+    """
+    out = _record_dict(_record(related=[
+        {"id": "capec:attack-pattern:295:consequence:1",
+         "name": "capec:attack-pattern:295:consequence:1",
+         "label": "Consequence", "type": "HAS_CONSEQUENCE",
+         "scopes": ["Confidentiality"], "impacts": ["Other"]},
+        {"id": "capec:attack-pattern:568:step:1", "label": "ExecutionStep",
+         "step": "1", "phase": "Explore",
+         "description": "Determine which user's credentials to capture."},
+    ]))
+    consequence, step = out["related"]
+    assert consequence["scopes"] == ["Confidentiality"]
+    assert consequence["impacts"] == ["Other"]
+    # Identity keys keep their place, and the step's own position still leads.
+    assert consequence["type"] == "HAS_CONSEQUENCE"
+    assert step["step"] == "1" and step["phase"] == "Explore"
+    assert step["description"].startswith("Determine which user")
+
+
+def test_related_content_is_bounded_like_every_other_property():
+    """Inverting the rule must not let one neighbour flood the judge's prompt."""
+    out = _record_dict(_record(related=[
+        {"id": "x:1", "label": "Consequence", "scopes": [str(i) for i in range(50)],
+         "impacts": "z" * 5000},
+    ]))
+    entry = out["related"][0]
+    assert len(entry["scopes"]) <= 11 and "more)" in entry["scopes"][-1]
+    assert len(entry["impacts"]) < 5000

@@ -1,0 +1,30 @@
+{
+ "case_id": "D6-HAS_MEMBER-MAPS_TO[ATTACK]-CAPEC-703-a8f98a::formal",
+ "verdict": "PARTIAL",
+ "correctness": 0.9,
+ "faithfulness": 0.8,
+ "groundedness": 0.85,
+ "completeness": 1.0,
+ "gold_expected": 50,
+ "gold_present": 50,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": true,
+ "hallucinations": [
+  "T1513",
+  "T1562.002",
+  "T1562.003",
+  "T1562.008",
+  "Non-ATT&CK OWASP/WASC mappings are included in ATT&CK mapping counts"
+ ],
+ "rationale": "The answer correctly identifies CAPEC-703 and states all 50 expected ATT&CK techniques, including T1014, T1036.006, T1566.001, and T1598.003. However, it adds ATT&CK mappings not in the expected set, such as T1513 for CAPEC-648 and T1562.002/T1562.003/T1562.008 for CAPEC-268. It also mixes OWASP/WASC entries into ATT&CK mapping statements, so it is complete but only partially faithful and grounded.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": true,
+  "position": 1
+ }
+}

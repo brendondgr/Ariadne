@@ -1,0 +1,24 @@
+{
+ "case_id": "D0-View-REQUIRES_RESOURCE-CAPEC-659-d996d5::formal",
+ "verdict": "CORRECT",
+ "correctness": 1.0,
+ "faithfulness": 1.0,
+ "groundedness": 1.0,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The capec query seeded with CAPEC-659 executed cleanly and returned row_count 0, so the abstention that the source does not establish required resources is supported. The answer includes CAPEC-659 in the abstention statement and shows the executed query, satisfying the honest-abstention rule. No resource identifiers or cross-source mappings are asserted, so there is no hallucination or fabricated mapping.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 8192,
+  "escalated": false,
+  "position": 1
+ }
+}

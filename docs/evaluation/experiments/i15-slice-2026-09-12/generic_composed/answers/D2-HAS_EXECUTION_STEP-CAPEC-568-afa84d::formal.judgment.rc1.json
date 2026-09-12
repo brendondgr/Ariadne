@@ -1,0 +1,30 @@
+{
+ "case_id": "D2-HAS_EXECUTION_STEP-CAPEC-568-afa84d::formal",
+ "verdict": "PARTIAL",
+ "correctness": 0.8,
+ "faithfulness": 0.75,
+ "groundedness": 0.8,
+ "completeness": 0.8,
+ "gold_expected": 5,
+ "gold_present": 5,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "Explore 1",
+  "Experiment 2",
+  "Experiment 3",
+  "Experiment 4",
+  "Exploit 5"
+ ],
+ "rationale": "The answer correctly identifies CAPEC-568 and enumerates all five execution steps, capec:attack-pattern:568:step:1 through capec:attack-pattern:568:step:5. However, it adds step-type labels such as Explore, Experiment, and Exploit that are not present in the shown CAPEC-568 related records. It also truncates the expected step text for step 2 and step 4, so it is partial rather than fully faithful and complete.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 8192,
+  "escalated": false,
+  "position": 1
+ }
+}
