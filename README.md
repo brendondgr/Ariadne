@@ -5,13 +5,18 @@
        alt="Ariadne — a teal and gold node-link graph inside a letter A. Live, read-only federated querying across cybersecurity knowledge graphs that don't share a query language, planned, queried and cited per engine. Written in Python, TypeScript and Shell, on LangGraph, FastAPI, Neo4j, Gremlin, Next.js and Docker." />
 </p>
 
-Cybersecurity teams increasingly rely on knowledge graphs to represent adversary techniques, attack patterns, and mitigations — but those sources live on different engines with different schemas and query languages, so cross-source correlation today usually means manual lookups or an offline ETL into one graph. Most existing federation approaches assume a single engine or require that translation step up front.
+<!-- The banner carries a tagline that says the same thing as the sentence below.
+     If you change what Ariadne is, change both: the tagline lives in TAGLINE in
+     scripts/make_header.py, which regenerates images/header.svg and its alt text. -->
+Ariadne answers a security analyst's question across live cybersecurity knowledge graphs that do not share a query language, and every claim it returns cites the record and the query behind it.
 
-Ariadne instead reads schema and metadata from each **live** source and routes queries natively per engine — Cypher against Neo4j, Gremlin against a Neptune-style server — reconciling results by shared identifiers (ATT&CK technique IDs, CAPEC IDs) rather than a shared index. Every claim in the answer cites a retrieved record and the query that produced it, and the system abstains rather than guesses when a request falls outside the declared schema. Grounding comes entirely from schema descriptions, source metadata, and executed queries; **no vector index or embedding store** is built from the graph data. Named after Ariadne — who guided Theseus through the labyrinth — it threads adversary-technique, attack-pattern, and mitigation graphs into one provenance-linked answer.
+Adversary-technique, attack-pattern, and mitigation graphs sit on different engines with different schemas, so correlating them usually means manual lookups or an offline merge into one store. Ariadne instead reads each source's schema at query time and routes natively per engine — Cypher to Neo4j, Gremlin to a Neptune-style server — reconciling results on shared identifiers (ATT&CK technique IDs, CAPEC IDs) rather than on a shared index. There is **no vector index or embedding store** over the graph data. When a question falls outside a source's declared schema the system abstains and shows the query it ran. The name is the thread through the labyrinth.
 
-**Funded by:** ReliaQuest Innovation Challenge Fund — Challenge Three: Knowledge Graph Integration (award period June 8 – October 23, 2026)
+If you want to **use** it, start at [Quick Start](#quick-start). If you want to **reproduce the measurements**, start at [Reproducing the Results](#reproducing-the-results).
 
-## Research record
+**Contents** — [Research Record](#research-record) · [What Actually Runs](#what-actually-runs) · [Demo](#demo) · [Quick Start](#quick-start) · [Configuration](#configuration) · [Architecture](#architecture) · [Key Features](#key-features) · [Results](#results) · [Reproducing the Results](#reproducing-the-results) · [Data](#data) · [Challenges & Design Decisions](#challenges--design-decisions) · [Status](#status) · [Documentation](#documentation) · [Repository Layout](#repository-layout) · [Roadmap](#roadmap--week-by-week) · [Team & Funding](#team--funding) · [Contributing](#contributing) · [Citation](#citation) · [License](#license)
+
+## Research Record
 
 This is a research repository. All experiments, results, figures, and findings
 live in [`docs/research/`](docs/research/). Nothing that will appear in a paper
@@ -22,7 +27,7 @@ is recorded anywhere else. Before running an experiment, read
   <img src="docs/assets/architecture.svg" alt="Ariadne federated query flow: an analyst question is planned into source-assigned sub-questions and graded by a deterministic gate, retrieved by per-source Cypher and Gremlin specialists over Neo4j and TinkerPop in an assess-and-re-plan loop, joined on shared identifiers, then composed, verified, and narrated into an answer or an abstention" width="100%">
 </p>
 
-## What actually runs
+## What Actually Runs
 
 Ariadne is **deterministic by default, with LLM seams that are opt-in and individually backstopped**. This is a design decision the project's own evaluation supports (see [Results](#results)), and the table below names each seam and its default in the detail the diagram above only labels:
 
@@ -30,10 +35,45 @@ Ariadne is **deterministic by default, with LLM seams that are opt-in and indivi
 |---|---|---|
 | **Planning** | Deterministic drafter: intent classified by a closed regex taxonomy, sources and entities matched against schema labels from the source cards, plan checked by a deterministic self-eval gate ([`utils/planner/`](utils/planner/)) | `ARIADNE_LLM_ENABLED` (default `false`) swaps in an LLM drafter, always backstopped by the deterministic one; `--plan-llm` / `--query-llm` enable it per invocation |
 | **Query construction** | **Deterministic on every shipped path.** An if-cascade over **29 distinct query-template identifiers** (20 in the Cypher builder, 14 in the Gremlin builder, 5 shared), of which **20 are exercised by the 120-question bank**; `ambiguous-name` and `unanchored` are refusal outcomes rather than queries. Derived on 2026-09-09 and recorded in [`EXP-2026-07-011`](docs/research/experiments/EXP-2026-07-011-portability-audit/) A-1. Each is validated against the source card before execution ([`utils/specialists/cypher/builder.py`](utils/specialists/cypher/builder.py), [`gremlin/builder.py`](utils/specialists/gremlin/builder.py)). Counts derived mechanically by [`docs/plans/robustness/_overnight/derive_templates.py`](docs/plans/robustness/_overnight/derive_templates.py), not read off prose | **Off by default, and it exists only as a baseline.** `SPECIALIST_LLM_QUERY_BUILDER` (default `false`) hands a model the schema and lets it write the Cypher or Gremlin itself ([`utils/specialists/llm_builder.py`](utils/specialists/llm_builder.py)). It was built to be measured against, not to be run: it scores **0.5000** where the template cascade scores **0.9467** on the same unseen questions |
-| **Retrieval loop** | `assess → re-plan → specialists`, capped at `ORCH_MAX_HOPS` — **code default 5, but the committed `.env` pins it to `1`, which makes the loop inert on a default local run.** Every arm that measures the loop sets `5` explicitly. Deterministic sufficiency judge over join closure ([`utils/orchestration/`](utils/orchestration/)) | `ORCH_ASSESS_MODE=llm` swaps in a "what's missing" critic with clean fallback; `ORCH_CHASE_FACETS` (default off) extends the frontier to un-fetched facets |
+| **Retrieval loop** | `assess → re-plan → specialists`, capped at `ORCH_MAX_HOPS` — **code default 5, but the committed `.env` pins it to `1`, which makes the loop inert on a default local run.** Every arm that measures the loop sets `5` explicitly. Deterministic sufficiency judge over join closure ([`utils/orchestration/`](utils/orchestration/)) | `ORCH_ASSESS_MODE=llm` selects a "what's missing" critic, but nothing injects one today ([`utils/orchestration/main.py`](utils/orchestration/main.py) builds the assess node with no `critic=`), so the mode degrades to the deterministic judge and records the fallback; `ORCH_CHASE_FACETS` (default off) extends the frontier to un-fetched facets |
 | **Synthesis** | **Claims are composed deterministically on every shipped path** and every one is checked against the retrieved evidence by an unconditional verifier — uncited or ungrounded claims are cut, honest empties become abstentions carrying the executed query as proof ([`utils/synthesis/`](utils/synthesis/)) | `ARIADNE_LLM_ENABLED` (default `false`) lets an LLM rewrite the **narrative prose** over the already-verified claims; it cannot add a claim. `SYNTHESIS_LLM_CLAIMS` (default `false`) lets a model *propose* claims — kept as an instrument, never as a default, because it is 67× slower and loses 0.1367 of grounding. It is the only configuration in which the verifier's gates have anything to cut |
 
 Every LLM-off path is byte-reproducible, which is what makes the committed evaluation reports citable.
+
+## Demo
+
+A federated question, the plan it produced, the query one specialist ran, and the answer. The
+question, plan, Gremlin query, headline, and narrative are quoted from a committed evaluation
+artifact — [`docs/evaluation/answers/F-CTM-03.json`](docs/evaluation/answers/F-CTM-03.json),
+deterministic composer, no model in the path — and the layout is this README's.
+
+```bash
+uv run main.py --query "Which ATT&CK techniques does CAPEC-593 (Session Hijacking) map to, and what mitigations apply to those techniques?"
+```
+
+```text
+plan    q1  capec   Which ATT&CK techniques does CAPEC-593 map to?
+        q2  attack  What mitigations does ATT&CK list for those mapped techniques?  [seeded from q1]
+
+query   capec · gremlin · template capec_maps_to · gate ok
+        g.V().hasLabel("AttackPattern").has("id", within(ids)).as("ap")
+         .out("MAPS_TO").hasLabel("TaxonomyEntry").has("taxonomy_name","ATTACK")
+         .as("tax").select("ap","tax").by(elementMap()).limit(300)
+
+answer  Gathered 4 record(s) from 2 source(s); 3 cross-source correlation(s) on shared identifiers.
+
+        CAPEC-593 (Session Hijacking) maps to ATT&CK techniques T1185 (Browser Session
+        Hijacking), T1550.001 (Application Access Token), and T1563 (Remote Service Session
+        Hijacking). Mitigations for T1185 include User Account Management (M1018) and User
+        Training (M1017). T1563 is mitigated by Disable or Remove Feature or Program (M1042),
+        Privileged Account Management (M1026), User Account Management (M1018), Password
+        Policies (M1027), and Network Segmentation (M1030). [...]
+
+claims  5, each carrying its source and primary id
+```
+
+<!-- TODO: add a workbench screenshot (chat view and graph explorer) to images/ and
+     reference it here; no screenshot exists in the repo today. -->
 
 ## Quick Start
 
@@ -105,7 +145,38 @@ cd web && npm install && npm run dev
 
 </details>
 
-All settings live in a single git-ignored `.env` (`cp .env.example .env` — every value defaults to current behavior). Repository navigation map and output-artifact tables: [`docs/structure.md`](docs/structure.md).
+## Configuration
+
+Every setting lives in one git-ignored `.env` (`cp .env.example .env`). The committed example is
+annotated with what reads each key and where, and every value in it produces current behavior.
+The keys that matter most:
+
+| Variable | Default | Meaning |
+|---|---|---|
+| `ATTACK_VERSION` · `CAPEC_VERSION` | `19.0` · `3.9` | MITRE source versions downloaded and built; the sha256 pin is taken against these |
+| `ARIADNE_DATA_DIR` | `data` | Root for raw downloads, processed pairs, and graph artifacts |
+| `NEO4J_VERSION` · `GREMLIN_VERSION` | `5.26` · `3.8.0` | Pinned Docker images for the local stack |
+| `NEO4J_HTTP_PORT` · `NEO4J_BOLT_PORT` · `GREMLIN_PORT` | `5455` · `5456` · `6455` | Host ports the stack publishes. Changing Bolt or Gremlin means changing the matching URI below |
+| `NEO4J_URI` · `GREMLIN_URI` | `bolt://localhost:5456` · `ws://localhost:6455/gremlin` | Where the specialists connect |
+| `NEO4J_USER` · `NEO4J_PASSWORD` · `NEO4J_AUTH` | `neo4j` · `password` · `neo4j/password` | Local Neo4j credentials; all three must agree |
+| `ARIADNE_LOAD_BATCH_SIZE` | `500` | Rows per write batch when loading artifacts into a live store |
+| `ARIADNE_LLM_ENABLED` | `false` | Master switch for the optional LLM seams: the planner drafter and the narrator over verified claims |
+| `ARIADNE_LLM_BASE_URL` · `ARIADNE_LLM_MODEL` | `http://localhost:9090/v1` · `default-model` | The OpenAI-compatible endpoint and the model name it serves |
+| `ARIADNE_LLM_MAX_TOKENS` · `ARIADNE_LLM_THINKING_BUDGET` | `4096` · `0` | Completion budget, and how much of it a reasoning model may spend before answering. The budget must stay below the ceiling, and a local server caps both at `n_ctx - prompt_tokens` |
+| `ARIADNE_LLM_TIMEOUT_S` | `30.0` | Per-call timeout; a timeout falls back to the deterministic path |
+| `SPECIALIST_LLM_QUERY_BUILDER` | `false` | Lets a model write the Cypher or Gremlin itself. A measured baseline, not a supported path |
+| `SYNTHESIS_LLM_CLAIMS` | `false` | Lets a model propose claims rather than only narrate verified ones |
+| `CONVERSATION_LLM_ENABLED` | `false` | The workbench's threaded-chat graph: router, memory-grounded answers, auto-titling |
+| `CONVERSATION_QUICK_ANSWER` · `CONVERSATION_HISTORY_TURNS` | `true` · `12` | Whether the router may answer from memory, and how many prior turns it sees |
+| `ORCH_MAX_HOPS` | `1` in `.env.example`, **`5` in code** | Cap on `assess → re-plan → specialists` iterations. At `1` the loop is inert. Set it explicitly, so what you ran is recorded |
+| `ORCH_ASSESS_MODE` | `deterministic` | Sufficiency judge. `llm` is wired end to end except for the critic itself, so it currently degrades back to the deterministic judge |
+| `ORCH_CHASE_FACETS` · `ORCH_MAX_FACET_EXPANSIONS` | `false` · `4` | Whether a re-plan hop may expand un-fetched facets, and how many per hop |
+| `PIPELINE_TIMEOUT_S` · `ORCH_RECURSION_LIMIT` | `120` · `200` | Wall-clock and LangGraph step ceilings for one question |
+| `EVAL_LLM_SAMPLE_SIZE` | `20` | Questions per run when the end-to-end evaluation uses a judge |
+
+The remaining keys — the merged-graph counterfactual ports, the name-search flag, the checkpointer —
+are documented in [`.env.example`](.env.example) beside the code path that reads them. Repository
+navigation map and output-artifact tables: [`docs/structure.md`](docs/structure.md).
 
 ## Architecture
 
@@ -123,7 +194,7 @@ The planner emits a CAPEC sub-task and an ATT&CK sub-task → the **Gremlin** sp
 
 Full component contracts: [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) (every stage, with the env vars it reads) and [`docs/agent-interfaces.md`](docs/agent-interfaces.md) (the four frozen seams).
 
-## Tech Stack
+### Tech Stack
 
 | Layer | Technology |
 |-------|------------|
@@ -136,14 +207,14 @@ Full component contracts: [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) (every 
 
 ## Key Features
 
-- **Plan-first routing** — the planning agent emits a structured, machine-checkable plan before any specialist runs a query, and a deterministic gate rejects plans that don't validate against the source cards.
-- **Bounded, validated queries** — every query is a read-only template gated against the card's declared labels, relationship types, row cap, and traversal depth before execution. A task naming an entity the card doesn't model returns an honest empty with a `boundary` trace instead of silently answering a different question.
-- **Verified answers, not generated ones** — claims are composed from the evidence and checked by an unconditional verifier; unsupported claims are cut and kept visible, and abstentions carry the executed query as proof.
-- **Reproducible graph artifacts** — a canonical (JSONL + schema + manifest) → export (Neo4j CSV/Cypher, Gremlin JSONL) → runtime layering, sha256-pinned to the raw source, with a fixture-QA harness that reconciles raw == manifest == live before agents ever query it.
-- **Self-healing pipeline runner** (`--yolo-all`) — classifies failures as stale-state (auto-backup + rebuild), transient (retry with backoff), or needs-human (surfaced, not crashed on), instead of failing the whole run on the first error.
-- **Memory-inclusive chat threads** — the workbench is a threaded chat: persisted conversations in a date-grouped sidebar (stdlib-SQLite, LLM auto-titled), cross-turn memory so a follow-up ("tell me more about T1598") resolves from prior turns, and a router that answers from memory when it can or re-queries the graphs when it must — with the grounded Answer Card kept as the trust surface beneath every reply.
-- **Analyst web workbench** — a Next.js app with three surfaces: a **chat view** streaming the live plan → query → evidence → answer pipeline, an **interactive graph explorer** (switch between the ATT&CK/Neo4j and CAPEC/Gremlin graphs, render every node and edge on canvas, search, filter by node/relationship type, inspect any element's properties), and an **evaluation view** that renders the committed component + end-to-end reports and can re-run the end-to-end evaluation live.
-- **A launcher that proves the stack** — `uv run app.py` preflights everything the pipeline needs (toolchain, ports, source cards, both graph backends, the LLM endpoint, and a compile of the LangGraph super-graph), gates on real readiness probes, prints a status board with per-subsystem verdicts and named remediations, and streams a startup smoke query over the same SSE contract the UI uses.
+- **Plan-first routing** — the planner emits a structured, machine-checkable plan before any specialist runs a query, and a deterministic gate rejects plans that do not validate against the source cards.
+- **Bounded, validated queries** — every query is a read-only template gated against the card's declared labels, relationship types, row cap, and traversal depth; a task naming an entity the card does not model returns an honest empty with a `boundary` trace rather than an answer to a different question.
+- **Verified answers, not generated ones** — claims are composed from the evidence and checked by an unconditional verifier, unsupported claims are cut and kept visible, and abstentions carry the executed query as proof.
+- **Reproducible graph artifacts** — a canonical → export → runtime layering, sha256-pinned to the raw source, with a fixture-QA harness that reconciles raw == manifest == live before any agent queries it.
+- **Self-healing pipeline runner** (`--yolo-all`) — classifies each failure as stale-state, transient, or needs-human, and rebuilds or retries instead of dying on the first error.
+- **Memory-inclusive chat threads** — persisted conversations in a date-grouped sidebar, cross-turn memory so a follow-up resolves against prior turns, and a router that answers from memory when it can and re-queries the graphs when it must, with the grounded Answer Card under every reply.
+- **Analyst web workbench** — three surfaces: a chat view streaming the live plan → query → evidence → answer pipeline, a graph explorer that renders either store's nodes and edges on canvas with search and type filters, and an evaluation view that renders the committed reports and can re-run the end-to-end evaluation.
+- **A launcher that proves the stack** — `uv run app.py` preflights the toolchain, ports, source cards, both graph backends, the LLM endpoint, and a compile of the LangGraph super-graph, then streams a smoke query over the same SSE contract the UI uses.
 
 ## Results
 
@@ -177,6 +248,9 @@ Full component contracts: [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) (every 
 
 Seven full runs over the 120-question development catalogue, each answer graded by an independent Sonnet 5 agent ([`docs/evaluation/2026-07-26/`](docs/evaluation/2026-07-26/README.md)). These are **development-set figures, on questions co-authored with the templates, produced by a model that no longer serves the endpoint** (Gemma 4 31B in July). They are the record of what was measured, not a description of the system today.
 
+<details>
+<summary>The seven-arm table (four arms shown; all seven are in the report)</summary>
+
 | Configuration | Plan | Synthesize | correctness | verdicts | hallucinations | wall clock |
 |---|---|---|---|---|---|---|
 | **A — deterministic** | authored | deterministic | **0.9972** | **120/0/0** | **0** | **1.6 s** |
@@ -185,6 +259,8 @@ Seven full runs over the 120-question development catalogue, each answer graded 
 | B — LLM-planned | **LLM** | LLM over verified claims | 0.8505 | 92/14/14 | 12 | 1,020 s |
 
 *(verdicts = CORRECT / PARTIAL / INCORRECT)*
+
+</details>
 
 Two findings from it still stand and drove the defaults: LLM planning is where the loss concentrates (B − C = **−0.1185** with extraction and synthesis held constant), and binding the narrator to the *verified claims* rather than raw evidence makes readable prose nearly free (0.9957 against 0.9972, zero INCORRECT). The third finding of the time — that the hand-written templates hold the accuracy — was **refuted** by the September comparisons above; the arm that supported it (Arm G) is now marked superseded, and its record notes that it ran with the injected gold plan rather than the LLM planner it was described with.
 
@@ -195,6 +271,73 @@ Two findings from it still stand and drove the defaults: LLM planning is where t
 - **No published external system has been run as a baseline.** Both baselines are our own: a model writing queries from the real schema, and a merged single store.
 - **The judge is a model.** Every judged figure names its grader and has been checked under a second family; the levels move with the grader, the orderings have not.
 - **The `generic` arm's narrator calls a model.** Its query path is byte-reproducible; its prose differs between runs on 143 of 276 answers, and the judged score moves by 0.0074 across six seeds ([`EXP-2026-09-010`](docs/research/experiments/EXP-2026-09-010-model-free-arm-identity/), [`EXP-2026-09-011`](docs/research/experiments/EXP-2026-09-011-generic-seeded-repeats/)).
+
+## Reproducing the Results
+
+The full artifact description — hardware, software, data pins, per-experiment commands, and the
+blockers — is [`docs/research/paper/ARTIFACT_APPENDIX.md`](docs/research/paper/ARTIFACT_APPENDIX.md).
+The short version is below. Every command was read from that appendix and the CLI parsers, and
+each experiment directory under [`docs/research/experiments/`](docs/research/experiments/) carries
+its own `manifest.yaml` with the figures and the artifacts they were computed from.
+
+**1. Prepare the data and both live stores.** Verify the fixtures are non-empty before going on:
+an empty CAPEC fixture returns "no records" rather than failing, which silently invalidates every
+CAPEC and federated result.
+
+```bash
+uv sync
+uv run main.py --docker start
+uv run main.py --download                 # checksum-verified; pins land in data/versions.json
+uv run main.py --build attack && uv run main.py --build capec
+uv run main.py --dataset attack --graph neo4j
+uv run main.py --dataset capec --graph gremlin
+```
+
+**2. Run what reproduces exactly.** These paths call no model and are byte-reproducible. Arm A
+completes in about 1.6 s on a commodity machine; the component and end-to-end deterministic
+metrics reproduce to the digit.
+
+```bash
+uv run main.py --component-eval           # EXP-2026-07-008
+uv run main.py --e2e-eval                 # EXP-2026-07-009, without a judge
+ORCH_MAX_HOPS=5 uv run python -m utils.evaluation.experiment_untruncated \
+  --arm deterministic --root docs/evaluation/experiments/untruncated-fixed --workers 4
+```
+
+Arms are selected with `--arm {deterministic,gold_llm,llm,llm_loop,gold_loop_llm,generic}`, and the
+per-arm environment overlays are in `untruncated_env()` in
+[`utils/evaluation/experiment_untruncated.py`](utils/evaluation/experiment_untruncated.py). Set
+`ORCH_MAX_HOPS` explicitly for any arm that measures the retrieval loop: the committed `.env` pins
+it to `1`, which makes the loop inert.
+
+**3. What cannot be reproduced from this repository.** Every judged correctness figure depends on
+independent grader agents — 120 per arm, 840 across the July study — so re-running the judging
+needs an equivalent judge and will not return identical numbers. The **judgments themselves are
+committed** under [`docs/evaluation/experiments/`](docs/evaluation/experiments/) and hashed in each
+experiment's `data/POINTERS.md`, so the aggregation is reproducible from the artifacts even where
+the grading is not. There is also **no archival DOI**: a clone of this repository is currently the
+only way to obtain the code.
+
+**4. Check the record itself.**
+
+```bash
+make check-record                         # validator, index freshness, and the stale-quote scan
+```
+
+## Data
+
+Ariadne is built on MITRE ATT&CK® and MITRE CAPEC™, used under their respective terms of use.
+`uv run main.py --download` fetches both and checksum-verifies them, writing the pins to
+`data/versions.json`; `--build` turns each into a canonical JSONL + schema + manifest triple that
+is sha256-pinned against the raw snapshot, and the fixture-QA harness reconciles raw == manifest ==
+live before any agent queries it. The snapshots in use are **ATT&CK 19.0** and **CAPEC 3.9**.
+Neither dataset is redistributed in this repository. The merged graph counterfactual required
+rewriting 1,083 of 9,138 nodes; the federated path rewrites none.
+
+Per-dataset provenance is in [`docs/research/datasets/DATASETS.md`](docs/research/datasets/DATASETS.md).
+The required attribution, the licence and disclaimer text, and the exact snapshots with their
+SHA256 pins are in [`NOTICE`](NOTICE). Ariadne is not affiliated with or endorsed by The MITRE
+Corporation.
 
 ## Challenges & Design Decisions
 
@@ -238,21 +381,6 @@ Since then the project has run **20 further experiments** — blind holdouts, bo
 | [`docs/skills/global-project-rules/SKILL.md`](docs/skills/global-project-rules/SKILL.md) | Agent workflow rules (read first) |
 | [`NOTICE`](NOTICE) | MITRE ATT&CK® and CAPEC™ attribution, licence text, and the pinned dataset versions |
 
-## Data attribution
-
-Ariadne is built on MITRE ATT&CK® and MITRE CAPEC™, used under their respective
-terms of use. The required attribution, the licence and disclaimer text, and the
-exact snapshots in use (ATT&CK 19.0, CAPEC 3.9, with SHA256 pins) are in
-[`NOTICE`](NOTICE). Ariadne is not affiliated with or endorsed by The MITRE
-Corporation.
-
-## Team
-
-| Role | Person |
-|------|--------|
-| Principal Investigator | Olmo S. Zavala Romero — Assistant Professor, FSU Department of Scientific Computing |
-| Graduate RA / technical lead | Brendon DGR — prototype implementation, evaluation, documentation |
-
 ## Repository Layout
 
 ```text
@@ -271,7 +399,13 @@ Agent pointer folders (`.claude/`, `.agents/`, `.cursor/`) route to canonical in
 
 ## Roadmap — Week by Week
 
-Full task rationale in [`docs/goals.md`](docs/goals.md); change history in [`docs/changelog.jsonl`](docs/changelog.jsonl).
+Every task through Wk 14–15 is complete: setup, the data layer, all four agents, end-to-end
+integration, and both evaluation tiers, with the technical documentation set delivered. The one
+item still open is Wk 15–16, pitch preparation and the final demo. Full task rationale is in
+[`docs/goals.md`](docs/goals.md); change history in [`docs/changelog.jsonl`](docs/changelog.jsonl).
+
+<details>
+<summary>The week-by-week plan, with its three milestone check-ins</summary>
 
 | Status | Weeks | Phase | Task | Difficulty |
 | :---: |-------|-------|------|------------|
@@ -308,3 +442,51 @@ Full task rationale in [`docs/goals.md`](docs/goals.md); change history in [`doc
 | 🔄 | Wk 15–16 | Pitch prep | Pitch preparation and final demo — underway, see `docs/pitch/october-pitch-plan.md` | Low |
 
 **October ReliaQuest pitch** — Live demo, evaluation results, and future development roadmap presented.
+
+</details>
+
+## Team & Funding
+
+| Role | Person |
+|------|--------|
+| Principal Investigator | Olmo S. Zavala Romero — Assistant Professor, FSU Department of Scientific Computing |
+| Graduate RA / technical lead | Brendon DGR — prototype implementation, evaluation, documentation |
+
+**Funded by** the ReliaQuest Innovation Challenge Fund — Challenge Three: Knowledge Graph
+Integration, award period June 8 – October 23, 2026.
+
+## Contributing
+
+This is a research repository with an open record, and the rules that keep the record trustworthy
+are not obvious from the code. Read [`CONTRIBUTING.md`](CONTRIBUTING.md) first — it covers how to
+run an experiment, where results are allowed to live, and the agent workflow rules in
+[`docs/skills/global-project-rules/SKILL.md`](docs/skills/global-project-rules/SKILL.md). Run
+`make check-record` before any commit that touches a figure.
+
+## Citation
+
+There is no published entry yet. The manuscript is in preparation
+([`docs/research/paper/tmlr/ariadne-tmlr.tex`](docs/research/paper/tmlr/ariadne-tmlr.tex); target
+venues in [`venue-targets.md`](docs/research/paper/venue-targets.md)) and is anonymized for review,
+and no archival DOI exists. Until one does, cite the repository:
+
+<!-- TODO: confirm the author line, and replace this block with the published entry once the
+     preprint is posted. A DOI also requires depositing an archival snapshot (Zenodo, Figshare, or
+     Dryad) — GitHub alone does not satisfy an artifact-available badge. Keep CITATION.cff in step. -->
+
+```bibtex
+@software{ariadne_2026,
+  title  = {Ariadne: federated question answering over live cybersecurity knowledge graphs},
+  author = {Zavala Romero, Olmo S. and Brendon DGR},
+  year   = {2026},
+  url    = {https://github.com/brendondgr/Ariadne},
+  note   = {ReliaQuest Innovation Challenge Fund, Challenge Three}
+}
+```
+
+## License
+
+The code is licensed under the Apache License 2.0 — see [`LICENSE`](LICENSE). The MITRE ATT&CK®
+and CAPEC™ data the project builds on is **not** covered by that licence and carries its own terms
+of use; those terms, the required attribution, and the pinned snapshot versions are in
+[`NOTICE`](NOTICE). No dataset is redistributed here.
