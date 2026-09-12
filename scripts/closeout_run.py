@@ -253,11 +253,24 @@ STAGES = (
 
 
 def guards(skip_seal: bool) -> None:
-    dirty = subprocess.check_output(
-        ["git", "status", "--porcelain", "--untracked-files=no"], cwd=REPO, text=True
-    ).strip()
+    # CODE must be committed, so a figure is attributable to a commit. Run
+    # output under `docs/evaluation/experiments` is exempt: the chain writes
+    # there while it runs, and a guard that fails on its own output would stop
+    # the chain the moment it started working.
+    dirty = [
+        line for line in subprocess.check_output(
+            ["git", "status", "--porcelain", "--untracked-files=no"],
+            cwd=REPO, text=True,
+        ).splitlines()
+        if line[3:].strip() and not line[3:].strip().startswith(
+            "docs/evaluation/experiments/"
+        )
+    ]
     if dirty:
-        raise SystemExit("working tree is dirty; commit so every figure has a commit")
+        raise SystemExit(
+            "working tree has uncommitted code; commit so every figure has a "
+            "commit:\n  " + "\n  ".join(dirty)
+        )
 
     from scripts.model_identity import resolve  # noqa: PLC0415
 
