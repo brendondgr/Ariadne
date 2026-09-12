@@ -215,6 +215,20 @@ def _ambiguous_candidates(result: SpecialistResult) -> list[tuple[str, str]]:
     return []
 
 
+def _sub_question_key(result: SpecialistResult) -> tuple[str, str]:
+    """Identity of the sub-question a result answers, for de-duplicating attempts.
+
+    The id when the plan gave one; otherwise the source and the question's own
+    words, which is what distinguishes two hops of the same plan.
+    """
+    task = result.task
+    return (
+        str(getattr(task, "source", "") or ""),
+        str(getattr(task, "sub_question_id", "") or "")
+        or " ".join(str(getattr(task, "text", "") or "").split()),
+    )
+
+
 def abstention_for(result: SpecialistResult) -> Abstention:
     """The enforced abstention for one empty-but-ok specialist result.
 
@@ -828,7 +842,9 @@ _LABEL_NOUNS: dict[str, tuple[str, str]] = {
 }
 
 
-def _related_noun(record: EvidenceRecord, count: int = 0) -> str:
+def _related_noun(
+    record: EvidenceRecord, count: int = 0, entries: list[dict] | None = None
+) -> str:
     """A readable plural for a record's related set.
 
     Prefers the *relationship* over the neighbour's label: the edge is what the
@@ -840,14 +856,17 @@ def _related_noun(record: EvidenceRecord, count: int = 0) -> str:
     always better than a confident wrong one, because the identifiers beside it
     are correct and a reader has no way to tell the label is the part that lied.
     """
+    # The noun describes the entries being listed, which is one label's worth
+    # when the enumeration is split by label — not the whole related set.
+    considered = record.related if entries is None else entries
     labels = {
         str(rel.get("label")).strip()
-        for rel in record.related
+        for rel in considered
         if isinstance(rel, dict) and rel.get("label")
     }
     rel_types = {
         str(rel.get("type")).strip().upper()
-        for rel in record.related
+        for rel in considered
         if isinstance(rel, dict) and rel.get("type")
     }
     if len(rel_types) == 1:
@@ -1064,10 +1083,26 @@ def _related_display(rel: dict) -> str:
     return text
 
 
+def _related_by_label(record: EvidenceRecord) -> list[list[dict]]:
+    """A record's related entries split into runs of one neighbour label.
+
+    Order is first appearance, so the enumeration still follows the traversal
+    rather than an alphabet. Entries with no label form their own group and keep
+    the previous behaviour.
+    """
+    groups: dict[str, list[dict]] = {}
+    for rel in record.related:
+        if not isinstance(rel, dict):
+            continue
+        groups.setdefault(str(rel.get("label") or ""), []).append(rel)
+    return [g for g in groups.values() if g]
+
+
 def _enumeration_claim(
     result: SpecialistResult,
     record: EvidenceRecord,
     bound_filter: tuple[str, str, str] | None = None,
+    related: list[dict] | None = None,
 ) -> Claim:
     """A structured claim naming *every* id in a record's related set.
 
@@ -1080,7 +1115,8 @@ def _enumeration_claim(
     ids: list[str] = []
     parts: list[str] = []
     seen: set[str] = set()
-    for rel in record.related:
+    entries = record.related if related is None else related
+    for rel in entries:
         if not isinstance(rel, dict):
             continue
         rid = rel.get("id") or rel.get("entry_id")
@@ -1108,7 +1144,7 @@ def _enumeration_claim(
             parts.append(shown)
         if len(ids) >= _enum_bound("MAX_ENUMERATION_IDS", _MAX_ENUMERATION_IDS):
             break
-    noun = _related_noun(record, len(ids))
+    noun = _related_noun(record, len(ids), entries)
     anchor = record.name and f"{record.primary_id} ({record.name})" or record.primary_id
     # Say what the set was restricted to — but only when the executed query
     # actually carried the restriction.
@@ -1135,7 +1171,13 @@ def _enumeration_claim(
             w for w in _PROPERTY_LABEL_RE.split(prop) if w and w != "x"
         ) or prop
         scope = f", restricted to {label} {value}"
-    text = f"{anchor} has {len(ids)} {noun}{scope}: {', '.join(parts)}."
+    # A comma list reads as a list of identifiers, and the grader read one that
+    # way: "Other Confidentiality" and "Modify Data Integrity" — a consequence's
+    # scope and impact, rendered as text because the node has no published id —
+    # were recorded as invented identifiers in three answers. A semicolon keeps
+    # a multi-word item legible as one item rather than two.
+    sep = "; " if any(" " in part for part in parts) else ", "
+    text = f"{anchor} has {len(ids)} {noun}{scope}: {sep.join(parts)}."
     return Claim(
         text=text,
         citations=(
@@ -1223,7 +1265,20 @@ def _enumeration_claims(
     for record in result.records:
         ids = _related_ids(record)
         if ids:
-            claims.append(_enumeration_claim(result, record, bound_filter))
+            # One claim per neighbour LABEL. A two-leg walk returns the
+            # intermediate patterns and the leaf consequences in one flat set,
+            # and a single claim over both could only call them "related
+            # item(s)" and had to list `CAPEC-182` beside `Other
+            # Confidentiality` as though the two were the same kind of thing.
+            # Split, each claim gets the noun the edge actually earns.
+            for group in _related_by_label(record):
+                claims.append(
+                    _enumeration_claim(result, record, bound_filter, group)
+                )
+                if len(claims) >= _enum_bound(
+                    "MAX_ENUMERATION_CLAIMS", _MAX_ENUMERATION_CLAIMS_PER_RESULT
+                ):
+                    return claims
         if len(claims) >= _enum_bound(
             "MAX_ENUMERATION_CLAIMS", _MAX_ENUMERATION_CLAIMS_PER_RESULT
         ):
@@ -1250,6 +1305,19 @@ class DeterministicComposer:
         claims: list[Claim] = []
         abstentions: list[Abstention] = []
         notes: list[str] = []
+
+        # A sub-question that ANOTHER result answered has not been abstained on.
+        # The iterative loop re-runs a hop that first came back empty — before
+        # the producer seeded it, or before the facet expansion widened it — and
+        # both attempts reach the composer. Abstaining on the empty one put "the
+        # executed query returned CAPEC-150 with no linked records" in an answer
+        # that listed its seven weaknesses four sentences earlier, and the
+        # grader recorded the contradiction as a hallucination.
+        answered = {
+            _sub_question_key(result)
+            for result in evidence.results
+            if result.records
+        }
 
         for result in evidence.results:
             slots = _slots_for(result)
@@ -1279,7 +1347,7 @@ class DeterministicComposer:
                 # the edge is there — see `_relation_is_empty`.
                 if slots.relation and _relation_is_empty(result, slots.relation):
                     claims.append(_absence_claim(result, slots.relation))
-            elif result.ok:
+            elif result.ok and _sub_question_key(result) not in answered:
                 abstentions.append(abstention_for(result))
             else:
                 notes.append(

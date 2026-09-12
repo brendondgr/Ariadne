@@ -635,8 +635,12 @@ def test_a_nameless_neighbour_is_listed_by_its_text_not_its_internal_id():
     )
     answer = _compose(evidence)
     enum = [c for c in answer.claims if c.kind == "enumeration"]
-    assert len(enum) == 1
-    body = enum[0].text
+    # One claim per neighbour LABEL: a pattern, a prerequisite and an execution
+    # step are three different kinds of thing and a single list could only call
+    # them "related item(s)".
+    assert len(enum) == 3
+    assert any("attack pattern" in c.text for c in enum)
+    body = " ".join(c.text for c in enum)
     assert text in body
     assert "[Observe] The attacker observes." in body
     # A published identifier is what an analyst looks up, so it survives…
@@ -644,8 +648,8 @@ def test_a_nameless_neighbour_is_listed_by_its_text_not_its_internal_id():
     # …and a synthetic path never reaches the reader.
     assert "prerequisite:3" not in body
     assert "step:1" not in body
-    # The ids stay on the claim for auditing even when the prose shows text.
-    assert "capec:attack-pattern:94:prerequisite:3" in enum[0].entity_ids
+    # The ids stay on the claims for auditing even when the prose shows text.
+    assert any("capec:attack-pattern:94:prerequisite:3" in c.entity_ids for c in enum)
 
 
 def test_a_false_attribute_is_stated_not_swallowed():
@@ -723,3 +727,68 @@ def test_a_node_whose_content_is_only_lists_states_all_of_them():
                  "Authorization", "Non-Repudiation"):
         assert word in body
     assert "[" not in body and '"' not in body, "JSON punctuation must not reach the reader"
+
+
+def test_a_sub_question_another_result_answered_is_not_abstained_on():
+    """The iterative loop re-runs a hop; both attempts reach the composer.
+
+    Abstaining on the empty attempt put "the executed query returned CAPEC-150
+    with no linked records" into an answer that listed its seven weaknesses four
+    sentences earlier, and the grader recorded the contradiction as a
+    hallucination (`EXP-2026-09-018`, I-14).
+    """
+    text = "For each of those: the CWE weaknesses each of those exploits."
+    empty = make_result(text=text, records=[], summary="No CAPEC records found.")
+    empty.query = "g.V().has('id', within(ids))"
+    filled = make_result(
+        text=text,
+        records=[make_record("CAPEC-150", name="Collect Data", label="AttackPattern",
+                             related=[{"id": "CWE-552", "name": "Files or Directories",
+                                       "label": "Weakness"}])],
+        summary="Found 1 CAPEC record(s): CAPEC-150.",
+    )
+    answer = _compose(make_evidence([empty, filled]))
+    assert answer.abstentions == []
+    assert any("CWE-552" in c.text for c in answer.claims)
+
+    # A sub-question NOTHING answered still abstains, honestly.
+    only_empty = _compose(make_evidence([empty]))
+    assert len(only_empty.abstentions) == 1
+
+
+def test_text_items_are_not_listed_as_though_they_were_identifiers():
+    """A two-leg walk returns patterns AND consequences in one flat related set.
+
+    A single claim over both could only call them "related item(s)" and had to
+    list `CAPEC-182` beside `Other Confidentiality` as though the two were the
+    same kind of thing — which the grader read literally, recording the
+    consequence text as an invented identifier in three answers. One claim per
+    neighbour label, and text items separated by semicolons so a multi-word one
+    stays legible as a single item.
+    """
+    anchor = make_record(
+        "CAPEC-248", name="Command Injection", label="AttackPattern",
+        related=[
+            {"id": "CAPEC-182", "name": "Flash Injection", "label": "AttackPattern",
+             "type": "CAN_ALSO_BE"},
+            {"id": "capec:attack-pattern:248:consequence:1",
+             "name": "capec:attack-pattern:248:consequence:1", "label": "Consequence",
+             "type": "HAS_CONSEQUENCE",
+             "impacts": '["Modify Data"]', "scopes": '["Integrity"]'},
+            {"id": "capec:attack-pattern:248:consequence:2",
+             "name": "capec:attack-pattern:248:consequence:2", "label": "Consequence",
+             "type": "HAS_CONSEQUENCE",
+             "impacts": '["Read Data"]', "scopes": '["Confidentiality"]'},
+        ],
+    )
+    evidence = make_evidence(
+        [make_result(text="What consequences can CAPEC-248 have?", records=[anchor],
+                     summary="Found 1 CAPEC record(s).")]
+    )
+    enum = [c for c in _compose(evidence).claims if c.kind == "enumeration"]
+    assert len(enum) == 2
+    patterns = next(c for c in enum if "CAPEC-182" in c.text)
+    consequences = next(c for c in enum if c is not patterns)
+    assert "related item" not in patterns.text and "related item" not in consequences.text
+    assert "CAPEC-182" not in consequences.text
+    assert "; " in consequences.text, "multi-word items are semicolon-separated"

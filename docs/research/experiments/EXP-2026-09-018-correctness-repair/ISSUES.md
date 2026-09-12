@@ -393,3 +393,35 @@ per-record cap before is displaced by one added after it.
 gold assertions, model-free. It says the evidence reaches the answer and the
 answer states it in identifiers an analyst can look up. It does not say what the
 grader will score, and the Step 6 re-judge is still the decision.
+
+## I-14 — Two presentation faults the grader read as invented content
+
+Found by judging the 82 two-step and cross-catalogue questions on the repaired
+LLM arm rather than by inspection. Correctness on that slice moved **0.5104 →
+0.8623** (position 1), but flagged hallucinations rose 64 → 72, and every one of
+the new flags was one of these two.
+
+**A false abstention beside a true answer.** The iterative loop re-runs a hop
+that first came back empty — before its producer seeded it, or before the facet
+expansion widened it — and BOTH attempts reach the composer. The empty one
+abstained, so one answer said "the executed query ran cleanly and returned
+CAPEC-150 with no linked records" four sentences after listing CAPEC-150's seven
+CWE weaknesses. An abstention is a statement about a SUB-QUESTION, so a
+sub-question another result answered no longer produces one.
+
+**Text listed as though it were an identifier.** A two-leg walk returns the
+intermediate patterns and the leaf consequences in ONE flat related set. A
+single enumeration over both could only call them "related item(s)" and had to
+print `CAPEC-182` beside `Other Confidentiality` in the same comma list. The
+grader read it literally and recorded the consequence text as an invented
+identifier in three answers. The enumeration is now split by neighbour label —
+so each claim gets the noun its edge earns, "1 attack pattern" and "6
+Consequences" — and a list whose items contain spaces is separated by semicolons
+so a multi-word item stays legible as one item.
+
+Neither changes what is retrieved: gold recall is 0.9791 on the development bank
+and 0.9788 on the holdout before and after, with no question moving either way.
+
+**Paper implication:** a faithfulness metric counts what the reader can
+misread, not only what the system invented. Both defects here were true
+statements arranged so that a careful reader would draw a false one.
