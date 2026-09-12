@@ -121,7 +121,12 @@ def _record_dict(r: EvidenceRecord) -> dict[str, Any]:
             continue
         entry = {
             k: rel.get(k)
-            for k in ("id", "entry_id", "name", "label", "step", "role", "abstraction", "type", "direction")
+            # ``via`` is the hop a chained neighbour was reached THROUGH. Without
+            # it the judge sees two sets and no mapping — five tools and 34
+            # techniques, nothing saying which tool reached which — which is the
+            # gap a narrator filled by inventing one (EXP-2026-09-018 ISSUES I-8).
+            for k in ("id", "entry_id", "name", "label", "step", "role",
+                      "abstraction", "type", "direction", "via")
             if k in rel
         }
         if rel.get("description"):

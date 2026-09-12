@@ -40,6 +40,22 @@ _MAX_CHAIN_HOPS = 3
 _ID_PREFIX_RE = re.compile(r"^([A-Za-z]+)[-]?\d")
 
 
+def _chain_arrow(safe_rel: str, direction: str) -> str:
+    """A chain leg's pattern, including the undirected case.
+
+    ``both`` is emitted for a self-referential relationship the schema declares
+    in both directions — ``ChildOf`` and ``CanAlsoBe`` reach their own label
+    either way, and which one a question means is in its words, not its plan.
+    Rendering it as outbound, which is what the two-way test used to fall
+    through to, answers the complement of what was asked.
+    """
+    if direction == "in":
+        return f"<-[:{safe_rel}]-"
+    if direction == "both":
+        return f"-[:{safe_rel}]-"
+    return f"-[:{safe_rel}]->"
+
+
 def _safe_ident(value: str, pattern: re.Pattern[str], kind: str) -> str:
     """Guard a facet-sourced label/rel before inlining it into a query string."""
     if not pattern.match(value or ""):
@@ -1185,12 +1201,13 @@ class CypherQueryBuilder:
                 pattern = []
                 for j, (rel, direction) in enumerate(legs[:i]):
                     safe_rel = _safe_ident(rel, _SAFE_REL_RE, "relationship type")
-                    var = f"c{i - 1}" if j == i - 1 else ""
-                    arrow = (
-                        f"<-[:{safe_rel}]-"
-                        if direction == "in"
-                        else f"-[:{safe_rel}]->"
-                    )
+                    # Bind EVERY hop, not just the terminal. The intermediate is
+                    # what tells a reader which tool used which technique, and
+                    # collecting the legs separately lost it: the evidence
+                    # carried five tools and 34 techniques and no pairing, so the
+                    # narrator invented one (`EXP-2026-09-018` ISSUES I-8).
+                    var = f"c{i - 1}" if j == i - 1 else f"c{i - 1}v{j}"
+                    arrow = _chain_arrow(safe_rel, direction)
                     pattern.append(f"{arrow}({var})")
                 terminal = _safe_ident(legs[i - 1][0], _SAFE_REL_RE, "relationship type")
                 carry = ", ".join(["n", *collected, *chain_collected])
@@ -1203,7 +1220,9 @@ class CypherQueryBuilder:
                 blocks.append(
                     f"OPTIONAL MATCH (n){''.join(pattern)} WHERE {where} "
                     f"WITH {carry}, "
-                    f"collect(DISTINCT {{m: c{i - 1}, r: '{terminal}'}}) AS k{i - 1}"
+                    f"collect(DISTINCT {{m: c{i - 1}, r: '{terminal}'"
+                    + (f", via: c{i - 1}v{i - 2}" if i >= 2 else "")
+                    + f"}}) AS k{i - 1}"
                 )
                 chain_collected.append(f"k{i - 1}")
 
@@ -1232,7 +1251,10 @@ class CypherQueryBuilder:
             "labels(n)[0] AS anchor_label, "
             "coalesce(hop.m.attack_id, hop.m.id) AS neighbour_id, "
             "hop.m.name AS neighbour_name, "
-            "labels(hop.m)[0] AS neighbour_label, hop.r AS rel_type"
+            "labels(hop.m)[0] AS neighbour_label, hop.r AS rel_type, "
+            # The hop the neighbour was reached THROUGH, null on a one-leg
+            # branch. Without it a two-leg answer is two sets and no mapping.
+            "coalesce(hop.via.attack_id, hop.via.id) AS via_id"
         )
         meta = {
             "paths": [

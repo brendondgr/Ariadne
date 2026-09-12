@@ -285,6 +285,15 @@ class CypherNormalizer:
             rel = str(row.get("rel_type") or "")
             if rel:
                 entry["type"] = rel
+            # The hop this neighbour was reached THROUGH, on a chained branch.
+            # Collecting a chain's legs separately gives two sets and no mapping
+            # — five tools and 34 techniques, with nothing saying which tool
+            # reached which — and a narrator asked to write that up invents the
+            # pairing (`EXP-2026-09-018` ISSUES I-8). Absent on a one-leg branch,
+            # where there is no intermediate to name.
+            via = str(row.get("via_id") or "")
+            if via and via != nid:
+                entry["via"] = via
             group["related"].append(entry)
 
         # In a store that holds only one catalogue, a *neighbour* carrying

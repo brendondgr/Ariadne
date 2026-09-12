@@ -53,12 +53,22 @@ _INTERMEDIATE_ALIASES = frozenset(
 #: fallback by design rather than by omission.
 _FLAT_FALLBACK_COLUMNS = frozenset({"id"})
 
+#: Columns that DO reach a result row but are not dispatch keys: they qualify a
+#: neighbour the row already identifies rather than identifying a record of
+#: their own. ``via_id`` names the hop a chained neighbour was reached through,
+#: and is read by `_normalize_generic_neighbors` — the branch `neighbour_id`
+#: already selected — never dispatched on. Listed rather than inferred, for the
+#: same reason as the intermediates: one that starts identifying a record should
+#: fail this test loudly.
+_QUALIFIER_COLUMNS = frozenset({"via_id"})
+
 
 def _emitted_id_columns() -> set[str]:
     """Every ``<entity>_id`` alias the Cypher builder projects into a result row."""
     source = BUILDER.read_text()
     aliases = set(re.findall(r"\bAS\s+([a-z_][a-z0-9_]*)", source))
     aliases -= _INTERMEDIATE_ALIASES
+    aliases -= _QUALIFIER_COLUMNS
     aliases -= _FLAT_FALLBACK_COLUMNS
     return {a for a in aliases if a.endswith("_id")}
 

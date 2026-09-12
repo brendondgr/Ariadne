@@ -638,7 +638,10 @@ def test_an_ordered_three_label_request_binds_the_intermediate(
     # One block per leg: the first binds the tools, the second the techniques
     # reached through them. The intermediate is retrieved in its own right.
     assert "-[:USES]->(c0) WHERE n:Campaign" in draft.query
-    assert "-[:USES]->()-[:USES]->(c1) WHERE n:Campaign" in draft.query
+    # The intermediate is BOUND, not anonymous: it is what tells a reader which
+    # tool used which technique, and collecting the legs separately lost it.
+    assert "-[:USES]->(c1v0)-[:USES]->(c1) WHERE n:Campaign" in draft.query
+    assert "via: c1v0" in draft.query and "AS via_id" in draft.query
 
 
 def test_the_star_walk_is_the_chain_s_fallback_not_its_peer(
@@ -744,20 +747,27 @@ def test_the_relationship_order_carries_a_chain_the_labels_cannot(
     draft = CypherQueryBuilder().build(resolved)
 
     assert draft.meta["chain"] == "Technique|HAS_SUBTECHNIQUE:out->MITIGATES:in"
-    assert "-[:HAS_SUBTECHNIQUE]->()<-[:MITIGATES]-(c1)" in draft.query
+    assert "-[:HAS_SUBTECHNIQUE]->(c1v0)<-[:MITIGATES]-(c1)" in draft.query
 
 
-def test_a_directionally_ambiguous_leg_is_refused_rather_than_guessed(
+def test_a_directionally_ambiguous_leg_is_walked_undirected(
     generic_only: None,
 ) -> None:
     """``ChildOf`` reaches its own label both ways; the schema cannot settle it.
 
     "Which patterns are more specific cases of CAPEC-26" is inbound; "what is
     CAPEC-26 a case of" is outbound. The words carry that and the plan does not.
-    Preferring `out` measured *worse* than not chaining — seven development
-    questions lost gold coverage and the dev mean fell from 0.6655 to 0.6534 —
-    because a confidently wrong direction replaces a star branch that sometimes
-    caught the answer by accident. So the chain abstains and the star answers.
+
+    This test asserted ``None`` until 2026-09-12, on the grounds that guessing
+    scores worse than declining — which it does: preferring ``out`` cost seven
+    development questions their gold coverage and moved the dev mean from 0.6655
+    to 0.6534. But declining left 27 development questions unchained, which is
+    why the two-hop hypothesis came in at +0.063 against a +0.10 threshold.
+
+    Undirected is neither horn of that dilemma. It is not a guess, it costs one
+    traversal step rather than two, and because the edge returns to its own label
+    the next leg is unaffected. On the 33 affected questions it gained three and
+    lost none.
     """
     from utils.specialists.schema import get_registry
     from utils.specialists.schema.paths import relation_chain
@@ -769,10 +779,44 @@ def test_a_directionally_ambiguous_leg_is_refused_rather_than_guessed(
         "AttackPattern",
         ["ChildOf", "REQUIRES_SKILL"],
         wanted_labels=("AttackPattern", "Skill"),
-    ) is None
-    # A leg that is not self-referential is unambiguous and still chains.
+    ) == [("ChildOf", "both", "AttackPattern"), ("REQUIRES_SKILL", "out", "Skill")]
+
+
+def test_an_undirected_leg_renders_as_undirected_in_both_languages(
+    generic_only: None,
+) -> None:
+    """A ``both`` direction must not fall through to the opposite one.
+
+    The Cypher renderer was updated and the Gremlin one was not, so Gremlin
+    emitted ``in`` for every undirected leg — the complement of what was asked.
+    On the 33 affected questions that cost nine of them their whole gold
+    coverage, and it took seconds to find because they were run on their own.
+    """
+    resolved = _capec(
+        "How are the broader patterns of CAPEC-26 mitigated?",
+        ("AttackPattern", "ChildOf", "HAS_MITIGATION", "Mitigation"),
+        seed_ids=("CAPEC-26",),
+    )
+    gremlin = GremlinQueryBuilder().build(resolved).query
+    assert '.both("CHILD_OF")' in gremlin
+    assert '.in("CHILD_OF").out("HAS_MITIGATION")' not in gremlin
+
+    attack = _attack(
+        "Which mitigations apply to the broader techniques of T1027.006?",
+        ("Technique", "HAS_SUBTECHNIQUE", "MITIGATES", "Mitigation"),
+        seed_ids=("T1027.006",),
+    )
+    cypher = CypherQueryBuilder().build(attack).query
+    assert "-[:HAS_SUBTECHNIQUE]->" in cypher
+
+
+def test_an_unambiguous_leg_still_keeps_its_direction(generic_only: None) -> None:
+    """Undirected is for the legs the schema cannot settle, and only those."""
+    from utils.specialists.schema import get_registry
+    from utils.specialists.schema.paths import relation_chain
+
     assert relation_chain(
-        registry,
+        get_registry(),
         "capec",
         "Category",
         ["MEMBER_OF", "HAS_EXECUTION_STEP"],

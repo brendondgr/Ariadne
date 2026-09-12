@@ -396,6 +396,65 @@ def _requested_property_claim(
 _PROPERTY_LABEL_RE = re.compile(r"[_\s]+")
 
 
+def _facet_counts_zero(result: SpecialistResult, relation: str) -> bool:
+    """Did ``describe`` report this relation with a count of zero?
+
+    ``describe`` answers with facet COUNTS rather than materialised neighbours,
+    so a zero count is a direct measurement of the thing being asked — stronger
+    than an empty neighbour list, which only says none were fetched. A non-zero
+    count already suppresses the claim in the caller; this is the same field
+    read the other way.
+    """
+    wanted = _normalise_rel(relation)
+    seen = False
+    for record in result.records:
+        for facet in record.facets or ():
+            if not isinstance(facet, dict):
+                continue
+            if _normalise_rel(str(facet.get("rel") or "")) == wanted:
+                if facet.get("count") or 0:
+                    return False
+                seen = True
+    return seen
+
+
+def _schema_denies(result: SpecialistResult, relation: str) -> bool:
+    """Does the declared schema say this anchor's label has no such edge at all?
+
+    A second, stronger warrant than "we looked and found none". "Which techniques
+    does campaign C0046 mitigate" names ``MITIGATES``, and ``Campaign`` has no
+    ``MITIGATES`` facet in either direction — so the walk never emitted that
+    branch and `_query_asked_about` refused the claim, leaving the answer to
+    enumerate the campaign's ``USES`` techniques instead and say nothing about
+    what was asked. All 16 questions in the `empty` slice were that shape.
+
+    The registry is being read for STRUCTURE, not for permission: it is the same
+    declared facet list the builders route on, and "this label has no edge of
+    this type" is a fact about the schema rather than about one query. Failing
+    to load it returns False, which is the old behaviour.
+    """
+    labels = {record.label for record in result.records if record.label}
+    if not labels:
+        return False
+    try:
+        from utils.specialists.schema import get_registry
+
+        registry = get_registry()
+    except Exception:  # noqa: BLE001 — no registry, no claim
+        return False
+    if registry is None:
+        return False
+    wanted = _normalise_rel(relation)
+    for label in labels:
+        try:
+            facets = registry.label_facets(label, dataset=result.task.source) or []
+        except Exception:  # noqa: BLE001
+            return False
+        if any(_normalise_rel(str(f.rel_type)) == wanted for f in facets):
+            return False
+    return True
+
+
 def _query_asked_about(result: SpecialistResult, relation: str) -> bool:
     """Did the executed query traverse ``relation``?
 
@@ -492,7 +551,13 @@ def _relation_is_empty(result: SpecialistResult, relation: str) -> bool:
     wanted = _normalise_rel(relation)
     if not wanted:
         return False
-    if not _query_asked_about(result, relation):
+    # Three warrants, any one of which makes an emptiness meaningful. Without
+    # one, "X has no Y" is asserted from a retrieval that never looked.
+    if not (
+        _query_asked_about(result, relation)
+        or _schema_denies(result, relation)
+        or _facet_counts_zero(result, relation)
+    ):
         return False
     for record in result.records:
         for rel in record.related or ():
@@ -895,8 +960,17 @@ def _enumeration_claim(
         # A role (e.g. an abstraction ancestor's "standard"/"meta") is annotated
         # in the prose so the answer says *which* is which, not just that both
         # exist — the distinction the hierarchy questions demand.
+        # A chained neighbour names the hop it was reached through, so the
+        # answer states the mapping instead of leaving two sets beside each
+        # other for a reader — or a narrator — to pair up.
         role = rel.get("role")
-        parts.append(f"{rid} ({role})" if role else rid)
+        via = rel.get("via")
+        if via and via != rid:
+            parts.append(f"{rid} (via {via})")
+        elif role:
+            parts.append(f"{rid} ({role})")
+        else:
+            parts.append(rid)
         if len(ids) >= _enum_bound("MAX_ENUMERATION_IDS", _MAX_ENUMERATION_IDS):
             break
     noun = _related_noun(record, len(ids))

@@ -174,23 +174,27 @@ def relation_chain(
                 facet.neighbour_label,
             )
         )
-        # Refuse a leg whose direction the schema cannot settle. A
-        # self-referential relationship declared both ways — ``ChildOf`` and
+        # A self-referential relationship declared both ways — ``ChildOf`` and
         # ``CanAlsoBe`` on ``AttackPattern`` — reaches its own label in either
-        # direction, so the schema says nothing about which one the question
-        # means. "More specific cases of CAPEC-26" is inbound; "what CAPEC-26 is
-        # a case of" is outbound; the words carry it and the plan does not.
+        # direction, so the schema cannot say which the question means. "More
+        # specific cases of CAPEC-26" is inbound; "what CAPEC-26 is a case of" is
+        # outbound; the words carry it and the plan does not.
         #
-        # Guessing costs more than abstaining. Preferring ``out`` on these legs
-        # measured *worse* than not chaining at all — seven development
-        # questions lost gold coverage and dev mean fell from 0.6655 to 0.6534 —
-        # because a confidently wrong direction replaces a star branch that
-        # sometimes caught the answer by accident. Reverse-direction asks are a
-        # known open weakness, concentrated exactly here.
-        ambiguous = {facet.direction for facet in facets if facet.neighbour_label == current}
-        if len(ambiguous) > 1:
-            return None
+        # **Walk it undirected rather than picking one.** Preferring ``out``
+        # measured worse than not chaining at all (seven questions lost gold
+        # coverage, dev mean 0.6655 -> 0.6534), and declining left 27 development
+        # questions unchained, which is why `H1` came in at +0.063 against a
+        # +0.10 threshold. Undirected is neither: it is not a guess, it costs one
+        # traversal step rather than two, and because the edge returns to its own
+        # label the next leg is unaffected. It retrieves a superset of the right
+        # answer where a direction would sometimes retrieve the complement.
+        ambiguous = {
+            facet.direction for facet in facets if facet.neighbour_label == current
+        }
         chosen = facets[0]
+        if len(ambiguous) > 1:
+            route.append((chosen.rel_type, "both", current))
+            continue
         route.append((chosen.rel_type, chosen.direction, chosen.neighbour_label))
         current = chosen.neighbour_label
     return route

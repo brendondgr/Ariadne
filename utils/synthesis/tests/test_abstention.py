@@ -270,12 +270,15 @@ def test_an_unrelated_neighbour_does_not_suppress_the_absence_claim() -> None:
     assert _relation_is_empty(asked, "HAS_PREREQUISITE")
     assert not _relation_is_empty(asked, "HAS_MEMBER")
 
+    # A query that never asked is not on its own a warrant — but it is not the
+    # only one. `HAS_MEMBER` is an edge `Category` really has, so a query that
+    # walked only it says nothing about members being absent.
     never_asked = make_result(
         source="capec", records=[record],
-        entities=("Category", "HAS_PREREQUISITE", "Prerequisite"),
-        query='g.V().has("id", within(ids)).in("HAS_MEMBER")',
+        entities=("Category", "HAS_MEMBER", "AttackPattern"),
+        query='g.V().has("id", within(ids)).out("HAS_PREREQUISITE")',
     )
-    assert not _relation_is_empty(never_asked, "HAS_PREREQUISITE")
+    assert not _relation_is_empty(never_asked, "HAS_MEMBER")
 
 
 def test_relation_names_fold_across_the_two_spellings() -> None:
@@ -292,3 +295,53 @@ def test_relation_names_fold_across_the_two_spellings() -> None:
         query='g.V().has("id", within(ids)).out("CAN_ALSO_BE")',
     )
     assert not _relation_is_empty(result, "CanAlsoBe")
+
+
+def test_three_warrants_let_an_answer_say_a_set_is_empty() -> None:
+    """"We looked" is one warrant. It is not the only one, and it is the narrowest.
+
+    Requiring the executed query to have traversed the relation was correct and
+    too narrow: not one of the 16 questions in the `empty` mechanism said the
+    requested set was empty, because their walks had gone somewhere else
+    (`EXP-2026-09-018` Step 6 follow-up). Two more warrants are stronger, not
+    weaker, and neither is a guess:
+
+    * the declared schema says this LABEL has no such edge at all — a fact about
+      the catalogue rather than about one query;
+    * ``describe`` reported the relation with a count of ZERO, which is a direct
+      measurement of the thing asked about.
+    """
+    from utils.synthesis.composer import _relation_is_empty
+
+    # 1. the query asked and found nothing
+    asked = make_result(
+        source="capec",
+        records=[make_record("CAPEC-513", source="capec", label="AttackPattern")],
+        query='g.V().has("id", within(ids)).out("HAS_EXECUTION_STEP")',
+    )
+    assert _relation_is_empty(asked, "HAS_EXECUTION_STEP")
+
+    # 2. a zero count from `describe`, on a query that walked nothing
+    counted = make_result(
+        source="capec",
+        records=[make_record(
+            "CAPEC-513", source="capec", label="AttackPattern",
+            facets=[{"rel": "HAS_EXECUTION_STEP", "direction": "out",
+                     "neighbour_label": "ExecutionStep", "count": 0}],
+        )],
+        query='g.V().has("id", within(ids)).project("node","out","in")',
+    )
+    assert _relation_is_empty(counted, "HAS_EXECUTION_STEP")
+
+    # …and a NON-zero count still refuses, which is the property that stopped
+    # "CAPEC-33 has no maps to" being emitted beside a facet saying it has one.
+    contradicted = make_result(
+        source="capec",
+        records=[make_record(
+            "CAPEC-33", source="capec", label="AttackPattern",
+            facets=[{"rel": "MAPS_TO", "direction": "out",
+                     "neighbour_label": "TaxonomyEntry", "count": 1}],
+        )],
+        query='g.V().has("id", within(ids)).out("MAPS_TO")',
+    )
+    assert not _relation_is_empty(contradicted, "MAPS_TO")

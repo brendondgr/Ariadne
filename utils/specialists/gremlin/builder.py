@@ -1101,6 +1101,22 @@ class GremlinQueryBuilder:
         def _edge(rel: str) -> str:
             return gremlin_edge_label(_safe_gremlin_ident(rel, "relationship type"))
 
+        def _step(direction: str) -> str:
+            """``both`` for a leg the schema declares in both directions.
+
+            A self-referential relationship reaches its own label either way and
+            the plan does not say which the question means, so the chain walks it
+            undirected. Rendering it as ``in`` — which is what a two-way test
+            falls through to — answers the complement of what was asked, and on
+            the 33 affected development questions that cost nine of them their
+            whole gold coverage before this was added.
+            """
+            if direction == "out":
+                return "out"
+            if direction == "both":
+                return "both"
+            return "in"
+
         # A hierarchy is one bounded ``repeat``, not one branch per depth. Per
         # depth would be correct and unshippable: the validator counts every
         # out/in step in the whole query against max_traversal_depth, so six
@@ -1119,7 +1135,7 @@ class GremlinQueryBuilder:
             )
         for root, path in prefixes:
             steps = [
-                f'{"out" if direction == "out" else "in"}("{_edge(rel)}")'
+                f'{_step(direction)}("{_edge(rel)}")'
                 for rel, direction in path
             ]
             branch_specs.append((len(steps), f'{_guard(root)}.{".".join(steps)}'))
@@ -1139,7 +1155,7 @@ class GremlinQueryBuilder:
             chain_root, legs = chain
             for i in range(1, len(legs) + 1):
                 steps = [
-                    f'{"out" if direction == "out" else "in"}("{_edge(rel)}")'
+                    f'{_step(direction)}("{_edge(rel)}")'
                     for rel, direction in legs[:i]
                 ]
                 branch = f'{_guard(chain_root)}.{".".join(steps)}'
