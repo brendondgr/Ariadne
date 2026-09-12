@@ -1,0 +1,28 @@
+{
+ "case_id": "D4-HAS_MEMBER-ChildOf-CAPEC-687-97e860::analyst",
+ "verdict": "CORRECT",
+ "correctness": 0.8,
+ "faithfulness": 0.85,
+ "groundedness": 0.85,
+ "completeness": 0.0,
+ "gold_expected": 1,
+ "gold_present": 0,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "T1566",
+  "M1017",
+  "CAPEC-98"
+ ],
+ "rationale": "The answer abstains and includes the executed CAPEC query, and the evidence shows row_count 0 for seed CAPEC-687, so it is faithful and grounded. It does not state the expected related identifier CAPEC-176, so completeness is low, but the abstention is query-backed rather than a fabricated mapping. The only unsupported identifiers are the illustrative examples T1566, M1017, and CAPEC-98.",
+ "judge": {
+  "model": "default-model",
+  "alias": "default-model",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

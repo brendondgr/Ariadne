@@ -203,3 +203,43 @@ the verb the sentence already carries and pluralises, falling back to the
 source's own identifier where no clean noun exists — `MAPS_TO` and `MEMBER_OF`
 end in a preposition and `CanAlsoBe` is not a noun phrase, and forcing them gave
 "no tos", "no member ofs" and "no canalsobes".
+
+## I-11 — The join key has one declared direction and a question can run either way along it
+
+**Impact:** 21 of the 27 federated development questions return **zero
+records** — 24% of the repaired arm's remaining judged loss, and the largest
+single untouched block.
+
+**Cause:** `dependency_map` decides producer and consumer from the join key's
+declared endpoints. `attack-technique-id` says CAPEC *produces* technique ids
+(it walks `MAPS_TO` to reach them) and ATT&CK *consumes* them (its records carry
+`attack_id` natively). That is correct for "which techniques does CAPEC-66 map
+to" and exactly backwards for "which CAPEC patterns correspond to T1555, and
+which CWE weaknesses do those exploit", where ATT&CK holds the seed and CAPEC is
+the only store that can answer.
+
+So the first hop is routed to ATT&CK and asks for `MAPS_TO` and `AttackPattern`,
+neither of which ATT&CK models; it returns nothing. The second hop is then told
+its producer yielded no join values and is **skipped without running**. Both
+hops return zero and the question scores near zero.
+
+**Two of three parts resolved.** A sub-question that names its own identifiers
+is no longer treated as a consumer (`carries_its_own_seeds`), and a consumer
+whose producer yields nothing now takes seeds from the *request* — the analyst's
+own words, verbatim, never invented (`request_seeds`). The CAPEC hop is now
+seeded with `T1555` where it previously received nothing.
+
+**The third part is open.** Seeded with an ATT&CK technique id, the CAPEC
+builder anchors on it as though it were a CAPEC identifier
+(`hasLabel("AttackPattern").has("id", within(ids))`) and matches nothing. It
+needs to enter through the mapping edge instead — from the `TaxonomyEntry`
+carrying that id, backwards along `MAPS_TO` to the patterns, and on to the
+second leg. `_generic_bridge` already reverses when the *plan* names `MAPS_TO`
+and `TaxonomyEntry`; here the plan does not, because it assumed the first hop
+would supply CAPEC ids. This is a builder change of similar size to the chained
+walk and is the highest-value item remaining.
+
+**Paper implication:** the join key's direction is a modelling choice that has
+been load-bearing without being stated. Any claim about federated retrieval
+should say that a declared join is directional and that the system answers along
+it one way.

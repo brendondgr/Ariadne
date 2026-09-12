@@ -1,0 +1,26 @@
+{
+ "case_id": "D4-CanFollow-HAS_PREREQUISITE-CAPEC-271-109948::formal",
+ "verdict": "PARTIAL",
+ "correctness": 0.2,
+ "faithfulness": 0.7,
+ "groundedness": 0.7,
+ "completeness": 0.0,
+ "gold_expected": 5,
+ "gold_present": 0,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "CAPEC-271 has no has prerequisite in this catalogue."
+ ],
+ "rationale": "The answer identifies CAPEC-271 but states none of the five expected prerequisite texts, such as \"There are two components communicating with each other.\" It also asserts that CAPEC-271 has no HAS_PREREQUISITE, although the evidence facet shows HAS_PREREQUISITE out count 2. Thus it is only partial: it addresses the anchor and gives a negative answer, but omits all expected prerequisite identifiers.",
+ "judge": {
+  "model": "default-model",
+  "alias": "default-model",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

@@ -1,0 +1,31 @@
+{
+ "case_id": "D5-uses-x_mitre_platforms-G0006-0eed87::analyst",
+ "verdict": "PARTIAL",
+ "correctness": 0.6,
+ "faithfulness": 0.45,
+ "groundedness": 0.5,
+ "completeness": 0.58,
+ "gold_expected": 12,
+ "gold_present": 7,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "T1049 applies to macOS",
+  "T1016 applies to macOS",
+  "T1135 applies to macOS",
+  "T1007 applies to macOS",
+  "T1087.001 applies to macOS",
+  "T1560.001 applies to macOS"
+ ],
+ "rationale": "The answer correctly anchors G0006 and lists related items, but its direct macOS list contains only T1057, T1049, T1016, T1135, T1007, T1087.001, and T1560.001, omitting gold macOS techniques T1005, T1119, T1566.001, T1566.002, and T1036.005. The visible evidence explicitly supports macOS applicability for T1057, while the other macOS assertions are not tied to platform properties in the shown records. Therefore the answer is partial and only moderately faithful and grounded.",
+ "judge": {
+  "model": "default-model",
+  "alias": "default-model",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

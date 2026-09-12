@@ -1,0 +1,27 @@
+{
+ "case_id": "D6-MAPS_TO[ATTACK]-HAS_MITIGATION-T1195.002-962add::formal",
+ "verdict": "PARTIAL",
+ "correctness": 0.3,
+ "faithfulness": 0.55,
+ "groundedness": 0.65,
+ "completeness": 0.037,
+ "gold_expected": 27,
+ "gold_present": 1,
+ "abstained": true,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "1 question(s) the sources don't establish",
+  "Found 558 CAPEC record(s) ... ATT&CK mappings: T1001.002, T1003, T1005, T1007, T1012"
+ ],
+ "rationale": "The answer mentions T1195.002 via capec:taxonomy:ATTACK:1195.002 and lists several CAPECs mapped to it, including CAPEC-669, CAPEC-673, CAPEC-678, CAPEC-691, CAPEC-186, CAPEC-442, CAPEC-443, and CAPEC-523. However, it does not state any of the 26 expected mitigation texts, so it only partially addresses the two-part question. It also says one question is not established but does not show the executed query, limiting the value of the abstention.",
+ "judge": {
+  "model": "default-model",
+  "alias": "default-model",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

@@ -1,0 +1,24 @@
+{
+ "case_id": "D2-HAS_MEMBER-CAPEC-156-d26a33::indirect",
+ "verdict": "CORRECT",
+ "correctness": 0.85,
+ "faithfulness": 1.0,
+ "groundedness": 0.8,
+ "completeness": 0.14,
+ "gold_expected": 7,
+ "gold_present": 1,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer abstains and includes the executed CAPEC query, and the evidence shows row_count 0 for seed CAPEC-156, so it is faithful and not a fabricated mapping. It does not state the expected related patterns CAPEC-148, CAPEC-151, CAPEC-154, CAPEC-173, CAPEC-416, or CAPEC-690, only the anchor CAPEC-156 in the abstention. This is an honest abstention rather than a guess, but it is incomplete relative to the gold set.",
+ "judge": {
+  "model": "default-model",
+  "alias": "default-model",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

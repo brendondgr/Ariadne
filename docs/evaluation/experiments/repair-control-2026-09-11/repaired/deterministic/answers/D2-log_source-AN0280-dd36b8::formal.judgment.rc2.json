@@ -1,0 +1,26 @@
+{
+ "case_id": "D2-log_source-AN0280-dd36b8::formal",
+ "verdict": "INCORRECT",
+ "correctness": 0.2,
+ "faithfulness": 0.7,
+ "groundedness": 0.7,
+ "completeness": 0.0,
+ "gold_expected": 1,
+ "gold_present": 0,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "AN0280 has no monitors in this catalogue"
+ ],
+ "rationale": "The answer identifies the anchor AN0280 but omits the expected data component DC0064. It also asserts that AN0280 has no monitors, which is not supported by the evidence facet showing a MONITORS relationship to a DataComponent. Because it did not abstain and instead gave a negative answer, it is incorrect.",
+ "judge": {
+  "model": "default-model",
+  "alias": "default-model",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

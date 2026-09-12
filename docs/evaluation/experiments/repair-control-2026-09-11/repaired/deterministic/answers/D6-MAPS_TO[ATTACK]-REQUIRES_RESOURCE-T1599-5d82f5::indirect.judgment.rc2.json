@@ -1,0 +1,26 @@
+{
+ "case_id": "D6-MAPS_TO[ATTACK]-REQUIRES_RESOURCE-T1599-5d82f5::indirect",
+ "verdict": "PARTIAL",
+ "correctness": 0.4,
+ "faithfulness": 0.7,
+ "groundedness": 0.8,
+ "completeness": 0.5,
+ "gold_expected": 2,
+ "gold_present": 1,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "The attack source doesn't establish the CAPEC patterns corresponding to T1599, so no query was executed"
+ ],
+ "rationale": "The answer identifies CAPEC-700 as mapped to T1599 via capec:taxonomy:ATTACK:1599, which addresses the correspondence part. It does not state the expected resource requirement, \"The adversary requires either high privileges or full control of a boundary device on a target network.\" It also includes a partially unsupported abstention saying the attack source does not establish the CAPEC patterns, which is inconsistent with the CAPEC-700 mapping it lists.",
+ "judge": {
+  "model": "default-model",
+  "alias": "default-model",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

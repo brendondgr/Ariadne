@@ -1,0 +1,28 @@
+{
+ "case_id": "D0-Software-subtechnique-of-S0267-4f502e::analyst",
+ "verdict": "CORRECT",
+ "correctness": 0.85,
+ "faithfulness": 0.8,
+ "groundedness": 0.6,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "T1566",
+  "M1017",
+  "CAPEC-98"
+ ],
+ "rationale": "The answer is an honest no-records abstention for S0267, and the failed attack trace shows the subtechnique_parent query was rejected because S0267 is treated as Software rather than Technique or SubTechnique. Since the expected parent set is empty, the answer does not assert any technique mapping and does not fabricate a cross-source correlation. The only unsupported items are the example identifiers T1566, M1017, and CAPEC-98, which are suggestions rather than claims about the answer.",
+ "judge": {
+  "model": "default-model",
+  "alias": "default-model",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

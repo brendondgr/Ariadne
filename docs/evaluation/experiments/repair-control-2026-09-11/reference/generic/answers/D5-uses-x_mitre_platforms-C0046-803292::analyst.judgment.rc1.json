@@ -1,0 +1,29 @@
+{
+ "case_id": "D5-uses-x_mitre_platforms-C0046-803292::analyst",
+ "verdict": "PARTIAL",
+ "correctness": 0.8,
+ "faithfulness": 0.7,
+ "groundedness": 0.75,
+ "completeness": 1.0,
+ "gold_expected": 21,
+ "gold_present": 21,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "T1583.006 applies to Windows",
+  "T1583.003 applies to Windows",
+  "T1587.001 applies to Windows",
+  "T1587.003 applies to Windows"
+ ],
+ "rationale": "The answer states C0046 and all 21 expected technique identifiers, including T1014, T1059, T1070.004, T1133, and T1690, so completeness is full. It overstates the Windows-applicable set by including T1583.006, T1583.003, T1587.001, and T1587.003 as applying to Windows, which are not in the expected set. The statements are grounded in the C0046 related-items record, but the Windows applicability claim is only partially supported by the shown descriptions.",
+ "judge": {
+  "model": "default-model",
+  "alias": "default-model",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

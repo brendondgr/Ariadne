@@ -1,0 +1,24 @@
+{
+ "case_id": "D5-ChildOf-Typical_Severity-CAPEC-634-446005::analyst",
+ "verdict": "PARTIAL",
+ "correctness": 0.6,
+ "faithfulness": 1.0,
+ "groundedness": 1.0,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer includes the expected broader pattern CAPEC-651 and its claims are grounded in the CAPEC-634 record and related entries. However, it lists all four ChildOf parents (CAPEC-545, CAPEC-651, CAPEC-116, CAPEC-117) rather than explicitly selecting only the Medium typical severity ones, so it only partially answers the filtered question. Completeness is full because the sole expected identifier is present.",
+ "judge": {
+  "model": "default-model",
+  "alias": "default-model",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

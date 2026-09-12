@@ -1,0 +1,28 @@
+{
+ "case_id": "D0-Category-CanAlsoBe-CAPEC-223-85585c::indirect",
+ "verdict": "CORRECT",
+ "correctness": 1.0,
+ "faithfulness": 0.85,
+ "groundedness": 0.9,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "T1566",
+  "M1017",
+  "CAPEC-98"
+ ],
+ "rationale": "The answer is an honest abstention: the CAPEC query for CAPEC-223 returned row_count 0 and no records, and the abstention includes the executed query. It states the anchor CAPEC-223 in the abstention statement, satisfying the only expected identifier. The only unsupported items are the example identifiers T1566, M1017, and CAPEC-98 in the narrative, so faithfulness is slightly reduced.",
+ "judge": {
+  "model": "default-model",
+  "alias": "default-model",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

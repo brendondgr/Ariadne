@@ -1,0 +1,26 @@
+{
+ "case_id": "D3-CanFollow-CAPEC-98-d9b3e3::analyst",
+ "verdict": "INCORRECT",
+ "correctness": 0.2,
+ "faithfulness": 0.7,
+ "groundedness": 0.8,
+ "completeness": 0.0,
+ "gold_expected": 2,
+ "gold_present": 0,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "CAPEC-98 has no canfollow in this catalogue"
+ ],
+ "rationale": "The question asks for CAPEC patterns that can follow CAPEC-98, and the expected related identifiers are CAPEC-186 and CAPEC-701. The answer only states CAPEC-98 and asserts that it has no canfollow, despite the evidence showing two incoming CAN_FOLLOW facets. It therefore omits both expected related patterns and makes an unsupported absence claim.",
+ "judge": {
+  "model": "default-model",
+  "alias": "default-model",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

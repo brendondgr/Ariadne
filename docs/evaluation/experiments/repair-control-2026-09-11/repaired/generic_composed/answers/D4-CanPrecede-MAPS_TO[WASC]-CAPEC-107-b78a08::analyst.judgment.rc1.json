@@ -1,0 +1,26 @@
+{
+ "case_id": "D4-CanPrecede-MAPS_TO[WASC]-CAPEC-107-b78a08::analyst",
+ "verdict": "PARTIAL",
+ "correctness": 0.4,
+ "faithfulness": 0.75,
+ "groundedness": 0.7,
+ "completeness": 0.5,
+ "gold_expected": 2,
+ "gold_present": 1,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "CAPEC-107's related attack patterns are restricted to taxonomy name WASC"
+ ],
+ "rationale": "The answer identifies CAPEC-107 and lists seven related CAPEC attack patterns: CAPEC-63, CAPEC-34, CAPEC-273, CAPEC-105, CAPEC-33, CAPEC-85, and CAPEC-174. However, it omits the expected WASC:08 entry and does not explicitly map the preceding patterns to WASC taxonomy entries. The claim that the patterns are restricted to taxonomy name WASC is not directly supported by the shown CAPEC-107 record, so faithfulness and groundedness are reduced.",
+ "judge": {
+  "model": "default-model",
+  "alias": "default-model",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

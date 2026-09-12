@@ -184,6 +184,68 @@ def harvest_seed_ids(
     return tuple(values), False
 
 
+def request_seeds(request: str, source: str) -> tuple[str, ...]:
+    """Identifiers the ANALYST'S QUESTION names that ``source`` can anchor on.
+
+    A last resort for a consumer whose producer yielded nothing, and a narrow
+    one: the values come from the request verbatim, so nothing is invented, and
+    a request naming no identifier returns an empty tuple and changes nothing.
+
+    It exists because the join key's direction is declared once and a question
+    can run either way along it. ``attack-technique-id`` says CAPEC produces and
+    ATT&CK consumes, which is right for "which techniques does CAPEC-66 map to"
+    and backwards for "which CAPEC patterns correspond to T1555" — where ATT&CK
+    holds the seed and cannot answer, because it does not model ``MAPS_TO``.
+    21 of the 27 federated development questions returned zero records for
+    that reason.
+    """
+    from .resolve import extract_attack_ids, extract_capec_ids, extract_cwe_ids
+
+    if source == "capec":
+        return (
+            extract_capec_ids(request)
+            or extract_cwe_ids(request)
+            or extract_attack_ids(request)
+        )
+    if source == "attack":
+        return extract_attack_ids(request)
+    return ()
+
+
+def carries_its_own_seeds(sq: SubQuestion) -> bool:
+    """Does this sub-question already name identifiers its own source can anchor on?
+
+    A consumer is a sub-question that has nothing to start from until a producer
+    hands it values. One that names ``T1555`` in its own text is not that, and
+    must not be skipped when the "producer" it was assigned yields nothing.
+
+    The assignment can be backwards, because `dependency_map` reads the join
+    key's declared direction and that direction is fixed: CAPEC *produces*
+    ATT&CK technique ids and ATT&CK *consumes* them. True for "which techniques
+    does CAPEC-66 map to"; exactly backwards for "which CAPEC patterns
+    correspond to T1555", where the ATT&CK side holds the seed. 21 of the 27
+    federated development questions returned **zero records** for that reason —
+    24% of the repaired arm's remaining judged loss (`EXP-2026-09-018`).
+
+    Reading the text rather than re-deriving the join direction is the
+    conservative repair: it can only let a sub-question run that would otherwise
+    have been skipped unseeded, and a sub-question that names no identifier is
+    unaffected.
+    """
+    if getattr(sq, "seed_ids", ()):  # the plan said so outright
+        return True
+    from .resolve import extract_attack_ids, extract_capec_ids, extract_cwe_ids
+
+    text = getattr(sq, "text", "") or ""
+    if sq.source == "attack":
+        return bool(extract_attack_ids(text))
+    if sq.source == "capec":
+        return bool(extract_capec_ids(text) or extract_cwe_ids(text))
+    return bool(
+        extract_attack_ids(text) or extract_capec_ids(text) or extract_cwe_ids(text)
+    )
+
+
 def dependency_skip_result(
     task: SpecialistTask, *, producer_id: str, reason: str
 ) -> SpecialistResult:
@@ -330,7 +392,14 @@ class SpecialistRouter:
                 # discard what the other found.
                 usable = [p for p in found if p is not None and p.ok]
                 task = SpecialistTask.from_sub_question(sq)
-                if not usable:
+                # A sub-question that names its own identifiers is not a
+                # consumer, whatever the join key's declared direction says —
+                # see `carries_its_own_seeds`. Running it unseeded here is
+                # correct: `resolve` will take the seeds out of its own text.
+                if not usable and carries_its_own_seeds(sq):
+                    usable = []
+                    seed_ids, truncated = (), False
+                elif not usable:
                     failed = [p for p in found if p is not None and not p.ok]
                     if failed:
                         # Keep the producer's own words. "no valid evidence" is
@@ -349,8 +418,23 @@ class SpecialistRouter:
                          "seed_count": 0, "truncated": False, "skipped": reason}
                     )
                     continue
-                seed_ids, truncated = harvest_seed_ids(usable, cap=sq.limits.max_result_rows)
+                seed_ids, truncated = harvest_seed_ids(
+                    usable, cap=sq.limits.max_result_rows
+                ) if usable else ((), False)
                 if not seed_ids:
+                    # The producer gave nothing. Before abstaining, look for
+                    # identifiers in the REQUEST — the analyst's own words, not
+                    # an invention. "Which CAPEC patterns correspond to T1555,
+                    # and which CWE weaknesses do those exploit" names T1555,
+                    # and the CAPEC store can answer the whole thing by walking
+                    # MAPS_TO backwards; the plan's split sends the first hop to
+                    # ATT&CK, which does not model MAPS_TO at all.
+                    #
+                    # Only the consuming side is seeded this way, and only from
+                    # identifiers the request literally contains, so a question
+                    # naming nothing is unaffected.
+                    seed_ids = request_seeds(plan.request, sq.source)
+                if not seed_ids and not carries_its_own_seeds(sq):
                     reason = "it returned no join values"
                     result = dependency_skip_result(task, producer_id=producer_id, reason=reason)
                     results.append(result)

@@ -1,0 +1,26 @@
+{
+ "case_id": "D5-mitigates-x_mitre_platforms-M1022-4689f4::formal",
+ "verdict": "INCORRECT",
+ "correctness": 0.1,
+ "faithfulness": 0.6,
+ "groundedness": 0.8,
+ "completeness": 0.0,
+ "gold_expected": 43,
+ "gold_present": 0,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "M1022 has no mitigates in this catalogue"
+ ],
+ "rationale": "The answer only names M1022 and describes the mitigation, but it omits all 43 expected technique/subtechnique identifiers such as T1036, T1070, T1543, and T1574. It also asserts that M1022 has no mitigates, which is contradicted by the record's MITIGATES facets to Technique and SubTechnique. Because it is a non-abstaining negative answer with no expected technique IDs, it is incorrect.",
+ "judge": {
+  "model": "default-model",
+  "alias": "default-model",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

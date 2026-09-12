@@ -1,0 +1,24 @@
+{
+ "case_id": "D5-HAS_MEMBER-Typical_Severity-CAPEC-512-dd2e01::analyst",
+ "verdict": "PARTIAL",
+ "correctness": 0.5,
+ "faithfulness": 1.0,
+ "groundedness": 0.9,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer includes the expected CAPEC-94 and the anchor CAPEC-512, and all listed CAPEC identifiers are supported by the capec:category:512 record. However, it enumerates all 17 members of CAPEC-512 rather than explicitly identifying CAPEC-94 as the Very High typical severity pattern, so it only partially answers the question. No unsupported cross-source mapping or hallucinated identifiers are present.",
+ "judge": {
+  "model": "default-model",
+  "alias": "default-model",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

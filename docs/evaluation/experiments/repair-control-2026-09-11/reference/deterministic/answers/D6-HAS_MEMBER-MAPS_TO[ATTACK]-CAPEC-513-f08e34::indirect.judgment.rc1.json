@@ -1,0 +1,27 @@
+{
+ "case_id": "D6-HAS_MEMBER-MAPS_TO[ATTACK]-CAPEC-513-f08e34::indirect",
+ "verdict": "PARTIAL",
+ "correctness": 0.4,
+ "faithfulness": 0.7,
+ "groundedness": 0.7,
+ "completeness": 0.0,
+ "gold_expected": 17,
+ "gold_present": 0,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "capec:category:513 has no linked attack patterns",
+  "the capec source does not model ATT&CK technique entities"
+ ],
+ "rationale": "The answer retrieves CAPEC-513 and enumerates its 52 CAPEC attack patterns, but it states none of the 17 expected ATT&CK technique IDs such as T1078, T1110, and T1499. It abstains on the ATT&CK mapping rather than fabricating a cross-source correlation, but one abstention incorrectly says the query returned no linked attack patterns. Thus it is partial: supported CAPEC enumeration, missing the gold ATT&CK set.",
+ "judge": {
+  "model": "default-model",
+  "alias": "default-model",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

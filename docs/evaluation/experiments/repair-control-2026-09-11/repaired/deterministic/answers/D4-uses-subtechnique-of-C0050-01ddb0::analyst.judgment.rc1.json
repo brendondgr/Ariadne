@@ -1,0 +1,28 @@
+{
+ "case_id": "D4-uses-subtechnique-of-C0050-01ddb0::analyst",
+ "verdict": "CORRECT",
+ "correctness": 1.0,
+ "faithfulness": 0.9,
+ "groundedness": 0.9,
+ "completeness": 0.0,
+ "gold_expected": 4,
+ "gold_present": 0,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "T1566",
+  "M1017",
+  "CAPEC-98"
+ ],
+ "rationale": "The attack query seeded with C0050 returned zero rows, so the abstention is honest and the executed query is shown. The answer does not state any of the expected technique identifiers T1036, T1583, T1587, or T1588, so completeness is zero, but it does not fabricate a mapping. The only unsupported identifiers are illustrative examples T1566, M1017, and CAPEC-98, which are not claimed to be related to C0050.",
+ "judge": {
+  "model": "default-model",
+  "alias": "default-model",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

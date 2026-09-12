@@ -1,0 +1,24 @@
+{
+ "case_id": "D5-PeerOf-Typical_Severity-CAPEC-665-0183ee::indirect",
+ "verdict": "PARTIAL",
+ "correctness": 0.5,
+ "faithfulness": 0.95,
+ "groundedness": 0.85,
+ "completeness": 1.0,
+ "gold_expected": 2,
+ "gold_present": 2,
+ "abstained": true,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer correctly cites CAPEC-665 and lists its PEER_OF neighbors CAPEC-148, CAPEC-151, and CAPEC-458, so it states the expected Medium-severity peers CAPEC-148 and CAPEC-151. However, it does not assert that CAPEC-148 and CAPEC-151 have Typical_Severity Medium; it only says the evidence does not establish which peers are Medium. It is therefore faithful and grounded but only partially answers the asked filter.",
+ "judge": {
+  "model": "default-model",
+  "alias": "default-model",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

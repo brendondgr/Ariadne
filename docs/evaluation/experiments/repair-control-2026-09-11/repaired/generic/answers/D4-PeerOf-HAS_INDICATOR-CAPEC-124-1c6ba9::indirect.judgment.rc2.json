@@ -1,0 +1,26 @@
+{
+ "case_id": "D4-PeerOf-HAS_INDICATOR-CAPEC-124-1c6ba9::indirect",
+ "verdict": "PARTIAL",
+ "correctness": 0.5,
+ "faithfulness": 0.8,
+ "groundedness": 0.7,
+ "completeness": 0.5,
+ "gold_expected": 2,
+ "gold_present": 1,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "Indicators for CAPEC-663 are transient instruction execution, speculative execution, branch prediction, instruction pipelining, out-of-order execution, non-discarded microarchitectural changes, covert channel, and instruction gadgets"
+ ],
+ "rationale": "The answer correctly states the anchor CAPEC-124 and provides a related CAPEC-663 record with indicator-like terms drawn from its description. However, it omits the expected related peer \"File Signatures for Malicious Software capable of abusing Transient Instruction Set Execution.\" The indicator list is mostly grounded in the CAPEC-663 description, but the evidence does not explicitly present those terms as indicator records.",
+ "judge": {
+  "model": "default-model",
+  "alias": "default-model",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

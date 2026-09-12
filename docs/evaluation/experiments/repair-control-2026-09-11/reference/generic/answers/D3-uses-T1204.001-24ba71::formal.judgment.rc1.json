@@ -1,0 +1,26 @@
+{
+ "case_id": "D3-uses-T1204.001-24ba71::formal",
+ "verdict": "CORRECT",
+ "correctness": 0.9,
+ "faithfulness": 0.85,
+ "groundedness": 0.95,
+ "completeness": 1.0,
+ "gold_expected": 29,
+ "gold_present": 29,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "The answer states that T1204.001 has 87 related items but enumerates only 86 identifiers."
+ ],
+ "rationale": "The answer includes all 29 expected software identifiers for T1204.001, including S0198, S0367, S0453, S0499, S0650, and S9026, so it fully covers the requested malware/tools. It also lists supported non-software related IDs such as G1014 and C0022, which makes the answer broader than the question but not unsupported. The main deduction is the internal mismatch between the claimed 87 related items and the 86 identifiers actually enumerated.",
+ "judge": {
+  "model": "default-model",
+  "alias": "default-model",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

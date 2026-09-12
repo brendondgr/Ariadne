@@ -1,0 +1,26 @@
+{
+ "case_id": "D6-MAPS_TO[ATTACK]-HAS_MEMBER-T1552.001-85a91e::indirect",
+ "verdict": "PARTIAL",
+ "correctness": 0.35,
+ "faithfulness": 0.7,
+ "groundedness": 0.8,
+ "completeness": 0.5,
+ "gold_expected": 2,
+ "gold_present": 1,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "The attack source doesn't establish this"
+ ],
+ "rationale": "The answer states the anchor T1552.001 and gives some CAPEC-to-ATT&CK mappings such as CAPEC-639 and CAPEC-191, but it omits the expected CAPEC-703 and does not identify the requested CAPEC views. Its abstention is explicit and shows the query for T1552.001, so it is partial rather than fully correct. The meta-claim that the attack source does not establish the mapping is not directly tied to a cited record.",
+ "judge": {
+  "model": "default-model",
+  "alias": "default-model",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

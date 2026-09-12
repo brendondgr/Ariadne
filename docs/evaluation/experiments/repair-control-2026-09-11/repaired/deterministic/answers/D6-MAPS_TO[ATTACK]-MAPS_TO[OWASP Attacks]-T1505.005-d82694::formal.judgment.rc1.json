@@ -1,0 +1,26 @@
+{
+ "case_id": "D6-MAPS_TO[ATTACK]-MAPS_TO[OWASP Attacks]-T1505.005-d82694::formal",
+ "verdict": "PARTIAL",
+ "correctness": 0.3,
+ "faithfulness": 0.7,
+ "groundedness": 0.7,
+ "completeness": 0.0,
+ "gold_expected": 1,
+ "gold_present": 0,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "The attack source doesn't establish this \u2014 it doesn't model the entities this question asks about"
+ ],
+ "rationale": "The answer mentions T1505.005 and lists CAPEC records that include capec:taxonomy:ATTACK:1505.005, such as CAPEC-640, CAPEC-642, and CAPEC-558, but it never states the requested OWASP entry OWASP Attacks:Binary planting. It also partially abstains by saying the attack source does not establish the T1505.005-to-CAPEC relation, which is only weakly grounded and leaves the OWASP hop unaddressed. Therefore it is partial rather than correct.",
+ "judge": {
+  "model": "default-model",
+  "alias": "default-model",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

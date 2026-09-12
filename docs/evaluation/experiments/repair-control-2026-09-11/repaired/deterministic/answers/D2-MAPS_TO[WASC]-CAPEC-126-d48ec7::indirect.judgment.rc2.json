@@ -1,0 +1,26 @@
+{
+ "case_id": "D2-MAPS_TO[WASC]-CAPEC-126-d48ec7::indirect",
+ "verdict": "PARTIAL",
+ "correctness": 0.3,
+ "faithfulness": 0.7,
+ "groundedness": 0.8,
+ "completeness": 0.5,
+ "gold_expected": 2,
+ "gold_present": 1,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "CAPEC-126 has no maps to in this catalogue"
+ ],
+ "rationale": "The answer identifies CAPEC-126 but never states the expected WASC:33 mapping. It asserts that CAPEC-126 has no maps to, which is contradicted by the record's MAPS_TO facet count of 2 and the gold expectation WASC:33. It is therefore a partial, non-abstaining answer with low correctness and completeness.",
+ "judge": {
+  "model": "default-model",
+  "alias": "default-model",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

@@ -1,0 +1,26 @@
+{
+ "case_id": "D3-CanFollow-CAPEC-390-754ead::indirect",
+ "verdict": "INCORRECT",
+ "correctness": 0.2,
+ "faithfulness": 0.6,
+ "groundedness": 0.8,
+ "completeness": 0.0,
+ "gold_expected": 1,
+ "gold_present": 0,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "CAPEC-390 has no canfollow in this catalogue"
+ ],
+ "rationale": "The answer correctly identifies the anchor CAPEC-390 but does not state the expected next pattern CAPEC-665. It also asserts that CAPEC-390 has no canfollow, while the evidence shows an incoming CAN_FOLLOW facet count of 1, which is the likely source of the expected CAPEC-665 relation. Because it gives a direct but unsupported negative answer instead of naming the expected neighbor, it is incorrect.",
+ "judge": {
+  "model": "default-model",
+  "alias": "default-model",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

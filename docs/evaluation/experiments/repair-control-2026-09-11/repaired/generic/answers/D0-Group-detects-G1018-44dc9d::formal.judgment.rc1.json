@@ -1,0 +1,24 @@
+{
+ "case_id": "D0-Group-detects-G1018-44dc9d::formal",
+ "verdict": "PARTIAL",
+ "correctness": 0.5,
+ "faithfulness": 1.0,
+ "groundedness": 1.0,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer states the required anchor G1018 (TA2541) and enumerates 37 related ATT&CK items, including technique IDs such as T1105 and T1518.001, all tied to the cited G1018 record. However, it frames the neighbors as 'related' rather than 'detects' and includes non-technique software IDs such as S0434, so it only partially answers the detection question. No cross-source mapping is asserted, and the gold expected set contains only G1018 with no expected DETECTS technique neighbors.",
+ "judge": {
+  "model": "default-model",
+  "alias": "default-model",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

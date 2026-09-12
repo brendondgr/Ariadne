@@ -1,0 +1,26 @@
+{
+ "case_id": "D5-CanFollow-Likelihood_Of_Attack-CAPEC-234-6037d9::indirect",
+ "verdict": "INCORRECT",
+ "correctness": 0.2,
+ "faithfulness": 0.7,
+ "groundedness": 0.8,
+ "completeness": 0.0,
+ "gold_expected": 1,
+ "gold_present": 0,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "CAPEC-234 has no canfollow in this catalogue"
+ ],
+ "rationale": "The expected related identifier was CAPEC-175, but the answer only states the anchor CAPEC-234 and asserts that it has no CanFollow. The evidence shows CAPEC-234 has outgoing CAN_FOLLOW count 3, so the blanket no-canfollow claim is not fully supported. As a result, the answer omits the gold related pattern and misstates the relationship.",
+ "judge": {
+  "model": "default-model",
+  "alias": "default-model",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

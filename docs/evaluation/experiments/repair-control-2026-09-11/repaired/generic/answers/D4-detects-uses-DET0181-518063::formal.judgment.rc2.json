@@ -1,0 +1,24 @@
+{
+ "case_id": "D4-detects-uses-DET0181-518063::formal",
+ "verdict": "PARTIAL",
+ "correctness": 0.65,
+ "faithfulness": 0.95,
+ "groundedness": 0.9,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer includes the expected gold identifier S0603 and correctly anchors the result to DET0181. However, it lists T1505.001 and C0025 as related items rather than explicitly limiting the response to malware/tools, and C0025 is a Campaign rather than a Software entity. All stated identifiers are supported by the DET0181 record, so the main issue is precision rather than unsupported claims.",
+ "judge": {
+  "model": "default-model",
+  "alias": "default-model",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

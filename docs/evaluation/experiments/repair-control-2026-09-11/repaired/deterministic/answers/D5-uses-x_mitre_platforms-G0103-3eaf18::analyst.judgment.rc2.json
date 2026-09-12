@@ -1,0 +1,28 @@
+{
+ "case_id": "D5-uses-x_mitre_platforms-G0103-3eaf18::analyst",
+ "verdict": "PARTIAL",
+ "correctness": 0.4,
+ "faithfulness": 0.85,
+ "groundedness": 0.8,
+ "completeness": 0.0,
+ "gold_expected": 1,
+ "gold_present": 0,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "T1566",
+  "M1017",
+  "CAPEC-98"
+ ],
+ "rationale": "The answer honestly abstains for G0103 and shows the executed query, and the evidence contains zero records, so it is faithful and not fabricated. It does not state the expected technique T1566.002, so completeness is zero despite the abstention. The narrative's example identifiers T1566, M1017, and CAPEC-98 are not supported by the shown records.",
+ "judge": {
+  "model": "default-model",
+  "alias": "default-model",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

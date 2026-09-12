@@ -1,0 +1,24 @@
+{
+ "case_id": "D4-PeerOf-HAS_MEMBER-CAPEC-12-c78070::analyst",
+ "verdict": "INCORRECT",
+ "correctness": 0.1,
+ "faithfulness": 1.0,
+ "groundedness": 0.9,
+ "completeness": 0.0,
+ "gold_expected": 2,
+ "gold_present": 0,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer only describes the anchor CAPEC-12 and asserts that it has no MEMBER_OF categories, but it never states the expected peer attack patterns CAPEC-225 or CAPEC-513. The evidence shows a PEER_OF out count for CAPEC-12, but the answer does not use that to identify peers or their categories. Therefore it is mostly grounded in the CAPEC-12 record but fails to answer the requested peer-and-category question.",
+ "judge": {
+  "model": "default-model",
+  "alias": "default-model",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

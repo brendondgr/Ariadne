@@ -1,0 +1,26 @@
+{
+ "case_id": "D1-AttackPattern-Typical_Severity-CAPEC-162-ac7ede::formal",
+ "verdict": "CORRECT",
+ "correctness": 1.0,
+ "faithfulness": 0.9,
+ "groundedness": 0.95,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "Asserts that CAPEC-77 and CAPEC-22 are 'parents' of CAPEC-162, while the evidence shows ChildOf-related neighbors but does not explicitly confirm direction for both."
+ ],
+ "rationale": "The answer directly states that CAPEC-162 has Typical_Severity High, which is the requested severity. It also names CAPEC-162 and ties the claim to the CAPEC record. The extra ChildOf parent claim is mostly grounded in the related records but is slightly over-specified because direction is not explicit.",
+ "judge": {
+  "model": "default-model",
+  "alias": "default-model",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

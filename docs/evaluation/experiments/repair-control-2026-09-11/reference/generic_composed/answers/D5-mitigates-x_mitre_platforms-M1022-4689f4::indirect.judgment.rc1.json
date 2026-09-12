@@ -1,0 +1,24 @@
+{
+ "case_id": "D5-mitigates-x_mitre_platforms-M1022-4689f4::indirect",
+ "verdict": "PARTIAL",
+ "correctness": 0.65,
+ "faithfulness": 0.85,
+ "groundedness": 0.8,
+ "completeness": 1.0,
+ "gold_expected": 43,
+ "gold_present": 43,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer names M1022 and includes all 43 expected Windows-applicable techniques, including T1036, T1543, T1569.002, and T1686.003. It only partially answers the question because it lists 60 mitigated techniques rather than explicitly filtering to the Windows subset, including non-Windows items such as T1574.004, T1548.006, T1547.013, T1543.002, and T1037.004. The statements are grounded in the M1022 record and its MITIGATES neighbours, with no unsupported cross-source mapping.",
+ "judge": {
+  "model": "default-model",
+  "alias": "default-model",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

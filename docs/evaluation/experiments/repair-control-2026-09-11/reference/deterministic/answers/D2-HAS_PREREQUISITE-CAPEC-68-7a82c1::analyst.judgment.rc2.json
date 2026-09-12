@@ -1,0 +1,24 @@
+{
+ "case_id": "D2-HAS_PREREQUISITE-CAPEC-68-7a82c1::analyst",
+ "verdict": "INCORRECT",
+ "correctness": 0.1,
+ "faithfulness": 1.0,
+ "groundedness": 1.0,
+ "completeness": 0.0,
+ "gold_expected": 3,
+ "gold_present": 0,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer identifies CAPEC-68 and accurately reports its description and properties, but it never states the three expected prerequisite texts for CAPEC-68. The expected prerequisites are the framework-based code-signing language, deployed vendor-signed code, and the attacker's ability to place code in the victim container. Because the narrative describes the anchor record rather than answering the prerequisite question, it is incorrect despite being faithful and grounded.",
+ "judge": {
+  "model": "default-model",
+  "alias": "default-model",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

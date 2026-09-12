@@ -1,0 +1,29 @@
+{
+ "case_id": "D4-mitigates-uses-M1046-b1c76e::formal",
+ "verdict": "PARTIAL",
+ "correctness": 0.2,
+ "faithfulness": 0.6,
+ "groundedness": 0.6,
+ "completeness": 0.0,
+ "gold_expected": 1,
+ "gold_present": 0,
+ "abstained": true,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "None of the live graph sources cover this request",
+  "T1566",
+  "M1017",
+  "CAPEC-98"
+ ],
+ "rationale": "The expected campaign C0063 is not stated, and the answer does not restate the anchor M1046. It abstains by reporting no records, which is supported by the empty result, but it overclaims that no live source covers the request and adds unsupported example identifiers T1566, M1017, and CAPEC-98. No cross-source mapping is fabricated.",
+ "judge": {
+  "model": "default-model",
+  "alias": "default-model",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

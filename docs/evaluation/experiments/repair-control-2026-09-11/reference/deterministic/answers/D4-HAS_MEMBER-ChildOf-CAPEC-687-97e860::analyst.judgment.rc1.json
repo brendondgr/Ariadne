@@ -1,0 +1,28 @@
+{
+ "case_id": "D4-HAS_MEMBER-ChildOf-CAPEC-687-97e860::analyst",
+ "verdict": "CORRECT",
+ "correctness": 1.0,
+ "faithfulness": 0.9,
+ "groundedness": 0.9,
+ "completeness": 0.5,
+ "gold_expected": 2,
+ "gold_present": 1,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "T1566",
+  "M1017",
+  "CAPEC-98"
+ ],
+ "rationale": "The answer is an honest abstention: the CAPEC query for CAPEC-687's CHILD_OF AttackPattern neighbors ran cleanly and returned zero records, so it does not assert a mapping to CAPEC-176. It does state the seed CAPEC-687 in the abstention, but it omits the expected related identifier CAPEC-176. The only unsupported items are the illustrative ids T1566, M1017, and CAPEC-98 in the narrative.",
+ "judge": {
+  "model": "default-model",
+  "alias": "default-model",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

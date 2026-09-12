@@ -1,0 +1,24 @@
+{
+ "case_id": "D6-MAPS_TO[ATTACK]-MAPS_TO[OWASP Attacks]-T1557.002-26aa05::indirect",
+ "verdict": "CORRECT",
+ "correctness": 0.65,
+ "faithfulness": 1.0,
+ "groundedness": 0.9,
+ "completeness": 0.5,
+ "gold_expected": 2,
+ "gold_present": 1,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer abstains rather than asserting a mapping, and the evidence shows zero records for the CAPEC query plus a skipped attack sub-question. It mentions T1557.002 in the attack abstention but does not state the expected OWASP Attacks:Cache Poisoning, so completeness is partial. The non-empty CAPEC query is shown as proof, supporting an honest abstention.",
+ "judge": {
+  "model": "default-model",
+  "alias": "default-model",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

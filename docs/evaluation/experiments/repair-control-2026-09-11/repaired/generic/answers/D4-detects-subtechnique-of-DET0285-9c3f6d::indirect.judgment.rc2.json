@@ -1,0 +1,27 @@
+{
+ "case_id": "D4-detects-subtechnique-of-DET0285-9c3f6d::indirect",
+ "verdict": "CORRECT",
+ "correctness": 0.95,
+ "faithfulness": 0.65,
+ "groundedness": 0.65,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "T1021 Remote Service as the parent of T1021.003",
+  "DET0285 has sub-technique T1021.003"
+ ],
+ "rationale": "The answer states the expected gold identifier T1021 and also identifies the detected sub-technique T1021.003, so it answers the question. However, the evidence only shows DET0285 DETECTS T1021.003 and does not explicitly include T1021 or the name Remote Service, making the parent claim inferential rather than fully grounded. The claim that DET0285 'has' a sub-technique is also a slight misphrasing of the DETECTS relationship.",
+ "judge": {
+  "model": "default-model",
+  "alias": "default-model",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

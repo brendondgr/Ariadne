@@ -1,0 +1,26 @@
+{
+ "case_id": "D4-PeerOf-MAPS_TO[WASC]-CAPEC-33-60d908::indirect",
+ "verdict": "PARTIAL",
+ "correctness": 0.3,
+ "faithfulness": 0.7,
+ "groundedness": 0.8,
+ "completeness": 0.5,
+ "gold_expected": 2,
+ "gold_present": 1,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "CAPEC-33 has no maps to in this catalogue"
+ ],
+ "rationale": "The answer identifies CAPEC-33 but does not state the expected WASC:27 mapping or any peer CAPEC pattern. It also asserts that CAPEC-33 has no maps, which is not fully supported because the CAPEC-33 record shows a MAPS_TO facet count of 1. This makes the answer partial rather than correct.",
+ "judge": {
+  "model": "default-model",
+  "alias": "default-model",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

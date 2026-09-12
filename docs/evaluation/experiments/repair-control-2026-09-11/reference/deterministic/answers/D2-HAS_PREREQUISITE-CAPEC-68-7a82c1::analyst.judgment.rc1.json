@@ -1,0 +1,24 @@
+{
+ "case_id": "D2-HAS_PREREQUISITE-CAPEC-68-7a82c1::analyst",
+ "verdict": "PARTIAL",
+ "correctness": 0.2,
+ "faithfulness": 1.0,
+ "groundedness": 0.8,
+ "completeness": 0.25,
+ "gold_expected": 4,
+ "gold_present": 1,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer correctly identifies CAPEC-68 and states supported record properties, but it does not state any of the three expected prerequisite texts for CAPEC-68. The evidence only shows a HAS_PREREQUISITE facet count of 3 and no related prerequisite records, so the answer is grounded in the CAPEC-68 record but incomplete. It is partial because it states the anchor CAPEC-68 while omitting the prerequisite texts.",
+ "judge": {
+  "model": "default-model",
+  "alias": "default-model",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

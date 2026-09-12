@@ -1,0 +1,24 @@
+{
+ "case_id": "D5-CanPrecede-Typical_Severity-CAPEC-273-97972f::formal",
+ "verdict": "PARTIAL",
+ "correctness": 0.6,
+ "faithfulness": 0.85,
+ "groundedness": 0.85,
+ "completeness": 1.0,
+ "gold_expected": 3,
+ "gold_present": 3,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer includes the required related patterns CAPEC-115, CAPEC-148, and CAPEC-154 among the CanPrecede neighbors of CAPEC-273, so completeness is full. However, it lists all seven successors (CAPEC-141, CAPEC-148, CAPEC-154, CAPEC-593, CAPEC-63, CAPEC-115, CAPEC-107) without identifying which have Typical_Severity Medium, so it only partially answers the severity-filtered question. The statements are mostly grounded in the CAPEC-273 record and its related entries, with a minor overstatement in calling all related nodes successors.",
+ "judge": {
+  "model": "default-model",
+  "alias": "default-model",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

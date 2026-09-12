@@ -1,0 +1,26 @@
+{
+ "case_id": "D5-mitigates-x_mitre_platforms-M1042-ad62f1::indirect",
+ "verdict": "INCORRECT",
+ "correctness": 0.1,
+ "faithfulness": 0.6,
+ "groundedness": 0.7,
+ "completeness": 0.0,
+ "gold_expected": 4,
+ "gold_present": 0,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "M1042 has no mitigates in this catalogue"
+ ],
+ "rationale": "The answer identifies only M1042 and does not state any of the expected SaaS-relevant mitigated techniques T1059, T1098, T1098.001, or T1671. It also asserts that M1042 has no mitigates, which is not supported by the evidence because the M1042 record has MITIGATES facets to Technique and SubTechnique neighbors. Because the answer describes the anchor but does not answer which techniques are relevant to SaaS, it is incorrect.",
+ "judge": {
+  "model": "default-model",
+  "alias": "default-model",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

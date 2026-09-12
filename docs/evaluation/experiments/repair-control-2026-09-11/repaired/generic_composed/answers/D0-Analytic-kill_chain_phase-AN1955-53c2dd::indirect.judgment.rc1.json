@@ -1,0 +1,24 @@
+{
+ "case_id": "D0-Analytic-kill_chain_phase-AN1955-53c2dd::indirect",
+ "verdict": "PARTIAL",
+ "correctness": 0.6,
+ "faithfulness": 1.0,
+ "groundedness": 0.9,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer references AN1955 and includes TA0043, which is the only Tactic in the evidence, but it presents DET0823, T1598, and TA0043 as generic related items rather than explicitly identifying TA0043 (Reconnaissance) as the tactic. All stated identifiers are supported by the cited AN1955 record, so the answer is faithful but only partially direct.",
+ "judge": {
+  "model": "default-model",
+  "alias": "default-model",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

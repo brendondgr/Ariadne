@@ -1,0 +1,26 @@
+{
+ "case_id": "D4-PeerOf-MAPS_TO[WASC]-CAPEC-33-60d908::analyst",
+ "verdict": "INCORRECT",
+ "correctness": 0.2,
+ "faithfulness": 0.6,
+ "groundedness": 0.7,
+ "completeness": 0.0,
+ "gold_expected": 1,
+ "gold_present": 0,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": true,
+ "hallucinations": [
+  "CAPEC-33 has no maps to in this catalogue"
+ ],
+ "rationale": "The answer identifies CAPEC-33 but never states the expected WASC:27 or any peer attack pattern. It also asserts that CAPEC-33 has no maps to, which is contradicted by the evidence facet showing one MAPS_TO TaxonomyEntry. Because it makes an unsupported negative cross-source claim instead of an honest abstention, it is incorrect.",
+ "judge": {
+  "model": "default-model",
+  "alias": "default-model",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

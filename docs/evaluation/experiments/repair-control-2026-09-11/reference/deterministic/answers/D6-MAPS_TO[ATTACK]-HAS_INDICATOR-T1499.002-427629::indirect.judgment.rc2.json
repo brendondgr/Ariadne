@@ -1,0 +1,24 @@
+{
+ "case_id": "D6-MAPS_TO[ATTACK]-HAS_INDICATOR-T1499.002-427629::indirect",
+ "verdict": "PARTIAL",
+ "correctness": 0.4,
+ "faithfulness": 0.7,
+ "groundedness": 0.8,
+ "completeness": 0.5,
+ "gold_expected": 2,
+ "gold_present": 1,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer states T1499.002 and lists CAPEC-469, CAPEC-482, CAPEC-488, CAPEC-489, and CAPEC-528 as having taxonomy entries to T1499.002, which partially addresses the corresponding attack-pattern part. It omits the required indicator text, \"A large amount of data is passed to the XML parser possibly making it crash or otherwise unavailable to end users,\" and does not clearly provide indicators for each listed CAPEC. The final note that the attack source does not establish the mapping is a partial abstention, but the answer still asserts CAPEC-to-ATT&CK mappings.",
+ "judge": {
+  "model": "default-model",
+  "alias": "default-model",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

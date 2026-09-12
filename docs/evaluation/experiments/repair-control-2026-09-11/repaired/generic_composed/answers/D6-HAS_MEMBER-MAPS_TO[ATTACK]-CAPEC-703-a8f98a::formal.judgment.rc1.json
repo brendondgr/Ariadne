@@ -1,0 +1,29 @@
+{
+ "case_id": "D6-HAS_MEMBER-MAPS_TO[ATTACK]-CAPEC-703-a8f98a::formal",
+ "verdict": "PARTIAL",
+ "correctness": 0.85,
+ "faithfulness": 0.75,
+ "groundedness": 0.9,
+ "completeness": 1.0,
+ "gold_expected": 50,
+ "gold_present": 50,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": true,
+ "hallucinations": [
+  "T1513",
+  "T1562.002",
+  "T1562.003",
+  "T1562.008"
+ ],
+ "rationale": "The answer states all 50 expected ATT&CK techniques, including T1014, T1036.001, T1598.003, and ties them to CAPEC records in view 703. However, it also asserts extra CAPEC-to-ATT&CK mappings such as CAPEC-648 to T1513 and CAPEC-268 to T1562.002/T1562.003/T1562.008 that are not in the expected set. The final 'source doesn't establish' line is a mild contradiction, so the answer is partial rather than fully correct.",
+ "judge": {
+  "model": "default-model",
+  "alias": "default-model",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

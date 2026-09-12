@@ -1,0 +1,27 @@
+{
+ "case_id": "D4-ChildOf-MAPS_TO[OWASP Attacks]-CAPEC-100-3a35a0::analyst",
+ "verdict": "PARTIAL",
+ "correctness": 0.4,
+ "faithfulness": 0.7,
+ "groundedness": 0.8,
+ "completeness": 0.5,
+ "gold_expected": 2,
+ "gold_present": 1,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "The 13 related CAPEC patterns are asserted as more specific cases of CAPEC-100 without evidence of CHILD_OF direction",
+  "CAPEC-123 is asserted as a more specific case of CAPEC-100"
+ ],
+ "rationale": "The answer correctly states CAPEC-100 and lists related CAPEC patterns, including CAPEC-10, but it does not state the expected OWASP entry 'OWASP Attacks:Buffer Overflow via Environment Variables'; it instead cites capec:taxonomy:OWASP_Attacks:Buffer_overflow_attack. It also overstates that all related CAPEC patterns, including CAPEC-123, are more specific cases, which the evidence only shows as related.",
+ "judge": {
+  "model": "default-model",
+  "alias": "default-model",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

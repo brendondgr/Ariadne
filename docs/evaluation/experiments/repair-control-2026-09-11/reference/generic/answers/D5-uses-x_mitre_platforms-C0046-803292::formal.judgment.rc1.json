@@ -1,0 +1,29 @@
+{
+ "case_id": "D5-uses-x_mitre_platforms-C0046-803292::formal",
+ "verdict": "PARTIAL",
+ "correctness": 0.8,
+ "faithfulness": 0.7,
+ "groundedness": 0.65,
+ "completeness": 1.0,
+ "gold_expected": 21,
+ "gold_present": 21,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "T1583.006 is Windows-applicable",
+  "T1583.003 is Windows-applicable",
+  "T1587.001 is Windows-applicable",
+  "T1587.003 is Windows-applicable"
+ ],
+ "rationale": "The answer correctly recalls C0046 and all 21 gold technique/subtechnique IDs, including T1014, T1020, T1036, T1037, T1040, T1041, T1055, T1059, T1070.004, T1071.001, T1082, T1102.003, T1119, T1133, T1140, T1190, T1556, T1557, T1653, T1685, and T1690. It is overinclusive by also presenting T1583.006, T1583.003, T1587.001, and T1587.003 as Windows-applicable, which are not in the gold set and are not explicitly supported by the shown records. Therefore it is partial: complete on expected identifiers but not fully faithful to the Windows filter.",
+ "judge": {
+  "model": "default-model",
+  "alias": "default-model",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

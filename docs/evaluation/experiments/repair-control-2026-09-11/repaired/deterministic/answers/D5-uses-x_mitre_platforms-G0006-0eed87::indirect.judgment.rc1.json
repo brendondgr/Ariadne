@@ -1,0 +1,26 @@
+{
+ "case_id": "D5-uses-x_mitre_platforms-G0006-0eed87::indirect",
+ "verdict": "PARTIAL",
+ "correctness": 0.5,
+ "faithfulness": 0.6,
+ "groundedness": 0.8,
+ "completeness": 0.58,
+ "gold_expected": 12,
+ "gold_present": 7,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "T1057 has no uses in this catalogue"
+ ],
+ "rationale": "The answer lists seven of the twelve expected macOS techniques (T1005, T1007, T1016, T1049, T1057, T1119, T1135) but omits T1036.005, T1087.001, T1560.001, T1566.001, and T1566.002. It also does not explicitly state that the listed techniques apply to macOS, and the absence claim about T1057 is not clearly supported by the records. No cross-source mapping is fabricated.",
+ "judge": {
+  "model": "default-model",
+  "alias": "default-model",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

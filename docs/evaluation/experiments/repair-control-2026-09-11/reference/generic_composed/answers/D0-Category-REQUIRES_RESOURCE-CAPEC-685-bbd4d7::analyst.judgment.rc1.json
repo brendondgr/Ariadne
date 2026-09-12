@@ -1,0 +1,28 @@
+{
+ "case_id": "D0-Category-REQUIRES_RESOURCE-CAPEC-685-bbd4d7::analyst",
+ "verdict": "CORRECT",
+ "correctness": 1.0,
+ "faithfulness": 0.9,
+ "groundedness": 0.9,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "T1566",
+  "M1017",
+  "CAPEC-98"
+ ],
+ "rationale": "The answer is an honest abstention: the CAPEC query seeded with CAPEC-685 executed successfully and returned zero records, so no required resources are asserted. It names the anchor CAPEC-685 and includes the executed query, satisfying the abstention rule. The fallback examples T1566, M1017, and CAPEC-98 are unsupported by the evidence but are not claimed as resources, so no fabricated mapping is made.",
+ "judge": {
+  "model": "default-model",
+  "alias": "default-model",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

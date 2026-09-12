@@ -1,0 +1,26 @@
+{
+ "case_id": "D3-ChildOf-CAPEC-227-5f6f39::formal",
+ "verdict": "PARTIAL",
+ "correctness": 0.6,
+ "faithfulness": 0.8,
+ "groundedness": 0.9,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "CAPEC-227 has CAPEC-469 as a ChildOf parent"
+ ],
+ "rationale": "The answer names the expected related pattern CAPEC-469 and ties it to CAPEC-227, but it describes CAPEC-469 as a ChildOf parent rather than a more specific child of CAPEC-227. The evidence shows a CHILD_OF relation between CAPEC-227 and CAPEC-469, but not an explicit direction, so the parent claim is only partially supported. It is partial because it states the gold identifier but does not cleanly answer the 'more specific cases' direction.",
+ "judge": {
+  "model": "default-model",
+  "alias": "default-model",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

@@ -1,0 +1,26 @@
+{
+ "case_id": "D6-CanFollow-MAPS_TO[ATTACK]-CAPEC-701-6e185a::indirect",
+ "verdict": "PARTIAL",
+ "correctness": 0.3,
+ "faithfulness": 0.7,
+ "groundedness": 0.7,
+ "completeness": 0.0,
+ "gold_expected": 2,
+ "gold_present": 0,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "The executed MAPS_TO query was treated as proof that no CAPEC CanFollow predecessors exist for CAPEC-701"
+ ],
+ "rationale": "The answer correctly retrieves and cites CAPEC-701, but it does not state the expected ATT&CK techniques T1566 or T1598. Its abstention is partly supported by the empty related field, but the shown query traverses MAPS_TO rather than CanFollow, so it does not fully prove absence of predecessor attack patterns. Therefore it is partial: grounded in the anchor record but incomplete for the asked mapping.",
+ "judge": {
+  "model": "default-model",
+  "alias": "default-model",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

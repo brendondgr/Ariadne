@@ -1,0 +1,24 @@
+{
+ "case_id": "D4-HAS_MEMBER-HAS_ALTERNATE_TERM-CAPEC-703-349040::indirect",
+ "verdict": "CORRECT",
+ "correctness": 1.0,
+ "faithfulness": 0.9,
+ "groundedness": 0.95,
+ "completeness": 1.0,
+ "gold_expected": 5,
+ "gold_present": 5,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer correctly anchors capec:view:703 (CAPEC-703) and reports all five expected alternate terms for CAPEC-94: Man-in-the-Middle / MITM, Monkey-in-the-Middle, Monster-in-the-Middle, On-path Attacker, and Person-in-the-Middle / PiTM. It also states that the other related attack patterns have no alternate terms, which is consistent with the 51-row result containing only those five alternate-term neighbors. A small faithfulness deduction is applied because the visible evidence is truncated before explicitly showing the alternate-term records, though the query and row count support the claim.",
+ "judge": {
+  "model": "default-model",
+  "alias": "default-model",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

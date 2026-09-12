@@ -1,0 +1,27 @@
+{
+ "case_id": "D6-MAPS_TO[ATTACK]-HAS_INDICATOR-T1558-e7169b::analyst",
+ "verdict": "PARTIAL",
+ "correctness": 0.3,
+ "faithfulness": 0.6,
+ "groundedness": 0.7,
+ "completeness": 0.17,
+ "gold_expected": 6,
+ "gold_present": 1,
+ "abstained": true,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "The attack source doesn't establish this",
+  "no query was executed for T1558 CAPEC patterns"
+ ],
+ "rationale": "The answer does mention T1558 and includes CAPEC-652 mapped to capec:taxonomy:ATTACK:1558, which partially addresses the CAPEC-pattern side of the question. However, it does not state any of the five expected indicator strings, so the indicator part is largely missing. It also adds an unsupported meta-abstention about the attack source and query execution, which weakens faithfulness.",
+ "judge": {
+  "model": "default-model",
+  "alias": "default-model",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

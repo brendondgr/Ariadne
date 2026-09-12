@@ -1,0 +1,24 @@
+{
+ "case_id": "D4-ChildOf-HAS_EXECUTION_STEP-CAPEC-126-3f62b8::formal",
+ "verdict": "PARTIAL",
+ "correctness": 0.35,
+ "faithfulness": 1.0,
+ "groundedness": 0.9,
+ "completeness": 0.36,
+ "gold_expected": 11,
+ "gold_present": 4,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer correctly anchors CAPEC-126 and lists four execution-step identifiers, capec:attack-pattern:126:step:1 through step:4, but it does not state the 11 expected execution-step texts. It also includes CAPEC-153 as a related item, which is not itself an execution step. All stated facts are supported by the CAPEC-126 record, so faithfulness is high, but completeness is limited because only 4 of 11 gold execution steps are stated.",
+ "judge": {
+  "model": "default-model",
+  "alias": "default-model",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

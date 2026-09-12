@@ -1,0 +1,26 @@
+{
+ "case_id": "D3-CanFollow-CAPEC-390-754ead::indirect",
+ "verdict": "CORRECT",
+ "correctness": 0.9,
+ "faithfulness": 0.85,
+ "groundedness": 0.95,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "CAPEC-390 has CAPEC-665 as a CanFollow predecessor, which asserts a directional predecessor relationship not explicitly specified in the evidence"
+ ],
+ "rationale": "The answer includes the required anchor CAPEC-390 and the expected related pattern CAPEC-665, satisfying the core query. It is grounded in the CAPEC-390 record and its related CAPEC-665 entry. The main weakness is the unsupported directional wording 'predecessor,' since the evidence only shows a CAN_FOLLOW relation without direction.",
+ "judge": {
+  "model": "default-model",
+  "alias": "default-model",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

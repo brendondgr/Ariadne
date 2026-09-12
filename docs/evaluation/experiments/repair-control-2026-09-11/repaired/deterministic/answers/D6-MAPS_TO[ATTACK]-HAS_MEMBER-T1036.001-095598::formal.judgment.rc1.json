@@ -1,0 +1,26 @@
+{
+ "case_id": "D6-MAPS_TO[ATTACK]-HAS_MEMBER-T1036.001-095598::formal",
+ "verdict": "PARTIAL",
+ "correctness": 0.3,
+ "faithfulness": 0.7,
+ "groundedness": 0.8,
+ "completeness": 0.0,
+ "gold_expected": 1,
+ "gold_present": 0,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "The attack source doesn't establish this and no query was executed for T1036.001"
+ ],
+ "rationale": "The answer mentions T1036.001 and lists many CAPEC records, including CAPEC-473 with a T1036.001 taxonomy entry, but it never states the expected CAPEC-703. Its final abstention shows the query for T1036.001, so it is not a pure guess, but it omits the gold CAPEC pattern and its views. The meta-claim that the attack source does not establish the mapping is not clearly tied to a cited record.",
+ "judge": {
+  "model": "default-model",
+  "alias": "default-model",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

@@ -1,0 +1,27 @@
+{
+ "case_id": "D6-HAS_MEMBER-MAPS_TO[ATTACK]-CAPEC-703-a8f98a::formal",
+ "verdict": "PARTIAL",
+ "correctness": 0.2,
+ "faithfulness": 0.5,
+ "groundedness": 0.5,
+ "completeness": 0.02,
+ "gold_expected": 51,
+ "gold_present": 1,
+ "abstained": true,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "capec:view:703 was returned with no linked records",
+  "the capec source does not model ATT&CK technique entities"
+ ],
+ "rationale": "The answer correctly retrieves capec:view:703 and enumerates its 46 CAPEC members, but it never states any expected ATT&CK techniques such as T1014, T1036, or T1598. It abstains on the ATT&CK mapping without an executed query for that subquestion, and its first abstention falsely says the query returned no linked records despite 46 related CAPEC records. Therefore it is partial: it anchors CAPEC-703 but omits all 50 gold techniques.",
+ "judge": {
+  "model": "default-model",
+  "alias": "default-model",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

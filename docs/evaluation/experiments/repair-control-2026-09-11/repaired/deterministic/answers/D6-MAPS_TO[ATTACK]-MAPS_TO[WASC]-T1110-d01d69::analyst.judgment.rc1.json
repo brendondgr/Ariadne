@@ -1,0 +1,26 @@
+{
+ "case_id": "D6-MAPS_TO[ATTACK]-MAPS_TO[WASC]-T1110-d01d69::analyst",
+ "verdict": "PARTIAL",
+ "correctness": 0.4,
+ "faithfulness": 0.6,
+ "groundedness": 0.7,
+ "completeness": 0.5,
+ "gold_expected": 2,
+ "gold_present": 1,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "WASC: capec:taxonomy:ATTACK:1110 is asserted as the WASC taxonomy entry for CAPEC-112 instead of the expected WASC:11"
+ ],
+ "rationale": "The answer identifies brute-force-related CAPEC patterns such as CAPEC-112, CAPEC-49, CAPEC-55, and CAPEC-565 and gives WASC-like taxonomy names containing ATTACK:1110, but it never states the expected WASC:11. It also dumps many unrelated CAPEC records, so it only partially answers the two-hop question. T1110 is implied by ATTACK:1110 rather than explicitly stated as T1110.",
+ "judge": {
+  "model": "default-model",
+  "alias": "default-model",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

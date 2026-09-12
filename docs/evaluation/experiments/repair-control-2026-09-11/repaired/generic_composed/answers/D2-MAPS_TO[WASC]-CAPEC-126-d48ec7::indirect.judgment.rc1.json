@@ -1,0 +1,26 @@
+{
+ "case_id": "D2-MAPS_TO[WASC]-CAPEC-126-d48ec7::indirect",
+ "verdict": "CORRECT",
+ "correctness": 0.95,
+ "faithfulness": 0.9,
+ "groundedness": 0.95,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "The two related taxonomy entries are described as ATT&CK mappings, although the evidence only shows CAPEC MAPS_TO taxonomy entries."
+ ],
+ "rationale": "The answer states the required WASC identifier capec:taxonomy:WASC:33 for CAPEC-126, which is present in the evidence as a MAPS_TO related record. It also includes the supported capec:taxonomy:OWASP_Attacks:Path_Traversal mapping, though it labels both as ATT&CK mappings, a minor unsupported characterization. The core query is answered and grounded in the cited CAPEC-126 record.",
+ "judge": {
+  "model": "default-model",
+  "alias": "default-model",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

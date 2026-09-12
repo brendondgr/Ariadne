@@ -1,0 +1,24 @@
+{
+ "case_id": "D0-Campaign-x_mitre_analytic_refs-C0034-a648a4::formal",
+ "verdict": "PARTIAL",
+ "correctness": 0.6,
+ "faithfulness": 1.0,
+ "groundedness": 1.0,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer correctly anchors C0034 and enumerates the 50 related ATT&CK items, including likely analytics such as AN0701, AN0414, and AN1221 as well as detection-like IDs such as DET0253 and DET0146. However, it frames them only as generic related items rather than explicitly identifying which are detection analytics that implement the campaign, and it also includes non-analytics such as S0693 and T1543.002. Therefore it is faithful and complete for the stated identifiers but only partially answers the asked relation.",
+ "judge": {
+  "model": "default-model",
+  "alias": "default-model",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

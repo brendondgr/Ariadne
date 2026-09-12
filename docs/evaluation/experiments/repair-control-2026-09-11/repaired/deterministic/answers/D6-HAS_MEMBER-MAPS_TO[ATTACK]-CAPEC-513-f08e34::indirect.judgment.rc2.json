@@ -1,0 +1,26 @@
+{
+ "case_id": "D6-HAS_MEMBER-MAPS_TO[ATTACK]-CAPEC-513-f08e34::indirect",
+ "verdict": "PARTIAL",
+ "correctness": 0.4,
+ "faithfulness": 0.7,
+ "groundedness": 0.75,
+ "completeness": 0.06,
+ "gold_expected": 18,
+ "gold_present": 1,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "The executed query returned capec:category:513 with no linked records for the CAPEC attack patterns it contains"
+ ],
+ "rationale": "The answer identifies CAPEC-513/capec:category:513 and enumerates 52 member attack patterns, but it states none of the expected ATT&CK techniques such as T1078, T1110, T1499.003, or T1595. It abstains on the ATT&CK correspondence, which is acceptable only if the graph lacks the mapping, but the first abstention contradicts the evidence by saying the query returned no linked attack patterns. Therefore it is partial: grounded in the CAPEC record but incomplete for the requested ATT&CK set.",
+ "judge": {
+  "model": "default-model",
+  "alias": "default-model",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

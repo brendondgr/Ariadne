@@ -1,0 +1,24 @@
+{
+ "case_id": "D4-detects-uses-DET0181-518063::formal",
+ "verdict": "INCORRECT",
+ "correctness": 0.2,
+ "faithfulness": 1.0,
+ "groundedness": 1.0,
+ "completeness": 0.0,
+ "gold_expected": 1,
+ "gold_present": 0,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer correctly identifies and cites DET0181, but it only describes the detection strategy and does not state the expected related software/tool S0603. Because the question asks for malware and tools using the detected techniques, the answer is anchor-only rather than answering. All stated properties are supported by the DET0181 record, so faithfulness is high, but completeness is zero for the expected S0603.",
+ "judge": {
+  "model": "default-model",
+  "alias": "default-model",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

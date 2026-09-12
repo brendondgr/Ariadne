@@ -1,0 +1,28 @@
+{
+ "case_id": "D0-Analytic-subtechnique-of-AN1112-b87d8e::formal",
+ "verdict": "CORRECT",
+ "correctness": 0.9,
+ "faithfulness": 0.85,
+ "groundedness": 0.85,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": true,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "T1566",
+  "M1017",
+  "CAPEC-98"
+ ],
+ "rationale": "The expected related set is empty, and the answer abstains by saying no records were returned rather than asserting a parent technique. It mentions AN1112 in the failure note, satisfying the required anchor, but the narrative examples T1566, M1017, and CAPEC-98 are not supported by the evidence. The notes tie the abstention to the attack specialist's pre-run gate failure, though the answer text itself does not display the Cypher query.",
+ "judge": {
+  "model": "default-model",
+  "alias": "default-model",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

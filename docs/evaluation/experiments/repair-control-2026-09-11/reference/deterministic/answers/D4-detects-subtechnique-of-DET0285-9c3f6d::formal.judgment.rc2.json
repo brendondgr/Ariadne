@@ -1,0 +1,28 @@
+{
+ "case_id": "D4-detects-subtechnique-of-DET0285-9c3f6d::formal",
+ "verdict": "INCORRECT",
+ "correctness": 0.1,
+ "faithfulness": 0.7,
+ "groundedness": 0.5,
+ "completeness": 0.0,
+ "gold_expected": 1,
+ "gold_present": 0,
+ "abstained": true,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "T1566",
+  "M1017",
+  "CAPEC-98"
+ ],
+ "rationale": "The answer abstains by saying no records were returned, but it does not state the expected parent technique T1021. It also does not explicitly assert DET0285 in the user-facing narrative, though the notes mention it. The example identifiers T1566, M1017, and CAPEC-98 are not supported by the evidence, and the failed query does not prove that no mapping exists.",
+ "judge": {
+  "model": "default-model",
+  "alias": "default-model",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

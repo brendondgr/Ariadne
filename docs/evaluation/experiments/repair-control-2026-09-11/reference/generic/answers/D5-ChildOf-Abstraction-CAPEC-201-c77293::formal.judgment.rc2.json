@@ -1,0 +1,27 @@
+{
+ "case_id": "D5-ChildOf-Abstraction-CAPEC-201-c77293::formal",
+ "verdict": "PARTIAL",
+ "correctness": 0.6,
+ "faithfulness": 0.7,
+ "groundedness": 0.8,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "CAPEC-278 is included as a Meta-level parent of CAPEC-201 without Abstraction evidence",
+  "CAPEC-272 is included as a Meta-level parent of CAPEC-201 without Abstraction evidence"
+ ],
+ "rationale": "The answer correctly states the expected related identifier CAPEC-122 for CAPEC-201 and grounds the CAPEC-201 record details in the cited CAPEC evidence. However, it also lists CAPEC-278 and CAPEC-272 as ChildOf patterns in response to a Meta-abstraction-level question, and the evidence does not show their Abstraction values. Therefore it is complete for the gold set but only partially correct because the Meta-level filter is not fully supported.",
+ "judge": {
+  "model": "default-model",
+  "alias": "default-model",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

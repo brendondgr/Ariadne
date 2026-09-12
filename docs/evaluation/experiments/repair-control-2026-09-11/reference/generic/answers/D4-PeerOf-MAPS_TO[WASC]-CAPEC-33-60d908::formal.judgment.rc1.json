@@ -1,0 +1,26 @@
+{
+ "case_id": "D4-PeerOf-MAPS_TO[WASC]-CAPEC-33-60d908::formal",
+ "verdict": "PARTIAL",
+ "correctness": 0.3,
+ "faithfulness": 0.7,
+ "groundedness": 0.8,
+ "completeness": 0.0,
+ "gold_expected": 1,
+ "gold_present": 0,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "The WASC taxonomy entry corresponding to the peer CAPEC attack pattern is capec:taxonomy:WASC:26"
+ ],
+ "rationale": "The answer correctly retrieves CAPEC-33 and mentions a WASC entry, capec:taxonomy:WASC:26, which appears in the related list. However, the expected WASC:27 is absent, so the answer only partially addresses the question. The claim that WASC:26 corresponds to the peer CAPEC attack pattern is over-specified because the evidence lists it as a related item without an explicit PEER_OF edge.",
+ "judge": {
+  "model": "default-model",
+  "alias": "default-model",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

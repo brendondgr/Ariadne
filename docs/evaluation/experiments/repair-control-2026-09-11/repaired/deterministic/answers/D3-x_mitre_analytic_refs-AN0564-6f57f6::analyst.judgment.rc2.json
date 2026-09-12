@@ -1,0 +1,26 @@
+{
+ "case_id": "D3-x_mitre_analytic_refs-AN0564-6f57f6::analyst",
+ "verdict": "INCORRECT",
+ "correctness": 0.2,
+ "faithfulness": 0.7,
+ "groundedness": 0.7,
+ "completeness": 0.0,
+ "gold_expected": 1,
+ "gold_present": 0,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "AN0564 has no has analytic in this catalogue"
+ ],
+ "rationale": "The answer identifies AN0564 and describes the analytic, but it never states the expected detection strategy DET0196. It also asserts that AN0564 has no HAS_ANALYTIC relation, which is contradicted by the evidence facet showing one incoming HAS_ANALYTIC neighbor of label DetectionStrategy. Because it gives a negative answer instead of naming DET0196 or abstaining with the query, it is incorrect.",
+ "judge": {
+  "model": "default-model",
+  "alias": "default-model",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

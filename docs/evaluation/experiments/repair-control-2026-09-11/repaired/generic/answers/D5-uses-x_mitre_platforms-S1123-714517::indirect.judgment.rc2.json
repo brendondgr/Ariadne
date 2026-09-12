@@ -1,0 +1,24 @@
+{
+ "case_id": "D5-uses-x_mitre_platforms-S1123-714517::indirect",
+ "verdict": "PARTIAL",
+ "correctness": 0.7,
+ "faithfulness": 0.95,
+ "groundedness": 0.8,
+ "completeness": 0.75,
+ "gold_expected": 4,
+ "gold_present": 3,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer correctly anchors S1123 and lists its used techniques, but its Windows-applicable set includes only T1559, T1140, and T1205.002, omitting gold expected T1573.002. The Windows claims are supported by the descriptions for T1559, T1140, and T1205.002, and no unsupported cross-source mapping is asserted. It is therefore partial rather than correct.",
+ "judge": {
+  "model": "default-model",
+  "alias": "default-model",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

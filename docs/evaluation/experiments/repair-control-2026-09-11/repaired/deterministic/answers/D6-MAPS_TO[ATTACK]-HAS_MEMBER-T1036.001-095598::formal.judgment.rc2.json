@@ -1,0 +1,24 @@
+{
+ "case_id": "D6-MAPS_TO[ATTACK]-HAS_MEMBER-T1036.001-095598::formal",
+ "verdict": "PARTIAL",
+ "correctness": 0.2,
+ "faithfulness": 0.65,
+ "groundedness": 0.7,
+ "completeness": 0.0,
+ "gold_expected": 1,
+ "gold_present": 0,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer mentions T1036.001 and gives a related CAPEC-473 entry with capec:taxonomy:ATTACK:1036.001, but it never states the expected CAPEC-703. It also says the attack source does not establish the mapping and that no query was executed, which is inconsistent with the listed CAPEC-473/T1036.001 entry. Because the only gold identifier CAPEC-703 is absent, completeness is zero despite the partial relevant mapping.",
+ "judge": {
+  "model": "default-model",
+  "alias": "default-model",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

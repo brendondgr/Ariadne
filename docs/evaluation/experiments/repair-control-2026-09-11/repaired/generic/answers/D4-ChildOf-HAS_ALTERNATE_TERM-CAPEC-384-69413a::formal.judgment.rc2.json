@@ -1,0 +1,27 @@
+{
+ "case_id": "D4-ChildOf-HAS_ALTERNATE_TERM-CAPEC-384-69413a::formal",
+ "verdict": "PARTIAL",
+ "correctness": 0.2,
+ "faithfulness": 0.6,
+ "groundedness": 0.6,
+ "completeness": 0.0,
+ "gold_expected": 5,
+ "gold_present": 0,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "CAPEC-384 is a more specific case of CAPEC-385, CAPEC-389, and CAPEC-94",
+  "CAPEC-385, CAPEC-389, and CAPEC-94 are alternate names for the patterns CAPEC-384 is a more specific case of"
+ ],
+ "rationale": "The answer identifies CAPEC-384 and the related CAPEC-94, but it lists primary names for CAPEC-385, CAPEC-389, and CAPEC-94 instead of the expected alternate terms. It does not state any of the gold alternate names such as Man-in-the-Middle / MITM, Monkey-in-the-Middle, Monster-in-the-Middle, On-path Attacker, or Person-in-the-Middle / PiTM. It also overstates that CAPEC-384 is a more specific case of all three related patterns, which the evidence does not explicitly support.",
+ "judge": {
+  "model": "default-model",
+  "alias": "default-model",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

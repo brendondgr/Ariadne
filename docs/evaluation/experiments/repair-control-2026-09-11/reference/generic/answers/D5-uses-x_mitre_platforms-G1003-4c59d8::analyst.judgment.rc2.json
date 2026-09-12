@@ -1,0 +1,26 @@
+{
+ "case_id": "D5-uses-x_mitre_platforms-G1003-4c59d8::analyst",
+ "verdict": "PARTIAL",
+ "correctness": 0.5,
+ "faithfulness": 0.7,
+ "groundedness": 0.8,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "Network-Device applicability is reflected in related techniques such as T1190, T1005, T1018, T1046, T1090.003, and T1078.001"
+ ],
+ "rationale": "The answer states the anchor G1003 and includes the expected S1187/reGeorg among the software items, so the gold identifier is present. However, it does not explicitly identify S1187 as the malware/tool that applies to Network Devices; it lists all related software and only infers applicability from techniques. The inference that T1190, T1005, T1018, T1046, T1090.003, and T1078.001 reflect network-device applicability is not directly supported by the shown records, while T1561.002 is.",
+ "judge": {
+  "model": "default-model",
+  "alias": "default-model",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

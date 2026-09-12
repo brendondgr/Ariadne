@@ -1,0 +1,24 @@
+{
+ "case_id": "D0-Campaign-mitigates-C0046-56b839::analyst",
+ "verdict": "PARTIAL",
+ "correctness": 0.4,
+ "faithfulness": 1.0,
+ "groundedness": 1.0,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer correctly identifies C0046 (ArcaneDoor) and lists technique/sub-technique neighbors such as T1556, T1059, and T1037 from the C0046 record. However, the evidence only shows USES relations, not MITIGATES, and the expected related set is empty, so it does not fully answer that C0046 mitigates no techniques. It is therefore partial: grounded and faithful, but relationally imprecise.",
+ "judge": {
+  "model": "default-model",
+  "alias": "default-model",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

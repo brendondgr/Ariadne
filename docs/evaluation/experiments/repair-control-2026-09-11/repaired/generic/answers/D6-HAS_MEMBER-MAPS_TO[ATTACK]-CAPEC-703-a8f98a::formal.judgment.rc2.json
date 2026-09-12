@@ -1,0 +1,24 @@
+{
+ "case_id": "D6-HAS_MEMBER-MAPS_TO[ATTACK]-CAPEC-703-a8f98a::formal",
+ "verdict": "CORRECT",
+ "correctness": 0.9,
+ "faithfulness": 0.88,
+ "groundedness": 0.92,
+ "completeness": 1.0,
+ "gold_expected": 51,
+ "gold_present": 51,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer identifies the view as capec:view:703 and enumerates all 50 expected ATT&CK mappings, including T1014, T1036.001, and T1598.003, through CAPEC taxonomy entries. It also includes a few additional mappings such as T1513 and T1562.002, but these are tied to specific CAPEC records rather than fabricated. The main weakness is that most technique identifiers are stated as capec:taxonomy:ATTACK: entries rather than clean T-prefixed ATT&CK identifiers, and the first summary only names five mappings.",
+ "judge": {
+  "model": "default-model",
+  "alias": "default-model",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

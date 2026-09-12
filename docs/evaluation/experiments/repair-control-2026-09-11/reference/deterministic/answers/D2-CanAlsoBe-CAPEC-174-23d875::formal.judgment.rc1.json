@@ -1,0 +1,24 @@
+{
+ "case_id": "D2-CanAlsoBe-CAPEC-174-23d875::formal",
+ "verdict": "INCORRECT",
+ "correctness": 0.2,
+ "faithfulness": 1.0,
+ "groundedness": 1.0,
+ "completeness": 0.0,
+ "gold_expected": 1,
+ "gold_present": 0,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer only states the anchor CAPEC-174 and its attributes, but the question asks which CAPEC attack patterns CAPEC-174 can also be carried out as. The expected related identifier CAPEC-460 is not stated, even though the evidence shows one outgoing CAN_ALSO_BE facet. All stated facts are supported by the CAPEC-174 record, but the requested relation is not addressed.",
+ "judge": {
+  "model": "default-model",
+  "alias": "default-model",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

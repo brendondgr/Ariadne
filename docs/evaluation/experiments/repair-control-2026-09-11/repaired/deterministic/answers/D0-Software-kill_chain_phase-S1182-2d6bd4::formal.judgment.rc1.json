@@ -1,0 +1,24 @@
+{
+ "case_id": "D0-Software-kill_chain_phase-S1182-2d6bd4::formal",
+ "verdict": "PARTIAL",
+ "correctness": 0.4,
+ "faithfulness": 0.9,
+ "groundedness": 0.9,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer states the required anchor S1182 and its supported properties, but it does not explicitly state any ATT&CK tactics for MagicRAT. It only asserts that S1182 has no HAS_TECHNIQUE relation, while the evidence shows USES edges to Technique and SubTechnique but no direct Tactic neighbours. This makes it a partial answer rather than a correct one, with no fabricated cross-source mapping.",
+ "judge": {
+  "model": "default-model",
+  "alias": "default-model",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

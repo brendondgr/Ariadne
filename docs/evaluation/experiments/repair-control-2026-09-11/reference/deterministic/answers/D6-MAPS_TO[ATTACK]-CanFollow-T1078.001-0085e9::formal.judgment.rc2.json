@@ -1,0 +1,24 @@
+{
+ "case_id": "D6-MAPS_TO[ATTACK]-CanFollow-T1078.001-0085e9::formal",
+ "verdict": "PARTIAL",
+ "correctness": 0.4,
+ "faithfulness": 0.75,
+ "groundedness": 0.8,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer mentions T1078.001 and the expected CAPEC-700, but it ties T1078.001 to CAPEC-70 rather than presenting CAPEC-700 as the corresponding or follow-on pattern. It also says the attack source does not establish the T1078.001-to-CAPEC query, so the two-hop question is only partially addressed. The expected identifier is present and most enumerated mappings are cited, but the answer does not clearly state the follow-on CAPEC patterns.",
+ "judge": {
+  "model": "default-model",
+  "alias": "default-model",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

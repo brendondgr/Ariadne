@@ -1,0 +1,27 @@
+{
+ "case_id": "D6-HAS_MEMBER-MAPS_TO[ATTACK]-CAPEC-703-a8f98a::formal",
+ "verdict": "PARTIAL",
+ "correctness": 0.35,
+ "faithfulness": 0.6,
+ "groundedness": 0.65,
+ "completeness": 0.02,
+ "gold_expected": 51,
+ "gold_present": 1,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "The capec source doesn't establish this \u2014 the executed query ran cleanly and returned capec:view:703 with no linked records for: For CAPEC-703: the CAPEC attack patterns it contains.",
+  "The capec source doesn't model the entities this question asks about"
+ ],
+ "rationale": "The answer identifies capec:view:703 and its 46 CAPEC members, but it does not state any expected ATT&CK techniques such as T1014, T1036, or T1598. It abstains that the capec source does not establish ATT&CK mappings, yet one abstention falsely says the query returned no linked records despite the evidence showing 46 related CAPEC patterns. This makes it a partial, mostly grounded abstention with very low completeness.",
+ "judge": {
+  "model": "default-model",
+  "alias": "default-model",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

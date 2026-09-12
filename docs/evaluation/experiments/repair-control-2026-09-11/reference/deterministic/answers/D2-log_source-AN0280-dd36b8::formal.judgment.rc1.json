@@ -1,0 +1,24 @@
+{
+ "case_id": "D2-log_source-AN0280-dd36b8::formal",
+ "verdict": "INCORRECT",
+ "correctness": 0.1,
+ "faithfulness": 1.0,
+ "groundedness": 1.0,
+ "completeness": 0.0,
+ "gold_expected": 1,
+ "gold_present": 0,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer correctly identifies AN0280 and states supported properties, but it never names the expected data component DC0064. The evidence includes a MONITORS facet to DataComponent, yet the narrative and claims do not surface DC0064 or directly answer which data components are used. This makes it a grounded retrieval of the anchor rather than a correct answer to the question.",
+ "judge": {
+  "model": "default-model",
+  "alias": "default-model",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

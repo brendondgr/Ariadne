@@ -1,0 +1,24 @@
+{
+ "case_id": "D0-View-REQUIRES_RESOURCE-CAPEC-483-47ec5e::formal",
+ "verdict": "CORRECT",
+ "correctness": 1.0,
+ "faithfulness": 1.0,
+ "groundedness": 1.0,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer abstains and explicitly names CAPEC-483 while reporting that the capec query returned no matching records. The executed query is included in the abstention, and the evidence shows row_count 0 and empty_with_seeds CAPEC-483. Since the gold expectation includes only CAPEC-483 and no related resources, the abstention fully satisfies the expected identifiers without asserting unsupported mappings.",
+ "judge": {
+  "model": "default-model",
+  "alias": "default-model",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

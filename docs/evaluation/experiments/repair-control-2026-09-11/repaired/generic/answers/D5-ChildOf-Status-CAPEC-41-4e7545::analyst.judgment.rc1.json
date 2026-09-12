@@ -1,0 +1,26 @@
+{
+ "case_id": "D5-ChildOf-Status-CAPEC-41-4e7545::analyst",
+ "verdict": "PARTIAL",
+ "correctness": 0.7,
+ "faithfulness": 0.7,
+ "groundedness": 0.7,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "CAPEC-137 is a Stable ChildOf parent of CAPEC-41"
+ ],
+ "rationale": "The answer includes the expected broader pattern CAPEC-242, satisfying the gold expectation. It also includes CAPEC-137, which appears in the CAPEC-41 related evidence but is not in the expected set, making the answer overinclusive. The ChildOf relation and Stable filter are visible in the query and related records, but the direction and Stable status of CAPEC-137 are not explicitly shown in the record evidence.",
+ "judge": {
+  "model": "default-model",
+  "alias": "default-model",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

@@ -1,0 +1,26 @@
+{
+ "case_id": "D4-uses-kill_chain_phase-C0063-80f876::indirect",
+ "verdict": "PARTIAL",
+ "correctness": 0.4,
+ "faithfulness": 0.85,
+ "groundedness": 0.9,
+ "completeness": 0.0,
+ "gold_expected": 15,
+ "gold_present": 0,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "T1529 has no has technique in this catalogue"
+ ],
+ "rationale": "The answer lists the 21 techniques returned for C0063, such as T1529, T1113, and T1006, so it partially addresses the technique part of the question. However, it never states any of the expected tactic identifiers TA0001 through TA0112, so the tactic-mapping part is missing. The absence claim for T1529 is only weakly supported by empty related records and is not a clear proof of no HAS_TECHNIQUE relation.",
+ "judge": {
+  "model": "default-model",
+  "alias": "default-model",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

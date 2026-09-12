@@ -1,0 +1,26 @@
+{
+ "case_id": "D5-mitigates-x_mitre_platforms-M1022-4689f4::analyst",
+ "verdict": "INCORRECT",
+ "correctness": 0.1,
+ "faithfulness": 0.6,
+ "groundedness": 0.8,
+ "completeness": 0.0,
+ "gold_expected": 43,
+ "gold_present": 0,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "M1022 has no mitigates in this catalogue"
+ ],
+ "rationale": "The answer identifies only M1022 and describes the mitigation, but it does not state any of the expected mitigated technique identifiers such as T1036, T1070, T1543, or T1574. It also asserts that M1022 has no mitigates, which is not supported by the evidence facets showing MITIGATES relationships to 41 SubTechnique and 19 Technique records. Because the question asked for the Windows-applicable techniques and none were listed, completeness is effectively zero.",
+ "judge": {
+  "model": "default-model",
+  "alias": "default-model",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

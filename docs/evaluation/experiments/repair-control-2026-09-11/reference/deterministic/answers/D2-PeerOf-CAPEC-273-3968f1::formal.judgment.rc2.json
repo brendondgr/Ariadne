@@ -1,0 +1,24 @@
+{
+ "case_id": "D2-PeerOf-CAPEC-273-3968f1::formal",
+ "verdict": "PARTIAL",
+ "correctness": 0.2,
+ "faithfulness": 1.0,
+ "groundedness": 0.8,
+ "completeness": 0.5,
+ "gold_expected": 2,
+ "gold_present": 1,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer correctly states and cites CAPEC-273, but it does not state the expected peer CAPEC-33, which is the key answer to the question. Its description and property claims are supported by the retrieved CAPEC-273 record, but the PEER_OF facet counts are not turned into an explicit peer identifier. This makes the answer partially complete and grounded, but not fully correct.",
+ "judge": {
+  "model": "default-model",
+  "alias": "default-model",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

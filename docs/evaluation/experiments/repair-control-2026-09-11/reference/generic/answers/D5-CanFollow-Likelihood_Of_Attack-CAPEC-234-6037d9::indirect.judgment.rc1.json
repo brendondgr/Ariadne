@@ -1,0 +1,26 @@
+{
+ "case_id": "D5-CanFollow-Likelihood_Of_Attack-CAPEC-234-6037d9::indirect",
+ "verdict": "PARTIAL",
+ "correctness": 0.5,
+ "faithfulness": 0.8,
+ "groundedness": 0.8,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "CAPEC-100 and CAPEC-242 are presented as the Medium-likelihood lead-up patterns to CAPEC-234"
+ ],
+ "rationale": "The answer includes the required related identifier CAPEC-175 and the anchor CAPEC-234, so it is not empty. However, it also lists CAPEC-100 and CAPEC-242 as the lead-up patterns without evidence that they are rated Medium for likelihood of attack. The evidence only shows CAPEC-234's related CAN_FOLLOW records and CAPEC-234's own Typical_Severity, not likelihood ratings for the related patterns.",
+ "judge": {
+  "model": "default-model",
+  "alias": "default-model",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

@@ -1,0 +1,27 @@
+{
+ "case_id": "D4-uses-uses-C0023-47ddc0::indirect",
+ "verdict": "PARTIAL",
+ "correctness": 0.8,
+ "faithfulness": 0.75,
+ "groundedness": 0.8,
+ "completeness": 1.0,
+ "gold_expected": 34,
+ "gold_present": 34,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": true,
+ "hallucinations": [
+  "PsExec (S0029) uses T1569.002 Service Execution",
+  "The only explicit software-to-technique link present in the provided records is PsExec -> T1569.002"
+ ],
+ "rationale": "The answer names C0023 and all 34 expected technique IDs, including T1005, T1027.011, and T1573.001, and lists the five software items S0029, S0051, S0512, S0511, and S0518. It is therefore complete on the expected technique set, but it asserts a direct S0029 -> T1569.002 mapping that the shown C0023 record does not explicitly contain. The per-software mapping for the other four software items is left as absent, so the answer only partially satisfies the 'each' part of the question.",
+ "judge": {
+  "model": "default-model",
+  "alias": "default-model",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

@@ -1,0 +1,24 @@
+{
+ "case_id": "D6-MAPS_TO[ATTACK]-MAPS_TO[OWASP Attacks]-T1110-6a5f44::indirect",
+ "verdict": "PARTIAL",
+ "correctness": 0.3,
+ "faithfulness": 0.7,
+ "groundedness": 0.8,
+ "completeness": 0.5,
+ "gold_expected": 2,
+ "gold_present": 1,
+ "abstained": true,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer mentions T1110 and several CAPEC brute-force-related patterns such as CAPEC-112, CAPEC-49, CAPEC-55, CAPEC-565, and CAPEC-600, but it reports ATTACK taxonomy entries rather than the expected OWASP Attacks:Brute force attack. It also abstains for the T1110-to-CAPEC join without showing an executed query, so it only partially addresses the asked mapping. The claims are mostly tied to cited CAPEC records, but the missing OWASP identifier limits completeness.",
+ "judge": {
+  "model": "default-model",
+  "alias": "default-model",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

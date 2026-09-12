@@ -1,0 +1,26 @@
+{
+ "case_id": "D4-uses-uses-C0023-47ddc0::indirect",
+ "verdict": "PARTIAL",
+ "correctness": 0.8,
+ "faithfulness": 0.85,
+ "groundedness": 0.9,
+ "completeness": 1.0,
+ "gold_expected": 34,
+ "gold_present": 34,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "C0023 has 44 related item(s), while the evidence reports 47 related items"
+ ],
+ "rationale": "The answer names C0023 and all 34 expected technique identifiers, including T1005, T1027.011, T1573.001, and T1569.002, and it also lists the software items S0029, S0051, S0512, S0511, and S0518. However, it presents the techniques as a flat list of campaign-related items rather than explicitly mapping each malware/tool to the techniques it uses. It also states that C0023 has 44 related items even though the evidence volume reports 47 related items.",
+ "judge": {
+  "model": "default-model",
+  "alias": "default-model",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

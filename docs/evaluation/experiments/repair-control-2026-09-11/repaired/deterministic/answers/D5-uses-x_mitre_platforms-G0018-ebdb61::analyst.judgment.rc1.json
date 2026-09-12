@@ -1,0 +1,26 @@
+{
+ "case_id": "D5-uses-x_mitre_platforms-G0018-ebdb61::analyst",
+ "verdict": "PARTIAL",
+ "correctness": 0.7,
+ "faithfulness": 0.6,
+ "groundedness": 0.6,
+ "completeness": 1.0,
+ "gold_expected": 4,
+ "gold_present": 4,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "T1203 has no uses in this catalogue"
+ ],
+ "rationale": "The answer includes all four expected technique identifiers, T1016, T1049, T1082, and T1083, so completeness is high. However, it does not explicitly state that these techniques are used by G0018 or that they apply to Network Devices, which weakens correctness. The unsupported absence claim about T1203 reduces faithfulness, and the claims are tied mainly to technique records rather than the G0018/Network Devices relationship.",
+ "judge": {
+  "model": "default-model",
+  "alias": "default-model",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

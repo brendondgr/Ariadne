@@ -1,0 +1,26 @@
+{
+ "case_id": "D5-x_mitre_analytic_refs-x_mitre_platforms-DET0444-c5a76e::indirect",
+ "verdict": "CORRECT",
+ "correctness": 1.0,
+ "faithfulness": 0.95,
+ "groundedness": 1.0,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "AN1225 is restricted to Windows only"
+ ],
+ "rationale": "The answer correctly identifies AN1225 as the analytic associated with DET0444 and states that it applies to Windows, matching the expected gold identifier. The query evidence filters on x_mitre_platforms and returns AN1225, so the core claim is grounded. The minor overstatement is that the analytic is 'restricted to' Windows, which is not explicitly shown as exclusive in the record.",
+ "judge": {
+  "model": "default-model",
+  "alias": "default-model",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

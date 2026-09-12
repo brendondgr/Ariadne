@@ -1,0 +1,28 @@
+{
+ "case_id": "D0-View-HAS_INDICATOR-CAPEC-703-9098da::indirect",
+ "verdict": "CORRECT",
+ "correctness": 1.0,
+ "faithfulness": 0.9,
+ "groundedness": 0.9,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "T1566",
+  "M1017",
+  "CAPEC-98"
+ ],
+ "rationale": "The capec query for CAPEC-703 returned zero rows, and the abstention explicitly repeats the question and executed query, making this an honest no-records abstention. It states the required anchor CAPEC-703 in the abstention statement, satisfying the only expected identifier. The generic example identifiers T1566, M1017, and CAPEC-98 are not supported by the evidence, but they do not create a fabricated mapping.",
+ "judge": {
+  "model": "default-model",
+  "alias": "default-model",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

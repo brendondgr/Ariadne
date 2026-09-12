@@ -1,0 +1,26 @@
+{
+ "case_id": "D3-CanFollow-CAPEC-390-754ead::indirect",
+ "verdict": "CORRECT",
+ "correctness": 0.9,
+ "faithfulness": 0.85,
+ "groundedness": 0.95,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "CAPEC-390 has CAPEC-665 as a CanFollow predecessor (direction not explicit in the evidence)"
+ ],
+ "rationale": "The answer states the expected related pattern CAPEC-665 for the anchor CAPEC-390, satisfying the gold expectation. It also correctly reports CAPEC-390's description, abstraction, and status from the cited record. The minor issue is that it labels CAPEC-665 a 'predecessor,' a directional claim not explicitly provided in the related record.",
+ "judge": {
+  "model": "default-model",
+  "alias": "default-model",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

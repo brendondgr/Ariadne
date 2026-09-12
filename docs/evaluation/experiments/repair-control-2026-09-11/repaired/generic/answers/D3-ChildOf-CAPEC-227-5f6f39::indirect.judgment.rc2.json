@@ -1,0 +1,26 @@
+{
+ "case_id": "D3-ChildOf-CAPEC-227-5f6f39::indirect",
+ "verdict": "PARTIAL",
+ "correctness": 0.6,
+ "faithfulness": 0.85,
+ "groundedness": 0.9,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "CAPEC-469 is characterized as a parent of CAPEC-227 rather than a narrower child pattern"
+ ],
+ "rationale": "The answer identifies the expected related pattern CAPEC-469 for anchor CAPEC-227, so the gold identifier is present. However, it frames CAPEC-469 as a 'ChildOf parent' instead of a narrower or more specific case, which only partially answers the question. The claims are mostly grounded in the CAPEC-227 record, but the parent direction is an interpretive claim not explicitly shown in the related record.",
+ "judge": {
+  "model": "default-model",
+  "alias": "default-model",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

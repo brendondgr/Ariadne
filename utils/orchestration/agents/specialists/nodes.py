@@ -30,6 +30,7 @@ from utils.specialists.config import SpecialistConfig
 from utils.specialists.contracts import SpecialistTask
 from utils.specialists.federation import (
     dependency_map,
+    carries_its_own_seeds,
     dependency_skip_result,
     execution_order,
     harvest_seed_ids,
@@ -115,6 +116,13 @@ def build_nodes(
                 seed_ids, truncated = harvest_seed_ids(usable, cap=sq.limits.max_result_rows)
                 if not seed_ids:
                     reason = "it returned no join values"
+            # A sub-question that names its own identifiers is not a consumer.
+            # `dependency_map` reads the join key's fixed direction, which is
+            # backwards for a question seeded on the consuming side — and that
+            # skipped 21 of 27 federated development questions unseeded.
+            if reason is not None and carries_its_own_seeds(sq):
+                reason = None
+                seed_ids, truncated = (), False
             if reason is not None:
                 result = dependency_skip_result(
                     SpecialistTask.from_sub_question(sq),

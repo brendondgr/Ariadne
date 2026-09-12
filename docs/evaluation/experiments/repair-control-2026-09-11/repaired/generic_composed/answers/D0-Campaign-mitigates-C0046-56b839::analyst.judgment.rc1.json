@@ -1,0 +1,24 @@
+{
+ "case_id": "D0-Campaign-mitigates-C0046-56b839::analyst",
+ "verdict": "PARTIAL",
+ "correctness": 0.35,
+ "faithfulness": 0.9,
+ "groundedness": 0.9,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer states the required anchor C0046 (ArcaneDoor) and lists 27 related ATT&CK items, including T1556, T1059, and T1036, but it frames them as related items rather than techniques that C0046 mitigates. The evidence shows USES neighbours and no explicit MITIGATES edges, so the answer is supported but only partially responsive to the mitigation question. It does not fabricate a cross-source mapping, and all listed identifiers are present in the C0046 record.",
+ "judge": {
+  "model": "default-model",
+  "alias": "default-model",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

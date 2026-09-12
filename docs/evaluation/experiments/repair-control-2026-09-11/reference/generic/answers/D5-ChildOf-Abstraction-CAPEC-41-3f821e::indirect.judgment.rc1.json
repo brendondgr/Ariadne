@@ -1,0 +1,24 @@
+{
+ "case_id": "D5-ChildOf-Abstraction-CAPEC-41-3f821e::indirect",
+ "verdict": "PARTIAL",
+ "correctness": 0.6,
+ "faithfulness": 1.0,
+ "groundedness": 0.8,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer states the expected broader pattern CAPEC-134, which is the gold identifier for CAPEC-41. However, it also lists CAPEC-242 and CAPEC-137 as ChildOf parents without explicitly applying the requested Standard-level abstraction filter, so it over-includes relative to the question. The listed relationships are supported by the CAPEC-41 evidence, so faithfulness is high, but the answer is only partially correct because it does not cleanly restrict the result to the expected Standard-level parent.",
+ "judge": {
+  "model": "default-model",
+  "alias": "default-model",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

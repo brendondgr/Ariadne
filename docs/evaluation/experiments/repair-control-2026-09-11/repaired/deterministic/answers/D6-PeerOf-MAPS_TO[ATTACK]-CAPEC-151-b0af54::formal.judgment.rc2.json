@@ -1,0 +1,27 @@
+{
+ "case_id": "D6-PeerOf-MAPS_TO[ATTACK]-CAPEC-151-b0af54::formal",
+ "verdict": "PARTIAL",
+ "correctness": 0.3,
+ "faithfulness": 0.65,
+ "groundedness": 0.6,
+ "completeness": 0.0,
+ "gold_expected": 3,
+ "gold_present": 0,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "CAPEC-151 has no peerof in this catalogue",
+  "the executed query returned CAPEC-151 with no linked records for peers"
+ ],
+ "rationale": "The answer identifies the anchor CAPEC-151 but states none of the expected ATT&CK techniques T1211, T1542.002, or T1556. It does abstain and shows a query, but the shown query projects MAPS_TO rather than traversing PeerOf, so the no-peer absence claim is only weakly supported by the evidence. This makes it a partial, abstaining answer rather than a fully correct one.",
+ "judge": {
+  "model": "default-model",
+  "alias": "default-model",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

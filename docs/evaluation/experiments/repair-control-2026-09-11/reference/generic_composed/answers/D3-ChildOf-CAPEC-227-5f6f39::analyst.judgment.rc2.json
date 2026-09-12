@@ -1,0 +1,26 @@
+{
+ "case_id": "D3-ChildOf-CAPEC-227-5f6f39::analyst",
+ "verdict": "PARTIAL",
+ "correctness": 0.5,
+ "faithfulness": 0.75,
+ "groundedness": 0.9,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "CAPEC-469 is a parent of CAPEC-227"
+ ],
+ "rationale": "The answer states the expected related identifier CAPEC-469, but frames it as a ChildOf parent of CAPEC-227 rather than a more specific case or child, so it only partially answers the question. The CAPEC-227 description, Abstraction, and Status are directly supported by the cited CAPEC record. The parent direction is not explicitly established by the related record, which only shows a CHILD_OF relation, so a small faithfulness deduction is warranted.",
+ "judge": {
+  "model": "default-model",
+  "alias": "default-model",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

@@ -1,0 +1,27 @@
+{
+ "case_id": "D6-HAS_MEMBER-MAPS_TO[ATTACK]-CAPEC-513-f08e34::indirect",
+ "verdict": "CORRECT",
+ "correctness": 0.9,
+ "faithfulness": 0.8,
+ "groundedness": 0.85,
+ "completeness": 1.0,
+ "gold_expected": 18,
+ "gold_present": 18,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "The capec source does not establish the ATT&CK technique correspondence",
+  "The attack source sub-question q2 produced no seed identifiers"
+ ],
+ "rationale": "The answer states the CAPEC-513 category as capec:category:513 and includes all 17 expected ATT&CK technique identifiers, including T1036.003, T1078, T1110, T1134, T1195, T1217, T1491, T1498.001, T1499, T1499.003, T1499.004, T1528, T1539, T1548, T1557, T1592, and T1595. The mappings are tied to specific CAPEC records such as CAPEC-112, CAPEC-169, CAPEC-21, and CAPEC-125. The main weakness is the meta-claim that the CAPEC source does not establish the ATT&CK correspondence, which is not fully consistent with the listed taxonomy entries.",
+ "judge": {
+  "model": "default-model",
+  "alias": "default-model",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

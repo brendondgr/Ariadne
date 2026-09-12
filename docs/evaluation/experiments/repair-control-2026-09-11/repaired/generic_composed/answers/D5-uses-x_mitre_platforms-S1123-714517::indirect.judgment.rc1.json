@@ -1,0 +1,26 @@
+{
+ "case_id": "D5-uses-x_mitre_platforms-S1123-714517::indirect",
+ "verdict": "PARTIAL",
+ "correctness": 0.8,
+ "faithfulness": 0.9,
+ "groundedness": 0.8,
+ "completeness": 1.0,
+ "gold_expected": 4,
+ "gold_present": 4,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "T1059.004 is included as a Windows-applicable technique, but the evidence describes Unix shells for Linux, macOS, and ESXi rather than Windows"
+ ],
+ "rationale": "The answer states all four expected related techniques, T1140, T1205.002, T1559, and T1573.002, so it is complete for the gold set. However, it also includes T1059.004, which the evidence associates with Unix shells on Linux, macOS, and ESXi, making the Windows-specific answer overinclusive. The claims are mostly grounded in the S1123 record and its related techniques, but the Windows filter is not explicitly applied.",
+ "judge": {
+  "model": "default-model",
+  "alias": "default-model",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

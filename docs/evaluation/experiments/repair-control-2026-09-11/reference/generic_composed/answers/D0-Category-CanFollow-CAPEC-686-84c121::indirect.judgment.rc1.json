@@ -1,0 +1,28 @@
+{
+ "case_id": "D0-Category-CanFollow-CAPEC-686-84c121::indirect",
+ "verdict": "CORRECT",
+ "correctness": 1.0,
+ "faithfulness": 0.9,
+ "groundedness": 0.9,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "T1566",
+  "M1017",
+  "CAPEC-98"
+ ],
+ "rationale": "The CAPEC query seeded on CAPEC-686 executed cleanly and returned zero rows, so the abstention that the source does not establish preceding patterns is supported. The answer includes CAPEC-686 in the abstention statement and carries the executed query, satisfying the honest-abstention rule. Minor unsupported example identifiers T1566, M1017, and CAPEC-98 slightly reduce faithfulness and groundedness, but no cross-source mapping is asserted.",
+ "judge": {
+  "model": "default-model",
+  "alias": "default-model",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

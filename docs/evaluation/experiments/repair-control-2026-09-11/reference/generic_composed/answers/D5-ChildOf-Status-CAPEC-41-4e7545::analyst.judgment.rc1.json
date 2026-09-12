@@ -1,0 +1,24 @@
+{
+ "case_id": "D5-ChildOf-Status-CAPEC-41-4e7545::analyst",
+ "verdict": "PARTIAL",
+ "correctness": 0.7,
+ "faithfulness": 1.0,
+ "groundedness": 0.9,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer includes the expected Stable broader pattern CAPEC-242 for CAPEC-41, but it also lists CAPEC-134 and CAPEC-137 without explicitly applying the Stable-status filter requested. The CAPEC-41 record supports the description, properties, and the three ChildOf relations, so the statements are well grounded. Completeness is full for the single expected identifier, but correctness is partial because the answer over-includes non-gold broader patterns.",
+ "judge": {
+  "model": "default-model",
+  "alias": "default-model",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

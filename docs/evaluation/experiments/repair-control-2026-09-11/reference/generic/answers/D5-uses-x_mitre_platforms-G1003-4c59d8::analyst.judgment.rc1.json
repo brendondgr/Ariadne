@@ -1,0 +1,26 @@
+{
+ "case_id": "D5-uses-x_mitre_platforms-G1003-4c59d8::analyst",
+ "verdict": "PARTIAL",
+ "correctness": 0.6,
+ "faithfulness": 0.85,
+ "groundedness": 0.75,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "The answer asserts that Network-Device applicability is reflected in related techniques T1190, T1005, T1018, T1046, T1090.003, and T1078.001, but the shown evidence explicitly supports only T1561.002 as applying to network devices."
+ ],
+ "rationale": "The answer states the anchor G1003 and includes the expected related software S1187 (reGeorg), so the gold identifier is present. However, it lists all G1003-related software and says the records do not explicitly mark Network-Device applicability, rather than directly identifying S1187 as the tool that applies to Network Devices. The only explicit network-device evidence shown is T1561.002, so the broader technique-applicability claim is mildly unsupported.",
+ "judge": {
+  "model": "default-model",
+  "alias": "default-model",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

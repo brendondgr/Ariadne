@@ -1,0 +1,26 @@
+{
+ "case_id": "D5-CanPrecede-Abstraction-CAPEC-600-1a0fa9::formal",
+ "verdict": "PARTIAL",
+ "correctness": 0.7,
+ "faithfulness": 0.7,
+ "groundedness": 0.8,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "CAPEC-50 and CAPEC-49 are CanPrecede successors of CAPEC-600"
+ ],
+ "rationale": "The answer correctly states the required gold identifier CAPEC-653 as a Standard-level pattern that can follow CAPEC-600. It also asserts CAPEC-50 and CAPEC-49 as CanPrecede successors, but the evidence only shows them as CAN_PRECEDE-related neighbors and the gold expectation contains only CAPEC-653. The query traversed both in and out CAN_PRECEDE, so the successor direction for the extra identifiers is not fully established.",
+ "judge": {
+  "model": "default-model",
+  "alias": "default-model",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

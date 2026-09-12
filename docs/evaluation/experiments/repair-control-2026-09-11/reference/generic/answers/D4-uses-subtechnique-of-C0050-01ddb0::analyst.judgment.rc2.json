@@ -1,0 +1,26 @@
+{
+ "case_id": "D4-uses-subtechnique-of-C0050-01ddb0::analyst",
+ "verdict": "CORRECT",
+ "correctness": 0.95,
+ "faithfulness": 0.85,
+ "groundedness": 0.8,
+ "completeness": 1.0,
+ "gold_expected": 4,
+ "gold_present": 4,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "The explicit parent-technique mapping for T1583.003, T1588.001, T1587.003, and T1036.005 is not directly present in the returned record"
+ ],
+ "rationale": "The answer states C0050 and all four expected parent identifiers: T1036, T1583, T1587, and T1588. It also correctly lists the related sub-technique records T1036.005, T1583.003, T1587.003, and T1588.001 from the C0050 evidence. The main weakness is that the parent mapping is inferred from sub-technique IDs rather than an explicit HAS_SUBTECHNIQUE record, so faithfulness and groundedness are slightly reduced.",
+ "judge": {
+  "model": "default-model",
+  "alias": "default-model",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

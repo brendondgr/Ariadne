@@ -1,0 +1,24 @@
+{
+ "case_id": "D6-PeerOf-MAPS_TO[ATTACK]-CAPEC-151-b0af54::formal",
+ "verdict": "CORRECT",
+ "correctness": 0.8,
+ "faithfulness": 0.95,
+ "groundedness": 0.9,
+ "completeness": 0.0,
+ "gold_expected": 3,
+ "gold_present": 0,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer states that CAPEC-151 was retrieved but that no peer records were linked and that the capec source does not model Technique, so it abstains rather than asserting T1211, T1542.002, or T1556. The abstention includes the executed query for the peer subquestion, which supports the no-linked-records claim. Completeness is low because none of the expected ATT&CK technique identifiers are stated, but the abstention is honest given the shown evidence.",
+ "judge": {
+  "model": "default-model",
+  "alias": "default-model",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}
