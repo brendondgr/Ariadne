@@ -173,6 +173,68 @@ def stage_regression_judge() -> int:
     return 0
 
 
+VARIANTS = REPO / "docs/evaluation/variants-2026-08-29"
+#: The T6 reference this tree is compared against — the most recent capture, so
+#: the comparison measures the repairs rather than everything since August.
+T6_REFERENCE = "reference_2026-09-08.json"
+#: Single-user latency, at the budget the generic arm actually ships with and at
+#: the old 120 s default, over the same 20 questions at ONE worker. `Q37` asks
+#: for the shipped figure; the pair says what the budget itself costs.
+LATENCY_BUDGETS = (("120", "120.0"), ("600", "600.0"))
+LATENCY_QUESTIONS = 20
+
+
+def stage_t6_rates() -> int:
+    """Wrong-entity and catalogue-dump rates on the final tree.
+
+    A Step 6 deliverable that was never produced. It is a different instrument
+    from the judged bank — it asks whether an answer is about the entity that
+    was asked for at all, which a correctness score can hide behind partial
+    credit.
+    """
+    code = _run("t6-capture", [
+        sys.executable, "scripts/variant_harness.py", "capture",
+        "--out", str(VARIANTS), "--name", "reference_closeout-2026-09-12.json",
+        "--workers", str(WORKERS),
+    ])
+    if code:
+        return code
+    return _run("t6-compare", [
+        sys.executable, "scripts/variant_harness.py", "compare",
+        "--out", str(VARIANTS), "--reference", T6_REFERENCE,
+        "--name", "scored_closeout-2026-09-12.json", "--workers", str(WORKERS),
+    ])
+
+
+def stage_latency() -> int:
+    """The shipped arm, one worker, both synthesis budgets."""
+    for label, budget in LATENCY_BUDGETS:
+        root = REPO / f"docs/evaluation/experiments/latency-2026-09-12/t{label}"
+        if _complete(root, "generic"):
+            print(f"[latency] t{label} already complete", flush=True)
+            continue
+        began = time.time()
+        LOGS.mkdir(parents=True, exist_ok=True)
+        cmd = [
+            sys.executable, "-m", "utils.evaluation.experiment_untruncated",
+            "--arm", "generic", "--bank",
+            str(REPO / "docs/evaluation/composition/bank/bank-dev.json"),
+            "--root", str(root), "--workers", "1",
+            "--limit", str(LATENCY_QUESTIONS), "--llm-model", MODEL,
+        ]
+        with (LOGS / f"latency-t{label}.log").open("a") as handle:
+            code = subprocess.call(
+                cmd, cwd=REPO,
+                env={**os.environ, **ENV, "SYNTHESIS_LLM_TIMEOUT_S": budget},
+                stdout=handle, stderr=subprocess.STDOUT,
+            )
+        print(f"[latency] t{label} exit {code} in {round(time.time() - began)}s",
+              flush=True)
+        if code:
+            return code
+    return 0
+
+
 #: Order matters and is the plan's order. The fresh set is sealed before it is
 #: generated, and the holdout regression runs last because it is the only stage
 #: whose result is not new evidence.
@@ -185,6 +247,8 @@ STAGES = (
     ("fresh-judge", stage_fresh_judge),
     ("regression-generate", stage_regression_generate),
     ("regression-judge", stage_regression_judge),
+    ("t6-rates", stage_t6_rates),
+    ("latency", stage_latency),
 )
 
 
