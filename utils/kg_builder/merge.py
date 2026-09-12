@@ -102,15 +102,36 @@ def _read_source(data_dir: Path, dataset: str) -> dict[str, Any]:
 # -- the transformation ------------------------------------------------------
 
 
+def taxonomy_public_id(taxonomy_name: str, entry_id: str) -> str:
+    """``T1027.001`` for ATT&CK, ``WASC:27`` otherwise, empty when unidentifiable.
+
+    Shared with the federated Gremlin normalizer's copy of the rule
+    (`_taxonomy_public_id`) so the merged and federated arms report the same
+    identifiers; a difference there would make the comparison about formatting
+    rather than about storage.
+    """
+    name, entry = taxonomy_name.strip(), entry_id.strip()
+    if not name or not entry:
+        return ""
+    if name.upper() == "ATTACK":
+        return entry if entry.startswith("T") else f"T{entry}"
+    return f"{name}:{entry}"
+
+
 def promote_public_id(node: dict[str, Any]) -> dict[str, Any]:
     """Give a CAPEC node the public identifier its ATT&CK counterpart already has.
 
     Returns a new node; the input is not mutated. A node that already carries
     the property (every ATT&CK node) is returned unchanged, and so is one whose
-    id has no public form (a Category, a View, a composite child) — those are
-    reported by their raw id in the federated system too, and inventing a
-    public id here would give the merged arm identifiers the federated arms
-    never emit.
+    id has no public form (a composite child such as
+    ``capec:attack-pattern:100:mitigation:1``) — those are reported by their raw
+    id in the federated system too, and inventing a public id here would give the
+    merged arm identifiers the federated arms never emit.
+
+    Categories and views DO have a public form: they share CAPEC's numbering, so
+    ``capec:category:118`` is ``CAPEC-118``. They were excluded while the
+    federated path reported them raw, and both paths were wrong together
+    (`EXP-2026-09-018`, I-12).
     """
     props = dict(node.get("properties") or {})
     if props.get(PUBLIC_ID_PROPERTY):
@@ -122,10 +143,17 @@ def promote_public_id(node: dict[str, Any]) -> dict[str, Any]:
     # maps_to handler; a merged graph reconciles identifiers once, at load. That
     # is the merged design's actual argument for itself, so writing the
     # reconciled id here is the merged condition, not a thumb on the scale.
-    if node.get("label") == "TaxonomyEntry" and props.get("taxonomy_name") == "ATTACK":
-        entry = str(props.get("entry_id") or "")
-        if entry:
-            props[PUBLIC_ID_PROPERTY] = entry if entry.startswith("T") else f"T{entry}"
+    #
+    # A non-ATT&CK taxonomy entry is published as ``<taxonomy>:<entry>``
+    # (``WASC:27``), which is the form the federated normalizer now emits and
+    # the form the gold uses. Both branches go through the same helper so the
+    # two paths cannot drift.
+    if node.get("label") == "TaxonomyEntry":
+        public = taxonomy_public_id(
+            str(props.get("taxonomy_name") or ""), str(props.get("entry_id") or "")
+        )
+        if public:
+            props[PUBLIC_ID_PROPERTY] = public
             merged = dict(node)
             merged["properties"] = props
             return merged

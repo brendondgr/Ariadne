@@ -317,3 +317,77 @@ its marks; the adversarial tier's abstentions named the wrong entity.
 that is correct and cites an identifier the catalogue does not publish is not
 auditable, and a node whose content is its text cannot be cited by identifier at
 all.
+
+**Resolved, in four more steps than the diagnosis above records.**
+
+4. A **published identifier always wins** over prose. The first cut of
+   `_related_display` used "has a colon" to mean synthetic, which is true of
+   `capec:attack-pattern:94:prerequisite:1` and false of `WASC:27` — six
+   questions asking for a WASC mapping got prose instead of the key. The test is
+   the identifier's DEPTH: CAPEC composes a child as `<parent>:<kind>:<index>`,
+   four segments, while everything the catalogue publishes is shallower.
+
+5. A **cross-taxonomy entry is published as `<taxonomy>:<entry>`** —
+   `WASC:27`, `OWASP Attacks:<name>` — and as `T1555` for ATT&CK, which is the
+   form the join key already uses. Three normalizer paths built that neighbour
+   and all three emitted the internal vertex path.
+
+6. A node with **no description carries its content in its own properties**: a
+   CAPEC consequence has only `scopes` and `impacts`, both JSON lists, so there
+   was nothing for the composer to say. Identity keys are dropped and the rest
+   joined — no label table, so an unfamiliar node kind still reads.
+
+7. The **merged build shares the rule**. `promote_public_id` excluded categories,
+   views and non-ATT&CK taxonomy entries on the stated grounds that the
+   federated path reported them raw. Both paths were wrong together; they now
+   share one helper. **The merged store must be rebuilt before the merged-arm
+   counterfactual is re-run** — its committed figures predate this.
+
+### Result
+
+Gold recall over the ANSWER TEXT, model-free, against the concurrent control at
+`46652efc` (`data/gold_text_recall.py`, `data/gold_text_recall.json`):
+
+| tier | n | before | after |
+|---|---:|---:|---:|
+| D0 adversarial | 36 | 0.8056 | 1.0000 |
+| D1 attribute | 35 | 0.9129 | 1.0000 |
+| D2 | 40 | 0.8018 | 0.9417 |
+| D3 | 44 | 0.9205 | 1.0000 |
+| D4 two-step | 55 | 0.5471 | 0.9259 |
+| D5 requested property | 47 | 0.9674 | 1.0000 |
+| D6 cross-catalogue | 27 | 0.3773 | 1.0000 |
+| **all** | **284** | **0.7721** | **0.9774** |
+
+97 questions improved and none regressed. The deterministic control moves 58 up
+and 2 down, both of which are a 558-record catalogue dump being removed that
+happened to contain the gold identifier.
+
+The holdout bank reads **0.9782** on the same measure. It was run only after the
+fixes, nothing was tuned against it, and it is not a judged number.
+
+The two tiers still short of 1.0000 are short on PHRASING rather than on
+content. The gold composes an execution step as ``step phase description`` and a
+consequence as ``scopes impacts``; the graph stores those as separate properties
+in its own order, and the answer states all of them. A grader reading both sees
+the same facts.
+
+## I-13 — A falsy value is a value, and a list-valued property is an answer
+
+**Impact:** every question asking what a group is also called, who contributed
+to a campaign, or whether a technique is a sub-technique.
+
+**Cause.** `_attribute_pairs` skipped list-valued properties outright, on the
+recorded reasoning that "a generic listing of every list a record carries is
+noise". A group's ``aliases`` is not noise; it is the answer to "what else is
+this group called", and the answer instead stated the group's ``revoked`` flag
+and not one of its names. Flattening then introduced the mirror defect:
+``value or ""`` turns ``False`` into the empty string and an empty attribute is
+dropped, so "is T1052 a sub-technique" lost the literal ``False`` that answered
+it. Lists are now listed after the scalars, so nothing that fitted under the
+per-record cap before is displaced by one added after it.
+
+**What this is not.** This is retrieval and composition measured against the
+gold assertions, model-free. It says the evidence reaches the answer and the
+answer states it in identifiers an analyst can look up. It does not say what the
+grader will score, and the Step 6 re-judge is still the decision.

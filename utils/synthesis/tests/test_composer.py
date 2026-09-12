@@ -495,12 +495,18 @@ def test_a_long_description_is_cut_at_a_sentence_boundary():
 def test_a_list_valued_requested_property_reaches_a_claim() -> None:
     """``x_mitre_platforms`` is a list, and lists were dropped.
 
-    ``_attribute_pairs`` skips list values on purpose — a generic listing of
-    every list a record carries is noise. But the *requested* property is the
-    answer. Two of the development half's exhibited failures are exactly this:
-    the platforms of T1027.006 and the contributors of T1530 sat in the evidence
-    and never reached a claim, and the narrator that would have said it anyway
-    had timed out on 43% of the run.
+    The *requested* property is the answer. Two of the development half's
+    exhibited failures are exactly this: the platforms of T1027.006 and the
+    contributors of T1530 sat in the evidence and never reached a claim, and the
+    narrator that would have said it anyway had timed out on 43% of the run.
+
+    This test used to also assert that the generic attribute listing still
+    skipped lists, on the reasoning that listing every list a record carries is
+    noise. That reasoning was wrong and cost whole questions: a group's
+    ``aliases`` IS the answer to "what else is this group called", and the
+    answer stated the group's ``revoked`` flag and not one of its names
+    (`EXP-2026-09-018`, I-12). The generic listing now includes lists, after the
+    scalars so nothing that fitted before is displaced.
     """
     from utils.synthesis.composer import _requested_property_claim
 
@@ -511,8 +517,8 @@ def test_a_list_valued_requested_property_reaches_a_claim() -> None:
     )
     result = make_result(records=[record])
 
-    generic = [key for key, _ in _attribute_pairs(record)]
-    assert "x_mitre_platforms" not in generic, "the generic listing still skips lists"
+    generic = dict(_attribute_pairs(record))
+    assert generic["x_mitre_platforms"] == "Linux Windows macOS"
 
     claim = _requested_property_claim(result, record, "x_mitre_platforms")
     assert claim is not None
@@ -640,3 +646,22 @@ def test_a_nameless_neighbour_is_listed_by_its_text_not_its_internal_id():
     assert "step:1" not in body
     # The ids stay on the claim for auditing even when the prose shows text.
     assert "capec:attack-pattern:94:prerequisite:3" in enum[0].entity_ids
+
+
+def test_a_false_attribute_is_stated_not_swallowed():
+    """"Is T1052 a sub-technique?" is answered by the literal False.
+
+    Flattening a value with ``value or ""`` turns ``False`` and ``0`` into the
+    empty string, and an empty attribute is dropped — so the one property the
+    question asked about vanished from the answer.
+    """
+    record = make_record(
+        "T1052",
+        name="Exfiltration Over Physical Medium",
+        label="Technique",
+        properties={"x_mitre_is_subtechnique": False, "revoked": False,
+                    "x_mitre_version": "1.3"},
+    )
+    pairs = dict(_attribute_pairs(record))
+    assert pairs["x_mitre_is_subtechnique"] == "False"
+    assert pairs["revoked"] == "False"

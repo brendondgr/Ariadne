@@ -131,6 +131,21 @@ def _traversal_edge(query: str) -> str:
 _CAPEC_AP_FULL_RE = re.compile(r"^capec:(?:attack-pattern|category|view):(\d+)$")
 
 
+def _taxonomy_public_id(props: dict, fallback: str) -> str:
+    """The identifier a cross-taxonomy entry is published under, or *fallback*.
+
+    A CAPEC taxonomy entry stores its foreign key as ``taxonomy_name`` plus
+    ``entry_id`` and its vertex id as an internal path. The published form is
+    ``WASC:27`` or ``OWASP Attacks:...``, and ``T1555`` for ATT&CK — the same
+    T-prefixed form the join key already uses, so the two never disagree.
+    """
+    from utils.kg_builder.merge import taxonomy_public_id
+
+    return taxonomy_public_id(
+        str(props.get("taxonomy_name") or ""), str(props.get("entry_id") or "")
+    ) or fallback
+
+
 def _expand_member_id(gremlin_id: str) -> str:
     """Member identity for expand: convert a *clean* CAPEC/CWE id, else keep raw.
 
@@ -390,7 +405,9 @@ class GremlinNormalizer:
             # ``_expand_member_id`` fullmatches, so a clean AttackPattern/CWE id is
             # canonicalised while a composite child (mitigation/step/consequence)
             # keeps its own identity rather than collapsing to its parent.
-            nbr_id = _expand_member_id(_safe_str(nbr_m.get("id", "")))
+            nbr_id = _taxonomy_public_id(
+                nbr_props, _expand_member_id(_safe_str(nbr_m.get("id", "")))
+            )
             nbr_name = _safe_str(nbr_m.get("name", "")) or nbr_id
             nbr_label = _get_label(nbr_m)
             related_entry: dict[str, Any] = {
@@ -466,7 +483,10 @@ class GremlinNormalizer:
             # Include as a related entry regardless.
             tax_props = _string_props(tax_m)
             related_entry = {
-                "id": _safe_str(tax_m.get("id", "")),
+                "id": _taxonomy_public_id(
+                    {"taxonomy_name": taxonomy_name, "entry_id": entry_id},
+                    _safe_str(tax_m.get("id", "")),
+                ),
                 "name": _safe_str(tax_m.get("name", "")),
                 "label": _get_label(tax_m) or "TaxonomyEntry",
                 # The edge this neighbour was reached through. Without it the
@@ -548,7 +568,10 @@ class GremlinNormalizer:
                         join_values.append(t_value)
                 related.append(
                     {
-                        "id": _safe_str(tax_m.get("id", "")),
+                        "id": _taxonomy_public_id(
+                            {"taxonomy_name": taxonomy_name, "entry_id": entry_id},
+                            _safe_str(tax_m.get("id", "")),
+                        ),
                         "name": _safe_str(tax_m.get("name", "")),
                         "label": _get_label(tax_m) or "TaxonomyEntry",
                         "type": "MAPS_TO",  # see `_normalize_maps_to`

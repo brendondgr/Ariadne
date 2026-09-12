@@ -58,10 +58,7 @@ def test_a_capec_node_gains_the_public_id_the_federated_path_reports(
     [
         "capec:attack-pattern:100:mitigation:1",   # composite child
         "capec:attack-pattern:100:consequence:1",
-        "capec:category:118",                       # no public form in the Gremlin path
-        "capec:view:1000",
         "capec:external-reference:REF-1",
-        "capec:taxonomy:ATTACK:1001.002",
     ],
 )
 def test_a_node_with_no_public_form_keeps_its_raw_id(node_id: str) -> None:
@@ -148,17 +145,23 @@ def test_the_merge_is_the_sum_of_its_two_inputs(built) -> None:
     assert built["relationships"] == expected_edges
 
 
-def test_the_public_id_promotion_covers_exactly_three_groups(built) -> None:
-    """558 attack patterns, 336 weaknesses, 189 ATT&CK taxonomy entries.
+def test_the_public_id_promotion_covers_every_published_form(built) -> None:
+    """558 attack patterns, 336 weaknesses, 261 taxonomy entries, 34 groupings.
 
-    The third group is the one that makes the cross-source join work. CAPEC
+    The ATT&CK taxonomy entries are what makes the cross-source join work: CAPEC
     stores the bare `1027.001` where ATT&CK stores `T1027.001`, so without the
     reconciliation the merged store retrieves the right mapping node and then
-    cannot follow it. Nothing else in CAPEC gets an identifier — categories,
-    views, WASC taxonomy entries and composite children keep their raw ids,
-    which is what the federated system reports for them.
+    cannot follow it.
+
+    The other three groups were excluded while the federated path reported them
+    raw, and both paths were wrong together. Categories and views share CAPEC's
+    numbering (`capec:category:118` is CAPEC-118) and the other taxonomies
+    publish `WASC:27` and `OWASP Attacks:<name>`. Composite children still keep
+    their raw ids: the catalogue addresses them only through their parent, and
+    giving each the parent's number would make every step claim to be the
+    pattern.
     """
-    assert built["public_ids_promoted"] == 558 + 336 + 189
+    assert built["public_ids_promoted"] == 558 + 336 + (189 + 39 + 33) + (21 + 13)
 
 
 @pytest.mark.parametrize(
@@ -180,14 +183,28 @@ def test_an_attack_taxonomy_entry_is_reconciled_to_the_attack_form(
     assert promote_public_id(node)["properties"][PUBLIC_ID_PROPERTY] == expected
 
 
-def test_a_non_attack_taxonomy_entry_is_left_alone() -> None:
-    """CAPEC also maps to WASC. Only the ATT&CK mapping is a join key here."""
+def test_a_non_attack_taxonomy_entry_gets_its_own_published_form() -> None:
+    """CAPEC also maps to WASC, and `WASC:12` is what that catalogue publishes.
+
+    Only the ATT&CK mapping is a join key, but a WASC entry reported as
+    `capec:taxonomy:WASC:12` is an identifier no gold assertion and no analyst
+    can match — six development questions asked for exactly this and got the
+    internal path (`EXP-2026-09-018`, I-12).
+    """
     node = {
         "id": "capec:taxonomy:WASC:12",
         "label": "TaxonomyEntry",
         "properties": {"taxonomy_name": "WASC", "entry_id": "12"},
     }
-    assert PUBLIC_ID_PROPERTY not in promote_public_id(node)["properties"]
+    assert promote_public_id(node)["properties"][PUBLIC_ID_PROPERTY] == "WASC:12"
+
+
+def test_a_category_and_a_view_share_capecs_published_numbering() -> None:
+    """CAPEC-513 is a category and CAPEC-1000 a view: one numbering space."""
+    for raw, public in (("capec:category:118", "CAPEC-118"),
+                        ("capec:view:1000", "CAPEC-1000")):
+        node = {"id": raw, "label": "Category", "properties": {}}
+        assert promote_public_id(node)["properties"][PUBLIC_ID_PROPERTY] == public
 
 
 def test_the_two_catalogues_share_exactly_one_label(built) -> None:

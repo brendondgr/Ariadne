@@ -23,6 +23,7 @@ Composition rules:
 from __future__ import annotations
 
 import re
+from typing import Any
 
 from utils.planner.intent import is_definitional_request
 from utils.specialists.contracts import EvidenceRecord, SpecialistResult
@@ -608,14 +609,35 @@ def _absence_claim(result: SpecialistResult, relation: str) -> Claim:
 
 
 def _attribute_pairs(record: EvidenceRecord) -> list[tuple[str, str]]:
-    """The record's own short scalar attributes, in a stable order."""
+    """The record's own short attributes, in a stable order.
+
+    List-valued properties are included, flattened to their members: see the
+    comment below for why excluding them lost the alias and contributor
+    questions outright.
+    """
     pairs: list[tuple[str, str]] = []
-    for key, value in sorted((record.properties or {}).items()):
+    # Scalars first, then lists. The cap keeps the sentence readable, and
+    # alphabetical order alone let the newly-included list properties take the
+    # slots that `x_mitre_is_subtechnique` had — which was the whole answer to
+    # one question. A scalar a record carried before must not be displaced by a
+    # list added after it.
+    items = sorted((record.properties or {}).items())
+    ordered = [kv for kv in items if not isinstance(kv[1], (list, tuple))] + [
+        kv for kv in items if isinstance(kv[1], (list, tuple))
+    ]
+    for key, value in ordered:
         if key in _NON_ATTRIBUTE_PROPERTIES or key.startswith("_"):
             continue
-        if value is None or isinstance(value, (list, dict, tuple)):
+        if value is None or isinstance(value, dict):
             continue
-        text = str(value).strip()
+        # A LIST-valued property is an answer, not noise. A group's `aliases` is
+        # what "what else is this group called" asks for, and dropping every
+        # list meant the answer stated the group's `revoked` flag and not one of
+        # its names. Same for a campaign's contributors and a technique's
+        # platforms. `_flatten_value` also unwraps the JSON-encoded lists CAPEC
+        # stores as strings, which otherwise reach the reader with brackets and
+        # quotes in them.
+        text = _flatten_value(value)
         if not text or len(text) > _MAX_ATTRIBUTE_VALUE_CHARS:
             continue
         pairs.append((key, text))
@@ -933,38 +955,88 @@ def _query_carries(result: SpecialistResult, prop: str) -> bool:
     return prop in (result.query or "")
 
 
+#: Keys that identify a related entry rather than say anything about it.
+_RELATED_IDENTITY_KEYS = frozenset(
+    {"id", "entry_id", "name", "label", "type", "via", "role"}
+)
+
+
+def _flatten_value(value: Any) -> str:
+    """One readable string for a property value, list-valued or not.
+
+    CAPEC stores a consequence's scopes and impacts as JSON lists, and a list
+    rendered by ``str`` puts brackets and quotes in the prose.
+    """
+    import json as _json
+
+    if isinstance(value, (list, tuple)):
+        return " ".join(str(v).strip() for v in value if str(v).strip())
+    # NOT `value or ""`: `False` and `0` are answers. "Is T1052 a sub-technique?"
+    # is answered by the literal False, and collapsing it to the empty string
+    # deleted the only thing the question asked for.
+    text = "" if value is None else str(value).strip()
+    if text.startswith("[") and text.endswith("]"):
+        try:
+            parsed = _json.loads(text)
+        except ValueError:
+            return text
+        if isinstance(parsed, list):
+            return " ".join(str(v).strip() for v in parsed if str(v).strip())
+    return text
+
+
+def _is_composite_child(rid: str) -> bool:
+    """Is this identifier a child the catalogue addresses only via its parent?
+
+    CAPEC composes one as ``<parent>:<kind>:<index>`` —
+    ``capec:attack-pattern:94:prerequisite:1`` — four colon-separated segments
+    deep. A published identifier is shallower: ``CAPEC-94`` and ``CWE-1239``
+    carry no colon at all, and a cross-taxonomy key is exactly two segments
+    (``WASC:27``). The depth is the test, not the presence of a colon, because
+    ``WASC:27`` IS what the catalogue publishes and an answer that replaced it
+    with prose lost the identifier the analyst needs.
+    """
+    return rid.count(":") >= 3
+
+
 def _related_display(rel: dict) -> str:
-    """What to call a related entry in prose: its name, its text, or its id.
+    """What to call a related entry in prose: its identifier, or its content.
 
-    Several CAPEC node kinds have no name at all. A prerequisite, consequence,
-    execution step, example, indicator, skill or mitigation IS its text, and its
-    identifier is a synthetic path the catalogue never publishes —
-    ``capec:attack-pattern:94:prerequisite:1``. Listing those identifiers
-    answered "what prerequisites does each of those require" with six opaque
-    strings and not one prerequisite, which is why two-step questions retrieved
-    everything they needed and still lost half their marks
-    (`EXP-2026-09-018`). The id stays the citation; the prose carries the
-    content.
+    A **published** identifier wins outright — ``CAPEC-94``, ``CWE-1239``,
+    ``T1555``, ``M1041`` are what an analyst looks up, and the name sits beside
+    them elsewhere in the answer.
 
-    A named neighbour is unchanged: a CAPEC or ATT&CK identifier is what an
-    analyst looks up, and its name is already carried beside it elsewhere.
+    A **synthetic** one (a path, recognised by its colon) names a node the
+    catalogue does not publish, and several CAPEC node kinds are exactly that. A
+    prerequisite, consequence, execution step, example, indicator, skill,
+    resource or mitigation IS its text; the normalizer fills ``name`` from the
+    id when the node has none, and an execution step is titled "Step 1", which
+    is its position. Listing those answered "what prerequisites does each of
+    those require" with six opaque strings and not one prerequisite, which is
+    why two-step questions retrieved everything they needed and still lost half
+    their marks (`EXP-2026-09-018`, I-12). The id stays the citation; the prose
+    carries the content.
     """
     rid = str(rel.get("id") or rel.get("entry_id") or "").strip()
     name = str(rel.get("name") or "").strip()
-    # A "name" equal to the identifier is not a name. The normalizer fills the
-    # field from the node's id when the node has none, so a prerequisite arrives
-    # named ``capec:attack-pattern:94:prerequisite:1`` and a naive name check
-    # reads as though it were titled.
-    # A synthetic path identifier names a node the catalogue does not publish:
-    # an execution step is titled "Step 1", which is its position, not its
-    # content. Its text is the answer. A published identifier (CAPEC-94, T1555,
-    # CWE-89 — no colon) is what an analyst looks up, so it stays.
-    synthetic = ":" in rid
-    text = " ".join(str(rel.get("description") or "").split())
-    if name and name != rid and not (synthetic and text):
-        return rid or name
-    if not text:
+    if rid and not _is_composite_child(rid):
         return rid
+    text = " ".join(str(rel.get("description") or "").split())
+    if not text:
+        # No description. The node's content is then spread across its own
+        # properties: a CAPEC consequence carries only `scopes` and `impacts`.
+        # Identity keys are dropped and the rest joined in the order the record
+        # presents them — no label table, so a node kind this composer has never
+        # seen still reads.
+        text = " ".join(
+            part
+            for key, value in rel.items()
+            if key not in _RELATED_IDENTITY_KEYS
+            for part in (_flatten_value(value),)
+            if part
+        ).strip()
+    if not text:
+        return name if name and name != rid else rid
     bound = _enum_bound("MAX_RELATED_TEXT_CHARS", _MAX_RELATED_TEXT_CHARS)
     if len(text) > bound:
         text = text[: bound - 1].rstrip() + "\u2026"

@@ -1,112 +1,83 @@
 {
   "experiment": "EXP-2026-09-018-correctness-repair",
   "measure": "gold_text_recall",
-  "measure_definition": "The fraction of a question's gold assertions (must_include_ids plus must_include_related) whose text appears in the composed answer. deterministic_scores.coverage matches by identifier only and is therefore blind to every gold item the catalogue publishes as text \u2014 prerequisites, consequences, execution steps, examples, indicators, mitigations.",
-  "arm": "generic_composed (model-free; the same primitives the LLM arm uses)",
-  "dev_before": {
-    "n": 284,
-    "mean": 0.7108,
-    "by_tier": {
-      "D0": {
-        "n": 36,
-        "mean": 0.5556
-      },
-      "D1": {
-        "n": 35,
-        "mean": 0.9129
-      },
-      "D2": {
-        "n": 40,
-        "mean": 0.8018
-      },
-      "D3": {
-        "n": 44,
-        "mean": 0.9205
-      },
-      "D4": {
-        "n": 55,
-        "mean": 0.5381
-      },
-      "D5": {
-        "n": 47,
-        "mean": 0.9674
-      },
-      "D6": {
-        "n": 27,
-        "mean": 0.0849
+  "measure_script": "data/gold_text_recall.py",
+  "measure_definition": "The fraction of a question's gold assertions (must_include_ids plus must_include_related) the ANSWER states \u2014 narrative, claims and abstentions. deterministic_scores.coverage matches by identifier only and is blind to every gold item the catalogue publishes as text. A long gold item is matched by its words rather than byte-for-byte, because the gold composes an execution step as `step phase description` and the graph stores those as separate properties. A PROXY for the judged score, not a substitute: it tracked the Step 6 judgments closely enough to steer repair (D4 0.5471 here against 0.5405 judged) at seconds per run.",
+  "baseline_commit": "46652efc",
+  "dev_generic_composed": {
+    "before": {
+      "n": 284,
+      "mean": 0.7721,
+      "by_tier": {
+        "D0": 0.8056,
+        "D1": 0.9129,
+        "D2": 0.8018,
+        "D3": 0.9205,
+        "D4": 0.5471,
+        "D5": 0.9674,
+        "D6": 0.3773
       }
-    }
-  },
-  "dev_after": {
-    "n": 284,
-    "mean": 0.8994,
-    "by_tier": {
-      "D0": {
-        "n": 36,
-        "mean": 0.75
-      },
-      "D1": {
-        "n": 35,
-        "mean": 0.9414
-      },
-      "D2": {
-        "n": 40,
-        "mean": 0.9062
-      },
-      "D3": {
-        "n": 44,
-        "mean": 1.0
-      },
-      "D4": {
-        "n": 55,
-        "mean": 0.8293
-      },
-      "D5": {
-        "n": 47,
-        "mean": 1.0
-      },
-      "D6": {
-        "n": 27,
-        "mean": 0.8377
+    },
+    "after": {
+      "n": 284,
+      "mean": 0.9774,
+      "by_tier": {
+        "D0": 1.0,
+        "D1": 1.0,
+        "D2": 0.9417,
+        "D3": 1.0,
+        "D4": 0.9259,
+        "D5": 1.0,
+        "D6": 1.0
       }
-    }
+    },
+    "improved": 97,
+    "regressed": 0
   },
-  "dev_regressions": 0,
-  "dev_improvements": 84,
-  "holdout_after": {
+  "dev_deterministic": {
+    "before": {
+      "n": 284,
+      "mean": 0.559,
+      "by_tier": {
+        "D0": 0.5,
+        "D1": 0.9129,
+        "D2": 0.6017,
+        "D3": 0.6648,
+        "D4": 0.2838,
+        "D5": 0.6269,
+        "D6": 0.3861
+      }
+    },
+    "after": {
+      "n": 284,
+      "mean": 0.6802,
+      "by_tier": {
+        "D0": 0.8611,
+        "D1": 1.0,
+        "D2": 0.6936,
+        "D3": 0.7671,
+        "D4": 0.3079,
+        "D5": 0.6595,
+        "D6": 0.6574
+      }
+    },
+    "improved": 58,
+    "regressed": 2
+  },
+  "dev_deterministic_note": "The 2 apparent regressions are both a 558-record CATALOGUE DUMP being removed that happened to contain the gold identifier. The replacement answers are correct and narrow.",
+  "holdout_generic_composed": {
     "n": 288,
-    "mean": 0.9253,
+    "mean": 0.9782,
     "by_tier": {
-      "D0": {
-        "n": 25,
-        "mean": 0.8
-      },
-      "D1": {
-        "n": 28,
-        "mean": 0.9464
-      },
-      "D2": {
-        "n": 37,
-        "mean": 0.9392
-      },
-      "D3": {
-        "n": 45,
-        "mean": 1.0
-      },
-      "D4": {
-        "n": 62,
-        "mean": 0.8501
-      },
-      "D5": {
-        "n": 58,
-        "mean": 1.0
-      },
-      "D6": {
-        "n": 33,
-        "mean": 0.895
-      }
+      "D0": 1.0,
+      "D1": 0.9643,
+      "D2": 0.9797,
+      "D3": 1.0,
+      "D4": 0.9322,
+      "D5": 1.0,
+      "D6": 0.9899
     }
   },
-  "holdout_note": "Run ONCE, after the fixes, as a generalisation check. Nothing was tuned against it. It is not a judged number and must not be quoted as one.",
-  "commit_before": "46652efc"
+  "holdout_note": "Run twice, both times AFTER the fixes, as a generalisation check. Nothing was tuned against it. Model-free retrieval and composition only; NOT a judged number and must not be quoted as one.",
+  "merged_store_note": "`promote_public_id` now promotes categories, views and non-ATT&CK taxonomy entries, so the merged store must be REBUILT before the merged-arm counterfactual (C-015) is re-run. Its committed figures predate this."
 }
