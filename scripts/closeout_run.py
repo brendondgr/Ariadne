@@ -101,6 +101,17 @@ def _complete(root: Path, arm: str) -> bool:
 
 
 def stage_control_generate() -> int:
+    """Skip entirely when all six cells are already on disk and complete.
+
+    Belt and braces after 2026-09-12: the six cells had finished, the chain
+    re-entered this stage to confirm it, the runner refused on a dirty tree it
+    had dirtied itself, and the whole judging phase never started.
+    """
+    cells = [(side, arm) for side in ("repaired", "reference") for arm in ARMS]
+    if all(_complete(CONTROL / side, arm) for side, arm in cells):
+        print("[control-generate] all six cells complete on disk, skipping",
+              flush=True)
+        return 0
     return _run("control-generate",
                 [sys.executable, "scripts/repair_control_run.py", "--stage", "generate"])
 

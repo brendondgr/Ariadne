@@ -327,10 +327,22 @@ def _reference_digests_match(directory: Path) -> dict:
 
 def generate(state: dict) -> None:
     """Both commits, one sitting. The reference is checked out, never quoted."""
-    if _git("status", "--porcelain", "--untracked-files=no"):
+    # CODE must be committed, so the cell this run measures is identified by a
+    # commit. This run's OWN output is exempt: `state.json` is tracked and is
+    # rewritten after every cell, so a guard that counted it refused to restart
+    # the moment the run had done any work — which is exactly what happened on
+    # 2026-09-12, after all six cells had finished and before any were judged.
+    dirty = [
+        line for line in _git(
+            "status", "--porcelain", "--untracked-files=no"
+        ).splitlines()
+        if line[3:].strip()
+        and not line[3:].strip().startswith("docs/evaluation/experiments/")
+    ]
+    if dirty:
         raise SystemExit(
-            "working tree has uncommitted tracked changes; commit first so the "
-            "cell this run measures is identified by a commit."
+            "working tree has uncommitted code; commit first so the cell this "
+            "run measures is identified by a commit:\n  " + "\n  ".join(dirty)
         )
     head = _git("rev-parse", "HEAD")
     state["head"] = head
