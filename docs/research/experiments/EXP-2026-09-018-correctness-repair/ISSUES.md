@@ -397,9 +397,15 @@ grader will score, and the Step 6 re-judge is still the decision.
 ## I-14 — Two presentation faults the grader read as invented content
 
 Found by judging the 82 two-step and cross-catalogue questions on the repaired
-LLM arm rather than by inspection. Correctness on that slice moved **0.5104 →
-0.8623** (position 1), but flagged hallucinations rose 64 → 72, and every one of
-the new flags was one of these two.
+LLM arm rather than by inspection. Correctness on that slice moved **0.5125 →
+0.8505** counterbalanced over both grading positions (`data/judged_hard_slice.json`)
+— two-step 0.5405 → 0.8404, cross-catalogue 0.4556 → 0.8711, 66 improved and 10
+down, every one of the ten a 1.00 falling to 0.90-0.95 where the answer now
+carries more than the deliberately rolled-up gold. The two positions agree to
+0.024, which is inside the grader's own spread.
+
+Flagged hallucinations nonetheless rose 141 → 149 across both positions, and
+every new flag was one of the two faults below rather than an invention.
 
 **A false abstention beside a true answer.** The iterative loop re-runs a hop
 that first came back empty — before its producer seeded it, or before the facet
@@ -421,6 +427,30 @@ so a multi-word item stays legible as one item.
 
 Neither changes what is retrieved: gold recall is 0.9791 on the development bank
 and 0.9788 on the holdout before and after, with no question moving either way.
+The judged slice above was generated BEFORE both fixes, so its correctness is a
+floor for the current tree.
+
+### What the whole development half should read
+
+The judged slice calibrates the cheap measure against the grader once: gold-text
+recall gained 0.4373 there and judged correctness gained 0.3380, a **transfer of
+0.773**. Applying that to how each untouched tier's recall moved, capped at 0.97:
+
+| | n | repaired commit | low | high |
+|---|---:|---:|---:|---:|
+| D4 two-step | 55 | 0.5405 | **0.8404** | **0.8404** |
+| D6 cross-catalogue | 27 | 0.4556 | **0.8711** | **0.8711** |
+| the other five tiers | 202 | — | unchanged | up to 0.97 |
+| **all** | **284** | **0.7845** | **0.8820** | **0.9253** |
+
+The two hard tiers are measured; the rest is projection. The low end credits the
+other five with NO gain at all, which is certainly too pessimistic — every one of
+them improved on the cheap measure. The high end applies a transfer ratio
+calibrated on a slice starting at 0.51, where there was far more headroom than a
+tier already at 0.93 has, so it should be read as an upper bound.
+
+**This is a projection, not a result.** The full judged run over the development
+half costs about an hour and is what the ship gate needs.
 
 **Paper implication:** a faithfulness metric counts what the reader can
 misread, not only what the system invented. Both defects here were true

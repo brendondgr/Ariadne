@@ -1,0 +1,70 @@
+{
+  "experiment": "EXP-2026-09-018-correctness-repair",
+  "measure": "judge correctness, two counterbalanced grading positions",
+  "judge": {
+    "model": "default-model",
+    "served": "qwen38-27B-v2",
+    "endpoint": "http://localhost:9090/v1",
+    "workers": 16,
+    "max_tokens": 32768
+  },
+  "arm": "generic (LLM planner, specialist, narrator, facet loop)",
+  "slice": "the 82 two-step (D4) and cross-catalogue (D6) development questions",
+  "baseline_commit": "46652efc",
+  "answers_generated_at": "37b18995",
+  "note": "The answers were generated BEFORE the two presentation fixes this judging exposed (I-14), so the hallucination counts below are the pre-fix state and the correctness figures are a floor for the current tree.",
+  "position_1": {
+    "before": {
+      "all": 0.5104,
+      "D4": 0.5409,
+      "D6": 0.4481
+    },
+    "after": {
+      "all": 0.8623,
+      "D4": 0.8571,
+      "D6": 0.873
+    },
+    "n": 82
+  },
+  "position_2": {
+    "before": {
+      "all": 0.5146,
+      "D4": 0.54,
+      "D6": 0.463
+    },
+    "after": {
+      "all": 0.8387,
+      "D4": 0.8236,
+      "D6": 0.8693
+    },
+    "n": 82
+  },
+  "counterbalanced": {
+    "before": {
+      "all": 0.5125,
+      "D4": 0.5405,
+      "D6": 0.4556
+    },
+    "after": {
+      "all": 0.8505,
+      "D4": 0.8404,
+      "D6": 0.8711
+    },
+    "n": 82,
+    "improved": 66,
+    "regressed": 10
+  },
+  "proxy_on_the_same_slice": {
+    "before": 0.5134,
+    "after": 0.9507
+  },
+  "transfer_ratio": 0.773,
+  "transfer_ratio_note": "Judged gain divided by gold-text-recall gain on this slice. It calibrates the cheap measure against the grader ONCE, on a slice with a great deal of headroom (starting at 0.51). Tiers already near 0.93 have far less to win, so applying it to them overstates; projections using it are capped at 0.97 and should be read as an upper bound.",
+  "projection_whole_development_half": {
+    "method": "D4 and D6 measured; the other five tiers projected from how their model-free gold-text recall moved, scaled by transfer_ratio and capped at 0.97. The low end credits the five with NO gain at all, which is certainly too pessimistic since every one of them improved on the cheap measure.",
+    "repaired_commit": 0.7845,
+    "low": 0.882,
+    "high": 0.9253,
+    "status": "PROJECTION, not a measurement. The full judged run is ~1 hour."
+  }
+}
