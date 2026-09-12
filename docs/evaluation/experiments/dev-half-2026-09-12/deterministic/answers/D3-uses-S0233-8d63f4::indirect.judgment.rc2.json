@@ -1,0 +1,26 @@
+{
+ "case_id": "D3-uses-S0233-8d63f4::indirect",
+ "verdict": "PARTIAL",
+ "correctness": 0.7,
+ "faithfulness": 0.6,
+ "groundedness": 0.8,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "G0065 has no USES relationships in this catalogue"
+ ],
+ "rationale": "The answer states the expected group G0065 and ties it to S0233, which satisfies the core question. However, it also claims that G0065 has no USES relationships, which is not supported by the executed USES query result and related record. This unsupported absence claim reduces faithfulness, making the answer partial rather than fully correct.",
+ "judge": {
+  "model": "default-model",
+  "alias": "default-model",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

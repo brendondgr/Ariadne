@@ -1,0 +1,26 @@
+{
+ "case_id": "D5-mitigates-x_mitre_platforms-M1042-ad62f1::analyst",
+ "verdict": "CORRECT",
+ "correctness": 0.95,
+ "faithfulness": 0.85,
+ "groundedness": 0.8,
+ "completeness": 1.0,
+ "gold_expected": 4,
+ "gold_present": 4,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "restricted to mitre platforms SaaS"
+ ],
+ "rationale": "The answer states the anchor M1042 and all four expected related identifiers: T1671, T1059, T1098, and T1098.001. The evidence record for M1042 contains those four MITIGATES-related entries, and the query filtered on x_mitre_platforms, so the core answer is well grounded. The phrase 'restricted to mitre platforms SaaS' is slightly stronger than the shown evidence, which indicates a SaaS filter but not exclusive platform restriction.",
+ "judge": {
+  "model": "default-model",
+  "alias": "default-model",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

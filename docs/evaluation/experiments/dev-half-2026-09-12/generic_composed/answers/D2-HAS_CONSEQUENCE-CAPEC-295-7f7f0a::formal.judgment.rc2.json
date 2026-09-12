@@ -1,0 +1,26 @@
+{
+ "case_id": "D2-HAS_CONSEQUENCE-CAPEC-295-7f7f0a::formal",
+ "verdict": "PARTIAL",
+ "correctness": 0.7,
+ "faithfulness": 0.75,
+ "groundedness": 0.7,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "Other Confidentiality"
+ ],
+ "rationale": "The answer correctly identifies CAPEC-295 and reports one HAS_CONSEQUENCE neighbor, which corresponds to the expected consequence capec:attack-pattern:295:consequence:1 / Confidentiality Other. However, it labels that consequence as \"Other Confidentiality,\" a reversed form not present in the provided evidence. This makes the key related claim only partially supported, so the answer is partial rather than fully correct.",
+ "judge": {
+  "model": "default-model",
+  "alias": "default-model",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

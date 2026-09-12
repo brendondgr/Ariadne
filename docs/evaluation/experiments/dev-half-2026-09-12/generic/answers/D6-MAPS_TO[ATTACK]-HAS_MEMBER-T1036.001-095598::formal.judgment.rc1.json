@@ -1,0 +1,26 @@
+{
+ "case_id": "D6-MAPS_TO[ATTACK]-HAS_MEMBER-T1036.001-095598::formal",
+ "verdict": "PARTIAL",
+ "correctness": 0.8,
+ "faithfulness": 0.7,
+ "groundedness": 0.85,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": false,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "The capec source doesn't establish this \u2014 the executed query ran cleanly and returned CAPEC-473 with no linked records for the question of which CAPEC views contain each of those."
+ ],
+ "rationale": "The answer identifies the expected CAPEC view CAPEC-703 and also names the corresponding CAPEC pattern CAPEC-473 for T1036.001, so the requested mapping is present. However, the narrative contradicts the evidence by saying the capec query returned no linked records for views, even though the q2 record shows CAPEC-473 related to CAPEC-703. This makes the answer mostly correct but not fully faithful.",
+ "judge": {
+  "model": "default-model",
+  "alias": "default-model",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

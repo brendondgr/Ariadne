@@ -1,0 +1,26 @@
+{
+ "case_id": "D3-mitigates-T1535-8132d3::formal",
+ "verdict": "PARTIAL",
+ "correctness": 0.8,
+ "faithfulness": 0.6,
+ "groundedness": 0.8,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "T1535 has no MITIGATES relationships in this catalogue"
+ ],
+ "rationale": "The answer correctly states the expected mitigation M1054 for technique T1535, so the requested gold identifier is present. However, it also claims that T1535 has no MITIGATES relationships, which is contradicted by the returned MITIGATES match to M1054. This makes the answer partially correct and somewhat unfaithful despite being grounded in the T1535 record.",
+ "judge": {
+  "model": "default-model",
+  "alias": "default-model",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

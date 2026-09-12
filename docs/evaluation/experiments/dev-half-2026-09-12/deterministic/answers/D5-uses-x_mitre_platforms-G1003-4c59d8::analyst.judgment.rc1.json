@@ -1,0 +1,26 @@
+{
+ "case_id": "D5-uses-x_mitre_platforms-G1003-4c59d8::analyst",
+ "verdict": "PARTIAL",
+ "correctness": 0.5,
+ "faithfulness": 0.6,
+ "groundedness": 0.7,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "G1003 has no USES relationships in this catalogue"
+ ],
+ "rationale": "The answer states the expected related identifier S1187 and the anchor G1003, but it presents them as general related items rather than explicitly identifying which apply to Network Devices. It also asserts that G1003 has no USES relationships, which is contradicted by the executed USES query returning 11 software rows. Completeness is full for the single expected gold identifier, but the unsupported absence claim and lack of Network Devices filtering make it only partial.",
+ "judge": {
+  "model": "default-model",
+  "alias": "default-model",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

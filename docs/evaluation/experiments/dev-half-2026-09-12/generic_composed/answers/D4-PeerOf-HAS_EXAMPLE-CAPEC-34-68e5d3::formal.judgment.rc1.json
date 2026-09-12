@@ -1,0 +1,26 @@
+{
+ "case_id": "D4-PeerOf-HAS_EXAMPLE-CAPEC-34-68e5d3::formal",
+ "verdict": "CORRECT",
+ "correctness": 0.92,
+ "faithfulness": 0.88,
+ "groundedness": 0.92,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "CAPEC-34 has 1 Example (the example is associated with peer CAPEC-105)"
+ ],
+ "rationale": "The answer identifies CAPEC-34 and the expected example capec:attack-pattern:105:example:1, the Microsoft Internet Explorer HTTP request splitting/smuggling text. It also names the peer CAPEC-105, which is the relevant attack pattern. The main weakness is that it frames the example as belonging to CAPEC-34 rather than explicitly to peer CAPEC-105, and it truncates the example text.",
+ "judge": {
+  "model": "default-model",
+  "alias": "default-model",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

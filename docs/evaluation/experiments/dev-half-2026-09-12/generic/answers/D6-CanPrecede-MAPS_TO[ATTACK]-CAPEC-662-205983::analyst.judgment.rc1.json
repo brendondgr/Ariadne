@@ -1,0 +1,27 @@
+{
+ "case_id": "D6-CanPrecede-MAPS_TO[ATTACK]-CAPEC-662-205983::analyst",
+ "verdict": "PARTIAL",
+ "correctness": 0.65,
+ "faithfulness": 0.8,
+ "groundedness": 0.9,
+ "completeness": 1.0,
+ "gold_expected": 2,
+ "gold_present": 2,
+ "abstained": false,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "CAPEC-662 has 4 CanPrecede successors (the evidence shows CAN_PRECEDE neighbors but not their direction)",
+  "The capec source returned no linked records for patterns that can precede CAPEC-662 (the CAPEC-662 record shows four CAN_PRECEDE related patterns)"
+ ],
+ "rationale": "The answer retrieves CAPEC-662 and lists CAPEC-159, CAPEC-185, CAPEC-475, and CAPEC-542 as CAN_PRECEDE neighbors, and it states the expected ATT&CK techniques T1027 and T1587.001 via CAPEC-542. However, it labels the neighbors as successors and includes a contradictory abstention about missing can-precede records, so it only partially answers the asked direction. The gold techniques are present and grounded in the cited CAPEC and ATT&CK records.",
+ "judge": {
+  "model": "default-model",
+  "alias": "default-model",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

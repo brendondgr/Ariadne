@@ -1,0 +1,24 @@
+{
+ "case_id": "D0-View-HAS_INDICATOR-CAPEC-703-9098da::analyst",
+ "verdict": "CORRECT",
+ "correctness": 1.0,
+ "faithfulness": 0.9,
+ "groundedness": 0.9,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer states the required anchor CAPEC-703 and directly addresses the question by saying CAPEC-703 has no indicators, which matches the gold expectation of no related indicator IDs. The 46 listed CAPEC attack patterns are supported by the CAPEC-703 record's members and related AttackPattern records, though they are extra context rather than indicators. The absence claim is grounded in the executed query returning no Indicator records, so no fabricated cross-source mapping is asserted.",
+ "judge": {
+  "model": "default-model",
+  "alias": "default-model",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

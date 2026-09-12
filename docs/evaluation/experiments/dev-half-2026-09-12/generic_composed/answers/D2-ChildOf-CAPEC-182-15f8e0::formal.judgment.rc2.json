@@ -1,0 +1,26 @@
+{
+ "case_id": "D2-ChildOf-CAPEC-182-15f8e0::formal",
+ "verdict": "PARTIAL",
+ "correctness": 0.7,
+ "faithfulness": 0.75,
+ "groundedness": 0.8,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "CAPEC-178 and CAPEC-174 are ChildOf parents of CAPEC-182"
+ ],
+ "rationale": "The answer includes the required related pattern CAPEC-137 and the anchor CAPEC-182, so the expected gold identifier is present. However, it asserts that CAPEC-178 and CAPEC-174 are also ChildOf parents, while the evidence only shows them as related via CHILD_OF and the query traversed both in and out directions. This makes the answer partially correct rather than fully faithful.",
+ "judge": {
+  "model": "default-model",
+  "alias": "default-model",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

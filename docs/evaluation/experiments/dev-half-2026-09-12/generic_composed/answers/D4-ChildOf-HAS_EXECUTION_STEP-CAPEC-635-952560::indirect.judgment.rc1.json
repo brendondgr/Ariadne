@@ -1,0 +1,29 @@
+{
+ "case_id": "D4-ChildOf-HAS_EXECUTION_STEP-CAPEC-635-952560::indirect",
+ "verdict": "CORRECT",
+ "correctness": 0.9,
+ "faithfulness": 0.85,
+ "groundedness": 0.9,
+ "completeness": 1.0,
+ "gold_expected": 4,
+ "gold_present": 4,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "Explore phase for capec:attack-pattern:11:step:1",
+  "Experiment phase for capec:attack-pattern:11:step:2",
+  "Experiment phase for capec:attack-pattern:11:step:3",
+  "Exploit phase for capec:attack-pattern:11:step:4"
+ ],
+ "rationale": "The answer identifies CAPEC-635 and the related CAPEC-165, CAPEC-11, and CAPEC-649 patterns, and it lists the four CAPEC-11 execution steps (capec:attack-pattern:11:step:1 through step:4) that match the gold step set. It is slightly imprecise in attributing the steps to CAPEC-635 rather than CAPEC-11 and adds phase labels not present in the shown step records, but it does not fabricate a cross-source mapping.",
+ "judge": {
+  "model": "default-model",
+  "alias": "default-model",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

@@ -1,0 +1,31 @@
+{
+ "case_id": "D4-CanAlsoBe-HAS_CONSEQUENCE-CAPEC-248-02edba::analyst",
+ "verdict": "PARTIAL",
+ "correctness": 0.6,
+ "faithfulness": 0.55,
+ "groundedness": 0.6,
+ "completeness": 0.667,
+ "gold_expected": 6,
+ "gold_present": 4,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "Other Confidentiality",
+  "Modify Data Integrity",
+  "Read Data Confidentiality",
+  "Execute Unauthorized Commands Authorization",
+  "Gain Privileges Accountability Authentication Authorization Non-Repudiation",
+  "Bypass Protection Mechanism Access Control Authorization"
+ ],
+ "rationale": "The answer correctly identifies CAPEC-182 as the attack pattern related to CAPEC-248 and lists six consequence items, but the evidence only shows consequence IDs rather than the asserted consequence names. It fully states four of the six expected consequence phrases and only partially states the other two, so it is partial rather than fully correct.",
+ "judge": {
+  "model": "default-model",
+  "alias": "default-model",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

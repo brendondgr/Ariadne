@@ -1,0 +1,24 @@
+{
+ "case_id": "D0-AttackPattern-HAS_MEMBER-CAPEC-136-9dabb8::formal",
+ "verdict": "PARTIAL",
+ "correctness": 0.7,
+ "faithfulness": 0.9,
+ "groundedness": 0.9,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer correctly states the required anchor CAPEC-136 and reports no MEMBER_OF relationships, but it does not explicitly say that CAPEC-136 contains no child CAPEC attack patterns; it only notes the parent CAPEC-248. The CAPEC-248 parent claim is supported by the ChildOf facet and related record, so there is no fabricated cross-source mapping. Because the expected related set is empty and the required anchor is present, completeness is high, but the missing direct 'contains none' statement makes the answer partial.",
+ "judge": {
+  "model": "default-model",
+  "alias": "default-model",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

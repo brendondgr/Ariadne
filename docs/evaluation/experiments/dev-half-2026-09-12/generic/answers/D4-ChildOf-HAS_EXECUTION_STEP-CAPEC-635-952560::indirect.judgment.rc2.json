@@ -1,0 +1,30 @@
+{
+ "case_id": "D4-ChildOf-HAS_EXECUTION_STEP-CAPEC-635-952560::indirect",
+ "verdict": "PARTIAL",
+ "correctness": 0.6,
+ "faithfulness": 0.7,
+ "groundedness": 0.7,
+ "completeness": 1.0,
+ "gold_expected": 4,
+ "gold_present": 4,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "CAPEC-635 has 4 ExecutionSteps",
+  "Explore 1 [Footprint file input vectors]",
+  "Experiment 2 [File misclassification shotgunning]",
+  "Experiment 3 [File misclassification sniping]",
+  "Exploit 4 [Disclose information]"
+ ],
+ "rationale": "The answer identifies CAPEC-635 and lists the related attack patterns CAPEC-165, CAPEC-11, and CAPEC-649, and it also states the four expected execution-step texts. However, it attributes the execution steps to CAPEC-635 rather than clearly tying them to CAPEC-11, which is what the evidence step IDs show. It also adds unsupported phase labels such as Explore, Experiment, and Exploit, so it is partial rather than fully correct.",
+ "judge": {
+  "model": "default-model",
+  "alias": "default-model",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

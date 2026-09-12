@@ -1,0 +1,27 @@
+{
+ "case_id": "D4-ChildOf-HAS_CONSEQUENCE-CAPEC-320-829ce0::indirect",
+ "verdict": "PARTIAL",
+ "correctness": 0.6,
+ "faithfulness": 0.7,
+ "groundedness": 0.7,
+ "completeness": 0.5,
+ "gold_expected": 2,
+ "gold_present": 1,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "Read Data Confidentiality",
+  "Bypass Protection Mechanism Confidentiality Access Control Authorization"
+ ],
+ "rationale": "The answer identifies CAPEC-320 and its parent CAPEC-312, and it lists two consequences, but the evidence only shows consequence IDs rather than the named consequences. It captures the expected 'Read Data' consequence only in reversed form and omits the expected 'Hide Activities' consequence, so it is partial. The unsupported consequence names reduce faithfulness and groundedness.",
+ "judge": {
+  "model": "default-model",
+  "alias": "default-model",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

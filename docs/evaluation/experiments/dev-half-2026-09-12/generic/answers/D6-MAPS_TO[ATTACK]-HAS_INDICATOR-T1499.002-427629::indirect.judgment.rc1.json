@@ -1,0 +1,27 @@
+{
+ "case_id": "D6-MAPS_TO[ATTACK]-HAS_INDICATOR-T1499.002-427629::indirect",
+ "verdict": "CORRECT",
+ "correctness": 0.9,
+ "faithfulness": 0.8,
+ "groundedness": 0.85,
+ "completeness": 1.0,
+ "gold_expected": 2,
+ "gold_present": 2,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "T1499 is asserted as a related technique of T1499.002 without a shown ATT&CK record",
+  "The CAPEC source is said to have no linked records for the broader indicator query despite CAPEC-528 having a linked indicator"
+ ],
+ "rationale": "The answer states the required T1499.002 anchor and the CAPEC-528 indicator text, and it lists CAPEC-469, CAPEC-482, CAPEC-488, CAPEC-489, and CAPEC-528 as corresponding patterns. Most claims are grounded in the q1 and q2 records, but the T1499 relation and the 'no linked records' abstention are not fully supported by the shown evidence. Therefore it is correct with minor faithfulness deductions.",
+ "judge": {
+  "model": "default-model",
+  "alias": "default-model",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

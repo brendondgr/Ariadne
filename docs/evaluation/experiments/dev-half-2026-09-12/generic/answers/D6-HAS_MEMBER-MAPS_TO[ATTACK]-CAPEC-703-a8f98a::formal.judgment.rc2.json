@@ -1,0 +1,29 @@
+{
+ "case_id": "D6-HAS_MEMBER-MAPS_TO[ATTACK]-CAPEC-703-a8f98a::formal",
+ "verdict": "CORRECT",
+ "correctness": 1.0,
+ "faithfulness": 0.85,
+ "groundedness": 0.8,
+ "completeness": 1.0,
+ "gold_expected": 50,
+ "gold_present": 50,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "T1562.002",
+  "T1562.003",
+  "T1562.008",
+  "53 distinct ATT&CK technique/sub-technique identifiers"
+ ],
+ "rationale": "The answer directly answers the query by naming CAPEC-703 and explicitly listing all 50 expected ATT&CK identifiers, including T1014, T1036.001, T1598.003, and T1574.010. It is complete, but it adds extra mappings such as T1562.002/T1562.003/T1562.008 and an internally inconsistent '53 distinct' count. The core CAPEC-to-ATT&CK mapping is grounded in the cited CAPEC records, so no fabricated cross-source mapping is required.",
+ "judge": {
+  "model": "default-model",
+  "alias": "default-model",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

@@ -1,0 +1,26 @@
+{
+ "case_id": "D5-CanPrecede-Typical_Severity-CAPEC-273-97972f::formal",
+ "verdict": "PARTIAL",
+ "correctness": 0.6,
+ "faithfulness": 0.85,
+ "groundedness": 0.9,
+ "completeness": 1.0,
+ "gold_expected": 3,
+ "gold_present": 3,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "CAPEC-273 has 7 CanPrecede successors, where the evidence shows 7 CAN_PRECEDE related records but does not explicitly confirm direction"
+ ],
+ "rationale": "The answer states the expected related identifiers CAPEC-115, CAPEC-148, and CAPEC-154, so it is complete on the gold set. However, it lists all seven CAN_PRECEDE related patterns, including CAPEC-141, CAPEC-593, CAPEC-63, and CAPEC-107, without explicitly identifying which have Typical_Severity: Medium. It also asserts a directional 'successors' relationship that is only weakly supported by the shown related records.",
+ "judge": {
+  "model": "default-model",
+  "alias": "default-model",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

@@ -455,3 +455,82 @@ half costs about an hour and is what the ship gate needs.
 **Paper implication:** a faithfulness metric counts what the reader can
 misread, not only what the system invented. Both defects here were true
 statements arranged so that a careful reader would draw a false one.
+
+## The full judged development half
+
+`data/dev_half_judged.json`, `scripts/dev_half_judged.py`. Three arms over all
+284 development questions, each answer graded in both positions — 1,704
+judgments — against the Step 6 cells at `46652efc`.
+
+| arm | reference | Step 6 | now | improved | regressed |
+|---|---:|---:|---:|---:|---:|
+| `generic` (LLM) | 0.7188 | 0.7845 | **0.9211** | 123 | 26 |
+| `generic_composed` (model-free) | 0.6547 | 0.7537 | **0.9210** | 146 | 14 |
+| `deterministic` (template control) | 0.5018 | 0.5732 | 0.6060 | 95 | 97 |
+
+Every tier of the LLM arm rose, and the two the repairs targeted rose most:
+
+| tier | Step 6 | now |
+|---|---:|---:|
+| D0 adversarial | 0.7767 | 0.9264 |
+| D1 attribute | 0.9407 | 0.9557 |
+| D2 two-hop attribute | 0.9000 | 0.9600 |
+| D3 filtered | 0.9278 | 0.9455 |
+| D4 two-step | 0.5405 | 0.8603 |
+| D5 requested property | 0.9160 | 0.9319 |
+| D6 cross-catalogue | 0.4556 | 0.8767 |
+
+The two grading positions agree to 0.005 (0.9187 / 0.9234). **The kill gate's
+metric is clear**: fabricated cross-catalogue mappings go 1 → 0 on `generic` and
+2 → 0 on `generic_composed`. It rises 2 → 4 on the template control, which was
+not repaired and is not shipped.
+
+**The template control is a wash** — 95 up, 97 down — which is what a control
+should do, and it rules out the grader simply having a good day.
+
+**The two real arms have converged.** The language model was worth 0.064 at the
+reference and 0.031 at Step 6; it is now worth 0.0001. Every fault repaired here
+was in routing, retrieval and identifiers, which both arms share, and there is no
+headroom left for a narrator to recover. The model-free arm is byte-reproducible
+and free to run.
+
+### This is one-sided, and the protocol asks for a pair
+
+The reference and Step 6 columns were graded in an earlier sitting; this one was
+graded today. `Q46` records a metric moving 0.0503 between sessions. The gap here
+is 0.1366 and is concentrated in exactly the two tiers the repairs targeted, so
+drift does not explain it — but a true paired control re-runs the pre-repair code
+in the same sitting, and that has not been done.
+
+### The hallucination count rose, and none of the rise is invention
+
+254 → 291 on `generic`. Classifying every flag:
+
+| category | Step 6 | now |
+|---|---:|---:|
+| our own id-example help text | 176 | 54 |
+| a real identifier the rolled-up gold omits | 62 | 106 |
+| node text read as an identifier | 14 | 114 |
+| a false absence claim | 2 | 15 |
+
+The first falls because fewer answers abstain. The second is an answer being
+**more** complete scoring worse, since the gold is deliberately rolled up
+(`_top_level`). The last two are genuine and are recorded below.
+
+## I-15 — Node text in an enumeration reads as an invented identifier (OPEN)
+
+114 flags. A CAPEC consequence, execution step or prerequisite has no published
+identifier and its content is text, so the enumeration lists the text. The grader
+reads a list item as an identifier the answer asserted. Splitting the enumeration
+by neighbour label and separating multi-word items with semicolons (I-14) cut it
+but did not remove it. It costs faithfulness, not correctness — the C0029 case
+scores 1.0 with 24 flags.
+
+## I-16 — A false absence claim names the question's edge, not the store's (OPEN)
+
+15 flags. A View's members hang off `IN_VIEW`; a Category's hang off `MEMBER_OF`.
+The builder resolves that and retrieves the members; the composer's absence check
+looks for related entries **of the named relation**, finds none of type
+`MEMBER_OF`, and writes "CAPEC-703 has no MEMBER_OF relationships in this
+catalogue" in an answer that has just enumerated them. This costs correctness as
+well as faithfulness and is the more urgent of the two.

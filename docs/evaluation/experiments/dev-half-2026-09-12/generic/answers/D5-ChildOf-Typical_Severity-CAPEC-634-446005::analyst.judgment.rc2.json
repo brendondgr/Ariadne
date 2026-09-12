@@ -1,0 +1,29 @@
+{
+ "case_id": "D5-ChildOf-Typical_Severity-CAPEC-634-446005::analyst",
+ "verdict": "PARTIAL",
+ "correctness": 0.6,
+ "faithfulness": 0.6,
+ "groundedness": 0.65,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "CAPEC-545 has Medium typical severity",
+  "CAPEC-651 has Medium typical severity",
+  "CAPEC-116 has Medium typical severity",
+  "CAPEC-117 has Medium typical severity"
+ ],
+ "rationale": "The answer correctly anchors CAPEC-634 and includes the expected broader pattern CAPEC-651. However, it also lists CAPEC-545, CAPEC-116, and CAPEC-117 as Medium-severity broader patterns, while the evidence only shows them as CHILD_OF related records without Typical_Severity values. Thus it is partial: complete on the gold identifier but over-asserts the Medium-severity filter.",
+ "judge": {
+  "model": "default-model",
+  "alias": "default-model",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

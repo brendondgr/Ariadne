@@ -1,0 +1,26 @@
+{
+ "case_id": "D6-MAPS_TO[ATTACK]-MAPS_TO[OWASP Attacks]-T1491-8c3fa2::analyst",
+ "verdict": "CORRECT",
+ "correctness": 1.0,
+ "faithfulness": 0.9,
+ "groundedness": 0.95,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "CAPEC-148 has 3 ATT&CK mappings: T1491; OWASP Attacks:Content Spoofing; WASC:12"
+ ],
+ "rationale": "The answer correctly identifies CAPEC-148 as the CAPEC pattern mapped to T1491 and OWASP Attacks:Content Spoofing as the corresponding OWASP entry, which matches the expected gold target. It also states the anchor T1491 and supported sub-techniques T1491.001 and T1491.002. The minor overclaim is calling OWASP and WASC entries 'ATT&CK mappings,' which is not fully supported by the evidence.",
+ "judge": {
+  "model": "default-model",
+  "alias": "default-model",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

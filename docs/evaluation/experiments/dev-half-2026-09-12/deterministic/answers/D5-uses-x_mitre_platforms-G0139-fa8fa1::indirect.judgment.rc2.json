@@ -1,0 +1,26 @@
+{
+ "case_id": "D5-uses-x_mitre_platforms-G0139-fa8fa1::indirect",
+ "verdict": "PARTIAL",
+ "correctness": 0.5,
+ "faithfulness": 0.7,
+ "groundedness": 0.7,
+ "completeness": 1.0,
+ "gold_expected": 2,
+ "gold_present": 2,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "G0139 has no USES relationships in this catalogue"
+ ],
+ "rationale": "The answer includes both expected container-related software identifiers, S0601 and S0683, but also lists S0349 and S0179 and does not explicitly state which items work against Containers. It also claims G0139 has no USES relationships, which is contradicted by the USES query returning four related software records. Gold completeness is full, but the answer is only partially correct and somewhat unfaithful.",
+ "judge": {
+  "model": "default-model",
+  "alias": "default-model",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

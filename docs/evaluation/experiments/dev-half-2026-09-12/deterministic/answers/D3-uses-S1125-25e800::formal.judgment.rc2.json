@@ -1,0 +1,26 @@
+{
+ "case_id": "D3-uses-S1125-25e800::formal",
+ "verdict": "PARTIAL",
+ "correctness": 0.6,
+ "faithfulness": 0.6,
+ "groundedness": 0.7,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "G0034 has no USES relationships in this catalogue"
+ ],
+ "rationale": "The answer identifies the expected group G0034 and connects it to S1125, satisfying the core query. However, it also asserts that G0034 has no USES relationships, which is not supported by the shown USES query result linking G0034 to S1125. This contradiction makes the answer only partially correct and somewhat unfaithful.",
+ "judge": {
+  "model": "default-model",
+  "alias": "default-model",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

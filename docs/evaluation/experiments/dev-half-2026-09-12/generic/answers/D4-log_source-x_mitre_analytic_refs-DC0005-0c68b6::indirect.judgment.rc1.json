@@ -1,0 +1,26 @@
+{
+ "case_id": "D4-log_source-x_mitre_analytic_refs-DC0005-0c68b6::indirect",
+ "verdict": "PARTIAL",
+ "correctness": 0.65,
+ "faithfulness": 0.7,
+ "groundedness": 0.8,
+ "completeness": 1.0,
+ "gold_expected": 3,
+ "gold_present": 3,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "The other listed analytics (AN0431, AN1118, AN0325, AN0433, AN0432, AN1119) have no detection strategy established"
+ ],
+ "rationale": "The answer correctly identifies DC0005 and all three expected detection strategies, DET0151, DET0399, and DET0117. It also lists the nine analytics that monitor DC0005, but it only maps three of them to strategies and incorrectly says the remaining analytics have no established detection strategy. The evidence shows additional mappings, including AN0431 to DET0151, AN0325 to DET0117, and AN1118/AN1119 to DET0399.",
+ "judge": {
+  "model": "default-model",
+  "alias": "default-model",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

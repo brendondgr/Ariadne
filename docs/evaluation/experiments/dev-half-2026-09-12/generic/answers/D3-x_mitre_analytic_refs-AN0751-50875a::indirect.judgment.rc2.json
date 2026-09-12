@@ -1,0 +1,24 @@
+{
+ "case_id": "D3-x_mitre_analytic_refs-AN0751-50875a::indirect",
+ "verdict": "PARTIAL",
+ "correctness": 0.5,
+ "faithfulness": 0.85,
+ "groundedness": 0.75,
+ "completeness": 0.5,
+ "gold_expected": 2,
+ "gold_present": 1,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer abstains and shows the executed query, which returned no records, so it does not fabricate a mapping. It names the anchor AN0751 but does not state the expected detection strategy DET0269, making it partial. The query is name-based and asks for an id despite AN0751 being an id-like seed, which limits groundedness.",
+ "judge": {
+  "model": "default-model",
+  "alias": "default-model",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

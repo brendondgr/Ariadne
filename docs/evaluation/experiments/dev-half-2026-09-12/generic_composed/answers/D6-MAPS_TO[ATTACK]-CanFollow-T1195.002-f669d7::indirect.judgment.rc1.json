@@ -1,0 +1,26 @@
+{
+ "case_id": "D6-MAPS_TO[ATTACK]-CanFollow-T1195.002-f669d7::indirect",
+ "verdict": "PARTIAL",
+ "correctness": 0.8,
+ "faithfulness": 0.8,
+ "groundedness": 0.85,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": false,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "CAPEC-186 has no linked records"
+ ],
+ "rationale": "The answer states the expected gold identifier CAPEC-98 as a CanFollow predecessor of CAPEC-186 and also lists the CAPEC patterns mapped to T1195.002. It is partial because it does not explicitly state that the other mapped CAPEC patterns have no predecessors, and it includes a contradictory abstention saying CAPEC-186 had no linked records. The key CAPEC-98 claim is tied to the CAPEC-186 citation and the CAN_FOLLOW query, but the visible evidence does not fully display the second-hop record.",
+ "judge": {
+  "model": "default-model",
+  "alias": "default-model",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

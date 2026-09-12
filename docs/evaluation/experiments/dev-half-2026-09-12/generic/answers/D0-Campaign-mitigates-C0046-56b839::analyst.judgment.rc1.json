@@ -1,0 +1,24 @@
+{
+ "case_id": "D0-Campaign-mitigates-C0046-56b839::analyst",
+ "verdict": "CORRECT",
+ "correctness": 1.0,
+ "faithfulness": 0.9,
+ "groundedness": 0.95,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer directly addresses the query by stating that C0046 (ArcaneDoor) has no MITIGATES relationships and therefore mitigates no ATT&CK techniques, matching the empty expected related set. It grounds the extra enumerations in the cited C0046 record, including S1188, S1186, T1556, and the listed USES techniques/subtechniques. The only minor deduction is that the executed query traversed USES rather than MITIGATES, so the catalogue-wide absence is inferred from the returned related list.",
+ "judge": {
+  "model": "default-model",
+  "alias": "default-model",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

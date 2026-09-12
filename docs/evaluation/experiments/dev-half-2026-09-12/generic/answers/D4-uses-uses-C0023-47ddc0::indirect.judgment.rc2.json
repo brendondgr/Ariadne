@@ -1,0 +1,26 @@
+{
+ "case_id": "D4-uses-uses-C0023-47ddc0::indirect",
+ "verdict": "CORRECT",
+ "correctness": 0.95,
+ "faithfulness": 0.9,
+ "groundedness": 0.85,
+ "completeness": 1.0,
+ "gold_expected": 34,
+ "gold_present": 34,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "The specific via-software attribution of techniques (e.g., S0029 uses T1569.002) is not explicitly shown in the visible C0023 related records, though the executed two-hop query supports it."
+ ],
+ "rationale": "The answer identifies C0023's software S0029, S0051, S0512, S0511, and S0518 and states all 34 expected technique IDs, including T1005, T1027.003, and T1573.001. It directly addresses the question by mapping most techniques to the relevant software and separately listing campaign-level techniques. The main deduction is that the visible record does not explicitly expose the via-software edges, so the per-item attributions are only indirectly supported by the two-hop query.",
+ "judge": {
+  "model": "default-model",
+  "alias": "default-model",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

@@ -1,0 +1,27 @@
+{
+ "case_id": "D4-ChildOf-HAS_CONSEQUENCE-CAPEC-320-829ce0::indirect",
+ "verdict": "CORRECT",
+ "correctness": 0.85,
+ "faithfulness": 0.8,
+ "groundedness": 0.8,
+ "completeness": 1.0,
+ "gold_expected": 2,
+ "gold_present": 2,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "Read Data Confidentiality",
+  "Hide Activities Confidentiality Access Control Authorization"
+ ],
+ "rationale": "The answer addresses the query by identifying CAPEC-320, its related general pattern CAPEC-312, and the two expected consequence concepts. It is not an abstention and does not assert a cross-source mapping. The main weakness is that the evidence shows consequence IDs but not the human-readable consequence names, so the named consequences are only partially supported.",
+ "judge": {
+  "model": "default-model",
+  "alias": "default-model",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

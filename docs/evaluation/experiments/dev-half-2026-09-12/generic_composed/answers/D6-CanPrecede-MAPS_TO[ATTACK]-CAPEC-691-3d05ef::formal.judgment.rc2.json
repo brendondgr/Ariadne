@@ -1,0 +1,27 @@
+{
+ "case_id": "D6-CanPrecede-MAPS_TO[ATTACK]-CAPEC-691-3d05ef::formal",
+ "verdict": "PARTIAL",
+ "correctness": 0.8,
+ "faithfulness": 0.7,
+ "groundedness": 0.85,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": false,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "CAPEC-691 has 3 CanPrecede successors: CAPEC-616, CAPEC-184, CAPEC-444 (the evidence shows CAN_PRECEDE neighbors but does not establish the 'successors' direction)",
+  "The capec source doesn't establish this / returned CAPEC-691 with no linked records (contradicted by the q1 related records for CAPEC-616, CAPEC-184, and CAPEC-444)"
+ ],
+ "rationale": "The answer states the expected ATT&CK technique T1036.005 through CAPEC-616, which satisfies the gold expectation for CAPEC-691's preceding-pattern mappings. However, it also reports CAPEC-691's own mappings T1195.001 and T1195.002, which are not the asked-for preceding-pattern mappings, and it calls the CAPEC-616/CAPEC-184/CAPEC-444 neighbors 'successors,' a direction not established by the evidence. The abstention statement that the query returned no linked records is also contradicted by the q1 related records.",
+ "judge": {
+  "model": "default-model",
+  "alias": "default-model",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

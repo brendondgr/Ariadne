@@ -1,0 +1,27 @@
+{
+ "case_id": "D4-ChildOf-HAS_EXECUTION_STEP-CAPEC-126-3f62b8::formal",
+ "verdict": "PARTIAL",
+ "correctness": 0.4,
+ "faithfulness": 0.75,
+ "groundedness": 0.7,
+ "completeness": 0.36,
+ "gold_expected": 11,
+ "gold_present": 4,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "CAPEC-153",
+  "Abstraction: Standard"
+ ],
+ "rationale": "The answer anchors CAPEC-126 and identifies a more specific pattern, CAPEC-153, but it only states four execution-step texts: Explore 1 fingerprinting, Explore 2 survey user-controllable inputs, Experiment 3 vary inputs, and Exploit 4 manipulate files. The expected set contains 11 execution-step texts, so the answer is partial. CAPEC-153 and Abstraction: Standard are not explicitly visible in the truncated evidence, reducing faithfulness.",
+ "judge": {
+  "model": "default-model",
+  "alias": "default-model",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

@@ -1,0 +1,26 @@
+{
+ "case_id": "D5-CanPrecede-Abstraction-CAPEC-600-1a0fa9::formal",
+ "verdict": "PARTIAL",
+ "correctness": 0.8,
+ "faithfulness": 0.75,
+ "groundedness": 0.75,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "CAPEC-50 and CAPEC-49 as CanPrecede successors of CAPEC-600"
+ ],
+ "rationale": "The answer states the required related identifier CAPEC-653 and the anchor CAPEC-600, so gold recall is complete. It also lists CAPEC-50 and CAPEC-49, which are present in the CAPEC-600 related evidence but are not in the gold expected set and are asserted as successors without explicit directional support. The query and related records support the identifiers, but the directional 'successors' claim is only partially grounded.",
+ "judge": {
+  "model": "default-model",
+  "alias": "default-model",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

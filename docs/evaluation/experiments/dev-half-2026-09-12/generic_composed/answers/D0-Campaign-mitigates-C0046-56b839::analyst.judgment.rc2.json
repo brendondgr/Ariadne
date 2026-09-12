@@ -1,0 +1,36 @@
+{
+ "case_id": "D0-Campaign-mitigates-C0046-56b839::analyst",
+ "verdict": "CORRECT",
+ "correctness": 0.85,
+ "faithfulness": 0.7,
+ "groundedness": 0.7,
+ "completeness": 1.0,
+ "gold_expected": 0,
+ "gold_present": 0,
+ "abstained": true,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "T1190",
+  "T1140",
+  "T1082",
+  "T1040",
+  "T1119",
+  "T1133",
+  "T1014",
+  "T1557",
+  "T1037",
+  "T1587.001",
+  "T1587.003"
+ ],
+ "rationale": "The question asks for MITIGATES techniques for C0046, and the answer correctly states that C0046 has no MITIGATES relationships, matching the empty expected technique set. It also enumerates USES neighbours such as S1188, S1186, T1556, and T1071.001, which are supported by the C0046 record, but several listed IDs (T1190, T1037, T1587.001, etc.) are not visible in the truncated evidence. The answer includes the required anchor C0046 and does not fabricate a MITIGATES mapping.",
+ "judge": {
+  "model": "default-model",
+  "alias": "default-model",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

@@ -1,0 +1,30 @@
+{
+ "case_id": "D2-HAS_EXECUTION_STEP-CAPEC-568-afa84d::formal",
+ "verdict": "CORRECT",
+ "correctness": 0.9,
+ "faithfulness": 0.85,
+ "groundedness": 0.85,
+ "completeness": 1.0,
+ "gold_expected": 5,
+ "gold_present": 5,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "Explore 1",
+  "Experiment 2",
+  "Experiment 3",
+  "Experiment 4",
+  "Exploit 5"
+ ],
+ "rationale": "The answer identifies CAPEC-568 and lists all five execution steps, capec:attack-pattern:568:step:1 through step:5, which directly answers the query. It omits the longer gold details for steps 2 and 4 and adds phase labels such as Explore, Experiment, and Exploit that are not present in the shown evidence. No cross-source mapping is asserted, so the main issue is minor unsupported phase labeling rather than missing steps.",
+ "judge": {
+  "model": "default-model",
+  "alias": "default-model",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

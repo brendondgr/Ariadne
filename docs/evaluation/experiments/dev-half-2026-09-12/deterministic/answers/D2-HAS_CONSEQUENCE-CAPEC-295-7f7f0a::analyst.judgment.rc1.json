@@ -1,0 +1,26 @@
+{
+ "case_id": "D2-HAS_CONSEQUENCE-CAPEC-295-7f7f0a::analyst",
+ "verdict": "PARTIAL",
+ "correctness": 0.8,
+ "faithfulness": 0.7,
+ "groundedness": 0.75,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "Other Confidentiality"
+ ],
+ "rationale": "The answer correctly anchors CAPEC-295 and states one consequence, matching the expected Confidentiality Other in substance. However, the evidence only shows a Consequence node capec:attack-pattern:295:consequence:1 without the name 'Other Confidentiality' or 'Confidentiality Other', so the specific label is not fully supported. The reversed wording and unsupported name make it partial rather than fully correct.",
+ "judge": {
+  "model": "default-model",
+  "alias": "default-model",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

@@ -1,0 +1,26 @@
+{
+ "case_id": "D4-CanAlsoBe-HAS_CONSEQUENCE-CAPEC-248-02edba::indirect",
+ "verdict": "PARTIAL",
+ "correctness": 0.75,
+ "faithfulness": 0.6,
+ "groundedness": 0.65,
+ "completeness": 1.0,
+ "gold_expected": 6,
+ "gold_present": 6,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "The specific consequence names (e.g., 'Other Confidentiality', 'Execute Unauthorized Commands Authorization') are not present in the shown CAPEC-248 record or related consequence records."
+ ],
+ "rationale": "The answer identifies CAPEC-248 and CAPEC-182 and enumerates six consequence identifiers corresponding to the expected set, including Access Control/Authorization/Bypass, Accountability/Non-Repudiation/Gain Privileges, Authorization/Execute Unauthorized Commands, Confidentiality/Other, Confidentiality/Read Data, and Integrity/Modify Data. However, the narrative's consequence names are reordered or abbreviated and are not explicitly shown in the evidence, so faithfulness is reduced. No cross-source mapping is asserted, and the six expected consequence entities are present in the claims.",
+ "judge": {
+  "model": "default-model",
+  "alias": "default-model",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

@@ -1,0 +1,26 @@
+{
+ "case_id": "D4-CanPrecede-MAPS_TO[WASC]-CAPEC-107-b78a08::analyst",
+ "verdict": "CORRECT",
+ "correctness": 0.85,
+ "faithfulness": 0.85,
+ "groundedness": 0.9,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "CAPEC-63 is described as restricted to taxonomy name WASC, which is not explicit in the CAPEC-107 record"
+ ],
+ "rationale": "The answer states the required anchor CAPEC-107 and the expected related WASC:08, and it also names CAPEC-63 as the associated attack pattern. It is slightly imprecise because it says CAPEC-107 'has' the pattern and WASC entry rather than explicitly stating that CAPEC-63 can precede CAPEC-107 and corresponds to WASC:08. The minor unsupported 'restricted to taxonomy name WASC' phrasing for CAPEC-63 slightly reduces faithfulness.",
+ "judge": {
+  "model": "default-model",
+  "alias": "default-model",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

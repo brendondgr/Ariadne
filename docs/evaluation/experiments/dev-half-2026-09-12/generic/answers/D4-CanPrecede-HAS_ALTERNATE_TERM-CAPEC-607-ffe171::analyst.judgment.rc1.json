@@ -1,0 +1,26 @@
+{
+ "case_id": "D4-CanPrecede-HAS_ALTERNATE_TERM-CAPEC-607-ffe171::analyst",
+ "verdict": "PARTIAL",
+ "correctness": 0.5,
+ "faithfulness": 0.7,
+ "groundedness": 0.7,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "CAPEC-607 has AlternateTerm 'Data Spill When information is handled by an information system of a classification/sensitivity for which the system has not been authorized to handle.' (the alternate term is associated with CAPEC-548, not CAPEC-607)"
+ ],
+ "rationale": "The answer identifies CAPEC-548 as the related attack pattern and includes the expected alternate-term text, but it attributes that AlternateTerm to CAPEC-607 instead of CAPEC-548. It also does not explicitly state that CAPEC-548 can precede CAPEC-607, only that CAPEC-607 has an attack pattern. Therefore the expected gold text is present, but the relationship is muddled.",
+ "judge": {
+  "model": "default-model",
+  "alias": "default-model",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

@@ -1,0 +1,26 @@
+{
+ "case_id": "D4-CanAlsoBe-HAS_CONSEQUENCE-CAPEC-248-02edba::indirect",
+ "verdict": "PARTIAL",
+ "correctness": 0.2,
+ "faithfulness": 0.6,
+ "groundedness": 0.7,
+ "completeness": 0.0,
+ "gold_expected": 6,
+ "gold_present": 0,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "Execute Unauthorized Commands Confidentiality Integrity Availability"
+ ],
+ "rationale": "The answer correctly identifies CAPEC-248 and attempts to answer by naming a consequence, but it does not state any of the six expected consequence identifiers. The evidence only shows capec:attack-pattern:248:consequence:1 without the asserted text, so the stated consequence string is unsupported. It omits expected items such as Authorization Execute Unauthorized Commands Run Arbitrary Code, Confidentiality Read Data, and Integrity Modify Data.",
+ "judge": {
+  "model": "default-model",
+  "alias": "default-model",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

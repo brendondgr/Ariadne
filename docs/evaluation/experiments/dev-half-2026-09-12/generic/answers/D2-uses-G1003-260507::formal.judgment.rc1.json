@@ -1,0 +1,26 @@
+{
+ "case_id": "D2-uses-G1003-260507::formal",
+ "verdict": "CORRECT",
+ "correctness": 0.95,
+ "faithfulness": 0.85,
+ "groundedness": 0.9,
+ "completeness": 1.0,
+ "gold_expected": 11,
+ "gold_present": 11,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "The narrative's second 'Used techniques \u2014 25' list contains 28 entries, not 25."
+ ],
+ "rationale": "The answer states all 11 expected software neighbors of G1003: S0029, S0174, S0357, S0488, S0508, S0521, S0598, S0689, S1018, S1040, and S1187. It also adds technique enumerations, but the narrative's second technique list is labeled 25 while containing 28 entries and differs from the claim's 25-technique list. These extra/inconsistent technique assertions reduce faithfulness, but the core malware/tool question is fully answered.",
+ "judge": {
+  "model": "default-model",
+  "alias": "default-model",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

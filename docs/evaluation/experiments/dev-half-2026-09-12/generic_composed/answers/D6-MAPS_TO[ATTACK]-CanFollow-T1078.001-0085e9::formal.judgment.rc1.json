@@ -1,0 +1,27 @@
+{
+ "case_id": "D6-MAPS_TO[ATTACK]-CanFollow-T1078.001-0085e9::formal",
+ "verdict": "PARTIAL",
+ "correctness": 0.7,
+ "faithfulness": 0.7,
+ "groundedness": 0.9,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "CAPEC-70 has 1 CanFollow predecessor: CAPEC-700",
+  "The capec source doesn't establish this \u2014 the executed query ran cleanly and returned CAPEC-70 with no linked records for: For each of those: the CAPEC attack patterns that can follow each of those."
+ ],
+ "rationale": "The answer correctly states the required cross-source link from T1078.001 to CAPEC-70 and also names the expected CAPEC-700. However, it frames CAPEC-700 as a CanFollow predecessor and includes an abstention claiming no can-follow linked records, which is inconsistent with the q2 evidence showing CAPEC-700 as a CAN_FOLLOW related record. This makes the can-follow part only partially answered despite the gold identifier being present.",
+ "judge": {
+  "model": "default-model",
+  "alias": "default-model",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

@@ -84,3 +84,30 @@ finished. The sidecar count is the thing this experiment actually reads, and it
 is reported in the row above; a whole-tree hash is a poor proxy for it. Making
 the pointer hash the sidecar *set* rather than the tree would fix it properly
 and is a change to this experiment's provenance design, not to a number.
+
+## 2026-09-12 — The tree hash moved again, and three of its directories are untracked
+
+**Impact:** none on any recorded number. This experiment's audited population is
+the 2026-09-07 one recorded in `data/recompute-audit.json`; the sidecars added
+since sit in new capture directories and form new cells, not new judgments in
+audited ones.
+
+**Cause:** the same fragility the two 2026-09-11 entries describe. The pointer
+hashes the whole of `docs/evaluation/experiments`, and every judged run writes
+under it. Since the 2026-09-11 re-hash the tree has taken the remaining
+`EXP-2026-09-018` repair captures and the 2026-09-12 full judged development
+half — three arms in both grading positions, 1,704 judgments. The candidate
+sidecar count is now **31,566**, against 25,318 on 2026-09-09, and the tree is
+1,229,038,988 bytes against 861,377,303.
+
+**Resolution:** re-hashed twice on 2026-09-12, both superseded hashes kept
+inline. The second re-hash is this entry's: the first was taken while the
+dev-half run had graded only its first two arms, and the template arm's 568
+sidecars landed after it.
+
+**The limit an earlier draft of this entry named is now smaller.**
+`dev-half-2026-09-12` is committed with this hash, so it is no longer a working
+-tree-only directory. The proper fix is still the one the 2026-09-11 entry
+names: hash the sidecar *set* this experiment reads, not the tree it happens to
+live in — otherwise every judged run anywhere in the repository moves a number
+that has nothing to do with it.

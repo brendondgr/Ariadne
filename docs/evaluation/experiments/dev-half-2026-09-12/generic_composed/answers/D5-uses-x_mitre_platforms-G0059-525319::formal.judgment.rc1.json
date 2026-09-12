@@ -1,0 +1,26 @@
+{
+ "case_id": "D5-uses-x_mitre_platforms-G0059-525319::formal",
+ "verdict": "CORRECT",
+ "correctness": 1.0,
+ "faithfulness": 0.9,
+ "groundedness": 0.95,
+ "completeness": 1.0,
+ "gold_expected": 10,
+ "gold_present": 10,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "The exact 26 Technique / 37 SubTechnique split and many listed technique IDs are not explicitly visible in the truncated evidence, though the total related count of 73 is shown."
+ ],
+ "rationale": "The answer directly answers the question by listing all ten expected Windows software neighbors of G0059: S0002, S0029, S0039, S0108, S0186, S0192, S0357, S0674, S1012, and S1144. It also adds technique and subtechnique enumerations, which are not required but are tied to the cited G0059 record. The only minor faithfulness issue is that the visible evidence shows only a truncated related list, so the exact 26/37 technique split is only indirectly supported by the 73-related count.",
+ "judge": {
+  "model": "default-model",
+  "alias": "default-model",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

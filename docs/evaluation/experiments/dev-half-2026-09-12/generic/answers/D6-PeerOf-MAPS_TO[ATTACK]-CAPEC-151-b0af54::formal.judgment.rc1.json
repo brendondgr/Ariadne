@@ -1,0 +1,26 @@
+{
+ "case_id": "D6-PeerOf-MAPS_TO[ATTACK]-CAPEC-151-b0af54::formal",
+ "verdict": "CORRECT",
+ "correctness": 0.95,
+ "faithfulness": 0.8,
+ "groundedness": 0.9,
+ "completeness": 1.0,
+ "gold_expected": 3,
+ "gold_present": 3,
+ "abstained": false,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "The capec source doesn't establish the peer relationship for CAPEC-151 / returned no linked peer records, despite CAPEC-665 being shown as a PEER_OF related record"
+ ],
+ "rationale": "The answer directly answers the query by identifying CAPEC-665 as the peer of CAPEC-151 and listing all expected ATT&CK identifiers T1211, T1542.002, and T1556. The main cross-source mappings are supported by CAPEC-665 MAPS_TO evidence and ATT&CK records, so no fabricated mapping is present. A minor faithfulness issue is the abstention claiming CAPEC-151 had no linked peer records, which conflicts with the CAPEC-665 PEER_OF evidence.",
+ "judge": {
+  "model": "default-model",
+  "alias": "default-model",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

@@ -1,0 +1,26 @@
+{
+ "case_id": "D2-HAS_CONSEQUENCE-CAPEC-295-7f7f0a::analyst",
+ "verdict": "PARTIAL",
+ "correctness": 0.6,
+ "faithfulness": 0.6,
+ "groundedness": 0.6,
+ "completeness": 0.5,
+ "gold_expected": 2,
+ "gold_present": 1,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "Other Confidentiality"
+ ],
+ "rationale": "The answer correctly states CAPEC-295 and that it has one HAS_CONSEQUENCE neighbor, capec:attack-pattern:295:consequence:1. However, it names that consequence \"Other Confidentiality\" instead of the expected \"Confidentiality Other,\" and the evidence does not provide that name. Therefore it partially answers the question but is not fully grounded.",
+ "judge": {
+  "model": "default-model",
+  "alias": "default-model",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

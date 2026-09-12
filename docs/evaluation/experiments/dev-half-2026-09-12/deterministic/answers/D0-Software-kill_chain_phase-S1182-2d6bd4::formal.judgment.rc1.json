@@ -1,0 +1,26 @@
+{
+ "case_id": "D0-Software-kill_chain_phase-S1182-2d6bd4::formal",
+ "verdict": "PARTIAL",
+ "correctness": 0.3,
+ "faithfulness": 0.6,
+ "groundedness": 0.7,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "S1182 has no techniques in this catalogue"
+ ],
+ "rationale": "The answer identifies the required anchor S1182, but the question asks for ATT&CK tactics and it never states any tactic identifiers. It instead asserts that S1182 has no techniques, which is contradicted by the evidence facets showing 5 Technique and 8 SubTechnique neighbors. Because the only expected gold identifier is S1182, completeness is high, but the unsupported absence claim and missing tactic answer make it only partial.",
+ "judge": {
+  "model": "default-model",
+  "alias": "default-model",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

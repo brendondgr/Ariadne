@@ -1,0 +1,26 @@
+{
+ "case_id": "D3-detects-T1003.001-7a04de::formal",
+ "verdict": "PARTIAL",
+ "correctness": 0.5,
+ "faithfulness": 0.6,
+ "groundedness": 0.7,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "T1003.001 has no DETECTS relationships"
+ ],
+ "rationale": "The answer names the expected detection strategy DET0363 for T1003.001, so the gold identifier is present. However, it also asserts that T1003.001 has no DETECTS relationships, which is contradicted by the executed DETECTS query returning a row and the related DET0363 record. It additionally lists AN1030 as related, which is supported but is an analytic rather than the requested detection strategy.",
+ "judge": {
+  "model": "default-model",
+  "alias": "default-model",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

@@ -1,0 +1,26 @@
+{
+ "case_id": "D5-HAS_MEMBER-Likelihood_Of_Attack-CAPEC-703-0c5b15::indirect",
+ "verdict": "CORRECT",
+ "correctness": 1.0,
+ "faithfulness": 0.9,
+ "groundedness": 0.9,
+ "completeness": 1.0,
+ "gold_expected": 6,
+ "gold_present": 6,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "CAPEC-703 has no MEMBER_OF relationships in this catalogue."
+ ],
+ "rationale": "The answer correctly names the anchor CAPEC-703 and all six expected Low-likelihood related patterns: CAPEC-457, CAPEC-540, CAPEC-573, CAPEC-580, CAPEC-649, and CAPEC-65. These match the evidence's IN_VIEW related AttackPattern records for the CAPEC-703 view. The only minor unsupported claim is the absence of MEMBER_OF relationships, which is not explicitly shown in the evidence.",
+ "judge": {
+  "model": "default-model",
+  "alias": "default-model",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

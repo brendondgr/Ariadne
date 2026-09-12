@@ -1,0 +1,24 @@
+{
+ "case_id": "D2-PeerOf-CAPEC-273-3968f1::formal",
+ "verdict": "INCORRECT",
+ "correctness": 0.2,
+ "faithfulness": 1.0,
+ "groundedness": 1.0,
+ "completeness": 0.0,
+ "gold_expected": 1,
+ "gold_present": 0,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer only reports the seed record CAPEC-273 and its attributes, but it never states the expected peer CAPEC-33. The evidence shows PEER_OF facets for CAPEC-273, but the answer does not surface the peer identifier. It is faithful and grounded to the CAPEC-273 record, yet incomplete for the question asked.",
+ "judge": {
+  "model": "default-model",
+  "alias": "default-model",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

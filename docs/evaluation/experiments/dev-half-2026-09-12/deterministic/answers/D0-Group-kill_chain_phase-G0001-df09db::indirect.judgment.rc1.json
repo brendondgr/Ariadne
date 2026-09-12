@@ -1,0 +1,26 @@
+{
+ "case_id": "D0-Group-kill_chain_phase-G0001-df09db::indirect",
+ "verdict": "PARTIAL",
+ "correctness": 0.5,
+ "faithfulness": 0.7,
+ "groundedness": 0.8,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "G0001 has no techniques in this catalogue"
+ ],
+ "rationale": "The answer identifies G0001/Axiom and cites the ATT&CK record, but the question asks for tactics and it only says G0001 has no techniques. The evidence facets show USES Technique count 9 and USES SubTechnique count 7, so the no-techniques claim is not fully supported. No tactic identifiers are stated, which matches the empty expected tactic set, but the answer is partial because it does not explicitly state that G0001 has no tactics.",
+ "judge": {
+  "model": "default-model",
+  "alias": "default-model",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

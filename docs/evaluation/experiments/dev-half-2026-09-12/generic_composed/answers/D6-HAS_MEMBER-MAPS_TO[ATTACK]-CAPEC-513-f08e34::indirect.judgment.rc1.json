@@ -1,0 +1,28 @@
+{
+ "case_id": "D6-HAS_MEMBER-MAPS_TO[ATTACK]-CAPEC-513-f08e34::indirect",
+ "verdict": "CORRECT",
+ "correctness": 0.85,
+ "faithfulness": 0.7,
+ "groundedness": 0.9,
+ "completeness": 1.0,
+ "gold_expected": 17,
+ "gold_present": 17,
+ "abstained": false,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "OWASP Attacks:Brute force attack and WASC:11 are described as ATT&CK mappings for CAPEC-112",
+  "WASC:45 is described as an ATT&CK mapping for CAPEC-224",
+  "The capec source doesn't establish / returned CAPEC-513 with no linked records for its attack patterns, despite the answer listing 52 linked patterns"
+ ],
+ "rationale": "The answer includes CAPEC-513 and all 17 expected ATT&CK techniques, including T1036.003, T1078, T1110, T1134, T1195, T1217, T1491, T1498.001, T1499, T1499.003, T1499.004, T1528, T1539, T1548, T1557, T1592, and T1595. It also enumerates the 52 CAPEC-513 member patterns, so the core query is answered. It is weakened by calling OWASP/WASC entries ATT&CK mappings and by a contradictory abstention saying CAPEC-513 had no linked patterns.",
+ "judge": {
+  "model": "default-model",
+  "alias": "default-model",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

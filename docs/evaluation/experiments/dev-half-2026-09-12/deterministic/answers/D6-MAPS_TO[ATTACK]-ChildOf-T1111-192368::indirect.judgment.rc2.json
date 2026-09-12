@@ -1,0 +1,27 @@
+{
+ "case_id": "D6-MAPS_TO[ATTACK]-ChildOf-T1111-192368::indirect",
+ "verdict": "CORRECT",
+ "correctness": 1.0,
+ "faithfulness": 0.85,
+ "groundedness": 0.95,
+ "completeness": 1.0,
+ "gold_expected": 2,
+ "gold_present": 2,
+ "abstained": false,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "The capec source doesn't establish the broader CAPEC parent relationships",
+  "The executed query returned CAPEC-651, CAPEC-158, and CAPEC-609 with no linked records for the broader attack patterns"
+ ],
+ "rationale": "The answer states the required T1111-to-CAPEC mappings and the broader patterns CAPEC-117 and CAPEC-157, so it fully answers the query. Those claims are grounded in the q1 MAPS_TO records and q2 CHILD_OF records. The main weakness is the contradictory abstention claiming no linked records, which the evidence does not support.",
+ "judge": {
+  "model": "default-model",
+  "alias": "default-model",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

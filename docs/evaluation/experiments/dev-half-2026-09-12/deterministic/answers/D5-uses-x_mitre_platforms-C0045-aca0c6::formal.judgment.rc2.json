@@ -1,0 +1,26 @@
+{
+ "case_id": "D5-uses-x_mitre_platforms-C0045-aca0c6::formal",
+ "verdict": "PARTIAL",
+ "correctness": 0.6,
+ "faithfulness": 0.8,
+ "groundedness": 0.7,
+ "completeness": 0.75,
+ "gold_expected": 4,
+ "gold_present": 3,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "T1105 has no USES relationships in this catalogue"
+ ],
+ "rationale": "The answer states T1105, T1016, and T1190, which are three of the four expected techniques, but omits T1059.006 and includes non-gold T1068. It does not explicitly restate C0045 or the ESXi applicability constraint, though the executed query was seeded with C0045. The absence claim about T1105 is only weakly supported by the empty related field.",
+ "judge": {
+  "model": "default-model",
+  "alias": "default-model",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

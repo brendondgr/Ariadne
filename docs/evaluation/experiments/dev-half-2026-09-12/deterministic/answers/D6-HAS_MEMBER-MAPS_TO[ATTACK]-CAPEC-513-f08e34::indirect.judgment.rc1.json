@@ -1,0 +1,26 @@
+{
+ "case_id": "D6-HAS_MEMBER-MAPS_TO[ATTACK]-CAPEC-513-f08e34::indirect",
+ "verdict": "CORRECT",
+ "correctness": 0.9,
+ "faithfulness": 0.8,
+ "groundedness": 0.9,
+ "completeness": 1.0,
+ "gold_expected": 17,
+ "gold_present": 17,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "The capec source doesn't establish this \u2014 the executed query ran cleanly and returned CAPEC-513 with no linked records for: For CAPEC-513: the CAPEC attack patterns it contains."
+ ],
+ "rationale": "The answer correctly anchors CAPEC-513 and lists the 52 member attack patterns, then states all 17 expected ATT&CK techniques: T1036.003, T1078, T1110, T1134, T1195, T1217, T1491, T1498.001, T1499, T1499.003, T1499.004, T1528, T1539, T1548, T1557, T1592, and T1595. The main weakness is the contradictory abstention claiming CAPEC-513 had no linked attack-pattern records, which conflicts with the 52 MEMBER_OF rows shown. Because the required identifiers and mappings are present and cited, the answer is correct with a modest faithfulness penalty.",
+ "judge": {
+  "model": "default-model",
+  "alias": "default-model",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

@@ -1,0 +1,32 @@
+{
+ "case_id": "D6-MAPS_TO[ATTACK]-MAPS_TO[OWASP Attacks]-T1505.005-d82694::formal",
+ "verdict": "CORRECT",
+ "correctness": 0.92,
+ "faithfulness": 0.75,
+ "groundedness": 0.85,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "Found 7 record(s) in MITRE ATT&CK including T1505.005, T1620, T1574.006 and more",
+  "T1505.005 has 1 technique: T1505",
+  "T1574.006 has 1 technique: T1574",
+  "T1574.005 has 1 technique: T1574",
+  "T1546.008 has 1 technique: T1546",
+  "T1574.013 has 1 technique: T1574",
+  "Cross-source corroboration counts for T1505.005, T1546.008, T1554, T1574.005, T1574.006, T1574.013, and T1620"
+ ],
+ "rationale": "The answer directly addresses the requested two-hop question by identifying CAPEC-640, CAPEC-642, and CAPEC-558 as corresponding to T1505.005 and states the required OWASP entry OWASP Attacks:Binary planting for CAPEC-642. It also correctly says CAPEC-640 and CAPEC-558 have no OWASP entries, so the gold target is present. Some extra ATT&CK parent-technique and cross-source corroboration claims are not fully visible in the supplied evidence, but they do not undermine the main answer.",
+ "judge": {
+  "model": "default-model",
+  "alias": "default-model",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

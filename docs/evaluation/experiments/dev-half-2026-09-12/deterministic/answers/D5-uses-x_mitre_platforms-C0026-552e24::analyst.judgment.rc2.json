@@ -1,0 +1,26 @@
+{
+ "case_id": "D5-uses-x_mitre_platforms-C0026-552e24::analyst",
+ "verdict": "PARTIAL",
+ "correctness": 0.7,
+ "faithfulness": 0.7,
+ "groundedness": 0.8,
+ "completeness": 1.0,
+ "gold_expected": 5,
+ "gold_present": 5,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "C0026 has no USES relationships in this catalogue"
+ ],
+ "rationale": "The answer states all five expected identifiers S0039, S0099, S1074, S1075, and S1076, but also includes S0104 and frames them as related rather than explicitly Windows-running. It further claims C0026 has no USES relationships, which is not supported by the USES query returning six rows. Completeness is full, but the extra item and unsupported absence claim make it partial.",
+ "judge": {
+  "model": "default-model",
+  "alias": "default-model",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

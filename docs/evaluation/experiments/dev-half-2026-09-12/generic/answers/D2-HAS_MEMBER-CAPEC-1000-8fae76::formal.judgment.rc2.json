@@ -1,0 +1,26 @@
+{
+ "case_id": "D2-HAS_MEMBER-CAPEC-1000-8fae76::formal",
+ "verdict": "CORRECT",
+ "correctness": 1.0,
+ "faithfulness": 0.85,
+ "groundedness": 0.9,
+ "completeness": 1.0,
+ "gold_expected": 9,
+ "gold_present": 9,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "CAPEC-1000 has no MEMBER_OF relationships in this catalogue"
+ ],
+ "rationale": "The answer states all nine expected CAPEC categories under CAPEC-1000: CAPEC-118, CAPEC-152, CAPEC-156, CAPEC-172, CAPEC-210, CAPEC-223, CAPEC-225, CAPEC-255, and CAPEC-262. These match the evidence's IN_VIEW related records. The only weak point is the unsupported absence claim about MEMBER_OF relationships, so faithfulness is slightly reduced.",
+ "judge": {
+  "model": "default-model",
+  "alias": "default-model",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

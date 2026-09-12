@@ -1,0 +1,26 @@
+{
+ "case_id": "D3-uses-T1204.001-24ba71::formal",
+ "verdict": "PARTIAL",
+ "correctness": 0.95,
+ "faithfulness": 0.9,
+ "groundedness": 0.95,
+ "completeness": 1.0,
+ "gold_expected": 29,
+ "gold_present": 29,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "S0499 has no USES relationships in this catalogue."
+ ],
+ "rationale": "The answer states all 29 expected software identifiers, including S0198, S0367, S0499, and S1039, and ties each to T1204.001, so completeness is full. It is grounded in the returned ATT&CK records, but the absence claim that S0499 has no USES relationships is contradicted by the same record's join_values and related T1204.001. Therefore it is partial rather than fully correct.",
+ "judge": {
+  "model": "default-model",
+  "alias": "default-model",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

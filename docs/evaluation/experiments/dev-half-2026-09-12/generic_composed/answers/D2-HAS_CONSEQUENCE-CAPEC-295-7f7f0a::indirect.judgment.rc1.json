@@ -1,0 +1,26 @@
+{
+ "case_id": "D2-HAS_CONSEQUENCE-CAPEC-295-7f7f0a::indirect",
+ "verdict": "PARTIAL",
+ "correctness": 0.7,
+ "faithfulness": 0.75,
+ "groundedness": 0.8,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "Other Confidentiality (consequence name not present in the cited CAPEC-295 record; evidence only shows capec:attack-pattern:295:consequence:1)"
+ ],
+ "rationale": "The answer identifies CAPEC-295 and states one consequence, which matches the expected consequence concept for the question. However, the expected label is \"Confidentiality Other,\" while the answer says \"Other Confidentiality,\" and the evidence only shows the related identifier capec:attack-pattern:295:consequence:1 rather than that name. The anchor, description, properties, and consequence count are grounded in the cited CAPEC-295 record.",
+ "judge": {
+  "model": "default-model",
+  "alias": "default-model",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

@@ -1,0 +1,24 @@
+{
+ "case_id": "D4-uses-mitigates-C0021-8f9753::formal",
+ "verdict": "INCORRECT",
+ "correctness": 0.1,
+ "faithfulness": 1.0,
+ "groundedness": 1.0,
+ "completeness": 0.0,
+ "gold_expected": 17,
+ "gold_present": 0,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer only reports techniques T1105, T1095, and T1140, and it does not state campaign C0021 or any expected mitigations such as M1017, M1018, or M1020. The evidence query stopped at Campaign-USES->Technique and returned no related mitigation records, so the answer is faithful but does not answer the mitigation question. It is not an abstention and does not assert unsupported cross-source mappings.",
+ "judge": {
+  "model": "default-model",
+  "alias": "default-model",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

@@ -1,0 +1,26 @@
+{
+ "case_id": "D2-HAS_CONSEQUENCE-CAPEC-295-7f7f0a::indirect",
+ "verdict": "PARTIAL",
+ "correctness": 0.8,
+ "faithfulness": 0.75,
+ "groundedness": 0.8,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "Other Confidentiality"
+ ],
+ "rationale": "The answer correctly identifies CAPEC-295 and states that it has one consequence, which corresponds to the expected related item Confidentiality Other, though it phrases it as \"Other Confidentiality\". The evidence shows the consequence node capec:attack-pattern:295:consequence:1, but not the exact label \"Other Confidentiality\", so the specific name is only partially supported. This makes the answer partial rather than fully correct.",
+ "judge": {
+  "model": "default-model",
+  "alias": "default-model",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

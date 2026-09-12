@@ -1,0 +1,26 @@
+{
+ "case_id": "D6-MAPS_TO[ATTACK]-HAS_MEMBER-T1552.001-85a91e::indirect",
+ "verdict": "CORRECT",
+ "correctness": 0.9,
+ "faithfulness": 0.85,
+ "groundedness": 0.9,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "The capec source doesn't establish the view mapping because the executed query returned CAPEC-191 with no linked records"
+ ],
+ "rationale": "The answer correctly identifies CAPEC-191 and CAPEC-639 as corresponding to T1552.001 and states that CAPEC-191 appears in CAPEC-703, which is the expected CAPEC view. It does not explicitly say CAPEC-639 has no views, but the abstention with the executed query covers that gap. The main unsupported detail is the abstention's claim that the query returned CAPEC-191 with no linked records, since the evidence links CAPEC-191 to CAPEC-703.",
+ "judge": {
+  "model": "default-model",
+  "alias": "default-model",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

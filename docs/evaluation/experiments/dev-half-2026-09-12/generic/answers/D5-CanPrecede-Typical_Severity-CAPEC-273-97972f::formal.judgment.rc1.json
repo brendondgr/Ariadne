@@ -1,0 +1,24 @@
+{
+ "case_id": "D5-CanPrecede-Typical_Severity-CAPEC-273-97972f::formal",
+ "verdict": "PARTIAL",
+ "correctness": 0.6,
+ "faithfulness": 0.9,
+ "groundedness": 0.8,
+ "completeness": 1.0,
+ "gold_expected": 3,
+ "gold_present": 3,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer includes the expected related identifiers CAPEC-115, CAPEC-148, and CAPEC-154, but it lists all seven CanPrecede neighbours, including CAPEC-141, CAPEC-593, CAPEC-63, and CAPEC-107, without explicitly filtering to Typical_Severity Medium. It also states that CAPEC-273 itself has Typical_Severity High, so the requested severity constraint is not directly applied to the successor set. The stated identifiers are grounded in the CAPEC evidence, but the answer is overinclusive and only partially answers the filtered question.",
+ "judge": {
+  "model": "default-model",
+  "alias": "default-model",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

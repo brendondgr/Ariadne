@@ -1,0 +1,26 @@
+{
+ "case_id": "D0-Analytic-subtechnique-of-AN1112-b87d8e::formal",
+ "verdict": "PARTIAL",
+ "correctness": 0.3,
+ "faithfulness": 0.6,
+ "groundedness": 0.7,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "AN1112 has 1 sub-technique: T1555.001"
+ ],
+ "rationale": "The question asks for parent techniques of AN1112, but the evidence shows only DET0396 via HAS_ANALYTIC and T1555.001 via DETECTS, with no parent-technique relation. The answer states AN1112 and related items, but confuses direction by saying AN1112 has sub-technique T1555.001 instead of clearly saying it is a sub-technique of no techniques. This makes it partial rather than fully correct.",
+ "judge": {
+  "model": "default-model",
+  "alias": "default-model",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

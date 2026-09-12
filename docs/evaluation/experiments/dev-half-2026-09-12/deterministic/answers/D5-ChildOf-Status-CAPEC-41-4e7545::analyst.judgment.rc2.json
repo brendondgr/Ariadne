@@ -1,0 +1,24 @@
+{
+ "case_id": "D5-ChildOf-Status-CAPEC-41-4e7545::analyst",
+ "verdict": "PARTIAL",
+ "correctness": 0.6,
+ "faithfulness": 1.0,
+ "groundedness": 0.8,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer correctly states that CAPEC-41 has ChildOf parents CAPEC-134 and CAPEC-242, and it includes the expected Stable broader pattern CAPEC-242. However, the question asked only for Stable-status broader patterns, and the answer lists CAPEC-134 as well without applying that filter. All stated facts are supported by the CAPEC-41 record and its related entries, but the overinclusive enumeration makes the answer partial.",
+ "judge": {
+  "model": "default-model",
+  "alias": "default-model",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

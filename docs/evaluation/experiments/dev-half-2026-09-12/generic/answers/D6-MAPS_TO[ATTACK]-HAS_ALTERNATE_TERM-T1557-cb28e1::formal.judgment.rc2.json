@@ -1,0 +1,26 @@
+{
+ "case_id": "D6-MAPS_TO[ATTACK]-HAS_ALTERNATE_TERM-T1557-cb28e1::formal",
+ "verdict": "CORRECT",
+ "correctness": 0.9,
+ "faithfulness": 0.75,
+ "groundedness": 0.9,
+ "completeness": 1.0,
+ "gold_expected": 5,
+ "gold_present": 5,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "The capec source doesn't establish this / returned CAPEC-94 with no linked records for alternate names, despite the CAPEC q2 evidence showing five AlternateTerm records for CAPEC-94"
+ ],
+ "rationale": "The answer correctly identifies CAPEC-94 as the CAPEC pattern mapped to T1557 and lists all five expected alternate terms, so completeness is full. It is slightly undermined by a contradictory abstention claiming no linked alternate-term records, which the CAPEC q2 evidence contradicts. No fabricated cross-source mapping is asserted.",
+ "judge": {
+  "model": "default-model",
+  "alias": "default-model",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

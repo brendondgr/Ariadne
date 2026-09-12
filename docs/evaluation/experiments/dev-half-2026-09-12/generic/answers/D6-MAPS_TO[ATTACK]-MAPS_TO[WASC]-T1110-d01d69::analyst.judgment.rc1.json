@@ -1,0 +1,26 @@
+{
+ "case_id": "D6-MAPS_TO[ATTACK]-MAPS_TO[WASC]-T1110-d01d69::analyst",
+ "verdict": "CORRECT",
+ "correctness": 0.95,
+ "faithfulness": 0.85,
+ "groundedness": 0.9,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "CAPEC-112 has 3 ATT&CK mappings (T1110, OWASP Attacks:Brute force attack, WASC:11)"
+ ],
+ "rationale": "The answer identifies the required two-hop result: CAPEC-112 corresponds to T1110, and CAPEC-112 corresponds to WASC:11. It also correctly lists T1110 sub-techniques and the OWASP mapping from the CAPEC record. The main weakness is the imprecise claim that CAPEC-112 has three ATT&CK mappings, since only T1110 is an ATT&CK mapping while OWASP and WASC are separate taxonomy entries.",
+ "judge": {
+  "model": "default-model",
+  "alias": "default-model",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

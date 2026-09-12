@@ -1,0 +1,26 @@
+{
+ "case_id": "D6-CanFollow-MAPS_TO[ATTACK]-CAPEC-701-6e185a::indirect",
+ "verdict": "CORRECT",
+ "correctness": 1.0,
+ "faithfulness": 0.95,
+ "groundedness": 1.0,
+ "completeness": 1.0,
+ "gold_expected": 3,
+ "gold_present": 3,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "The capec source doesn't establish this \u2014 the executed query returned CAPEC-701 with no linked records for CAPEC-701 predecessors"
+ ],
+ "rationale": "The answer correctly identifies CAPEC-98 as the CAPEC pattern that can lead into CAPEC-701 and states its ATT&CK mappings T1566 and T1598, which are supported by the CAPEC records. It includes the anchor CAPEC-701 and all expected identifiers, so completeness is full. The only minor faithfulness issue is the contradictory abstention note saying no linked predecessor records, while the evidence shows CAPEC-98 as a CAN_FOLLOW related record.",
+ "judge": {
+  "model": "default-model",
+  "alias": "default-model",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

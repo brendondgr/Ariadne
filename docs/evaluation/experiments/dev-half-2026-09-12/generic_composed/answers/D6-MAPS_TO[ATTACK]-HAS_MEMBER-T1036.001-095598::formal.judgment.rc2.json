@@ -1,0 +1,26 @@
+{
+ "case_id": "D6-MAPS_TO[ATTACK]-HAS_MEMBER-T1036.001-095598::formal",
+ "verdict": "CORRECT",
+ "correctness": 1.0,
+ "faithfulness": 0.8,
+ "groundedness": 0.9,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "CAPEC-473 has no linked CAPEC views"
+ ],
+ "rationale": "The answer identifies CAPEC-473 as the CAPEC attack pattern mapped to T1036.001 and CAPEC-703 as the view containing it, which matches the evidence. The main claims are grounded in the CAPEC-473 record and its related T1036.001 and CAPEC-703 entries. The residual abstention claiming no linked views is contradicted by the CAPEC-703 relation, so faithfulness is reduced.",
+ "judge": {
+  "model": "default-model",
+  "alias": "default-model",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

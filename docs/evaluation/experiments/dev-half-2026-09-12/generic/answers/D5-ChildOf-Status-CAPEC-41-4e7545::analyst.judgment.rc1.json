@@ -1,0 +1,26 @@
+{
+ "case_id": "D5-ChildOf-Status-CAPEC-41-4e7545::analyst",
+ "verdict": "PARTIAL",
+ "correctness": 0.6,
+ "faithfulness": 0.8,
+ "groundedness": 0.8,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "CAPEC-137 is asserted as a Stable ChildOf parent of CAPEC-41, but the shown related record for CAPEC-137 does not include a Stable status"
+ ],
+ "rationale": "The answer correctly states CAPEC-242 as a broader pattern for CAPEC-41, which is the expected gold identifier. It also includes CAPEC-137, which appears in the related evidence but is not in the expected Stable set and lacks explicit Stable status in the shown record. This makes the answer partially correct: complete for the gold identifier but over-inclusive and slightly under-supported.",
+ "judge": {
+  "model": "default-model",
+  "alias": "default-model",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

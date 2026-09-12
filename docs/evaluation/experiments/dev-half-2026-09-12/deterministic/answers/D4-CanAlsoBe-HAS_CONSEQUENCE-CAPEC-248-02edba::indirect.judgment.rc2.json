@@ -1,0 +1,26 @@
+{
+ "case_id": "D4-CanAlsoBe-HAS_CONSEQUENCE-CAPEC-248-02edba::indirect",
+ "verdict": "PARTIAL",
+ "correctness": 0.3,
+ "faithfulness": 0.7,
+ "groundedness": 0.7,
+ "completeness": 0.0,
+ "gold_expected": 6,
+ "gold_present": 0,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "Execute Unauthorized Commands Confidentiality Integrity Availability"
+ ],
+ "rationale": "The answer correctly identifies CAPEC-248 and supports its description and properties from the cited CAPEC record. However, it asserts only one consequence, 'Execute Unauthorized Commands Confidentiality Integrity Availability', which is not present in the evidence and does not match the expected consequence names. It omits the expected CAPEC consequence texts, including Authorization Execute Unauthorized Commands Run Arbitrary Code, Confidentiality Read Data, and Integrity Modify Data.",
+ "judge": {
+  "model": "default-model",
+  "alias": "default-model",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

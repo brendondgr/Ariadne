@@ -1,0 +1,27 @@
+{
+ "case_id": "D4-ChildOf-HAS_EXECUTION_STEP-CAPEC-635-952560::indirect",
+ "verdict": "PARTIAL",
+ "correctness": 0.7,
+ "faithfulness": 0.75,
+ "groundedness": 0.8,
+ "completeness": 0.85,
+ "gold_expected": 4,
+ "gold_present": 4,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "CAPEC-635 directly has 4 ExecutionSteps",
+  "Execution steps are labeled Explore, Experiment, and Exploit"
+ ],
+ "rationale": "The answer correctly identifies CAPEC-635 and its more specific CAPEC patterns CAPEC-165, CAPEC-11, and CAPEC-649. It also lists the four execution steps associated with CAPEC-11, matching the expected step topics. However, it attributes those steps directly to CAPEC-635 instead of clearly tying them to CAPEC-11, and it adds Explore/Experiment/Exploit labels not present in the shown evidence.",
+ "judge": {
+  "model": "default-model",
+  "alias": "default-model",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

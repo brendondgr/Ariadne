@@ -1,0 +1,26 @@
+{
+ "case_id": "D5-HAS_MEMBER-Likelihood_Of_Attack-CAPEC-703-0c5b15::indirect",
+ "verdict": "PARTIAL",
+ "correctness": 0.5,
+ "faithfulness": 0.8,
+ "groundedness": 0.85,
+ "completeness": 1.0,
+ "gold_expected": 6,
+ "gold_present": 6,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "CAPEC-703 has no MEMBER_OF relationships in this catalogue"
+ ],
+ "rationale": "The answer correctly identifies CAPEC-703 and enumerates all 46 related attack patterns, including the expected Low-likelihood identifiers CAPEC-457, CAPEC-540, CAPEC-573, CAPEC-580, CAPEC-649, and CAPEC-65. However, it does not explicitly state which of those patterns have Low likelihood, so it only partially answers the question. The unsupported claim that CAPEC-703 has no MEMBER_OF relationships slightly reduces faithfulness.",
+ "judge": {
+  "model": "default-model",
+  "alias": "default-model",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

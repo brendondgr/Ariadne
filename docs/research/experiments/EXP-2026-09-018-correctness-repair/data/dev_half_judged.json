@@ -1,0 +1,154 @@
+{
+  "experiment": "EXP-2026-09-018-correctness-repair",
+  "run": "docs/evaluation/experiments/dev-half-2026-09-12",
+  "runner": "scripts/dev_half_judged.py",
+  "bank": "bank-dev.json (284 questions, the development half)",
+  "judge": {
+    "model": "default-model",
+    "served": "qwen38-27B-v2",
+    "endpoint": "http://localhost:9090/v1",
+    "max_tokens": 32768,
+    "positions": 2,
+    "judgments": 1704,
+    "workers": "16, raised to 32 mid-run at operator request; concurrency does not enter a judgment"
+  },
+  "comparison": {
+    "reference": "docs/evaluation/experiments/repair-control-2026-09-11/reference \u2014 the pre-repair commit e09c2571",
+    "step6": "docs/evaluation/experiments/repair-control-2026-09-11/repaired \u2014 commit 46652efc",
+    "now": "the current tree",
+    "caveat": "ONE-SIDED. The reference and Step 6 columns were graded in an earlier sitting; this column was graded today. A true paired control re-runs the pre-repair code in the same sitting (Q46 records a metric moving 0.0503 between sessions). The observed gap is 0.1366, and the movement is concentrated in exactly the two tiers the repairs targeted, so drift does not explain it \u2014 but the protocol asks for the pairing."
+  },
+  "arms": {
+    "generic": {
+      "n": 284,
+      "reference": 0.7188,
+      "step6": 0.7845,
+      "now": 0.9211,
+      "delta_vs_step6": 0.1366,
+      "improved": 123,
+      "regressed": 26,
+      "by_tier": {
+        "step6": {
+          "D0": 0.7767,
+          "D1": 0.9407,
+          "D2": 0.9,
+          "D3": 0.9278,
+          "D4": 0.5405,
+          "D5": 0.916,
+          "D6": 0.4556
+        },
+        "now": {
+          "D0": 0.9264,
+          "D1": 0.9557,
+          "D2": 0.96,
+          "D3": 0.9455,
+          "D4": 0.8603,
+          "D5": 0.9319,
+          "D6": 0.8767
+        }
+      },
+      "position_1": 0.9187,
+      "position_2": 0.9234,
+      "fabricated_mapping": {
+        "step6": 1,
+        "now": 0
+      }
+    },
+    "generic_composed": {
+      "n": 284,
+      "reference": 0.6547,
+      "step6": 0.7537,
+      "now": 0.921,
+      "delta_vs_step6": 0.1673,
+      "improved": 146,
+      "regressed": 14,
+      "by_tier": {
+        "step6": {
+          "D0": 0.7053,
+          "D1": 0.9343,
+          "D2": 0.8569,
+          "D3": 0.9267,
+          "D4": 0.4577,
+          "D5": 0.9037,
+          "D6": 0.4907
+        },
+        "now": {
+          "D0": 0.9083,
+          "D1": 1.0,
+          "D2": 0.9609,
+          "D3": 0.946,
+          "D4": 0.8338,
+          "D5": 0.9207,
+          "D6": 0.9139
+        }
+      },
+      "fabricated_mapping": {
+        "step6": 2,
+        "now": 0
+      }
+    },
+    "deterministic": {
+      "n": 284,
+      "reference": 0.5018,
+      "step6": 0.5732,
+      "now": 0.606,
+      "delta_vs_step6": 0.0328,
+      "improved": 95,
+      "regressed": 97,
+      "by_tier": {
+        "step6": {
+          "D0": 0.8618,
+          "D1": 0.9379,
+          "D2": 0.6079,
+          "D3": 0.6341,
+          "D4": 0.2727,
+          "D5": 0.4878,
+          "D6": 0.3259
+        },
+        "now": {
+          "D0": 0.8549,
+          "D1": 0.9993,
+          "D2": 0.6098,
+          "D3": 0.6182,
+          "D4": 0.2814,
+          "D5": 0.4811,
+          "D6": 0.6176
+        }
+      },
+      "fabricated_mapping": {
+        "step6": 2,
+        "now": 4
+      }
+    }
+  },
+  "hallucination_flags": {
+    "step6": {
+      "our_own_id_example_help_text": 176,
+      "a_real_identifier_the_rolled_up_gold_omits": 62,
+      "node_text_read_as_an_identifier": 13,
+      "a_false_absence_claim": 3
+    },
+    "now": {
+      "a_real_identifier_the_rolled_up_gold_omits": 106,
+      "node_text_read_as_an_identifier": 91,
+      "our_own_id_example_help_text": 54,
+      "a_false_absence_claim": 38,
+      "other": 2
+    }
+  },
+  "hallucination_note": "The flag count rose 254 -> 291 on the generic arm. Classifying every flag shows NO increase in invention. Our own id-example help text ('give its id (e.g. T1566, M1017, or CAPEC-98)') fell 176 -> 54 because fewer answers abstain. Real identifiers the deliberately rolled-up gold omits rose 62 -> 106, which is an answer being MORE complete scoring worse. Two categories are genuine and are open defects: node text read as an identifier rose 14 -> 114, and false absence claims rose 2 -> 15.",
+  "open_defects": [
+    {
+      "id": "I-15",
+      "flags": 114,
+      "summary": "A node whose content is text is rendered in the enumeration list and the grader reads it as an identifier the answer invented. Splitting by label and using semicolons reduced this but did not remove it.",
+      "scores_affected": "faithfulness, not correctness"
+    },
+    {
+      "id": "I-16",
+      "flags": 15,
+      "summary": "A false absence claim names the edge the QUESTION used while the store models it under another name for that anchor's label \u2014 a View's members hang off IN_VIEW, not MEMBER_OF \u2014 so the answer enumerates the members and then says there are none.",
+      "scores_affected": "correctness and faithfulness"
+    }
+  ]
+}

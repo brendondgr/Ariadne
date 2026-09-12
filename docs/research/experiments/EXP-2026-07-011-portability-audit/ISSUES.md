@@ -56,3 +56,27 @@ not print it.
 
 **Paper implication:** Quote 29 distinct / 19 builder templates exercised and
 say "as of `e7ee893`"; re-run the script before quoting anything.
+
+## 2026-09-12 — Both builder pointers went stale again; the counts did not move
+
+**Impact:** none on any recorded number. The 29 distinct / 20 exercised figures
+this experiment publishes were re-derived and are unchanged, as were the
+per-builder splits (20 Cypher, 14 Gremlin, 5 shared).
+
+**Cause:** the rows pinned `3861e784`. Two commits have changed a builder since:
+`c43e7ae6`, which verified each repair mechanism on its own slice and fixed the
+two the check found broken, touched both files; `a8fb13b3`, which routes each hop
+to the store that can express it and gives a CAPEC node a name, touched the
+Gremlin builder. This is the drift the 2026-09-09 hashing was installed to
+catch, working as intended.
+
+**Resolution:** `docs/plans/robustness/_overnight/derive_templates.py` re-run
+before touching the rows — 29 distinct, 20 exercised, `cypher_count` 20,
+`gremlin_count` 14, five shared names, ten declared but not exercised. Both
+pointers re-hashed at `a8fb13b3` with the superseded hashes kept inline. No
+repair in this series has added a template literal, which is why the count has
+survived six changes to these files.
+
+**Standing note:** these two rows pin live source files under active repair, so
+they will drift again. The row text now says which commit each hash was taken
+at, so the next mismatch can be read against a commit rather than a date.

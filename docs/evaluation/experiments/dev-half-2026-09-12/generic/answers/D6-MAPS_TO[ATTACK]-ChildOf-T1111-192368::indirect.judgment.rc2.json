@@ -1,0 +1,27 @@
+{
+ "case_id": "D6-MAPS_TO[ATTACK]-ChildOf-T1111-192368::indirect",
+ "verdict": "PARTIAL",
+ "correctness": 0.85,
+ "faithfulness": 0.7,
+ "groundedness": 0.8,
+ "completeness": 1.0,
+ "gold_expected": 2,
+ "gold_present": 2,
+ "abstained": false,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "The capec source doesn\u2019t establish the broader CAPEC patterns / has no linked records for the second sub-question",
+  "CAPEC-651 is a more specific case of CAPEC-508, CAPEC-634, and CAPEC-699"
+ ],
+ "rationale": "The answer correctly identifies T1111 and the expected broader CAPEC patterns CAPEC-117 and CAPEC-157, and it also lists the mapped CAPEC patterns CAPEC-158, CAPEC-609, and CAPEC-651. However, it overstates the CAPEC-651 relationships by treating CAPEC-508, CAPEC-634, and CAPEC-699 as broader parents, which the shown CHILD_OF related records do not directionally establish. It also includes a contradictory abstention claiming no linked records for the second hop despite the related records being present.",
+ "judge": {
+  "model": "default-model",
+  "alias": "default-model",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

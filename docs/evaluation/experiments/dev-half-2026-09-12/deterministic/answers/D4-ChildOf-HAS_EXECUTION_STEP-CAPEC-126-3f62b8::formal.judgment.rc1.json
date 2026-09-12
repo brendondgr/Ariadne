@@ -1,0 +1,27 @@
+{
+ "case_id": "D4-ChildOf-HAS_EXECUTION_STEP-CAPEC-126-3f62b8::formal",
+ "verdict": "PARTIAL",
+ "correctness": 0.4,
+ "faithfulness": 0.75,
+ "groundedness": 0.7,
+ "completeness": 0.36,
+ "gold_expected": 11,
+ "gold_present": 4,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "Abstraction: Standard",
+  "user-controllable file inputs"
+ ],
+ "rationale": "The answer correctly anchors on CAPEC-126 and lists four of its execution steps, matching four of the eleven expected execution-step texts. It also names the more specific child pattern CAPEC-153, but it does not state CAPEC-153's execution steps, which are part of the expected set. Minor unsupported or paraphrased details such as 'Abstraction: Standard' and 'user-controllable file inputs' reduce faithfulness.",
+ "judge": {
+  "model": "default-model",
+  "alias": "default-model",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

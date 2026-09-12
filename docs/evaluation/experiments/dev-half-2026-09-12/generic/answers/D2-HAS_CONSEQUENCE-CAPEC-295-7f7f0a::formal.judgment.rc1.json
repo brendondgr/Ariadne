@@ -1,0 +1,26 @@
+{
+ "case_id": "D2-HAS_CONSEQUENCE-CAPEC-295-7f7f0a::formal",
+ "verdict": "CORRECT",
+ "correctness": 0.85,
+ "faithfulness": 0.75,
+ "groundedness": 0.75,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "Other Confidentiality"
+ ],
+ "rationale": "The answer identifies CAPEC-295 and its single HAS_CONSEQUENCE neighbor, capec:attack-pattern:295:consequence:1, which corresponds to the expected consequence Confidentiality Other. It is slightly under-supported because the evidence shows only the consequence URI, not the human-readable name Other Confidentiality. The mapping is same-source and not fabricated, so the answer is correct but with minor faithfulness and groundedness deductions.",
+ "judge": {
+  "model": "default-model",
+  "alias": "default-model",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

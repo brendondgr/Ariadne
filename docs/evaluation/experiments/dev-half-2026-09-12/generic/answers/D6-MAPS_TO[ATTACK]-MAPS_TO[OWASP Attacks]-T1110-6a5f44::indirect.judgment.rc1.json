@@ -1,0 +1,26 @@
+{
+ "case_id": "D6-MAPS_TO[ATTACK]-MAPS_TO[OWASP Attacks]-T1110-6a5f44::indirect",
+ "verdict": "CORRECT",
+ "correctness": 0.9,
+ "faithfulness": 0.85,
+ "groundedness": 0.9,
+ "completeness": 1.0,
+ "gold_expected": 2,
+ "gold_present": 2,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "CAPEC-112 has 3 ATT&CK mappings: T1110; OWASP Attacks:Brute force attack; WASC:11"
+ ],
+ "rationale": "The answer identifies CAPEC-112 as the CAPEC attack pattern associated with T1110 and states the required OWASP mapping OWASP Attacks:Brute force attack. It also includes supported extras such as WASC:11 and T1110 sub-techniques. The main weakness is that it labels OWASP and WASC entries as ATT&CK mappings and gives inconsistent mapping counts, though the underlying related entries are present in the CAPEC evidence.",
+ "judge": {
+  "model": "default-model",
+  "alias": "default-model",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

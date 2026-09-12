@@ -1,0 +1,24 @@
+{
+ "case_id": "D5-mitigates-x_mitre_platforms-M1022-4689f4::formal",
+ "verdict": "INCORRECT",
+ "correctness": 0.1,
+ "faithfulness": 1.0,
+ "groundedness": 0.9,
+ "completeness": 0.0,
+ "gold_expected": 43,
+ "gold_present": 0,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer only states the anchor mitigation M1022 and its description; it does not state any of the expected technique/subtechnique IDs such as T1036, T1070, T1543, or T1565. The M1022 evidence record includes MITIGATES facets to 41 SubTechnique and 19 Technique nodes, but the answer text does not surface those neighbor identifiers. Therefore it is faithful to the retrieved M1022 record but fails to answer which Windows-applicable techniques are mitigated.",
+ "judge": {
+  "model": "default-model",
+  "alias": "default-model",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

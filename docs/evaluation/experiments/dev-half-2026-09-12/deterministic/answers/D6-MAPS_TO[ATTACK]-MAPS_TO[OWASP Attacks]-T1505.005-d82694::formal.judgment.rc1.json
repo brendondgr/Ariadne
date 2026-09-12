@@ -1,0 +1,28 @@
+{
+ "case_id": "D6-MAPS_TO[ATTACK]-MAPS_TO[OWASP Attacks]-T1505.005-d82694::formal",
+ "verdict": "PARTIAL",
+ "correctness": 0.2,
+ "faithfulness": 0.75,
+ "groundedness": 0.8,
+ "completeness": 0.0,
+ "gold_expected": 1,
+ "gold_present": 0,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "CAPEC-640 has 1 ATT&CK mapping: T1505.005, although the later evidence shows four mappings including T1574.006, T1574.013, and T1620",
+  "CAPEC-642 has 1 ATT&CK mapping: T1505.005, although the later evidence shows three mappings including T1554 and T1574.005",
+  "CAPEC-558 has 1 ATT&CK mapping: T1505.005, although the later evidence shows two mappings including T1546.008"
+ ],
+ "rationale": "The answer correctly identifies the CAPEC patterns linked to T1505.005 (CAPEC-558, CAPEC-640, CAPEC-642), but it never states the requested OWASP taxonomy entry, OWASP Attacks:Binary planting. It instead reports ATT&CK mappings, so it addresses only the first hop. The repeated 'has 1 ATT&CK mapping' claims are inconsistent with the later evidence showing additional mappings for the same CAPEC records.",
+ "judge": {
+  "model": "default-model",
+  "alias": "default-model",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

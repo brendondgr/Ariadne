@@ -1,0 +1,26 @@
+{
+ "case_id": "D6-PeerOf-MAPS_TO[ATTACK]-CAPEC-151-b0af54::formal",
+ "verdict": "PARTIAL",
+ "correctness": 0.3,
+ "faithfulness": 0.75,
+ "groundedness": 0.8,
+ "completeness": 0.0,
+ "gold_expected": 3,
+ "gold_present": 0,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "CAPEC-151 has no MAPS_TO relationships in this catalogue"
+ ],
+ "rationale": "The answer correctly anchors on CAPEC-151 and abstains with executed queries, but it does not state any of the expected ATT&CK techniques T1211, T1542.002, or T1556. Its no-MAPS_TO claim is only weakly supported because the shown query checks MAPS_TO to ATTACK taxonomy entries rather than PeerOf peers. No cross-source mapping is fabricated, but the answer is a cautious abstention rather than a complete answer.",
+ "judge": {
+  "model": "default-model",
+  "alias": "default-model",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

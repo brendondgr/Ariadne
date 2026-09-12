@@ -1,0 +1,26 @@
+{
+ "case_id": "D3-ChildOf-CAPEC-227-5f6f39::indirect",
+ "verdict": "PARTIAL",
+ "correctness": 0.5,
+ "faithfulness": 0.75,
+ "groundedness": 0.9,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "CAPEC-469 is a parent of CAPEC-227"
+ ],
+ "rationale": "The answer states the expected related identifier CAPEC-469 and correctly describes CAPEC-227 using the cited CAPEC record. However, it frames CAPEC-469 as a 'ChildOf parent' of CAPEC-227, which does not directly answer the question asking for narrower patterns under CAPEC-227. The direction claim is not clearly supported by the evidence, so the answer is partial rather than fully correct.",
+ "judge": {
+  "model": "default-model",
+  "alias": "default-model",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

@@ -1,0 +1,26 @@
+{
+ "case_id": "D6-MAPS_TO[ATTACK]-HAS_MEMBER-T1598.002-508de4::analyst",
+ "verdict": "CORRECT",
+ "correctness": 0.9,
+ "faithfulness": 0.8,
+ "groundedness": 0.9,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "The capec source doesn't establish the CAPEC views for CAPEC-163 / returned no linked records for views"
+ ],
+ "rationale": "The answer states the required CAPEC-703 view for CAPEC-163 and correctly links CAPEC-163 to T1598.002, so it answers both parts of the question. Most claims are grounded in the CAPEC and ATT&CK records, but the added abstention claiming no linked view records is unsupported by the q2 record, which includes CAPEC-703. This contradiction slightly reduces faithfulness without changing the core answer.",
+ "judge": {
+  "model": "default-model",
+  "alias": "default-model",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

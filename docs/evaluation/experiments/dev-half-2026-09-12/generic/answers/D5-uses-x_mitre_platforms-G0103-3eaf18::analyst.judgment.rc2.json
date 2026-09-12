@@ -1,0 +1,26 @@
+{
+ "case_id": "D5-uses-x_mitre_platforms-G0103-3eaf18::analyst",
+ "verdict": "CORRECT",
+ "correctness": 1.0,
+ "faithfulness": 0.9,
+ "groundedness": 0.95,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "T1566.002 is described as restricted to Office Suite, whereas the evidence only supports that it applies to Office Suite via the query filter"
+ ],
+ "rationale": "The answer correctly states the expected related identifier T1566.002 as a technique used by G0103 (Mofang) for Office Suite. It also includes the required anchor G0103. The minor issue is the word 'restricted to,' which is slightly stronger than the evidence showing Office Suite membership.",
+ "judge": {
+  "model": "default-model",
+  "alias": "default-model",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

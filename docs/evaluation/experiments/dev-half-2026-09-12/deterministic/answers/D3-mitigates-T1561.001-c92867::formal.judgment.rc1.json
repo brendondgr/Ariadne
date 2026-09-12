@@ -1,0 +1,26 @@
+{
+ "case_id": "D3-mitigates-T1561.001-c92867::formal",
+ "verdict": "PARTIAL",
+ "correctness": 0.7,
+ "faithfulness": 0.7,
+ "groundedness": 0.8,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "T1561.001 has no MITIGATES relationships in this catalogue"
+ ],
+ "rationale": "The answer states the expected mitigation M1053 for T1561.001, so the gold identifier is present. However, it also claims T1561.001 has no MITIGATES relationships, which is not supported by the MITIGATES query returning M1053. This contradiction makes the answer only partially correct and slightly unfaithful.",
+ "judge": {
+  "model": "default-model",
+  "alias": "default-model",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

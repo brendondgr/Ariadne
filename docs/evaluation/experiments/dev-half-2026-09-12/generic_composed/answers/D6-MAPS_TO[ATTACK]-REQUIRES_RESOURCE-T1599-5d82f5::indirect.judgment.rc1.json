@@ -1,0 +1,26 @@
+{
+ "case_id": "D6-MAPS_TO[ATTACK]-REQUIRES_RESOURCE-T1599-5d82f5::indirect",
+ "verdict": "CORRECT",
+ "correctness": 0.9,
+ "faithfulness": 0.8,
+ "groundedness": 0.9,
+ "completeness": 1.0,
+ "gold_expected": 2,
+ "gold_present": 2,
+ "abstained": false,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "The capec source doesn't establish this \u2014 the executed query ran cleanly and returned CAPEC-700 with no linked records for: For each of those: the resources each of those requires."
+ ],
+ "rationale": "The answer identifies CAPEC-700 as the CAPEC attack pattern mapped to T1599 and states the required resource text. It is grounded in the CAPEC-700 record and its REQUIRES_RESOURCE neighbor capec:attack-pattern:700:resource:1. The only unsupported claim is the leftover abstention saying no linked resource records, which the evidence contradicts.",
+ "judge": {
+  "model": "default-model",
+  "alias": "default-model",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

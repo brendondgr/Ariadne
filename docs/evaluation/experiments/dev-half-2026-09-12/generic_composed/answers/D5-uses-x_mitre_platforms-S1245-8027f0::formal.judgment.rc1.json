@@ -1,0 +1,26 @@
+{
+ "case_id": "D5-uses-x_mitre_platforms-S1245-8027f0::formal",
+ "verdict": "PARTIAL",
+ "correctness": 0.9,
+ "faithfulness": 0.9,
+ "groundedness": 0.85,
+ "completeness": 1.0,
+ "gold_expected": 33,
+ "gold_present": 33,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "T1547.013 and T1543.001 are included as Windows-applicable techniques"
+ ],
+ "rationale": "The answer states S1245 and all 33 expected Windows-related technique identifiers, including T1005, T1048.003, T1547.001, and T1679. It is overinclusive because it also lists T1547.013 and T1543.001, which are not in the gold Windows set, and it does not explicitly state that the listed techniques apply to Windows. The listed identifiers are grounded in the S1245 related evidence, so faithfulness remains high despite the precision issue.",
+ "judge": {
+  "model": "default-model",
+  "alias": "default-model",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

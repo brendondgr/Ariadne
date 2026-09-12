@@ -1,0 +1,26 @@
+{
+ "case_id": "D6-MAPS_TO[ATTACK]-REQUIRES_RESOURCE-T1599-5d82f5::indirect",
+ "verdict": "CORRECT",
+ "correctness": 0.9,
+ "faithfulness": 0.8,
+ "groundedness": 0.85,
+ "completeness": 1.0,
+ "gold_expected": 2,
+ "gold_present": 2,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "The capec source returned CAPEC-700 with no linked resource records, despite the evidence showing CAPEC-700 REQUIRES_RESOURCE capec:attack-pattern:700:resource:1."
+ ],
+ "rationale": "The answer identifies CAPEC-700 as the CAPEC attack pattern mapped to T1599 and states the required resource text. It also includes supported details such as T1599.001, but the abstention claiming no linked CAPEC resource records is contradicted by the q2 evidence. All expected gold items are present, so the core question is answered.",
+ "judge": {
+  "model": "default-model",
+  "alias": "default-model",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

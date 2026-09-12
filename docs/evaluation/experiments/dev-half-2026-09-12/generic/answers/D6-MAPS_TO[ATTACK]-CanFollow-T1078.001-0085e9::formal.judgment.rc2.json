@@ -1,0 +1,27 @@
+{
+ "case_id": "D6-MAPS_TO[ATTACK]-CanFollow-T1078.001-0085e9::formal",
+ "verdict": "PARTIAL",
+ "correctness": 0.7,
+ "faithfulness": 0.7,
+ "groundedness": 0.8,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "CAPEC-70 has one CanFollow predecessor, CAPEC-700",
+  "the executed query returned CAPEC-70 with no linked records"
+ ],
+ "rationale": "The answer correctly identifies CAPEC-70 as the CAPEC pattern mapped to T1078.001 and names the expected follow-on identifier CAPEC-700. However, it calls CAPEC-700 a predecessor and also says the CAPEC query returned no linked records, which is not fully supported by the q2 record containing CAPEC-700. It therefore partially answers the two-hop question with a direction and abstention inconsistency.",
+ "judge": {
+  "model": "default-model",
+  "alias": "default-model",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

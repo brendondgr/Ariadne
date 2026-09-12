@@ -1,0 +1,26 @@
+{
+ "case_id": "D5-CanFollow-Likelihood_Of_Attack-CAPEC-234-6037d9::indirect",
+ "verdict": "CORRECT",
+ "correctness": 1.0,
+ "faithfulness": 0.9,
+ "groundedness": 1.0,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "The direction of the CAN_FOLLOW relation, i.e. that CAPEC-175 is a predecessor of CAPEC-234, is not explicitly shown in the related record."
+ ],
+ "rationale": "The answer correctly identifies CAPEC-175 as the expected related attack pattern for CAPEC-234 and also states the anchor identifier. It fully satisfies the expected gold set. The minor faithfulness deduction is for asserting 'predecessor' direction when the evidence shows a CAN_FOLLOW relation but not its explicit direction.",
+ "judge": {
+  "model": "default-model",
+  "alias": "default-model",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

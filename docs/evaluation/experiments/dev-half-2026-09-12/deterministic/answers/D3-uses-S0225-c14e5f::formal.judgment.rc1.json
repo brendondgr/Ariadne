@@ -1,0 +1,26 @@
+{
+ "case_id": "D3-uses-S0225-c14e5f::formal",
+ "verdict": "PARTIAL",
+ "correctness": 0.6,
+ "faithfulness": 0.6,
+ "groundedness": 0.7,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "C0061 has no USES relationships in this catalogue"
+ ],
+ "rationale": "The answer states the expected campaign C0061 and the tool S0225, so completeness is full. However, it says C0061 has no USES relationships even though the executed query returned a Campaign-USES-Software result linking C0061 to S0225. That unsupported absence claim makes the answer only partially correct and somewhat unfaithful.",
+ "judge": {
+  "model": "default-model",
+  "alias": "default-model",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

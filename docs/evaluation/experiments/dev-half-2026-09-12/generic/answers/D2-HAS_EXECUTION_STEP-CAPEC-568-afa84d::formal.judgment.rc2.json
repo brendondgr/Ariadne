@@ -1,0 +1,28 @@
+{
+ "case_id": "D2-HAS_EXECUTION_STEP-CAPEC-568-afa84d::formal",
+ "verdict": "CORRECT",
+ "correctness": 0.95,
+ "faithfulness": 0.8,
+ "groundedness": 0.85,
+ "completeness": 1.0,
+ "gold_expected": 5,
+ "gold_present": 5,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "Explore phase for step 1",
+  "Experiment phase for steps 2-4",
+  "Exploit phase for step 5"
+ ],
+ "rationale": "The answer names CAPEC-568 and all five execution steps, capec:attack-pattern:568:step:1 through capec:attack-pattern:568:step:5, so it answers the requested execution-step query. It omits the longer substep details for steps 2 and 4 present in the gold text, but still states each step. Faithfulness is reduced because the shown CAPEC record fields do not include the Explore/Experiment/Exploit phase labels asserted in the narrative.",
+ "judge": {
+  "model": "default-model",
+  "alias": "default-model",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

@@ -1,0 +1,27 @@
+{
+ "case_id": "D4-HAS_MEMBER-HAS_ALTERNATE_TERM-CAPEC-703-349040::indirect",
+ "verdict": "PARTIAL",
+ "correctness": 0.7,
+ "faithfulness": 0.6,
+ "groundedness": 0.7,
+ "completeness": 1.0,
+ "gold_expected": 6,
+ "gold_present": 6,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "CAPEC-703 has 5 AlternateTerms",
+  "The five alternate terms are direct names of CAPEC-703 rather than of the member attack pattern CAPEC-94"
+ ],
+ "rationale": "The answer states CAPEC-703 and all five expected alternate terms: Man-in-the-Middle / MITM, Monkey-in-the-Middle, Monster-in-the-Middle, On-path Attacker, and Person-in-the-Middle / PiTM. However, it attributes those alternate terms to CAPEC-703 itself, while the evidence ties them to the member attack pattern CAPEC-94. This makes the answer complete in stated identifiers but only partially correct and somewhat unfaithful in the relationship it asserts.",
+ "judge": {
+  "model": "default-model",
+  "alias": "default-model",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

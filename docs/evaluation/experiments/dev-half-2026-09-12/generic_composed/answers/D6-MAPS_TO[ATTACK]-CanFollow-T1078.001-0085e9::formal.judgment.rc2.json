@@ -1,0 +1,27 @@
+{
+ "case_id": "D6-MAPS_TO[ATTACK]-CanFollow-T1078.001-0085e9::formal",
+ "verdict": "PARTIAL",
+ "correctness": 0.8,
+ "faithfulness": 0.7,
+ "groundedness": 0.8,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": false,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "CAPEC-70 has 1 CanFollow predecessor: CAPEC-700",
+  "The capec source has no linked records for the CanFollow sub-question"
+ ],
+ "rationale": "The answer correctly identifies CAPEC-70 as the CAPEC pattern mapped to T1078.001 and names the expected gold identifier CAPEC-700. However, it labels CAPEC-700 as a CanFollow predecessor rather than clearly stating that CAPEC-700 can follow CAPEC-70, and it includes an abstention saying no linked records were found, which is not fully supported by the q2 record that lists CAPEC-700.",
+ "judge": {
+  "model": "default-model",
+  "alias": "default-model",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}
