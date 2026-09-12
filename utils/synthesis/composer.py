@@ -41,7 +41,10 @@ _MAX_ENUMERATION_IDS = 200
 _MAX_ENUMERATION_CLAIMS_PER_RESULT = 25
 #: A nameless neighbour is rendered by its text; bound it so one
 #: enumeration stays a list rather than becoming the catalogue.
-_MAX_RELATED_TEXT_CHARS = 240
+_MAX_RELATED_TEXT_CHARS = 400
+#: A scalar longer than this beside a description is a second description, not a
+#: label, and belongs in its own claim rather than in front of this one.
+_MAX_RELATED_LEAD_CHARS = 40
 
 
 def _enum_bound(name: str, default: int) -> int:
@@ -1021,13 +1024,31 @@ def _related_display(rel: dict) -> str:
     name = str(rel.get("name") or "").strip()
     if rid and not _is_composite_child(rid):
         return rid
-    text = " ".join(str(rel.get("description") or "").split())
+    described = " ".join(str(rel.get("description") or "").split())
+    # A short scalar beside the description is part of the content, not metadata:
+    # an execution step's `step` and `phase` are the "1 Explore" the catalogue
+    # prints before the text, and an answer without them cannot say which step
+    # of which phase it is quoting. They lead, as they do in the source.
+    # The length cap applies only when a description follows: there, a long
+    # scalar is a second description and belongs in its own claim. With no
+    # description the scalars ARE the content — a CAPEC consequence stores its
+    # scopes as a JSON-encoded string that flattens past any label-sized bound,
+    # and capping it deleted four of the seven consequences from one answer.
+    lead_cap = _MAX_RELATED_LEAD_CHARS if described else None
+    leading = " ".join(
+        part
+        for key, value in sorted(rel.items())
+        if key not in _RELATED_IDENTITY_KEYS
+        and not isinstance(value, (list, tuple, dict))
+        for part in (_flatten_value(value),)
+        if part and (lead_cap is None or len(part) <= lead_cap)
+    ).strip()
+    text = " ".join(x for x in (leading, described) if x)
     if not text:
-        # No description. The node's content is then spread across its own
-        # properties: a CAPEC consequence carries only `scopes` and `impacts`.
-        # Identity keys are dropped and the rest joined in the order the record
-        # presents them — no label table, so a node kind this composer has never
-        # seen still reads.
+        # Neither. The node's content is then spread across list properties: a
+        # CAPEC consequence carries only `scopes` and `impacts`. Identity keys
+        # are dropped and the rest joined — no label table, so a node kind this
+        # composer has never seen still reads.
         text = " ".join(
             part
             for key, value in rel.items()

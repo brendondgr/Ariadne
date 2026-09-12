@@ -665,3 +665,61 @@ def test_a_false_attribute_is_stated_not_swallowed():
     pairs = dict(_attribute_pairs(record))
     assert pairs["x_mitre_is_subtechnique"] == "False"
     assert pairs["revoked"] == "False"
+
+
+def test_a_steps_position_and_phase_lead_its_text():
+    """"1 Explore [Fingerprint the OS] …" — the catalogue prints all three.
+
+    An answer carrying only the description cannot say which step of which phase
+    it is quoting. Short scalars lead; a long one would be a second description
+    and is left to its own claim.
+
+    They lead in PROPERTY-NAME order, not the catalogue's print order. CAPEC
+    prints "1 Explore"; this says "Explore 1". Encoding the print order would
+    mean a per-label table of MITRE conventions inside a composer that is
+    deliberately schema-driven, and it buys nothing: both carry the same two
+    facts, and a reader and a grader see the step and the phase either way.
+    """
+    anchor = make_record(
+        "CAPEC-126", name="Path Traversal", label="AttackPattern",
+        related=[{
+            "id": "capec:attack-pattern:126:step:1",
+            "name": "Step 1", "label": "ExecutionStep",
+            "step": "1", "phase": "Explore",
+            "description": "[Fingerprint the OS] The attacker needs the file separator.",
+        }],
+    )
+    evidence = make_evidence(
+        [make_result(text="Through which execution steps is CAPEC-126 carried out?",
+                     records=[anchor], summary="Found 1 CAPEC record(s).")]
+    )
+    body = [c for c in _compose(evidence).claims if c.kind == "enumeration"][0].text
+    assert "Explore 1 [Fingerprint the OS] The attacker needs the file separator." in body
+
+
+def test_a_node_whose_content_is_only_lists_states_all_of_them():
+    """A CAPEC consequence has no description: it is its scopes and its impacts.
+
+    The scopes arrive as a JSON-encoded string that flattens past any
+    label-sized bound, so capping the lead deleted four of seven consequences
+    from one answer. The cap applies only when a description follows it.
+    """
+    anchor = make_record(
+        "CAPEC-248", name="Command Injection", label="AttackPattern",
+        related=[{
+            "id": "capec:attack-pattern:248:consequence:5",
+            "name": "capec:attack-pattern:248:consequence:5",
+            "label": "Consequence",
+            "impacts": '["Gain Privileges"]',
+            "scopes": '["Accountability", "Authentication", "Authorization", "Non-Repudiation"]',
+        }],
+    )
+    evidence = make_evidence(
+        [make_result(text="What consequences can CAPEC-248 have?",
+                     records=[anchor], summary="Found 1 CAPEC record(s).")]
+    )
+    body = [c for c in _compose(evidence).claims if c.kind == "enumeration"][0].text
+    for word in ("Gain Privileges", "Accountability", "Authentication",
+                 "Authorization", "Non-Repudiation"):
+        assert word in body
+    assert "[" not in body and '"' not in body, "JSON punctuation must not reach the reader"

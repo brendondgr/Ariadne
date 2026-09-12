@@ -352,24 +352,26 @@ Gold recall over the ANSWER TEXT, model-free, against the concurrent control at
 |---|---:|---:|---:|
 | D0 adversarial | 36 | 0.8056 | 1.0000 |
 | D1 attribute | 35 | 0.9129 | 1.0000 |
-| D2 | 40 | 0.8018 | 0.9417 |
+| D2 | 40 | 0.8018 | 0.9479 |
 | D3 | 44 | 0.9205 | 1.0000 |
-| D4 two-step | 55 | 0.5471 | 0.9259 |
+| D4 two-step | 55 | 0.5471 | 0.9301 |
 | D5 requested property | 47 | 0.9674 | 1.0000 |
 | D6 cross-catalogue | 27 | 0.3773 | 1.0000 |
-| **all** | **284** | **0.7721** | **0.9774** |
+| **all** | **284** | **0.7721** | **0.9791** |
 
-97 questions improved and none regressed. The deterministic control moves 58 up
+98 questions improved and none regressed. The deterministic control moves 59 up
 and 2 down, both of which are a 558-record catalogue dump being removed that
 happened to contain the gold identifier.
 
-The holdout bank reads **0.9782** on the same measure. It was run only after the
+The holdout bank reads **0.9788** on the same measure. It was run only after the
 fixes, nothing was tuned against it, and it is not a judged number.
 
-The two tiers still short of 1.0000 are short on PHRASING rather than on
-content. The gold composes an execution step as ``step phase description`` and a
-consequence as ``scopes impacts``; the graph stores those as separate properties
-in its own order, and the answer states all of them. A grader reading both sees
+The two tiers still short of 1.0000 are short on ORDER rather than on content.
+The answer states an execution step's phase, its number and its text, and a
+consequence's scopes and impacts — in property-name order rather than the
+catalogue's print order. Encoding the print order would mean a per-label table of
+MITRE conventions inside a composer that is deliberately schema-driven, and a
+reader or a grader sees the same facts either way. A grader reading both sees
 the same facts.
 
 ## I-13 — A falsy value is a value, and a list-valued property is an answer
