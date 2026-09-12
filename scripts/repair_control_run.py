@@ -81,11 +81,15 @@ BANK = REPO / "docs/evaluation/composition/bank/bank-dev.json"
 #: The commit the repairs are measured against: Step 0, before any repair.
 REFERENCE_COMMIT = "e09c2571"
 ARMS = ("deterministic", "generic_composed", "generic")
-WORKERS = 24
+#: 32, the concurrency the operator measured at ~1250 tok/s against 750 at 16
+#: (2026-09-12). End-to-end judging gains rather less than that ratio — 1.2x
+#: was the observed figure on the development half — because a judgment is one
+#: long generation and the tail is the tail.
+WORKERS = 32
 JUDGE_URL = "http://localhost:9090/v1"
 JUDGE_MODEL = "default-model"
 JUDGE_EXPECT = "qwen"
-JUDGE_WORKERS = 16
+JUDGE_WORKERS = 32
 JUDGE_MAX_TOKENS = 32768
 PASSES = ((".rc1", 1), (".rc2", 2))
 
@@ -269,7 +273,56 @@ def dry(state: dict) -> None:
            if name.endswith("/generic") and row["health"]["fallbacks"]]
     if hot:
         raise SystemExit(f"dry run fell back on {hot}: {json.dumps(rows, indent=2)}")
-    print("dry run clean: both sides resolve their data and nothing fell back")
+
+    state["dry_reference_digests"] = _reference_digests_match(
+        root / "reference" / "deterministic" / "answers"
+    )
+    STATE.write_text(json.dumps(state, indent=2) + "\n")
+    match = state["dry_reference_digests"]
+    if match["differ"] or not match["same"]:
+        raise SystemExit(
+            "the reference worktree does not reproduce the recorded Step 0 "
+            f"reference: {json.dumps(match, indent=2)}"
+        )
+    print(f"dry run clean: both sides resolve their data, nothing fell back, and "
+          f"{match['same']}/{match['same']} reference answers are byte-identical "
+          "to the recorded Step 0 capture")
+
+
+def _reference_digests_match(directory: Path) -> dict:
+    """Does the reference worktree still produce the Step 0 answers, byte for byte?
+
+    The strongest available check that this checkout *is* the pre-repair system:
+    `data/reference/reference-datafix.json` holds a clock-stripped digest per
+    case, recorded at `e09c2571` against the current data. A worktree that runs
+    clean but answers differently is not a reference.
+    """
+    import importlib.util
+
+    module_path = (
+        REPO / "docs/research/experiments/EXP-2026-09-018-correctness-repair"
+        "/data/reference/capture.py"
+    )
+    spec = importlib.util.spec_from_file_location("_step0_capture", module_path)
+    capture = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(capture)
+    recorded = json.loads(
+        (module_path.parent / "reference-datafix.json").read_text()
+    )["captures"]["dev/deterministic"]["cases"]
+
+    same, differ, unknown = 0, [], []
+    for path in sorted(directory.glob("*.json")):
+        if ".judgment" in path.name:
+            continue
+        answer = json.loads(path.read_text())
+        case = answer["id"]
+        if case not in recorded:
+            unknown.append(case)
+        elif capture.digest(answer) == recorded[case]["digest"]:
+            same += 1
+        else:
+            differ.append(case)
+    return {"same": same, "differ": differ, "not_in_reference": unknown}
 
 
 def generate(state: dict) -> None:
