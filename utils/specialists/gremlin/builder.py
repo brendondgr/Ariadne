@@ -65,13 +65,22 @@ _AP_NEIGHBOR_RELS = frozenset({
 #: end the question anchors on. Both are resolved, never assumed; when neither
 #: end identifies a container the question falls through to ``describe`` rather
 #: than being answered with a guess.
-_CONTAINMENT_EDGE_BY_CONTAINER = {"Category": "MEMBER_OF", "View": "IN_VIEW"}
+CONTAINMENT_EDGE_BY_CONTAINER = {"Category": "MEMBER_OF", "View": "IN_VIEW"}
 
 #: Names a planner may reach containment by, in either vocabulary.
-_MEMBERSHIP_ALIASES = frozenset({"HAS_MEMBER", "MEMBER_OF", "IN_VIEW"})
+#:
+#: Public because synthesis needs the same list. The composer must not assert
+#: "CAPEC-703 has no MEMBER_OF relationships" beneath the members it just
+#: enumerated off ``IN_VIEW``; these three names denote one relation, and that
+#: fact is recorded here once rather than copied into `utils/synthesis`.
+MEMBERSHIP_ALIASES = frozenset({"HAS_MEMBER", "MEMBER_OF", "IN_VIEW"})
 
 #: The CAPEC kinds that contain other kinds.
-_CONTAINER_LABELS = frozenset(_CONTAINMENT_EDGE_BY_CONTAINER)
+CONTAINER_LABELS = frozenset(CONTAINMENT_EDGE_BY_CONTAINER)
+
+_CONTAINMENT_EDGE_BY_CONTAINER = CONTAINMENT_EDGE_BY_CONTAINER
+_MEMBERSHIP_ALIASES = MEMBERSHIP_ALIASES
+_CONTAINER_LABELS = CONTAINER_LABELS
 
 # Mapping from relationship name to expected target label (for meta).
 _REL_TARGET_LABEL: dict[str, str] = {

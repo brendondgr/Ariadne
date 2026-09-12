@@ -526,7 +526,7 @@ by neighbour label and separating multi-word items with semicolons (I-14) cut it
 but did not remove it. It costs faithfulness, not correctness — the C0029 case
 scores 1.0 with 24 flags.
 
-## I-16 — A false absence claim names the question's edge, not the store's (OPEN)
+## I-16 — A false absence claim names the question's edge, not the store's (RESOLVED 2026-09-12)
 
 15 flags. A View's members hang off `IN_VIEW`; a Category's hang off `MEMBER_OF`.
 The builder resolves that and retrieves the members; the composer's absence check
@@ -534,3 +534,68 @@ looks for related entries **of the named relation**, finds none of type
 `MEMBER_OF`, and writes "CAPEC-703 has no MEMBER_OF relationships in this
 catalogue" in an answer that has just enumerated them. This costs correctness as
 well as faithfulness and is the more urgent of the two.
+
+**Two shapes, not one.** Scanning both banks for self-contradiction — an absence
+claim the same answer refutes — found the containment case and a second one the
+original write-up missed:
+
+| Shape | Example | Why the old check could not see it |
+|---|---|---|
+| `resolved-edge` | "CAPEC-703 has no MEMBER_OF relationships" beside its 15 `IN_VIEW` members | the store's edge name differs from the question's |
+| `enumerated-noun` | "T1518 has no tactics" beside "T1518 has 1 tactic: TA0007" | `Tactic -[HAS_TECHNIQUE]-> Technique` is the same relation read from the other end, so **no** edge-name folding reconciles it |
+
+**Resolution.** Two one-way suppressions in `_relation_is_empty`, neither of
+which can manufacture an absence:
+
+1. Relation names fold across the containment class. `MEMBER_OF`, `HAS_MEMBER`
+   and `IN_VIEW` denote one relation; that list already existed in
+   `utils/specialists/gremlin/builder.py`, so it was made public
+   (`MEMBERSHIP_ALIASES`) and imported rather than restated — a test asserts the
+   two views of it stay equal. The fold is applied to the related-entry scan, to
+   the facet-count scan, and to `_schema_denies`, which was the warrant actually
+   firing: a View declares `IN_VIEW` and no `MEMBER_OF`, and reading that as
+   "the schema has no such edge" is what licensed the claim.
+2. An absence is refused when the enumeration the same result is about to emit
+   calls those neighbours by the noun the absence would deny. The nouns are
+   derived by walking exactly the groups `_enumeration_claims` walks, so the two
+   cannot drift.
+
+**What was deliberately left alone.** Six of the ten flagged development cases
+were fixed; four keep their absence claim because it is **true** — a Campaign
+has no `MITIGATES` edge, Software and Groups have no `DETECTS` edge, and
+Software has no sub-techniques. Those are the `empty` mechanism working as
+designed (the slice still states 8 empty sets, down only by the one
+contradiction), and suppressing them would trade a false statement for a silent
+one.
+
+**Verification** (`scripts/mechanism_check.py`, new `contradictions()` property,
+asserted on every slice and over each capture as a whole):
+
+| Capture | before | after |
+|---|---|---|
+| dev · `generic_composed` (284) | 7 (6 resolved-edge, 1 enumerated-noun) | **0** |
+| dev · `deterministic` (284) | 6 | **0** |
+| holdout · `generic_composed` (288) | 5 | **0** |
+| holdout · `deterministic` (288) | 6 | **0** |
+
+Gold-text recall is unmoved on all four cells — dev 0.9791, holdout 0.9788 on
+`generic_composed`; dev 0.6814, holdout 0.6402 on `deterministic` — with
+**0 questions regressing** in any of them, against a baseline generated in a
+worktree at `c5cb2906` so the comparison is same-data and same-sitting. The
+recorded-answer diff is exactly 6 answers per bank on the deterministic arm,
+each differing by the one removed claim and nothing else; provenance goes 4/4 to
+3/3, so the ratio holds. Every other mechanism property is unchanged.
+
+Neither capture's answer files are committed — `.gitignore` keeps every
+`experiments/**/answers/*` that is not a judgment sidecar, and neither capture
+was graded. Both arms are model-free and regenerate byte-for-byte from the
+commit and the data; `data/i16_contradictions.json` is the committed evidence
+and `i16-baseline-c5cb2906/README.md` carries the two commands. The holdout is
+**not** spent by any of this.
+
+**A note for whoever runs the paired control.** A `git worktree` of this
+repository has a **tracked** `data/versions.json`, so `ln -s … data` silently
+creates the link *inside* the checked-out directory and the schema registry
+discovers no datasets: the run completes and reports 33/288 with "no specialist
+for source 'attack'" on the rest. Symlink the *subdirectories* of `data/`
+instead, and check `ok == count` before believing any reference number.

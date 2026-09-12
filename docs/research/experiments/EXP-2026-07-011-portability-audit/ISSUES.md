@@ -80,3 +80,19 @@ survived six changes to these files.
 **Standing note:** these two rows pin live source files under active repair, so
 they will drift again. The row text now says which commit each hash was taken
 at, so the next mismatch can be read against a commit rather than a date.
+
+## 2026-09-12 (second) — Gremlin builder re-hashed again; 29/20 unchanged
+
+**Impact:** none. Both figures re-derive to the same values.
+
+**Cause:** `EXP-2026-09-018`'s close-out step 1 (I-16) made
+`CONTAINMENT_EDGE_BY_CONTAINER`, `MEMBERSHIP_ALIASES` and `CONTAINER_LABELS`
+public in `utils/specialists/gremlin/builder.py` so `utils/synthesis/composer.py`
+could import the containment alias list rather than keep a second copy of it.
+The private names remain as aliases, so no call site changed.
+
+**Resolution:** re-hashed (69599 → 70044 bytes), superseded hash kept in the
+row. `derive_templates.py` re-run: 14 gremlin template literals, 29 distinct
+across both builders, 20 exercised — identical to every previous derivation.
+The change adds no `QueryDraft(template=…)` literal, which is what this row
+exists to detect.

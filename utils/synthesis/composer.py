@@ -426,13 +426,13 @@ def _facet_counts_zero(result: SpecialistResult, relation: str) -> bool:
     count already suppresses the claim in the caller; this is the same field
     read the other way.
     """
-    wanted = _normalise_rel(relation)
+    wanted = _relation_aliases(relation)
     seen = False
     for record in result.records:
         for facet in record.facets or ():
             if not isinstance(facet, dict):
                 continue
-            if _normalise_rel(str(facet.get("rel") or "")) == wanted:
+            if _normalise_rel(str(facet.get("rel") or "")) in wanted:
                 if facet.get("count") or 0:
                     return False
                 seen = True
@@ -465,13 +465,17 @@ def _schema_denies(result: SpecialistResult, relation: str) -> bool:
         return False
     if registry is None:
         return False
-    wanted = _normalise_rel(relation)
+    # Folded across the relation's aliases: a View declares ``IN_VIEW`` and no
+    # ``MEMBER_OF``, and reading that as "the schema has no such edge" is how a
+    # question asked in the bank's vocabulary earned an absence claim about a
+    # relation the store models perfectly well.
+    wanted = _relation_aliases(relation)
     for label in labels:
         try:
             facets = registry.label_facets(label, dataset=result.task.source) or []
         except Exception:  # noqa: BLE001
             return False
-        if any(_normalise_rel(str(f.rel_type)) == wanted for f in facets):
+        if any(_normalise_rel(str(f.rel_type)) in wanted for f in facets):
             return False
     return True
 
@@ -532,6 +536,62 @@ def _plural_word(word: str) -> str:
     return word + "s"
 
 
+def _relation_aliases(relation: str) -> frozenset[str]:
+    """Every normalised name that denotes the same relation as *relation*.
+
+    CAPEC stores containment as ``MEMBER_OF`` when the container is a Category
+    and ``IN_VIEW`` when it is a View, and the question bank asks for it as
+    ``HAS_MEMBER``; the builder already resolves the three to one edge. The
+    composer has to fold them too, or it reads a View's materialised ``IN_VIEW``
+    members as *no* ``MEMBER_OF`` members and writes the absence of the very set
+    it has just enumerated — I-16, and the only open defect that cost
+    correctness rather than faithfulness.
+
+    The list is imported from the builder rather than restated here: one record
+    of "these names are one relation", read by whoever needs it. A failed
+    import degrades to the relation's own name, which is the old behaviour.
+    """
+    wanted = _normalise_rel(relation)
+    if not wanted:
+        return frozenset()
+    try:
+        from utils.specialists.gremlin.builder import MEMBERSHIP_ALIASES
+    except Exception:  # noqa: BLE001 — no builder, no folding
+        return frozenset({wanted})
+    membership = frozenset(_normalise_rel(name) for name in MEMBERSHIP_ALIASES)
+    return membership if wanted in membership else frozenset({wanted})
+
+
+def _enumerated_nouns(result: SpecialistResult) -> frozenset[str]:
+    """The nouns this result's enumeration claims will use, singular and plural.
+
+    Derived by walking exactly the groups `_enumeration_claims` walks, so the
+    two cannot drift: whatever the enumeration ends up calling the neighbours is
+    what appears here.
+
+    Its one use is refusing an absence claim that would contradict the answer it
+    sits in. "T1518 has no tactics" was written directly beneath "T1518
+    (Software Discovery) has 1 tactic: TA0007" because the question named
+    ``HAS_TACTIC`` and the graph stores the edge as ``Tactic -[HAS_TECHNIQUE]->
+    Technique`` — the same relation read from the other end, which no amount of
+    edge-name folding can see. The nouns match even when the edge names cannot,
+    because both are derived from what the walk returned.
+    """
+    nouns: set[str] = set()
+    for record in result.records:
+        if not _related_ids(record):
+            continue
+        for group in _related_by_label(record):
+            # Both numbers, always. A group of one is rendered "1 tactic" and
+            # would otherwise never offer "tactics" for the absence — which is
+            # the exact size the contradicted enumerations came in at.
+            singular = _related_noun(record, 1, group)
+            nouns.add(singular)
+            nouns.add(_plural(singular, 2))
+            nouns.add(_related_noun(record, len(group), group))
+    return frozenset(n.strip().lower() for n in nouns if n)
+
+
 def _normalise_rel(name: str) -> str:
     """``CanAlsoBe`` and ``CAN_ALSO_BE`` are the same edge.
 
@@ -569,7 +629,7 @@ def _relation_is_empty(result: SpecialistResult, relation: str) -> bool:
     enumeration's scope line, the claim's warrant is the executed query, so the
     relation must appear in it before its emptiness means anything.
     """
-    wanted = _normalise_rel(relation)
+    wanted = _relation_aliases(relation)
     if not wanted:
         return False
     # Three warrants, any one of which makes an emptiness meaningful. Without
@@ -580,16 +640,22 @@ def _relation_is_empty(result: SpecialistResult, relation: str) -> bool:
         or _facet_counts_zero(result, relation)
     ):
         return False
+    # The answer's own words are the last warrant, and the one that holds when
+    # the edge names cannot be reconciled at all: if the enumeration about to be
+    # written calls these neighbours by the noun the absence is about to deny,
+    # the walk answered the question and the absence is simply false.
+    if _relation_noun(relation).strip().lower() in _enumerated_nouns(result):
+        return False
     for record in result.records:
         for rel in record.related or ():
             if not isinstance(rel, dict):
                 continue
-            if _normalise_rel(str(rel.get("type") or "")) == wanted:
+            if _normalise_rel(str(rel.get("type") or "")) in wanted:
                 return False
         for facet in record.facets or ():
             if not isinstance(facet, dict):
                 continue
-            if _normalise_rel(str(facet.get("rel") or "")) == wanted and (
+            if _normalise_rel(str(facet.get("rel") or "")) in wanted and (
                 facet.get("count") or 0
             ):
                 return False

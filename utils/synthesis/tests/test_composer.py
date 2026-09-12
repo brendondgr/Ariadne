@@ -792,3 +792,134 @@ def test_text_items_are_not_listed_as_though_they_were_identifiers():
     assert "related item" not in patterns.text and "related item" not in consequences.text
     assert "CAPEC-182" not in consequences.text
     assert "; " in consequences.text, "multi-word items are semicolon-separated"
+
+
+# -- I-16: an absence is judged against the edge the store resolved ----------
+
+
+def test_a_views_members_are_not_denied_because_the_question_said_member_of():
+    """CAPEC-703 is a View; its members hang off ``IN_VIEW``, never ``MEMBER_OF``.
+
+    The bank asks for containment as ``HAS_MEMBER``, the planner resolves it to
+    ``MEMBER_OF``, and the graph stores a View's membership as ``IN_VIEW``. The
+    composer used to look for related entries typed with the *question's* name,
+    find none, and write "CAPEC-703 has no MEMBER_OF relationships" directly
+    beneath the fifteen members it had just enumerated — a false statement with
+    full provenance, which is the worst thing this system can emit.
+    """
+    from utils.synthesis.composer import _relation_is_empty
+
+    view = make_record(
+        "CAPEC-703",
+        name="Industrial Control System (ICS) Patterns",
+        source="capec",
+        label="View",
+        related=[
+            {"id": "CAPEC-438", "label": "AttackPattern", "type": "IN_VIEW"},
+            {"id": "CAPEC-439", "label": "AttackPattern", "type": "IN_VIEW"},
+        ],
+    )
+    result = make_result(
+        source="capec",
+        records=[view],
+        query='g.V().has("id", within(ids)).in("IN_VIEW").elementMap()',
+    )
+    # Every alias of containment, from either vocabulary.
+    for asked in ("MEMBER_OF", "HAS_MEMBER", "IN_VIEW"):
+        assert not _relation_is_empty(result, asked), asked
+
+
+def test_a_genuinely_absent_relation_is_still_stated():
+    """The suppression is one-way: ``MITIGATES`` on a Campaign is really absent.
+
+    "Which techniques does C0046 mitigate" walks the campaign's ``USES`` edge
+    because ``MITIGATES`` is not a Campaign facet at all, and the answer must
+    say so rather than quietly enumerate what it did find. Folding containment
+    aliases must not fold two relations that merely happen to co-occur.
+    """
+    from utils.synthesis.composer import _relation_is_empty
+
+    campaign = make_record(
+        "C0046",
+        name="ArcaneDoor",
+        label="Campaign",
+        related=[
+            {"id": "T1556", "label": "Technique", "type": "USES"},
+            {"id": "S1188", "label": "Software", "type": "USES"},
+        ],
+    )
+    result = make_result(records=[campaign], query="MATCH (n)-[:USES]->(m) RETURN m")
+    assert _relation_is_empty(result, "MITIGATES")
+
+
+def test_an_absence_never_contradicts_the_noun_the_answer_enumerates():
+    """"T1518 has no tactics" sat beneath "T1518 has 1 tactic: TA0007".
+
+    ``Tactic -[HAS_TECHNIQUE]-> Technique`` is the same relation the question
+    named as ``HAS_TACTIC``, read from the other end, so no amount of edge-name
+    folding reconciles the two. What does reconcile them is the answer's own
+    words: the enumeration about to be written calls these neighbours by the
+    very noun the absence is about to deny.
+    """
+    from utils.synthesis.composer import _relation_is_empty
+
+    technique = make_record(
+        "T1518",
+        name="Software Discovery",
+        label="Technique",
+        related=[{"id": "TA0007", "label": "Tactic", "type": "HAS_TECHNIQUE"}],
+    )
+    result = make_result(
+        records=[technique],
+        query="MATCH (n)<-[:HAS_TECHNIQUE]-(m) RETURN m",
+    )
+    assert not _relation_is_empty(result, "HAS_TACTIC")
+
+
+def test_a_facet_count_is_read_through_the_alias_too():
+    """``describe`` answers with counts, not neighbours — and counts alias too.
+
+    A View asked for its ``MEMBER_OF`` members through ``describe`` gets back a
+    facet saying ``IN_VIEW: 15`` and no materialised neighbours at all. Reading
+    that as "no MEMBER_OF facet, and none materialised" asserts an absence over
+    a measured fifteen, so both the warrant and the suppression fold the alias.
+    """
+    from utils.synthesis.composer import _facet_counts_zero, _relation_is_empty
+
+    view = make_record(
+        "CAPEC-1000",
+        name="Mechanisms of Attack",
+        source="capec",
+        label="View",
+        related=[],
+        facets=[{"rel": "IN_VIEW", "count": 15}],
+    )
+    populated = make_result(source="capec", records=[view], query="describe CAPEC-1000")
+    assert not _facet_counts_zero(populated, "MEMBER_OF")
+    assert not _relation_is_empty(populated, "MEMBER_OF")
+
+    # A measured zero on the resolved edge still warrants the claim.
+    empty_view = make_record(
+        "CAPEC-1000",
+        source="capec",
+        label="View",
+        related=[],
+        facets=[{"rel": "IN_VIEW", "count": 0}],
+    )
+    measured = make_result(
+        source="capec", records=[empty_view], query="describe CAPEC-1000"
+    )
+    assert _facet_counts_zero(measured, "MEMBER_OF")
+    assert _relation_is_empty(measured, "MEMBER_OF")
+
+
+def test_synthesis_and_the_builder_share_one_record_of_containment():
+    """The alias list is imported, never restated — this is the guard on that."""
+    from utils.specialists.gremlin.builder import MEMBERSHIP_ALIASES
+    from utils.synthesis.composer import _normalise_rel, _relation_aliases
+
+    folded = frozenset(_normalise_rel(name) for name in MEMBERSHIP_ALIASES)
+    for name in MEMBERSHIP_ALIASES:
+        assert _relation_aliases(name) == folded
+    # A relation outside the class folds to itself and nothing else.
+    assert _relation_aliases("MITIGATES") == frozenset({"MITIGATES"})

@@ -111,3 +111,26 @@ sidecars landed after it.
 names: hash the sidecar *set* this experiment reads, not the tree it happens to
 live in — otherwise every judged run anywhere in the repository moves a number
 that has nothing to do with it.
+
+## 2026-09-12 (second) — The tree hash moved a third time; step 1 of the close-out added two untracked captures
+
+**Impact:** none on any recorded number, for the reason the three entries above
+give: this experiment's audited population is the 2026-09-07 one in
+`data/recompute-audit.json`, and nothing here writes a judgment sidecar.
+
+**Cause:** `EXP-2026-09-018`'s close-out step 1 (I-16) wrote two **model-free**
+captures under this tree — `i16-full-2026-09-12` and `i16-baseline-c5cb2906`,
+the after and before columns of the contradiction table — adding roughly 55 MB
+across four answer sets on each side. The tree is now 1,284,582,013 bytes
+against 1,229,038,988.
+
+**Why the input is unchanged:** both captures are generated with the LLM seams
+off and neither was graded, so they contribute **zero** `*.judgment*.json`
+sidecars. The candidate sidecar count is still **31,566**.
+
+**Resolution:** re-hashed, superseded hash kept inline. This is the third
+re-hash in two days and the fourth entry describing the same fragility; the fix
+named on 2026-09-11 — hash the sidecar *set* this experiment reads rather than
+the tree it lives in — is still the right one and is still not done. It is now
+the single largest source of pointless churn in the record, and the remaining
+close-out steps will each move it again.

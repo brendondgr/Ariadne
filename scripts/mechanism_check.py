@@ -33,6 +33,7 @@ from __future__ import annotations
 import argparse
 import csv
 import json
+import re
 import subprocess
 import sys
 from pathlib import Path
@@ -88,6 +89,77 @@ def _queries(answer: dict) -> str:
     )
 
 
+#: "CAPEC-703 has no MEMBER_OF relationships in this catalogue."
+_ABSENCE = re.compile(
+    r"^(?P<anchor>\S+) has no (?P<noun>.+?)(?: in this catalogue)?\.?$"
+)
+#: The verbatim-identifier form `_relation_noun` falls back to when the edge
+#: name will not make a clean English noun (`MAPS_TO`, `MEMBER_OF`).
+_VERBATIM = re.compile(r"^(?P<rel>[A-Z][A-Z0-9_]*) relationships$")
+
+
+def _related_types(answer: dict) -> set[str]:
+    """Every edge type the executed walks actually returned neighbours on."""
+    out: set[str] = set()
+    for result in (answer.get("logic_flow") or {}).get("results") or []:
+        for record in result.get("records") or []:
+            for rel in record.get("related") or []:
+                if isinstance(rel, dict) and rel.get("type"):
+                    out.add(str(rel["type"]))
+    return out
+
+
+def contradictions(answer: dict) -> list[dict]:
+    """Absence claims this same answer contradicts. I-16's defining property.
+
+    A false statement carrying full provenance is the worst thing the system can
+    emit, so this is asserted rather than inferred from a score. Two shapes, and
+    both were live on the development half:
+
+    * the absence names an edge (``MEMBER_OF``) that the store resolved to
+      another name (``IN_VIEW``) and returned neighbours on — so the answer
+      denies the relation directly beneath the members it enumerates; and
+    * the absence names a noun (``tactics``) that another claim in the same
+      answer states a non-zero count of (``has 1 tactic: TA0007``) — the same
+      relation read from the other end, which no edge-name folding can see.
+
+    Neither needs a grader: each is a self-contradiction visible in the text.
+    """
+    from utils.synthesis.composer import _normalise_rel, _relation_aliases
+
+    claims = _claims(answer)
+    types = {_normalise_rel(t) for t in _related_types(answer)}
+    found: list[dict] = []
+    for claim in claims:
+        if claim.get("kind") != "absence":
+            continue
+        match = _ABSENCE.match(str(claim.get("text") or "").strip())
+        if not match:
+            continue
+        anchor, noun = match.group("anchor"), match.group("noun")
+        verbatim = _VERBATIM.match(noun)
+        if verbatim:
+            aliases = _relation_aliases(verbatim.group("rel"))
+            if aliases & types:
+                found.append({"anchor": anchor, "denied": noun,
+                              "shape": "resolved-edge", "text": claim.get("text")})
+                continue
+        singular = noun[:-1] if noun.endswith("s") else noun
+        counted = re.compile(
+            rf"\b{re.escape(anchor)}\b[^.]*\bhas \d+ "
+            rf"(?:{re.escape(noun)}|{re.escape(singular)})\b"
+        )
+        for other in claims:
+            if other is claim or other.get("kind") == "absence":
+                continue
+            if counted.search(str(other.get("text") or "")):
+                found.append({"anchor": anchor, "denied": noun,
+                              "shape": "enumerated-noun", "text": claim.get("text"),
+                              "beside": other.get("text")})
+                break
+    return found
+
+
 def _errors(answer: dict) -> str:
     return " ".join(
         str(r.get("error") or "")
@@ -127,6 +199,10 @@ def check(now: dict[str, dict], slices: dict[str, list[str]], control: dict) -> 
             row["answers_stating_an_empty_set"] = sum(
                 1 for i in ids if any(c.get("kind") == "absence" for c in _claims(now[i]))
             )
+        # I-16. Asserted on EVERY slice, not just `empty`: a contradiction is a
+        # false statement wherever it lands, and the slice that produced most of
+        # them was `ns`, not the one named after absences.
+        row["absence_contradictions"] = sum(len(contradictions(now[i])) for i in ids)
         report[name] = row
     return report
 
@@ -184,6 +260,18 @@ def main() -> int:
     now = _answers(REPO / args.answers)
 
     report = check(now, slices, control)
+    # Over the whole capture, not only the mechanism slices, because the slices
+    # cover 1 in 3 of the bank and an absence claim can be composed anywhere.
+    whole = [c for a in now.values() for c in contradictions(a)]
+    report["absence_contradictions"] = {
+        "answers": len(now),
+        "count": len(whole),
+        "by_shape": {
+            shape: sum(1 for c in whole if c["shape"] == shape)
+            for shape in sorted({c["shape"] for c in whole})
+        },
+        "examples": whole[:10],
+    }
     order = ["capec", "ns", "chain", "filter", "empty", "narrator", "none"]
     print(f"{'mechanism':10s} {'n':>4s} {'coverage':>18s} {'zero-record':>14s}  property")
     for name in order:
@@ -199,6 +287,14 @@ def main() -> int:
             f"{row['coverage_control']:.4f} -> {row['coverage_now']:.4f}   "
             f"{row['zero_record_control']:3d} -> {row['zero_record_now']:3d}    {detail}"
         )
+
+    contra = report["absence_contradictions"]
+    print(
+        f"\nabsence contradictions: {contra['count']} over {contra['answers']} answers"
+        f"  {contra['by_shape'] or ''}"
+    )
+    for example in contra["examples"][:5]:
+        print(f"   {example['shape']:16s} {example['text']}")
 
     if args.narrator:
         print("\n-- narrator slice, live LLM arm --")
