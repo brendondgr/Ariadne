@@ -155,3 +155,51 @@ reported as noise.
 that `H1`'s +0.10 threshold on 56 questions is read as about five standard
 errors rather than as a bare number, and so that no smaller per-tier movement is
 claimed in Step 6.
+
+## I-9 — A stash-and-checkout cycle silently reverted committed source
+
+**Impact:** none on any figure. Caught before any run was scored.
+
+**Cause:** the Step 6 re-run needed the reference commit checked out and back,
+and the working tree was carried across on `git stash`. The pop conflicted, and
+resolving the conflict restored `verifier.py`, `canonical.py` and two test files
+to a state *older than the commit they had already been committed in*
+(`5d8833c1`). The tree compiled and looked right; the absence claim's facet
+check and its per-relation test were simply gone.
+
+**Found by:** the test suite, on a single assertion about the enumeration's
+scope line. Nothing else would have caught it, and the next nine-hour grading
+run would have measured a build missing three of the four fixes it was meant to
+verify.
+
+**Resolution:** every source file this experiment touches was diffed against
+`5d8833c1` and the three that had regressed were restored from it; the two
+changes made *after* that commit were re-applied on top. A file-by-file
+comparison against the last commit that touched it is now part of preparing a
+run, not something to notice afterwards.
+
+**Paper implication:** none, but it is the second time in this experiment that a
+check written for one purpose caught something else entirely — the pre-commit
+hash gate caught the reference being overwritten (`I-3`), and the unit tests
+caught this.
+
+## I-10 — The narrative omitted the answer it had already composed
+
+**Impact:** part of the `capec` slice's fall in Step 6, and not measured
+separately before the fix.
+
+**Cause:** `_narrative` assembled prose from `fact` and `enumeration` claims and
+ignored `absence` ones. So "what prerequisites does CAPEC-689 require" produced
+the claim *"capec:category:689 has no prerequisites"* and a narrative that
+talked about the category's members instead. The structured claim carried the
+answer; the sentence a reader sees did not.
+
+The phrasing was also wrong: rendering the identifier literally gave "has no
+**has prerequisite**".
+
+**Resolution:** an absence claim now **leads** the narrative, because it is the
+answer and everything else is context about the anchor. `_relation_noun` strips
+the verb the sentence already carries and pluralises, falling back to the
+source's own identifier where no clean noun exists — `MAPS_TO` and `MEMBER_OF`
+end in a preposition and `CanAlsoBe` is not a noun phrase, and forcing them gave
+"no tos", "no member ofs" and "no canalsobes".

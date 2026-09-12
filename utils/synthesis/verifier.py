@@ -163,10 +163,11 @@ def _verify_claim(
                 cfg.gate_grounded,
                 "absence claim rests on a query that did not run clean",
             )
-        elif any(_related_entries(record) for record in result.records):
+        elif not _absence_holds(result, claim):
             object_to(
                 cfg.gate_grounded,
-                "absence claim contradicted by related records in the evidence",
+                "absence claim contradicted by the evidence: the requested "
+                "relation has related records or a non-zero facet count",
             )
 
     if claim.kind == "correlation" and not reasons:
@@ -187,6 +188,34 @@ def _verify_claim(
 
 def _related_entries(record: EvidenceRecord) -> list[dict]:
     return [rel for rel in (record.related or ()) if isinstance(rel, dict)]
+
+
+def _absence_holds(result: SpecialistResult, claim: Claim) -> bool:
+    """Re-derive the composer's emptiness test, independently of the claim text.
+
+    The verifier must not take the composer's word for which relation was asked
+    about, so it reads every relation the claim could be about off the result's
+    own task and checks the same two conditions the composer did: no related
+    entry of that relation, and no facet for it with a non-zero count.
+    """
+    from .composer import _relation_is_empty
+
+    relations = [
+        entity
+        for entity in (result.task.entities or ())
+        if _relation_mentioned(entity, claim.text)
+    ]
+    if not relations:
+        # Nothing in the task names a relation this claim could be about, so the
+        # narrow test cannot run; fall back to the strict one.
+        return not any(_related_entries(record) for record in result.records)
+    return all(_relation_is_empty(result, relation) for relation in relations)
+
+
+def _relation_mentioned(entity: str, text: str) -> bool:
+    """Is ``entity`` the relation this absence claim names, in words?"""
+    words = [w.lower() for w in (entity or "").replace("_", " ").split() if w]
+    return bool(words) and all(word in (text or "").lower() for word in words)
 
 
 def _result_for(claim: Claim, evidence: FederatedEvidence) -> SpecialistResult | None:

@@ -187,23 +187,108 @@ def test_an_absence_claim_is_admitted_only_off_a_clean_query() -> None:
     assert any("did not run clean" in r for r in bad.reasons)
 
 
-def test_an_absence_claim_is_refused_when_the_evidence_contradicts_it() -> None:
-    """Related records in the evidence mean the set is not empty."""
+def test_an_absence_claim_is_refused_when_the_relation_is_actually_there() -> None:
+    """A related entry OF THAT RELATION means the set is not empty."""
     from utils.synthesis.composer import _absence_claim
     from utils.synthesis.verifier import _verify_claim
 
     empty = make_record("CAPEC-513", source="capec", label="Category", related=[])
-    claim = _absence_claim(make_result(source="capec", records=[empty]),
-                           "HAS_EXECUTION_STEP")
+    entities = ("Category", "HAS_EXECUTION_STEP", "ExecutionStep")
+    claim = _absence_claim(
+        make_result(source="capec", records=[empty], entities=entities),
+        "HAS_EXECUTION_STEP",
+    )
 
     populated = make_record(
         "CAPEC-513", source="capec", label="Category",
         related=[{"id": "capec:step:1", "label": "ExecutionStep",
                   "type": "HAS_EXECUTION_STEP"}],
     )
-    result = make_result(source="capec", records=[populated])
+    result = make_result(source="capec", records=[populated], entities=entities)
     verdict = _verify_claim(claim, {"capec": [populated]}, set(), None,
                             make_evidence([result]))
 
     assert verdict.verdict == "unsupported"
-    assert any("contradicted by related records" in r for r in verdict.reasons)
+    assert any("contradicted by the evidence" in r for r in verdict.reasons)
+
+
+def test_an_absence_claim_is_refused_when_only_a_facet_says_the_edge_is_there() -> None:
+    """`describe` returns facet COUNTS without materialising neighbours.
+
+    A record can carry an empty `related` list and a facet saying the edge
+    exists. Reading the empty list as absence produced the first
+    `fabricated_mapping` flags against the repaired arm: "CAPEC-33 has no maps
+    to" beside a facet reporting one outbound MAPS_TO. Absence of materialised
+    neighbours is not absence of the edge.
+    """
+    from utils.synthesis.composer import _absence_claim, _relation_is_empty
+    from utils.synthesis.verifier import _verify_claim
+
+    entities = ("AttackPattern", "MAPS_TO", "TaxonomyEntry")
+    faceted = make_record(
+        "CAPEC-33", source="capec", label="AttackPattern", related=[],
+        facets=[{"rel": "MAPS_TO", "direction": "out",
+                 "neighbour_label": "TaxonomyEntry", "count": 1}],
+    )
+    result = make_result(
+        source="capec", records=[faceted], entities=entities,
+        query='g.V().has("id", within(ids)).out("MAPS_TO")',
+    )
+
+    assert not _relation_is_empty(result, "MAPS_TO")
+
+    claim = _absence_claim(result, "MAPS_TO")
+    verdict = _verify_claim(claim, {"capec": [faceted]}, set(), None,
+                            make_evidence([result]))
+    assert verdict.verdict == "unsupported"
+
+
+def test_an_unrelated_neighbour_does_not_suppress_the_absence_claim() -> None:
+    """A Category asked for its prerequisites carries its MEMBERS, not none.
+
+    Testing "does this record have any related entries at all" made the answer
+    enumerate the members and never say the requested set was empty — it
+    answered a different question, and four D0 questions lost the score they had
+    been getting by abstaining for the wrong reason.
+    """
+    from utils.synthesis.composer import _relation_is_empty
+
+    record = make_record(
+        "capec:category:689", source="capec", label="Category",
+        related=[{"id": "CAPEC-675", "label": "AttackPattern",
+                  "type": "HAS_MEMBER"}],
+    )
+    # The query must have ASKED about the relation before its emptiness means
+    # anything: an absence asserted from a retrieval that never looked is not
+    # grounded in the retrieval it cites.
+    asked = make_result(
+        source="capec", records=[record],
+        entities=("Category", "HAS_PREREQUISITE", "Prerequisite"),
+        query='g.V().has("id", within(ids)).union(__.out("HAS_PREREQUISITE"), '
+              '__.in("HAS_MEMBER"))',
+    )
+    assert _relation_is_empty(asked, "HAS_PREREQUISITE")
+    assert not _relation_is_empty(asked, "HAS_MEMBER")
+
+    never_asked = make_result(
+        source="capec", records=[record],
+        entities=("Category", "HAS_PREREQUISITE", "Prerequisite"),
+        query='g.V().has("id", within(ids)).in("HAS_MEMBER")',
+    )
+    assert not _relation_is_empty(never_asked, "HAS_PREREQUISITE")
+
+
+def test_relation_names_fold_across_the_two_spellings() -> None:
+    """The card says `CanAlsoBe`; the loaded graph says `CAN_ALSO_BE`."""
+    from utils.synthesis.composer import _relation_is_empty
+
+    record = make_record(
+        "CAPEC-33", source="capec", label="AttackPattern",
+        related=[{"id": "CAPEC-273", "label": "AttackPattern",
+                  "type": "CAN_ALSO_BE"}],
+    )
+    result = make_result(
+        source="capec", records=[record],
+        query='g.V().has("id", within(ids)).out("CAN_ALSO_BE")',
+    )
+    assert not _relation_is_empty(result, "CanAlsoBe")

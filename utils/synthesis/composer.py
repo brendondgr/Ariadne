@@ -396,6 +396,120 @@ def _requested_property_claim(
 _PROPERTY_LABEL_RE = re.compile(r"[_\s]+")
 
 
+def _query_asked_about(result: SpecialistResult, relation: str) -> bool:
+    """Did the executed query traverse ``relation``?
+
+    Folded across the card's CamelCase and the graph's SCREAMING_SNAKE, because
+    the query carries whichever the store uses. Necessary, not sufficient: a
+    relation named nowhere in the query was certainly not asked about, which is
+    the direction that matters.
+    """
+    wanted = _normalise_rel(relation)
+    if not wanted:
+        return False
+    # The EXECUTED query only. The gate's traces carry rejected drafts too, and
+    # a draft that named the relation and was refused is evidence the system
+    # tried, not evidence it looked.
+    return wanted in _normalise_rel(result.query or "")
+
+
+#: Relationship identifiers begin with a verb the sentence already supplies.
+#: ``HAS_PREREQUISITE`` rendered literally gives "has no has prerequisite".
+_RELATION_VERBS = frozenset({"has", "have", "requires", "require", "exploits"})
+#: A name ending in one of these is not a noun phrase: ``MAPS_TO``, ``MEMBER_OF``.
+_TRAILING_PREPOSITIONS = frozenset({"to", "of", "for", "with", "in", "on", "by"})
+#: CamelCase and SCREAMING_SNAKE alike, into lowercase words.
+_WORD_SPLIT_RE = re.compile(r"[_\s]+|(?<=[a-z0-9])(?=[A-Z])")
+
+
+def _relation_noun(relation: str) -> str:
+    """``HAS_PREREQUISITE`` -> "prerequisites"; ``MAPS_TO`` -> "MAPS_TO relationships".
+
+    The identifier's own words minus the verb the surrounding sentence already
+    carries, pluralised — still the source's vocabulary rather than a gloss,
+    which is the rule the renderer follows too.
+
+    When that does not yield a clean noun the identifier is used verbatim.
+    ``MAPS_TO`` and ``MEMBER_OF`` end in a preposition and ``CanAlsoBe`` is not a
+    noun phrase at all; forcing them gave "no tos", "no member ofs" and "no
+    canalsobes". An unambiguous identifier reads better than a mangled word and
+    cannot be misread.
+    """
+    words = [w.lower() for w in _WORD_SPLIT_RE.split(relation) if w]
+    if words and words[0] in _RELATION_VERBS and len(words) > 1:
+        rest = words[1:]
+        if rest[-1] not in _TRAILING_PREPOSITIONS:
+            rest[-1] = _plural_word(rest[-1])
+            return " ".join(rest)
+    return f"{relation} relationships"
+
+
+def _plural_word(word: str) -> str:
+    if word.endswith(("s", "x", "ch", "sh")):
+        return word + "es"
+    if word.endswith("y") and len(word) > 1 and word[-2] not in "aeiou":
+        return word[:-1] + "ies"
+    return word + "s"
+
+
+def _normalise_rel(name: str) -> str:
+    """``CanAlsoBe`` and ``CAN_ALSO_BE`` are the same edge.
+
+    The card declares CAPEC's natures in the source's CamelCase and the loaded
+    graph carries the SCREAMING_SNAKE form, so a comparison that does not fold
+    the two reads a present edge as absent.
+    """
+    return "".join(ch for ch in (name or "").upper() if ch.isalnum())
+
+
+def _relation_is_empty(result: SpecialistResult, relation: str) -> bool:
+    """Did the requested relation genuinely return nothing?
+
+    Two ways this was wrong, both caught by the judge in Step 6:
+
+    * It asked whether the record had **any** related entries, not whether it
+      had any of *this* relation. A Category asked for its prerequisites carries
+      its members in `related`, so the set was non-empty and the answer never
+      said the requested set was empty — it enumerated the members instead, and
+      answered a different question.
+    * It ignored **facets**. `describe` returns facet counts without
+      materialising neighbours, so a record can have an empty `related` list and
+      a facet saying the edge exists. Asserting absence there is a false
+      statement with full provenance, which is the worst thing this system can
+      emit, and it is what produced the first `fabricated_mapping` flags against
+      the repaired arm.
+
+    Absence of materialised neighbours is not absence of the edge. All three
+    checks are one-way: they can only suppress an absence claim, never
+    manufacture one.
+
+    The third is the warrant. "CAPEC-33 has no MAPS_TO" was stated off a query
+    that walked ``PEER_OF`` and never asked about ``MAPS_TO`` at all — an
+    absence asserted from a retrieval that did not look. As with the
+    enumeration's scope line, the claim's warrant is the executed query, so the
+    relation must appear in it before its emptiness means anything.
+    """
+    wanted = _normalise_rel(relation)
+    if not wanted:
+        return False
+    if not _query_asked_about(result, relation):
+        return False
+    for record in result.records:
+        for rel in record.related or ():
+            if not isinstance(rel, dict):
+                continue
+            if _normalise_rel(str(rel.get("type") or "")) == wanted:
+                return False
+        for facet in record.facets or ():
+            if not isinstance(facet, dict):
+                continue
+            if _normalise_rel(str(facet.get("rel") or "")) == wanted and (
+                facet.get("count") or 0
+            ):
+                return False
+    return True
+
+
 def _absence_claim(result: SpecialistResult, relation: str) -> Claim:
     """State that the requested set is empty, with the executed query as proof.
 
@@ -407,7 +521,7 @@ def _absence_claim(result: SpecialistResult, relation: str) -> Claim:
     """
     anchor_ids = [r.primary_id for r in result.records if r.primary_id]
     anchor = anchor_ids[0] if anchor_ids else (result.task.seed_ids or ("the anchor",))[0]
-    phrase = " ".join(w.lower() for w in _PROPERTY_LABEL_RE.split(relation) if w)
+    phrase = _relation_noun(relation)
     return Claim(
         text=f"{anchor} has no {phrase} in this catalogue.",
         citations=tuple(
@@ -746,12 +860,9 @@ def _query_carries(result: SpecialistResult, prop: str) -> bool:
     """
     if not prop:
         return False
-    queries = [result.query or ""]
-    queries += [
-        str((trace.detail or {}).get("query") or "")
-        for trace in (result.traces or ())
-    ]
-    return any(prop in query for query in queries if query)
+    # The EXECUTED query only, for the same reason as `_query_asked_about`: a
+    # rejected draft that named the property never filtered anything.
+    return prop in (result.query or "")
 
 
 def _enumeration_claim(
@@ -955,9 +1066,9 @@ class DeterministicComposer:
                 claims.extend(_enumeration_claims(result, cap, slots.filter))
                 # The requested relation came back empty while the anchor
                 # resolved: an answer, not an absence of one.
-                if slots.relation and not any(
-                    _related_ids(record) for record in result.records
-                ):
+                # Judged on THAT relation, and never against a facet that says
+                # the edge is there — see `_relation_is_empty`.
+                if slots.relation and _relation_is_empty(result, slots.relation):
                     claims.append(_absence_claim(result, slots.relation))
             elif result.ok:
                 abstentions.append(abstention_for(result))
@@ -1096,7 +1207,15 @@ def _narrative(claims: list[Claim], abstentions: list[Abstention]) -> str:
     facts = [c.text.rstrip(".") for c in claims if c.kind in ("fact", "enumeration")]
     correlation_ids = [i for c in claims if c.kind == "correlation" for i in c.entity_ids]
 
-    sentences = list(facts)
+    # An absence claim LEADS. It is the answer to the question that was asked,
+    # and everything else is context about the anchor. Omitting it from the
+    # prose — which is what happened until 2026-09-12 — left a reader of
+    # "what prerequisites does CAPEC-689 require" with a sentence about the
+    # category's members and no answer at all. Four D0 questions lost between
+    # 0.45 and 0.75 of their score to exactly that (`EXP-2026-09-018` Step 6).
+    absences = [c.text.rstrip(".") for c in claims if c.kind == "absence"]
+
+    sentences = absences + list(facts)
     if correlation_ids:
         n = len(set(correlation_ids))
         sentences.append(

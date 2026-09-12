@@ -554,14 +554,24 @@ def test_an_enumeration_says_what_it_was_restricted_to() -> None:
         related=[{"id": "T1055", "label": "Technique", "type": "USES"},
                  {"id": "T1059", "label": "Technique", "type": "USES"}],
     )
-    result = make_result(records=[record])
+    # The scope line's warrant is the QUERY, not the records: a related
+    # neighbour carries no properties, so a neighbour-side filter can never be
+    # verified from the evidence the claim cites. A query that does not name the
+    # property cannot have filtered on it.
+    unfiltered = make_result(records=[record])
+    filtered = make_result(
+        records=[record],
+        query="MATCH (n)-[:USES]->(m) WHERE $filterValue IN m.`x_mitre_platforms` RETURN m",
+    )
+    bound = ("Technique", "x_mitre_platforms", "macOS")
 
-    plain = _enumeration_claim(result, record)
+    plain = _enumeration_claim(unfiltered, record)
     assert "restricted to" not in plain.text
 
-    scoped = _enumeration_claim(
-        result, record, ("Technique", "x_mitre_platforms", "macOS")
-    )
+    # Asked for, but the query did not do it — so it is not stated.
+    assert "restricted to" not in _enumeration_claim(unfiltered, record, bound).text
+
+    scoped = _enumeration_claim(filtered, record, bound)
     assert "restricted to mitre platforms macOS" in scoped.text
     assert scoped.entity_ids == plain.entity_ids
 
@@ -580,5 +590,7 @@ def test_an_empty_requested_relation_is_stated_as_an_answer() -> None:
                            "HAS_EXECUTION_STEP")
 
     assert claim.kind == "absence"
-    assert "CAPEC-513" in claim.text and "no has execution step" in claim.text
+    # The identifier's own words, minus the verb the sentence already carries:
+    # rendering it literally gave "has no has execution step".
+    assert "CAPEC-513" in claim.text and "has no execution steps" in claim.text
     assert claim.citations

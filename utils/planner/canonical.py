@@ -1473,10 +1473,21 @@ def requested_slots(
             if len(values) == 1:
                 bound_filter = matches[0]
 
+    # The relation slot means "the ONE relation this question is about", and it
+    # is bound only when the plan names exactly one. A two-hop request names
+    # two, and its final leg is walked from the intermediate entities rather
+    # than from the anchor — so "CAPEC-33 has no MAPS_TO" was attributing to the
+    # anchor an emptiness that was measured, if at all, about its peers. The
+    # judge recorded that as a fabricated mapping (`EXP-2026-09-018` Step 6).
+    #
+    # A chained question therefore gets no absence claim. That is the honest
+    # position: this composer has no sentence for "none of the things you asked
+    # about have any", and inventing one attributed to the wrong entity is worse
+    # than saying nothing.
     return RequestedSlots(
         property=prop,
         filter=bound_filter,
-        relation=relations[-1] if relations else None,
+        relation=relations[0] if len(relations) == 1 else None,
     )
 
 
