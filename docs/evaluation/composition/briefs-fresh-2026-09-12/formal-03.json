@@ -1,0 +1,209 @@
+{
+ "instructions": "You are writing evaluation questions for a cybersecurity knowledge-base benchmark.\n\nFor each item below, write ONE natural-language question. Return JSON only:\n{\"questions\": [{\"id\": \"<item id>\", \"question\": \"<the question>\"}, ...]}\n\nEach item gives you: a subject (its name, its type, its identifier), what the\nquestion should ask for, and sometimes a restriction to apply.\n\nRules, all of which are checked automatically and will cause a rejection:\n- The question MUST contain the subject's identifier exactly as given.\n- The question MUST NOT contain any other identifier.\n- Do NOT answer the question. Do NOT explain yourself.\n- Do NOT use underscores, camelCase, or database field names. Write it the way a\n  person would say it.\n- Exactly one question mark.\n- Some items have no answer in the data. You cannot tell which, and you should\n  not try: write every item as a straightforward question regardless.\n",
+ "style": "Write it as a precise written question, the way it would appear in a report or a checklist.",
+ "items": [
+  {
+   "id": "q4afb3d709abd",
+   "subject_name": "Browser in the Middle (BiTM)",
+   "subject_type": "CAPEC attack pattern",
+   "identifier": "CAPEC-701",
+   "ask_for": "the CAPEC attack patterns that can precede it, and then the CAPEC views that contain each of those",
+   "answer_shape": "a list of CAPEC views"
+  },
+  {
+   "id": "qf97258d4810c",
+   "subject_name": "Software Integrity Attack",
+   "subject_type": "CAPEC attack pattern",
+   "identifier": "CAPEC-184",
+   "ask_for": "the CAPEC attack patterns that can precede it, and then the skills each of those requires",
+   "answer_shape": "a list of skills"
+  },
+  {
+   "id": "qeef589d472b9",
+   "subject_name": "Adversary in the Middle (AiTM)",
+   "subject_type": "CAPEC attack pattern",
+   "identifier": "CAPEC-94",
+   "ask_for": "the CAPEC attack patterns that are more specific cases of it, and then the resources each of those requires",
+   "answer_shape": "a list of resources"
+  },
+  {
+   "id": "q221a44014ad3",
+   "subject_name": "Using Slashes and URL Encoding Combined to Bypass Validation Logic",
+   "subject_type": "CAPEC attack pattern",
+   "identifier": "CAPEC-64",
+   "ask_for": "the CAPEC attack patterns it is a more specific case of, and then the skills each of those requires",
+   "answer_shape": "a list of skills"
+  },
+  {
+   "id": "q15a15b7eb627",
+   "subject_name": "Distribution",
+   "subject_type": "CAPEC category",
+   "identifier": "CAPEC-686",
+   "ask_for": "the CAPEC attack patterns it contains, and then the example instances that illustrate each of those",
+   "answer_shape": "a list of example instances"
+  },
+  {
+   "id": "q336f50a82895",
+   "subject_name": "Communications",
+   "subject_type": "CAPEC category",
+   "identifier": "CAPEC-512",
+   "ask_for": "the CAPEC attack patterns it contains, and then the WASC taxonomy entries each of those corresponds to",
+   "answer_shape": "a list of WASC taxonomy entries"
+  },
+  {
+   "id": "qf82f7abd6366",
+   "subject_name": "HTTP Response Smuggling",
+   "subject_type": "CAPEC attack pattern",
+   "identifier": "CAPEC-273",
+   "ask_for": "the CAPEC attack patterns that are peers of it, and then the CWE weaknesses each of those exploits",
+   "answer_shape": "a list of CWE weaknesses"
+  },
+  {
+   "id": "qba2ad5f71899",
+   "subject_name": "HTTP Request Splitting",
+   "subject_type": "CAPEC attack pattern",
+   "identifier": "CAPEC-105",
+   "ask_for": "the CAPEC attack patterns that are peers of it, and then the WASC taxonomy entries each of those corresponds to",
+   "answer_shape": "a list of WASC taxonomy entries"
+  },
+  {
+   "id": "qbe6bdee21c02",
+   "subject_name": "Email Spoofing",
+   "subject_type": "ATT&CK technique",
+   "identifier": "T1684.002",
+   "ask_for": "the detection strategies that detect it, and then the detection analytics that implement each of those",
+   "answer_shape": "a list of detection analytics"
+  },
+  {
+   "id": "q6625677cc56d",
+   "subject_name": "Data Loss Prevention",
+   "subject_type": "ATT&CK mitigation",
+   "identifier": "M1057",
+   "ask_for": "the ATT&CK techniques it mitigates, and then the ATT&CK tactics each of those belongs to",
+   "answer_shape": "a list of ATT&CK tactics"
+  },
+  {
+   "id": "q7bb27dcf0f68",
+   "subject_name": "Process Injection",
+   "subject_type": "ATT&CK technique",
+   "identifier": "T1055",
+   "ask_for": "the ATT&CK techniques that are sub-techniques of it, and then the ATT&CK tactics each of those belongs to",
+   "answer_shape": "a list of ATT&CK tactics"
+  },
+  {
+   "id": "qdea5fa997a52",
+   "subject_name": "SharePoint ToolShell Exploitation",
+   "subject_type": "campaign",
+   "identifier": "C0058",
+   "ask_for": "the ATT&CK techniques it uses, and then the ATT&CK mitigations that mitigate each of those",
+   "answer_shape": "a list of ATT&CK mitigations"
+  },
+  {
+   "id": "q22adb3aab320",
+   "subject_name": "nbtstat",
+   "subject_type": "piece of malware or tooling",
+   "identifier": "S0102",
+   "ask_for": "the ATT&CK techniques it uses, and then the ATT&CK techniques that are sub-techniques of each of those",
+   "answer_shape": "a list of ATT&CK techniques"
+  },
+  {
+   "id": "qdaa8779a3707",
+   "subject_name": "Hijacking a privileged process",
+   "subject_type": "CAPEC attack pattern",
+   "identifier": "CAPEC-234",
+   "ask_for": "the CAPEC attack patterns that can precede it",
+   "answer_shape": "a list of CAPEC attack patterns",
+   "restriction": "only the ones whose abstraction level is Standard"
+  },
+  {
+   "id": "qab5b8f066b9b",
+   "subject_name": "Network Boundary Bridging",
+   "subject_type": "CAPEC attack pattern",
+   "identifier": "CAPEC-700",
+   "ask_for": "the CAPEC attack patterns that can precede it",
+   "answer_shape": "a list of CAPEC attack patterns",
+   "restriction": "only the ones whose status is Draft"
+  },
+  {
+   "id": "qcddd676515ae",
+   "subject_name": "Capture Credentials via Keylogger",
+   "subject_type": "CAPEC attack pattern",
+   "identifier": "CAPEC-568",
+   "ask_for": "the CAPEC attack patterns that can follow it",
+   "answer_shape": "a list of CAPEC attack patterns",
+   "restriction": "only the ones whose abstraction level is Meta"
+  },
+  {
+   "id": "q691628fe5245",
+   "subject_name": "TypoSquatting",
+   "subject_type": "CAPEC attack pattern",
+   "identifier": "CAPEC-630",
+   "ask_for": "the CAPEC attack patterns that can follow it",
+   "answer_shape": "a list of CAPEC attack patterns",
+   "restriction": "only the ones whose typical severity is Very High"
+  },
+  {
+   "id": "q897931269466",
+   "subject_name": "Android Activity Hijack",
+   "subject_type": "CAPEC attack pattern",
+   "identifier": "CAPEC-501",
+   "ask_for": "the CAPEC attack patterns it is a more specific case of",
+   "answer_shape": "a list of CAPEC attack patterns",
+   "restriction": "only the ones whose status is Draft"
+  },
+  {
+   "id": "q5079d71704cd",
+   "subject_name": "Software",
+   "subject_type": "CAPEC category",
+   "identifier": "CAPEC-513",
+   "ask_for": "the CAPEC attack patterns it contains",
+   "answer_shape": "a list of CAPEC attack patterns",
+   "restriction": "only the ones where the likelihood of attack is High"
+  },
+  {
+   "id": "qedde2c13e4d1",
+   "subject_name": "Subvert Access Control",
+   "subject_type": "CAPEC category",
+   "identifier": "CAPEC-225",
+   "ask_for": "the CAPEC attack patterns it contains",
+   "answer_shape": "a list of CAPEC attack patterns",
+   "restriction": "only the ones whose typical severity is Very High"
+  },
+  {
+   "id": "q8cf03ba473bf",
+   "subject_name": "Exploitation of Transient Instruction Execution",
+   "subject_type": "CAPEC attack pattern",
+   "identifier": "CAPEC-663",
+   "ask_for": "the CAPEC attack patterns that are peers of it",
+   "answer_shape": "a list of CAPEC attack patterns",
+   "restriction": "only the ones where the likelihood of attack is High"
+  },
+  {
+   "id": "q5050891368ad",
+   "subject_name": "Limit Software Installation",
+   "subject_type": "ATT&CK mitigation",
+   "identifier": "M1033",
+   "ask_for": "the ATT&CK techniques it mitigates",
+   "answer_shape": "a list of ATT&CK techniques",
+   "restriction": "only the ones that apply to ESXi"
+  },
+  {
+   "id": "q0d671fee85d7",
+   "subject_name": "Audit",
+   "subject_type": "ATT&CK mitigation",
+   "identifier": "M1047",
+   "ask_for": "the ATT&CK techniques it mitigates",
+   "answer_shape": "a list of ATT&CK techniques",
+   "restriction": "only the ones that apply to Linux"
+  },
+  {
+   "id": "qdd1dfd8bec24",
+   "subject_name": "Night Dragon",
+   "subject_type": "campaign",
+   "identifier": "C0002",
+   "ask_for": "the ATT&CK techniques it uses",
+   "answer_shape": "a list of ATT&CK techniques",
+   "restriction": "only the ones that apply to Windows"
+  }
+ ]
+}

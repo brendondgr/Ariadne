@@ -1,0 +1,209 @@
+{
+ "instructions": "You are writing evaluation questions for a cybersecurity knowledge-base benchmark.\n\nFor each item below, write ONE natural-language question. Return JSON only:\n{\"questions\": [{\"id\": \"<item id>\", \"question\": \"<the question>\"}, ...]}\n\nEach item gives you: a subject (its name, its type, its identifier), what the\nquestion should ask for, and sometimes a restriction to apply.\n\nRules, all of which are checked automatically and will cause a rejection:\n- The question MUST contain the subject's identifier exactly as given.\n- The question MUST NOT contain any other identifier.\n- Do NOT answer the question. Do NOT explain yourself.\n- Do NOT use underscores, camelCase, or database field names. Write it the way a\n  person would say it.\n- Exactly one question mark.\n- Some items have no answer in the data. You cannot tell which, and you should\n  not try: write every item as a straightforward question regardless.\n",
+ "style": "Write it the way someone would ask a colleague who knows the subject \u2014 conversational, and phrased around what they are trying to find out rather than around the data.",
+ "items": [
+  {
+   "id": "qaeb35c24cdee",
+   "subject_name": "Software Integrity Attack",
+   "subject_type": "CAPEC attack pattern",
+   "identifier": "CAPEC-184",
+   "ask_for": "the CAPEC attack patterns that are more specific cases of it, and then the CAPEC attack patterns that are peers of each of those",
+   "answer_shape": "a list of CAPEC attack patterns"
+  },
+  {
+   "id": "q7479caa431ee",
+   "subject_name": "Distribution",
+   "subject_type": "CAPEC category",
+   "identifier": "CAPEC-686",
+   "ask_for": "the CAPEC attack patterns it contains, and then the CWE weaknesses each of those exploits",
+   "answer_shape": "a list of CWE weaknesses"
+  },
+  {
+   "id": "qfcbe88e2122f",
+   "subject_name": "Industrial Control System (ICS) Patterns",
+   "subject_type": "CAPEC view",
+   "identifier": "CAPEC-703",
+   "ask_for": "the CAPEC attack patterns it contains, and then the execution steps each of those is carried out through",
+   "answer_shape": "a list of execution steps"
+  },
+  {
+   "id": "qa076952c5383",
+   "subject_name": "Industrial Control System (ICS) Patterns",
+   "subject_type": "CAPEC view",
+   "identifier": "CAPEC-703",
+   "ask_for": "the CAPEC attack patterns it contains, and then the CAPEC attack patterns that are peers of each of those",
+   "answer_shape": "a list of CAPEC attack patterns"
+  },
+  {
+   "id": "q320081a3ac78",
+   "subject_name": "HTTP Response Smuggling",
+   "subject_type": "CAPEC attack pattern",
+   "identifier": "CAPEC-273",
+   "ask_for": "the CAPEC attack patterns that are peers of it, and then the consequences each of those can have",
+   "answer_shape": "a list of consequences"
+  },
+  {
+   "id": "qb843eae69527",
+   "subject_name": "C0033",
+   "subject_type": "campaign",
+   "identifier": "C0033",
+   "ask_for": "the threat groups it is attributed to, and then the malware and tools each of those uses",
+   "answer_shape": "a list of malware and tools"
+  },
+  {
+   "id": "qe31ad44160f7",
+   "subject_name": "Windows Host Firewall",
+   "subject_type": "ATT&CK technique",
+   "identifier": "T1686.003",
+   "ask_for": "the ATT&CK tactics it belongs to, and then the ATT&CK matrices that cover each of those",
+   "answer_shape": "a list of ATT&CK matrices"
+  },
+  {
+   "id": "qc39735642c79",
+   "subject_name": "Boot Integrity",
+   "subject_type": "ATT&CK mitigation",
+   "identifier": "M1046",
+   "ask_for": "the ATT&CK techniques it mitigates, and then the campaigns that use each of those",
+   "answer_shape": "a list of campaigns"
+  },
+  {
+   "id": "qb53674ff8cd6",
+   "subject_name": "PowerShell",
+   "subject_type": "ATT&CK technique",
+   "identifier": "T1059.001",
+   "ask_for": "the ATT&CK techniques it is a sub-technique of, and then the ATT&CK tactics each of those belongs to",
+   "answer_shape": "a list of ATT&CK tactics"
+  },
+  {
+   "id": "q70177fbe71fb",
+   "subject_name": "ZeroCleare",
+   "subject_type": "piece of malware or tooling",
+   "identifier": "S1151",
+   "ask_for": "the campaigns that use it, and then the threat groups each of those is attributed to",
+   "answer_shape": "a list of threat groups"
+  },
+  {
+   "id": "qcd1e29734c0f",
+   "subject_name": "CALENDAR",
+   "subject_type": "piece of malware or tooling",
+   "identifier": "S0025",
+   "ask_for": "the ATT&CK techniques it uses, and then the ATT&CK mitigations that mitigate each of those",
+   "answer_shape": "a list of ATT&CK mitigations"
+  },
+  {
+   "id": "qd9558adb5325",
+   "subject_name": "APT16",
+   "subject_type": "threat group",
+   "identifier": "G0023",
+   "ask_for": "the malware and tools it uses, and then the ATT&CK techniques each of those uses",
+   "answer_shape": "a list of ATT&CK techniques"
+  },
+  {
+   "id": "qf198a61b3985",
+   "subject_name": "Tonto Team",
+   "subject_type": "threat group",
+   "identifier": "G0131",
+   "ask_for": "the malware and tools it uses, and then the ATT&CK techniques each of those uses",
+   "answer_shape": "a list of ATT&CK techniques"
+  },
+  {
+   "id": "q0e8d1b236f1f",
+   "subject_name": "Hijacking a privileged process",
+   "subject_type": "CAPEC attack pattern",
+   "identifier": "CAPEC-234",
+   "ask_for": "the CAPEC attack patterns that can precede it",
+   "answer_shape": "a list of CAPEC attack patterns",
+   "restriction": "only the ones where the likelihood of attack is High"
+  },
+  {
+   "id": "qfa1ab7293711",
+   "subject_name": "Network Boundary Bridging",
+   "subject_type": "CAPEC attack pattern",
+   "identifier": "CAPEC-700",
+   "ask_for": "the CAPEC attack patterns that can precede it",
+   "answer_shape": "a list of CAPEC attack patterns",
+   "restriction": "only the ones whose status is Stable"
+  },
+  {
+   "id": "q31e57def2480",
+   "subject_name": "Modification of Registry Run Keys",
+   "subject_type": "CAPEC attack pattern",
+   "identifier": "CAPEC-270",
+   "ask_for": "the CAPEC attack patterns that can follow it",
+   "answer_shape": "a list of CAPEC attack patterns",
+   "restriction": "only the ones where the likelihood of attack is Low"
+  },
+  {
+   "id": "q0a66fa29e707",
+   "subject_name": "Using Meta-characters in E-mail Headers to Inject Malicious Payloads",
+   "subject_type": "CAPEC attack pattern",
+   "identifier": "CAPEC-41",
+   "ask_for": "the CAPEC attack patterns it is a more specific case of",
+   "answer_shape": "a list of CAPEC attack patterns",
+   "restriction": "only the ones whose abstraction level is Meta"
+  },
+  {
+   "id": "q594ac6cbfff0",
+   "subject_name": "Pretexting",
+   "subject_type": "CAPEC attack pattern",
+   "identifier": "CAPEC-407",
+   "ask_for": "the CAPEC attack patterns it is a more specific case of",
+   "answer_shape": "a list of CAPEC attack patterns",
+   "restriction": "only the ones whose typical severity is Low"
+  },
+  {
+   "id": "qdc962132a8d0",
+   "subject_name": "Industrial Control System (ICS) Patterns",
+   "subject_type": "CAPEC view",
+   "identifier": "CAPEC-703",
+   "ask_for": "the CAPEC attack patterns it contains",
+   "answer_shape": "a list of CAPEC attack patterns",
+   "restriction": "only the ones whose typical severity is Very High"
+  },
+  {
+   "id": "q3cd010bf897c",
+   "subject_name": "Account Use Policies",
+   "subject_type": "ATT&CK mitigation",
+   "identifier": "M1036",
+   "ask_for": "the ATT&CK techniques it mitigates",
+   "answer_shape": "a list of ATT&CK techniques",
+   "restriction": "only the ones that apply to macOS"
+  },
+  {
+   "id": "q91f5a9fa3ac3",
+   "subject_name": "Software Configuration",
+   "subject_type": "ATT&CK mitigation",
+   "identifier": "M1054",
+   "ask_for": "the ATT&CK techniques it mitigates",
+   "answer_shape": "a list of ATT&CK techniques",
+   "restriction": "only the ones that apply to ESXi"
+  },
+  {
+   "id": "q114b70820ccd",
+   "subject_name": "Operation CuckooBees",
+   "subject_type": "campaign",
+   "identifier": "C0012",
+   "ask_for": "the malware and tools it uses",
+   "answer_shape": "a list of malware and tools",
+   "restriction": "only the ones that apply to Windows"
+  },
+  {
+   "id": "q88aadc171ff5",
+   "subject_name": "Triton Safety Instrumented System Attack",
+   "subject_type": "campaign",
+   "identifier": "C0030",
+   "ask_for": "the ATT&CK techniques it uses",
+   "answer_shape": "a list of ATT&CK techniques",
+   "restriction": "only the ones that apply to ESXi"
+  },
+  {
+   "id": "q7f6fad3a7649",
+   "subject_name": "Leviathan Australian Intrusions",
+   "subject_type": "campaign",
+   "identifier": "C0049",
+   "ask_for": "the ATT&CK techniques it uses",
+   "answer_shape": "a list of ATT&CK techniques",
+   "restriction": "only the ones that apply to ESXi"
+  }
+ ]
+}

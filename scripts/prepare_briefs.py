@@ -91,7 +91,7 @@ def gold_token(answer: str) -> str:
     return answer if len(answer) > 8 else f" {answer} "
 
 
-def brief_text(spec: Spec) -> str:
+def brief_text(spec: Spec, register: str | None = None) -> str:
     """Everything about a spec that reaches the page, as text.
 
     Rendered rather than approximated. A value-set heuristic missed a case the
@@ -99,10 +99,33 @@ def brief_text(spec: Spec) -> str:
     `Windows Command Shell` — because the leak was in prose the heuristic never
     looked at.
     """
-    return " " + json.dumps(brief_payload(spec, next(iter(rd.REGISTERS)))) + " "
+    # The register the file is ACTUALLY written in. Checking a fixed one while
+    # writing another is how `D2-detects-DET0175-b97d85` put `T1542.004` on the
+    # same page as the question it answers: the registers phrase a brief
+    # differently, so a collision invisible in one is present in another, and
+    # the guard fired on a file the partition had already approved.
+    return " " + json.dumps(
+        brief_payload(spec, register or next(iter(rd.REGISTERS)))
+    ) + " "
 
 
-def partition(specs: list[Spec], batches: int) -> list[list[Spec]]:
+def self_leaks(spec: Spec) -> bool:
+    """Does a spec's own brief contain its own answer?
+
+    One spec in the pool of 2,367 does: `D2-detects-DET0175-b97d85` asks which
+    techniques `DET0175` detects, and `DET0175` is *named* "Detection Strategy
+    for T1542.004 Pre-OS Boot: ROMMONkit". No partitioning can separate a brief
+    from itself, so such a spec cannot be asked blind at all and is dropped at
+    the draw rather than failing the guard at the last step.
+    """
+    for register in rd.REGISTERS:
+        blob = " " + json.dumps(brief_payload(spec, register)) + " "
+        if any(gold_token(answer) in blob for answer in spec.gold):
+            return True
+    return False
+
+
+def partition(specs: list[Spec], batches: int, register: str | None = None) -> list[list[Spec]]:
     """Split specs into files where nothing on the page gives away an answer.
 
     A batch is one prompt, so every brief in it is visible at once. Three ways
@@ -117,7 +140,7 @@ def partition(specs: list[Spec], batches: int) -> list[list[Spec]]:
     is a lower bound: conflicts create more files, never fewer.
     """
     target = max(1, -(-len(specs) // max(1, batches)))
-    texts = {spec.id: brief_text(spec) for spec in specs}
+    texts = {spec.id: brief_text(spec, register) for spec in specs}
     groups: list[list[Spec]] = []
     golds: list[set[str]] = []
     blobs: list[str] = []
@@ -213,7 +236,9 @@ def main() -> None:
         ]
         if not eligible:
             continue
-        for number, group in enumerate(partition(eligible, args.batches), start=1):
+        for number, group in enumerate(
+            partition(eligible, args.batches, register), start=1
+        ):
             payload = {
                 "instructions": INSTRUCTIONS,
                 "style": rd.REGISTERS[register],

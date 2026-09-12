@@ -1,0 +1,38 @@
+{
+ "instructions": "You are writing evaluation questions for a cybersecurity knowledge-base benchmark.\n\nFor each item below, write ONE natural-language question. Return JSON only:\n{\"questions\": [{\"id\": \"<item id>\", \"question\": \"<the question>\"}, ...]}\n\nEach item gives you: a subject (its name, its type, its identifier), what the\nquestion should ask for, and sometimes a restriction to apply.\n\nRules, all of which are checked automatically and will cause a rejection:\n- The question MUST contain the subject's identifier exactly as given.\n- The question MUST NOT contain any other identifier.\n- Do NOT answer the question. Do NOT explain yourself.\n- Do NOT use underscores, camelCase, or database field names. Write it the way a\n  person would say it.\n- Exactly one question mark.\n- Some items have no answer in the data. You cannot tell which, and you should\n  not try: write every item as a straightforward question regardless.\n",
+ "style": "Write it the way a security analyst would type it into a search box: direct, unceremonious, no preamble.",
+ "items": [
+  {
+   "id": "qac68de00ca9e",
+   "subject_name": "Direct Network Flood",
+   "subject_type": "ATT&CK technique",
+   "identifier": "T1498.001",
+   "ask_for": "the CAPEC attack patterns that correspond to it, and then the alternate names each of those also goes by",
+   "answer_shape": "a list of alternate names"
+  },
+  {
+   "id": "q71ca946ed1cf",
+   "subject_name": "Service Exhaustion Flood",
+   "subject_type": "ATT&CK technique",
+   "identifier": "T1499.002",
+   "ask_for": "the CAPEC attack patterns that correspond to it, and then the indicators that indicate each of those",
+   "answer_shape": "a list of indicators"
+  },
+  {
+   "id": "q51052994809e",
+   "subject_name": "Credentials In Files",
+   "subject_type": "ATT&CK technique",
+   "identifier": "T1552.001",
+   "ask_for": "the CAPEC attack patterns that correspond to it, and then the CAPEC views that contain each of those",
+   "answer_shape": "a list of CAPEC views"
+  },
+  {
+   "id": "qe2d3e5d1363a",
+   "subject_name": "Direct Network Flood",
+   "subject_type": "ATT&CK technique",
+   "identifier": "T1498.001",
+   "ask_for": "the CAPEC attack patterns that correspond to it, and then the WASC taxonomy entries each of those corresponds to",
+   "answer_shape": "a list of WASC taxonomy entries"
+  }
+ ]
+}

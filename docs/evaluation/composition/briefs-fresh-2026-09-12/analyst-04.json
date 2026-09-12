@@ -1,0 +1,187 @@
+{
+ "instructions": "You are writing evaluation questions for a cybersecurity knowledge-base benchmark.\n\nFor each item below, write ONE natural-language question. Return JSON only:\n{\"questions\": [{\"id\": \"<item id>\", \"question\": \"<the question>\"}, ...]}\n\nEach item gives you: a subject (its name, its type, its identifier), what the\nquestion should ask for, and sometimes a restriction to apply.\n\nRules, all of which are checked automatically and will cause a rejection:\n- The question MUST contain the subject's identifier exactly as given.\n- The question MUST NOT contain any other identifier.\n- Do NOT answer the question. Do NOT explain yourself.\n- Do NOT use underscores, camelCase, or database field names. Write it the way a\n  person would say it.\n- Exactly one question mark.\n- Some items have no answer in the data. You cannot tell which, and you should\n  not try: write every item as a straightforward question regardless.\n",
+ "style": "Write it the way a security analyst would type it into a search box: direct, unceremonious, no preamble.",
+ "items": [
+  {
+   "id": "q3215bf9d1d5d",
+   "subject_name": "Industrial Control System (ICS) Patterns",
+   "subject_type": "CAPEC view",
+   "identifier": "CAPEC-703",
+   "ask_for": "the CAPEC attack patterns it contains",
+   "answer_shape": "a list of CAPEC attack patterns",
+   "restriction": "only the ones whose typical severity is Very Low"
+  },
+  {
+   "id": "qd9d8080eb98a",
+   "subject_name": "Exploitation of Thunderbolt Protection Flaws",
+   "subject_type": "CAPEC attack pattern",
+   "identifier": "CAPEC-665",
+   "ask_for": "the CAPEC attack patterns that are peers of it",
+   "answer_shape": "a list of CAPEC attack patterns",
+   "restriction": "only the ones whose abstraction level is Detailed"
+  },
+  {
+   "id": "q1966847c7039",
+   "subject_name": "Exploitation of Thunderbolt Protection Flaws",
+   "subject_type": "CAPEC attack pattern",
+   "identifier": "CAPEC-665",
+   "ask_for": "the CAPEC attack patterns that are peers of it",
+   "answer_shape": "a list of CAPEC attack patterns",
+   "restriction": "only the ones whose status is Stable"
+  },
+  {
+   "id": "qffea9778bc42",
+   "subject_name": "Filter Network Traffic",
+   "subject_type": "ATT&CK mitigation",
+   "identifier": "M1037",
+   "ask_for": "the ATT&CK techniques it mitigates",
+   "answer_shape": "a list of ATT&CK techniques",
+   "restriction": "only the ones that apply to IaaS"
+  },
+  {
+   "id": "q6b41c8e0a666",
+   "subject_name": "TrickBot",
+   "subject_type": "piece of malware or tooling",
+   "identifier": "S0266",
+   "ask_for": "the ATT&CK techniques it uses",
+   "answer_shape": "a list of ATT&CK techniques",
+   "restriction": "only the ones whose impact is on Availability"
+  },
+  {
+   "id": "qb6cacb868e47",
+   "subject_name": "C0017",
+   "subject_type": "campaign",
+   "identifier": "C0017",
+   "ask_for": "the malware and tools it uses",
+   "answer_shape": "a list of malware and tools",
+   "restriction": "only the ones that apply to Windows"
+  },
+  {
+   "id": "qccced9678781",
+   "subject_name": "C0032",
+   "subject_type": "campaign",
+   "identifier": "C0032",
+   "ask_for": "the ATT&CK techniques it uses",
+   "answer_shape": "a list of ATT&CK techniques",
+   "restriction": "only the ones that apply to Office Suite"
+  },
+  {
+   "id": "q59769f28ab27",
+   "subject_name": "Operation Digital Eye",
+   "subject_type": "campaign",
+   "identifier": "C0061",
+   "ask_for": "the malware and tools it uses",
+   "answer_shape": "a list of malware and tools",
+   "restriction": "only the ones that apply to Network Devices"
+  },
+  {
+   "id": "q1ad71608bdbc",
+   "subject_name": "APT33",
+   "subject_type": "threat group",
+   "identifier": "G0064",
+   "ask_for": "the malware and tools it uses",
+   "answer_shape": "a list of malware and tools",
+   "restriction": "only the ones that apply to macOS"
+  },
+  {
+   "id": "qc8be4b2ceb58",
+   "subject_name": "EXOTIC LILY",
+   "subject_type": "threat group",
+   "identifier": "G1011",
+   "ask_for": "the ATT&CK techniques it uses",
+   "answer_shape": "a list of ATT&CK techniques",
+   "restriction": "only the ones that apply to SaaS"
+  },
+  {
+   "id": "q841af1d66edf",
+   "subject_name": "Ebury",
+   "subject_type": "piece of malware or tooling",
+   "identifier": "S0377",
+   "ask_for": "the ATT&CK techniques it uses",
+   "answer_shape": "a list of ATT&CK techniques",
+   "restriction": "only the ones that apply to Windows"
+  },
+  {
+   "id": "q08c9ea730836",
+   "subject_name": "Detect Remote Email Collection via Abnormal Login and Programmatic Access",
+   "subject_type": "detection strategy",
+   "identifier": "DET0048",
+   "ask_for": "the detection analytics that implement it",
+   "answer_shape": "a list of detection analytics",
+   "restriction": "only the ones that apply to Office Suite"
+  },
+  {
+   "id": "q5ed2dd42e867",
+   "subject_name": "Detection of Defense Impairment",
+   "subject_type": "detection strategy",
+   "identifier": "DET0900",
+   "ask_for": "the detection analytics that implement it",
+   "answer_shape": "a list of detection analytics",
+   "restriction": "only the ones that apply to SaaS"
+  },
+  {
+   "id": "qd011a3c576d7",
+   "subject_name": "Try Common or Default Usernames and Passwords",
+   "subject_type": "CAPEC attack pattern",
+   "identifier": "CAPEC-70",
+   "ask_for": "the CAPEC attack patterns that can follow it, and then the ATT&CK techniques each of those corresponds to",
+   "answer_shape": "a list of ATT&CK techniques"
+  },
+  {
+   "id": "qbc7e6fb24aaf",
+   "subject_name": "Windows Admin Shares with Stolen Credentials",
+   "subject_type": "CAPEC attack pattern",
+   "identifier": "CAPEC-561",
+   "ask_for": "the CAPEC attack patterns that can precede it, and then the ATT&CK techniques each of those corresponds to",
+   "answer_shape": "a list of ATT&CK techniques"
+  },
+  {
+   "id": "qcf7a08f04e5e",
+   "subject_name": "Communications",
+   "subject_type": "CAPEC category",
+   "identifier": "CAPEC-512",
+   "ask_for": "the CAPEC attack patterns it contains, and then the ATT&CK techniques each of those corresponds to",
+   "answer_shape": "a list of ATT&CK techniques"
+  },
+  {
+   "id": "q4d560a63822d",
+   "subject_name": "Rename Legitimate Utilities",
+   "subject_type": "ATT&CK technique",
+   "identifier": "T1036.003",
+   "ask_for": "the CAPEC attack patterns that correspond to it, and then the CAPEC attack patterns that can also be carried out as each of those",
+   "answer_shape": "a list of CAPEC attack patterns"
+  },
+  {
+   "id": "q140bc07eb0b8",
+   "subject_name": "Remote Email Collection",
+   "subject_type": "ATT&CK technique",
+   "identifier": "T1114.002",
+   "ask_for": "the CAPEC attack patterns that correspond to it, and then the CAPEC attack patterns that can follow each of those",
+   "answer_shape": "a list of CAPEC attack patterns"
+  },
+  {
+   "id": "q612e982c72c6",
+   "subject_name": "Reflective Code Loading",
+   "subject_type": "ATT&CK technique",
+   "identifier": "T1620",
+   "ask_for": "the CAPEC attack patterns that correspond to it, and then the execution steps each of those is carried out through",
+   "answer_shape": "a list of execution steps"
+  },
+  {
+   "id": "qc90d9086ca18",
+   "subject_name": "Brute Force",
+   "subject_type": "ATT&CK technique",
+   "identifier": "T1110",
+   "ask_for": "the CAPEC attack patterns that correspond to it, and then the OWASP taxonomy entries each of those corresponds to",
+   "answer_shape": "a list of OWASP taxonomy entries"
+  },
+  {
+   "id": "qe3be4ad4e243",
+   "subject_name": "Exploitation of Thunderbolt Protection Flaws",
+   "subject_type": "CAPEC attack pattern",
+   "identifier": "CAPEC-665",
+   "ask_for": "the CAPEC attack patterns that are peers of it, and then the ATT&CK techniques each of those corresponds to",
+   "answer_shape": "a list of ATT&CK techniques"
+  }
+ ]
+}

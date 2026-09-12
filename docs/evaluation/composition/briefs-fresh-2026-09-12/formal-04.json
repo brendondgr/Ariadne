@@ -1,0 +1,166 @@
+{
+ "instructions": "You are writing evaluation questions for a cybersecurity knowledge-base benchmark.\n\nFor each item below, write ONE natural-language question. Return JSON only:\n{\"questions\": [{\"id\": \"<item id>\", \"question\": \"<the question>\"}, ...]}\n\nEach item gives you: a subject (its name, its type, its identifier), what the\nquestion should ask for, and sometimes a restriction to apply.\n\nRules, all of which are checked automatically and will cause a rejection:\n- The question MUST contain the subject's identifier exactly as given.\n- The question MUST NOT contain any other identifier.\n- Do NOT answer the question. Do NOT explain yourself.\n- Do NOT use underscores, camelCase, or database field names. Write it the way a\n  person would say it.\n- Exactly one question mark.\n- Some items have no answer in the data. You cannot tell which, and you should\n  not try: write every item as a straightforward question regardless.\n",
+ "style": "Write it as a precise written question, the way it would appear in a report or a checklist.",
+ "items": [
+  {
+   "id": "qbdbaeb18d535",
+   "subject_name": "Industrial Control System (ICS) Patterns",
+   "subject_type": "CAPEC view",
+   "identifier": "CAPEC-703",
+   "ask_for": "the CAPEC attack patterns it contains, and then the indicators that indicate each of those",
+   "answer_shape": "a list of indicators"
+  },
+  {
+   "id": "qeca03e0634fb",
+   "subject_name": "Supply Chain Risks",
+   "subject_type": "CAPEC view",
+   "identifier": "CAPEC-683",
+   "ask_for": "the CAPEC categories it contains, and then the CAPEC attack patterns each of those contains",
+   "answer_shape": "a list of CAPEC attack patterns"
+  },
+  {
+   "id": "q2f4e7dbd6fa7",
+   "subject_name": "Enterprise ATT&CK",
+   "subject_type": "ATT&CK matrix",
+   "identifier": "enterprise-attack",
+   "ask_for": "the ATT&CK tactics it covers, and then the ATT&CK techniques that belong to each of those",
+   "answer_shape": "a list of ATT&CK techniques"
+  },
+  {
+   "id": "q512088e953bd",
+   "subject_name": "Industrial Control System (ICS) Patterns",
+   "subject_type": "CAPEC view",
+   "identifier": "CAPEC-703",
+   "ask_for": "the CAPEC attack patterns it contains",
+   "answer_shape": "a list of CAPEC attack patterns",
+   "restriction": "only the ones whose typical severity is High"
+  },
+  {
+   "id": "qb0276b137f43",
+   "subject_name": "Cutting Edge",
+   "subject_type": "campaign",
+   "identifier": "C0029",
+   "ask_for": "the malware and tools it uses",
+   "answer_shape": "a list of malware and tools",
+   "restriction": "only the ones that apply to Network Devices"
+  },
+  {
+   "id": "q38ce1126100b",
+   "subject_name": "2022 Ukraine Electric Power Attack",
+   "subject_type": "campaign",
+   "identifier": "C0034",
+   "ask_for": "the ATT&CK techniques it uses",
+   "answer_shape": "a list of ATT&CK techniques",
+   "restriction": "only the ones that apply to IaaS"
+  },
+  {
+   "id": "q3fd2df7e6797",
+   "subject_name": "APT28",
+   "subject_type": "threat group",
+   "identifier": "G0007",
+   "ask_for": "the ATT&CK techniques it uses",
+   "answer_shape": "a list of ATT&CK techniques",
+   "restriction": "only the ones that apply to macOS"
+  },
+  {
+   "id": "q77c4d5021a87",
+   "subject_name": "Blue Mockingbird",
+   "subject_type": "threat group",
+   "identifier": "G0108",
+   "ask_for": "the malware and tools it uses",
+   "answer_shape": "a list of malware and tools",
+   "restriction": "only the ones that apply to Linux"
+  },
+  {
+   "id": "q0c156c4c0f52",
+   "subject_name": "UNC3886",
+   "subject_type": "threat group",
+   "identifier": "G1048",
+   "ask_for": "the ATT&CK techniques it uses",
+   "answer_shape": "a list of ATT&CK techniques",
+   "restriction": "only the ones that apply to Identity Provider"
+  },
+  {
+   "id": "q55e753b45a4e",
+   "subject_name": "MegaCortex",
+   "subject_type": "piece of malware or tooling",
+   "identifier": "S0576",
+   "ask_for": "the ATT&CK techniques it uses",
+   "answer_shape": "a list of ATT&CK techniques",
+   "restriction": "only the ones that apply to Network Devices"
+  },
+  {
+   "id": "q188cc26b52df",
+   "subject_name": "Detection of Mutex-Based Execution Guardrails Across Platforms",
+   "subject_type": "detection strategy",
+   "identifier": "DET0132",
+   "ask_for": "the detection analytics that implement it",
+   "answer_shape": "a list of detection analytics",
+   "restriction": "only the ones that apply to macOS"
+  },
+  {
+   "id": "q4f234215aa91",
+   "subject_name": "File Content Injection",
+   "subject_type": "CAPEC attack pattern",
+   "identifier": "CAPEC-23",
+   "ask_for": "the CAPEC attack patterns it can also be carried out as, and then the ATT&CK techniques each of those corresponds to",
+   "answer_shape": "a list of ATT&CK techniques"
+  },
+  {
+   "id": "q91e3e5202792",
+   "subject_name": "Network Boundary Bridging",
+   "subject_type": "CAPEC attack pattern",
+   "identifier": "CAPEC-700",
+   "ask_for": "the CAPEC attack patterns that can precede it, and then the ATT&CK techniques each of those corresponds to",
+   "answer_shape": "a list of ATT&CK techniques"
+  },
+  {
+   "id": "q5a170643a36e",
+   "subject_name": "TypoSquatting",
+   "subject_type": "CAPEC attack pattern",
+   "identifier": "CAPEC-630",
+   "ask_for": "the CAPEC attack patterns that can follow it, and then the ATT&CK techniques each of those corresponds to",
+   "answer_shape": "a list of ATT&CK techniques"
+  },
+  {
+   "id": "q501aa91c3607",
+   "subject_name": "System Network Configuration Discovery",
+   "subject_type": "ATT&CK technique",
+   "identifier": "T1016",
+   "ask_for": "the CAPEC attack patterns that correspond to it, and then the CAPEC attack patterns that can follow each of those",
+   "answer_shape": "a list of CAPEC attack patterns"
+  },
+  {
+   "id": "q3a4fbb77cfe6",
+   "subject_name": "Input Capture",
+   "subject_type": "ATT&CK technique",
+   "identifier": "T1056",
+   "ask_for": "the CAPEC attack patterns that correspond to it, and then the indicators that indicate each of those",
+   "answer_shape": "a list of indicators"
+  },
+  {
+   "id": "q4be38fd29476",
+   "subject_name": "Steal or Forge Kerberos Tickets",
+   "subject_type": "ATT&CK technique",
+   "identifier": "T1558",
+   "ask_for": "the CAPEC attack patterns that correspond to it, and then the indicators that indicate each of those",
+   "answer_shape": "a list of indicators"
+  },
+  {
+   "id": "q63efed896459",
+   "subject_name": "Defacement",
+   "subject_type": "ATT&CK technique",
+   "identifier": "T1491",
+   "ask_for": "the CAPEC attack patterns that correspond to it, and then the OWASP taxonomy entries each of those corresponds to",
+   "answer_shape": "a list of OWASP taxonomy entries"
+  },
+  {
+   "id": "q3c32f510839d",
+   "subject_name": "Behavioral Detection of Obfuscated Files or Information",
+   "subject_type": "detection strategy",
+   "identifier": "DET0378",
+   "ask_for": "the ATT&CK techniques it detects, and then the CAPEC attack patterns that correspond to each of those",
+   "answer_shape": "a list of CAPEC attack patterns"
+  }
+ ]
+}

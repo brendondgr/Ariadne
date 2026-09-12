@@ -1,0 +1,212 @@
+{
+ "instructions": "You are writing evaluation questions for a cybersecurity knowledge-base benchmark.\n\nFor each item below, write ONE natural-language question. Return JSON only:\n{\"questions\": [{\"id\": \"<item id>\", \"question\": \"<the question>\"}, ...]}\n\nEach item gives you: a subject (its name, its type, its identifier), what the\nquestion should ask for, and sometimes a restriction to apply.\n\nRules, all of which are checked automatically and will cause a rejection:\n- The question MUST contain the subject's identifier exactly as given.\n- The question MUST NOT contain any other identifier.\n- Do NOT answer the question. Do NOT explain yourself.\n- Do NOT use underscores, camelCase, or database field names. Write it the way a\n  person would say it.\n- Exactly one question mark.\n- Some items have no answer in the data. You cannot tell which, and you should\n  not try: write every item as a straightforward question regardless.\n",
+ "style": "Write it the way a security analyst would type it into a search box: direct, unceremonious, no preamble.",
+ "items": [
+  {
+   "id": "qac70c4d263a4",
+   "subject_name": "HTTP Response Splitting",
+   "subject_type": "CAPEC attack pattern",
+   "identifier": "CAPEC-34",
+   "ask_for": "the CAPEC attack patterns that can follow it, and then the OWASP taxonomy entries each of those corresponds to",
+   "answer_shape": "a list of OWASP taxonomy entries"
+  },
+  {
+   "id": "q96b75afd4bef",
+   "subject_name": "Browser in the Middle (BiTM)",
+   "subject_type": "CAPEC attack pattern",
+   "identifier": "CAPEC-701",
+   "ask_for": "the CAPEC attack patterns that can follow it, and then the CAPEC attack patterns that are peers of each of those",
+   "answer_shape": "a list of CAPEC attack patterns"
+  },
+  {
+   "id": "q47c673b448d9",
+   "subject_name": "Malicious Automated Software Update via Redirection",
+   "subject_type": "CAPEC attack pattern",
+   "identifier": "CAPEC-187",
+   "ask_for": "the CAPEC attack patterns it is a more specific case of, and then the CAPEC attack patterns that can precede each of those",
+   "answer_shape": "a list of CAPEC attack patterns"
+  },
+  {
+   "id": "q9f3a627bd4ec",
+   "subject_name": "Overflow Variables and Tags",
+   "subject_type": "CAPEC attack pattern",
+   "identifier": "CAPEC-46",
+   "ask_for": "the CAPEC attack patterns it is a more specific case of, and then the example instances that illustrate each of those",
+   "answer_shape": "a list of example instances"
+  },
+  {
+   "id": "qfb777169bc70",
+   "subject_name": "Authentication Abuse",
+   "subject_type": "CAPEC attack pattern",
+   "identifier": "CAPEC-114",
+   "ask_for": "the CAPEC attack patterns that are more specific cases of it, and then the prerequisites each of those requires as a precondition",
+   "answer_shape": "a list of prerequisites"
+  },
+  {
+   "id": "q630223fb3a63",
+   "subject_name": "Port Scanning",
+   "subject_type": "CAPEC attack pattern",
+   "identifier": "CAPEC-300",
+   "ask_for": "the CAPEC attack patterns it is a more specific case of, and then the resources each of those requires",
+   "answer_shape": "a list of resources"
+  },
+  {
+   "id": "qa3619cec974d",
+   "subject_name": "BitSquatting",
+   "subject_type": "CAPEC attack pattern",
+   "identifier": "CAPEC-611",
+   "ask_for": "the CAPEC attack patterns it is a more specific case of, and then the skills each of those requires",
+   "answer_shape": "a list of skills"
+  },
+  {
+   "id": "q3bfe8af0bace",
+   "subject_name": "Subvert Access Control",
+   "subject_type": "CAPEC category",
+   "identifier": "CAPEC-225",
+   "ask_for": "the CAPEC attack patterns it contains, and then the alternate names each of those also goes by",
+   "answer_shape": "a list of alternate names"
+  },
+  {
+   "id": "qaa67ea2d82d0",
+   "subject_name": "Hardware",
+   "subject_type": "CAPEC category",
+   "identifier": "CAPEC-515",
+   "ask_for": "the CAPEC attack patterns it contains, and then the indicators that indicate each of those",
+   "answer_shape": "a list of indicators"
+  },
+  {
+   "id": "q55cdd3682272",
+   "subject_name": "HTTP Response Splitting",
+   "subject_type": "CAPEC attack pattern",
+   "identifier": "CAPEC-34",
+   "ask_for": "the CAPEC attack patterns that are peers of it, and then the CAPEC attack patterns each of those is a more specific case of",
+   "answer_shape": "a list of CAPEC attack patterns"
+  },
+  {
+   "id": "qecc3c6963693",
+   "subject_name": "HTTP Request Smuggling",
+   "subject_type": "CAPEC attack pattern",
+   "identifier": "CAPEC-33",
+   "ask_for": "the CAPEC attack patterns that are peers of it, and then the indicators that indicate each of those",
+   "answer_shape": "a list of indicators"
+  },
+  {
+   "id": "qe326cf41f9eb",
+   "subject_name": "Detection of Serverless",
+   "subject_type": "detection strategy",
+   "identifier": "DET0864",
+   "ask_for": "the ATT&CK techniques it detects, and then the ATT&CK tactics each of those belongs to",
+   "answer_shape": "a list of ATT&CK tactics"
+  },
+  {
+   "id": "qbda337d1ff6e",
+   "subject_name": "Scheduled Job Metadata",
+   "subject_type": "data component",
+   "identifier": "DC0005",
+   "ask_for": "the detection analytics that draw on it, and then the detection strategies that each of those implements",
+   "answer_shape": "a list of detection strategies"
+  },
+  {
+   "id": "qfde7b3d62acd",
+   "subject_name": "Audit",
+   "subject_type": "ATT&CK mitigation",
+   "identifier": "M1047",
+   "ask_for": "the ATT&CK techniques it mitigates, and then the threat groups that use each of those",
+   "answer_shape": "a list of threat groups"
+  },
+  {
+   "id": "q7a9f0a985789",
+   "subject_name": "DHCP Spoofing",
+   "subject_type": "ATT&CK technique",
+   "identifier": "T1557.003",
+   "ask_for": "the ATT&CK techniques it is a sub-technique of, and then the ATT&CK tactics each of those belongs to",
+   "answer_shape": "a list of ATT&CK tactics"
+  },
+  {
+   "id": "qdaa8c2492384",
+   "subject_name": "Operation AkaiRy\u016b",
+   "subject_type": "campaign",
+   "identifier": "C0060",
+   "ask_for": "the ATT&CK techniques it uses, and then the ATT&CK tactics each of those belongs to",
+   "answer_shape": "a list of ATT&CK tactics"
+  },
+  {
+   "id": "qea7639564dc9",
+   "subject_name": "Operation Wocao",
+   "subject_type": "campaign",
+   "identifier": "C0014",
+   "ask_for": "the ATT&CK techniques it uses, and then the ATT&CK techniques each of those is a sub-technique of",
+   "answer_shape": "a list of ATT&CK techniques"
+  },
+  {
+   "id": "q42de12cf7dc2",
+   "subject_name": "J-magic Campaign",
+   "subject_type": "campaign",
+   "identifier": "C0050",
+   "ask_for": "the malware and tools it uses, and then the ATT&CK techniques each of those uses",
+   "answer_shape": "a list of ATT&CK techniques"
+  },
+  {
+   "id": "qc32a9082c6bd",
+   "subject_name": "Detection of Adversary Use of Unused or Unsupported Cloud Regions (IaaS)",
+   "subject_type": "detection strategy",
+   "identifier": "DET0247",
+   "ask_for": "the detection analytics that implement it, and then the data components each of those draws on",
+   "answer_shape": "a list of data components"
+  },
+  {
+   "id": "qdf5bbf7ecaf3",
+   "subject_name": "Hijacking a privileged process",
+   "subject_type": "CAPEC attack pattern",
+   "identifier": "CAPEC-234",
+   "ask_for": "the CAPEC attack patterns that can precede it",
+   "answer_shape": "a list of CAPEC attack patterns",
+   "restriction": "only the ones whose status is Stable"
+  },
+  {
+   "id": "q3efa572c39d2",
+   "subject_name": "Password Spraying",
+   "subject_type": "CAPEC attack pattern",
+   "identifier": "CAPEC-565",
+   "ask_for": "the CAPEC attack patterns that can follow it",
+   "answer_shape": "a list of CAPEC attack patterns",
+   "restriction": "only the ones whose abstraction level is Standard"
+  },
+  {
+   "id": "q41bdd82663c1",
+   "subject_name": "HTTP Request Smuggling",
+   "subject_type": "CAPEC attack pattern",
+   "identifier": "CAPEC-33",
+   "ask_for": "the CAPEC attack patterns that can follow it",
+   "answer_shape": "a list of CAPEC attack patterns",
+   "restriction": "only the ones whose status is Stable"
+  },
+  {
+   "id": "qf83920025e2c",
+   "subject_name": "Data Serialization External Entities Blowup",
+   "subject_type": "CAPEC attack pattern",
+   "identifier": "CAPEC-221",
+   "ask_for": "the CAPEC attack patterns it is a more specific case of",
+   "answer_shape": "a list of CAPEC attack patterns",
+   "restriction": "only the ones where the likelihood of attack is Medium"
+  },
+  {
+   "id": "q36181f613179",
+   "subject_name": "Supply Chain",
+   "subject_type": "CAPEC category",
+   "identifier": "CAPEC-437",
+   "ask_for": "the CAPEC attack patterns it contains",
+   "answer_shape": "a list of CAPEC attack patterns",
+   "restriction": "only the ones where the likelihood of attack is Medium"
+  },
+  {
+   "id": "qb259791e15cd",
+   "subject_name": "Industrial Control System (ICS) Patterns",
+   "subject_type": "CAPEC view",
+   "identifier": "CAPEC-703",
+   "ask_for": "the CAPEC attack patterns it contains",
+   "answer_shape": "a list of CAPEC attack patterns",
+   "restriction": "only the ones whose status is Draft"
+  }
+ ]
+}

@@ -79,6 +79,12 @@ def _spread(pool: Sequence[Spec], take: int, rng: random.Random) -> list[Spec]:
         cells[(spec.tier, reverse, band_of(spec.gold_width))].append(spec)
     for members in cells.values():
         rng.shuffle(members)
+        # A spec nobody has ever been asked is taken before one that merely has
+        # an unasked register left. `_spread` pops from the END, so the never-
+        # asked ones go last; sorting them first would hand the draw exactly the
+        # specs it is trying to avoid. Stable after the shuffle, so this orders
+        # within a cell without undoing the stratification.
+        members.sort(key=lambda s: not bool(getattr(s, "_already_asked", False)))
 
     order = sorted(cells)
     chosen: list[Spec] = []
@@ -108,6 +114,22 @@ def main() -> None:
     parser.add_argument("--paraphrase", type=int, default=40,
                         help="specs also rendered in the other two registers")
     parser.add_argument("--seed", type=int, default=20260901)
+    # -- a FRESH draw: everything below is off by default, so the committed
+    #    selection this script already produced is unaffected.
+    parser.add_argument(
+        "--exclude-bank", action="append", default=[], type=Path,
+        help="a bank whose (spec, register) pairs have already been asked. "
+             "Repeatable. A spec with no unasked register left is dropped "
+             "entirely; a spec that has never been asked at all is preferred "
+             "over one that has, and the split is reported.",
+    )
+    parser.add_argument(
+        "--tier-quota", default=None,
+        help="explicit per-tier counts, e.g. 'D0=25,D1=28,D2=37,D3=45,D4=62,"
+             "D5=58,D6=33'. Overrides the shape arguments, which force D2 and "
+             "D3 to be equal halves of --single and so cannot reproduce an "
+             "existing bank's mix.",
+    )
     args = parser.parse_args()
 
     census = json.loads(args.census.read_text())
@@ -116,6 +138,32 @@ def main() -> None:
 
     specs = [s for s in load_specs(args.specs) if rd.renderable(s)]
     specs = [s for s in specs if spec_bank.answerable(s)]
+
+    # A spec whose own brief names its own answer cannot be asked blind. Exactly
+    # one exists in the pool, and dropping it at the draw beats failing the
+    # brief guard after the selection is written.
+    from scripts.prepare_briefs import self_leaks
+
+    leaking = [s.id for s in specs if self_leaks(s)]
+    if leaking:
+        specs = [s for s in specs if s.id not in set(leaking)]
+        print(f"dropped {len(leaking)} spec(s) whose brief names their own gold: "
+              f"{', '.join(sorted(leaking))}")
+
+    # Which (spec, register) pairs are already spent. A question is fresh when
+    # nobody has ever been asked THAT spec in THAT register; a spec nobody has
+    # ever been asked at all is fresher still and is preferred.
+    asked: dict[str, set[str]] = defaultdict(set)
+    for path in args.exclude_bank:
+        doc = json.loads(Path(path).read_text())
+        for q in (doc["questions"] if isinstance(doc, dict) else doc):
+            asked[str(q["spec_id"])].add(str(q["register"]))
+    all_registers = set(rd.REGISTERS)
+    if args.exclude_bank:
+        before = len(specs)
+        specs = [s for s in specs if asked.get(s.id, set()) != all_registers]
+        print(f"excluded {before - len(specs)} specs with no unasked register "
+              f"left, from {len(args.exclude_bank)} bank(s); {len(specs)} remain")
 
     # Allocate by tier first, then spread across shapes inside each tier.
     #
@@ -137,6 +185,17 @@ def main() -> None:
         "D5": args.constrained,
         "D6": args.cross_source,
     }
+    abstention_quota = args.abstention
+    if args.tier_quota:
+        wanted = dict(
+            (k.strip(), int(v)) for k, v in
+            (part.split("=") for part in args.tier_quota.split(",") if part.strip())
+        )
+        abstention_quota = wanted.pop("D0", abstention_quota)
+        quota_by_tier = wanted
+
+    for spec in specs:
+        object.__setattr__(spec, "_already_asked", bool(asked.get(spec.id)))
 
     rng = random.Random(args.seed)
     chosen: list[Spec] = []
@@ -182,12 +241,20 @@ def main() -> None:
         rng.shuffle(spares)
         chosen.extend(spares[: target - len(chosen)])
 
-    abstention = _spread(d0, min(args.abstention, len(d0)), rng)
+    abstention = _spread(d0, min(abstention_quota, len(d0)), rng)
     chosen.extend(abstention)
     chosen.sort(key=lambda s: (s.tier, s.id))
 
     registers = list(rd.REGISTERS)
-    assignment = {spec.id: [registers[i % len(registers)]] for i, spec in enumerate(chosen)}
+    # Round-robin, but never onto a (spec, register) pair somebody has already
+    # been asked. Without this, a recycled spec is handed back the very wording
+    # register it was spent in and the "fresh" question is the old question.
+    assignment: dict[str, list[str]] = {}
+    for i, spec in enumerate(chosen):
+        spent = asked.get(spec.id, set())
+        order = [registers[(i + k) % len(registers)] for k in range(len(registers))]
+        free = [r for r in order if r not in spent]
+        assignment[spec.id] = [free[0] if free else order[0]]
     paraphrase = rng.sample(chosen, min(args.paraphrase, len(chosen)))
     for spec in paraphrase:
         assignment[spec.id] = list(registers)
@@ -198,9 +265,28 @@ def main() -> None:
     }
     drawn_instances = sum(instances.get(sh, 0) for sh in per_shape if per_shape[sh])
 
+    recycled = sorted(s.id for s in chosen if asked.get(s.id))
+    collisions = sorted(
+        f"{sid}::{r}" for sid, rs in assignment.items()
+        for r in rs if r in asked.get(sid, set())
+    )
     payload = {
         "seed": args.seed,
-        "tier_quota": quota_by_tier,
+        "tier_quota": {**quota_by_tier, "D0": abstention_quota},
+        # Honest freshness. `recycled_specs` have been asked before in ANOTHER
+        # register — the question is new, the anchor and its gold are not — and
+        # they exist because a tier can be exhausted: on 2026-09-12 every one of
+        # D3's 73 specs was already spent, so a wholly unused D3 draw was not
+        # available at any size.
+        "excluded_banks": [str(p) for p in args.exclude_bank],
+        "recycled_specs": recycled,
+        # Pairs that could NOT be made fresh. Must be empty: a non-empty list
+        # means a question in this set has been asked, word for word, before.
+        "already_asked_pairs": collisions,
+        "recycled_by_tier": {
+            t: sum(1 for s in chosen if asked.get(s.id) and s.tier == t)
+            for t in sorted({s.tier for s in chosen})
+        },
         "specs": len(chosen),
         "questions": questions,
         "paraphrase_specs": sorted(s.id for s in paraphrase),
