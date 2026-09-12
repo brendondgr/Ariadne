@@ -14,7 +14,7 @@ Adversary-technique, attack-pattern, and mitigation graphs sit on different engi
 
 If you want to **use** it, start at [Quick Start](#quick-start). If you want to **reproduce the measurements**, start at [Reproducing the Results](#reproducing-the-results).
 
-**Contents** — [Research Record](#research-record) · [What Actually Runs](#what-actually-runs) · [Demo](#demo) · [Quick Start](#quick-start) · [Configuration](#configuration) · [Architecture](#architecture) · [Key Features](#key-features) · [Results](#results) · [Reproducing the Results](#reproducing-the-results) · [Data](#data) · [Challenges & Design Decisions](#challenges--design-decisions) · [Status](#status) · [Documentation](#documentation) · [Repository Layout](#repository-layout) · [Roadmap](#roadmap--week-by-week) · [Team & Funding](#team--funding) · [Contributing](#contributing) · [Citation](#citation) · [License](#license)
+**Contents** — [Research Record](#research-record) · [What Actually Runs](#what-actually-runs) · [Demo](#demo) · [Quick Start](#quick-start) · [Configuration](#configuration) · [Architecture](#architecture) · [Key Features](#key-features) · [Results](#results) · [Reproducing the Results](#reproducing-the-results) · [Data](#data) · [Challenges & Design Decisions](#challenges--design-decisions) · [Status](#status) · [Documentation](#documentation) · [Repository Layout](#repository-layout) · [Roadmap](#roadmap) · [Team & Funding](#team--funding) · [Contributing](#contributing) · [Citation](#citation) · [License](#license)
 
 ## Research Record
 
@@ -153,30 +153,19 @@ The keys that matter most:
 
 | Variable | Default | Meaning |
 |---|---|---|
-| `ATTACK_VERSION` · `CAPEC_VERSION` | `19.0` · `3.9` | MITRE source versions downloaded and built; the sha256 pin is taken against these |
-| `ARIADNE_DATA_DIR` | `data` | Root for raw downloads, processed pairs, and graph artifacts |
-| `NEO4J_VERSION` · `GREMLIN_VERSION` | `5.26` · `3.8.0` | Pinned Docker images for the local stack |
-| `NEO4J_HTTP_PORT` · `NEO4J_BOLT_PORT` · `GREMLIN_PORT` | `5455` · `5456` · `6455` | Host ports the stack publishes. Changing Bolt or Gremlin means changing the matching URI below |
+| `NEO4J_HTTP_PORT` · `NEO4J_BOLT_PORT` · `GREMLIN_PORT` | `5455` · `5456` · `6455` | Host ports the stack publishes. Changing Bolt or Gremlin means changing the matching URI |
 | `NEO4J_URI` · `GREMLIN_URI` | `bolt://localhost:5456` · `ws://localhost:6455/gremlin` | Where the specialists connect |
 | `NEO4J_USER` · `NEO4J_PASSWORD` · `NEO4J_AUTH` | `neo4j` · `password` · `neo4j/password` | Local Neo4j credentials; all three must agree |
-| `ARIADNE_LOAD_BATCH_SIZE` | `500` | Rows per write batch when loading artifacts into a live store |
+| `ATTACK_VERSION` · `CAPEC_VERSION` | `19.0` · `3.9` | MITRE source versions downloaded and built; the sha256 pin is taken against these |
+| `ARIADNE_DATA_DIR` | `data` | Root for raw downloads, processed pairs, and graph artifacts |
 | `ARIADNE_LLM_ENABLED` | `false` | Master switch for the optional LLM seams: the planner drafter and the narrator over verified claims |
 | `ARIADNE_LLM_BASE_URL` · `ARIADNE_LLM_MODEL` | `http://localhost:9090/v1` · `default-model` | The OpenAI-compatible endpoint and the model name it serves |
-| `ARIADNE_LLM_MAX_TOKENS` · `ARIADNE_LLM_THINKING_BUDGET` | `4096` · `0` | Completion budget, and how much of it a reasoning model may spend before answering. The budget must stay below the ceiling, and a local server caps both at `n_ctx - prompt_tokens` |
-| `ARIADNE_LLM_TIMEOUT_S` | `30.0` | Per-call timeout; a timeout falls back to the deterministic path |
-| `SPECIALIST_LLM_QUERY_BUILDER` | `false` | Lets a model write the Cypher or Gremlin itself. A measured baseline, not a supported path |
-| `SYNTHESIS_LLM_CLAIMS` | `false` | Lets a model propose claims rather than only narrate verified ones |
-| `CONVERSATION_LLM_ENABLED` | `false` | The workbench's threaded-chat graph: router, memory-grounded answers, auto-titling |
-| `CONVERSATION_QUICK_ANSWER` · `CONVERSATION_HISTORY_TURNS` | `true` · `12` | Whether the router may answer from memory, and how many prior turns it sees |
 | `ORCH_MAX_HOPS` | `1` in `.env.example`, **`5` in code** | Cap on `assess → re-plan → specialists` iterations. At `1` the loop is inert. Set it explicitly, so what you ran is recorded |
-| `ORCH_ASSESS_MODE` | `deterministic` | Sufficiency judge. `llm` is wired end to end except for the critic itself, so it currently degrades back to the deterministic judge |
-| `ORCH_CHASE_FACETS` · `ORCH_MAX_FACET_EXPANSIONS` | `false` · `4` | Whether a re-plan hop may expand un-fetched facets, and how many per hop |
-| `PIPELINE_TIMEOUT_S` · `ORCH_RECURSION_LIMIT` | `120` · `200` | Wall-clock and LangGraph step ceilings for one question |
-| `EVAL_LLM_SAMPLE_SIZE` | `20` | Questions per run when the end-to-end evaluation uses a judge |
+| `PIPELINE_TIMEOUT_S` | `120` | Wall-clock ceiling for one question |
 
-The remaining keys — the merged-graph counterfactual ports, the name-search flag, the checkpointer —
-are documented in [`.env.example`](.env.example) beside the code path that reads them. Repository
-navigation map and output-artifact tables: [`docs/structure.md`](docs/structure.md).
+The other 28 keys — the model budgets, the two LLM baselines, the conversation layer, the
+merged-graph ports — are documented in [`.env.example`](.env.example) beside the code path that
+reads each one. Repository navigation map: [`docs/structure.md`](docs/structure.md).
 
 ## Architecture
 
@@ -233,44 +222,26 @@ Full component contracts: [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) (every 
 | **Templates vs a language model writing the queries** | Templates ahead: **+0.1147** [+0.0653, +0.1645] on the development half and **+0.0822** [+0.0362, +0.1308] on the holdout under one grader family; positive but not significant under the second (+0.0696 [−0.0024, +0.1450]; +0.0643 [−0.0080, +0.1333]). The model-written arm is stable across seeds (sd 0.0089) | [`EXP-2026-09-007`](docs/research/experiments/EXP-2026-09-007-holdout-spend/), [`EXP-2026-09-006`](docs/research/experiments/EXP-2026-09-006-cross-family-august-regrade/), [`EXP-2026-09-009`](docs/research/experiments/EXP-2026-09-009-llm-query-seeded-repeats/) |
 | **Federating two stores vs merging both catalogues into one** | No demonstrable accuracy difference: merged minus federated **−0.0587** and **−0.0520** over eight named grading passes, inside the ±0.06 sampling floor at n=30, and the same under a second grader family. The case for federation is structural: merging required rewriting **1,083 of 9,138 nodes**; federation rewrote none, and a third live source loaded unmodified beside both catalogues | [`EXP-2026-08-009`](docs/research/experiments/EXP-2026-08-009-merged-graph-counterfactual/), [`EXP-2026-08-017`](docs/research/experiments/EXP-2026-08-017-federation-isolation/), [`EXP-2026-08-013`](docs/research/experiments/EXP-2026-08-013-tri-source-federation/) |
 
-**What the design costs, measured rather than assumed.**
+What the design costs is measured too, and recorded rather than summarized here: co-authorship
+bias between questions written with and without sight of the templates, the vocabulary cliff under
+paraphrase, 240/240 blocked on the safety gate after 15 live bypasses were found and closed, and
+which local graders can resolve a 0.03 difference at all. Against two published external
+benchmarks, scored against an oracle graph read rather than against 1.0, the cascade reaches
+recall 0.7633 against a ceiling of 0.9863.
 
-| Property | Figure | Record |
-|---|---|---|
-| Co-authorship bias — the same cascade, same grader, same night, on questions written alongside the templates versus questions written without sight of them | **0.0483** after the composer fix (0.1472 before it) | [`EXP-2026-08-008`](docs/research/experiments/EXP-2026-08-008-composer-fix-and-fresh-bank/) |
-| The vocabulary cliff — exact-record identity as a paraphrase drops more of the schema's own words | **1.0000 → 0.4667 → 0.4250 → 0.0990 → 0.0000** across five tiers; a gated rewrite stage lifts the bottom tiers to 0.0880 / 0.1635 but doubles confident-wrong answers there and stays off by default | [`EXP-2026-08-020`](docs/research/experiments/EXP-2026-08-020-variant-robustness/), [`EXP-2026-09-014`](docs/research/experiments/EXP-2026-09-014-hybrid-rewrite-stage/) |
-| The safety gate, under 240 generated probes rather than 17 hand-written ones | **240/240** blocked, after **15** live bypasses were found and closed | [`EXP-2026-08-016`](docs/research/experiments/EXP-2026-08-016-tenant-isolation/) |
-| Grader resolution — whether a local judge can see a 0.03 difference near the ceiling | Of three local graders one can; one emits a single value there and one inverts the ordering of mediocre and good answers | [`EXP-2026-09-008`](docs/research/experiments/EXP-2026-09-008-grader-calibration/) |
+Four honest limits carry across all of it: every question is anchored, so open-ended asks are
+unmeasured; the development catalogue was co-authored with the system; no published external
+system has been run as a baseline; and the judge is a model, so every figure names its grader.
+[`CURRENT.md`](docs/research/CURRENT.md) holds each of these with its experiment.
 
-**Against two published external benchmarks**, scored against an oracle graph read rather than against 1.0, the template cascade reaches recall **0.7633** after two coverage fixes, against a ceiling of 0.9863 ([`EXP-2026-08-010`](docs/research/experiments/EXP-2026-08-010-external-validation/), [`EXP-2026-08-012`](docs/research/experiments/EXP-2026-08-012-template-coverage-fix/)).
+### Earlier measurements
 
-### The July arm study, kept as history
-
-Seven full runs over the 120-question development catalogue, each answer graded by an independent Sonnet 5 agent ([`docs/evaluation/2026-07-26/`](docs/evaluation/2026-07-26/README.md)). These are **development-set figures, on questions co-authored with the templates, produced by a model that no longer serves the endpoint** (Gemma 4 31B in July). They are the record of what was measured, not a description of the system today.
-
-<details>
-<summary>The seven-arm table (four arms shown; all seven are in the report)</summary>
-
-| Configuration | Plan | Synthesize | correctness | verdicts | hallucinations | wall clock |
-|---|---|---|---|---|---|---|
-| **A — deterministic** | authored | deterministic | **0.9972** | **120/0/0** | **0** | **1.6 s** |
-| **F — determ. + loop + LLM writer** | authored | LLM over verified claims | 0.9957 | 119/1/0 | 3 | 533 s |
-| E — LLM-planned + loop | **LLM** | LLM over verified claims | 0.8560 | 97/7/16 | 15 | 1,043 s |
-| B — LLM-planned | **LLM** | LLM over verified claims | 0.8505 | 92/14/14 | 12 | 1,020 s |
-
-*(verdicts = CORRECT / PARTIAL / INCORRECT)*
-
-</details>
-
-Two findings from it still stand and drove the defaults: LLM planning is where the loss concentrates (B − C = **−0.1185** with extraction and synthesis held constant), and binding the narrator to the *verified claims* rather than raw evidence makes readable prose nearly free (0.9957 against 0.9972, zero INCORRECT). The third finding of the time — that the hand-written templates hold the accuracy — was **refuted** by the September comparisons above; the arm that supported it (Arm G) is now marked superseded, and its record notes that it ran with the injected gold plan rather than the LLM planner it was described with.
-
-### What these numbers do and don't show
-
-- **Every question is anchored** (names an entity or an id). Open-ended questions are unmeasured; paraphrased ones are measured and the result is the vocabulary cliff above.
-- **The catalogue was co-authored with the system.** Its price is measured: 0.0483.
-- **No published external system has been run as a baseline.** Both baselines are our own: a model writing queries from the real schema, and a merged single store.
-- **The judge is a model.** Every judged figure names its grader and has been checked under a second family; the levels move with the grader, the orderings have not.
-- **The `generic` arm's narrator calls a model.** Its query path is byte-reproducible; its prose differs between runs on 143 of 276 answers, and the judged score moves by 0.0074 across six seeds ([`EXP-2026-09-010`](docs/research/experiments/EXP-2026-09-010-model-free-arm-identity/), [`EXP-2026-09-011`](docs/research/experiments/EXP-2026-09-011-generic-seeded-repeats/)).
+A seven-arm study over a 120-question catalogue was run in July and is kept as history in
+[`docs/evaluation/2026-07-26/`](docs/evaluation/2026-07-26/README.md). It was graded by a model
+that no longer serves the endpoint, on questions co-authored with the templates, and its headline
+finding has since been refuted by the comparisons above. Two of its findings still stand and drove
+the defaults: LLM planning is where the loss concentrates, and binding the narrator to the verified
+claims rather than to raw evidence makes readable prose nearly free.
 
 ## Reproducing the Results
 
@@ -363,23 +334,17 @@ Since then the project has run **20 further experiments** — blind holdouts, bo
 
 | Document | Description |
 |----------|--------------|
-| [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) | The pipeline stage by stage — cards, intent, canonicalize, plan, specialists, retrieval loop, synthesis, orchestration — with the configuration each stage actually reads |
-| [`docs/goals.md`](docs/goals.md) | Full roadmap, evaluation criteria, deliverables |
-| [`docs/structure.md`](docs/structure.md) | Repository navigation map and output-artifact reference |
 | [`docs/commands.md`](docs/commands.md) | Every CLI command, verified against the parsers |
-| [`docs/agent-interfaces.md`](docs/agent-interfaces.md) | The four integration-frozen seams: wire shapes, omit-when-empty rules, change policy |
+| [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) | The pipeline stage by stage, with the configuration each stage reads |
+| [`docs/structure.md`](docs/structure.md) | Repository navigation map and output-artifact reference |
 | [`docs/source_cards.md`](docs/source_cards.md) | Source-card format specification and authoring checklist |
 | [`docs/query-safety.md`](docs/query-safety.md) | The safety model by enforcement point |
 | [`docs/migration-guide.md`](docs/migration-guide.md) | Adding a new query-language specialist |
-| [`docs/CHANGELOG.md`](docs/CHANGELOG.md) | How to read and extend `docs/changelog.jsonl` |
-| [`docs/evaluation/README.md`](docs/evaluation/README.md) | Which evaluation report is current, and what each measures |
-| [`docs/research/`](docs/research/README.md) | **The research record.** Every experiment, claim, decision, figure, and open question |
-| [`docs/research/CURRENT.md`](docs/research/CURRENT.md) | **Read before quoting any number**: the current headline per experiment and every withdrawn figure with its replacement |
-| [`docs/research/INDEX.md`](docs/research/INDEX.md) | Auto-generated table of every recorded experiment |
-| [`docs/research/CLAIMS.md`](docs/research/CLAIMS.md) | Claim → experiment → artifact ledger, with what is and is not supported |
-| [`docs/research/audit-2026-08-03.md`](docs/research/audit-2026-08-03.md) | External research audit: novelty, positioning, blocking gaps |
-| [`docs/skills/global-project-rules/SKILL.md`](docs/skills/global-project-rules/SKILL.md) | Agent workflow rules (read first) |
+| [`docs/research/`](docs/research/README.md) | **The research record**, and its own index: every experiment, claim, decision, figure, and open question. Read [`CURRENT.md`](docs/research/CURRENT.md) before quoting any number |
 | [`NOTICE`](NOTICE) | MITRE ATT&CK® and CAPEC™ attribution, licence text, and the pinned dataset versions |
+
+Agent workflow rules, the interface contracts, the changelog format, and the evaluation-report
+index sit beside these in [`docs/`](docs/).
 
 ## Repository Layout
 
@@ -397,53 +362,13 @@ web/      Analyst-facing workbench (Next.js App Router)
 
 Agent pointer folders (`.claude/`, `.agents/`, `.cursor/`) route to canonical instructions under [`docs/skills/`](docs/skills/) and contain no instructions of their own.
 
-## Roadmap — Week by Week
+## Roadmap
 
-Every task through Wk 14–15 is complete: setup, the data layer, all four agents, end-to-end
-integration, and both evaluation tiers, with the technical documentation set delivered. The one
-item still open is Wk 15–16, pitch preparation and the final demo. Full task rationale is in
-[`docs/goals.md`](docs/goals.md); change history in [`docs/changelog.jsonl`](docs/changelog.jsonl).
-
-<details>
-<summary>The week-by-week plan, with its three milestone check-ins</summary>
-
-| Status | Weeks | Phase | Task | Difficulty |
-| :---: |-------|-------|------|------------|
-| ✅ | Wk 1–2 | Setup | Environment and tooling setup | Low |
-| ✅ | Wk 2–3 | Setup | Download and validate public data sources | Low |
-| ✅ | Wk 3–4 | Data layer | Build portable ATT&CK graph artifacts (JSONL, schema, Neo4j CSV/Cypher) | Medium |
-| ✅ | Wk 4 | Data layer | Runtime ATT&CK graph loader (Neo4j/Gremlin load, verify, health) | Medium |
-| ✅ | Wk 4–5 | Data layer | Build Gremlin CAPEC fixture | Medium |
-| ✅ | Wk 4–5 | Data layer | Fixture-QA harness (raw==manifest==live) + sha256-pinned data snapshot | Medium |
-| ✅ | Wk 5 | Data layer | Author source cards (auto-generated base + hand-authored overlays: connection, provenance, safety limits) | Low |
-
-**ITS check-in** — Both graph fixtures live and QA-reconciled against the pinned ATT&CK v19.0 / CAPEC v3.9 snapshot, source cards complete, environment reproducible.
-
-| Status | Weeks | Phase | Task | Difficulty |
-| :---: |-------|-------|------|------------|
-| ✅ | Wk 6–7 | Agents | Federated planning agent | High |
-| ✅ | Wk 7–8 | Agents | Cypher specialist agent | High |
-| ✅ | Wk 8–9 | Agents | Gremlin specialist agent | High |
-
-**Midpoint review** — All three agents (planner + Cypher + Gremlin) functional and running end-to-end against the live Neo4j + Gremlin stack.
-
-| Status | Weeks | Phase | Task | Difficulty |
-| :---: |-------|-------|------|------------|
-| ✅ | Wk 10 | Agents | Synthesis and reporting agent | High |
-| ✅ | Wk 10–11 | Agents | End-to-end integration and pipeline wiring | Medium |
-| ✅ | Wk 11–13 | Evaluation | Component-level evaluation (planner + specialist scorers, `--component-eval` report) | Medium |
-| ✅ | Wk 12–13 | Evaluation | End-to-end evaluation and LLM evaluator (`--e2e-eval` report, opt-in LLM judge, web Evaluation view) | Medium |
-
-**Pitch workshop** — Evaluation results compiled, demo stable, narrative prepared.
-
-| Status | Weeks | Phase | Task | Difficulty |
-| :---: |-------|-------|------|------------|
-| ✅ | Wk 14–15 | Evaluation | Bug fixes, iteration, and documentation — technical documentation set delivered and consolidated; hardening recorded as the August–September experiment series | Low |
-| 🔄 | Wk 15–16 | Pitch prep | Pitch preparation and final demo — underway, see `docs/pitch/october-pitch-plan.md` | Low |
-
-**October ReliaQuest pitch** — Live demo, evaluation results, and future development roadmap presented.
-
-</details>
+Every task through Wk 14–15 of the funded plan is complete: setup, the data layer, all four agents,
+end-to-end integration, both evaluation tiers, and the technical documentation set. The one item
+still open is Wk 15–16, pitch preparation and the final demo. The week-by-week plan with its three
+milestone check-ins is in [`docs/goals.md`](docs/goals.md); change history is in
+[`docs/changelog.jsonl`](docs/changelog.jsonl).
 
 ## Team & Funding
 
