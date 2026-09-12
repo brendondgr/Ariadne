@@ -80,6 +80,7 @@ def scan(target: set[str], control: set[str]) -> dict:
 
 
 def seal(bank: Path) -> dict:
+    bank = bank if bank.is_absolute() else (REPO / bank)
     doc = json.loads(bank.read_text())
     questions = doc["questions"] if isinstance(doc, dict) else doc
     target = {str(q["id"]) for q in questions}

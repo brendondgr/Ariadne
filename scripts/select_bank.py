@@ -124,6 +124,11 @@ def main() -> None:
              "over one that has, and the split is reported.",
     )
     parser.add_argument(
+        "--exclude-answered", action="store_true",
+        help="also treat every (spec, register) ANSWERED anywhere under "
+             "docs/evaluation/experiments as spent, not only those in a bank",
+    )
+    parser.add_argument(
         "--tier-quota", default=None,
         help="explicit per-tier counts, e.g. 'D0=25,D1=28,D2=37,D3=45,D4=62,"
              "D5=58,D6=33'. Overrides the shape arguments, which force D2 and "
@@ -158,12 +163,37 @@ def main() -> None:
         doc = json.loads(Path(path).read_text())
         for q in (doc["questions"] if isinstance(doc, dict) else doc):
             asked[str(q["spec_id"])].add(str(q["register"]))
+    # Every case id anything has ever ANSWERED, anywhere under the runs tree.
+    # Excluding the three committed banks was not enough on 2026-09-12: three
+    # drawn questions had already been answered by `probe-2026-09-01`, which is
+    # not a bank, and `scripts/fresh_seal.py` caught them after the set had been
+    # authored. A draw that reads the runs tree cannot make that mistake.
+    if args.exclude_answered:
+        runs = Path("docs/evaluation/experiments")
+        answered_cases: set[str] = set()
+        for path in runs.rglob("answers/*.json"):
+            if ".judgment" in path.name:
+                continue
+            try:
+                case = json.loads(path.read_text()).get("id")
+            except (json.JSONDecodeError, OSError):
+                continue
+            if case:
+                answered_cases.add(str(case))
+        for case in answered_cases:
+            spec_id, _, register = str(case).partition("::")
+            if register:
+                asked[spec_id].add(register)
+        print(f"read {len(answered_cases)} answered case id(s) from {runs}")
+
     all_registers = set(rd.REGISTERS)
-    if args.exclude_bank:
+    if args.exclude_bank or args.exclude_answered:
         before = len(specs)
         specs = [s for s in specs if asked.get(s.id, set()) != all_registers]
         print(f"excluded {before - len(specs)} specs with no unasked register "
-              f"left, from {len(args.exclude_bank)} bank(s); {len(specs)} remain")
+              f"left, from {len(args.exclude_bank)} bank(s)"
+              + (" and the runs tree" if args.exclude_answered else "")
+              + f"; {len(specs)} remain")
 
     # Allocate by tier first, then spread across shapes inside each tier.
     #

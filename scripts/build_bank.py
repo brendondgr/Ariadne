@@ -46,6 +46,16 @@ def main() -> None:
     parser.add_argument("--selection", type=Path, default=BANK_DIR / "selection.json")
     parser.add_argument("--ingested", type=Path, default=BANK_DIR / "ingested.json")
     parser.add_argument("--out", type=Path, default=BANK_DIR)
+    parser.add_argument("--name", default="bank.json",
+                        help="output filename under --out")
+    parser.add_argument(
+        "--no-split", action="store_true",
+        help="one whole bank, no dev/holdout halves. For a set drawn to be used "
+             "once: a split exists to keep half of a bank unseen while the other "
+             "half selects a configuration, and a set that selects nothing has "
+             "nothing to keep back.",
+    )
+    parser.add_argument("--manifest", default="MANIFEST.md")
     args = parser.parse_args()
 
     selection = json.loads(args.selection.read_text())
@@ -68,7 +78,7 @@ def main() -> None:
     )
 
     for entry in bank["questions"]:
-        entry["split"] = split_of(entry["spec_id"])
+        entry["split"] = "whole" if args.no_split else split_of(entry["spec_id"])
 
     bank["meta"]["reweighting"] = selection["reweighting"]
     bank["meta"]["stratification"] = {
@@ -76,7 +86,15 @@ def main() -> None:
         for k in ("tier_quota", "by_tier", "by_source", "by_width_band", "by_direction")
         if k in selection
     }
-    bank["meta"]["split_rule"] = "sha256(spec_id) parity; drawn before any run"
+    bank["meta"]["split_rule"] = (
+        "none — one whole bank, used once" if args.no_split
+        else "sha256(spec_id) parity; drawn before any run"
+    )
+    bank["meta"]["author_path"] = ingested["report"].get("author_path", "unknown")
+    for key in ("excluded_banks", "recycled_specs", "recycled_by_tier",
+                "already_asked_pairs"):
+        if key in selection:
+            bank["meta"].setdefault("freshness", {})[key] = selection[key]
     bank["meta"]["rejected"] = ingested["report"]["rejection_reasons"]
     bank["meta"]["keep_rate"] = ingested["report"]["keep_rate"]
     bank["meta"]["paraphrase_specs"] = len(selection["paraphrase_specs"])
@@ -86,16 +104,17 @@ def main() -> None:
     shapes = {s for q in bank["questions"] for s in q["spec"]["shapes"]}
     census_shapes = {e["triple"] for e in census["edges"]}
 
-    path = args.out / "bank.json"
+    path = args.out / args.name
     spec_bank.write(bank, path)
     digest = hashlib.sha256(path.read_bytes()).hexdigest()
-    (args.out / "MANIFEST.md").write_text(
+    (args.out / args.manifest).write_text(
         f"""# Expansion bank
 
 | | |
 |---|---|
 | questions | {len(bank['questions'])} |
 | dev / holdout | {splits['dev']} / {splits['holdout']} |
+| split rule | {bank['meta']['split_rule']} |
 | distinct specs | {len({q['spec_id'] for q in bank['questions']})} |
 | census shapes covered | {len(shapes & census_shapes)} / {len(census_shapes)} |
 | author | {bank['meta']['author_model']} (subagent) |

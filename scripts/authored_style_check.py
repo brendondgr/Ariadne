@@ -120,7 +120,12 @@ def main() -> int:
     ap.add_argument("--compare", type=Path, default=None,
                     help="an existing bank, compared as a DISTRIBUTION only")
     ap.add_argument("--tolerance", type=float, default=2.0,
-                    help="|z| beyond which a batch is called an outlier")
+                    help="|z| beyond which a batch is a candidate outlier")
+    ap.add_argument("--min-gap-words", type=float, default=2.0,
+                    help="a candidate is only an outlier if it is ALSO this far "
+                         "from its register's mean in words")
+    ap.add_argument("--min-gap-clauses", type=float, default=0.75,
+                    help="the same floor, in clauses")
     ap.add_argument("--out", type=Path, default=None)
     args = ap.parse_args()
 
@@ -155,10 +160,26 @@ def main() -> int:
                 others = [report["batches"][n][metric] for n in names if n != name]
                 z = _z(row[metric], others or pool)
                 row[f"z_{metric}"] = round(z, 2)
-                if abs(z) > args.tolerance:
+                # A z-score alone is the wrong test once the batches are tight:
+                # if every batch lands within a word of the others, the standard
+                # deviation collapses and a batch a word and a half out scores
+                # |z| > 3 while being, in fact, the same length. The existing
+                # bank's batches span 10.2 to 26.8 words; these span about four.
+                # So a batch must be BOTH statistically distinguishable and
+                # materially different before it is worth re-authoring.
+                gap = abs(row[metric] - report["by_register"][register][metric])
+                floor = (args.min_gap_words if metric == "words_mean"
+                         else args.min_gap_clauses)
+                row[f"gap_{metric}"] = round(gap, 2)
+                if abs(z) > args.tolerance and gap >= floor:
                     report["outliers"].append(
                         {"batch": name, "register": register, "metric": metric,
-                         "value": row[metric], "z": round(z, 2)}
+                         "value": row[metric], "z": round(z, 2), "gap": round(gap, 2)}
+                    )
+                elif abs(z) > args.tolerance:
+                    report.setdefault("tight_cluster_flags", []).append(
+                        {"batch": name, "register": register, "metric": metric,
+                         "value": row[metric], "z": round(z, 2), "gap": round(gap, 2)}
                     )
 
     if args.compare:
@@ -193,9 +214,14 @@ def main() -> int:
     if report["outliers"]:
         print(f"\nOUTLIER BATCHES (|z| > {args.tolerance}) — re-author these:")
         for row in report["outliers"]:
-            print(f"  {row['batch']}: {row['metric']}={row['value']} z={row['z']}")
+            print(f"  {row['batch']}: {row['metric']}={row['value']} "
+                  f"z={row['z']} gap={row['gap']}")
     else:
-        print(f"\nno batch is beyond |z| > {args.tolerance} on length or complexity")
+        print(f"\nno batch is both |z| > {args.tolerance} and materially apart "
+              f"(>= {args.min_gap_words} words / {args.min_gap_clauses} clauses)")
+    for row in report.get("tight_cluster_flags", []):
+        print(f"  (statistically apart but materially the same: {row['batch']} "
+              f"{row['metric']}={row['value']} z={row['z']} gap={row['gap']})")
 
     if args.out:
         args.out.write_text(json.dumps(report, indent=2) + "\n")
