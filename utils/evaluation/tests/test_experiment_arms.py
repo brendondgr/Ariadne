@@ -163,6 +163,55 @@ class TestGenericLocalNarrator:
         assert self.ARM not in _MODEL_FREE_ARMS
 
 
+class TestGenericLocalFull:
+    """The specialist seam — the one with a measured downside."""
+
+    ARM = "generic_local_full"
+
+    def test_it_turns_on_the_flag_a_builder_actually_reads(self):
+        # SPECIALIST_LLM_ENABLED is NOT that flag. Four other arms set it to
+        # mean "LLM drafter/synthesis" and no query builder reads it, so an arm
+        # that set only it would run with no model writing any query and report
+        # a healthy specialist seam. `utils/specialists/config.py` reads
+        # SPECIALIST_LLM_QUERY_BUILDER.
+        env = env_for(self.ARM)
+        assert env["SPECIALIST_LLM_QUERY_BUILDER"] == "true"
+
+    def test_the_pool_is_built_with_the_query_builder_on(self):
+        # The flag alone is not enough: the arm's pool must be constructed with
+        # llm_query_builder=True, the same way `llm_query` is.
+        import inspect
+
+        source = inspect.getsource(exp.run_arm)
+        assert '"llm_query", "generic_local_full"' in source
+
+    def test_it_is_the_narrator_arm_plus_the_specialist_seam(self):
+        narrator = env_for("generic_local_narrator")
+        full = env_for(self.ARM)
+        # Nothing they share may differ: the specialist seam is the only change.
+        assert {k: full[k] for k in set(narrator) & set(full)} == narrator
+        assert set(full) - set(narrator) == {
+            "SPECIALIST_LLM_QUERY_BUILDER", "SPECIALIST_LLM_BASE_URL",
+            "SPECIALIST_LLM_MODEL", "SPECIALIST_LLM_MAX_TOKENS",
+            "SPECIALIST_LLM_TIMEOUT_S", "LLM_THINKING_BUDGET",
+        }
+
+    def test_the_planner_stays_out_of_it(self):
+        # Steps 3 and 4 vary the model, not the plan. Both replay the authored
+        # decomposition, so they are comparable with generic_composed.
+        assert env_for(self.ARM)["PLANNER_LLM_ENABLED"] == "false"
+
+    def test_the_clock_is_long_enough_for_the_budget(self):
+        # llm_query's lesson: raising the token budget without raising the clock
+        # aborts every call mid-draft, and an aborted call is indistinguishable
+        # downstream from a model with nothing to say.
+        env = env_for(self.ARM)
+        assert float(env["SPECIALIST_LLM_TIMEOUT_S"]) >= 600.0
+
+    def test_it_is_not_treated_as_model_free(self):
+        assert self.ARM not in _MODEL_FREE_ARMS
+
+
 class TestTheLLMPostureIsStatedAtTheCallSite:
     """`use_llm` overwrites the environment, so it is asserted, not assumed.
 

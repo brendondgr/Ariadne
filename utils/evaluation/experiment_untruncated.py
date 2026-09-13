@@ -44,7 +44,7 @@ DEFAULT_ROOT = "docs/evaluation/experiments/untruncated"
 # un-truncation, A − C isolates the composer, and B − C isolates LLM planning.
 ARMS = ("deterministic", "llm", "gold_llm", "llm_loop", "gold_loop_llm", "generic",
         "llm_query", "merged", "generic_composed", "generic_planned",
-        "generic_local_narrator",
+        "generic_local_narrator", "generic_local_full",
         "rewrite_off", "rewrite_det", "rewrite_model")
 
 #: The small-model endpoint (EXP-2026-09-019). Read at call time, never at
@@ -281,6 +281,46 @@ def untruncated_env(*, arm: str, llm_model: str, llm_max_tokens: int) -> dict[st
             # (`EXP-2026-09-010`), and a time-out is indistinguishable
             # downstream from a model with nothing to say.
             "SYNTHESIS_LLM_TIMEOUT_S": "600.0",
+            "ARIADNE_REWRITE": "0",
+            "ARIADNE_REWRITE_MODEL": "0",
+        })
+    elif arm == "generic_local_full":
+        # EXP-2026-09-019 Step 4 — the 2B model on the seam that can lose.
+        # Everything `generic_local_narrator` sets, plus a model drafting the
+        # queries. This is the seam with a measured downside: on the 27B control
+        # the model rewrote the query on 49 of 284 questions and at least one
+        # went backwards, and `llm_query` scored 0.4039 on the holdout.
+        #
+        # **The flag is SPECIALIST_LLM_QUERY_BUILDER, not
+        # SPECIALIST_LLM_ENABLED.** The plan names the latter, but no builder
+        # reads it — four other arms set it to mean "LLM drafter/synthesis", and
+        # `llm_query`'s own comment records the distinction. An arm built to the
+        # plan's literal wording would have run with no model writing any query
+        # and reported that as a healthy specialist seam, which is the same
+        # failure shape as `I-4`: a configuration that cannot do the thing under
+        # test, completing successfully.
+        #
+        # The budget is small and the clock is long, for the reason `llm_query`
+        # records: raising the token budget without raising the timeout aborts
+        # every call mid-draft, and a bound that cuts a model off is
+        # indistinguishable downstream from a model with nothing to say.
+        env.update({
+            "SPECIALIST_GENERIC_ONLY": "true",
+            "PLANNER_LLM_ENABLED": "false",
+            "CONVERSATION_LLM_ENABLED": "false",
+            "SPECIALIST_LLM_ENABLED": "false",
+            "SPECIALIST_LLM_QUERY_BUILDER": "true",
+            "SPECIALIST_LLM_BASE_URL": _local_llm_base_url(),
+            "SPECIALIST_LLM_MODEL": _local_llm_model(),
+            "SPECIALIST_LLM_MAX_TOKENS": "4096",
+            "SPECIALIST_LLM_TIMEOUT_S": "600.0",
+            "SYNTHESIS_LLM_ENABLED": "true",
+            "SYNTHESIS_LLM_BASE_URL": _local_llm_base_url(),
+            "SYNTHESIS_LLM_MODEL": _local_llm_model(),
+            "SYNTHESIS_LLM_MAX_TOKENS": _local_llm_max_tokens(),
+            "SYNTHESIS_LLM_THINKING_BUDGET": _local_llm_thinking_budget(),
+            "SYNTHESIS_LLM_TIMEOUT_S": "600.0",
+            "LLM_THINKING_BUDGET": _local_llm_thinking_budget(),
             "ARIADNE_REWRITE": "0",
             "ARIADNE_REWRITE_MODEL": "0",
         })
@@ -872,6 +912,9 @@ RUNNERS = {
     # at the local small model. The claims are composed deterministically in
     # both, which is what makes them comparable.
     "generic_local_narrator": run_gold_llm,
+    # Same driver again: the query builder is decided by the pool's
+    # SpecialistConfig, not by the runner, exactly as in `llm_query`.
+    "generic_local_full": run_gold_llm,
     # EXP-2026-09-014's three arms all drive the REAL pipeline (planner
     # included, no language model in it) and differ only by the two rewrite
     # flags their env sets. `run_deterministic` would be wrong here: it replays
@@ -932,7 +975,7 @@ def run_arm(
     else:
         pool = _RouterPool(
             llm_enabled=(arm == "gold_llm"),
-            llm_query_builder=(arm == "llm_query"),
+            llm_query_builder=(arm in ("llm_query", "generic_local_full")),
         )
 
     manifest: list[dict[str, Any]] = []
