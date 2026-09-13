@@ -151,16 +151,56 @@ class TestGenericLocalNarrator:
         # time-out is indistinguishable downstream from a model with nothing to say.
         assert float(env_for(self.ARM)["SYNTHESIS_LLM_TIMEOUT_S"]) > 120.0
 
+    def test_it_is_not_treated_as_model_free(self):
+        # It has a live seam, so the relay preflight must run for it.
+        assert self.ARM not in _MODEL_FREE_ARMS
+
     def test_it_differs_from_its_control_only_in_the_narrator(self):
+        narrator = env_for(self.ARM)
+        control = env_for("generic_narrator_off")
+        assert set(narrator) == set(control)
+        differing = {k for k in narrator if narrator[k] != control[k]}
+        assert differing == {"SYNTHESIS_LLM_ENABLED"}
+
+    def test_generic_composed_is_NOT_its_control(self):
+        """`_run_gold_replay` loads two different SynthesisConfigs.
+
+        Deterministic synthesis gets the bare `SynthesisConfig()` — every cap at
+        its dataclass default, `max_citations=8` — and LLM synthesis gets
+        `SynthesisConfig.from_env()`, which reads the un-truncated 200. So
+        `generic_composed` and any narrator arm compose at different caps, and
+        two of forty enumeration claims differed on that alone at n=40. Reading
+        the narrator against it attributes a composer cap to the model.
+        """
         narrator = env_for(self.ARM)
         composed = env_for("generic_composed")
         shared = set(narrator) & set(composed)
         differing = {k for k in shared if narrator[k] != composed[k]}
         assert differing == {"SYNTHESIS_LLM_ENABLED"}
+        # Same env delta as the real control, and yet not interchangeable with
+        # it — which is exactly why the env alone cannot be trusted here.
+        assert RUNNERS["generic_composed"] is not RUNNERS[self.ARM]
 
-    def test_it_is_not_treated_as_model_free(self):
-        # It has a live seam, so the relay preflight must run for it.
-        assert self.ARM not in _MODEL_FREE_ARMS
+
+class TestGenericNarratorOff:
+    """The control for Steps 3 and 4."""
+
+    ARM = "generic_narrator_off"
+
+    def test_it_reaches_synthesis_through_the_same_runner_as_the_arms_it_controls(self):
+        assert RUNNERS[self.ARM] is RUNNERS["generic_local_narrator"]
+        assert RUNNERS[self.ARM] is RUNNERS["generic_local_full"]
+
+    def test_every_seam_is_off(self):
+        env = env_for(self.ARM)
+        for seam in SEAMS:
+            assert env[seam] == "false", f"{seam} is not off"
+
+    def test_it_skips_the_preflight_despite_naming_an_endpoint(self):
+        # It names one only so its config resolves identically to the arms it
+        # controls for; it never calls it.
+        assert self.ARM in _MODEL_FREE_ARMS
+        assert env_for(self.ARM)["SYNTHESIS_LLM_BASE_URL"].startswith("http")
 
 
 class TestGenericLocalFull:

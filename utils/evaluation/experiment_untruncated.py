@@ -44,7 +44,7 @@ DEFAULT_ROOT = "docs/evaluation/experiments/untruncated"
 # un-truncation, A − C isolates the composer, and B − C isolates LLM planning.
 ARMS = ("deterministic", "llm", "gold_llm", "llm_loop", "gold_loop_llm", "generic",
         "llm_query", "merged", "generic_composed", "generic_planned",
-        "generic_local_narrator", "generic_local_full",
+        "generic_local_narrator", "generic_local_full", "generic_narrator_off",
         "rewrite_off", "rewrite_det", "rewrite_model")
 
 #: The small-model endpoint (EXP-2026-09-019). Read at call time, never at
@@ -280,6 +280,34 @@ def untruncated_env(*, arm: str, llm_model: str, llm_max_tokens: int) -> dict[st
             # The narrator's failures were read time-outs at the 120 s default
             # (`EXP-2026-09-010`), and a time-out is indistinguishable
             # downstream from a model with nothing to say.
+            "SYNTHESIS_LLM_TIMEOUT_S": "600.0",
+            "ARIADNE_REWRITE": "0",
+            "ARIADNE_REWRITE_MODEL": "0",
+        })
+    elif arm == "generic_narrator_off":
+        # The control Steps 3 and 4 actually need, and the one that did not
+        # exist. `generic_composed` is NOT it, for a reason the claim-identity
+        # gate caught at n=40: `_run_gold_replay` builds `SynthesisConfig()` —
+        # the bare constructor, every cap at its dataclass default — when
+        # synthesis is deterministic, and `SynthesisConfig.from_env()` when it is
+        # not. So `generic_composed` composes at `max_citations=8` while any
+        # narrator arm composes at the un-truncated 200, and two of forty
+        # enumeration claims differed on that alone. Reading the narrator
+        # against it would have attributed a composer cap to the model.
+        #
+        # This arm is `generic_local_narrator` with the seam off and nothing
+        # else changed, so it loads its config the same way through the same
+        # runner. The difference between them is the narrator.
+        env.update({
+            "SPECIALIST_GENERIC_ONLY": "true",
+            "PLANNER_LLM_ENABLED": "false",
+            "SPECIALIST_LLM_ENABLED": "false",
+            "CONVERSATION_LLM_ENABLED": "false",
+            "SYNTHESIS_LLM_ENABLED": "false",
+            "SYNTHESIS_LLM_BASE_URL": _local_llm_base_url(),
+            "SYNTHESIS_LLM_MODEL": _local_llm_model(),
+            "SYNTHESIS_LLM_MAX_TOKENS": _local_llm_max_tokens(),
+            "SYNTHESIS_LLM_THINKING_BUDGET": _local_llm_thinking_budget(),
             "SYNTHESIS_LLM_TIMEOUT_S": "600.0",
             "ARIADNE_REWRITE": "0",
             "ARIADNE_REWRITE_MODEL": "0",
@@ -915,6 +943,12 @@ RUNNERS = {
     # Same driver again: the query builder is decided by the pool's
     # SpecialistConfig, not by the runner, exactly as in `llm_query`.
     "generic_local_full": run_gold_llm,
+    # The same runner as the arms it controls for, which is the entire point:
+    # `_run_gold_replay` loads a DIFFERENT SynthesisConfig depending on the
+    # llm_synthesis flag, so a control reached through the other branch is
+    # composing at different caps. `SYNTHESIS_LLM_ENABLED=false` in its env is
+    # what turns the narrator off, via from_env().
+    "generic_narrator_off": run_gold_llm,
     # EXP-2026-09-014's three arms all drive the REAL pipeline (planner
     # included, no language model in it) and differ only by the two rewrite
     # flags their env sets. `run_deterministic` would be wrong here: it replays
@@ -1053,6 +1087,10 @@ def run_arm(
 #: fail a run that cannot be affected by the relay at all.
 _MODEL_FREE_ARMS = frozenset({
     "deterministic", "generic_composed", "generic_planned", "merged",
+    # No live seam: SYNTHESIS_LLM_ENABLED=false, and every other seam off. It
+    # names an endpoint only so that its config resolves identically to the
+    # arms it is the control for.
+    "generic_narrator_off",
 })
 
 
