@@ -13,13 +13,13 @@
  "hallucinations": [
   "C0027 has no ATTRIBUTED_TO relationships in this catalogue"
  ],
- "rationale": "The answer states the expected group G1015 for campaign C0027, which addresses the core question. However, it also claims that C0027 has no ATTRIBUTED_TO relationships, contradicting the executed query result that returned one row for G1015. This makes the answer partially correct rather than fully faithful.",
+ "rationale": "The answer states the expected group G1015 for campaign C0027, which satisfies the core attribution question. However, it also claims that C0027 has no ATTRIBUTED_TO relationships, contradicting the executed query result that returned one related group. This makes the answer partially correct but not fully faithful.",
  "judge": {
-  "model": "default-model",
-  "alias": "default-model",
+  "model": "skynet",
+  "alias": "skynet",
   "served_model": "qwen38-27B-v2",
   "runner": "utils/evaluation/judge_answers.py",
-  "max_tokens": 32768,
+  "max_tokens": 8192,
   "escalated": false,
   "position": 1
  }

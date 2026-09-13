@@ -11,13 +11,13 @@
  "abstention_carries_query": false,
  "fabricated_mapping": false,
  "hallucinations": [],
- "rationale": "The answer only states M1049 and its description/properties; it does not state any of the expected technique identifiers such as T1027, T1059, or T1566. Although the evidence facets show MITIGATES edges to 16 SubTechnique and 7 Technique neighbors, the narrative and claims do not surface those neighbor IDs. Thus it retrieves the anchor but fails to answer which techniques are mitigated.",
+ "rationale": "The answer only states the anchor M1049 and its description/properties, but it does not name any of the expected technique identifiers such as T1027, T1059, T1566, or T1547.006. Although the evidence contains MITIGATES facet counts for Technique and SubTechnique, the answer text does not state the actual neighbor technique IDs. All stated facts are supported by the M1049 record, but the question itself is not answered.",
  "judge": {
-  "model": "default-model",
-  "alias": "default-model",
+  "model": "skynet",
+  "alias": "skynet",
   "served_model": "qwen38-27B-v2",
   "runner": "utils/evaluation/judge_answers.py",
-  "max_tokens": 32768,
+  "max_tokens": 8192,
   "escalated": false,
   "position": 1
  }

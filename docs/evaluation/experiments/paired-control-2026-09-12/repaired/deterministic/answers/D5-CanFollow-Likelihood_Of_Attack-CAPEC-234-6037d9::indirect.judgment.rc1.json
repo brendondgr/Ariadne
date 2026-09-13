@@ -3,7 +3,7 @@
  "verdict": "INCORRECT",
  "correctness": 0.1,
  "faithfulness": 1.0,
- "groundedness": 0.9,
+ "groundedness": 1.0,
  "completeness": 0.0,
  "gold_expected": 1,
  "gold_present": 0,
@@ -11,13 +11,13 @@
  "abstention_carries_query": false,
  "fabricated_mapping": false,
  "hallucinations": [],
- "rationale": "The answer correctly identifies and describes the anchor CAPEC-234, but it does not state any attack patterns that can lead up to it. The expected related identifier CAPEC-175 is absent, so the requested set is not answered. All stated claims are supported by the CAPEC-234 record, but the answer remains incomplete because it never addresses the lead-up relationship.",
+ "rationale": "The answer only states the anchor record CAPEC-234 and its description/properties, but the question asked for lead-up attack patterns, specifically the expected related identifier CAPEC-175. It is faithful and grounded in the cited CAPEC-234 record, but it does not address the requested relationship and does not abstain. Therefore it is incorrect rather than partial.",
  "judge": {
-  "model": "default-model",
-  "alias": "default-model",
+  "model": "skynet",
+  "alias": "skynet",
   "served_model": "qwen38-27B-v2",
   "runner": "utils/evaluation/judge_answers.py",
-  "max_tokens": 32768,
+  "max_tokens": 8192,
   "escalated": false,
   "position": 1
  }

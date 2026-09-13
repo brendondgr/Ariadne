@@ -1,9 +1,9 @@
 {
  "case_id": "D0-Analytic-subtechnique-of-AN0749-d741a1::analyst",
  "verdict": "CORRECT",
- "correctness": 1.0,
+ "correctness": 0.85,
  "faithfulness": 1.0,
- "groundedness": 0.9,
+ "groundedness": 0.8,
  "completeness": 1.0,
  "gold_expected": 1,
  "gold_present": 1,
@@ -11,13 +11,13 @@
  "abstention_carries_query": false,
  "fabricated_mapping": false,
  "hallucinations": [],
- "rationale": "The answer abstains instead of guessing and reports that no records were returned for AN0749. Its notes tie the failure to the specific binding mismatch showing AN0749 identifies Analytic rather than Technique or SubTechnique. Because the expected related set is empty, stating AN0749 and reporting no parent techniques is complete.",
+ "rationale": "The answer abstains rather than asserting a parent technique for AN0749, and the evidence shows zero records plus a failed subtechnique_parent gate. It mentions AN0749 in the notes and does not fabricate a mapping. The main weakness is that the answer text does not itself display the executed Cypher query, though the trace contains it.",
  "judge": {
-  "model": "default-model",
-  "alias": "default-model",
+  "model": "skynet",
+  "alias": "skynet",
   "served_model": "qwen38-27B-v2",
   "runner": "utils/evaluation/judge_answers.py",
-  "max_tokens": 32768,
+  "max_tokens": 8192,
   "escalated": false,
   "position": 1
  }

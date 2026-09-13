@@ -11,13 +11,13 @@
  "abstention_carries_query": false,
  "fabricated_mapping": false,
  "hallucinations": [],
- "rationale": "The answer correctly identifies CAPEC-700 as the CAPEC attack pattern mapped to T1599. However, it does not state the expected resource requirement, 'The adversary requires either high privileges or full control of a boundary device on a target network.' All stated claims are supported by the cited CAPEC-700 record, so it is faithful but only partially complete.",
+ "rationale": "The answer correctly identifies CAPEC-700 as the CAPEC attack pattern mapped to T1599 and ties that claim to the CAPEC-700 record. However, it does not state the expected resource requirement, \"The adversary requires either high privileges or full control of a boundary device on a target network,\" and only paraphrases elevated access to boundary devices. Therefore it is partial: the mapping is present, but the required resource text is missing.",
  "judge": {
-  "model": "default-model",
-  "alias": "default-model",
+  "model": "skynet",
+  "alias": "skynet",
   "served_model": "qwen38-27B-v2",
   "runner": "utils/evaluation/judge_answers.py",
-  "max_tokens": 32768,
+  "max_tokens": 8192,
   "escalated": false,
   "position": 1
  }

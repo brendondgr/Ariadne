@@ -1,23 +1,25 @@
 {
  "case_id": "D2-HAS_CONSEQUENCE-CAPEC-295-7f7f0a::indirect",
  "verdict": "CORRECT",
- "correctness": 1.0,
- "faithfulness": 1.0,
- "groundedness": 1.0,
+ "correctness": 0.9,
+ "faithfulness": 0.85,
+ "groundedness": 0.95,
  "completeness": 1.0,
  "gold_expected": 1,
  "gold_present": 1,
  "abstained": false,
  "abstention_carries_query": false,
  "fabricated_mapping": false,
- "hallucinations": [],
- "rationale": "The answer identifies CAPEC-295 and states its single consequence as 'Other Confidentiality', which corresponds to the expected 'Confidentiality Other' from the CAPEC consequence's scopes and impacts. All claims are tied to the cited CAPEC-295 record and its related consequence. No unsupported cross-source mapping is asserted.",
+ "hallucinations": [
+  "The consequence is described as named 'Other Confidentiality', whereas the evidence only provides impacts ['Other'] and scopes ['Confidentiality']"
+ ],
+ "rationale": "The answer identifies CAPEC-295 and its single consequence, matching the expected consequence in substance via impacts ['Other'] and scopes ['Confidentiality']. It does not use the exact gold label 'Confidentiality Other', instead saying 'Other Confidentiality', so it is substantively complete but slightly imprecise. All claims are tied to the CAPEC-295 record and its related consequence node.",
  "judge": {
-  "model": "default-model",
-  "alias": "default-model",
+  "model": "skynet",
+  "alias": "skynet",
   "served_model": "qwen38-27B-v2",
   "runner": "utils/evaluation/judge_answers.py",
-  "max_tokens": 32768,
+  "max_tokens": 8192,
   "escalated": false,
   "position": 1
  }

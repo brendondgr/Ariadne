@@ -1,24 +1,24 @@
 {
  "case_id": "D0-Analytic-subtechnique-of-AN1112-b87d8e::formal",
  "verdict": "CORRECT",
- "correctness": 0.8,
+ "correctness": 1.0,
  "faithfulness": 1.0,
- "groundedness": 0.8,
+ "groundedness": 1.0,
  "completeness": 1.0,
  "gold_expected": 1,
  "gold_present": 1,
  "abstained": true,
- "abstention_carries_query": false,
+ "abstention_carries_query": true,
  "fabricated_mapping": false,
  "hallucinations": [],
- "rationale": "The expected gold set for AN1112's parent techniques is empty, and the answer states AN1112 while reporting no records or related technique IDs. It does not assert any cross-source mapping, so no fabricated mapping. The abstention is honest but only shows the gate error rather than the executed Cypher query, so abstention_carries_query is false.",
+ "rationale": "The answer abstains instead of asserting any parent technique for AN1112, and the evidence shows zero records plus a failed gate because AN1112 is an Analytic rather than a Technique/SubTechnique. It states AN1112 in the notes and carries the query-failure details, matching the empty expected technique set. No technique identifiers are fabricated.",
  "judge": {
-  "model": "default-model",
-  "alias": "default-model",
+  "model": "skynet",
+  "alias": "skynet",
   "served_model": "qwen38-27B-v2",
   "runner": "utils/evaluation/judge_answers.py",
-  "max_tokens": 32768,
-  "escalated": false,
+  "max_tokens": 16384,
+  "escalated": true,
   "position": 1
  }
 }

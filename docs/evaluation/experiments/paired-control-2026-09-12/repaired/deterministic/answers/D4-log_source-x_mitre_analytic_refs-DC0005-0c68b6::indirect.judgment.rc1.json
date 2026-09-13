@@ -3,7 +3,7 @@
  "verdict": "PARTIAL",
  "correctness": 0.4,
  "faithfulness": 1.0,
- "groundedness": 0.9,
+ "groundedness": 1.0,
  "completeness": 0.25,
  "gold_expected": 4,
  "gold_present": 1,
@@ -11,13 +11,13 @@
  "abstention_carries_query": false,
  "fabricated_mapping": false,
  "hallucinations": [],
- "rationale": "The answer correctly identifies DC0005 and lists related analytics such as AN0430, AN0431, and AN1120, but it omits the expected detection strategies DET0117, DET0151, and DET0399. It therefore only partially answers the two-part question. The stated facts are supported by the cited DC0005 record, but the missing DET identifiers lower completeness.",
+ "rationale": "The answer states DC0005 and lists nine analytics (AN0430, AN0431, AN1120, AN0326, AN1118, AN0325, AN0433, AN0432, AN1119), but it omits all expected detection strategies DET0117, DET0151, and DET0399. It therefore partially answers the analytics portion while not addressing the strategy portion. All listed identifiers are supported by the DC0005 record, so faithfulness and groundedness are high, but completeness is limited to the single required anchor identifier.",
  "judge": {
-  "model": "default-model",
-  "alias": "default-model",
+  "model": "skynet",
+  "alias": "skynet",
   "served_model": "qwen38-27B-v2",
   "runner": "utils/evaluation/judge_answers.py",
-  "max_tokens": 32768,
+  "max_tokens": 8192,
   "escalated": false,
   "position": 1
  }

@@ -11,13 +11,13 @@
  "abstention_carries_query": false,
  "fabricated_mapping": false,
  "hallucinations": [],
- "rationale": "The answer retrieves and describes CAPEC-68, but it never states the three expected HAS_PREREQUISITE texts for CAPEC-68. The evidence shows a HAS_PREREQUISITE out count of 3, yet the narrative only reports the record's description and properties. Therefore it is grounded and faithful but incomplete and does not answer the prerequisite question.",
+ "rationale": "The answer retrieves and cites CAPEC-68, but it only restates the attack pattern description and properties. It never states the three expected HAS_PREREQUISITE texts for CAPEC-68: framework-based code-signing language, vendor-signed deployed code, and ability to place code in the victim container. Thus it is faithful and grounded, but it does not answer the prerequisite question.",
  "judge": {
-  "model": "default-model",
-  "alias": "default-model",
+  "model": "skynet",
+  "alias": "skynet",
   "served_model": "qwen38-27B-v2",
   "runner": "utils/evaluation/judge_answers.py",
-  "max_tokens": 32768,
+  "max_tokens": 8192,
   "escalated": false,
   "position": 1
  }

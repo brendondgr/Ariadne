@@ -3,7 +3,7 @@
  "verdict": "CORRECT",
  "correctness": 1.0,
  "faithfulness": 1.0,
- "groundedness": 0.9,
+ "groundedness": 1.0,
  "completeness": 1.0,
  "gold_expected": 1,
  "gold_present": 1,
@@ -11,13 +11,13 @@
  "abstention_carries_query": true,
  "fabricated_mapping": false,
  "hallucinations": [],
- "rationale": "The CAPEC query seeded with CAPEC-659 executed successfully and returned zero rows, so the abstention is honest. The answer names CAPEC-659 in the abstention and includes the executed query, satisfying the only expected identifier. It asserts no resources or cross-source mappings, so no fabrication or hallucination is present.",
+ "rationale": "The only required identifier is CAPEC-659, and the answer explicitly names it in the CAPEC abstention. The evidence shows the CAPEC query executed cleanly with row_count 0 and no records, so an abstention with the executed query is appropriate. No expected resource neighbors are present in the gold set, and no unsupported cross-source mapping is asserted.",
  "judge": {
-  "model": "default-model",
-  "alias": "default-model",
+  "model": "skynet",
+  "alias": "skynet",
   "served_model": "qwen38-27B-v2",
   "runner": "utils/evaluation/judge_answers.py",
-  "max_tokens": 32768,
+  "max_tokens": 8192,
   "escalated": false,
   "position": 1
  }

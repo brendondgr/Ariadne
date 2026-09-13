@@ -11,13 +11,13 @@
  "abstention_carries_query": false,
  "fabricated_mapping": false,
  "hallucinations": [],
- "rationale": "The answer identifies CAPEC-271 and accurately describes its record, but it does not state any of the five expected prerequisite texts for attack patterns that can precede Schema Poisoning. It therefore describes the anchor rather than answering the requested prerequisite question. All stated claims are supported by the cited CAPEC-271 record, but completeness is zero because none of the gold prerequisite identifiers are present.",
+ "rationale": "The answer identifies CAPEC-271 and restates its description and properties, but it does not state any of the requested prerequisite texts. It omits all five expected prerequisites, such as \"There are two components communicating with each other\" and \"Strong mutual authentication is not used between the two target components yielding opportunity for attacker interposition.\" The statements it does make are supported by the CAPEC-271 record, but the question itself is not answered.",
  "judge": {
-  "model": "default-model",
-  "alias": "default-model",
+  "model": "skynet",
+  "alias": "skynet",
   "served_model": "qwen38-27B-v2",
   "runner": "utils/evaluation/judge_answers.py",
-  "max_tokens": 32768,
+  "max_tokens": 8192,
   "escalated": false,
   "position": 1
  }

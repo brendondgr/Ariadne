@@ -1,9 +1,9 @@
 {
  "case_id": "D4-kill_chain_phase-tactic_refs-T1578-9370d3::formal",
  "verdict": "PARTIAL",
- "correctness": 0.3,
+ "correctness": 0.25,
  "faithfulness": 1.0,
- "groundedness": 1.0,
+ "groundedness": 0.9,
  "completeness": 0.0,
  "gold_expected": 1,
  "gold_present": 0,
@@ -11,13 +11,13 @@
  "abstention_carries_query": false,
  "fabricated_mapping": false,
  "hallucinations": [],
- "rationale": "The answer correctly identifies T1578 and its related tactic TA0112, but the question asks for the ATT&CK matrices covering those tactics. It never states the expected matrix enterprise-attack, so it is supported but incomplete. No unsupported cross-source mapping is asserted.",
+ "rationale": "The answer identifies T1578 and its related tactic TA0112, which is supported by the evidence. However, the question asks for the ATT&CK matrices covering those tactics, and the expected matrix enterprise-attack is not stated. It therefore only partially addresses the query by stopping at the tactic level.",
  "judge": {
-  "model": "default-model",
-  "alias": "default-model",
+  "model": "skynet",
+  "alias": "skynet",
   "served_model": "qwen38-27B-v2",
   "runner": "utils/evaluation/judge_answers.py",
-  "max_tokens": 32768,
+  "max_tokens": 8192,
   "escalated": false,
   "position": 1
  }

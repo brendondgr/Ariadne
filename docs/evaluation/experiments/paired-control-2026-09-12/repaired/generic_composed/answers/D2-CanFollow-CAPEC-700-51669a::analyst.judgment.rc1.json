@@ -2,7 +2,7 @@
  "case_id": "D2-CanFollow-CAPEC-700-51669a::analyst",
  "verdict": "CORRECT",
  "correctness": 1.0,
- "faithfulness": 0.95,
+ "faithfulness": 1.0,
  "groundedness": 1.0,
  "completeness": 1.0,
  "gold_expected": 2,
@@ -11,13 +11,13 @@
  "abstention_carries_query": false,
  "fabricated_mapping": false,
  "hallucinations": [],
- "rationale": "The answer directly answers the question by naming CAPEC-560 and CAPEC-70 as the CAPEC patterns that can precede CAPEC-700. Both identifiers are present in the cited CAPEC-700 record's related CAN_FOLLOW entries, and the anchor CAPEC-700 is also stated. The only minor interpretive step is calling the CAN_FOLLOW neighbors predecessors, which is consistent with the question and expected gold set.",
+ "rationale": "The answer explicitly states that CAPEC-700 has the two expected predecessor patterns, CAPEC-560 and CAPEC-70. It also correctly identifies the anchor CAPEC-700 and its record properties from the cited CAPEC evidence. No unsupported identifiers or cross-source mappings are asserted.",
  "judge": {
-  "model": "default-model",
-  "alias": "default-model",
+  "model": "skynet",
+  "alias": "skynet",
   "served_model": "qwen38-27B-v2",
   "runner": "utils/evaluation/judge_answers.py",
-  "max_tokens": 32768,
+  "max_tokens": 8192,
   "escalated": false,
   "position": 1
  }

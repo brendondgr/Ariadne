@@ -1216,6 +1216,41 @@ def _related_by_label(record: EvidenceRecord) -> list[list[dict]]:
     return [g for g in groups.values() if g]
 
 
+def _entries_contradict_filter(
+    entries: list[dict], prop: str, value: str
+) -> bool:
+    """Do the listed neighbours carry this property, and none of them match?
+
+    The scope line's warrant has been the executed query, on the stated grounds
+    that "a related neighbour carries no properties, so the composer can never
+    verify a neighbour-side filter from the evidence it cites". That was true
+    when it was written and is no longer true of every neighbour: a
+    ``TaxonomyEntry`` carries ``taxonomy_name``, and I-15 stopped the judging
+    view discarding a neighbour's content, so where the property IS there it can
+    be checked.
+
+    Where it is checked and fails, the claim is self-contradictory: "CAPEC-112
+    has 1 ATT&CK mapping, restricted to taxonomy name WASC: T1110" states a WASC
+    restriction over an entry whose taxonomy is ATTACK, and the grader recorded
+    it as a fabricated cross-catalogue mapping — correctly.
+
+    One-way, like the rest: absence of the property returns False and leaves the
+    query gate exactly as it was. Only a property that is present and
+    contradicts can withhold the scope line.
+    """
+    seen = [rel[prop] for rel in entries if isinstance(rel, dict) and prop in rel]
+    if not seen:
+        return False
+    wanted = str(value)
+    for carried in seen:
+        if isinstance(carried, (list, tuple)):
+            if any(str(v) == wanted for v in carried):
+                return False
+        elif str(carried) == wanted:
+            return False
+    return True
+
+
 def _enumeration_text(
     anchor: str,
     total: int,
@@ -1320,7 +1355,12 @@ def _enumeration_claim(
     # and conservative: it can only withhold a true scope line, never assert a
     # false one.
     scope = ""
-    if bound_filter is not None and _query_carries(result, bound_filter[1]):
+    if (
+        bound_filter is not None
+        and _query_carries(result, bound_filter[1])
+        and not _entries_contradict_filter(list(entries), bound_filter[1],
+                                           bound_filter[2])
+    ):
         _, prop, value = bound_filter
         label = " ".join(
             w for w in _PROPERTY_LABEL_RE.split(prop) if w and w != "x"

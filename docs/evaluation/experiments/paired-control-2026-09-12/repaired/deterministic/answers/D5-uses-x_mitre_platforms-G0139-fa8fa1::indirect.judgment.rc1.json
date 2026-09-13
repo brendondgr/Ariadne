@@ -1,7 +1,7 @@
 {
  "case_id": "D5-uses-x_mitre_platforms-G0139-fa8fa1::indirect",
  "verdict": "PARTIAL",
- "correctness": 0.6,
+ "correctness": 0.5,
  "faithfulness": 0.7,
  "groundedness": 0.7,
  "completeness": 1.0,
@@ -13,13 +13,13 @@
  "hallucinations": [
   "G0139 has no USES relationships in this catalogue"
  ],
- "rationale": "The answer states the expected container-related software identifiers S0601 and S0683, but it also includes S0349 and S0179 and does not explicitly select the container-working subset. It also asserts that G0139 has no USES relationships, which conflicts with the executed USES query returning four related software rows. Completeness is high because both gold identifiers are present, but correctness and faithfulness are reduced by the overinclusive list and unsupported absence claim.",
+ "rationale": "The answer includes both expected container-related identifiers, S0601 and S0683, but it presents them as part of a broader four-item related set that also includes S0349 and S0179, rather than explicitly identifying the container-working subset. It also asserts that G0139 has no USES relationships, which is contradicted by the executed USES query returning four rows. This makes the answer partially correct but not fully faithful.",
  "judge": {
-  "model": "default-model",
-  "alias": "default-model",
+  "model": "skynet",
+  "alias": "skynet",
   "served_model": "qwen38-27B-v2",
   "runner": "utils/evaluation/judge_answers.py",
-  "max_tokens": 32768,
+  "max_tokens": 8192,
   "escalated": false,
   "position": 1
  }

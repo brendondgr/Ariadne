@@ -13,7 +13,7 @@
 cd /home/bdgr/Agents/Ariadne || exit 1
 LOG=logs/closeout-2026-09-12/supervisor.log
 mkdir -p logs/closeout-2026-09-12
-STAGES="control-generate control-judge control-regenerate-repaired control-rejudge control-score fresh-seal fresh-generate fresh-judge"
+STAGES="control-generate control-judge control-regenerate-repaired control-rejudge control-patch control-score fresh-seal fresh-generate fresh-judge"
 
 # Is the chain ACTUALLY running?
 #

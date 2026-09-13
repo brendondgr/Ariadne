@@ -1,25 +1,26 @@
 {
  "case_id": "D0-Analytic-subtechnique-of-AN0749-d741a1::analyst",
  "verdict": "PARTIAL",
- "correctness": 0.35,
- "faithfulness": 0.45,
- "groundedness": 0.55,
+ "correctness": 0.4,
+ "faithfulness": 0.5,
+ "groundedness": 0.6,
  "completeness": 1.0,
  "gold_expected": 1,
  "gold_present": 1,
  "abstained": false,
  "abstention_carries_query": false,
- "fabricated_mapping": false,
+ "fabricated_mapping": true,
  "hallucinations": [
-  "AN0749 has 1 sub-technique: T1560.002"
+  "AN0749 has 1 sub-technique: T1560.002",
+  "AN0749 has 1 detection strategy: DET0268"
  ],
- "rationale": "The answer states the required anchor AN0749 and cites related DET0268 and T1560.002, but it does not clearly answer which parent techniques AN0749 is a sub-technique of. It instead gives the inverse relation, saying AN0749 has no subtechniques and then that it has sub-technique T1560.002, while the evidence only shows DETECTS to T1560.002 and HAS_ANALYTIC to DET0268.",
+ "rationale": "The answer correctly names the anchor AN0749 and gestures at absence, but it does not clearly answer that AN0749 is not a sub-technique of any parent technique. It also asserts that AN0749 has sub-technique T1560.002, while the evidence only shows T1560.002 as a DETECTS-related SubTechnique, not a HAS_SUBTECHNIQUE parent. The DET0268 claim is also directionally unsupported by the HAS_ANALYTIC relation shown.",
  "judge": {
-  "model": "default-model",
-  "alias": "default-model",
+  "model": "skynet",
+  "alias": "skynet",
   "served_model": "qwen38-27B-v2",
   "runner": "utils/evaluation/judge_answers.py",
-  "max_tokens": 32768,
+  "max_tokens": 8192,
   "escalated": false,
   "position": 1
  }

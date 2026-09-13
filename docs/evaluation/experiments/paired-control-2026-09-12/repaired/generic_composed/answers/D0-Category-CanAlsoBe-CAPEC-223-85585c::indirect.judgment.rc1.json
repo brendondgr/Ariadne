@@ -11,13 +11,13 @@
  "abstention_carries_query": true,
  "fabricated_mapping": false,
  "hallucinations": [],
- "rationale": "The only required gold identifier is CAPEC-223, and the CAPEC query returned row_count 0 with no related records. The answer abstains, explicitly quotes CAPEC-223, and includes the executed query, making it an honest no-mapping response. No extra CAPEC attack patterns or cross-source mappings are asserted.",
+ "rationale": "The expected identifier is CAPEC-223, and the answer's abstention explicitly names it while reporting that the capec query returned no matching records. The evidence shows row_count 0 and summary 'No CAPEC records found', so the abstention is honest and query-bearing. No related CAPEC patterns are asserted, matching the empty expected neighbor set.",
  "judge": {
-  "model": "default-model",
-  "alias": "default-model",
+  "model": "skynet",
+  "alias": "skynet",
   "served_model": "qwen38-27B-v2",
   "runner": "utils/evaluation/judge_answers.py",
-  "max_tokens": 32768,
+  "max_tokens": 8192,
   "escalated": false,
   "position": 1
  }

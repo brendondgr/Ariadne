@@ -1,7 +1,7 @@
 {
  "case_id": "D5-CanPrecede-Abstraction-CAPEC-600-1a0fa9::formal",
  "verdict": "PARTIAL",
- "correctness": 0.8,
+ "correctness": 0.7,
  "faithfulness": 1.0,
  "groundedness": 1.0,
  "completeness": 1.0,
@@ -11,13 +11,13 @@
  "abstention_carries_query": false,
  "fabricated_mapping": false,
  "hallucinations": [],
- "rationale": "The answer states the expected Standard-level successor CAPEC-653 for CAPEC-600, which satisfies the core gold expectation. It also lists CAPEC-151 as a CanPrecede successor, which is supported by the evidence but is not Standard-level because its Abstraction is Meta. This makes the answer grounded and complete for the expected identifier, but slightly over-inclusive for the Standard-abstraction constraint.",
+ "rationale": "The answer includes the expected Standard-abstraction successor CAPEC-653 for CAPEC-600. It also lists CAPEC-151, which the evidence shows as a CAN_PRECEDE successor but with Abstraction Meta, so it is over-inclusive for the Standard-level question. All stated facts are grounded in the CAPEC-600 record and its related entries.",
  "judge": {
-  "model": "default-model",
-  "alias": "default-model",
+  "model": "skynet",
+  "alias": "skynet",
   "served_model": "qwen38-27B-v2",
   "runner": "utils/evaluation/judge_answers.py",
-  "max_tokens": 32768,
+  "max_tokens": 8192,
   "escalated": false,
   "position": 1
  }

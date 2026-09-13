@@ -1,7 +1,7 @@
 {
  "case_id": "D2-subtechnique-of-T1574.012-6aaf34::analyst",
  "verdict": "PARTIAL",
- "correctness": 0.5,
+ "correctness": 0.6,
  "faithfulness": 0.6,
  "groundedness": 0.7,
  "completeness": 1.0,
@@ -13,13 +13,13 @@
  "hallucinations": [
   "T1574 has no subtechniques in this catalogue"
  ],
- "rationale": "The evidence query returns T1574 as the parent technique for T1574.012, and the answer does state both T1574 and T1574.012. However, it also asserts that T1574 has no subtechniques, which is unsupported and contradicted by the related T1574.012 record. This makes the answer only partially correct despite naming the expected identifier.",
+ "rationale": "The evidence query returned T1574 as the parent technique for T1574.012, and the answer does name both T1574 and T1574.012. However, it also asserts that T1574 has no subtechniques, which contradicts the returned subtechnique relation. Thus the answer partially answers the question but is not fully faithful.",
  "judge": {
-  "model": "default-model",
-  "alias": "default-model",
+  "model": "skynet",
+  "alias": "skynet",
   "served_model": "qwen38-27B-v2",
   "runner": "utils/evaluation/judge_answers.py",
-  "max_tokens": 32768,
+  "max_tokens": 8192,
   "escalated": false,
   "position": 1
  }

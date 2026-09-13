@@ -1,9 +1,9 @@
 {
  "case_id": "D5-uses-x_mitre_platforms-C0046-803292::indirect",
  "verdict": "PARTIAL",
- "correctness": 0.7,
- "faithfulness": 0.8,
- "groundedness": 0.8,
+ "correctness": 0.8,
+ "faithfulness": 0.7,
+ "groundedness": 0.9,
  "completeness": 0.857,
  "gold_expected": 21,
  "gold_present": 18,
@@ -13,13 +13,13 @@
  "hallucinations": [
   "T1556 has no USES relationships in this catalogue"
  ],
- "rationale": "The answer lists 18 of the 21 expected Windows-applicable techniques, including T1556, T1653, T1685, T1690, T1041, T1020, T1059, T1055, T1036, T1190, T1140, T1082, T1040, T1119, T1133, T1014, T1557, and T1037, but omits T1070.004, T1071.001, and T1102.003. It also does not explicitly state that the listed techniques apply to Windows, and the evidence contains no platform properties. The claim that T1556 has no USES relationships is not directly supported by the shown record.",
+ "rationale": "The answer enumerates 18 of the 21 expected techniques associated with C0046, including T1556, T1653, T1685, T1690, T1041, T1020, T1059, T1055, T1036, T1190, T1140, T1082, T1040, T1119, T1133, T1014, T1557, and T1037. It omits T1070.004, T1071.001, and T1102.003, so it is partial rather than complete. The unsupported absence claim about T1556's USES relationships slightly reduces faithfulness, while the listed technique IDs are grounded in the returned ATT&CK records.",
  "judge": {
-  "model": "default-model",
-  "alias": "default-model",
+  "model": "skynet",
+  "alias": "skynet",
   "served_model": "qwen38-27B-v2",
   "runner": "utils/evaluation/judge_answers.py",
-  "max_tokens": 32768,
+  "max_tokens": 8192,
   "escalated": false,
   "position": 1
  }

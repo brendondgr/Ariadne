@@ -1,8 +1,8 @@
 {
  "case_id": "D2-attributed-to-C0049-c41417::indirect",
  "verdict": "PARTIAL",
- "correctness": 0.8,
- "faithfulness": 0.7,
+ "correctness": 0.7,
+ "faithfulness": 0.6,
  "groundedness": 0.8,
  "completeness": 1.0,
  "gold_expected": 1,
@@ -11,15 +11,15 @@
  "abstention_carries_query": false,
  "fabricated_mapping": false,
  "hallucinations": [
-  "C0049 has no ATTRIBUTED_TO relationships in this catalogue"
+  "C0049 has no ATTRIBUTED_TO relationships in this catalogue."
  ],
- "rationale": "The answer correctly states that C0049 is related to G0065, which is the expected attributed threat group. However, it also claims that C0049 has no ATTRIBUTED_TO relationships, which is contradicted by the executed query returning one related group. This unsupported absence claim makes the answer partial rather than fully correct.",
+ "rationale": "The answer states the expected related group G0065 for campaign C0049, which satisfies the core question. However, it also claims that C0049 has no ATTRIBUTED_TO relationships, which is contradicted by the executed ATTRIBUTED_TO query returning G0065. This makes the answer partially correct and somewhat unfaithful.",
  "judge": {
-  "model": "default-model",
-  "alias": "default-model",
+  "model": "skynet",
+  "alias": "skynet",
   "served_model": "qwen38-27B-v2",
   "runner": "utils/evaluation/judge_answers.py",
-  "max_tokens": 32768,
+  "max_tokens": 8192,
   "escalated": false,
   "position": 1
  }

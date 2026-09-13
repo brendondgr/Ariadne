@@ -1,9 +1,9 @@
 {
  "case_id": "D0-Software-kill_chain_phase-S1182-2d6bd4::formal",
  "verdict": "PARTIAL",
- "correctness": 0.3,
- "faithfulness": 0.6,
- "groundedness": 0.7,
+ "correctness": 0.4,
+ "faithfulness": 0.7,
+ "groundedness": 0.8,
  "completeness": 1.0,
  "gold_expected": 1,
  "gold_present": 1,
@@ -13,13 +13,13 @@
  "hallucinations": [
   "S1182 has no techniques in this catalogue"
  ],
- "rationale": "The answer correctly identifies the anchor S1182 and provides supported record details for MagicRAT. However, it does not state any ATT&CK tactics for S1182, which is what the question asked. It also asserts that S1182 has no techniques, while the evidence facets show 5 Technique and 8 SubTechnique neighbors.",
+ "rationale": "The answer correctly identifies the anchor S1182, which is the only required gold identifier, but it does not directly state any ATT&CK tactics for MagicRAT. It instead claims S1182 has no techniques, which is not supported by the evidence because the S1182 record shows Technique and SubTechnique neighbours. This makes the answer partially responsive rather than fully correct.",
  "judge": {
-  "model": "default-model",
-  "alias": "default-model",
+  "model": "skynet",
+  "alias": "skynet",
   "served_model": "qwen38-27B-v2",
   "runner": "utils/evaluation/judge_answers.py",
-  "max_tokens": 32768,
+  "max_tokens": 8192,
   "escalated": false,
   "position": 1
  }

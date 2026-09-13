@@ -1,9 +1,9 @@
 {
  "case_id": "D4-detects-subtechnique-of-DET0285-9c3f6d::indirect",
  "verdict": "PARTIAL",
- "correctness": 0.4,
- "faithfulness": 1.0,
- "groundedness": 0.8,
+ "correctness": 0.2,
+ "faithfulness": 0.9,
+ "groundedness": 0.6,
  "completeness": 0.0,
  "gold_expected": 1,
  "gold_present": 0,
@@ -11,13 +11,13 @@
  "abstention_carries_query": false,
  "fabricated_mapping": false,
  "hallucinations": [],
- "rationale": "The answer honestly abstains and is supported by the failed attack-specialist trace showing no records for DET0285. It does not state the expected related identifier T1021 or any detected-technique/parent relationship, so it is incomplete. It mentions DET0285 only in the failure note, not as an answer to the requested techniques.",
+ "rationale": "The answer abstains and faithfully reports that the attack specialist returned no records, but it does not state the expected related technique T1021 or any detected ATT&CK technique. It mentions DET0285 only in the failure note, and the abstention does not show the executed Cypher query from the traces. Thus it is partial: grounded in the empty result and error, but incomplete for the gold expectation.",
  "judge": {
-  "model": "default-model",
-  "alias": "default-model",
+  "model": "skynet",
+  "alias": "skynet",
   "served_model": "qwen38-27B-v2",
   "runner": "utils/evaluation/judge_answers.py",
-  "max_tokens": 32768,
+  "max_tokens": 8192,
   "escalated": false,
   "position": 1
  }

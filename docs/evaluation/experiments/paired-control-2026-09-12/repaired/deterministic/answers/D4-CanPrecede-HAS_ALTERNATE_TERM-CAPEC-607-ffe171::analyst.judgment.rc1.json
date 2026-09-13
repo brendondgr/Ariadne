@@ -1,9 +1,9 @@
 {
  "case_id": "D4-CanPrecede-HAS_ALTERNATE_TERM-CAPEC-607-ffe171::analyst",
  "verdict": "PARTIAL",
- "correctness": 0.3,
+ "correctness": 0.5,
  "faithfulness": 1.0,
- "groundedness": 0.8,
+ "groundedness": 0.9,
  "completeness": 0.0,
  "gold_expected": 1,
  "gold_present": 0,
@@ -11,13 +11,13 @@
  "abstention_carries_query": true,
  "fabricated_mapping": false,
  "hallucinations": [],
- "rationale": "The answer honestly abstains and shows the executed CAPEC query for CAPEC-607, but it does not state the expected preceding pattern \"Data Spill When information is handled by an information system of a classification/sensitivity for which the system has not been authorized to handle.\" The query follows out(\"CAN_PRECEDE\") from CAPEC-607, which is not the natural direction for finding patterns that can precede CAPEC-607, so the abstention is not fully aligned with the gold expectation. No cross-source mapping is fabricated.",
+ "rationale": "The answer abstains and shows the executed CAPEC query for seed CAPEC-607, which returned zero rows, so its no-records claim is faithful and grounded. It does not state the expected gold neighbor Data Spill..., and the query follows out(CAN_PRECEDE) from CAPEC-607 rather than the incoming patterns that can precede it, so completeness is zero. No cross-source mapping is fabricated.",
  "judge": {
-  "model": "default-model",
-  "alias": "default-model",
+  "model": "skynet",
+  "alias": "skynet",
   "served_model": "qwen38-27B-v2",
   "runner": "utils/evaluation/judge_answers.py",
-  "max_tokens": 32768,
+  "max_tokens": 8192,
   "escalated": false,
   "position": 1
  }

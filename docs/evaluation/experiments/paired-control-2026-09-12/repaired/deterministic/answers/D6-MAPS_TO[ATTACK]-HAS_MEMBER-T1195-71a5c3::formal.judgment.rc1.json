@@ -2,8 +2,8 @@
  "case_id": "D6-MAPS_TO[ATTACK]-HAS_MEMBER-T1195-71a5c3::formal",
  "verdict": "CORRECT",
  "correctness": 0.95,
- "faithfulness": 0.9,
- "groundedness": 0.95,
+ "faithfulness": 0.95,
+ "groundedness": 1.0,
  "completeness": 1.0,
  "gold_expected": 5,
  "gold_present": 5,
@@ -11,13 +11,13 @@
  "abstention_carries_query": true,
  "fabricated_mapping": false,
  "hallucinations": [],
- "rationale": "The answer correctly connects T1195 to CAPEC-438, CAPEC-439, and CAPEC-446, and it states all five expected CAPEC categories: CAPEC-262, CAPEC-437, CAPEC-513, CAPEC-515, and CAPEC-686. The category claims are grounded in the MEMBER_OF evidence for CAPEC-438 and CAPEC-439. The main weakness is the slightly ambiguous abstention about missing linked records, but it does not fabricate a cross-source mapping.",
+ "rationale": "The answer correctly connects T1195 to CAPEC-438, CAPEC-439, and CAPEC-446, and states all expected category identifiers: CAPEC-262, CAPEC-437, CAPEC-513, CAPEC-515, and CAPEC-686. It grounds the category memberships for CAPEC-438 and CAPEC-439 in the cited CAPEC records and uses an abstention with the executed query for the missing CAPEC-446 category links. No unsupported cross-source mapping is asserted.",
  "judge": {
-  "model": "default-model",
-  "alias": "default-model",
+  "model": "skynet",
+  "alias": "skynet",
   "served_model": "qwen38-27B-v2",
   "runner": "utils/evaluation/judge_answers.py",
-  "max_tokens": 32768,
+  "max_tokens": 8192,
   "escalated": false,
   "position": 1
  }

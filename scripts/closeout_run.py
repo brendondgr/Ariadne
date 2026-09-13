@@ -253,6 +253,71 @@ def stage_control_judge() -> int:
     return 0
 
 
+def _claims_digest(path: Path) -> str:
+    import hashlib
+
+    doc = json.loads(path.read_text())
+    text = "\u0000".join(
+        c.get("text", "") for c in (doc.get("answer") or {}).get("claims") or []
+    )
+    return hashlib.sha256(text.encode()).hexdigest()
+
+
+def stage_control_patch() -> int:
+    """Re-answer the repaired side and re-judge ONLY what the tree changed.
+
+    I-19 landed after the re-judge had started, and its blast radius is one
+    answer in 852. Rebuilding and re-grading the whole side for that would cost
+    four hours to correct two judgments; grading nothing would leave the control
+    describing a tree that is not the one shipped. So: digest every answer's
+    claims, regenerate, and delete the sidecars of exactly those whose claims
+    moved. The judge then skips everything that still has one.
+
+    It is written to be safe when nothing has changed — the usual case on a
+    re-run — in which case it regenerates, finds no differences and grades
+    nothing.
+    """
+    before = {}
+    for arm in ARMS:
+        for path in (CONTROL / "repaired" / arm / "answers").glob("*.json"):
+            if ".judgment" not in path.name:
+                before[(arm, path.name)] = _claims_digest(path)
+    for arm in ARMS:
+        code = _run(f"control-patch-{arm}",
+                    _arm(CONTROL / "repaired", arm,
+                         REPO / "docs/evaluation/composition/bank/bank-dev.json"))
+        if code:
+            return code
+        if not _complete(CONTROL / "repaired", arm):
+            print(f"[control-patch] {arm} INCOMPLETE — stopping", flush=True)
+            return 1
+
+    stale = []
+    for arm in ARMS:
+        for path in sorted((CONTROL / "repaired" / arm / "answers").glob("*.json")):
+            if ".judgment" in path.name:
+                continue
+            key = (arm, path.name)
+            if key in before and _claims_digest(path) != before[key]:
+                stale.append((arm, path))
+    print(f"[control-patch] {len(stale)} answer(s) changed", flush=True)
+    for arm, path in stale:
+        print(f"    {path.stem[:60]}", flush=True)
+        for suffix, _position in PASSES:
+            sidecar = path.with_name(f"{path.stem}.judgment{suffix}.json")
+            if sidecar.is_file():
+                sidecar.unlink()
+    if not stale:
+        return 0
+    for suffix, position in PASSES:
+        for arm in {a for a, _p in stale}:
+            code = _run(f"control-patch-judge-{arm}{suffix}",
+                        _judge(CONTROL / "repaired", arm, suffix, position))
+            if code:
+                return code
+    return 0
+
+
 def stage_control_score() -> int:
     return _run("control-score",
                 [sys.executable, "scripts/paired_control_score.py",
@@ -417,6 +482,9 @@ STAGES = (
     # re-judged against the shipped tree before anything is scored from it.
     ("control-regenerate-repaired", stage_control_regenerate_repaired),
     ("control-rejudge", stage_control_rejudge),
+    # I-19 landed mid-re-judge and changes one answer in 852; this re-grades
+    # exactly that one rather than the side.
+    ("control-patch", stage_control_patch),
     ("control-score", stage_control_score),
     ("fresh-seal", stage_fresh_seal),
     ("fresh-generate", stage_fresh_generate),

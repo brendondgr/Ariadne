@@ -1,7 +1,7 @@
 {
  "case_id": "D0-Technique-log_source-T1566.001-5331f1::analyst",
  "verdict": "CORRECT",
- "correctness": 1.0,
+ "correctness": 0.95,
  "faithfulness": 1.0,
  "groundedness": 1.0,
  "completeness": 1.0,
@@ -11,13 +11,13 @@
  "abstention_carries_query": false,
  "fabricated_mapping": false,
  "hallucinations": [],
- "rationale": "The answer correctly identifies T1566.001 and states that it has no MONITORS relationships, which matches the empty expected related set for data components. The evidence record for T1566.001 contains no MONITORS facet and an empty related list, supporting the absence claim. No unsupported cross-source mapping or extra identifiers are asserted.",
+ "rationale": "The evidence for T1566.001 contains no MONITORS facet and an empty related list, so the expected data-component set is empty. The answer states T1566.001 and asserts that it has no MONITORS relationships, which is supported by the retrieved record. It therefore correctly answers the question with a negative result rather than inventing data components.",
  "judge": {
-  "model": "default-model",
-  "alias": "default-model",
+  "model": "skynet",
+  "alias": "skynet",
   "served_model": "qwen38-27B-v2",
   "runner": "utils/evaluation/judge_answers.py",
-  "max_tokens": 32768,
+  "max_tokens": 8192,
   "escalated": false,
   "position": 1
  }

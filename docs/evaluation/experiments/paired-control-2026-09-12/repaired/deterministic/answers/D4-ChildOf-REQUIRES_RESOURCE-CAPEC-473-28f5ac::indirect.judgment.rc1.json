@@ -11,13 +11,13 @@
  "abstention_carries_query": false,
  "fabricated_mapping": false,
  "hallucinations": [],
- "rationale": "The answer correctly states CAPEC-473 and its CAPEC-151 ChildOf parent, but the question asked for more specific child patterns and the resources required by those patterns. It omits both expected resources, 'A valid certificate request and a malicious certificate request with identical hash values' and 'Knowledge of a certificate authority that uses hashing algorithms with poor collision resistance'. All stated claims are supported by the CAPEC-473 record, so faithfulness and groundedness remain high.",
+ "rationale": "The answer correctly identifies and describes CAPEC-473, but it does not answer the requested question about more specific child CAPEC patterns or their required resources. It only states that CAPEC-473 has a ChildOf parent, CAPEC-151, which is not the expected narrower-case information. The expected resource statements about certificate requests and weak collision resistance are absent.",
  "judge": {
-  "model": "default-model",
-  "alias": "default-model",
+  "model": "skynet",
+  "alias": "skynet",
   "served_model": "qwen38-27B-v2",
   "runner": "utils/evaluation/judge_answers.py",
-  "max_tokens": 32768,
+  "max_tokens": 8192,
   "escalated": false,
   "position": 1
  }

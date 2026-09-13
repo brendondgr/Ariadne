@@ -3,7 +3,7 @@
  "verdict": "INCORRECT",
  "correctness": 0.1,
  "faithfulness": 1.0,
- "groundedness": 0.9,
+ "groundedness": 1.0,
  "completeness": 0.0,
  "gold_expected": 4,
  "gold_present": 0,
@@ -11,13 +11,13 @@
  "abstention_carries_query": false,
  "fabricated_mapping": false,
  "hallucinations": [],
- "rationale": "The answer only states the anchor mitigation M1042 and describes it, but it does not name any mitigated techniques. It omits all expected related identifiers T1059, T1098, T1098.001, and T1671, so it retrieves the anchor rather than answering the question. The statements it does make are supported by the M1042 record, but the requested technique set is absent.",
+ "rationale": "The answer identifies M1042 but does not state any of the expected technique identifiers T1059, T1098, T1098.001, or T1671. It therefore describes the anchor mitigation rather than answering which SaaS-applicable techniques are mitigated. The stated facts are supported by the M1042 record, but the expected technique set is absent.",
  "judge": {
-  "model": "default-model",
-  "alias": "default-model",
+  "model": "skynet",
+  "alias": "skynet",
   "served_model": "qwen38-27B-v2",
   "runner": "utils/evaluation/judge_answers.py",
-  "max_tokens": 32768,
+  "max_tokens": 8192,
   "escalated": false,
   "position": 1
  }

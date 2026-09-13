@@ -11,15 +11,15 @@
  "abstention_carries_query": false,
  "fabricated_mapping": false,
  "hallucinations": [
-  "G0044 has no USES relationships in this catalogue."
+  "G0044 has no USES relationships in this catalogue"
  ],
- "rationale": "The answer identifies the expected group G0044 (Winnti Group) in connection with S0501, which satisfies the core query. However, it also asserts that G0044 has no USES relationships, which is contradicted by the executed query returning a Group-USES-Software row for G0501/S0501. This unsupported absence claim makes the answer partial rather than fully correct.",
+ "rationale": "The answer identifies the expected group G0044 (Winnti Group) in relation to S0501, so the gold identifier is present. However, it also asserts that G0044 has no USES relationships, which is contradicted by the executed query returning a G0044-to-S0501 USES result. This makes the answer partially correct and less faithful than it would be if it had simply stated the USES relationship.",
  "judge": {
-  "model": "default-model",
-  "alias": "default-model",
+  "model": "skynet",
+  "alias": "skynet",
   "served_model": "qwen38-27B-v2",
   "runner": "utils/evaluation/judge_answers.py",
-  "max_tokens": 32768,
+  "max_tokens": 8192,
   "escalated": false,
   "position": 1
  }

@@ -1,9 +1,9 @@
 {
  "case_id": "D0-View-HAS_INDICATOR-CAPEC-703-9098da::formal",
  "verdict": "CORRECT",
- "correctness": 0.95,
- "faithfulness": 0.95,
- "groundedness": 0.9,
+ "correctness": 1.0,
+ "faithfulness": 0.9,
+ "groundedness": 0.95,
  "completeness": 1.0,
  "gold_expected": 1,
  "gold_present": 1,
@@ -11,13 +11,13 @@
  "abstention_carries_query": false,
  "fabricated_mapping": false,
  "hallucinations": [],
- "rationale": "The answer states the required anchor CAPEC-703 and directly addresses the question by saying CAPEC-703 has no indicators, which matches the empty expected related set. It also lists the 46 CAPEC attack-pattern members such as CAPEC-309 and CAPEC-312, which are supported by the CAPEC-703 record but are not the requested indicators. No unsupported cross-source mapping is asserted.",
+ "rationale": "The expected gold identifier is CAPEC-703, and the answer states it while directly answering that no indicators are present. The 46 listed CAPEC attack patterns are supported by the CAPEC-703 members/related evidence, though they are not the requested indicators. No unsupported cross-source mapping is asserted.",
  "judge": {
-  "model": "default-model",
-  "alias": "default-model",
+  "model": "skynet",
+  "alias": "skynet",
   "served_model": "qwen38-27B-v2",
   "runner": "utils/evaluation/judge_answers.py",
-  "max_tokens": 32768,
+  "max_tokens": 8192,
   "escalated": false,
   "position": 1
  }

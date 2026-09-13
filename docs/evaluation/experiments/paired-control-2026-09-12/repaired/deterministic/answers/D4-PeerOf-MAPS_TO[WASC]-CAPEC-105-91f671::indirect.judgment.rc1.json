@@ -3,7 +3,7 @@
  "verdict": "INCORRECT",
  "correctness": 0.1,
  "faithfulness": 1.0,
- "groundedness": 1.0,
+ "groundedness": 0.9,
  "completeness": 0.0,
  "gold_expected": 1,
  "gold_present": 0,
@@ -11,13 +11,13 @@
  "abstention_carries_query": false,
  "fabricated_mapping": false,
  "hallucinations": [],
- "rationale": "The answer only describes the anchor CAPEC-105 and its properties; it never states any peer CAPEC pattern or the expected WASC:25 mapping. All asserted facts are supported by the CAPEC-105 record, but the question asked for peers and their WASC correspondences. Since the expected WASC:25 identifier is absent, completeness is zero and the answer is incorrect rather than an honest abstention.",
+ "rationale": "The answer only describes the anchor record CAPEC-105 and its attributes, but it never states the requested peer CAPEC attack pattern(s) or the expected WASC:25 mapping. The evidence shows CAPEC-105 has PEER_OF and MAPS_TO facets, but the answer does not surface any related peer or WASC identifier. All stated claims are supported by the cited CAPEC-105 record, so faithfulness is high, but the question itself is not answered.",
  "judge": {
-  "model": "default-model",
-  "alias": "default-model",
+  "model": "skynet",
+  "alias": "skynet",
   "served_model": "qwen38-27B-v2",
   "runner": "utils/evaluation/judge_answers.py",
-  "max_tokens": 32768,
+  "max_tokens": 8192,
   "escalated": false,
   "position": 1
  }

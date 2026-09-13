@@ -3,7 +3,7 @@
  "verdict": "CORRECT",
  "correctness": 0.9,
  "faithfulness": 1.0,
- "groundedness": 0.95,
+ "groundedness": 1.0,
  "completeness": 1.0,
  "gold_expected": 1,
  "gold_present": 1,
@@ -11,13 +11,13 @@
  "abstention_carries_query": false,
  "fabricated_mapping": false,
  "hallucinations": [],
- "rationale": "The answer states the required anchor identifier CAPEC-136 and asserts that it has no MEMBER_OF relationships, which is consistent with the evidence showing MEMBER_OF out count 0. The expected related set is empty, so no additional CAPEC attack pattern identifiers were required. The remaining descriptive and property claims are supported by the cited CAPEC-136 record.",
+ "rationale": "The answer states the required anchor CAPEC-136 and asserts that it has no MEMBER_OF relationships, which matches the empty expected related set. The description and property claims are directly supported by the CAPEC-136 record. It does not fabricate a cross-source mapping or list unsupported contained patterns.",
  "judge": {
-  "model": "default-model",
-  "alias": "default-model",
+  "model": "skynet",
+  "alias": "skynet",
   "served_model": "qwen38-27B-v2",
   "runner": "utils/evaluation/judge_answers.py",
-  "max_tokens": 32768,
+  "max_tokens": 8192,
   "escalated": false,
   "position": 1
  }

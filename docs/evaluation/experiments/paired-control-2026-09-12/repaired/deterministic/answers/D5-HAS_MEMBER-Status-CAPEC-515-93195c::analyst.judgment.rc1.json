@@ -2,8 +2,8 @@
  "case_id": "D5-HAS_MEMBER-Status-CAPEC-515-93195c::analyst",
  "verdict": "PARTIAL",
  "correctness": 0.7,
- "faithfulness": 0.95,
- "groundedness": 0.95,
+ "faithfulness": 1.0,
+ "groundedness": 1.0,
  "completeness": 1.0,
  "gold_expected": 11,
  "gold_present": 11,
@@ -11,13 +11,13 @@
  "abstention_carries_query": false,
  "fabricated_mapping": false,
  "hallucinations": [],
- "rationale": "The answer includes all 11 expected Draft-status attack patterns for CAPEC-515: CAPEC-113, CAPEC-114, CAPEC-122, CAPEC-124, CAPEC-161, CAPEC-176, CAPEC-233, CAPEC-438, CAPEC-439, CAPEC-548, and CAPEC-607. However, it presents them as part of a full 24-pattern enumeration for CAPEC-515 rather than explicitly filtering or labeling only the Draft-status patterns. This makes the response grounded and complete, but only partially responsive to the status-filtered question.",
+ "rationale": "The answer includes CAPEC-515 and all 11 expected Draft-status related patterns: CAPEC-113, CAPEC-114, CAPEC-122, CAPEC-124, CAPEC-161, CAPEC-176, CAPEC-233, CAPEC-438, CAPEC-439, CAPEC-548, and CAPEC-607. However, it lists all 24 related attack patterns rather than explicitly filtering or identifying only the Draft-status ones. Its statements are supported by the CAPEC-515 record and its related neighbors, so it is faithful and grounded but only partially answers the status-filtered question.",
  "judge": {
-  "model": "default-model",
-  "alias": "default-model",
+  "model": "skynet",
+  "alias": "skynet",
   "served_model": "qwen38-27B-v2",
   "runner": "utils/evaluation/judge_answers.py",
-  "max_tokens": 32768,
+  "max_tokens": 8192,
   "escalated": false,
   "position": 1
  }

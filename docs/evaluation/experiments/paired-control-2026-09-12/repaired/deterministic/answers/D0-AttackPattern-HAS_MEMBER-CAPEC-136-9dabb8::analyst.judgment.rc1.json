@@ -1,7 +1,7 @@
 {
  "case_id": "D0-AttackPattern-HAS_MEMBER-CAPEC-136-9dabb8::analyst",
  "verdict": "CORRECT",
- "correctness": 0.9,
+ "correctness": 0.95,
  "faithfulness": 1.0,
  "groundedness": 1.0,
  "completeness": 1.0,
@@ -11,13 +11,13 @@
  "abstention_carries_query": false,
  "fabricated_mapping": false,
  "hallucinations": [],
- "rationale": "The answer states the required anchor identifier CAPEC-136 and asserts that it has no MEMBER_OF relationships, which is consistent with the empty expected related set. The description and property claims for CAPEC-136 are directly supported by the cited CAPEC record. It does not assert any unsupported cross-source mapping, though it phrases the absence as MEMBER_OF rather than explicitly saying it contains no attack patterns.",
+ "rationale": "The answer states the required anchor CAPEC-136 and asserts that it has no MEMBER_OF relationships, which matches the empty expected related set. It does not introduce unsupported CAPEC identifiers or cross-source mappings. The only minor weakness is that it frames the result as absence of MEMBER_OF rather than explicitly saying CAPEC-136 contains no CAPEC attack patterns.",
  "judge": {
-  "model": "default-model",
-  "alias": "default-model",
+  "model": "skynet",
+  "alias": "skynet",
   "served_model": "qwen38-27B-v2",
   "runner": "utils/evaluation/judge_answers.py",
-  "max_tokens": 32768,
+  "max_tokens": 8192,
   "escalated": false,
   "position": 1
  }

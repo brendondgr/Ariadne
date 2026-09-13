@@ -11,13 +11,13 @@
  "abstention_carries_query": true,
  "fabricated_mapping": false,
  "hallucinations": [],
- "rationale": "The answer correctly abstains for CAPEC-284 because the CAPEC query returned no matching records. It explicitly names CAPEC-284 and includes the executed query, satisfying the honest-abstention rule. No consequences or cross-source mappings are asserted beyond the evidence.",
+ "rationale": "The expected identifier is CAPEC-284, and the answer mentions it while reporting that the CAPEC source returned no matching records. The evidence shows row_count 0 and empty_with_seeds CAPEC-284, so the abstention is supported and includes the executed query. No consequence identifiers or cross-source mappings are asserted, so there is no fabrication or hallucination.",
  "judge": {
-  "model": "default-model",
-  "alias": "default-model",
+  "model": "skynet",
+  "alias": "skynet",
   "served_model": "qwen38-27B-v2",
   "runner": "utils/evaluation/judge_answers.py",
-  "max_tokens": 32768,
+  "max_tokens": 8192,
   "escalated": false,
   "position": 1
  }

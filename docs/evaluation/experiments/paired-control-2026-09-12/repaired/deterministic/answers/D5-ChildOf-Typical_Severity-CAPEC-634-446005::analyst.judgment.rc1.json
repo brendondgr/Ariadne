@@ -1,25 +1,23 @@
 {
  "case_id": "D5-ChildOf-Typical_Severity-CAPEC-634-446005::analyst",
  "verdict": "PARTIAL",
- "correctness": 0.6,
- "faithfulness": 0.8,
- "groundedness": 0.8,
+ "correctness": 0.8,
+ "faithfulness": 1.0,
+ "groundedness": 0.9,
  "completeness": 1.0,
  "gold_expected": 1,
  "gold_present": 1,
  "abstained": false,
  "abstention_carries_query": false,
  "fabricated_mapping": false,
- "hallucinations": [
-  "CAPEC-545 as a qualifying Medium-severity broader pattern"
- ],
- "rationale": "The answer includes the expected Medium-severity parent CAPEC-651, but it also lists CAPEC-545, which the evidence does not mark as Medium typical severity. This makes the filtered answer over-inclusive, so it is partial rather than fully correct. The claims are grounded in the CAPEC-634 record and no cross-source mapping is fabricated.",
+ "hallucinations": [],
+ "rationale": "The answer includes the expected Medium-severity broader pattern CAPEC-651 as a ChildOf parent of CAPEC-634. However, it also lists CAPEC-545 in the same parent enumeration without explicitly applying the Medium typical-severity filter or identifying CAPEC-651 as the qualifying one. The statements are supported by the CAPEC-634 record and its related entries, but the response is not fully direct.",
  "judge": {
-  "model": "default-model",
-  "alias": "default-model",
+  "model": "skynet",
+  "alias": "skynet",
   "served_model": "qwen38-27B-v2",
   "runner": "utils/evaluation/judge_answers.py",
-  "max_tokens": 32768,
+  "max_tokens": 8192,
   "escalated": false,
   "position": 1
  }

@@ -1,25 +1,25 @@
 {
  "case_id": "D2-uses-G0024-e4334c::indirect",
  "verdict": "PARTIAL",
- "correctness": 0.85,
- "faithfulness": 0.6,
+ "correctness": 0.8,
+ "faithfulness": 0.65,
  "groundedness": 0.8,
  "completeness": 1.0,
- "gold_expected": 4,
- "gold_present": 4,
+ "gold_expected": 5,
+ "gold_present": 5,
  "abstained": false,
  "abstention_carries_query": false,
  "fabricated_mapping": false,
  "hallucinations": [
-  "G0024 has no USES relationships in this catalogue"
+  "G0024 has no USES relationships in this catalogue."
  ],
- "rationale": "The answer states all four expected related software identifiers, S0065, S0066, S0067, and S0068, for G0024, so completeness is full. However, it also claims that G0024 has no USES relationships, which contradicts the executed USES query returning four rows. This unsupported absence claim makes the answer partial rather than fully correct.",
+ "rationale": "The answer correctly states the expected related software identifiers S0065, S0066, S0067, and S0068 for G0024. However, it also asserts that G0024 has no USES relationships, which is contradicted by the executed USES query returning four related software records. This makes the answer mostly correct but not fully faithful.",
  "judge": {
-  "model": "default-model",
-  "alias": "default-model",
+  "model": "skynet",
+  "alias": "skynet",
   "served_model": "qwen38-27B-v2",
   "runner": "utils/evaluation/judge_answers.py",
-  "max_tokens": 32768,
+  "max_tokens": 8192,
   "escalated": false,
   "position": 1
  }

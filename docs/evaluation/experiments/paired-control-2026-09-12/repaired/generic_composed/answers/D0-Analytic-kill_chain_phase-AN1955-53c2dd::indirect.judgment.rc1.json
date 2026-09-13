@@ -2,8 +2,8 @@
  "case_id": "D0-Analytic-kill_chain_phase-AN1955-53c2dd::indirect",
  "verdict": "CORRECT",
  "correctness": 1.0,
- "faithfulness": 0.9,
- "groundedness": 0.9,
+ "faithfulness": 1.0,
+ "groundedness": 1.0,
  "completeness": 1.0,
  "gold_expected": 1,
  "gold_present": 1,
@@ -11,13 +11,13 @@
  "abstention_carries_query": false,
  "fabricated_mapping": false,
  "hallucinations": [],
- "rationale": "The answer directly states the requested tactic TA0043 for AN1955, which is present in the evidence as a related Tactic. It also mentions DET0823 and T1955-related T1598, both supported by the AN1955 related records, though the 'has' phrasing slightly simplifies the DETECTS/HAS_ANALYTIC paths. No cross-source mapping is asserted.",
+ "rationale": "The answer identifies AN1955 and states the requested tactic TA0043, which is present in the AN1955 evidence record. It also correctly reports the related DET0823 and T1598 from the same record. No unsupported cross-source mapping or extra identifiers are asserted.",
  "judge": {
-  "model": "default-model",
-  "alias": "default-model",
+  "model": "skynet",
+  "alias": "skynet",
   "served_model": "qwen38-27B-v2",
   "runner": "utils/evaluation/judge_answers.py",
-  "max_tokens": 32768,
+  "max_tokens": 8192,
   "escalated": false,
   "position": 1
  }

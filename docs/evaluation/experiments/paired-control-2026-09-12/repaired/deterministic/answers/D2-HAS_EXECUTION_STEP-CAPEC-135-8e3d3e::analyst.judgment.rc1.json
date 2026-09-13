@@ -11,13 +11,13 @@
  "abstention_carries_query": false,
  "fabricated_mapping": false,
  "hallucinations": [],
- "rationale": "The answer identifies CAPEC-135 and its three execution-step neighbors, corresponding to capec:attack-pattern:135:step:1, capec:attack-pattern:135:step:2, and capec:attack-pattern:135:step:3. It states the Explore, Experiment, and Exploit steps, but truncates the expected step text and omits the technique details included in the gold strings. No unsupported cross-source mapping is asserted.",
+ "rationale": "The answer identifies CAPEC-135 and all three execution steps (capec:attack-pattern:135:step:1, capec:attack-pattern:135:step:2, capec:attack-pattern:135:step:3) with their phases and descriptions. It is partial because the quoted step text is truncated and omits the technique details included in the gold strings. The claims are grounded in the CAPEC-135 record and its related ExecutionStep records, with no fabricated cross-source mapping.",
  "judge": {
-  "model": "default-model",
-  "alias": "default-model",
+  "model": "skynet",
+  "alias": "skynet",
   "served_model": "qwen38-27B-v2",
   "runner": "utils/evaluation/judge_answers.py",
-  "max_tokens": 32768,
+  "max_tokens": 8192,
   "escalated": false,
   "position": 1
  }

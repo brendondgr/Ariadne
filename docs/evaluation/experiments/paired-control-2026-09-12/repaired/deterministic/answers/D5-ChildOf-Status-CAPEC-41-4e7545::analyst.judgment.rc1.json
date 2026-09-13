@@ -3,7 +3,7 @@
  "verdict": "PARTIAL",
  "correctness": 0.6,
  "faithfulness": 1.0,
- "groundedness": 0.8,
+ "groundedness": 0.9,
  "completeness": 1.0,
  "gold_expected": 1,
  "gold_present": 1,
@@ -11,13 +11,13 @@
  "abstention_carries_query": false,
  "fabricated_mapping": false,
  "hallucinations": [],
- "rationale": "The answer identifies CAPEC-242 as a ChildOf parent of CAPEC-41, which is the expected Stable broader pattern. It also lists CAPEC-134, which is Draft in the evidence, without explicitly filtering to Stable status, so the answer only partially satisfies the question. The statements are supported by the CAPEC-41 record and its related entries.",
+ "rationale": "The answer identifies CAPEC-242 as a ChildOf parent of CAPEC-41, which is the expected Stable broader pattern. However, it also lists CAPEC-134, which the evidence marks as Draft, and does not explicitly filter the result to Stable status. All stated facts are supported by the CAPEC-41 record and its related entries.",
  "judge": {
-  "model": "default-model",
-  "alias": "default-model",
+  "model": "skynet",
+  "alias": "skynet",
   "served_model": "qwen38-27B-v2",
   "runner": "utils/evaluation/judge_answers.py",
-  "max_tokens": 32768,
+  "max_tokens": 8192,
   "escalated": false,
   "position": 1
  }

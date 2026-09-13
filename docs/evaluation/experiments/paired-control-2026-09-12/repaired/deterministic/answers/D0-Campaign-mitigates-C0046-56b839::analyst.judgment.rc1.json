@@ -1,9 +1,9 @@
 {
  "case_id": "D0-Campaign-mitigates-C0046-56b839::analyst",
- "verdict": "INCORRECT",
- "correctness": 0.3,
- "faithfulness": 0.9,
- "groundedness": 0.9,
+ "verdict": "PARTIAL",
+ "correctness": 0.4,
+ "faithfulness": 0.95,
+ "groundedness": 0.95,
  "completeness": 0.0,
  "gold_expected": 1,
  "gold_present": 0,
@@ -11,14 +11,14 @@
  "abstention_carries_query": false,
  "fabricated_mapping": false,
  "hallucinations": [],
- "rationale": "The gold expectation requires the anchor C0046 and no related technique identifiers, but the answer never states C0046 and instead enumerates 18 technique IDs such as T1556, T1653, and T1037. The evidence supports those 18 records as query results, but the executed query used USES rather than MITIGATES, so the answer overstates the mitigation mapping. It is therefore grounded but not a correct answer to the asked mitigation question.",
+ "rationale": "The answer lists 18 technique identifiers such as T1556, T1653, and T1685, all of which are present in the cited ATT&CK records. However, it never states the required anchor identifier C0046, so the expected gold identifier is missing. It is grounded in the retrieved records and does not assert a cross-source mapping, but it only partially answers the question by omitting C0046.",
  "judge": {
-  "model": "default-model",
-  "alias": "default-model",
+  "model": "skynet",
+  "alias": "skynet",
   "served_model": "qwen38-27B-v2",
   "runner": "utils/evaluation/judge_answers.py",
-  "max_tokens": 32768,
-  "escalated": false,
+  "max_tokens": 16384,
+  "escalated": true,
   "position": 1
  }
 }

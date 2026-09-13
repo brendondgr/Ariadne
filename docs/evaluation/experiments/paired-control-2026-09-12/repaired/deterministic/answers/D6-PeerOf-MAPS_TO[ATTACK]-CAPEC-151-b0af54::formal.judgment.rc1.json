@@ -1,8 +1,8 @@
 {
  "case_id": "D6-PeerOf-MAPS_TO[ATTACK]-CAPEC-151-b0af54::formal",
- "verdict": "CORRECT",
- "correctness": 0.8,
- "faithfulness": 0.9,
+ "verdict": "PARTIAL",
+ "correctness": 0.3,
+ "faithfulness": 0.8,
  "groundedness": 0.8,
  "completeness": 0.0,
  "gold_expected": 3,
@@ -11,13 +11,13 @@
  "abstention_carries_query": true,
  "fabricated_mapping": false,
  "hallucinations": [],
- "rationale": "The answer abstains instead of asserting the expected ATT&CK techniques T1211, T1542.002, or T1556, and it shows the executed query returning CAPEC-151 with no linked records. This is an honest abstention rather than a fabricated cross-source mapping, but it states none of the three expected technique identifiers. The asserted absence of MAPS_TO links for CAPEC-151 is supported by the evidence.",
+ "rationale": "The answer correctly identifies the anchor CAPEC-151 and abstains with an executed query, but it does not state any of the expected ATT&CK techniques T1211, T1542.002, or T1556. Its abstention is tied to a MAPS_TO query from CAPEC-151 rather than a clear PeerOf traversal, so it is an honest but incomplete response. No cross-source mapping is fabricated, but completeness is low because none of the gold technique identifiers are present.",
  "judge": {
-  "model": "default-model",
-  "alias": "default-model",
+  "model": "skynet",
+  "alias": "skynet",
   "served_model": "qwen38-27B-v2",
   "runner": "utils/evaluation/judge_answers.py",
-  "max_tokens": 32768,
+  "max_tokens": 8192,
   "escalated": false,
   "position": 1
  }
