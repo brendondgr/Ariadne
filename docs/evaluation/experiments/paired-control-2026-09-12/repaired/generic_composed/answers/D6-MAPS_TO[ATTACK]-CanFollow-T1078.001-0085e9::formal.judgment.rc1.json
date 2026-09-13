@@ -1,0 +1,27 @@
+{
+ "case_id": "D6-MAPS_TO[ATTACK]-CanFollow-T1078.001-0085e9::formal",
+ "verdict": "PARTIAL",
+ "correctness": 0.7,
+ "faithfulness": 0.6,
+ "groundedness": 0.7,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "CAPEC-70 has 1 CanFollow predecessor: CAPEC-700 (the evidence shows a CAN_FOLLOW related record, but not the predecessor direction)",
+  "The capec source returned no linked records for the can-follow subquestion (the q2 record includes CAPEC-700 as a CAN_FOLLOW related record)"
+ ],
+ "rationale": "The answer identifies CAPEC-70 as the CAPEC pattern mapped to T1078.001 and names CAPEC-700, which satisfies the expected gold identifier. However, it calls CAPEC-700 a CanFollow predecessor of CAPEC-70 and also includes an abstention saying no linked records were found, which is not fully supported by the q2 evidence that lists CAPEC-700 as a CAN_FOLLOW related record. These direction and abstention issues make the answer partial rather than fully correct.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 16384,
+  "escalated": true,
+  "position": 1
+ }
+}

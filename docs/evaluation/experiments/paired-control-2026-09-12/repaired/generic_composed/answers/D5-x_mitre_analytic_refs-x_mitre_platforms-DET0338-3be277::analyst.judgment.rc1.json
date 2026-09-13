@@ -1,0 +1,26 @@
+{
+ "case_id": "D5-x_mitre_analytic_refs-x_mitre_platforms-DET0338-3be277::analyst",
+ "verdict": "CORRECT",
+ "correctness": 1.0,
+ "faithfulness": 0.9,
+ "groundedness": 0.9,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "AN0958 is described as restricted to Containers, which is slightly stronger than the evidence that it applies to Containers"
+ ],
+ "rationale": "The answer correctly identifies AN0958 as the analytic associated with DET0338 and connects it to the Containers filter in the executed query. It states the required anchor DET0338 and the expected gold identifier AN0958, so completeness is full. The minor faithfulness deduction is for saying the analytic is restricted to Containers rather than simply applying to Containers, since the record does not list the full platform set.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 8192,
+  "escalated": false,
+  "position": 1
+ }
+}

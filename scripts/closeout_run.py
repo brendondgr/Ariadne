@@ -478,12 +478,11 @@ def stage_latency() -> int:
     return 0
 
 
-#: Where the chain stops unless told otherwise. The operator asked for the
-#: paired control and the fresh set and nothing beyond them (2026-09-13), so the
-#: three stages after it stay defined — they are written and validated — but are
-#: not run. `--through latency` or `--through regression-judge` turns them back
-#: on without editing anything.
-DEFAULT_THROUGH = "fresh-judge"
+#: Where the chain stops unless told otherwise. Back to the end of the list on
+#: 2026-09-13: the operator wants the whole cycle run overnight, not because
+#: every figure is needed but because a workflow is only known to work once it
+#: has run end to end without a hand on it.
+DEFAULT_THROUGH = "regression-judge"
 
 #: Order matters and is the plan's order. The fresh set is sealed before it is
 #: generated, and the holdout regression runs last because it is the only stage

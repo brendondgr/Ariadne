@@ -1,0 +1,24 @@
+{
+ "case_id": "D5-CanPrecede-Typical_Severity-CAPEC-273-97972f::formal",
+ "verdict": "PARTIAL",
+ "correctness": 0.6,
+ "faithfulness": 1.0,
+ "groundedness": 0.9,
+ "completeness": 1.0,
+ "gold_expected": 3,
+ "gold_present": 3,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer correctly includes the expected Medium-severity successors CAPEC-115, CAPEC-148, and CAPEC-154, and all listed CanPrecede successors are supported by the CAPEC-273 evidence. However, it does not explicitly filter the answer to Typical_Severity Medium, instead listing all seven successors including non-Medium ones such as CAPEC-141, CAPEC-593, CAPEC-63, and CAPEC-107. This makes it partially correct rather than fully precise.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 8192,
+  "escalated": false,
+  "position": 1
+ }
+}

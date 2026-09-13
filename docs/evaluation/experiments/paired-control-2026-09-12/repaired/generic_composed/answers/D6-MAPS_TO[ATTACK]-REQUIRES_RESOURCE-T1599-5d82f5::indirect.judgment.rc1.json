@@ -1,0 +1,27 @@
+{
+ "case_id": "D6-MAPS_TO[ATTACK]-REQUIRES_RESOURCE-T1599-5d82f5::indirect",
+ "verdict": "CORRECT",
+ "correctness": 0.9,
+ "faithfulness": 0.8,
+ "groundedness": 0.9,
+ "completeness": 1.0,
+ "gold_expected": 2,
+ "gold_present": 2,
+ "abstained": false,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "The capec source doesn't establish the resources for CAPEC-700",
+  "The executed query returned CAPEC-700 with no linked resource records"
+ ],
+ "rationale": "The answer identifies CAPEC-700 as the CAPEC attack pattern mapped to T1599 and states the required resource text for capec:attack-pattern:700:resource:1. It therefore covers the expected T1599 and resource assertion. The main weakness is the contradictory abstention claiming no linked resource records, which the q2 evidence does not support.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 16384,
+  "escalated": true,
+  "position": 1
+ }
+}

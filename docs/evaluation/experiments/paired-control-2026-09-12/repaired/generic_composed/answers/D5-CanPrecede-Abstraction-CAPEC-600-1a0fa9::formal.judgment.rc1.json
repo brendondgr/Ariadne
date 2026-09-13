@@ -1,0 +1,27 @@
+{
+ "case_id": "D5-CanPrecede-Abstraction-CAPEC-600-1a0fa9::formal",
+ "verdict": "PARTIAL",
+ "correctness": 0.8,
+ "faithfulness": 0.85,
+ "groundedness": 0.95,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "CAPEC-50 can follow CAPEC-600",
+  "CAPEC-49 can follow CAPEC-600"
+ ],
+ "rationale": "The answer correctly states the required related identifier CAPEC-653 and the anchor CAPEC-600, so gold completeness is full. However, it also asserts that CAPEC-50 and CAPEC-49 are CanPrecede successors of CAPEC-600, while the evidence only lists them as related CAN_PRECEDE entries without explicit direction. The query traversed both in and out CAN_PRECEDE, so the extra successor claims are not fully supported.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 8192,
+  "escalated": false,
+  "position": 1
+ }
+}

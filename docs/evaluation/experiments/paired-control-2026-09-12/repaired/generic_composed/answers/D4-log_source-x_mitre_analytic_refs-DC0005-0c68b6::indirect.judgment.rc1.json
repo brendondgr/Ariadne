@@ -1,0 +1,24 @@
+{
+ "case_id": "D4-log_source-x_mitre_analytic_refs-DC0005-0c68b6::indirect",
+ "verdict": "PARTIAL",
+ "correctness": 0.8,
+ "faithfulness": 1.0,
+ "groundedness": 1.0,
+ "completeness": 1.0,
+ "gold_expected": 3,
+ "gold_present": 3,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer states DC0005 and all three expected detection strategies, DET0151, DET0399, and DET0117, and it lists the nine related analytics. It is partial because it does not fully map each analytic to its strategy; for example, it gives DET0151 only via AN0430, while the evidence also supports DET0151 via AN0431, AN0433, and AN0432. All asserted mappings are supported by the cited DC0005 record, so there is no fabrication or hallucination.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 8192,
+  "escalated": false,
+  "position": 1
+ }
+}

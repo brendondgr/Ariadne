@@ -111,18 +111,36 @@ def _tier(case: str) -> str:
     return case.split("-")[0]
 
 
-def score(root: Path) -> dict:
+def score(root: Path, partial: bool = False, expected: int = 284) -> dict:
     cells = {
         f"{side}/{arm}": _scores(root / side / arm / "answers")
         for side in SIDES for arm in ARMS
     }
     missing = [name for name, rows in cells.items() if not rows]
-    if missing:
-        raise SystemExit(f"no judgments in: {', '.join(missing)}")
+    if missing and not partial:
+        raise SystemExit(
+            f"no judgments in: {', '.join(missing)} "
+            "(pass --partial to score what exists so far)"
+        )
+    # Coverage travels WITH the numbers. A preliminary figure that does not say
+    # how much of the run it rests on is the same mistake as a figure with no
+    # code behind it, which is why this scorer exists at all.
+    coverage = {
+        name: {"cases": len(rows), "of": expected, "complete": len(rows) == expected}
+        for name, rows in cells.items()
+    }
+    cells = {name: rows for name, rows in cells.items() if rows}
+    if len(cells) < 2:
+        raise SystemExit("fewer than two cells have judgments; nothing to pair")
 
     mechanisms = _mechanism_slices()
-    report: dict = {"arms": {}, "kill_gate": {"per_cell": {}}}
+    report: dict = {"arms": {}, "kill_gate": {"per_cell": {}}, "coverage": coverage,
+                    "preliminary": bool(missing) or not all(
+                        c["complete"] for c in coverage.values())}
     for arm in ARMS:
+        if f"reference/{arm}" not in cells or f"repaired/{arm}" not in cells:
+            report["arms"][arm] = {"overall": None, "note": "one side unjudged"}
+            continue
         before, after = cells[f"reference/{arm}"], cells[f"repaired/{arm}"]
         ids = sorted(set(before) & set(after))
         row: dict = {"overall": _paired(before, after)}
@@ -150,10 +168,17 @@ def score(root: Path) -> dict:
             "fabricated_mapping": _flag(root / side / arm / "answers",
                                         "fabricated_mapping"),
         }
-    ref = sum(report["kill_gate"]["per_cell"][f"reference/{a}"]["fabricated_mapping"]
-              for a in ARMS)
-    rep = sum(report["kill_gate"]["per_cell"][f"repaired/{a}"]["fabricated_mapping"]
-              for a in ARMS)
+    # A cell with no judgments contributes nothing rather than raising: on a
+    # partial read half the cells do not exist yet, and the gate still has to
+    # report what it can see.
+    def _flagged(side: str) -> int:
+        per_cell = report["kill_gate"]["per_cell"]
+        return sum(
+            (per_cell.get(f"{side}/{arm}") or {}).get("fabricated_mapping", 0)
+            for arm in ARMS
+        )
+
+    ref, rep = _flagged("reference"), _flagged("repaired")
     report["kill_gate"].update({
         "fabricated_mapping_reference": ref,
         "fabricated_mapping_repaired": rep,
@@ -206,6 +231,8 @@ def verify() -> int:
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--root", default=None, help="paired-control run root")
+    parser.add_argument("--partial", action="store_true",
+                        help="score whatever has been judged so far, and say so")
     parser.add_argument("--verify", action="store_true",
                         help="reproduce the committed Step 6 figures and exit")
     parser.add_argument("--out", default=None)
@@ -215,9 +242,12 @@ def main() -> int:
         return verify()
     if not args.root:
         parser.error("--root or --verify")
-    report = score(Path(args.root))
+    report = score(Path(args.root), partial=args.partial)
     for arm in ARMS:
         row = report["arms"][arm]["overall"]
+        if row is None:
+            print(f"{arm:18s} not yet pairable ({report['arms'][arm].get('note')})")
+            continue
         print(f"{arm:18s} n={row['n']:3d}  {row['before']:.4f} -> {row['after']:.4f}"
               f"  diff {row['paired_difference']:+.4f} ± {row['standard_error']:.4f}"
               f"  {'separable' if row['separable'] else 'NOT separable'}")

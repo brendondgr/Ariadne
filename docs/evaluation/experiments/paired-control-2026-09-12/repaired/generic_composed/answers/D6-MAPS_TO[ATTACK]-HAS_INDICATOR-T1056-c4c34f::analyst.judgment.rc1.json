@@ -1,0 +1,27 @@
+{
+ "case_id": "D6-MAPS_TO[ATTACK]-HAS_INDICATOR-T1056-c4c34f::analyst",
+ "verdict": "CORRECT",
+ "correctness": 0.92,
+ "faithfulness": 0.85,
+ "groundedness": 0.95,
+ "completeness": 1.0,
+ "gold_expected": 3,
+ "gold_present": 3,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "The executed indicator query returned CAPEC-654 with no linked records",
+  "CAPEC-654's indicator is named only as text"
+ ],
+ "rationale": "The answer identifies CAPEC-569 and CAPEC-654 as the CAPEC patterns mapped to T1056 and states the CAPEC-654 indicator text, \"Credential prompts that appear illegitimate or unexpected.\" It also shows the executed indicator query and abstains for the missing CAPEC-569 indicator, though the abstention wording is slightly inconsistent with the evidence. The core mappings are grounded in the cited CAPEC records.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 16384,
+  "escalated": true,
+  "position": 1
+ }
+}
