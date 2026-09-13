@@ -1,0 +1,93 @@
+{
+  "probed_at": "2026-09-13T15:38:48-0400",
+  "base_url": "http://localhost:4000/v1",
+  "alias": "local",
+  "host": {
+    "cores": 32,
+    "loadavg_1m_at_start": 1.66
+  },
+  "identity": {
+    "expected_substring": "minicpm",
+    "served_model": "gemma-4-26B-it",
+    "passed": false,
+    "overridden": true
+  },
+  "context_ceiling": {
+    "largest_accepted": 1048576,
+    "smallest_refused": null,
+    "refusal_body": null,
+    "note": "no ceiling below the probe cap of 1048576 tokens"
+  },
+  "ladder": [
+    {
+      "concurrency": 1,
+      "calls": 10,
+      "wall_s": 56.268,
+      "ok": 10,
+      "errors": 0,
+      "completion_tokens": 5120,
+      "tokens_per_s": 90.99,
+      "per_call_tokens_per_s": 91.0,
+      "p50_s": 5.625,
+      "p95_s": 5.672,
+      "min_s": 5.574,
+      "max_s": 5.672,
+      "loadavg_1m": 3.16,
+      "stop_reason": null,
+      "error_samples": []
+    },
+    {
+      "concurrency": 2,
+      "calls": 10,
+      "wall_s": 46.609,
+      "ok": 10,
+      "errors": 0,
+      "completion_tokens": 5120,
+      "tokens_per_s": 109.85,
+      "per_call_tokens_per_s": 55.0,
+      "p50_s": 9.3,
+      "p95_s": 9.457,
+      "min_s": 9.208,
+      "max_s": 9.457,
+      "loadavg_1m": 3.86,
+      "stop_reason": null,
+      "error_samples": []
+    },
+    {
+      "concurrency": 4,
+      "calls": 10,
+      "wall_s": 36.565,
+      "ok": 10,
+      "errors": 0,
+      "completion_tokens": 5120,
+      "tokens_per_s": 140.03,
+      "per_call_tokens_per_s": 41.08,
+      "p50_s": 13.539,
+      "p95_s": 13.671,
+      "min_s": 9.319,
+      "max_s": 13.671,
+      "loadavg_1m": 4.17,
+      "stop_reason": null,
+      "error_samples": []
+    },
+    {
+      "concurrency": 8,
+      "calls": 10,
+      "wall_s": 41.78,
+      "ok": 10,
+      "errors": 0,
+      "completion_tokens": 5120,
+      "tokens_per_s": 122.55,
+      "per_call_tokens_per_s": 23.24,
+      "p50_s": 25.877,
+      "p95_s": 32.075,
+      "min_s": 15.789,
+      "max_s": 32.075,
+      "loadavg_1m": 4.39,
+      "stop_reason": "p95 32.075s exceeds 4x rung-1 p50 (22.5s)",
+      "error_samples": []
+    }
+  ],
+  "chosen_concurrency": 4,
+  "ladder_stopped_at": 8
+}
