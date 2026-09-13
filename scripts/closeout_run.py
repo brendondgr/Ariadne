@@ -49,6 +49,7 @@ HOLDOUT_BANK = REPO / "docs/evaluation/composition/bank/bank-holdout.json"
 STATE = REPO / "docs/evaluation/experiments/closeout-2026-09-12-state.json"
 LOGS = REPO / "logs/closeout-2026-09-12"
 ARMS = ("deterministic", "generic_composed", "generic")
+SIDES = ("repaired", "reference")
 PASSES = ((".rc1", 1), (".rc2", 2))
 WORKERS = 32
 MODEL = "default-model"
@@ -92,12 +93,66 @@ def _judge(root: Path, arm: str, suffix: str, position: int) -> list[str]:
     ]
 
 
+#: `EXP-2026-09-016` A-8: healthy is at or below this, over ANSWERS.
+HEALTHY_FALLBACK = 0.14
+
+
+def _fallback_rate(root: Path, arm: str) -> float:
+    answers = [p for p in (root / arm / "answers").glob("*.json")
+               if ".judgment" not in p.name]
+    if not answers:
+        return 1.0
+    fell_back = 0
+    for path in answers:
+        try:
+            reason = (json.loads(path.read_text()).get("answer") or {}).get(
+                "fallback_reason")
+        except (json.JSONDecodeError, OSError):
+            reason = "unreadable"
+        fell_back += bool(reason)
+    return fell_back / len(answers)
+
+
 def _complete(root: Path, arm: str) -> bool:
+    """Every case answered — and, for the LLM arm, actually answered BY the LLM.
+
+    `:9090` is an SSH tunnel, not a local server. If it drops mid-run the
+    narrator falls back and the arm still writes an answer per case, so
+    `ok == count` stays true while the cell quietly becomes a model-free run
+    wearing the `generic` label. The fallback rate is the difference between a
+    cell and a cell that means anything.
+    """
     path = root / arm / "manifest.json"
     if not path.is_file():
         return False
     doc = json.loads(path.read_text())
-    return bool(doc.get("count")) and doc.get("ok") == doc.get("count")
+    if not doc.get("count") or doc.get("ok") != doc.get("count"):
+        return False
+    if arm == "generic":
+        rate = _fallback_rate(root, arm)
+        if rate > HEALTHY_FALLBACK:
+            print(f"[health] {root.name}/{arm} fallback rate {rate:.4f} exceeds "
+                  f"{HEALTHY_FALLBACK} — the tunnel probably dropped; "
+                  "the cell is NOT complete", flush=True)
+            return False
+    return True
+
+
+def _ungraded(root: Path, arm: str, suffix: str) -> list[str]:
+    """Answers with no judgment sidecar for this position.
+
+    A judge run whose calls all fail still exits zero: each case writes
+    `<case>.judgment<suffix>.error.txt` and no `.json`. Counting the answers
+    against the sidecars is what turns that into a failure the chain can see.
+    """
+    directory = root / arm / "answers"
+    missing = []
+    for path in sorted(directory.glob("*.json")):
+        if ".judgment" in path.name:
+            continue
+        if not path.with_name(f"{path.stem}.judgment{suffix}.json").is_file():
+            missing.append(path.stem)
+    return missing
 
 
 def stage_control_generate() -> int:
@@ -117,8 +172,22 @@ def stage_control_generate() -> int:
 
 
 def stage_control_judge() -> int:
-    return _run("control-judge",
+    code = _run("control-judge",
                 [sys.executable, "scripts/repair_control_run.py", "--stage", "judge"])
+    if code:
+        return code
+    # Same check as the other two judged stages: the judge exits zero whether it
+    # graded a case or wrote an error beside it, so count the sidecars.
+    for side in SIDES:
+        for arm in ARMS:
+            for suffix, _position in PASSES:
+                missing = _ungraded(CONTROL / side, arm, suffix)
+                if missing:
+                    print(f"[control-judge] {side}/{arm}{suffix}: {len(missing)} "
+                          f"answer(s) ungraded (first: {missing[0]}). Re-running "
+                          "this stage picks them up.", flush=True)
+                    return 1
+    return 0
 
 
 def stage_control_score() -> int:
@@ -153,14 +222,25 @@ def stage_fresh_generate() -> int:
     return 0
 
 
-def stage_fresh_judge() -> int:
+def _judge_all(root: Path, label: str) -> int:
     for suffix, position in PASSES:
         for arm in ARMS:
-            code = _run(f"fresh-judge-{arm}{suffix}",
-                        _judge(FRESH, arm, suffix, position))
+            code = _run(f"{label}-judge-{arm}{suffix}",
+                        _judge(root, arm, suffix, position))
             if code:
                 return code
+            missing = _ungraded(root, arm, suffix)
+            if missing:
+                print(f"[{label}] {arm}{suffix}: {len(missing)} answer(s) have no "
+                      f"judgment — the judge exited clean but graded nothing for "
+                      f"them (first: {missing[0]}). Re-running this stage picks "
+                      "them up.", flush=True)
+                return 1
     return 0
+
+
+def stage_fresh_judge() -> int:
+    return _judge_all(FRESH, "fresh")
 
 
 def stage_regression_generate() -> int:
@@ -175,13 +255,7 @@ def stage_regression_generate() -> int:
 
 
 def stage_regression_judge() -> int:
-    for suffix, position in PASSES:
-        for arm in ARMS:
-            code = _run(f"regression-judge-{arm}{suffix}",
-                        _judge(REGRESSION, arm, suffix, position))
-            if code:
-                return code
-    return 0
+    return _judge_all(REGRESSION, "regression")
 
 
 VARIANTS = REPO / "docs/evaluation/variants-2026-08-29"
