@@ -1,0 +1,26 @@
+{
+ "case_id": "D3-uses-T1608.005-77b30b::analyst",
+ "verdict": "PARTIAL",
+ "correctness": 0.8,
+ "faithfulness": 0.6,
+ "groundedness": 0.7,
+ "completeness": 1.0,
+ "gold_expected": 2,
+ "gold_present": 2,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "T1608.005 has no USES relationships in this catalogue"
+ ],
+ "rationale": "The answer correctly names both expected campaigns, C0059 and C0060, as using T1608.005, so completeness is full. However, it also claims T1608.005 has no USES relationships, which is contradicted by the executed Campaign-USES-Technique query returning two rows. This makes the answer partially faithful rather than fully correct.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 8192,
+  "escalated": false,
+  "position": 1
+ }
+}

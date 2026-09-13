@@ -1,0 +1,26 @@
+{
+ "case_id": "D0-Mitigation-attributed-to-M1049-4bbc52::formal",
+ "verdict": "PARTIAL",
+ "correctness": 0.7,
+ "faithfulness": 0.8,
+ "groundedness": 0.7,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "M1049 has no ATTRIBUTED_TO relationships in this catalogue"
+ ],
+ "rationale": "The answer correctly anchors M1049 and states that it has no ATTRIBUTED_TO relationships, which matches the empty expected group set. It also enumerates 140 group IDs such as G0027, G0090, and G1055 as \u201chas groups,\u201d which are related through the shown MITIGATES/USES traversal rather than direct attribution, making the response somewhat over-assertive. The 677-related count and query support the broad neighbor lists, but the absence claim is not directly evidenced in the shown records.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 8192,
+  "escalated": false,
+  "position": 1
+ }
+}

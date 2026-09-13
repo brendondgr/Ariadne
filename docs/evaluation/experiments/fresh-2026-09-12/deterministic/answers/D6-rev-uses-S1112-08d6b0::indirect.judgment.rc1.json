@@ -1,0 +1,26 @@
+{
+ "case_id": "D6-rev-uses-S1112-08d6b0::indirect",
+ "verdict": "PARTIAL",
+ "correctness": 0.7,
+ "faithfulness": 0.85,
+ "groundedness": 0.9,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "S1112 has no USES relationships in this catalogue"
+ ],
+ "rationale": "The answer includes the expected CAPEC-650 and ties it to T1505.003, which is one of the techniques associated with S1112 in the evidence. However, it also asserts that S1112 has no USES relationships, which is contradicted by the ATT&CK query returning five technique rows. This makes the answer substantively useful but not fully clean.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 8192,
+  "escalated": false,
+  "position": 1
+ }
+}

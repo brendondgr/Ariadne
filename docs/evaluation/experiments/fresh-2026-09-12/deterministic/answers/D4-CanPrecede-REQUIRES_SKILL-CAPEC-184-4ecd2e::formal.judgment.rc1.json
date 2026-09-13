@@ -1,0 +1,26 @@
+{
+ "case_id": "D4-CanPrecede-REQUIRES_SKILL-CAPEC-184-4ecd2e::formal",
+ "verdict": "PARTIAL",
+ "correctness": 0.3,
+ "faithfulness": 0.8,
+ "groundedness": 0.8,
+ "completeness": 0.5,
+ "gold_expected": 2,
+ "gold_present": 1,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "The skill is described as named 'Medium Manual or user-assisted attacks require deceptive mechanisms...' when the evidence gives name capec:attack-pattern:184:skill:1, level Medium, and a separate description."
+ ],
+ "rationale": "The answer correctly identifies CAPEC-184 and reports a CAPEC skill, but it reports CAPEC-184's own skill capec:attack-pattern:184:skill:1 rather than the expected preceding-pattern skill 'Ability to spoof a variety of software metadata to convince victims the source is trusted.' It therefore only partially addresses the query. The statements are mostly grounded in the CAPEC-184 record, with a minor overstatement about the skill's name.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 8192,
+  "escalated": false,
+  "position": 1
+ }
+}

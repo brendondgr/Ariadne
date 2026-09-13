@@ -1,0 +1,26 @@
+{
+ "case_id": "D3-uses-S0233-8d63f4::analyst",
+ "verdict": "PARTIAL",
+ "correctness": 0.65,
+ "faithfulness": 0.6,
+ "groundedness": 0.7,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "G0065 has no USES relationships in this catalogue"
+ ],
+ "rationale": "The answer identifies G0065 (Leviathan) in connection with S0233, which is the expected group identifier. However, it also claims that G0065 has no USES relationships, which is contradicted by the executed USES query returning one row for S0233. Because it states the gold entity but does not cleanly assert the use relationship, it is partial rather than fully correct.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 8192,
+  "escalated": false,
+  "position": 1
+ }
+}

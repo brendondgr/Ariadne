@@ -1,0 +1,24 @@
+{
+ "case_id": "D2-HAS_EXECUTION_STEP-CAPEC-591-0e63cc::indirect",
+ "verdict": "PARTIAL",
+ "correctness": 0.8,
+ "faithfulness": 0.95,
+ "groundedness": 0.9,
+ "completeness": 1.0,
+ "gold_expected": 4,
+ "gold_present": 4,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer identifies CAPEC-591 and all four execution steps, corresponding to capec:attack-pattern:591:step:1 through capec:attack-pattern:591:step:4. It is partial rather than fully correct because the gold step texts include the techniques sentences, which the answer omits, and it renders the step prefixes as 'Explore 1' rather than the expected '1 Explore'.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 8192,
+  "escalated": false,
+  "position": 1
+ }
+}

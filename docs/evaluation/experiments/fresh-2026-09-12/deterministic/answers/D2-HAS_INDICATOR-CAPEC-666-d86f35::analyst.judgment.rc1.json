@@ -1,0 +1,24 @@
+{
+ "case_id": "D2-HAS_INDICATOR-CAPEC-666-d86f35::analyst",
+ "verdict": "PARTIAL",
+ "correctness": 0.2,
+ "faithfulness": 1.0,
+ "groundedness": 0.8,
+ "completeness": 0.0,
+ "gold_expected": 1,
+ "gold_present": 0,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer correctly identifies CAPEC-666 and states supported details about BlueSmacking, but it does not state the expected indicator text 'Performance is degraded or halted by incoming L2CAP packets.' The evidence shows a HAS_INDICATOR facet count of 1 for CAPEC-666, but the answer never names the indicator itself. Therefore it is a grounded partial answer that omits the requested gold entity.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 8192,
+  "escalated": false,
+  "position": 1
+ }
+}

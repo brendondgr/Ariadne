@@ -1,0 +1,24 @@
+{
+ "case_id": "D4-CanPrecede-HAS_ALTERNATE_TERM-CAPEC-593-4e821b::formal",
+ "verdict": "PARTIAL",
+ "correctness": 0.4,
+ "faithfulness": 0.9,
+ "groundedness": 0.8,
+ "completeness": 0.0,
+ "gold_expected": 1,
+ "gold_present": 0,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer abstains and shows the executed CAPEC query seeded on CAPEC-593, but it does not state the expected alternate name, \"HTTP Desync Modification/manipulation of HTTP message headers...\". The shown query also traverses out(CAN_PRECEDE) from CAPEC-593 rather than the predecessor direction implied by the question, so the abstention is transparent but not fully answering. It is faithful to the empty result and does not fabricate a mapping, but completeness is low because the gold expected identifier is absent.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 8192,
+  "escalated": false,
+  "position": 1
+ }
+}

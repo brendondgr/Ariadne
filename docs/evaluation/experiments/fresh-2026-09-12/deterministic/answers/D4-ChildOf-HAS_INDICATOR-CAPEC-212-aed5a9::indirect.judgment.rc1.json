@@ -1,0 +1,24 @@
+{
+ "case_id": "D4-ChildOf-HAS_INDICATOR-CAPEC-212-aed5a9::indirect",
+ "verdict": "CORRECT",
+ "correctness": 1.0,
+ "faithfulness": 1.0,
+ "groundedness": 1.0,
+ "completeness": 0.0,
+ "gold_expected": 1,
+ "gold_present": 0,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer abstains and includes the executed CAPEC query, and the evidence shows row_count 0 for seed CAPEC-212, so the no-records claim is faithful and grounded. It does not state the expected neighbor \"Many incorrect attempts to answer the security question.\", so completeness is 0. No cross-source mapping is asserted, so no fabricated mapping.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 8192,
+  "escalated": false,
+  "position": 1
+ }
+}

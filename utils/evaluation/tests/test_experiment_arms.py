@@ -252,6 +252,100 @@ class TestGenericLocalFull:
         assert self.ARM not in _MODEL_FREE_ARMS
 
 
+class TestTheTwoByTwo:
+    """The 2x2: {authored plan, real planner} x {no model, 2B}.
+
+    The interesting cell is the one nobody had run — a real planner AND a small
+    model, which is what a laptop deployment actually is. Reporting the corners
+    without it would let a reader assume the two variables are additive, and
+    there is no reason to think they are: a weaker plan and a weaker narrator
+    can fail on the same questions.
+    """
+
+    CELLS = {
+        ("authored", "none"): "generic_narrator_off",
+        ("authored", "2B"): "generic_local_narrator",
+        ("planner", "none"): "generic_planned",
+        ("planner", "2B"): "generic_planned_local",
+    }
+
+    def test_every_cell_exists_and_has_a_runner(self):
+        for cell, arm in self.CELLS.items():
+            assert arm in ARMS, cell
+            assert arm in RUNNERS, cell
+
+    def test_the_rows_differ_only_in_where_the_plan_comes_from(self):
+        # Same model column, different plan source: the environments must match
+        # exactly, so the runner is the only variable.
+        for model in ("none", "2B"):
+            authored = env_for(self.CELLS[("authored", model)])
+            planner = env_for(self.CELLS[("planner", model)])
+            shared = set(authored) & set(planner)
+            differing = {k for k in shared if authored[k] != planner[k]}
+            assert differing == set(), f"{model} column differs in {differing}"
+
+    def test_the_columns_differ_only_in_the_narrator_seam(self):
+        for plan in ("authored", "planner"):
+            none = env_for(self.CELLS[(plan, "none")])
+            small = env_for(self.CELLS[(plan, "2B")])
+            differing = {
+                k for k in set(none) & set(small) if none[k] != small[k]
+            }
+            assert differing == {"SYNTHESIS_LLM_ENABLED"}, f"{plan} row: {differing}"
+
+    def test_the_plan_source_is_carried_by_the_runner_not_the_env(self):
+        # Which is why the env comparison above can be empty and the cells still
+        # differ. Stated here so a reader of the 2x2 does not conclude the rows
+        # are identical runs.
+        assert RUNNERS["generic_narrator_off"] is not RUNNERS["generic_planned_local"]
+        assert RUNNERS["generic_local_narrator"] is not RUNNERS["generic_planned_local"]
+        assert RUNNERS["generic_planned"] is not RUNNERS["generic_narrator_off"]
+
+    def test_the_small_model_cells_use_one_model_configuration(self):
+        a = env_for(self.CELLS[("authored", "2B")])
+        b = env_for(self.CELLS[("planner", "2B")])
+        for key in ("SYNTHESIS_LLM_BASE_URL", "SYNTHESIS_LLM_MODEL",
+                    "SYNTHESIS_LLM_MAX_TOKENS", "SYNTHESIS_LLM_THINKING_BUDGET"):
+            assert a[key] == b[key], key
+
+
+class TestPlannedLocalSeams:
+    """The fourth cell drives the real pipeline but must NOT wake every seam."""
+
+    def _seams_passed_by(self, runner, monkeypatch) -> dict:
+        captured: dict = {}
+
+        def fake_iter_pipeline(question, *, mode, use_llm, specialists,
+                               synthesis_config=None, run=None, **kw):
+            captured["use_llm"] = use_llm
+            captured["synthesis_llm"] = (
+                None if synthesis_config is None else synthesis_config.llm_enabled
+            )
+            run.status, run.exit_code = "answered", 0
+            yield "answer", {"plan": None, "evidence": {"results": []},
+                             "synthesized": {}}
+
+        import utils.orchestration.main as orch_main
+
+        monkeypatch.setattr(orch_main, "iter_pipeline", fake_iter_pipeline)
+        runner({"question": "q", "id": "x"}, "attack", None)
+        return captured
+
+    def test_the_planner_is_deterministic_and_the_narrator_is_not(self, monkeypatch):
+        # `use_llm` sets planner, specialist AND synthesis together, so this
+        # cell cannot be expressed by it alone. An explicit synthesis_config is
+        # what separates them.
+        out = self._seams_passed_by(exp.run_planned_local, monkeypatch)
+        assert out["use_llm"] is False
+        assert out["synthesis_llm"] is True
+
+    def test_the_model_free_planner_arm_stays_model_free(self, monkeypatch):
+        out = self._seams_passed_by(exp.run_planned, monkeypatch)
+        assert out["use_llm"] is False
+        # None means "derive from use_llm", which for False is deterministic.
+        assert out["synthesis_llm"] in (None, False)
+
+
 class TestTheLLMPostureIsStatedAtTheCallSite:
     """`use_llm` overwrites the environment, so it is asserted, not assumed.
 

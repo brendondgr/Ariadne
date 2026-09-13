@@ -1,0 +1,26 @@
+{
+ "case_id": "D3-CanPrecede-CAPEC-600-e6e27b::analyst",
+ "verdict": "PARTIAL",
+ "correctness": 0.7,
+ "faithfulness": 0.8,
+ "groundedness": 0.9,
+ "completeness": 1.0,
+ "gold_expected": 8,
+ "gold_present": 8,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "CAPEC-600 has 11 CanPrecede successors"
+ ],
+ "rationale": "The answer lists all eight expected related identifiers: CAPEC-101, CAPEC-16, CAPEC-49, CAPEC-50, CAPEC-55, CAPEC-565, CAPEC-568, and CAPEC-70. However, it frames them as CanPrecede successors of CAPEC-600 rather than patterns that can precede CAPEC-600, and it adds CAPEC-270, CAPEC-653, and CAPEC-151. The claims are grounded in the CAPEC-600 record and its related entries, but the successor direction is not explicitly supported by the evidence.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 8192,
+  "escalated": false,
+  "position": 1
+ }
+}

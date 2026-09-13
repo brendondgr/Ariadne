@@ -1,0 +1,26 @@
+{
+ "case_id": "D5-uses-x_mitre_platforms-G1011-1525da::analyst",
+ "verdict": "PARTIAL",
+ "correctness": 0.25,
+ "faithfulness": 0.6,
+ "groundedness": 0.6,
+ "completeness": 0.0,
+ "gold_expected": 1,
+ "gold_present": 0,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "T1203 has no USES relationships in this catalogue"
+ ],
+ "rationale": "The answer lists T1203, T1597, T1102, and T1594 as found ATT&CK records, but it never states G1011 and omits the expected related technique T1566.002. The listed technique IDs are supported by the executed query, but the absence claim about T1203 is not directly evidenced by the shown records. Because it addresses the technique question only indirectly and misses the gold identifier, it is partial rather than correct.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 8192,
+  "escalated": false,
+  "position": 1
+ }
+}

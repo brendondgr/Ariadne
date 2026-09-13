@@ -1,0 +1,24 @@
+{
+ "case_id": "D2-PeerOf-CAPEC-34-b6e26b::analyst",
+ "verdict": "INCORRECT",
+ "correctness": 0.2,
+ "faithfulness": 1.0,
+ "groundedness": 1.0,
+ "completeness": 0.0,
+ "gold_expected": 1,
+ "gold_present": 0,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer reports only the anchor CAPEC-34 and its attributes, never stating the expected peer CAPEC-105. The evidence supports those CAPEC-34 facts and shows PEER_OF counts, but the answer does not use them to answer the peer question. Thus it is faithful and grounded but incomplete and not a correct answer.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 8192,
+  "escalated": false,
+  "position": 1
+ }
+}

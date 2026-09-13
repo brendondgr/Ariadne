@@ -1,0 +1,27 @@
+{
+ "case_id": "D6-MAPS_TO[ATTACK]-HAS_MEMBER-T1036.001-095598::indirect",
+ "verdict": "PARTIAL",
+ "correctness": 0.85,
+ "faithfulness": 0.7,
+ "groundedness": 0.85,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "The capec source does not establish the CAPEC views for CAPEC-473",
+  "The executed query returned CAPEC-473 with no linked records for CAPEC views"
+ ],
+ "rationale": "The answer correctly identifies CAPEC-473 as the CAPEC pattern mapped to T1036.001 and states the expected view CAPEC-703. However, the included abstention claims the CAPEC source returned no linked view records, which is contradicted by the q2 evidence showing CAPEC-703 as an IN_VIEW related record. This contradiction makes the answer partial rather than fully correct.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 16384,
+  "escalated": true,
+  "position": 1
+ }
+}

@@ -1,0 +1,24 @@
+{
+ "case_id": "D2-HAS_PREREQUISITE-CAPEC-478-3c9de1::analyst",
+ "verdict": "INCORRECT",
+ "correctness": 0.2,
+ "faithfulness": 1.0,
+ "groundedness": 1.0,
+ "completeness": 0.0,
+ "gold_expected": 1,
+ "gold_present": 0,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer retrieves and describes CAPEC-478, but it does not state the expected prerequisite, \"The adversary must have the capability to write to the Windows Registry on the targeted system.\" Although the evidence facet shows HAS_PREREQUISITE count 1 for CAPEC-478, the narrative and claims only report the anchor record's description and properties. It therefore describes the anchor rather than answering the prerequisite question, with no abstention and no fabricated mapping.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 8192,
+  "escalated": false,
+  "position": 1
+ }
+}

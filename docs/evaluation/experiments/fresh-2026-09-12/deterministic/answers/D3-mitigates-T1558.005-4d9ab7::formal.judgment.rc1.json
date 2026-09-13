@@ -1,0 +1,26 @@
+{
+ "case_id": "D3-mitigates-T1558.005-4d9ab7::formal",
+ "verdict": "PARTIAL",
+ "correctness": 0.6,
+ "faithfulness": 0.6,
+ "groundedness": 0.7,
+ "completeness": 1.0,
+ "gold_expected": 2,
+ "gold_present": 2,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "T1558.005 has no MITIGATES relationships in this catalogue"
+ ],
+ "rationale": "The answer states both expected mitigations, M1047 and M1043, for T1558.005, so the required identifiers are present. However, it also claims that T1558.005 has no MITIGATES relationships, which contradicts the two returned mitigation rows. This contradiction makes the answer partial rather than fully correct and reduces faithfulness.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 8192,
+  "escalated": false,
+  "position": 1
+ }
+}

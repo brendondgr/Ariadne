@@ -1,0 +1,26 @@
+{
+ "case_id": "D3-subtechnique-of-T1484-5e647a::analyst",
+ "verdict": "PARTIAL",
+ "correctness": 0.7,
+ "faithfulness": 0.6,
+ "groundedness": 0.7,
+ "completeness": 1.0,
+ "gold_expected": 2,
+ "gold_present": 2,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "T1484 has no subtechniques in this catalogue"
+ ],
+ "rationale": "The answer states both expected sub-technique identifiers, T1484.001 and T1484.002, so completeness is full. However, it also asserts that T1484 has no subtechniques, which is contradicted by the evidence showing two related sub-technique records. The related-item enumeration is grounded in the cited T1484 record, but the unsupported absence claim reduces faithfulness and correctness.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 8192,
+  "escalated": false,
+  "position": 1
+ }
+}

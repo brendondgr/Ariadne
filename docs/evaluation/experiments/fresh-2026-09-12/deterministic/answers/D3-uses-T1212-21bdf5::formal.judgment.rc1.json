@@ -1,0 +1,26 @@
+{
+ "case_id": "D3-uses-T1212-21bdf5::formal",
+ "verdict": "CORRECT",
+ "correctness": 0.9,
+ "faithfulness": 0.75,
+ "groundedness": 0.8,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "T1212 has no USES relationships in this catalogue"
+ ],
+ "rationale": "The answer correctly identifies C0049 as the campaign associated with T1212, satisfying the expected gold identifier. It also names T1212 and ties the campaign claim to the returned ATT&CK record. The extra absence claim about T1212 having no USES relationships is not directly supported by the evidence, which shows a USES edge from C0049 to T1212.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 8192,
+  "escalated": false,
+  "position": 1
+ }
+}

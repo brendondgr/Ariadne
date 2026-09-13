@@ -1,0 +1,24 @@
+{
+ "case_id": "D6-PeerOf-MAPS_TO[ATTACK]-CAPEC-665-85647c::analyst",
+ "verdict": "INCORRECT",
+ "correctness": 0.2,
+ "faithfulness": 1.0,
+ "groundedness": 0.7,
+ "completeness": 0.0,
+ "gold_expected": 1,
+ "gold_present": 0,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer reports CAPEC-665's own ATT&CK mappings T1211, T1542.002, and T1556, but the question asks for techniques corresponding to peer attack patterns of CAPEC-665. It never states any peer pattern or the expected technique T1491, so it describes the anchor rather than answering the two-hop query. The statements are supported by the cited CAPEC-665 record, but the missing peer relationship makes the answer incorrect and incomplete.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 16384,
+  "escalated": true,
+  "position": 1
+ }
+}

@@ -1,0 +1,26 @@
+{
+ "case_id": "D0-Campaign-detects-C0028-845039::indirect",
+ "verdict": "CORRECT",
+ "correctness": 0.85,
+ "faithfulness": 0.75,
+ "groundedness": 0.8,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "C0028 has no DETECTS relationships in this catalogue"
+ ],
+ "rationale": "The answer anchors C0028 and states that it has no DETECTS relationships, which matches the expected empty set of detected techniques. It also lists supported USES neighbours such as S0607, S0089, T1105, T1018, and T1059.005, but those are not the asked DETECTS techniques. The absence claim is only weakly supported because the shown query traversed USES rather than DETECTS, so faithfulness is reduced.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 8192,
+  "escalated": false,
+  "position": 1
+ }
+}

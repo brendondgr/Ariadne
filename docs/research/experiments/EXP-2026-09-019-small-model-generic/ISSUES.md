@@ -68,3 +68,52 @@ were verified to fail with this experiment's run root moved out of the tree, so
 none is caused by it. The third's hash *also* moves whenever anything is written
 under `docs/evaluation/experiments`, which this experiment does — but it was
 already stale beforehand. This experiment's own folder validates.
+
+## I-8 — 11 of 284 claim *texts* differ, and the narrator is not the cause (open)
+
+At n=284 the claim-identity gate reported 273 of 284 identical. The 11 that
+differ do so in `text` and in nothing else: across all eleven, zero changes to
+`entity_ids`, zero to `citations`, zero to `verdict`, and zero new unsupported
+verdicts anywhere in the run. The facts are untouched; the wording of a
+relationship is not.
+
+The mechanism is in `utils/synthesis/composer.py`. `_REL_NOUNS` maps `DETECTS`
+to "detected technique", and when that lookup does not apply the noun falls
+through to the neighbour's LABEL — the fallback the table's own comment was
+written to prevent, because it "asserts a hierarchy that does not exist". The
+observed difference is exactly that fall-through: "has 1 detected technique:
+T1491" against "has 1 technique: T1491".
+
+**It is not the narrator.** Re-running the same question three times on the
+narrator arm at one worker reproduces the control's wording every time, and
+re-running the control on all eleven cases at one worker and at four workers
+produces byte-identical claims in every pairing (0 differences across 3
+comparisons x 11 cases). It appears only in a sustained full-bank run and does
+not reproduce in isolation, which is why it is recorded here rather than fixed:
+a defect that cannot be reproduced cannot be verified fixed.
+
+This is a composer defect, not a small-model one, and it is reachable by every
+arm in the project. Raised for its own investigation rather than repaired
+inside an experiment about model size.
+
+## I-9 — the specialist seam is not viable at 2B (Step 4 result, not a failure)
+
+On the nine-question gate, `generic_local_full` returned **zero records on 9 of
+9 questions** where the model-free control returned records on 9 of 9, and every
+one of the nine queries differed from the control's. The drafts were mostly
+"empty query" (11 occurrences): the model spent its entire 4096-token budget and
+truncated, on prompts of only ~870 tokens, so this is the model rambling rather
+than a context limit.
+
+No rejection named `allowed_edge_patterns`. That is worth stating plainly
+because the plan expected the allowlist gate to be what stopped a bad draft.
+Instead the drafts were empty, and those that were not empty **reached the live
+graph engines and failed there** — Gremlin `597: No such property: params`,
+Gremlin `499: ... invalid parameters key of [[id]] - these are reserved names`,
+and Neo4j `ParameterMissing`. Malformed model-written queries executing against
+the database rather than being refused before it is a gate finding in its own
+right, and it is not specific to a small model.
+
+The plan's rule is that above a 25% rejection rate this seam is not viable at 2B
+and the step records that rather than widening. The observed figure is a total
+retrieval failure, so the full 284-question pass was not run.

@@ -1,0 +1,26 @@
+{
+ "case_id": "D3-uses-S0225-c14e5f::indirect",
+ "verdict": "PARTIAL",
+ "correctness": 0.7,
+ "faithfulness": 0.6,
+ "groundedness": 0.8,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "C0061 has no USES relationships in this catalogue"
+ ],
+ "rationale": "The answer states the expected campaign C0061 (Operation Digital Eye) in relation to S0225 (sqlmap), which satisfies the gold expectation. However, it also claims that C0061 has no USES relationships, which is contradicted by the executed Campaign-USES-Software query returning C0061 for S0225. This makes the answer partially correct and less than fully faithful.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 8192,
+  "escalated": false,
+  "position": 1
+ }
+}

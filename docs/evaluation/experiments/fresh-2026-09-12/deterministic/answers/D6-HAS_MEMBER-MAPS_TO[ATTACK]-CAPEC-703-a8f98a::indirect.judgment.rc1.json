@@ -1,0 +1,30 @@
+{
+ "case_id": "D6-HAS_MEMBER-MAPS_TO[ATTACK]-CAPEC-703-a8f98a::indirect",
+ "verdict": "CORRECT",
+ "correctness": 0.95,
+ "faithfulness": 0.85,
+ "groundedness": 0.9,
+ "completeness": 1.0,
+ "gold_expected": 50,
+ "gold_present": 50,
+ "abstained": false,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "T1513",
+  "T1562.002",
+  "T1562.003",
+  "T1562.008",
+  "CAPEC-703 has no linked records (abstention statement)"
+ ],
+ "rationale": "The answer resolves CAPEC-703's 46 member patterns and states all 50 expected ATT&CK techniques, including T1014, T1036.001, T1566.003, and T1598.003. It adds non-gold mappings such as T1513 and T1562.002/.003/.008 and includes a contradictory abstention saying CAPEC-703 has no linked records, so faithfulness is slightly reduced. Grounding is strong because each mapping is tied to a cited CAPEC record, though the visible evidence fully shows only the CAPEC-703 membership.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 16384,
+  "escalated": true,
+  "position": 1
+ }
+}

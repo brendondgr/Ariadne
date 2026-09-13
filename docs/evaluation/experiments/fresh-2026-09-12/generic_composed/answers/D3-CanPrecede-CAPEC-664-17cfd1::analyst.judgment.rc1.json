@@ -1,0 +1,26 @@
+{
+ "case_id": "D3-CanPrecede-CAPEC-664-17cfd1::analyst",
+ "verdict": "PARTIAL",
+ "correctness": 0.8,
+ "faithfulness": 0.85,
+ "groundedness": 0.9,
+ "completeness": 1.0,
+ "gold_expected": 5,
+ "gold_present": 5,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "CAPEC-664 has CanPrecede successors (directional orientation not shown in the evidence)"
+ ],
+ "rationale": "The answer states all five expected related identifiers, CAPEC-122, CAPEC-126, CAPEC-161, CAPEC-253, and CAPEC-309, along with the anchor CAPEC-664. It is partial rather than fully correct because it labels them as CanPrecede successors, which is a directional claim not established by the evidence. The claims are otherwise grounded in the CAPEC-664 record and its related entries.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 8192,
+  "escalated": false,
+  "position": 1
+ }
+}

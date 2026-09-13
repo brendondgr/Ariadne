@@ -1,0 +1,26 @@
+{
+ "case_id": "D5-uses-x_mitre_platforms-G0131-8d6616::indirect",
+ "verdict": "PARTIAL",
+ "correctness": 0.6,
+ "faithfulness": 0.7,
+ "groundedness": 0.8,
+ "completeness": 1.0,
+ "gold_expected": 3,
+ "gold_present": 3,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "G0131 has no USES relationships in this catalogue"
+ ],
+ "rationale": "The answer states the anchor G0131 and the expected related software identifiers S0349 and S0590, so it captures the gold set. However, it lists all six related items (S0349, S0590, S0008, S0002, S0596, S0268) without explicitly filtering to Linux-relevant items. It also asserts that G0131 has no USES relationships, which is contradicted by the executed USES query returning six related software rows.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 8192,
+  "escalated": false,
+  "position": 1
+ }
+}

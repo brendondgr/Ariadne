@@ -1,0 +1,26 @@
+{
+ "case_id": "D5-uses-x_mitre_impact_type-S0266-8f2205::analyst",
+ "verdict": "PARTIAL",
+ "correctness": 0.6,
+ "faithfulness": 0.7,
+ "groundedness": 0.8,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "S0266 has no USES relationships in this catalogue."
+ ],
+ "rationale": "The answer includes the expected gold technique T1495 among the 55 ATT&CK items related to S0266, so the required identifier is present. However, it does not explicitly identify T1495 as the Availability-impacting technique and instead lists all related techniques. It also asserts that S0266 has no USES relationships, which is contradicted by the executed USES query returning 55 rows.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 8192,
+  "escalated": false,
+  "position": 1
+ }
+}

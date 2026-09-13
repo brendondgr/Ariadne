@@ -1,0 +1,24 @@
+{
+ "case_id": "D4-CanFollow-HAS_EXECUTION_STEP-CAPEC-555-6f690d::analyst",
+ "verdict": "CORRECT",
+ "correctness": 0.85,
+ "faithfulness": 1.0,
+ "groundedness": 0.95,
+ "completeness": 0.25,
+ "gold_expected": 4,
+ "gold_present": 1,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer abstains and shows the executed CAPEC query for CAPEC-555, which returned zero rows, so it is an honest no-result answer rather than a guess. It states CAPEC-555 but omits the three expected execution steps (Explore, Experiment, Exploit), so completeness is low. No unsupported cross-source mapping is asserted.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 8192,
+  "escalated": false,
+  "position": 1
+ }
+}

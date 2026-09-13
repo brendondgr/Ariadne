@@ -1,0 +1,24 @@
+{
+ "case_id": "D4-CanPrecede-REQUIRES_SKILL-CAPEC-611-e6f4cd::indirect",
+ "verdict": "PARTIAL",
+ "correctness": 0.5,
+ "faithfulness": 0.9,
+ "groundedness": 0.8,
+ "completeness": 0.5,
+ "gold_expected": 2,
+ "gold_present": 1,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer correctly states CAPEC-611 and identifies the following patterns CAPEC-543 and CAPEC-89 from the CAPEC-611 related records. However, it reports a skill for CAPEC-611 rather than the expected skill text for the following patterns, which mentions resolver poisoning for pharming and low-skill fake website setup. This makes it partial: grounded in the retrieved CAPEC-611 record, but incomplete on the demanded skills.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 16384,
+  "escalated": true,
+  "position": 1
+ }
+}

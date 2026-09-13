@@ -1,0 +1,24 @@
+{
+ "case_id": "D5-ChildOf-Abstraction-CAPEC-41-9bdee1::indirect",
+ "verdict": "PARTIAL",
+ "correctness": 0.8,
+ "faithfulness": 1.0,
+ "groundedness": 1.0,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer includes the expected meta-level parent CAPEC-242 and all statements are supported by the CAPEC-41 record. However, it also lists CAPEC-134, which is a ChildOf parent but has Standard abstraction rather than Meta, so it does not cleanly isolate the meta-level answer. No fabricated cross-source mapping or unsupported identifiers are present.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 8192,
+  "escalated": false,
+  "position": 1
+ }
+}

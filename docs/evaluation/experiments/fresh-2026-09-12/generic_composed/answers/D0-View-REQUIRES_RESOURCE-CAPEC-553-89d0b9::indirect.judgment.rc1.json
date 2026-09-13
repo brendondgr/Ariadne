@@ -1,0 +1,24 @@
+{
+ "case_id": "D0-View-REQUIRES_RESOURCE-CAPEC-553-89d0b9::indirect",
+ "verdict": "CORRECT",
+ "correctness": 1.0,
+ "faithfulness": 1.0,
+ "groundedness": 1.0,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer abstains for CAPEC-553 and includes the executed query, matching the evidence that the CAPEC query returned row_count=0 and empty_with_seeds=[CAPEC-553]. It states the only expected identifier, CAPEC-553, and does not assert any unsupported resource or cross-source mapping. The generic advice to name an entity is not a substantive unsupported claim.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 8192,
+  "escalated": false,
+  "position": 1
+ }
+}

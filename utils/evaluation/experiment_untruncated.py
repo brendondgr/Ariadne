@@ -45,6 +45,7 @@ DEFAULT_ROOT = "docs/evaluation/experiments/untruncated"
 ARMS = ("deterministic", "llm", "gold_llm", "llm_loop", "gold_loop_llm", "generic",
         "llm_query", "merged", "generic_composed", "generic_planned",
         "generic_local_narrator", "generic_local_full", "generic_narrator_off",
+        "generic_planned_local",
         "rewrite_off", "rewrite_det", "rewrite_model")
 
 #: The small-model endpoint (EXP-2026-09-019). Read at call time, never at
@@ -71,6 +72,17 @@ def _local_llm_max_tokens() -> str:
     model's launch arguments.
     """
     return os.environ.get("LOCAL_LLM_MAX_TOKENS", "16384")
+
+
+def _local_specialist_max_tokens() -> str:
+    """4096 for a query draft — small on purpose, and overridable on purpose.
+
+    A bounded traversal is short, so the budget exists to stop a model rambling
+    rather than to give it room. It is overridable so that "the 2B cannot draft
+    a query" can be *tested* against a larger budget rather than assumed, which
+    is the difference between a measurement and an excuse.
+    """
+    return os.environ.get("LOCAL_SPECIALIST_MAX_TOKENS", "4096")
 
 
 def _local_llm_thinking_budget() -> str:
@@ -284,6 +296,25 @@ def untruncated_env(*, arm: str, llm_model: str, llm_max_tokens: int) -> dict[st
             "ARIADNE_REWRITE": "0",
             "ARIADNE_REWRITE_MODEL": "0",
         })
+    elif arm == "generic_planned_local":
+        # The 2x2's fourth cell: `generic_planned`'s plan source with
+        # `generic_local_narrator`'s model. Every key that names the endpoint is
+        # identical to the narrator arm's, so the two rows of the 2x2 differ in
+        # the plan and nothing else.
+        env.update({
+            "SPECIALIST_GENERIC_ONLY": "true",
+            "PLANNER_LLM_ENABLED": "false",
+            "SPECIALIST_LLM_ENABLED": "false",
+            "CONVERSATION_LLM_ENABLED": "false",
+            "SYNTHESIS_LLM_ENABLED": "true",
+            "SYNTHESIS_LLM_BASE_URL": _local_llm_base_url(),
+            "SYNTHESIS_LLM_MODEL": _local_llm_model(),
+            "SYNTHESIS_LLM_MAX_TOKENS": _local_llm_max_tokens(),
+            "SYNTHESIS_LLM_THINKING_BUDGET": _local_llm_thinking_budget(),
+            "SYNTHESIS_LLM_TIMEOUT_S": "600.0",
+            "ARIADNE_REWRITE": "0",
+            "ARIADNE_REWRITE_MODEL": "0",
+        })
     elif arm == "generic_narrator_off":
         # The control Steps 3 and 4 actually need, and the one that did not
         # exist. `generic_composed` is NOT it, for a reason the claim-identity
@@ -340,7 +371,7 @@ def untruncated_env(*, arm: str, llm_model: str, llm_max_tokens: int) -> dict[st
             "SPECIALIST_LLM_QUERY_BUILDER": "true",
             "SPECIALIST_LLM_BASE_URL": _local_llm_base_url(),
             "SPECIALIST_LLM_MODEL": _local_llm_model(),
-            "SPECIALIST_LLM_MAX_TOKENS": "4096",
+            "SPECIALIST_LLM_MAX_TOKENS": _local_specialist_max_tokens(),
             "SPECIALIST_LLM_TIMEOUT_S": "600.0",
             "SYNTHESIS_LLM_ENABLED": "true",
             "SYNTHESIS_LLM_BASE_URL": _local_llm_base_url(),
@@ -833,7 +864,9 @@ def run_llm(entry: dict, kind: str, _pool: Any) -> tuple[Any, Any, dict]:
     }
 
 
-def _run_real_pipeline(entry: dict, kind: str, *, use_llm: bool) -> tuple[Any, Any, dict]:
+def _run_real_pipeline(
+    entry: dict, kind: str, *, use_llm: bool, llm_synthesis: bool | None = None
+) -> tuple[Any, Any, dict]:
     """Drive the REAL pipeline — planner included — at an explicit LLM posture.
 
     ``use_llm`` is a parameter rather than a constant because it is **not**
@@ -863,8 +896,22 @@ def _run_real_pipeline(entry: dict, kind: str, *, use_llm: bool) -> tuple[Any, A
 
     run = PipelineRun(question=entry["question"], mode="query")
     plan = evidence = answer = None
+    # `use_llm` sets the planner, specialist AND synthesis seams together, so a
+    # cell that wants a deterministic planner with a live narrator cannot be
+    # expressed by it. Passing an explicit synthesis_config is what separates
+    # them: iter_pipeline uses it as given instead of deriving it from use_llm.
+    synthesis_config = None
+    if llm_synthesis is not None:
+        import dataclasses as _dc
+
+        from utils.synthesis.config import SynthesisConfig
+
+        synthesis_config = _dc.replace(
+            SynthesisConfig.from_env(), llm_enabled=llm_synthesis
+        )
     for event, payload in iter_pipeline(
-        entry["question"], mode="query", use_llm=use_llm, specialists=injected, run=run
+        entry["question"], mode="query", use_llm=use_llm, specialists=injected,
+        synthesis_config=synthesis_config, run=run,
     ):
         if event == "plan":
             plan = payload.get("plan")
@@ -881,8 +928,13 @@ def _run_real_pipeline(entry: dict, kind: str, *, use_llm: bool) -> tuple[Any, A
     # model seams could write a provenance record claiming it had none.
     return evidence, answer, {
         "planner": "deterministic" if not use_llm else "llm",
-        "synthesis": "deterministic" if not use_llm else "llm",
+        "synthesis": (
+            "deterministic"
+            if not (use_llm if llm_synthesis is None else llm_synthesis)
+            else "llm"
+        ),
         "use_llm": use_llm,
+        "llm_synthesis": use_llm if llm_synthesis is None else llm_synthesis,
         "rewrite": getattr(plan, "rewrite", None),
         "observed_plan": _plan_dict(plan),
         "exit_code": run.exit_code,
@@ -900,6 +952,17 @@ def run_rewrite(entry: dict, kind: str, _pool: Any) -> tuple[Any, Any, dict]:
     re-describe published numbers. See `Q40`.
     """
     return _run_real_pipeline(entry, kind, use_llm=True)
+
+
+def run_planned_local(entry: dict, kind: str, _pool: Any) -> tuple[Any, Any, dict]:
+    """The 2x2's fourth cell: a real planner AND a small model narrating.
+
+    This is what a laptop deployment actually is, and it is the cell nobody has
+    run. The planner and the query builders stay deterministic; only the
+    narrator is the model, which is the one seam Step 3 established does not
+    change the facts.
+    """
+    return _run_real_pipeline(entry, kind, use_llm=False, llm_synthesis=True)
 
 
 def run_planned(entry: dict, kind: str, _pool: Any) -> tuple[Any, Any, dict]:
@@ -935,6 +998,9 @@ RUNNERS = {
     # precisely the variable this arm exists to remove. `run_rewrite` drives the
     # real pipeline with the planner in it and no language model anywhere.
     "generic_planned": run_planned,
+    # Deterministic planner, deterministic queries, 2B narrator — the one cell
+    # of the 2x2 that had never been run.
+    "generic_planned_local": run_planned_local,
     # Same gold-replay driver as `gold_llm`: the arm differs only in its env —
     # generic primitives on, the specialist seam off, and the narrator pointed
     # at the local small model. The claims are composed deterministically in
@@ -1002,6 +1068,7 @@ def run_arm(
     # share a thread-local router set (ARM C keeps the .env LLM drafter, as the
     # baseline did; ARM A forces it off).
     if arm in ("llm", "llm_loop", "gold_loop_llm", "generic", "generic_planned",
+               "generic_planned_local",
                "rewrite_off", "rewrite_det", "rewrite_model"):
         pool = None
     elif arm == "merged":

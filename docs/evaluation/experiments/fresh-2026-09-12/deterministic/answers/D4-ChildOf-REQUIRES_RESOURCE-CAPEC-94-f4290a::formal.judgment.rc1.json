@@ -1,0 +1,24 @@
+{
+ "case_id": "D4-ChildOf-REQUIRES_RESOURCE-CAPEC-94-f4290a::formal",
+ "verdict": "PARTIAL",
+ "correctness": 0.3,
+ "faithfulness": 0.9,
+ "groundedness": 0.8,
+ "completeness": 0.0,
+ "gold_expected": 4,
+ "gold_present": 0,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer honestly abstains and shows the executed CAPEC query from CAPEC-94 over CHILD_OF, which returned zero rows, so it is faithful and not fabricated. However, the gold expects four resource strings required by child attack patterns of CAPEC-94, and the answer states none of them. The shown query also stops at child AttackPattern nodes rather than traversing REQUIRES_RESOURCE to Resource nodes, so the abstention is only partially justified.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 8192,
+  "escalated": false,
+  "position": 1
+ }
+}

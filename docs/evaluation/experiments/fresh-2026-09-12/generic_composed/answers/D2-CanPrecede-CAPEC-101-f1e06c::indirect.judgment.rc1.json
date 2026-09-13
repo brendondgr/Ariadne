@@ -1,0 +1,24 @@
+{
+ "case_id": "D2-CanPrecede-CAPEC-101-f1e06c::indirect",
+ "verdict": "CORRECT",
+ "correctness": 0.95,
+ "faithfulness": 0.9,
+ "groundedness": 0.95,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer states the required follow-on pattern CAPEC-600 and also names the anchor CAPEC-101. It additionally lists CAPEC-653 and CAPEC-151, which appear in the CAPEC-101 related records, so the core query is answered. The only minor weakness is that 'successors' is inferred from the CAN_PRECEDE relation rather than explicitly labeled in the evidence.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 8192,
+  "escalated": false,
+  "position": 1
+ }
+}

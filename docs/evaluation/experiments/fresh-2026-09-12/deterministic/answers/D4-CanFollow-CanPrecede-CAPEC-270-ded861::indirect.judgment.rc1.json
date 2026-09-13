@@ -1,0 +1,24 @@
+{
+ "case_id": "D4-CanFollow-CanPrecede-CAPEC-270-ded861::indirect",
+ "verdict": "INCORRECT",
+ "correctness": 0.2,
+ "faithfulness": 1.0,
+ "groundedness": 1.0,
+ "completeness": 0.0,
+ "gold_expected": 1,
+ "gold_present": 0,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer traverses out(CAN_PRECEDE) from CAPEC-270 and reports CAPEC-529, CAPEC-568, and CAPEC-646 as successors of CAPEC-270. The question asked for patterns that can precede CAPEC-270, with expected gold CAPEC-151, and then what follows those predecessors. The answer states the anchor and supported CanPrecede neighbors, but it never states CAPEC-151 or the followers of the requested preceding patterns.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 8192,
+  "escalated": false,
+  "position": 1
+ }
+}

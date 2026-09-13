@@ -1,0 +1,24 @@
+{
+ "case_id": "D6-MAPS_TO[ATTACK]-PeerOf-T1574.010-61ea1f::formal",
+ "verdict": "PARTIAL",
+ "correctness": 0.2,
+ "faithfulness": 0.9,
+ "groundedness": 0.7,
+ "completeness": 0.0,
+ "gold_expected": 1,
+ "gold_present": 0,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The expected peer identifier is CAPEC-663, but the answer never states it. It lists CAPEC-1, CAPEC-17, and CAPEC-180 as CAPEC patterns mapped to T1574.010 and notes that CAPEC-17 also maps to T1574.005, which addresses the first hop rather than the requested peer set. The claims are mostly supported by the cited CAPEC records, but the final answer is incomplete.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 8192,
+  "escalated": false,
+  "position": 1
+ }
+}

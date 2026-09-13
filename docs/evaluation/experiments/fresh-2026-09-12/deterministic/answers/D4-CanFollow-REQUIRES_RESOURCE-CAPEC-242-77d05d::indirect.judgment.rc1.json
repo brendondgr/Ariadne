@@ -1,0 +1,24 @@
+{
+ "case_id": "D4-CanFollow-REQUIRES_RESOURCE-CAPEC-242-77d05d::indirect",
+ "verdict": "PARTIAL",
+ "correctness": 0.3,
+ "faithfulness": 1.0,
+ "groundedness": 1.0,
+ "completeness": 0.0,
+ "gold_expected": 1,
+ "gold_present": 0,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer correctly identifies CAPEC-242 and its description/properties, all supported by the CAPEC record. However, it does not state the expected resource text 'None: No specialized resources are required to execute this type of attack' or any CanFollow neighbour patterns. The evidence shows CAPEC-242 has no outgoing REQUIRES_RESOURCE and no outgoing CAN_FOLLOW neighbours, but the narrative never addresses the asked follow patterns or required resources.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 8192,
+  "escalated": false,
+  "position": 1
+ }
+}

@@ -1,0 +1,24 @@
+{
+ "case_id": "D2-CanAlsoBe-CAPEC-182-67b422::analyst",
+ "verdict": "INCORRECT",
+ "correctness": 0.2,
+ "faithfulness": 1.0,
+ "groundedness": 1.0,
+ "completeness": 0.0,
+ "gold_expected": 1,
+ "gold_present": 0,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer only reports CAPEC-182 and its attributes, but the question asks for the related CAPEC pattern it can also be carried out as, which is CAPEC-248. It does not state CAPEC-248 and does not abstain, so it retrieves the anchor without answering the requested relation. Its statements are faithful and grounded in the CAPEC-182 record, but completeness is zero for the expected CAPEC-248.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 8192,
+  "escalated": false,
+  "position": 1
+ }
+}

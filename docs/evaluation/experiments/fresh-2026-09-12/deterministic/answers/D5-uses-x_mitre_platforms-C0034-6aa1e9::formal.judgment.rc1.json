@@ -1,0 +1,26 @@
+{
+ "case_id": "D5-uses-x_mitre_platforms-C0034-6aa1e9::formal",
+ "verdict": "PARTIAL",
+ "correctness": 0.5,
+ "faithfulness": 0.7,
+ "groundedness": 0.8,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "T1485 has no USES relationships in this catalogue"
+ ],
+ "rationale": "The answer includes the expected technique T1485 from the C0034 query, but it does not explicitly name C0034 or state that T1485 applies to infrastructure as a service. It also asserts that T1485 has no USES relationships, which is not clearly supported because the executed query shows C0034 USES T1485. The other listed techniques are grounded in the returned records, so the response is partial rather than fully correct.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 8192,
+  "escalated": false,
+  "position": 1
+ }
+}
