@@ -32,6 +32,7 @@ from __future__ import annotations
 import argparse
 import json
 import os
+import shutil
 import subprocess
 import sys
 import time
@@ -164,6 +165,60 @@ def _ungraded(root: Path, arm: str, suffix: str) -> list[str]:
         if not path.with_name(f"{path.stem}.judgment{suffix}.json").is_file():
             missing.append(path.stem)
     return missing
+
+
+#: The commit the repaired cells must have been produced at. Set when the tree
+#: changes under a control that has already run: the repaired side is rebuilt,
+#: the reference side is not, because it is a different commit and unaffected.
+REPAIRED_SIDE_AT = "14331824"
+
+
+def stage_control_regenerate_repaired() -> int:
+    """Rebuild the repaired half of the control on the current tree.
+
+    I-18 changed what an answer says, so the repaired cells measured a tree that
+    no longer exists. The reference half is left alone — it is `e09c2571`, which
+    this fix does not touch, and its judgments already reproduced the committed
+    Step 6 reference to within 0.0016.
+    """
+    stale = CONTROL / "repaired"
+    marker = stale / ".built-at"
+    if marker.is_file() and marker.read_text().strip() == REPAIRED_SIDE_AT:
+        print("[control-regenerate] repaired side already at "
+              f"{REPAIRED_SIDE_AT}, skipping", flush=True)
+        return 0
+    if stale.is_dir():
+        retired = CONTROL / f"repaired-pre-{REPAIRED_SIDE_AT}"
+        if retired.exists():
+            shutil.rmtree(retired)
+        stale.rename(retired)
+        print(f"[control-regenerate] kept the pre-fix side as {retired.name}",
+              flush=True)
+    for arm in ARMS:
+        code = _run(f"control-regenerate-{arm}",
+                    _arm(CONTROL / "repaired", arm,
+                         REPO / "docs/evaluation/composition/bank/bank-dev.json"))
+        if code:
+            return code
+        if not _complete(CONTROL / "repaired", arm):
+            print(f"[control-regenerate] {arm} INCOMPLETE — stopping", flush=True)
+            return 1
+    marker.write_text(REPAIRED_SIDE_AT + "\n")
+    return 0
+
+
+def stage_control_rejudge() -> int:
+    """Judge the rebuilt repaired half, both positions."""
+    for suffix, position in PASSES:
+        for arm in ARMS:
+            code = _run(f"control-rejudge-{arm}{suffix}",
+                        _judge(CONTROL / "repaired", arm, suffix, position))
+            if code:
+                return code
+            if _report_ungraded("control-rejudge", f"repaired/{arm}{suffix}",
+                                _ungraded(CONTROL / "repaired", arm, suffix)):
+                return 1
+    return 0
 
 
 def stage_control_generate() -> int:
@@ -351,14 +406,21 @@ def stage_latency() -> int:
 STAGES = (
     ("control-generate", stage_control_generate),
     ("control-judge", stage_control_judge),
+    # I-18 landed after the control had run, so the repaired half is rebuilt and
+    # re-judged against the shipped tree before anything is scored from it.
+    ("control-regenerate-repaired", stage_control_regenerate_repaired),
+    ("control-rejudge", stage_control_rejudge),
     ("control-score", stage_control_score),
     ("fresh-seal", stage_fresh_seal),
     ("fresh-generate", stage_fresh_generate),
     ("fresh-judge", stage_fresh_judge),
-    ("regression-generate", stage_regression_generate),
-    ("regression-judge", stage_regression_judge),
     ("t6-rates", stage_t6_rates),
     ("latency", stage_latency),
+    # Last on purpose: the holdout has been graded twice already, so this is
+    # regression evidence and never a capability figure. Everything above it is
+    # a number the write-up actually quotes.
+    ("regression-generate", stage_regression_generate),
+    ("regression-judge", stage_regression_judge),
 )
 
 
