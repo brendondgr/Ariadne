@@ -1,0 +1,28 @@
+{
+ "case_id": "D6-CanPrecede-MAPS_TO[ATTACK]-CAPEC-691-3d05ef::formal",
+ "verdict": "PARTIAL",
+ "correctness": 0.6,
+ "faithfulness": 0.6,
+ "groundedness": 0.8,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "CAPEC-691 has 3 CanPrecede successors: CAPEC-616, CAPEC-184, and CAPEC-444",
+  "the CAPEC source does not establish this because the executed query returned CAPEC-691 with no linked records for the CAPEC attack patterns that can precede it",
+  "T1036.005 is named Match Legitimate Resource Name or Location"
+ ],
+ "rationale": "The answer does state the expected gold identifier T1036.005, tied to CAPEC-616, but it also reports CAPEC-691's own mappings T1195.001 and T1195.002 and frames the related CAPEC patterns as successors rather than predecessors. Its abstention that CAPEC-691 has no linked predecessor records is contradicted by the q1 related records CAPEC-616, CAPEC-184, and CAPEC-444. This makes the answer partially responsive but not cleanly correct.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 8192,
+  "escalated": false,
+  "position": 1
+ }
+}

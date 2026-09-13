@@ -1,0 +1,26 @@
+{
+ "case_id": "D6-CanPrecede-MAPS_TO[ATTACK]-CAPEC-662-205983::analyst",
+ "verdict": "CORRECT",
+ "correctness": 0.85,
+ "faithfulness": 0.85,
+ "groundedness": 0.9,
+ "completeness": 1.0,
+ "gold_expected": 2,
+ "gold_present": 2,
+ "abstained": false,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "The capec source's executed query returned CAPEC-662 with no linked records for the preceding-pattern question, while the same result also reports four CAN_PRECEDE related records"
+ ],
+ "rationale": "The answer states the required anchor CAPEC-662 and the expected ATT&CK techniques T1027 and T1587.001, tying them to CAPEC-542. It also lists the related CAPEC patterns CAPEC-159, CAPEC-185, CAPEC-475, and CAPEC-542 with their mappings, which addresses the two-hop question. The main weakness is the mixed abstention language: it says the preceding-pattern query returned no linked records, then reports four CAN_PRECEDE neighbors.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 16384,
+  "escalated": true,
+  "position": 1
+ }
+}

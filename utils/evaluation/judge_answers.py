@@ -141,6 +141,25 @@ MAX_TOTAL_TOKENS = int(os.environ.get("JUDGE_MAX_TOTAL_TOKENS", "84000"))
 #: a budget the server refuses; over-estimating only costs headroom.
 CHARS_PER_TOKEN = 3
 
+#: A 4xx the relay recovers from on its own. `:9090` is an SSH tunnel, and when
+#: it drops the alias stops resolving: the relay answers **400 "model
+#: 'default-model' not found"** rather than refusing the connection. That looks
+#: exactly like a malformed request and is nothing of the kind — it is the
+#: endpoint being briefly absent, and the only correct response is to wait.
+#:
+#: Worth recording how this was found: 22 cases failed with "HTTP Error 400: Bad
+#: Request" and I spent an afternoon reasoning about token ceilings. The moment
+#: the response body was actually read, the server turned out to have been
+#: saying something else entirely all along.
+TRANSIENT_400 = re.compile(
+    r"model\s+\S*\s*not found|no healthy upstream|temporarily unavailable|"
+    r"service unavailable", re.I
+)
+#: A tunnel flap outlasts an ordinary retry ladder, so this one is longer and
+#: slower: roughly eight minutes of patience before a case is given up on.
+TRANSIENT_RETRIES = 8
+TRANSIENT_BACKOFF_S = 60
+
 
 def _budgets(config: JudgeConfig, prompt: str) -> list[int]:
     """The escalation ladder, clamped to what the server can actually accept.
@@ -194,7 +213,13 @@ def _post(config: JudgeConfig, prompt: str, max_tokens: int | None = None) -> tu
         }
     ).encode()
     last: Exception | None = None
-    for attempt in range(1, config.retries + 1):
+    transient = 0
+    # A transient rejection does not consume an ordinary attempt: the request
+    # was never considered, so counting it against the retry budget would give
+    # up on a healthy case because the tunnel blinked.
+    attempt = 0
+    while attempt < config.retries:
+        attempt += 1
         try:
             request = urllib.request.Request(
                 f"{config.base_url.rstrip('/')}/chat/completions",
@@ -204,7 +229,7 @@ def _post(config: JudgeConfig, prompt: str, max_tokens: int | None = None) -> tu
             with urllib.request.urlopen(request, timeout=config.timeout_s) as response:
                 payload = json.load(response)
             return payload["choices"][0]["message"]["content"] or "", payload.get("model")
-        except urllib.error.HTTPError as exc:
+        except urllib.error.HTTPError as exc:  # noqa: PERF203
             # Read the BODY. `str(HTTPError)` is "HTTP Error 400: Bad Request"
             # and nothing else, so a rejection the server explains precisely —
             # "max_tokens=131072 cannot be greater than max_model_len=84000" —
@@ -215,8 +240,15 @@ def _post(config: JudgeConfig, prompt: str, max_tokens: int | None = None) -> tu
             except Exception:  # noqa: BLE001
                 detail = "<body unreadable>"
             last = RuntimeError(f"HTTP {exc.code}: {detail}")
-            # A 4xx is the server declining THIS request, not a blip; retrying
-            # the identical body cannot change its mind.
+            if 400 <= exc.code < 500 and TRANSIENT_400.search(detail):
+                # The endpoint is absent, not objecting. Wait for it.
+                transient += 1
+                if transient >= TRANSIENT_RETRIES:
+                    break
+                time.sleep(TRANSIENT_BACKOFF_S)
+                continue
+            # Any other 4xx is the server declining THIS request; retrying the
+            # identical body cannot change its mind.
             if 400 <= exc.code < 500:
                 break
             if attempt < config.retries:

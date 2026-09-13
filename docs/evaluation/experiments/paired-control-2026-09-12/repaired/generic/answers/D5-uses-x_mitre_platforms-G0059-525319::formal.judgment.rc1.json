@@ -1,0 +1,26 @@
+{
+ "case_id": "D5-uses-x_mitre_platforms-G0059-525319::formal",
+ "verdict": "CORRECT",
+ "correctness": 1.0,
+ "faithfulness": 0.85,
+ "groundedness": 0.9,
+ "completeness": 1.0,
+ "gold_expected": 10,
+ "gold_present": 10,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "The 26/37 technique breakdown and many technique IDs are not fully visible in the truncated evidence"
+ ],
+ "rationale": "The answer directly states all ten expected Windows software neighbors of G0059: S0002, S0029, S0039, S0108, S0186, S0192, S0357, S0674, S1012, and S1144. It also adds technique enumerations, which are not the requested malware/tools but are tied to the G0059 record. The minor faithfulness deduction is for the technique-count breakdown and extra technique IDs that are not fully visible in the truncated evidence.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 8192,
+  "escalated": false,
+  "position": 1
+ }
+}

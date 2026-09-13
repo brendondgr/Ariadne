@@ -1,0 +1,24 @@
+{
+ "case_id": "D5-uses-x_mitre_platforms-G0006-0eed87::indirect",
+ "verdict": "CORRECT",
+ "correctness": 1.0,
+ "faithfulness": 0.95,
+ "groundedness": 0.95,
+ "completeness": 1.0,
+ "gold_expected": 12,
+ "gold_present": 12,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer states the anchor G0006 and all 12 expected macOS-related technique identifiers: T1005, T1007, T1016, T1036.005, T1049, T1057, T1087.001, T1119, T1135, T1560.001, T1566.001, and T1566.002. These identifiers are present in the G0006 related records and the query was filtered by platform, so the macOS restriction is well supported. Minor deductions are for the somewhat awkward split into 7 and 5 techniques and for platform support being inferred from the query/question rather than explicit record properties.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 8192,
+  "escalated": false,
+  "position": 1
+ }
+}
