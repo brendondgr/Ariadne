@@ -1,0 +1,26 @@
+{
+ "case_id": "D5-uses-x_mitre_platforms-C0026-552e24::analyst",
+ "verdict": "PARTIAL",
+ "correctness": 0.7,
+ "faithfulness": 0.7,
+ "groundedness": 0.8,
+ "completeness": 1.0,
+ "gold_expected": 5,
+ "gold_present": 5,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "C0026 has no USES relationships in this catalogue"
+ ],
+ "rationale": "The answer states all five expected related software identifiers for C0026: S0039, S0099, S1074, S1075, and S1076. It also includes S0104 and does not explicitly tie the listed items to running on Windows, so it only partially answers the question. The unsupported claim that C0026 has no USES relationships conflicts with the evidence showing six related software rows.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 8192,
+  "escalated": false,
+  "position": 2
+ }
+}

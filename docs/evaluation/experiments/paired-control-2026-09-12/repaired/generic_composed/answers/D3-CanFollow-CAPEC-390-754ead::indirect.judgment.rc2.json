@@ -1,0 +1,26 @@
+{
+ "case_id": "D3-CanFollow-CAPEC-390-754ead::indirect",
+ "verdict": "PARTIAL",
+ "correctness": 0.8,
+ "faithfulness": 0.85,
+ "groundedness": 1.0,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "CAPEC-665 is a CanFollow predecessor of CAPEC-390 (directionality not specified in the evidence)"
+ ],
+ "rationale": "The answer identifies the expected related pattern CAPEC-665 for CAPEC-390 and grounds the description in the cited CAPEC-390 record. It is only partial because it calls CAPEC-665 a 'CanFollow predecessor,' a directional claim not explicit in the evidence, rather than clearly stating it as the next pattern. No cross-source mapping is fabricated.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 8192,
+  "escalated": false,
+  "position": 2
+ }
+}

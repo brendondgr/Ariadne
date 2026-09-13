@@ -1,0 +1,26 @@
+{
+ "case_id": "D6-MAPS_TO[ATTACK]-HAS_MEMBER-T1195-71a5c3::formal",
+ "verdict": "CORRECT",
+ "correctness": 0.9,
+ "faithfulness": 0.85,
+ "groundedness": 0.9,
+ "completeness": 1.0,
+ "gold_expected": 5,
+ "gold_present": 5,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "The capec source doesn't establish this / CAPEC-438 and CAPEC-439 have no linked category records"
+ ],
+ "rationale": "The answer states T1195 and all five expected CAPEC categories: CAPEC-262, CAPEC-437, CAPEC-513, CAPEC-515, and CAPEC-686. It correctly maps CAPEC-438 to CAPEC-515, CAPEC-262, CAPEC-437, and CAPEC-513, and CAPEC-439 to CAPEC-262, CAPEC-437, CAPEC-515, and CAPEC-686. It also identifies CAPEC-446 as mapped to T1195 but does not explicitly state that CAPEC-446 has no categories. The abstention claiming no linked category records is inconsistent with the listed categories, so faithfulness is reduced.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 8192,
+  "escalated": false,
+  "position": 2
+ }
+}

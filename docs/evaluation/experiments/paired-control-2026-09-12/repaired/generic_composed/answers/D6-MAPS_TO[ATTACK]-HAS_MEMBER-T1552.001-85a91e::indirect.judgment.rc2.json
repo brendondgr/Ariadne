@@ -1,0 +1,26 @@
+{
+ "case_id": "D6-MAPS_TO[ATTACK]-HAS_MEMBER-T1552.001-85a91e::indirect",
+ "verdict": "CORRECT",
+ "correctness": 0.9,
+ "faithfulness": 0.85,
+ "groundedness": 0.9,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "The capec source returned CAPEC-191 with no linked CAPEC view records"
+ ],
+ "rationale": "The answer correctly identifies CAPEC-191 and CAPEC-639 as the CAPEC attack patterns mapped to T1552.001, and it states the required view CAPEC-703 for CAPEC-191. It also includes an abstention with the executed query for the missing CAPEC-639 view, which satisfies the second-hop request. The minor faithfulness issue is that the abstention says CAPEC-191 had no linked records, while the evidence shows CAPEC-191 linked to CAPEC-703.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 8192,
+  "escalated": false,
+  "position": 2
+ }
+}

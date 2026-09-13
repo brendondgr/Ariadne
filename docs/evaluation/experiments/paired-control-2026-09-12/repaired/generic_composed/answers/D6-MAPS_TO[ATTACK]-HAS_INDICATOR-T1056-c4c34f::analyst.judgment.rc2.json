@@ -1,0 +1,27 @@
+{
+ "case_id": "D6-MAPS_TO[ATTACK]-HAS_INDICATOR-T1056-c4c34f::analyst",
+ "verdict": "CORRECT",
+ "correctness": 0.9,
+ "faithfulness": 0.85,
+ "groundedness": 0.9,
+ "completeness": 1.0,
+ "gold_expected": 4,
+ "gold_present": 4,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "The executed query returned CAPEC-654 with no linked records for indicators",
+  "The CAPEC-654 indicator is named only as text"
+ ],
+ "rationale": "The answer states T1056, CAPEC-569, CAPEC-654, and the CAPEC-654 indicator text \"Credential prompts that appear illegitimate or unexpected.\" It also includes an abstention with the executed query for the indicator side, though the abstention wording is slightly inconsistent with the returned CAPEC-654 indicator. No unsupported cross-source mapping is asserted.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 16384,
+  "escalated": true,
+  "position": 2
+ }
+}

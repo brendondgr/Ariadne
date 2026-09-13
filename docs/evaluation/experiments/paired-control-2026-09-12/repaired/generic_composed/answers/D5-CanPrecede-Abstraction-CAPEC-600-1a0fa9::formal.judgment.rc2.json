@@ -1,0 +1,26 @@
+{
+ "case_id": "D5-CanPrecede-Abstraction-CAPEC-600-1a0fa9::formal",
+ "verdict": "PARTIAL",
+ "correctness": 0.7,
+ "faithfulness": 0.75,
+ "groundedness": 0.9,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "CAPEC-50 and CAPEC-49 are CanPrecede successors of CAPEC-600"
+ ],
+ "rationale": "The answer includes the required anchor CAPEC-600 and the expected successor CAPEC-653, so it satisfies the gold set. It also asserts that CAPEC-50 and CAPEC-49 are CanPrecede successors, but the evidence only shows them as CAN_PRECEDE-related neighbors and the gold expects only CAPEC-653. This overclaim makes the answer partial rather than fully correct.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 8192,
+  "escalated": false,
+  "position": 2
+ }
+}

@@ -1,0 +1,27 @@
+{
+ "case_id": "D6-MAPS_TO[ATTACK]-HAS_MEMBER-T1598.002-508de4::analyst",
+ "verdict": "PARTIAL",
+ "correctness": 0.9,
+ "faithfulness": 0.75,
+ "groundedness": 0.8,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": false,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "The capec source does not establish CAPEC-163's view membership",
+  "The executed view query returned CAPEC-163 with no linked records"
+ ],
+ "rationale": "The answer identifies CAPEC-163 as the CAPEC attack pattern mapped to T1598.002 and CAPEC-703 as the containing view, which satisfies the requested two-hop answer. It also correctly notes the ATT&CK parent T1598. The main weakness is the unsupported claim that the capec source does not establish the view and that the query returned no linked records, despite the q2 record listing CAPEC-703 as an IN_VIEW related record.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 16384,
+  "escalated": true,
+  "position": 1
+ }
+}

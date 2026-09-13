@@ -1,0 +1,26 @@
+{
+ "case_id": "D0-Group-kill_chain_phase-G0001-df09db::indirect",
+ "verdict": "PARTIAL",
+ "correctness": 0.5,
+ "faithfulness": 0.6,
+ "groundedness": 0.8,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "G0001 has no techniques in this catalogue"
+ ],
+ "rationale": "The answer correctly identifies and cites G0001 (Axiom), satisfying the required anchor identifier. However, the question asks for ATT&CK tactics, and the answer instead asserts that G0001 has no techniques, which is not supported by the shown facets that include USES Technique count 9 and USES SubTechnique count 7. It therefore partially addresses the query but does not explicitly state the expected tactic set.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 8192,
+  "escalated": false,
+  "position": 2
+ }
+}

@@ -1,0 +1,27 @@
+{
+ "case_id": "D6-MAPS_TO[ATTACK]-HAS_MEMBER-T1598.002-508de4::analyst",
+ "verdict": "PARTIAL",
+ "correctness": 0.8,
+ "faithfulness": 0.75,
+ "groundedness": 0.9,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": false,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "The capec source doesn't establish the CAPEC views for CAPEC-163",
+  "The executed query returned CAPEC-163 with no linked records for CAPEC views"
+ ],
+ "rationale": "The answer correctly identifies CAPEC-163 as the CAPEC attack pattern corresponding to T1598.002 and states that CAPEC-163 is contained in CAPEC-703, which satisfies the expected gold identifier. However, it includes an unsupported and contradictory abstention claiming no linked CAPEC view records, even though the evidence shows CAPEC-703 as a related View. This makes the response mostly correct but not fully faithful.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 8192,
+  "escalated": false,
+  "position": 2
+ }
+}

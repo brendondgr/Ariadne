@@ -1,0 +1,27 @@
+{
+ "case_id": "D6-MAPS_TO[ATTACK]-HAS_MEMBER-T1552.001-85a91e::indirect",
+ "verdict": "PARTIAL",
+ "correctness": 0.8,
+ "faithfulness": 0.7,
+ "groundedness": 0.85,
+ "completeness": 1.0,
+ "gold_expected": 2,
+ "gold_present": 2,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "The capec source does not establish the CAPEC-view question",
+  "CAPEC-191 was returned with no linked records for the CAPEC-view sub-question"
+ ],
+ "rationale": "The answer correctly identifies CAPEC-191 and CAPEC-639 as corresponding to T1552.001 and states the required CAPEC-703 view for CAPEC-191. It also provides a query-backed abstention for the missing CAPEC-639 view, but the narrative's 'no linked records' and 'does not establish this' are inconsistent with the CAPEC-703 IN_VIEW record. Therefore it is partial rather than fully correct.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 16384,
+  "escalated": true,
+  "position": 1
+ }
+}

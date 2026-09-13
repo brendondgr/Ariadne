@@ -1,0 +1,24 @@
+{
+ "case_id": "D0-AttackPattern-HAS_MEMBER-CAPEC-136-9dabb8::analyst",
+ "verdict": "CORRECT",
+ "correctness": 0.85,
+ "faithfulness": 0.95,
+ "groundedness": 0.9,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer states the required anchor CAPEC-136 and directly addresses the containment question by asserting that CAPEC-136 has no MEMBER_OF relationships, which matches the empty expected related set. It also correctly identifies the supported ChildOf relation to CAPEC-248 as a parent rather than a contained pattern. The main weakness is that it does not more explicitly say that CAPEC-136 contains no CAPEC attack patterns.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 8192,
+  "escalated": false,
+  "position": 2
+ }
+}

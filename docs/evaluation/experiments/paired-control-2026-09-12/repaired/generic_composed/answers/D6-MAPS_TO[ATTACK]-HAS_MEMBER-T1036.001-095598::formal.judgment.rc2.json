@@ -1,0 +1,26 @@
+{
+ "case_id": "D6-MAPS_TO[ATTACK]-HAS_MEMBER-T1036.001-095598::formal",
+ "verdict": "CORRECT",
+ "correctness": 1.0,
+ "faithfulness": 0.8,
+ "groundedness": 0.9,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "The capec source doesn't establish the CAPEC views for CAPEC-473 / returned no linked records, despite the q2 evidence showing CAPEC-703 as a related View."
+ ],
+ "rationale": "The answer identifies CAPEC-473 as the CAPEC attack pattern mapped to T1036.001 and CAPEC-703 as the view containing it, which matches the evidence. It therefore states the expected CAPEC-703 identifier and addresses both parts of the question. The main weakness is the abstention claiming no linked view records, which conflicts with the CAPEC-703 related record.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 16384,
+  "escalated": true,
+  "position": 2
+ }
+}

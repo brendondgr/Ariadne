@@ -1,0 +1,26 @@
+{
+ "case_id": "D3-uses-S0233-8d63f4::indirect",
+ "verdict": "PARTIAL",
+ "correctness": 0.7,
+ "faithfulness": 0.6,
+ "groundedness": 0.7,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "G0065 has no USES relationships in this catalogue"
+ ],
+ "rationale": "The answer identifies the expected group G0065 (Leviathan) and mentions S0233, so it does address the question about MURKYTOP. However, it also asserts that G0065 has no USES relationships, which is contradicted by the executed query returning a Group-USES-Software row for G0065 to S0233. This makes the response partially correct and less faithful than it would be if it simply reported the USES relationship.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 8192,
+  "escalated": false,
+  "position": 2
+ }
+}

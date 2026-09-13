@@ -1,0 +1,26 @@
+{
+ "case_id": "D0-Software-kill_chain_phase-S1182-2d6bd4::formal",
+ "verdict": "PARTIAL",
+ "correctness": 0.4,
+ "faithfulness": 0.75,
+ "groundedness": 0.8,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "S1182 has no techniques in this catalogue"
+ ],
+ "rationale": "The answer correctly identifies S1182, but it does not directly state which ATT&CK tactics apply to S1182. It also asserts that S1182 has no techniques, which is contradicted by the S1182 record's facets showing USES to Technique and SubTechnique. Because the expected tactic set is empty, the answer is partial rather than fully correct, and the unsupported absence claim reduces faithfulness.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 8192,
+  "escalated": false,
+  "position": 2
+ }
+}

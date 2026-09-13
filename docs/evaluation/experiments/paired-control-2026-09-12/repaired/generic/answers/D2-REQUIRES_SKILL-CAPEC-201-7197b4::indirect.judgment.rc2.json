@@ -1,0 +1,26 @@
+{
+ "case_id": "D2-REQUIRES_SKILL-CAPEC-201-7197b4::indirect",
+ "verdict": "CORRECT",
+ "correctness": 1.0,
+ "faithfulness": 0.95,
+ "groundedness": 1.0,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "The skill is characterized as 'named only as text' although the evidence gives it an id/name."
+ ],
+ "rationale": "The answer directly answers the question by stating the required skill text for CAPEC-201: 'To send serialized data messages with maliciously crafted schema.' It is grounded in the CAPEC-201 record and its REQUIRES_SKILL neighbor capec:attack-pattern:201:skill:1. The only minor issue is the unsupported phrasing that the skill is 'named only as text,' but the expected gold content is present.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 8192,
+  "escalated": false,
+  "position": 2
+ }
+}

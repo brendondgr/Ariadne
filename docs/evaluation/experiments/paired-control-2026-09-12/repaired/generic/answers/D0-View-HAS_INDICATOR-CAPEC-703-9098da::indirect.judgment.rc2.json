@@ -1,0 +1,24 @@
+{
+ "case_id": "D0-View-HAS_INDICATOR-CAPEC-703-9098da::indirect",
+ "verdict": "CORRECT",
+ "correctness": 0.95,
+ "faithfulness": 0.9,
+ "groundedness": 0.95,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer states the required anchor CAPEC-703 and directly addresses the query by saying no indicators were found. The 46 enumerated CAPEC attack patterns, including CAPEC-309 and CAPEC-312, are supported by the CAPEC-703 members property and related records. The only slight overreach is the broad 'in this catalogue' absence claim, but the executed query returned only AttackPattern neighbors and no Indicator records.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 8192,
+  "escalated": false,
+  "position": 2
+ }
+}

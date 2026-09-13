@@ -1,0 +1,26 @@
+{
+ "case_id": "D3-kill_chain_phase-TA0040-d56458::indirect",
+ "verdict": "PARTIAL",
+ "correctness": 0.5,
+ "faithfulness": 0.9,
+ "groundedness": 1.0,
+ "completeness": 0.45,
+ "gold_expected": 33,
+ "gold_present": 15,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "T1529 has no techniques in this catalogue"
+ ],
+ "rationale": "The answer lists 15 top-level Impact techniques, including T1485, T1496, T1499, T1561, and T1565, but omits all 18 expected subtechnique identifiers such as T1496.001, T1499.001, and T1565.001. Its enumeration is grounded in the 15 returned ATT&CK records, though the extra absence claim about T1529 is only weakly supported by the empty related field. Therefore it is partial, with 15 of 33 expected technique identifiers present.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 8192,
+  "escalated": false,
+  "position": 2
+ }
+}

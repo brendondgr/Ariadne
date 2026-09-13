@@ -43,7 +43,7 @@ DEFAULT_ROOT = "docs/evaluation/experiments/untruncated"
 # synthesis) with ONLY the un-truncation profile added, so C − baseline isolates
 # un-truncation, A − C isolates the composer, and B − C isolates LLM planning.
 ARMS = ("deterministic", "llm", "gold_llm", "llm_loop", "gold_loop_llm", "generic",
-        "llm_query", "merged", "generic_composed",
+        "llm_query", "merged", "generic_composed", "generic_planned",
         "rewrite_off", "rewrite_det", "rewrite_model")
 
 # -- the un-truncation profile ----------------------------------------------
@@ -181,6 +181,35 @@ def untruncated_env(*, arm: str, llm_model: str, llm_max_tokens: int) -> dict[st
             "SPECIALIST_LLM_ENABLED": "false",
             "SYNTHESIS_LLM_ENABLED": "false",
             "CONVERSATION_LLM_ENABLED": "false",
+        })
+    elif arm == "generic_planned":
+        # The arm that isolates the *plan*, and the one this programme never
+        # had. Every headline figure replays an authored decomposition:
+        # `generic` and `generic_composed` are both driven by gold-replay
+        # runners that hand the pipeline its plan. So 0.92 is the ceiling for
+        # retrieval and composition *given a correct plan*, and what it costs to
+        # produce that plan has never been measured on any run on record.
+        #
+        # This is `generic_composed` with exactly one thing changed — the plan
+        # comes from the planner instead of from the bank. That is why it drives
+        # `run_rewrite`, which runs the REAL pipeline, rather than
+        # `run_deterministic`, which replays the authored plan and never
+        # executes the stage under test. Every LLM seam is off on both sides, so
+        # a paired difference is the planner and nothing else.
+        #
+        # The rewrite flags are *stated* rather than inherited. They default
+        # falsy in `utils/planner/config.py`, so "0" is the shipped posture, and
+        # rewrite is a separate stage with its own experiment
+        # (EXP-2026-09-014) — letting it move here would confound two answers
+        # into one number.
+        env.update({
+            "SPECIALIST_GENERIC_ONLY": "true",
+            "PLANNER_LLM_ENABLED": "false",
+            "SPECIALIST_LLM_ENABLED": "false",
+            "SYNTHESIS_LLM_ENABLED": "false",
+            "CONVERSATION_LLM_ENABLED": "false",
+            "ARIADNE_REWRITE": "0",
+            "ARIADNE_REWRITE_MODEL": "0",
         })
     elif arm == "merged":
         # The C-015 counterfactual: ONE store holding both catalogues instead of
@@ -663,13 +692,24 @@ def run_llm(entry: dict, kind: str, _pool: Any) -> tuple[Any, Any, dict]:
     }
 
 
-def run_rewrite(entry: dict, kind: str, _pool: Any) -> tuple[Any, Any, dict]:
-    """EXP-2026-09-014 — the real pipeline, no LLM in it, rewrite per the env.
+def _run_real_pipeline(entry: dict, kind: str, *, use_llm: bool) -> tuple[Any, Any, dict]:
+    """Drive the REAL pipeline — planner included — at an explicit LLM posture.
 
-    Identical to :func:`run_llm` in what it drives; the arm is decided entirely
-    by the environment, and the LLM seams are all off. What it adds is the
-    rewrite provenance in ``run_meta``, so a scorer can report the rung that
-    answered without re-deriving it from the plan.
+    ``use_llm`` is a parameter rather than a constant because it is **not**
+    merely a hint that the environment can overrule. ``iter_pipeline`` applies it
+    as ``dataclasses.replace(PlannerConfig.from_env(), llm_enabled=use_llm)`` and
+    does the same to the specialist and synthesis configs, so it *overwrites*
+    whatever ``PLANNER_LLM_ENABLED`` / ``SPECIALIST_LLM_ENABLED`` /
+    ``SYNTHESIS_LLM_ENABLED`` resolved to. An arm that sets those three to
+    ``false`` and then calls this with ``use_llm=True`` runs every seam live
+    against ``ARIADNE_LLM_BASE_URL`` while its own env says it is model-free.
+
+    That was observed directly on 2026-09-13: a socket trace of
+    ``generic_planned`` — every seam pinned ``false`` — caught the planner's
+    ``OpenAICompatibleDrafter`` opening a connection to the configured endpoint
+    on the first question. The posture is therefore stated at the call site,
+    where it is visible, and asserted in
+    ``utils/evaluation/tests/test_experiment_arms.py``.
     """
     from utils.orchestration.main import PipelineRun, iter_pipeline
 
@@ -683,7 +723,7 @@ def run_rewrite(entry: dict, kind: str, _pool: Any) -> tuple[Any, Any, dict]:
     run = PipelineRun(question=entry["question"], mode="query")
     plan = evidence = answer = None
     for event, payload in iter_pipeline(
-        entry["question"], mode="query", use_llm=True, specialists=injected, run=run
+        entry["question"], mode="query", use_llm=use_llm, specialists=injected, run=run
     ):
         if event == "plan":
             plan = payload.get("plan")
@@ -695,14 +735,40 @@ def run_rewrite(entry: dict, kind: str, _pool: Any) -> tuple[Any, Any, dict]:
             answer = payload.get("synthesized")
     if answer is None or evidence is None:
         raise RuntimeError(f"pipeline produced no answer (status={run.status!r})")
+    # Observed, not asserted. These fields used to be the literals
+    # "deterministic" regardless of what ran, which is how an arm with live
+    # model seams could write a provenance record claiming it had none.
     return evidence, answer, {
-        "planner": "deterministic",
-        "synthesis": "deterministic",
+        "planner": "deterministic" if not use_llm else "llm",
+        "synthesis": "deterministic" if not use_llm else "llm",
+        "use_llm": use_llm,
         "rewrite": getattr(plan, "rewrite", None),
         "observed_plan": _plan_dict(plan),
         "exit_code": run.exit_code,
         "status": run.status,
     }
+
+
+def run_rewrite(entry: dict, kind: str, _pool: Any) -> tuple[Any, Any, dict]:
+    """EXP-2026-09-014's three rewrite arms, at the posture they were run at.
+
+    ``use_llm=True`` is preserved exactly as committed. It is almost certainly
+    not what those arms intended — their env pins every seam ``false`` and their
+    comment says "no language model anywhere" — but their figures are in the
+    record and were produced this way, so changing it here would silently
+    re-describe published numbers. See `Q40`.
+    """
+    return _run_real_pipeline(entry, kind, use_llm=True)
+
+
+def run_planned(entry: dict, kind: str, _pool: Any) -> tuple[Any, Any, dict]:
+    """The real pipeline with the planner running and **no model anywhere**.
+
+    This is what `generic_planned` needs and what :func:`run_rewrite` cannot
+    give it: the planner executes for real, and the drafter it selects is the
+    deterministic one rather than the hybrid that reaches for an endpoint.
+    """
+    return _run_real_pipeline(entry, kind, use_llm=False)
 
 
 # -- driver -----------------------------------------------------------------
@@ -724,6 +790,10 @@ RUNNERS = {
     # And again: this arm differs from `deterministic` only by an env flag the
     # query builders read, so it needs no driver of its own.
     "generic_composed": run_deterministic,
+    # NOT `run_deterministic`: that runner replays the authored plan, which is
+    # precisely the variable this arm exists to remove. `run_rewrite` drives the
+    # real pipeline with the planner in it and no language model anywhere.
+    "generic_planned": run_planned,
     # EXP-2026-09-014's three arms all drive the REAL pipeline (planner
     # included, no language model in it) and differ only by the two rewrite
     # flags their env sets. `run_deterministic` would be wrong here: it replays
@@ -776,7 +846,7 @@ def run_arm(
     # ARM B builds its own specialists inside iter_pipeline; the gold-replay arms
     # share a thread-local router set (ARM C keeps the .env LLM drafter, as the
     # baseline did; ARM A forces it off).
-    if arm in ("llm", "llm_loop", "gold_loop_llm", "generic",
+    if arm in ("llm", "llm_loop", "gold_loop_llm", "generic", "generic_planned",
                "rewrite_off", "rewrite_det", "rewrite_model"):
         pool = None
     elif arm == "merged":
@@ -860,7 +930,9 @@ def run_arm(
 
 #: Arms with no model seam. A preflight against a relay they never call would
 #: fail a run that cannot be affected by the relay at all.
-_MODEL_FREE_ARMS = frozenset({"deterministic", "generic_composed", "merged"})
+_MODEL_FREE_ARMS = frozenset({
+    "deterministic", "generic_composed", "generic_planned", "merged",
+})
 
 
 def _preflight_llm(arm: str, model: str) -> None:

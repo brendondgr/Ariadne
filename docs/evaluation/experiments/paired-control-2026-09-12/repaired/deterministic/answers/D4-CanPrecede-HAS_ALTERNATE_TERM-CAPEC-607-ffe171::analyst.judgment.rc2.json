@@ -1,0 +1,24 @@
+{
+ "case_id": "D4-CanPrecede-HAS_ALTERNATE_TERM-CAPEC-607-ffe171::analyst",
+ "verdict": "CORRECT",
+ "correctness": 0.8,
+ "faithfulness": 1.0,
+ "groundedness": 1.0,
+ "completeness": 0.0,
+ "gold_expected": 1,
+ "gold_present": 0,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The CAPEC query seeded on CAPEC-607 over CAN_PRECEDE returned row_count 0, so the abstention is honest and includes the executed query. It does not state the expected neighbor \"Data Spill When information is handled by an information system of a classification/sensitivity for which the system has not been authorized to handle.\", so completeness is 0, but it does not assert any unsupported mapping.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 16384,
+  "escalated": true,
+  "position": 2
+ }
+}

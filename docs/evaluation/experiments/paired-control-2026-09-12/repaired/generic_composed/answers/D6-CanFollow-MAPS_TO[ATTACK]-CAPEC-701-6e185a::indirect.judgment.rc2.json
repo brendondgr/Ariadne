@@ -1,0 +1,26 @@
+{
+ "case_id": "D6-CanFollow-MAPS_TO[ATTACK]-CAPEC-701-6e185a::indirect",
+ "verdict": "CORRECT",
+ "correctness": 1.0,
+ "faithfulness": 0.9,
+ "groundedness": 0.95,
+ "completeness": 1.0,
+ "gold_expected": 3,
+ "gold_present": 3,
+ "abstained": false,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "The capec source returned CAPEC-701 with no linked records for preceding attack patterns, despite CAPEC-98 appearing as a CAN_FOLLOW related record"
+ ],
+ "rationale": "The answer identifies CAPEC-98 as the preceding attack pattern for CAPEC-701 and states the corresponding ATT&CK techniques T1566 and T1598, matching the expected identifiers. The mapping is grounded in the CAPEC-98 MAPS_TO records for T1566 and T1598. A minor faithfulness deduction is warranted because the abstention claims no linked records even though CAPEC-98 is present as a related CAN_FOLLOW record.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 8192,
+  "escalated": false,
+  "position": 2
+ }
+}

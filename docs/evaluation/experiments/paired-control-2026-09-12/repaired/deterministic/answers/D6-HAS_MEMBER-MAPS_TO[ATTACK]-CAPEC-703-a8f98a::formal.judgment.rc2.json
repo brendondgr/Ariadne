@@ -1,0 +1,26 @@
+{
+ "case_id": "D6-HAS_MEMBER-MAPS_TO[ATTACK]-CAPEC-703-a8f98a::formal",
+ "verdict": "CORRECT",
+ "correctness": 0.95,
+ "faithfulness": 0.85,
+ "groundedness": 0.95,
+ "completeness": 1.0,
+ "gold_expected": 51,
+ "gold_present": 51,
+ "abstained": false,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "The abstention states that CAPEC-703 had no linked records for its contained attack patterns, which conflicts with the returned 46 member CAPEC records."
+ ],
+ "rationale": "The answer identifies CAPEC-703 and states all 50 expected ATT&CK techniques, including T1014, T1036.001, T1566.003, and T1598.003, so it fully answers the query. It also includes extra mappings such as T1513 and T1562.002, but these are tied to cited CAPEC records rather than being unsupported cross-source fabrications. The main weakness is the contradictory abstention claiming no linked records for CAPEC-703 despite the 46 returned members.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 16384,
+  "escalated": true,
+  "position": 2
+ }
+}

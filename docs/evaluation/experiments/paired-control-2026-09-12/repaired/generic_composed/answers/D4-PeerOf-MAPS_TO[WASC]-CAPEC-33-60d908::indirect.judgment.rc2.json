@@ -1,0 +1,26 @@
+{
+ "case_id": "D4-PeerOf-MAPS_TO[WASC]-CAPEC-33-60d908::indirect",
+ "verdict": "PARTIAL",
+ "correctness": 0.7,
+ "faithfulness": 0.85,
+ "groundedness": 0.9,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "CAPEC-273 is described as restricted to taxonomy name WASC"
+ ],
+ "rationale": "The answer includes the required anchor CAPEC-33 and the expected related WASC:27, and it also names the peer CAPEC-273. However, it does not explicitly state that CAPEC-273 is the peer of CAPEC-33 or that CAPEC-273 maps to WASC:27. The phrasing that CAPEC-273 is restricted to taxonomy name WASC is not directly supported by the shown record.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 8192,
+  "escalated": false,
+  "position": 2
+ }
+}

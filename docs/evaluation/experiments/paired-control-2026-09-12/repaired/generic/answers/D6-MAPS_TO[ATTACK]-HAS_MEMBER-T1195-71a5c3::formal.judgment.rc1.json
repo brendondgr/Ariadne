@@ -1,0 +1,29 @@
+{
+ "case_id": "D6-MAPS_TO[ATTACK]-HAS_MEMBER-T1195-71a5c3::formal",
+ "verdict": "CORRECT",
+ "correctness": 0.9,
+ "faithfulness": 0.75,
+ "groundedness": 0.8,
+ "completeness": 1.0,
+ "gold_expected": 5,
+ "gold_present": 5,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "T1195.002",
+  "T1195.003",
+  "T1195.001",
+  "The CAPEC category query returned no linked records for CAPEC-438 and CAPEC-439"
+ ],
+ "rationale": "The answer identifies the relevant CAPEC patterns CAPEC-438, CAPEC-439, and CAPEC-446 for T1195 and states all five expected category identifiers: CAPEC-262, CAPEC-437, CAPEC-513, CAPEC-515, and CAPEC-686. It is slightly weakened by unsupported ATT&CK sub-technique claims and a contradictory abstention saying the CAPEC query returned no linked category records. Because all gold category identifiers are present and no fabricated cross-source mapping is asserted, the answer is correct overall.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 16384,
+  "escalated": true,
+  "position": 1
+ }
+}

@@ -1,0 +1,24 @@
+{
+ "case_id": "D5-HAS_MEMBER-Likelihood_Of_Attack-CAPEC-703-0c5b15::indirect",
+ "verdict": "PARTIAL",
+ "correctness": 0.5,
+ "faithfulness": 1.0,
+ "groundedness": 0.8,
+ "completeness": 1.0,
+ "gold_expected": 6,
+ "gold_present": 6,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer correctly retrieves CAPEC-703 and lists all 46 related attack patterns, including the six expected Low-likelihood identifiers CAPEC-457, CAPEC-540, CAPEC-573, CAPEC-580, CAPEC-649, and CAPEC-65. However, it does not explicitly filter or identify those six as having Low likelihood of attack, instead presenting the full membership of the ICS patterns view. Therefore it is grounded and complete in stated identifiers, but only partially answers the specific question asked.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 8192,
+  "escalated": false,
+  "position": 2
+ }
+}

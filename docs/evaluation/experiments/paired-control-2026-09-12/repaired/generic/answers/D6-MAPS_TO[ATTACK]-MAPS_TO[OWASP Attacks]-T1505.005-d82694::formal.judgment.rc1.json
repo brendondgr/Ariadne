@@ -1,0 +1,26 @@
+{
+ "case_id": "D6-MAPS_TO[ATTACK]-MAPS_TO[OWASP Attacks]-T1505.005-d82694::formal",
+ "verdict": "CORRECT",
+ "correctness": 0.85,
+ "faithfulness": 0.75,
+ "groundedness": 0.8,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "The claim that T1505.005 is shared by 7 records across attack and capec is not supported by the visible evidence; the visible CAPEC records show three CAPEC records mapping to T1505.005, not seven records sharing that identifier."
+ ],
+ "rationale": "The answer identifies the relevant CAPEC patterns CAPEC-558, CAPEC-640, and CAPEC-642 for T1505.005 and states the expected OWASP mapping for CAPEC-642, OWASP Attacks:Binary planting. It is somewhat noisy and does not explicitly say that CAPEC-558 and CAPEC-640 have no OWASP entries, but the enumeration of their ATT&CK-only mappings makes the intended answer recoverable. The main unsupported detail is the count claim that seven records share T1505.005.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 16384,
+  "escalated": true,
+  "position": 1
+ }
+}

@@ -1,0 +1,26 @@
+{
+ "case_id": "D2-uses-C0006-a570a2::indirect",
+ "verdict": "PARTIAL",
+ "correctness": 0.4,
+ "faithfulness": 0.75,
+ "groundedness": 0.7,
+ "completeness": 0.36,
+ "gold_expected": 28,
+ "gold_present": 10,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "T1105 has no USES relationships in this catalogue"
+ ],
+ "rationale": "The answer lists 10 of the 28 expected techniques for C0006, including T1105, T1041, T1057, T1083, T1112, T1036, T1140, T1005, T1106, and T1082, but omits 18 expected techniques such as T1027.013 and T1588.004. It also does not explicitly state C0006 or Operation Honeybee in the answer text. The claim that T1105 has no USES relationships is not well supported by the evidence, which shows T1105 as a retrieved technique result from the campaign query.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 8192,
+  "escalated": false,
+  "position": 2
+ }
+}

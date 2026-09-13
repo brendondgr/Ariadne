@@ -1,0 +1,24 @@
+{
+ "case_id": "D4-ChildOf-REQUIRES_RESOURCE-CAPEC-473-28f5ac::indirect",
+ "verdict": "CORRECT",
+ "correctness": 0.9,
+ "faithfulness": 0.95,
+ "groundedness": 0.95,
+ "completeness": 1.0,
+ "gold_expected": 3,
+ "gold_present": 3,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer states the required anchor CAPEC-473 and both gold resources: \u201cA valid certificate request and a malicious certificate request with identical hash values\u201d and \u201cKnowledge of a certificate authority that uses hashing algorithms with poor collision resistance.\u201d It also enumerates the related attack patterns CAPEC-151, CAPEC-477, CAPEC-479, CAPEC-485, CAPEC-459, CAPEC-474, CAPEC-475, and CAPEC-476, all of which appear in the evidence. The minor weakness is that it frames the resources as belonging to CAPEC-473 rather than explicitly mapping each resource to its child pattern, but the resource IDs provide that mapping.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 8192,
+  "escalated": false,
+  "position": 2
+ }
+}

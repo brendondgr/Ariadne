@@ -1,0 +1,26 @@
+{
+ "case_id": "D3-subtechnique-of-T1589-3f64fc::indirect",
+ "verdict": "PARTIAL",
+ "correctness": 0.8,
+ "faithfulness": 0.7,
+ "groundedness": 0.8,
+ "completeness": 1.0,
+ "gold_expected": 3,
+ "gold_present": 3,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "T1589 has no subtechniques in this catalogue"
+ ],
+ "rationale": "The answer lists all expected sub-techniques T1589.001, T1589.002, and T1589.003, so completeness is full. However, it also asserts that T1589 has no subtechniques, which contradicts the evidence showing three HAS_SUBTECHNIQUE-related records. This makes the answer partially correct rather than fully faithful.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 8192,
+  "escalated": false,
+  "position": 2
+ }
+}

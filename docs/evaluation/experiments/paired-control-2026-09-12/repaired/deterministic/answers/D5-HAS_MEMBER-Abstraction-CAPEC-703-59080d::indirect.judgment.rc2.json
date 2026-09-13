@@ -1,0 +1,24 @@
+{
+ "case_id": "D5-HAS_MEMBER-Abstraction-CAPEC-703-59080d::indirect",
+ "verdict": "PARTIAL",
+ "correctness": 0.5,
+ "faithfulness": 1.0,
+ "groundedness": 0.9,
+ "completeness": 1.0,
+ "gold_expected": 15,
+ "gold_present": 15,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer retrieves CAPEC-703 and enumerates all 46 member attack patterns, including the 15 expected Meta-level identifiers CAPEC-94, CAPEC-125, CAPEC-130, CAPEC-131, CAPEC-148, CAPEC-165, CAPEC-169, CAPEC-184, CAPEC-227, CAPEC-438, CAPEC-439, CAPEC-441, CAPEC-560, CAPEC-607, and CAPEC-690. However, it does not explicitly identify those as the Meta-level subset, instead listing all gathered patterns. Therefore it is faithful and complete in identifier coverage but only partially answers the asked filtering question.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 8192,
+  "escalated": false,
+  "position": 2
+ }
+}

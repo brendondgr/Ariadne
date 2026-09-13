@@ -1,0 +1,24 @@
+{
+ "case_id": "D4-CanAlsoBe-HAS_CONSEQUENCE-CAPEC-248-02edba::indirect",
+ "verdict": "CORRECT",
+ "correctness": 0.9,
+ "faithfulness": 0.95,
+ "groundedness": 0.95,
+ "completeness": 1.0,
+ "gold_expected": 6,
+ "gold_present": 6,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer identifies CAPEC-248 and the related attack pattern CAPEC-182, then enumerates all six consequence records capec:attack-pattern:182:consequence:1 through capec:attack-pattern:182:consequence:6. It covers the expected consequence set, though it phrases them as impact-then-scope and omits some gold wording such as 'Information Leakage' and 'Run Arbitrary Code'. Because all six expected consequences are present and grounded in the cited CAPEC evidence, the answer is correct.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 8192,
+  "escalated": false,
+  "position": 2
+ }
+}

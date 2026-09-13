@@ -1,0 +1,26 @@
+{
+ "case_id": "D3-uses-T1204.001-24ba71::formal",
+ "verdict": "CORRECT",
+ "correctness": 0.95,
+ "faithfulness": 0.9,
+ "groundedness": 0.9,
+ "completeness": 1.0,
+ "gold_expected": 29,
+ "gold_present": 29,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "S0499 has no USES relationships in this catalogue."
+ ],
+ "rationale": "The answer states all 29 expected software identifiers, including S0198, S0367, S0499, S0650, and S9026, and ties each to T1204.001. The main unsupported claim is that S0499 has no USES relationships, which conflicts with the returned S0499-to-T1204.001 record. No cross-source mapping is asserted, so the answer is complete despite a minor faithfulness deduction.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 8192,
+  "escalated": false,
+  "position": 2
+ }
+}

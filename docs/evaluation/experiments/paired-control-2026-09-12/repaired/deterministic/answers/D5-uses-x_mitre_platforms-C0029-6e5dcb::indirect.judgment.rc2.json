@@ -1,0 +1,26 @@
+{
+ "case_id": "D5-uses-x_mitre_platforms-C0029-6e5dcb::indirect",
+ "verdict": "PARTIAL",
+ "correctness": 0.8,
+ "faithfulness": 0.7,
+ "groundedness": 0.8,
+ "completeness": 1.0,
+ "gold_expected": 9,
+ "gold_present": 9,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "C0029 has no USES relationships in this catalogue"
+ ],
+ "rationale": "The answer states all nine expected network-device-targeting software identifiers: S1114, S1115, S1116, S1117, S1118, S1119, S1120, S1121, and S1123. It is partial rather than fully correct because it also includes S0488 and S0357 and frames them as related items rather than explicitly identifying the network-device-targeting subset. The claim that C0029 has no USES relationships is not supported by the executed query, which returned 11 Campaign-USES-Software rows.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 8192,
+  "escalated": false,
+  "position": 2
+ }
+}

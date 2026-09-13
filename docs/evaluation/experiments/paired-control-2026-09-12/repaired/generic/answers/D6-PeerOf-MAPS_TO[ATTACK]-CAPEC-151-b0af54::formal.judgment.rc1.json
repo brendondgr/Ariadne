@@ -1,0 +1,27 @@
+{
+ "case_id": "D6-PeerOf-MAPS_TO[ATTACK]-CAPEC-151-b0af54::formal",
+ "verdict": "PARTIAL",
+ "correctness": 0.85,
+ "faithfulness": 0.75,
+ "groundedness": 0.85,
+ "completeness": 1.0,
+ "gold_expected": 3,
+ "gold_present": 3,
+ "abstained": false,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "The CAPEC source does not establish the peer relationship because the query returned CAPEC-151 with no linked records",
+  "T1556 has 9 sub-techniques including T1556.001, T1556.002, T1556.003, T1556.005, T1556.006, T1556.007, T1556.008, and T1556.009"
+ ],
+ "rationale": "The answer correctly identifies CAPEC-151's peer CAPEC-665 and the expected ATT&CK techniques T1211, T1542.002, and T1556, so completeness is full. However, it contradicts the q1 evidence by claiming the CAPEC source returned no linked records and did not establish the peer relationship. The extra T1556 sub-technique enumeration is also not fully visible in the provided evidence, reducing faithfulness.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 16384,
+  "escalated": true,
+  "position": 1
+ }
+}

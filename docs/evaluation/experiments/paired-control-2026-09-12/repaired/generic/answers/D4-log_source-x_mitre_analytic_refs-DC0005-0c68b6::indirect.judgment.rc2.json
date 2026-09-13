@@ -1,0 +1,26 @@
+{
+ "case_id": "D4-log_source-x_mitre_analytic_refs-DC0005-0c68b6::indirect",
+ "verdict": "PARTIAL",
+ "correctness": 0.55,
+ "faithfulness": 0.7,
+ "groundedness": 0.85,
+ "completeness": 1.0,
+ "gold_expected": 3,
+ "gold_present": 3,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "No other detection-strategy links are established for the remaining six analytics"
+ ],
+ "rationale": "The answer correctly identifies DC0005, lists the nine related analytics, and includes all three expected detection strategies: DET0117, DET0151, and DET0399. However, it only maps AN0430 to DET0151, AN1120 to DET0399, and AN0326 to DET0117, then incorrectly states that the remaining six analytics have no detection-strategy links. The evidence shows additional links, including AN0431/AN0432/AN0433 to DET0151, AN1118/AN1119 to DET0399, and AN0325 to DET0117.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 8192,
+  "escalated": false,
+  "position": 2
+ }
+}

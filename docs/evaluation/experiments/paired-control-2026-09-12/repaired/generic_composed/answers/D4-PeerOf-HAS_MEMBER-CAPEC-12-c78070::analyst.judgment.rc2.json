@@ -1,0 +1,26 @@
+{
+ "case_id": "D4-PeerOf-HAS_MEMBER-CAPEC-12-c78070::analyst",
+ "verdict": "PARTIAL",
+ "correctness": 0.7,
+ "faithfulness": 0.7,
+ "groundedness": 0.8,
+ "completeness": 1.0,
+ "gold_expected": 2,
+ "gold_present": 2,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "CAPEC-12 has 2 Categories: CAPEC-225, CAPEC-513"
+ ],
+ "rationale": "The answer lists CAPEC-21 and the expected categories CAPEC-225 and CAPEC-513, so it covers the gold identifiers. However, it frames CAPEC-21 as an attack pattern of CAPEC-12 and the categories as belonging to CAPEC-12, rather than stating that CAPEC-21 is a peer of CAPEC-12 and that CAPEC-21 is contained in CAPEC-225 and CAPEC-513. The identifiers are grounded in the CAPEC-12 related records, but the category-containment mapping is imprecise.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 8192,
+  "escalated": false,
+  "position": 2
+ }
+}
