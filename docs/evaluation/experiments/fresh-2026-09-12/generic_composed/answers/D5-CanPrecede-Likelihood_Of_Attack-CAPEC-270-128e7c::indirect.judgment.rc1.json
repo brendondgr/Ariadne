@@ -1,0 +1,26 @@
+{
+ "case_id": "D5-CanPrecede-Likelihood_Of_Attack-CAPEC-270-128e7c::indirect",
+ "verdict": "PARTIAL",
+ "correctness": 0.5,
+ "faithfulness": 0.85,
+ "groundedness": 0.9,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "CAPEC-270 has 11 CanPrecede successors"
+ ],
+ "rationale": "The answer includes the required anchor CAPEC-270 and the expected related identifier CAPEC-646, but it lists all CanPrecede neighbors rather than explicitly identifying the low-likelihood successor. It does not state that CAPEC-646 has Likelihood_Of_Attack Low, so it only partially answers the question. The '11 CanPrecede successors' claim is only weakly supported because the evidence shows 16 related rows with 11 unique IDs and no explicit direction.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 8192,
+  "escalated": false,
+  "position": 1
+ }
+}

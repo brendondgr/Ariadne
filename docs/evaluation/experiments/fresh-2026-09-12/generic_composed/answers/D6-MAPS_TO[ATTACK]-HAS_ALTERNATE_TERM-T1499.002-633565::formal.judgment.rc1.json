@@ -1,0 +1,26 @@
+{
+ "case_id": "D6-MAPS_TO[ATTACK]-HAS_ALTERNATE_TERM-T1499.002-633565::formal",
+ "verdict": "CORRECT",
+ "correctness": 0.92,
+ "faithfulness": 0.85,
+ "groundedness": 0.95,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "The capec source doesn't establish this / returned CAPEC-528 with no linked records for alternate names"
+ ],
+ "rationale": "The answer states the required anchor T1499.002 and the expected alternate name XML Denial of Service (XML DoS) for CAPEC-528. It also correctly lists the other mapped CAPEC patterns CAPEC-469, CAPEC-482, CAPEC-488, and CAPEC-489. The main weakness is the abstention claiming no linked alternate-term records, which conflicts with the returned AlternateTerm for CAPEC-528.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 8192,
+  "escalated": false,
+  "position": 1
+ }
+}

@@ -1,0 +1,24 @@
+{
+ "case_id": "D5-mitigates-x_mitre_platforms-M1047-6309db::formal",
+ "verdict": "CORRECT",
+ "correctness": 1.0,
+ "faithfulness": 0.95,
+ "groundedness": 0.9,
+ "completeness": 1.0,
+ "gold_expected": 56,
+ "gold_present": 56,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer directly answers the query by naming M1047 and enumerating all 56 expected Linux-applicable technique/subtechnique identifiers, including T1021, T1021.005, T1053.002, T1566.003, and T1686. The executed query filters on x_mitre_platforms containing Linux and returns MITIGATES neighbors, so the mappings are grounded in the cited M1047 record. Minor deduction is for the repeated count phrasing, but no unsupported identifiers or cross-source mappings are asserted.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 8192,
+  "escalated": false,
+  "position": 1
+ }
+}

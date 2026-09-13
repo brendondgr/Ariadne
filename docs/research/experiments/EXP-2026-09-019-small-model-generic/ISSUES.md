@@ -100,10 +100,27 @@ inside an experiment about model size.
 
 On the nine-question gate, `generic_local_full` returned **zero records on 9 of
 9 questions** where the model-free control returned records on 9 of 9, and every
-one of the nine queries differed from the control's. The drafts were mostly
-"empty query" (11 occurrences): the model spent its entire 4096-token budget and
-truncated, on prompts of only ~870 tokens, so this is the model rambling rather
-than a context limit.
+one of the nine queries differed from the control's. Counted at the level that matters — drafts submitted to
+the gate, not questions — the seam produced **0 working queries out of 17**.
+
+| | 4096-token budget | 16384-token budget |
+| --- | ---: | ---: |
+| Drafts reaching the gate | 17 | 16 |
+| Rejected as empty | 11 | 8 |
+| Rejection rate | 0.6471 | 0.5000 |
+| Cleared the gate, then failed at the database | 6 of 6 | 8 of 8 |
+| **Drafts that actually worked** | **0 of 17** | **0 of 16** |
+
+Quadrupling the token budget is therefore not the missing ingredient, and this
+is the reason the budget was made a call-time override rather than a constant:
+the claim "a 2B cannot draft these queries" is only worth having if it was
+tested. What the larger budget bought was a shift in *failure mode*, not in
+outcome — fewer drafts truncated into nothing, and correspondingly more
+malformed drafts reaching the database and erroring there.
+
+The empty drafts are the model rambling rather than a context limit: the prompts
+are ~870 tokens and the model spends the entire completion budget without
+closing a query.
 
 No rejection named `allowed_edge_patterns`. That is worth stating plainly
 because the plan expected the allowlist gate to be what stopped a bad draft.

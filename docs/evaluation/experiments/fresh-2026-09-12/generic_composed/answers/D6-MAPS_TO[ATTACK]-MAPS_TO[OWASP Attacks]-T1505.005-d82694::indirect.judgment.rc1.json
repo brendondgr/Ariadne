@@ -1,0 +1,28 @@
+{
+ "case_id": "D6-MAPS_TO[ATTACK]-MAPS_TO[OWASP Attacks]-T1505.005-d82694::indirect",
+ "verdict": "CORRECT",
+ "correctness": 0.88,
+ "faithfulness": 0.85,
+ "groundedness": 0.9,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "CAPEC-640 has 1 ATT&CK mapping",
+  "CAPEC-642 has 1 ATT&CK mapping",
+  "CAPEC-558 has 1 ATT&CK mapping"
+ ],
+ "rationale": "The answer identifies the required anchor T1505.005 and the expected OWASP mapping OWASP Attacks:Binary planting via CAPEC-642. It is grounded in the CAPEC records and their MAPS_TO relations, but the early \"has 1 ATT&CK mapping\" counts are contradicted by the fuller q2 evidence for CAPEC-640, CAPEC-642, and CAPEC-558. No fabricated cross-source mapping is asserted.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 8192,
+  "escalated": false,
+  "position": 1
+ }
+}

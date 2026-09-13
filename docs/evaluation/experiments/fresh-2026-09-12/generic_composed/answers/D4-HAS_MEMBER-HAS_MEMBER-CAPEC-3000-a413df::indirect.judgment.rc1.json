@@ -1,0 +1,26 @@
+{
+ "case_id": "D4-HAS_MEMBER-HAS_MEMBER-CAPEC-3000-a413df::indirect",
+ "verdict": "CORRECT",
+ "correctness": 0.95,
+ "faithfulness": 0.9,
+ "groundedness": 0.95,
+ "completeness": 1.0,
+ "gold_expected": 60,
+ "gold_present": 60,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "CAPEC-3000 has no MEMBER_OF relationships in this catalogue"
+ ],
+ "rationale": "The answer states the anchor CAPEC-3000 and all 60 expected attack patterns, including CAPEC-112, CAPEC-137, CAPEC-154, CAPEC-607, and CAPEC-690, so it fully answers the question. It also lists the six supporting categories CAPEC-403, CAPEC-437, CAPEC-512, CAPEC-513, CAPEC-514, and CAPEC-515, which are supported by the related records. The minor unsupported absence claim about CAPEC-3000 having no MEMBER_OF relationships slightly reduces faithfulness.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 8192,
+  "escalated": false,
+  "position": 1
+ }
+}

@@ -1,0 +1,24 @@
+{
+ "case_id": "D4-CanFollow-REQUIRES_RESOURCE-CAPEC-242-77d05d::indirect",
+ "verdict": "CORRECT",
+ "correctness": 0.9,
+ "faithfulness": 0.85,
+ "groundedness": 0.9,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer states the required anchor CAPEC-242 and the expected resource text, \u201cNone: No specialized resources are required to execute this type of attack.\u201d It also identifies CAPEC-234 as the related attack pattern, which addresses the \u201cwhich patterns can follow it\u201d part. The main weakness is that it attributes the resource to CAPEC-242 rather than explicitly to CAPEC-234, but the resource is grounded in the CAPEC-242 record\u2019s related resource capec:attack-pattern:234:resource:1.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 8192,
+  "escalated": false,
+  "position": 1
+ }
+}

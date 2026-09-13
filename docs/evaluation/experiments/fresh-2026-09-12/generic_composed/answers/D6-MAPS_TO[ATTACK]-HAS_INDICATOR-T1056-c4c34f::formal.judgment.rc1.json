@@ -1,0 +1,26 @@
+{
+ "case_id": "D6-MAPS_TO[ATTACK]-HAS_INDICATOR-T1056-c4c34f::formal",
+ "verdict": "CORRECT",
+ "correctness": 0.95,
+ "faithfulness": 0.85,
+ "groundedness": 0.9,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "The capec source doesn't establish this \u2014 the executed query ran cleanly and returned CAPEC-654 with no linked records for: For each of those: the indicators that indicate each of those."
+ ],
+ "rationale": "The answer correctly connects T1056 to CAPEC-569 and CAPEC-654 and states the expected CAPEC indicator for CAPEC-654, \u201cCredential prompts that appear illegitimate or unexpected.\u201d Those claims are grounded in the q1 and q2 evidence records for CAPEC-569 and CAPEC-654. The main weakness is the abstention statement saying the capec source does not establish the indicator, which is inconsistent with the returned HAS_INDICATOR record.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 8192,
+  "escalated": false,
+  "position": 1
+ }
+}

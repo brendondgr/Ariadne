@@ -1,0 +1,27 @@
+{
+ "case_id": "D5-uses-x_mitre_platforms-S0576-d2b056::formal",
+ "verdict": "PARTIAL",
+ "correctness": 0.7,
+ "faithfulness": 0.75,
+ "groundedness": 0.85,
+ "completeness": 1.0,
+ "gold_expected": 4,
+ "gold_present": 4,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "S0576 has 6 used techniques",
+  "S0576 has 10 used techniques"
+ ],
+ "rationale": "The answer states all four expected network-device techniques, T1083, T1490, T1561.001, and T1685, so completeness is full. It is overinclusive because it presents all 16 related techniques as used techniques rather than explicitly selecting the network-device-applicable subset. The split into 6 and 10 used techniques is not directly supported by the single S0576 record, though the 16-related count is.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 8192,
+  "escalated": false,
+  "position": 1
+ }
+}

@@ -1,0 +1,24 @@
+{
+ "case_id": "D4-CanPrecede-ChildOf-CAPEC-600-0c3ed3::analyst",
+ "verdict": "PARTIAL",
+ "correctness": 0.7,
+ "faithfulness": 0.85,
+ "groundedness": 0.9,
+ "completeness": 1.0,
+ "gold_expected": 5,
+ "gold_present": 5,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer states CAPEC-600 and all expected related identifiers CAPEC-112, CAPEC-212, CAPEC-253, CAPEC-49, and CAPEC-569, so completeness is full. It is partial because it presents them as a generic list of 22 CAPEC-600 attack patterns rather than distinguishing which can precede CAPEC-600 and which are their specific-case parents, and it includes extra IDs such as CAPEC-653 and CAPEC-151. The claims are tied to the cited CAPEC-600 record and its related list, with no cross-source mapping asserted.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 8192,
+  "escalated": false,
+  "position": 1
+ }
+}

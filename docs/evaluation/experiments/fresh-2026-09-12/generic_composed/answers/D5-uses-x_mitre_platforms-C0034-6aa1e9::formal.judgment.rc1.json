@@ -1,0 +1,24 @@
+{
+ "case_id": "D5-uses-x_mitre_platforms-C0034-6aa1e9::formal",
+ "verdict": "PARTIAL",
+ "correctness": 0.5,
+ "faithfulness": 1.0,
+ "groundedness": 0.9,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer states the expected technique T1485 and the anchor C0034, and all listed related items are supported by the C0034 record. However, it does not explicitly identify T1485 as the technique that applies to infrastructure as a service; it instead enumerates multiple used techniques, including T1095, T1570, and T1572, without applying the IaaS filter. Therefore it is partially correct: the gold identifier is present, but the asked-for selection is not clearly made.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 8192,
+  "escalated": false,
+  "position": 1
+ }
+}

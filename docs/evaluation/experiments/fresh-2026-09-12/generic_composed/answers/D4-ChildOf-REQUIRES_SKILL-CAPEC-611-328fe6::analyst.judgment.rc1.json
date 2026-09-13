@@ -1,0 +1,26 @@
+{
+ "case_id": "D4-ChildOf-REQUIRES_SKILL-CAPEC-611-328fe6::analyst",
+ "verdict": "CORRECT",
+ "correctness": 0.9,
+ "faithfulness": 0.85,
+ "groundedness": 0.9,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "The skill is described as named 'Low Adversaries can often purchase low-cost technology to implement rogue access points.'; the evidence has level 'Low' and description 'Adversaries can often purchase low-cost technology to implement rogue access points.' separately."
+ ],
+ "rationale": "The answer includes CAPEC-611 and the expected skill text for capec:attack-pattern:616:skill:1, satisfying the single gold expectation. It also identifies CAPEC-616 as the related attack pattern, though it phrases the relationship as 'has' rather than explicitly as the more-specific-case parent. The only minor unsupported detail is concatenating the skill level 'Low' into the quoted skill name.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 8192,
+  "escalated": false,
+  "position": 1
+ }
+}

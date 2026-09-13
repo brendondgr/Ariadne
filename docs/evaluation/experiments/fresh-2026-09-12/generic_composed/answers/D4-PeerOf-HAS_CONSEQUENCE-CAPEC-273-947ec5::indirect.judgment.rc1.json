@@ -1,0 +1,24 @@
+{
+ "case_id": "D4-PeerOf-HAS_CONSEQUENCE-CAPEC-273-947ec5::indirect",
+ "verdict": "CORRECT",
+ "correctness": 0.85,
+ "faithfulness": 0.85,
+ "groundedness": 0.9,
+ "completeness": 1.0,
+ "gold_expected": 3,
+ "gold_present": 3,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer identifies CAPEC-33 as the peer of CAPEC-273 and lists the three consequence contents tied to capec:attack-pattern:33:consequence:1, capec:attack-pattern:33:consequence:2, and capec:attack-pattern:33:consequence:3. It covers the expected damage items: Execute Unauthorized Commands, Gain Privileges, and Modify Data, along with their scopes. It is slightly imprecise because it phrases the consequences as belonging to CAPEC-273 rather than explicitly to CAPEC-33 and reverses the expected scope/impact order, but it states all expected related text.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 8192,
+  "escalated": false,
+  "position": 1
+ }
+}

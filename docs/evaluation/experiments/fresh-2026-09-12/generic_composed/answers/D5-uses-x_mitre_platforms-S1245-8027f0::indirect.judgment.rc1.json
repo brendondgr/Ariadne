@@ -1,0 +1,24 @@
+{
+ "case_id": "D5-uses-x_mitre_platforms-S1245-8027f0::indirect",
+ "verdict": "PARTIAL",
+ "correctness": 0.85,
+ "faithfulness": 0.9,
+ "groundedness": 0.9,
+ "completeness": 1.0,
+ "gold_expected": 33,
+ "gold_present": 33,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer states S1245 and all 33 expected Windows-relevant technique IDs, including T1005, T1048.003, and T1679. It also includes T1547.013 and T1543.001, which are not in the expected Windows-relevant set, and it does not explicitly frame the list as filtered to Windows. The claims are grounded in the S1245 record, but the overinclusive list makes it partial.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 8192,
+  "escalated": false,
+  "position": 1
+ }
+}
