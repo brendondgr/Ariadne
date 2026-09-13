@@ -1,0 +1,29 @@
+{
+ "case_id": "D6-HAS_MEMBER-MAPS_TO[ATTACK]-CAPEC-703-a8f98a::formal",
+ "verdict": "PARTIAL",
+ "correctness": 0.88,
+ "faithfulness": 0.82,
+ "groundedness": 0.88,
+ "completeness": 1.0,
+ "gold_expected": 50,
+ "gold_present": 50,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": true,
+ "hallucinations": [
+  "CAPEC-648 maps to T1513",
+  "CAPEC-268 maps to T1562.002",
+  "CAPEC-268 maps to T1562.003",
+  "CAPEC-268 maps to T1562.008"
+ ],
+ "rationale": "The answer correctly anchors CAPEC-703 and states all 50 expected ATT&CK identifiers, including T1014, T1036.001, T1566.003, and T1598.003. However, it also asserts additional CAPEC-to-ATT&CK mappings not in the expected set, such as CAPEC-648 to T1513 and CAPEC-268 to T1562.002/T1562.003/T1562.008, while still reporting only 50 cross-source correlations. This makes the correspondence set slightly over-asserted despite full completeness.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 16384,
+  "escalated": true,
+  "position": 2
+ }
+}

@@ -1,0 +1,29 @@
+{
+ "case_id": "D6-CanPrecede-MAPS_TO[ATTACK]-CAPEC-662-205983::analyst",
+ "verdict": "PARTIAL",
+ "correctness": 0.7,
+ "faithfulness": 0.7,
+ "groundedness": 0.8,
+ "completeness": 1.0,
+ "gold_expected": 2,
+ "gold_present": 2,
+ "abstained": false,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "The CAPEC preceding-pattern query returned no linked records for CAPEC-662",
+  "T1587.001 has parent technique T1587",
+  "T1574.008 has parent technique T1574",
+  "T1027 has 18 sub-techniques"
+ ],
+ "rationale": "The answer includes CAPEC-662 and the expected ATT&CK identifiers T1027 and T1587.001, and it lists CAPEC-185, CAPEC-542, CAPEC-159, and CAPEC-475 as related CanPrecede patterns. However, it frames them as successors and includes an inconsistent abstention saying the preceding-pattern query had no linked records, so the first part of the question is only partially addressed. Extra ATT&CK parent/subtechnique details are not clearly supported by the visible evidence.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 16384,
+  "escalated": true,
+  "position": 2
+ }
+}

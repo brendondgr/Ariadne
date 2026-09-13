@@ -1,0 +1,26 @@
+{
+ "case_id": "D6-MAPS_TO[ATTACK]-CanFollow-T1195.002-f669d7::indirect",
+ "verdict": "PARTIAL",
+ "correctness": 0.8,
+ "faithfulness": 0.75,
+ "groundedness": 0.85,
+ "completeness": 1.0,
+ "gold_expected": 2,
+ "gold_present": 2,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "CAPEC-186 returned no linked records for the broader predecessor query"
+ ],
+ "rationale": "The answer states the required anchor T1195.002 and the expected CAPEC-98 predecessor of CAPEC-186, and it also lists the CAPEC patterns mapped to T1195.002. It is partial rather than fully correct because it says the predecessor query returned CAPEC-186 with no linked records while also asserting CAPEC-98 as a CanFollow predecessor, and it does not explicitly enumerate predecessors for all eight corresponding patterns.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 16384,
+  "escalated": true,
+  "position": 2
+ }
+}

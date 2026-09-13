@@ -44,7 +44,43 @@ DEFAULT_ROOT = "docs/evaluation/experiments/untruncated"
 # un-truncation, A − C isolates the composer, and B − C isolates LLM planning.
 ARMS = ("deterministic", "llm", "gold_llm", "llm_loop", "gold_loop_llm", "generic",
         "llm_query", "merged", "generic_composed", "generic_planned",
+        "generic_local_narrator",
         "rewrite_off", "rewrite_det", "rewrite_model")
+
+#: The small-model endpoint (EXP-2026-09-019). Read at call time, never at
+#: import: an import-time environment read is how "LLM-off" runs reached a live
+#: model before (`Q12`, and `api/main.py`'s load_env leak).
+#:
+#: The defaults are the *llama.cpp router* on :7070, not the relay on :4000.
+#: The plan named :4000 / `local`, but that alias resolved to `gemma-4-26B-it`
+#: on 2026-09-13 while MiniCPM5-2B was loaded behind :7070 — which is exactly
+#: what the probe's identity gate is for.
+def _local_llm_base_url() -> str:
+    return os.environ.get("LOCAL_LLM_BASE_URL", "http://localhost:7070/v1")
+
+
+def _local_llm_model() -> str:
+    return os.environ.get("LOCAL_LLM_MODEL", "minicpm-5-2B")
+
+
+def _local_llm_max_tokens() -> str:
+    """16384 of MiniCPM's 131072-token context (its `--ctx-size` at launch).
+
+    Not probed. The endpoint accepts any `max_tokens` and clamps silently, so a
+    ceiling cannot be discovered by asking it; this number comes from the served
+    model's launch arguments.
+    """
+    return os.environ.get("LOCAL_LLM_MAX_TOKENS", "16384")
+
+
+def _local_llm_thinking_budget() -> str:
+    """0 — "send no cap". MiniCPM is not a reasoning model.
+
+    Overridable because the same arm is re-pointed at the 27B reasoning model to
+    get the cost comparison, and *that* model must have its deliberation capped
+    or it spends the whole token budget thinking and returns empty content.
+    """
+    return os.environ.get("LOCAL_LLM_THINKING_BUDGET", "0")
 
 # -- the un-truncation profile ----------------------------------------------
 # Every one of these keys is read *at call time* by the bound it names, with the
@@ -208,6 +244,43 @@ def untruncated_env(*, arm: str, llm_model: str, llm_max_tokens: int) -> dict[st
             "SPECIALIST_LLM_ENABLED": "false",
             "SYNTHESIS_LLM_ENABLED": "false",
             "CONVERSATION_LLM_ENABLED": "false",
+            "ARIADNE_REWRITE": "0",
+            "ARIADNE_REWRITE_MODEL": "0",
+        })
+    elif arm == "generic_local_narrator":
+        # EXP-2026-09-019 Step 3 — the 2B model on the seam where it is least
+        # dangerous. This is `generic_composed` with one thing added: a small
+        # local model rewrites the narrative prose over claims that were already
+        # composed deterministically and already verified.
+        #
+        # The reason this seam is safe is structural, not optimistic. The
+        # composer stays deterministic, so the *claims* are not the model's; the
+        # verifier runs unconditionally and grounds every asserted identifier;
+        # and when the narrator fails outright `utils/synthesis/factory.py`
+        # falls back to the composed text and records `fallback_reason`. A weak
+        # narrator therefore produces worse prose rather than worse facts, and
+        # the failure is counted rather than hidden.
+        #
+        # The budget is NOT inherited and NOT probed. The probe established that
+        # this server accepts any `max_tokens` and clamps silently, so a ceiling
+        # cannot be discovered by asking; 131072 is the `--ctx-size` the loaded
+        # model was launched with. The thinking budget is 0 because MiniCPM is
+        # not a reasoning model — the >=2048 floor `skynet` needs does not apply,
+        # and a positive budget must in any case stay below max_tokens.
+        env.update({
+            "SPECIALIST_GENERIC_ONLY": "true",
+            "PLANNER_LLM_ENABLED": "false",
+            "SPECIALIST_LLM_ENABLED": "false",
+            "CONVERSATION_LLM_ENABLED": "false",
+            "SYNTHESIS_LLM_ENABLED": "true",
+            "SYNTHESIS_LLM_BASE_URL": _local_llm_base_url(),
+            "SYNTHESIS_LLM_MODEL": _local_llm_model(),
+            "SYNTHESIS_LLM_MAX_TOKENS": _local_llm_max_tokens(),
+            "SYNTHESIS_LLM_THINKING_BUDGET": _local_llm_thinking_budget(),
+            # The narrator's failures were read time-outs at the 120 s default
+            # (`EXP-2026-09-010`), and a time-out is indistinguishable
+            # downstream from a model with nothing to say.
+            "SYNTHESIS_LLM_TIMEOUT_S": "600.0",
             "ARIADNE_REWRITE": "0",
             "ARIADNE_REWRITE_MODEL": "0",
         })
@@ -794,6 +867,11 @@ RUNNERS = {
     # precisely the variable this arm exists to remove. `run_rewrite` drives the
     # real pipeline with the planner in it and no language model anywhere.
     "generic_planned": run_planned,
+    # Same gold-replay driver as `gold_llm`: the arm differs only in its env —
+    # generic primitives on, the specialist seam off, and the narrator pointed
+    # at the local small model. The claims are composed deterministically in
+    # both, which is what makes them comparable.
+    "generic_local_narrator": run_gold_llm,
     # EXP-2026-09-014's three arms all drive the REAL pipeline (planner
     # included, no language model in it) and differ only by the two rewrite
     # flags their env sets. `run_deterministic` would be wrong here: it replays
@@ -1017,10 +1095,21 @@ def main(argv: list[str] | None = None) -> int:
     from utils.config import load_env
 
     load_env()
-    apply_env(untruncated_env(
+    overlay = untruncated_env(
         arm=args.arm, llm_model=args.llm_model, llm_max_tokens=args.llm_max_tokens
-    ))
-    _preflight_llm(args.arm, args.llm_model)
+    )
+    apply_env(overlay)
+    # Probe the model the arm will ACTUALLY use, not the one on the command
+    # line. An arm that pins its own endpoint (the EXP-2026-09-019 local arms)
+    # would otherwise be preflighted against `--llm-model`'s default and pass or
+    # fail for a model it never calls — which is the preflight reporting on the
+    # wrong thing, the same shape of error it exists to prevent.
+    _preflight_llm(
+        args.arm,
+        overlay.get("SYNTHESIS_LLM_MODEL")
+        or overlay.get("SPECIALIST_LLM_MODEL")
+        or args.llm_model,
+    )
     only = {s.strip() for s in args.only.split(",")} if args.only else None
     run_arm(
         args.arm, root=args.root, workers=args.workers,

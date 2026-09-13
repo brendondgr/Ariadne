@@ -102,6 +102,67 @@ class TestGenericPlanned:
         assert not [k for k, v in env.items() if v == "unused-model"]
 
 
+class TestGenericLocalNarrator:
+    """The 2B narrator arm: one seam on, everything else held at the control."""
+
+    ARM = "generic_local_narrator"
+
+    def test_only_the_synthesis_seam_is_live(self):
+        env = env_for(self.ARM)
+        assert env["SYNTHESIS_LLM_ENABLED"] == "true"
+        for seam in ("PLANNER_LLM_ENABLED", "SPECIALIST_LLM_ENABLED",
+                     "CONVERSATION_LLM_ENABLED"):
+            assert env[seam] == "false", f"{seam} is not off"
+
+    def test_it_composes_claims_deterministically(self):
+        # The runner is the gold-replay one, so the CLAIMS are composed by the
+        # deterministic composer in both this arm and its control. The model
+        # rewrites prose over them. If this arm ever drove a claims composer the
+        # comparison against generic_composed would stop meaning anything.
+        assert RUNNERS[self.ARM] is exp.run_gold_llm
+
+    def test_the_endpoint_is_pinned_rather_than_inherited(self):
+        env = env_for(self.ARM)
+        assert env["SYNTHESIS_LLM_BASE_URL"].startswith("http")
+        assert env["SYNTHESIS_LLM_MODEL"]
+
+    def test_the_endpoint_can_be_repointed_without_editing_code(self, monkeypatch):
+        monkeypatch.setenv("LOCAL_LLM_BASE_URL", "http://elsewhere:1234/v1")
+        monkeypatch.setenv("LOCAL_LLM_MODEL", "other-weights")
+        env = env_for(self.ARM)
+        assert env["SYNTHESIS_LLM_BASE_URL"] == "http://elsewhere:1234/v1"
+        assert env["SYNTHESIS_LLM_MODEL"] == "other-weights"
+
+    def test_the_endpoint_is_read_at_call_time_not_import_time(self, monkeypatch):
+        # An import-time environment read is how "LLM-off" runs reached a live
+        # model before. If this were a module constant the override above would
+        # only work when the env was set before the import.
+        monkeypatch.setenv("LOCAL_LLM_MODEL", "late-binding-check")
+        assert exp._local_llm_model() == "late-binding-check"
+
+    def test_the_thinking_budget_stays_below_the_token_cap(self):
+        # A budget at or above max_tokens is the configuration that returns
+        # empty content, which reaches a caller as a silent "LLM unavailable".
+        env = env_for(self.ARM)
+        assert int(env["SYNTHESIS_LLM_THINKING_BUDGET"]) < int(env["SYNTHESIS_LLM_MAX_TOKENS"])
+
+    def test_the_timeout_is_raised_off_the_120s_default(self):
+        # EXP-2026-09-010: the narrator's failures were read time-outs, and a
+        # time-out is indistinguishable downstream from a model with nothing to say.
+        assert float(env_for(self.ARM)["SYNTHESIS_LLM_TIMEOUT_S"]) > 120.0
+
+    def test_it_differs_from_its_control_only_in_the_narrator(self):
+        narrator = env_for(self.ARM)
+        composed = env_for("generic_composed")
+        shared = set(narrator) & set(composed)
+        differing = {k for k in shared if narrator[k] != composed[k]}
+        assert differing == {"SYNTHESIS_LLM_ENABLED"}
+
+    def test_it_is_not_treated_as_model_free(self):
+        # It has a live seam, so the relay preflight must run for it.
+        assert self.ARM not in _MODEL_FREE_ARMS
+
+
 class TestTheLLMPostureIsStatedAtTheCallSite:
     """`use_llm` overwrites the environment, so it is asserted, not assumed.
 
