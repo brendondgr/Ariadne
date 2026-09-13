@@ -1,0 +1,26 @@
+{
+ "case_id": "D5-uses-x_mitre_platforms-C0029-6e5dcb::indirect",
+ "verdict": "PARTIAL",
+ "correctness": 0.7,
+ "faithfulness": 0.7,
+ "groundedness": 0.75,
+ "completeness": 1.0,
+ "gold_expected": 9,
+ "gold_present": 9,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "C0029 has no USES relationships in this catalogue"
+ ],
+ "rationale": "The answer states all nine expected network-device-targeting software identifiers for C0029: S1114, S1115, S1116, S1117, S1118, S1119, S1120, S1121, and S1123. However, it presents them as part of a broader set of 11 related items and includes non-gold S0488 and S0357 without explicitly identifying the network-device-targeting subset. It also asserts that C0029 has no USES relationships, which is contradicted by the USES query returning 11 related software records.",
+ "judge": {
+  "model": "default-model",
+  "alias": "default-model",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

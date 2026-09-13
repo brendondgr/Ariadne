@@ -1,0 +1,26 @@
+{
+ "case_id": "D3-CanFollow-CAPEC-390-754ead::indirect",
+ "verdict": "PARTIAL",
+ "correctness": 0.8,
+ "faithfulness": 0.85,
+ "groundedness": 1.0,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "CAPEC-665 is a CanFollow predecessor of CAPEC-390"
+ ],
+ "rationale": "The answer identifies the expected gold neighbor CAPEC-665 for CAPEC-390 and grounds the CAPEC-390 description, status, and abstraction in the provided record. However, it calls CAPEC-665 a \"CanFollow predecessor\" rather than a next or successor pattern, and the evidence only shows a CAN_FOLLOW relation without an explicit direction. This makes the directional claim weakly supported, so the answer is partial rather than fully correct. No cross-source mapping is asserted.",
+ "judge": {
+  "model": "default-model",
+  "alias": "default-model",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

@@ -1,0 +1,24 @@
+{
+ "case_id": "D6-MAPS_TO[ATTACK]-HAS_INDICATOR-T1056-c4c34f::analyst",
+ "verdict": "PARTIAL",
+ "correctness": 0.4,
+ "faithfulness": 0.65,
+ "groundedness": 0.75,
+ "completeness": 0.5,
+ "gold_expected": 2,
+ "gold_present": 1,
+ "abstained": true,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer mentions T1056 and lists CAPEC records with ATTACK:1056-related taxonomy entries, including CAPEC-654, CAPEC-569, CAPEC-568, and CAPEC-383. However, it does not state the expected indicator, \"Credential prompts that appear illegitimate or unexpected,\" and it partially abstains by saying the attack source does not establish the T1056-to-CAPEC mapping. It is therefore partial: grounded in cited CAPEC taxonomy entries, but incomplete on the requested indicators.",
+ "judge": {
+  "model": "default-model",
+  "alias": "default-model",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

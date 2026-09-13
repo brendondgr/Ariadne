@@ -1,0 +1,26 @@
+{
+ "case_id": "D2-MAPS_TO[WASC]-CAPEC-126-d48ec7::indirect",
+ "verdict": "CORRECT",
+ "correctness": 0.9,
+ "faithfulness": 0.85,
+ "groundedness": 0.9,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "CAPEC-126 has ATT&CK mappings"
+ ],
+ "rationale": "The answer states the required anchor CAPEC-126 and the expected WASC mapping capec:taxonomy:WASC:33, so it answers the query. It also includes the supported but non-WASC mapping capec:taxonomy:OWASP_Attacks:Path_Traversal. The main weakness is calling the mappings \"ATT&CK mappings\" when the evidence only shows CAPEC MAPS_TO taxonomy entries.",
+ "judge": {
+  "model": "default-model",
+  "alias": "default-model",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

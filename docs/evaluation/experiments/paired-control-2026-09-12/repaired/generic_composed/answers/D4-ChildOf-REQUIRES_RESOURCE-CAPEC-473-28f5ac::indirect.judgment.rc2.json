@@ -1,0 +1,24 @@
+{
+ "case_id": "D4-ChildOf-REQUIRES_RESOURCE-CAPEC-473-28f5ac::indirect",
+ "verdict": "PARTIAL",
+ "correctness": 0.8,
+ "faithfulness": 0.9,
+ "groundedness": 0.9,
+ "completeness": 1.0,
+ "gold_expected": 2,
+ "gold_present": 2,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer correctly identifies CAPEC-473 and includes both expected resource texts, including the CAPEC-459 resources about identical-hash certificate requests and knowledge of a CA with weak collision resistance. It also lists the related attack patterns, but it does not clearly map each pattern to its required resources, such as CAPEC-151's 'None' resource and CAPEC-459's two resources, so it only partially answers the 'each' part of the question.",
+ "judge": {
+  "model": "default-model",
+  "alias": "default-model",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

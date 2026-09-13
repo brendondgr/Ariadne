@@ -1,0 +1,26 @@
+{
+ "case_id": "D0-Analytic-subtechnique-of-AN0749-d741a1::analyst",
+ "verdict": "PARTIAL",
+ "correctness": 0.35,
+ "faithfulness": 0.45,
+ "groundedness": 0.55,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "AN0749 has 1 sub-technique: T1560.002"
+ ],
+ "rationale": "The answer states the required anchor AN0749 and cites related DET0268 and T1560.002, but it does not clearly answer which parent techniques AN0749 is a sub-technique of. It instead gives the inverse relation, saying AN0749 has no subtechniques and then that it has sub-technique T1560.002, while the evidence only shows DETECTS to T1560.002 and HAS_ANALYTIC to DET0268.",
+ "judge": {
+  "model": "default-model",
+  "alias": "default-model",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

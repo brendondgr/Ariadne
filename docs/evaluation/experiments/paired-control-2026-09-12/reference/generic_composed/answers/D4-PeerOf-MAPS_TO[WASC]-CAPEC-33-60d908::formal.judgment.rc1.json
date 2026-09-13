@@ -1,0 +1,24 @@
+{
+ "case_id": "D4-PeerOf-MAPS_TO[WASC]-CAPEC-33-60d908::formal",
+ "verdict": "PARTIAL",
+ "correctness": 0.4,
+ "faithfulness": 1.0,
+ "groundedness": 1.0,
+ "completeness": 0.5,
+ "gold_expected": 2,
+ "gold_present": 1,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer states the anchor CAPEC-33 and lists capec:taxonomy:WASC:26 as a related taxonomy entry, both supported by the CAPEC-33 record. However, the expected WASC:27 is not stated, so the answer only partially satisfies the required identifiers. It is faithful and grounded because all listed related items appear in the evidence, but it omits the gold WASC entry.",
+ "judge": {
+  "model": "default-model",
+  "alias": "default-model",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

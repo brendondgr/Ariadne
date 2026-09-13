@@ -1,0 +1,26 @@
+{
+ "case_id": "D2-HAS_EXAMPLE-CAPEC-126-641f1b::formal",
+ "verdict": "CORRECT",
+ "correctness": 1.0,
+ "faithfulness": 0.9,
+ "groundedness": 1.0,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "The example is described as 'named only as text' although the evidence gives the example's name as capec:attack-pattern:126:example:1 and the quoted text as its description."
+ ],
+ "rationale": "The answer directly answers the question by stating CAPEC-126 and the expected example text associated with capec:attack-pattern:126:example:1. The claims are tied to the cited CAPEC record and its related example. A minor faithfulness deduction is warranted for characterizing the example as 'named only as text' when the record's name field is the URI and the quoted text is the description.",
+ "judge": {
+  "model": "default-model",
+  "alias": "default-model",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

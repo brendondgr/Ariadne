@@ -1,0 +1,26 @@
+{
+ "case_id": "D5-uses-x_mitre_platforms-G0018-ebdb61::analyst",
+ "verdict": "PARTIAL",
+ "correctness": 0.6,
+ "faithfulness": 0.7,
+ "groundedness": 0.7,
+ "completeness": 1.0,
+ "gold_expected": 4,
+ "gold_present": 4,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "T1203 has no USES relationships in this catalogue"
+ ],
+ "rationale": "The answer states all four expected technique identifiers, T1016, T1049, T1082, and T1083, but it also includes T1203 and T1007 and does not explicitly tie the results to G0018 or Network Devices. The absence claim about T1203 is not directly supported by the shown records, since T1203 appears as a returned technique in the G0018 USES query. Overall, it is a partial answer because the gold techniques are present but the response is over-inclusive and weakly framed.",
+ "judge": {
+  "model": "default-model",
+  "alias": "default-model",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

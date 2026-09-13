@@ -1,0 +1,24 @@
+{
+ "case_id": "D5-mitigates-x_mitre_platforms-M1042-ad62f1::analyst",
+ "verdict": "CORRECT",
+ "correctness": 1.0,
+ "faithfulness": 0.95,
+ "groundedness": 0.95,
+ "completeness": 1.0,
+ "gold_expected": 4,
+ "gold_present": 4,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer states M1042 and all four expected related identifiers: T1671, T1059, T1098, and T1098.001. The evidence record for M1042 contains exactly those four MITIGATES neighbours, and the executed query filters on x_mitre_platforms, supporting the SaaS restriction. Minor deduction for not explicitly showing the platform property in the normalized record, but no unsupported identifiers are asserted.",
+ "judge": {
+  "model": "default-model",
+  "alias": "default-model",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

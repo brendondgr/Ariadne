@@ -1,0 +1,24 @@
+{
+ "case_id": "D5-CanFollow-Likelihood_Of_Attack-CAPEC-234-6037d9::indirect",
+ "verdict": "PARTIAL",
+ "correctness": 0.7,
+ "faithfulness": 0.9,
+ "groundedness": 0.9,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer correctly anchors CAPEC-234 and includes the expected related pattern CAPEC-175, but it also lists CAPEC-100 and CAPEC-242 without explicitly applying the requested Medium likelihood-of-attack filter. The claims are grounded in the CAPEC-234 record and its CAN_FOLLOW related entries, though the directional wording 'predecessors' is only weakly evidenced by the related list. It is partial because the requested filtered set is not cleanly stated.",
+ "judge": {
+  "model": "default-model",
+  "alias": "default-model",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

@@ -1,0 +1,27 @@
+{
+ "case_id": "D5-ChildOf-Typical_Severity-CAPEC-634-446005::analyst",
+ "verdict": "PARTIAL",
+ "correctness": 0.5,
+ "faithfulness": 0.6,
+ "groundedness": 0.7,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "The verified claims do not assign Medium typical severity to any of the broader patterns CAPEC-545, CAPEC-651, CAPEC-116, and CAPEC-117",
+  "No Medium-severity broader pattern is established for CAPEC-634"
+ ],
+ "rationale": "The answer retrieves CAPEC-634 and explicitly states CAPEC-651 as a ChildOf broader pattern, so the expected identifier is present. However, it concludes that no Medium-severity broader pattern is established, even though the evidence shows CAPEC-651 with Typical_Severity Medium. This makes the filtered answer only partially correct and somewhat unfaithful to the shown records.",
+ "judge": {
+  "model": "default-model",
+  "alias": "default-model",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

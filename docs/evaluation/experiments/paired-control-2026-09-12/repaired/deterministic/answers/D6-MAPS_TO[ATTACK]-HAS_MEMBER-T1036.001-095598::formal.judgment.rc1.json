@@ -1,0 +1,26 @@
+{
+ "case_id": "D6-MAPS_TO[ATTACK]-HAS_MEMBER-T1036.001-095598::formal",
+ "verdict": "PARTIAL",
+ "correctness": 0.85,
+ "faithfulness": 0.75,
+ "groundedness": 0.8,
+ "completeness": 1.0,
+ "gold_expected": 2,
+ "gold_present": 2,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "The capec source doesn't establish the view relationship and returned CAPEC-473 with no linked records for views, despite the q2 evidence showing CAPEC-703 as an IN_VIEW related record."
+ ],
+ "rationale": "The answer correctly identifies CAPEC-473 as the CAPEC pattern mapped to T1036.001 and CAPEC-703 as the containing view, satisfying the requested identifiers. However, its abstention claims the capec source returned no linked view records, which contradicts the q2 evidence showing CAPEC-703. No fabricated cross-source mapping is asserted, and the core answer is complete.",
+ "judge": {
+  "model": "default-model",
+  "alias": "default-model",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

@@ -1,0 +1,28 @@
+{
+ "case_id": "D2-HAS_MEMBER-CAPEC-156-d26a33::analyst",
+ "verdict": "PARTIAL",
+ "correctness": 0.2,
+ "faithfulness": 0.9,
+ "groundedness": 0.8,
+ "completeness": 0.0,
+ "gold_expected": 6,
+ "gold_present": 0,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "T1566",
+  "M1017",
+  "CAPEC-98"
+ ],
+ "rationale": "The answer honestly abstains and shows the executed CAPEC query, and the zero-row result supports the no-records claim. However, the gold expected six contained patterns\u2014CAPEC-148, CAPEC-151, CAPEC-154, CAPEC-173, CAPEC-416, and CAPEC-690\u2014and the answer states none of them, only the anchor CAPEC-156 in the query. The illustrative identifiers T1566, M1017, and CAPEC-98 are not in the evidence, so faithfulness is slightly reduced.",
+ "judge": {
+  "model": "default-model",
+  "alias": "default-model",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

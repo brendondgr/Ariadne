@@ -1,0 +1,26 @@
+{
+ "case_id": "D6-CanFollow-MAPS_TO[ATTACK]-CAPEC-701-6e185a::indirect",
+ "verdict": "PARTIAL",
+ "correctness": 0.35,
+ "faithfulness": 0.85,
+ "groundedness": 0.9,
+ "completeness": 0.33,
+ "gold_expected": 3,
+ "gold_present": 1,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "Headline states 1 unestablished question, but the answer contains two abstained subquestions: CAPEC predecessors and ATT&CK techniques."
+ ],
+ "rationale": "The answer correctly retrieves and cites CAPEC-701, but it does not state the expected ATT&CK techniques T1566 or T1598. It abstains for the CAPEC predecessor subquestion with an executed query and for the ATT&CK technique subquestion because the CAPEC source does not model Technique. This makes the answer grounded and mostly faithful, but incomplete relative to the gold identifiers.",
+ "judge": {
+  "model": "default-model",
+  "alias": "default-model",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

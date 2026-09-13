@@ -1,0 +1,24 @@
+{
+ "case_id": "D3-ChildOf-CAPEC-227-5f6f39::indirect",
+ "verdict": "PARTIAL",
+ "correctness": 0.6,
+ "faithfulness": 0.9,
+ "groundedness": 0.9,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer states the expected related identifier CAPEC-469 and correctly describes CAPEC-227, but it frames CAPEC-469 as a ChildOf parent rather than a narrower child under CAPEC-227. Because the only expected narrower pattern is present, completeness is full, but the directional mismatch makes the answer only partially correct. The claims are grounded in the CAPEC-227 record and do not assert a cross-source mapping.",
+ "judge": {
+  "model": "default-model",
+  "alias": "default-model",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

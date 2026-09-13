@@ -1,0 +1,26 @@
+{
+ "case_id": "D0-Technique-tactic_refs-T1518-ad4ac3::analyst",
+ "verdict": "PARTIAL",
+ "correctness": 0.6,
+ "faithfulness": 0.6,
+ "groundedness": 0.7,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "T1518 has no tactics in this catalogue"
+ ],
+ "rationale": "The evidence shows T1518 is associated with tactic TA0007, and the answer does state TA0007. However, it also asserts that T1518 has no tactics, which contradicts the returned TA0007 record. This makes the answer partially correct but not fully faithful.",
+ "judge": {
+  "model": "default-model",
+  "alias": "default-model",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

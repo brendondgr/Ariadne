@@ -1,0 +1,24 @@
+{
+ "case_id": "D3-PeerOf-CAPEC-34-8b04c9::indirect",
+ "verdict": "INCORRECT",
+ "correctness": 0.1,
+ "faithfulness": 1.0,
+ "groundedness": 1.0,
+ "completeness": 0.0,
+ "gold_expected": 1,
+ "gold_present": 0,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer identifies and describes the anchor CAPEC-34, but it never states the expected peer CAPEC-105. Because the question asks for peer attack patterns, describing only CAPEC-34 does not answer the query. The statements made are supported by the cited CAPEC-34 record, but completeness is zero for the expected peer identifier.",
+ "judge": {
+  "model": "default-model",
+  "alias": "default-model",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

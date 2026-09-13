@@ -1,0 +1,28 @@
+{
+ "case_id": "D3-HAS_MEMBER-CAPEC-515-4e6f91::formal",
+ "verdict": "PARTIAL",
+ "correctness": 0.5,
+ "faithfulness": 0.9,
+ "groundedness": 1.0,
+ "completeness": 0.0,
+ "gold_expected": 1,
+ "gold_present": 0,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "T1566",
+  "M1017",
+  "CAPEC-98"
+ ],
+ "rationale": "The answer honestly abstains and shows the executed CAPEC query for seed CAPEC-515, which returned zero rows, so it is faithful and grounded. It does not state the expected related view CAPEC-3000, so completeness is 0 and the answer only partially addresses the question. The illustrative identifiers T1566, M1017, and CAPEC-98 are not supported by the evidence, but no cross-source mapping is asserted.",
+ "judge": {
+  "model": "default-model",
+  "alias": "default-model",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

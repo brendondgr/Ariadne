@@ -1,0 +1,24 @@
+{
+ "case_id": "D4-mitigates-uses-M1047-b63672::indirect",
+ "verdict": "PARTIAL",
+ "correctness": 0.7,
+ "faithfulness": 0.85,
+ "groundedness": 0.8,
+ "completeness": 1.0,
+ "gold_expected": 46,
+ "gold_present": 46,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer states M1047 and includes all 46 expected campaign identifiers, including C0001, C0002, C0004, and C0063, so the expected campaign set is fully present. It also lists many technique identifiers such as T1176.002, T1213.005, and T1505.001, but presents them as a flat set of related items rather than mapping each mitigated technique to the campaigns that used it. This makes the answer partial rather than fully correct for the two-hop question.",
+ "judge": {
+  "model": "default-model",
+  "alias": "default-model",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

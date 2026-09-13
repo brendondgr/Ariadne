@@ -1,0 +1,26 @@
+{
+ "case_id": "D0-Group-kill_chain_phase-G0001-df09db::indirect",
+ "verdict": "PARTIAL",
+ "correctness": 0.6,
+ "faithfulness": 0.7,
+ "groundedness": 0.8,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "G0001 has no techniques in this catalogue"
+ ],
+ "rationale": "The answer correctly identifies the anchor G0001 (Axiom) and reports the retrieved ATT&CK record, satisfying the required identifier. However, it answers in terms of techniques rather than tactics and asserts that G0001 has no techniques, which is not well supported because the evidence facets show USES Technique count 9 and USES SubTechnique count 7. No tactic identifiers are stated, but the expected tactic set is empty, so the main issue is imprecise and partly unsupported absence language rather than missing gold identifiers.",
+ "judge": {
+  "model": "default-model",
+  "alias": "default-model",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

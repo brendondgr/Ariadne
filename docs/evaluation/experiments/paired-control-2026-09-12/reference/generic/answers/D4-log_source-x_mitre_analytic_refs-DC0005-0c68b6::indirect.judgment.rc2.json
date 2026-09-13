@@ -1,0 +1,28 @@
+{
+ "case_id": "D4-log_source-x_mitre_analytic_refs-DC0005-0c68b6::indirect",
+ "verdict": "CORRECT",
+ "correctness": 0.85,
+ "faithfulness": 0.7,
+ "groundedness": 0.75,
+ "completeness": 1.0,
+ "gold_expected": 3,
+ "gold_present": 3,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "AN0430, AN0431, AN0432, and AN0433 are asserted to implement DET0151, but the evidence only shows they are related to DC0005 and that DET0151 is also related to DC0005.",
+  "AN1118, AN1119, and AN1120 are asserted to implement DET0399, but the evidence does not explicitly link those analytics to DET0399.",
+  "AN0325 and AN0326 are asserted to implement DET0117, but the evidence does not explicitly link those analytics to DET0117."
+ ],
+ "rationale": "The answer correctly names DC0005 and all three expected detection strategies, DET0151, DET0399, and DET0117, and lists the nine related analytics. The per-analytic strategy mappings are plausible from the names and descriptions, but the provided record only shows that both the analytics and strategies are related to DC0005, not the exact analytic-to-strategy edges.",
+ "judge": {
+  "model": "default-model",
+  "alias": "default-model",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

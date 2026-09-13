@@ -1,0 +1,26 @@
+{
+ "case_id": "D5-uses-x_mitre_platforms-G0059-525319::formal",
+ "verdict": "PARTIAL",
+ "correctness": 0.6,
+ "faithfulness": 0.7,
+ "groundedness": 0.8,
+ "completeness": 1.0,
+ "gold_expected": 10,
+ "gold_present": 10,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "71 additional technique/subtechnique IDs beyond the 20 visible related records (e.g., T1105, T1046, T1018, T1059.005, T1071.001, T1189, T1070.004, T1027.010, T1036.010, T1059.003, T1564.003, T1078.002, T1570, T1102.002, T1589.001, T1685, T1592.002, T1573, T1486, T1114.002, T1585.001, T1053.005, T1560.001, T1047, T1113, T1033, T1218.011, T1056.001, T1027.013, T1590.005, T1016.001, T1685.001, T1114, T1036.005, T1114.001, T1204.002, T1686.003, T1566.002, T1598.003, T1082, T1071, T1070.003, T1005, T1586.002, T1098.007, T1190, T1567, T1583.001, T1016.002, T1087.003, T1572, T1589, T1595.002, T1112, T1505.003, T1078.001, T1136.001, T1585.002, T1003.001, T1589.002, T1016, T1090, T1482, T1083, T1036.004, T1049, T1583.006, T1057, T1059.001, T1547.001, T1588.002)"
+ ],
+ "rationale": "The answer includes G0059 and all ten expected software identifiers: S0002, S0029, S0039, S0108, S0186, S0192, S0357, S0674, S1012, and S1144. However, it presents all 91 related items rather than cleanly identifying the Windows-applicable malware/tools, so it is only partially responsive. Faithfulness is reduced because the visible evidence shows only 20 related records, while the answer enumerates many additional IDs not shown.",
+ "judge": {
+  "model": "default-model",
+  "alias": "default-model",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

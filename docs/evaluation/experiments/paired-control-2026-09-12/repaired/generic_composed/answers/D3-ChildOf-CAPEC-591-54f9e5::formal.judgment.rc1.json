@@ -1,0 +1,26 @@
+{
+ "case_id": "D3-ChildOf-CAPEC-591-54f9e5::formal",
+ "verdict": "PARTIAL",
+ "correctness": 0.8,
+ "faithfulness": 0.9,
+ "groundedness": 0.95,
+ "completeness": 1.0,
+ "gold_expected": 9,
+ "gold_present": 9,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "CAPEC-591 has 11 ChildOf parents (the evidence lists 11 CHILD_OF-related records but does not specify direction)"
+ ],
+ "rationale": "The answer includes all nine expected more-specific CAPEC patterns: CAPEC-18, CAPEC-198, CAPEC-199, CAPEC-243, CAPEC-244, CAPEC-245, CAPEC-247, CAPEC-32, and CAPEC-86, along with the anchor CAPEC-591. It also includes two supported but non-gold related records, CAPEC-63 and CAPEC-242, and labels the set as 'ChildOf parents' rather than clearly more specific cases. This makes the answer complete but only partially precise in answering the requested direction.",
+ "judge": {
+  "model": "default-model",
+  "alias": "default-model",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

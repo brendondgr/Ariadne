@@ -918,6 +918,44 @@ _LABEL_NOUNS: dict[str, tuple[str, str]] = {
 }
 
 
+#: The taxonomy whose entries ARE ATT&CK techniques. Every other value of a
+#: TaxonomyEntry's ``taxonomy_name`` is a different catalogue entirely.
+_ATTACK_TAXONOMY = "ATTACK"
+
+
+def _mapping_noun(entries: list[dict], count: int) -> str | None:
+    """What to call a ``MAPS_TO`` set, given the catalogues it actually reaches.
+
+    ``MAPS_TO`` is the CAPEC bridge to *every* taxonomy it carries — ATT&CK,
+    OWASP Attacks, WASC — and all of them arrive with the neighbour label
+    ``TaxonomyEntry``. So :data:`_NOUN_EXPECTS`, which guards exactly this
+    mistake by checking the label, could not see it: the label is identical for
+    all three, the noun said "ATT&CK mapping" for all three, and the answer
+    stated "CAPEC-126 (Path Traversal) has 2 ATT&CK mappings: OWASP
+    Attacks:Path Traversal; WASC:33" — where **neither** is an ATT&CK mapping.
+    Nine answers per arm on the development half, and the grader was right to
+    record it as a fabricated cross-catalogue mapping.
+
+    The entries carry ``taxonomy_name``, so the noun is taken from the data. The
+    fallback is one-way: ATT&CK is asserted only when every entry says so, and
+    anything unknown or mixed gets the neutral noun rather than a confident
+    wrong one — the same rule :data:`_NOUN_EXPECTS` already states.
+    """
+    names = [
+        str(rel.get("taxonomy_name") or "").strip()
+        for rel in entries
+        if isinstance(rel, dict)
+    ]
+    if not names:
+        return None
+    distinct = set(names)
+    if distinct == {_ATTACK_TAXONOMY}:
+        return _plural("ATT&CK mapping", count)
+    if len(distinct) == 1 and "" not in distinct:
+        return _plural(f"{next(iter(distinct))} mapping", count)
+    return _plural("catalogue mapping", count)
+
+
 def _related_noun(
     record: EvidenceRecord, count: int = 0, entries: list[dict] | None = None
 ) -> str:
@@ -945,6 +983,10 @@ def _related_noun(
         for rel in considered
         if isinstance(rel, dict) and rel.get("type")
     }
+    if rel_types == {"MAPS_TO"}:
+        mapped = _mapping_noun(list(considered), count)
+        if mapped:
+            return mapped
     if len(rel_types) == 1:
         noun = _REL_NOUNS.get(next(iter(rel_types)))
         expected = _NOUN_EXPECTS.get(noun or "")

@@ -1,0 +1,26 @@
+{
+ "case_id": "D1-Technique-x_mitre_contributors-T1001.003-0a5bef::formal",
+ "verdict": "CORRECT",
+ "correctness": 1.0,
+ "faithfulness": 0.95,
+ "groundedness": 1.0,
+ "completeness": 1.0,
+ "gold_expected": 2,
+ "gold_present": 2,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "T1001.003 has 1 technique: T1001 and has 1 tactic: TA0011 (the related records show T1001/TA0011, but the direction of HAS_SUBTECHNIQUE/HAS_TECHNIQUE is not explicitly asserted as outgoing from T1001.003)"
+ ],
+ "rationale": "The answer directly states the required contributor for T1001.003, 'James Emery-Callcott, Emerging Threats Team, Proofpoint,' matching the evidence's x_mitre_contributors. It also includes the anchor identifier T1001.003 and cites related T1001 and TA0011 from the same ATT&CK records. The only minor issue is the direction of the technique/tactic relationships, so no cross-source mapping is fabricated.",
+ "judge": {
+  "model": "default-model",
+  "alias": "default-model",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

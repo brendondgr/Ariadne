@@ -1,0 +1,26 @@
+{
+ "case_id": "D3-ChildOf-CAPEC-591-54f9e5::indirect",
+ "verdict": "PARTIAL",
+ "correctness": 0.8,
+ "faithfulness": 0.85,
+ "groundedness": 0.95,
+ "completeness": 1.0,
+ "gold_expected": 9,
+ "gold_present": 9,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "CAPEC-591 has 11 ChildOf parents, including CAPEC-63 and CAPEC-242, rather than clearly separating child variants from parent patterns"
+ ],
+ "rationale": "The answer states all nine expected variants (CAPEC-18, CAPEC-198, CAPEC-199, CAPEC-243, CAPEC-244, CAPEC-245, CAPEC-247, CAPEC-32, CAPEC-86) along with CAPEC-591, so completeness is full. It is partial because it also includes CAPEC-63 and CAPEC-242 and labels all eleven as 'ChildOf parents' instead of explicitly identifying the more specific variants. The statements are grounded in the CAPEC-591 record and its related entries, with only a slight direction over-interpretation.",
+ "judge": {
+  "model": "default-model",
+  "alias": "default-model",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

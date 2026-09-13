@@ -1,0 +1,26 @@
+{
+ "case_id": "D5-CanPrecede-Abstraction-CAPEC-600-1a0fa9::formal",
+ "verdict": "PARTIAL",
+ "correctness": 0.7,
+ "faithfulness": 0.75,
+ "groundedness": 0.9,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "CAPEC-50 and CAPEC-49 are CanPrecede successors of CAPEC-600"
+ ],
+ "rationale": "The answer correctly identifies CAPEC-653 as a Standard-abstraction pattern related to CAPEC-600 via CAN_PRECEDE. It also asserts CAPEC-50 and CAPEC-49 as CanPrecede successors, but the evidence only lists them as related CAN_PRECEDE neighbors without confirming the successor direction. Therefore it is partial: the gold identifier is present, but the extra successor claims are not fully supported.",
+ "judge": {
+  "model": "default-model",
+  "alias": "default-model",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

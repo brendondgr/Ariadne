@@ -1,0 +1,27 @@
+{
+ "case_id": "D6-MAPS_TO[ATTACK]-CanFollow-T1195.002-f669d7::indirect",
+ "verdict": "PARTIAL",
+ "correctness": 0.35,
+ "faithfulness": 0.85,
+ "groundedness": 0.7,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "T1566",
+  "M1017"
+ ],
+ "rationale": "The answer abstains and shows an empty CAPEC query, but it does not assert the expected CAPEC-98 correspondence to T1195.002; it only mentions CAPEC-98 as an example id. It also introduces unsupported example identifiers T1566 and M1017, so faithfulness is slightly reduced. Because the gold expected CAPEC-98 is present but not used as an answer, the result is partial.",
+ "judge": {
+  "model": "default-model",
+  "alias": "default-model",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

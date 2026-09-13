@@ -1,0 +1,28 @@
+{
+ "case_id": "D4-uses-uses-C0023-47ddc0::indirect",
+ "verdict": "PARTIAL",
+ "correctness": 0.25,
+ "faithfulness": 0.65,
+ "groundedness": 0.55,
+ "completeness": 0.03,
+ "gold_expected": 35,
+ "gold_present": 1,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "T1566",
+  "M1017",
+  "CAPEC-98"
+ ],
+ "rationale": "The answer is a grounded abstention: it states that the executed query for C0023 returned no records and includes that query. However, it only states the anchor C0023 and omits all 34 expected technique identifiers, such as T1005, T1059.001, and T1573.001, as well as any malware or tool entities. The illustrative identifiers T1566, M1017, and CAPEC-98 are not supported by the shown evidence.",
+ "judge": {
+  "model": "default-model",
+  "alias": "default-model",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

@@ -1,0 +1,26 @@
+{
+ "case_id": "D6-MAPS_TO[ATTACK]-HAS_INDICATOR-T1499.002-427629::indirect",
+ "verdict": "CORRECT",
+ "correctness": 0.95,
+ "faithfulness": 0.9,
+ "groundedness": 0.95,
+ "completeness": 1.0,
+ "gold_expected": 2,
+ "gold_present": 2,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "The capec source doesn't establish this / no linked records for the indicator subquestion, despite CAPEC-528 having a linked indicator."
+ ],
+ "rationale": "The answer states the required T1499.002 and the gold CAPEC-528 indicator text, and it correctly lists CAPEC-469, CAPEC-482, CAPEC-488, CAPEC-489, and CAPEC-528 as mapped to T1499.002. Its claims are tied to the cited CAPEC records and the executed indicator query. The only minor weakness is the abstention's 'no linked records' phrasing, since CAPEC-528 does have a linked indicator, but the answer still supplies that indicator.",
+ "judge": {
+  "model": "default-model",
+  "alias": "default-model",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

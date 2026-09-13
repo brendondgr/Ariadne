@@ -1,0 +1,26 @@
+{
+ "case_id": "D6-MAPS_TO[ATTACK]-HAS_MEMBER-T1552.001-85a91e::indirect",
+ "verdict": "CORRECT",
+ "correctness": 0.95,
+ "faithfulness": 0.85,
+ "groundedness": 0.95,
+ "completeness": 1.0,
+ "gold_expected": 2,
+ "gold_present": 2,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "The capec source doesn't establish this / returned CAPEC-191 with no linked records for CAPEC views"
+ ],
+ "rationale": "The answer states the required anchor T1552.001 and the required CAPEC view CAPEC-703, and it also names the corresponding CAPEC patterns CAPEC-191 and CAPEC-639. The mapping claims are supported by the MAPS_TO and IN_VIEW evidence. The main weakness is the abstention text saying CAPEC-191 had no linked view records, which is inconsistent with the returned CAPEC-703 relation.",
+ "judge": {
+  "model": "default-model",
+  "alias": "default-model",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

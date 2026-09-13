@@ -1,0 +1,26 @@
+{
+ "case_id": "D5-ChildOf-Typical_Severity-CAPEC-634-446005::analyst",
+ "verdict": "PARTIAL",
+ "correctness": 0.5,
+ "faithfulness": 0.8,
+ "groundedness": 0.9,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "No broader attack pattern with Medium typical severity is established (count: 0)"
+ ],
+ "rationale": "The answer retrieves CAPEC-634 and lists its ChildOf parents, including the expected CAPEC-651, so the gold identifier is present. However, it concludes that no broader pattern with Medium typical severity is established, which conflicts with the expected CAPEC-651 and is not directly supported because the related records in the evidence lack Typical_Severity values. Therefore it is partial: grounded and complete in identifier mention, but not fully correct in the filtered answer.",
+ "judge": {
+  "model": "default-model",
+  "alias": "default-model",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

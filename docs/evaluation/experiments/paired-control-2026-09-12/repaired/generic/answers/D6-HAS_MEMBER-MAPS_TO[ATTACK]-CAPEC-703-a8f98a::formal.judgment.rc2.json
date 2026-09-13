@@ -1,0 +1,30 @@
+{
+ "case_id": "D6-HAS_MEMBER-MAPS_TO[ATTACK]-CAPEC-703-a8f98a::formal",
+ "verdict": "PARTIAL",
+ "correctness": 0.9,
+ "faithfulness": 0.8,
+ "groundedness": 0.9,
+ "completeness": 1.0,
+ "gold_expected": 50,
+ "gold_present": 50,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": true,
+ "hallucinations": [
+  "CAPEC-648 -> T1513",
+  "CAPEC-268 -> T1562.002",
+  "CAPEC-268 -> T1562.003",
+  "CAPEC-268 -> T1562.008",
+  "CAPEC-125 has 4 ATT&CK mappings including OWASP Attacks:Traffic flood and WASC:10"
+ ],
+ "rationale": "The answer names CAPEC-703 and states all 50 expected ATT&CK identifiers, including T1014, T1036.001, T1598.003, and T1574.010, so it fully covers the requested set. It is not fully faithful because it adds cross-source mappings outside the expected 50, such as CAPEC-648 -> T1513 and CAPEC-268 -> T1562.002/T1562.003/T1562.008, and it counts OWASP/WASC entries as ATT&CK mappings. These extra unsupported correlations make the answer partial rather than clean correct.",
+ "judge": {
+  "model": "default-model",
+  "alias": "default-model",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

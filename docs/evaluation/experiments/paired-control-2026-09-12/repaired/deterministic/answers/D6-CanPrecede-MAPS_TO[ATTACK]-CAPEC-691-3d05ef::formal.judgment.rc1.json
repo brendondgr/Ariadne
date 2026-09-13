@@ -1,0 +1,26 @@
+{
+ "case_id": "D6-CanPrecede-MAPS_TO[ATTACK]-CAPEC-691-3d05ef::formal",
+ "verdict": "PARTIAL",
+ "correctness": 0.2,
+ "faithfulness": 0.8,
+ "groundedness": 0.9,
+ "completeness": 0.0,
+ "gold_expected": 1,
+ "gold_present": 0,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "The capec source doesn't establish this \u2014 the executed query ran cleanly and returned CAPEC-691 with no linked records for: For CAPEC-691: the CAPEC attack patterns that can precede it."
+ ],
+ "rationale": "The answer identifies CAPEC-691 and reports outgoing CanPrecede neighbors CAPEC-184 and CAPEC-444, plus CAPEC-691's mappings T1195.001 and T1195.002, but it never states the expected technique T1036.005. It also uses an outgoing CanPrecede query rather than the incoming patterns that can precede CAPEC-691. The abstention is query-backed but conflicts with the shown q1 result, which returned two linked CAPEC records.",
+ "judge": {
+  "model": "default-model",
+  "alias": "default-model",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

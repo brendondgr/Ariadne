@@ -1,0 +1,26 @@
+{
+ "case_id": "D3-detects-T1003.001-7a04de::formal",
+ "verdict": "PARTIAL",
+ "correctness": 0.6,
+ "faithfulness": 0.6,
+ "groundedness": 0.7,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "T1003.001 has no DETECTS relationships in this catalogue"
+ ],
+ "rationale": "The answer includes the expected detection strategy DET0363 for T1003.001, so the core gold identifier is present. However, it also lists AN1030 as a related item and asserts that T1003.001 has no DETECTS relationships, which is inconsistent with the query result showing DET0363 as related. This makes the answer partially correct but not fully faithful.",
+ "judge": {
+  "model": "default-model",
+  "alias": "default-model",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

@@ -1,0 +1,26 @@
+{
+ "case_id": "D5-uses-x_mitre_platforms-S0435-07fa38::formal",
+ "verdict": "PARTIAL",
+ "correctness": 0.8,
+ "faithfulness": 0.9,
+ "groundedness": 0.85,
+ "completeness": 1.0,
+ "gold_expected": 14,
+ "gold_present": 14,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "T1059.003 is asserted as a Linux-applicable technique used by S0435"
+ ],
+ "rationale": "The answer states S0435 and all 14 expected Linux-applicable technique IDs, including T1001.001, T1010, T1057, T1070.004, T1071.001, T1083, T1090, T1105, T1106, T1204.001, T1204.002, T1555, T1555.003, and T1573.001. However, it also includes T1059.003, which the evidence describes as a Windows command shell technique and which is not in the gold Linux set. The claims are grounded in the S0435 record's USES neighbours, but the answer does not explicitly filter or state Linux applicability, making it partial rather than fully correct.",
+ "judge": {
+  "model": "default-model",
+  "alias": "default-model",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

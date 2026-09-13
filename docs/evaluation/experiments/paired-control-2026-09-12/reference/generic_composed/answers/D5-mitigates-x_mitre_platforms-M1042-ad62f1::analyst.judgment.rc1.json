@@ -1,0 +1,24 @@
+{
+ "case_id": "D5-mitigates-x_mitre_platforms-M1042-ad62f1::analyst",
+ "verdict": "PARTIAL",
+ "correctness": 0.6,
+ "faithfulness": 0.95,
+ "groundedness": 0.8,
+ "completeness": 1.0,
+ "gold_expected": 4,
+ "gold_present": 4,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer includes all four expected SaaS-related techniques, T1059, T1098, T1098.001, and T1671, among M1042's MITIGATES neighbours. However, it lists all 71 mitigated techniques rather than explicitly identifying the SaaS-applicable subset, so it is overinclusive and only partially answers the SaaS filter. No unsupported cross-source mapping is asserted.",
+ "judge": {
+  "model": "default-model",
+  "alias": "default-model",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

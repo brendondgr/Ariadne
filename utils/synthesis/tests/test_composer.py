@@ -1041,3 +1041,82 @@ def test_synthesis_and_the_builder_share_one_record_of_containment():
         assert _relation_aliases(name) == folded
     # A relation outside the class folds to itself and nothing else.
     assert _relation_aliases("MITIGATES") == frozenset({"MITIGATES"})
+
+
+# -- I-18: MAPS_TO reaches more catalogues than ATT&CK -----------------------
+
+
+def test_a_non_attack_taxonomy_entry_is_not_called_an_attack_mapping():
+    """"CAPEC-126 has 2 ATT&CK mappings: OWASP…; WASC:33" — neither one is.
+
+    `MAPS_TO` is CAPEC's bridge to *every* taxonomy it carries, and all of them
+    arrive with the neighbour label `TaxonomyEntry`. `_NOUN_EXPECTS` guards
+    exactly this mistake by checking the label, so it could not see this one:
+    the label is identical for all three catalogues. The judge recorded it as a
+    fabricated cross-catalogue mapping, which is what it was.
+    """
+    from utils.synthesis.composer import _enumeration_claim
+
+    anchor = make_record(
+        "CAPEC-126", name="Path Traversal", source="capec", label="AttackPattern",
+        related=[
+            {"id": "OWASP Attacks:Path Traversal", "name": "Path Traversal",
+             "label": "TaxonomyEntry", "type": "MAPS_TO",
+             "taxonomy_name": "OWASP Attacks"},
+            {"id": "WASC:33", "name": "Path Traversal", "label": "TaxonomyEntry",
+             "type": "MAPS_TO", "taxonomy_name": "WASC"},
+        ],
+    )
+    text = _enumeration_claim(make_result(source="capec", records=[anchor]), anchor).text
+    assert "ATT&CK mapping" not in text, text
+    assert "catalogue mappings" in text, text
+
+
+def test_a_single_non_attack_taxonomy_is_named():
+    """One catalogue, named — "2 WASC mappings" beats "2 catalogue mappings"."""
+    from utils.synthesis.composer import _enumeration_claim
+
+    anchor = make_record(
+        "CAPEC-126", name="Path Traversal", source="capec", label="AttackPattern",
+        related=[
+            {"id": "WASC:33", "label": "TaxonomyEntry", "type": "MAPS_TO",
+             "taxonomy_name": "WASC"},
+            {"id": "WASC:34", "label": "TaxonomyEntry", "type": "MAPS_TO",
+             "taxonomy_name": "WASC"},
+        ],
+    )
+    assert "2 WASC mappings" in _enumeration_claim(
+        make_result(source="capec", records=[anchor]), anchor).text
+
+
+def test_an_all_attack_set_still_says_attack():
+    """The suppression is surgical: a genuine ATT&CK set keeps its noun."""
+    from utils.synthesis.composer import _enumeration_claim
+
+    anchor = make_record(
+        "CAPEC-112", name="Brute Force", source="capec", label="AttackPattern",
+        related=[
+            {"id": "T1110", "label": "TaxonomyEntry", "type": "MAPS_TO",
+             "taxonomy_name": "ATTACK"},
+            {"id": "T1110.001", "label": "TaxonomyEntry", "type": "MAPS_TO",
+             "taxonomy_name": "ATTACK"},
+        ],
+    )
+    assert "2 ATT&CK mappings" in _enumeration_claim(
+        make_result(source="capec", records=[anchor]), anchor).text
+
+
+def test_an_unknown_taxonomy_never_earns_the_attack_noun():
+    """One-way, like every other noun guard: unknown gets the neutral word."""
+    from utils.synthesis.composer import _enumeration_claim
+
+    anchor = make_record(
+        "CAPEC-1", source="capec", label="AttackPattern",
+        related=[
+            {"id": "T1110", "label": "TaxonomyEntry", "type": "MAPS_TO",
+             "taxonomy_name": "ATTACK"},
+            {"id": "X:1", "label": "TaxonomyEntry", "type": "MAPS_TO"},
+        ],
+    )
+    text = _enumeration_claim(make_result(source="capec", records=[anchor]), anchor).text
+    assert "ATT&CK mapping" not in text and "catalogue mappings" in text, text

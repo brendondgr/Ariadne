@@ -1,0 +1,24 @@
+{
+ "case_id": "D4-mitigates-uses-M1047-b63672::indirect",
+ "verdict": "PARTIAL",
+ "correctness": 0.5,
+ "faithfulness": 0.85,
+ "groundedness": 0.7,
+ "completeness": 0.0,
+ "gold_expected": 47,
+ "gold_present": 0,
+ "abstained": true,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer honestly abstains after the attack specialist failed on M1047 with a Campaign.attack_id binding mismatch, and the evidence contains 0 records. It does not state any of the expected campaign identifiers such as C0001, C0002, or C0063, nor any techniques, so completeness is zero. It is not fully correct because the answer text does not show the executed query as proof, only the binding-mismatch note.",
+ "judge": {
+  "model": "default-model",
+  "alias": "default-model",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

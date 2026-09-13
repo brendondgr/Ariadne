@@ -1,0 +1,24 @@
+{
+ "case_id": "D0-View-HAS_ALTERNATE_TERM-CAPEC-3000-fb5299::indirect",
+ "verdict": "PARTIAL",
+ "correctness": 0.35,
+ "faithfulness": 1.0,
+ "groundedness": 1.0,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer retrieves and cites capec:view:3000, the CAPEC-3000 'Domains of Attack' record, and its stated properties are supported by the evidence. However, it only describes the anchor record and does not explicitly state that CAPEC-3000 has no other names or list any alternate terms. Therefore it is partial: grounded and complete for the expected identifier, but not fully answering the 'other names' question.",
+ "judge": {
+  "model": "default-model",
+  "alias": "default-model",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

@@ -1,0 +1,24 @@
+{
+ "case_id": "D4-detects-uses-DET0181-518063::formal",
+ "verdict": "INCORRECT",
+ "correctness": 0.1,
+ "faithfulness": 1.0,
+ "groundedness": 1.0,
+ "completeness": 0.0,
+ "gold_expected": 1,
+ "gold_present": 0,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer only reports the anchor record DET0181 and its properties, but it does not state the expected related software/tool S0603. It is faithful and grounded in the cited DET0181 record, but it does not answer the question about malware and tools using the detected techniques. Because it is not an abstention and omits the expected gold identifier S0603, it is incorrect.",
+ "judge": {
+  "model": "default-model",
+  "alias": "default-model",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

@@ -1,0 +1,24 @@
+{
+ "case_id": "D5-HAS_MEMBER-Status-CAPEC-515-93195c::indirect",
+ "verdict": "PARTIAL",
+ "correctness": 0.65,
+ "faithfulness": 1.0,
+ "groundedness": 0.9,
+ "completeness": 1.0,
+ "gold_expected": 11,
+ "gold_present": 11,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer identifies CAPEC-515 and includes all 11 expected related patterns: CAPEC-113, CAPEC-114, CAPEC-122, CAPEC-124, CAPEC-161, CAPEC-176, CAPEC-233, CAPEC-438, CAPEC-439, CAPEC-548, and CAPEC-607. However, it lists all 24 Hardware-category members and only states that the category has Draft status, rather than explicitly filtering the attack patterns by Draft status. This makes it complete on the expected identifiers but only partially precise in answering the asked subset.",
+ "judge": {
+  "model": "default-model",
+  "alias": "default-model",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

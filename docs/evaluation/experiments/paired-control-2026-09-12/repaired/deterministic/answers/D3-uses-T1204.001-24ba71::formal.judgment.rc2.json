@@ -1,0 +1,26 @@
+{
+ "case_id": "D3-uses-T1204.001-24ba71::formal",
+ "verdict": "CORRECT",
+ "correctness": 0.95,
+ "faithfulness": 0.9,
+ "groundedness": 0.9,
+ "completeness": 1.0,
+ "gold_expected": 29,
+ "gold_present": 29,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "S0499 has no USES relationships in this catalogue"
+ ],
+ "rationale": "The answer states all 29 expected software identifiers, including S0198, S0367, S0499, S0650, and S1039, and ties each to T1204.001, so it fully answers the query. The unsupported absence claim that S0499 has no USES relationships is contradicted by the returned S0499 record and the USES query, causing a small faithfulness deduction. No cross-source mapping is asserted, and the main enumeration is grounded in the cited ATT&CK records.",
+ "judge": {
+  "model": "default-model",
+  "alias": "default-model",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

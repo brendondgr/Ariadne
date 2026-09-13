@@ -1,0 +1,24 @@
+{
+ "case_id": "D3-PeerOf-CAPEC-34-8b04c9::indirect",
+ "verdict": "PARTIAL",
+ "correctness": 0.4,
+ "faithfulness": 1.0,
+ "groundedness": 0.9,
+ "completeness": 0.5,
+ "gold_expected": 2,
+ "gold_present": 1,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer correctly states and grounds CAPEC-34, including its description and properties, but it omits the expected peer CAPEC-105. The evidence shows PEER_OF facets for CAPEC-34, but the narrative never names the peer relationship or the peer identifier. It is faithful and mostly grounded, but incomplete because the asked peer set is not stated.",
+ "judge": {
+  "model": "default-model",
+  "alias": "default-model",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

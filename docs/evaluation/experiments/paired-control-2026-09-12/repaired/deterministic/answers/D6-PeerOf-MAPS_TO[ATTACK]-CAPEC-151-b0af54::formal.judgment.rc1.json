@@ -1,0 +1,24 @@
+{
+ "case_id": "D6-PeerOf-MAPS_TO[ATTACK]-CAPEC-151-b0af54::formal",
+ "verdict": "CORRECT",
+ "correctness": 0.8,
+ "faithfulness": 0.9,
+ "groundedness": 0.8,
+ "completeness": 0.0,
+ "gold_expected": 3,
+ "gold_present": 0,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer abstains instead of asserting the expected ATT&CK techniques T1211, T1542.002, or T1556, and it shows the executed query returning CAPEC-151 with no linked records. This is an honest abstention rather than a fabricated cross-source mapping, but it states none of the three expected technique identifiers. The asserted absence of MAPS_TO links for CAPEC-151 is supported by the evidence.",
+ "judge": {
+  "model": "default-model",
+  "alias": "default-model",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

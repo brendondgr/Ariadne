@@ -1,0 +1,24 @@
+{
+ "case_id": "D5-uses-x_mitre_platforms-G0139-fa8fa1::indirect",
+ "verdict": "PARTIAL",
+ "correctness": 0.6,
+ "faithfulness": 1.0,
+ "groundedness": 1.0,
+ "completeness": 1.0,
+ "gold_expected": 2,
+ "gold_present": 2,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer states the expected container-related identifiers S0601 and S0683, but it does so by listing all four related software items, including S0349 and S0179, rather than explicitly identifying the subset that works against Containers. All stated identifiers are supported by the G0139 record, so faithfulness and groundedness are high. It is partial because it answers the related-software retrieval but not the container-specific filtering asked in the question.",
+ "judge": {
+  "model": "default-model",
+  "alias": "default-model",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

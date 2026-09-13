@@ -1,0 +1,27 @@
+{
+ "case_id": "D6-CanPrecede-MAPS_TO[ATTACK]-CAPEC-691-3d05ef::formal",
+ "verdict": "PARTIAL",
+ "correctness": 0.8,
+ "faithfulness": 0.75,
+ "groundedness": 0.85,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": false,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "CAPEC-691 has 3 CanPrecede successors: CAPEC-616, CAPEC-184, CAPEC-444",
+  "The capec source doesn't establish this / returned CAPEC-691 with no linked records for CAPEC-691 predecessors"
+ ],
+ "rationale": "The answer includes the expected ATT&CK technique T1036.005 via CAPEC-616 and also lists CAPEC-184 and CAPEC-444, so the gold set is present. It is less clean because it labels the CAPEC-691 neighbors as \"CanPrecede successors\" and includes CAPEC-691's own mappings T1195.001/T1195.002 rather than isolating the requested predecessor mappings. The abstention claiming no linked records is contradicted by the q1 evidence, reducing faithfulness.",
+ "judge": {
+  "model": "default-model",
+  "alias": "default-model",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

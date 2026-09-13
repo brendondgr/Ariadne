@@ -1,0 +1,24 @@
+{
+ "case_id": "D5-uses-x_mitre_platforms-C0046-803292::formal",
+ "verdict": "PARTIAL",
+ "correctness": 0.8,
+ "faithfulness": 0.9,
+ "groundedness": 0.9,
+ "completeness": 1.0,
+ "gold_expected": 21,
+ "gold_present": 21,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer states all 21 expected technique IDs for C0046, including T1014, T1059, T1070.004, and T1690, so completeness is full. However, it frames the result as 27 related items and includes non-technique software S1188/S1186 plus extra subtechniques such as T1583.006 and T1587.001, without explicitly asserting Windows applicability. The claims are grounded in the C0046 ATT&CK record and its related list, but the over-inclusion makes it partial rather than fully precise.",
+ "judge": {
+  "model": "default-model",
+  "alias": "default-model",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

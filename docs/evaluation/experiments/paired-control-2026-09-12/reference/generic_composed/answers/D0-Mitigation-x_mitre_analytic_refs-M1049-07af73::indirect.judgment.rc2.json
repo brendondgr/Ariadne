@@ -1,0 +1,24 @@
+{
+ "case_id": "D0-Mitigation-x_mitre_analytic_refs-M1049-07af73::indirect",
+ "verdict": "PARTIAL",
+ "correctness": 0.55,
+ "faithfulness": 0.85,
+ "groundedness": 0.8,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer correctly anchors M1049 and enumerates 122 related ATT&CK items, including analytics such as AN0784 and detections such as DET0281. However, it frames them as 'related' rather than specifically as detection analytics that implement M1049, and the gold expected neighbor set is empty. It is grounded in the M1049 record, but the non-abstaining, unfiltered enumeration makes it only a partial answer.",
+ "judge": {
+  "model": "default-model",
+  "alias": "default-model",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

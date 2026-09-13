@@ -1,0 +1,26 @@
+{
+ "case_id": "D3-uses-T1608.005-77b30b::indirect",
+ "verdict": "CORRECT",
+ "correctness": 0.9,
+ "faithfulness": 0.7,
+ "groundedness": 0.9,
+ "completeness": 1.0,
+ "gold_expected": 2,
+ "gold_present": 2,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "T1608.005 has no USES relationships in this catalogue"
+ ],
+ "rationale": "The answer correctly states both expected campaigns, C0059 and C0060, as using T1608.005, matching the executed Campaign-USES->Technique query and related records. The unsupported absence claim that T1608.005 has no USES relationships is the main faithfulness issue, since the evidence shows two USES rows involving T1608.005. No cross-source mapping is fabricated.",
+ "judge": {
+  "model": "default-model",
+  "alias": "default-model",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

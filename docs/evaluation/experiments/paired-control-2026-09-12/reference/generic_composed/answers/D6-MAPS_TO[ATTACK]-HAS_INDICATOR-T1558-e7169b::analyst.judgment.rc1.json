@@ -1,0 +1,28 @@
+{
+ "case_id": "D6-MAPS_TO[ATTACK]-HAS_INDICATOR-T1558-e7169b::analyst",
+ "verdict": "PARTIAL",
+ "correctness": 0.2,
+ "faithfulness": 0.8,
+ "groundedness": 0.6,
+ "completeness": 0.1667,
+ "gold_expected": 6,
+ "gold_present": 1,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "T1566",
+  "M1017",
+  "CAPEC-98"
+ ],
+ "rationale": "The answer abstains and shows a capec query, but it does not state the expected CAPEC-related indicators for T1558. It only repeats the anchor T1558 in the attack abstention, so it is partial rather than correct. The illustrative identifiers T1566, M1017, and CAPEC-98 are not supported by the evidence, though no cross-source mapping is asserted.",
+ "judge": {
+  "model": "default-model",
+  "alias": "default-model",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

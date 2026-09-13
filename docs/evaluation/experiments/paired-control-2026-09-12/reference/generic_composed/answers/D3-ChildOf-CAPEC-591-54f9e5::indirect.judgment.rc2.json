@@ -1,0 +1,26 @@
+{
+ "case_id": "D3-ChildOf-CAPEC-591-54f9e5::indirect",
+ "verdict": "PARTIAL",
+ "correctness": 0.8,
+ "faithfulness": 0.85,
+ "groundedness": 0.9,
+ "completeness": 1.0,
+ "gold_expected": 9,
+ "gold_present": 9,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "CAPEC-63 and CAPEC-242 are asserted as ChildOf parents of CAPEC-591, but the evidence only shows them as related via CHILD_OF without confirming parent direction"
+ ],
+ "rationale": "The answer includes all nine expected specific variants of CAPEC-591: CAPEC-18, CAPEC-198, CAPEC-199, CAPEC-243, CAPEC-244, CAPEC-245, CAPEC-247, CAPEC-32, and CAPEC-86. It also includes CAPEC-63 and CAPEC-242 and labels all eleven as ChildOf parents, which conflates generalizations with the requested more specific variants. The claims are grounded in the CAPEC-591 record and its related entries, but the parent/child role is not fully supported by the evidence.",
+ "judge": {
+  "model": "default-model",
+  "alias": "default-model",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

@@ -1,0 +1,27 @@
+{
+ "case_id": "D2-ChildOf-CAPEC-182-15f8e0::formal",
+ "verdict": "PARTIAL",
+ "correctness": 0.8,
+ "faithfulness": 0.8,
+ "groundedness": 0.9,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "CAPEC-182 has CAPEC-178 as a ChildOf parent",
+  "CAPEC-182 has CAPEC-174 as a ChildOf parent"
+ ],
+ "rationale": "The answer correctly states the expected related pattern CAPEC-137 for CAPEC-182, satisfying the core gold expectation. It also lists CAPEC-178 and CAPEC-174 as ChildOf parents; these identifiers appear in the related evidence, but the parent direction for both is not explicitly supported and they are not in the gold set. Therefore the answer is partial rather than fully correct.",
+ "judge": {
+  "model": "default-model",
+  "alias": "default-model",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

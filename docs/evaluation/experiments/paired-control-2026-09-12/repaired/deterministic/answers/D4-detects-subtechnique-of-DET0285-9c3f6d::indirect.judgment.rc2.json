@@ -1,0 +1,24 @@
+{
+ "case_id": "D4-detects-subtechnique-of-DET0285-9c3f6d::indirect",
+ "verdict": "PARTIAL",
+ "correctness": 0.2,
+ "faithfulness": 0.8,
+ "groundedness": 0.7,
+ "completeness": 0.0,
+ "gold_expected": 1,
+ "gold_present": 0,
+ "abstained": true,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer abstains by saying no records were returned, but it does not state the expected related identifier T1021; DET0285 appears only in diagnostic notes. The evidence shows a failed attack specialist with zero records, but the answer does not display the executed query, so it is an incomplete abstention rather than a correct negative. No cross-source mapping is fabricated.",
+ "judge": {
+  "model": "default-model",
+  "alias": "default-model",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

@@ -1,0 +1,24 @@
+{
+ "case_id": "D3-tactic_refs-TA0008-a2b65f::analyst",
+ "verdict": "PARTIAL",
+ "correctness": 0.4,
+ "faithfulness": 1.0,
+ "groundedness": 0.8,
+ "completeness": 0.5,
+ "gold_expected": 2,
+ "gold_present": 1,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer correctly identifies TA0008 as Lateral Movement and provides supported details from the attack record. However, it does not state the expected matrix/domain identifier enterprise-attack, even though the evidence includes x_mitre_domains: [\"enterprise-attack\"] and a HAS_TACTIC Matrix facet. It therefore partially answers the question by naming the tactic but omitting the requested matrix.",
+ "judge": {
+  "model": "default-model",
+  "alias": "default-model",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

@@ -1,0 +1,27 @@
+{
+ "case_id": "D6-MAPS_TO[ATTACK]-MAPS_TO[OWASP Attacks]-T1557.002-26aa05::indirect",
+ "verdict": "CORRECT",
+ "correctness": 0.9,
+ "faithfulness": 0.8,
+ "groundedness": 0.9,
+ "completeness": 1.0,
+ "gold_expected": 2,
+ "gold_present": 2,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "CAPEC-141 has 2 ATT&CK mappings",
+  "OWASP Attacks:Cache Poisoning is an ATT&CK mapping"
+ ],
+ "rationale": "The answer identifies CAPEC-141 as the CAPEC attack pattern associated with T1557.002 and includes the required OWASP Attacks:Cache Poisoning mapping. It is slightly unfaithful because it labels both T1557.002 and OWASP Attacks:Cache Poisoning as ATT&CK mappings, while the evidence shows one ATTACK entry and one OWASP Attacks entry. All expected identifiers are present, so completeness is full.",
+ "judge": {
+  "model": "default-model",
+  "alias": "default-model",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

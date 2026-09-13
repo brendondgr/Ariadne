@@ -1,0 +1,24 @@
+{
+ "case_id": "D4-CanFollow-HAS_PREREQUISITE-CAPEC-271-109948::indirect",
+ "verdict": "PARTIAL",
+ "correctness": 0.25,
+ "faithfulness": 1.0,
+ "groundedness": 0.9,
+ "completeness": 0.17,
+ "gold_expected": 6,
+ "gold_present": 1,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer correctly states CAPEC-271 and notes CAPEC-94 as a related attack pattern, but it does not state the five gold prerequisites for the preceding pattern (eavesdropping, identifying communication, lack of strong mutual authentication, clear/insufficient encryption, and two communicating components). It instead lists CAPEC-271's own prerequisites, so it only partially answers the question. All stated facts are supported by the CAPEC-271 record, but completeness is low because only CAPEC-271 from the expected identifiers is present.",
+ "judge": {
+  "model": "default-model",
+  "alias": "default-model",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

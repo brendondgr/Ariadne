@@ -1,0 +1,24 @@
+{
+ "case_id": "D5-HAS_MEMBER-Abstraction-CAPEC-703-c62fab::analyst",
+ "verdict": "PARTIAL",
+ "correctness": 0.6,
+ "faithfulness": 1.0,
+ "groundedness": 1.0,
+ "completeness": 1.0,
+ "gold_expected": 13,
+ "gold_present": 13,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer identifies the anchor view capec:view:703 and includes all 12 expected related CAPEC identifiers: CAPEC-158, CAPEC-163, CAPEC-177, CAPEC-191, CAPEC-457, CAPEC-552, CAPEC-57, CAPEC-648, CAPEC-649, CAPEC-65, CAPEC-692, and CAPEC-70. However, it lists all 46 members of the Industrial Control System Patterns view rather than explicitly selecting only the Detailed abstraction level, so it over-includes non-gold patterns such as CAPEC-309 and CAPEC-98. Its statements are well grounded in the cited capec:view:703 record, but the answer is only partially correct because it does not precisely answer the abstraction-level filter.",
+ "judge": {
+  "model": "default-model",
+  "alias": "default-model",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

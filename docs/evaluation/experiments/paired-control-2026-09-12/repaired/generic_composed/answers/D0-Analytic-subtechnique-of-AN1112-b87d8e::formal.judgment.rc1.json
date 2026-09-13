@@ -1,0 +1,27 @@
+{
+ "case_id": "D0-Analytic-subtechnique-of-AN1112-b87d8e::formal",
+ "verdict": "PARTIAL",
+ "correctness": 0.4,
+ "faithfulness": 0.6,
+ "groundedness": 0.75,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "AN1112 has no subtechniques",
+  "AN1112 has 1 sub-technique: T1555.001"
+ ],
+ "rationale": "The answer states the required anchor AN1112 and correctly cites related items DET0396 and T1555.001, but it does not directly answer which technique(s) AN1112 is a sub-technique of. The evidence shows T1555.001 as a DETECTS-related SubTechnique, not as a parent technique of AN1112, and the narrative is internally inconsistent by saying AN1112 has no subtechniques while also saying it has one.",
+ "judge": {
+  "model": "default-model",
+  "alias": "default-model",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

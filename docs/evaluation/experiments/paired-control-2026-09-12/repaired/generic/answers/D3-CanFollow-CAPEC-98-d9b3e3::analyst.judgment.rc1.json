@@ -1,0 +1,26 @@
+{
+ "case_id": "D3-CanFollow-CAPEC-98-d9b3e3::analyst",
+ "verdict": "CORRECT",
+ "correctness": 0.9,
+ "faithfulness": 0.9,
+ "groundedness": 0.95,
+ "completeness": 1.0,
+ "gold_expected": 2,
+ "gold_present": 2,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "CAPEC-98 has 2 CanFollow predecessors (directional predecessor relationship not explicitly stated in the evidence)"
+ ],
+ "rationale": "The answer states both expected related patterns, CAPEC-701 and CAPEC-186, in addition to the anchor CAPEC-98, so the expected set is complete. The claims are tied to the CAPEC-98 record and its CAN_FOLLOW related entries. The main weakness is the unsupported directional wording 'predecessors,' because the evidence only shows CAN_FOLLOW related patterns without explicit direction.",
+ "judge": {
+  "model": "default-model",
+  "alias": "default-model",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

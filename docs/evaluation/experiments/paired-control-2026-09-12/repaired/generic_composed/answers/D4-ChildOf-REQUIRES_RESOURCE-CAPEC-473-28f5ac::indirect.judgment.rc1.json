@@ -1,0 +1,24 @@
+{
+ "case_id": "D4-ChildOf-REQUIRES_RESOURCE-CAPEC-473-28f5ac::indirect",
+ "verdict": "PARTIAL",
+ "correctness": 0.8,
+ "faithfulness": 0.9,
+ "groundedness": 0.9,
+ "completeness": 1.0,
+ "gold_expected": 2,
+ "gold_present": 2,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer states the anchor CAPEC-473 and both required resource texts associated with CAPEC-459, so the expected gold resources are present. However, it lists all eight related attack patterns, including CAPEC-151, and presents the resources as belonging to CAPEC-473 rather than explicitly mapping the two certificate-collision resources to the more specific pattern CAPEC-459. This makes it mostly correct but not fully precise about per-pattern requirements. No unsupported cross-source mapping is asserted.",
+ "judge": {
+  "model": "default-model",
+  "alias": "default-model",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

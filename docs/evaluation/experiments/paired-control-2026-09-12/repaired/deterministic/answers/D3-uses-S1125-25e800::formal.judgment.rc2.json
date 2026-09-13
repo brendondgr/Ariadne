@@ -1,0 +1,26 @@
+{
+ "case_id": "D3-uses-S1125-25e800::formal",
+ "verdict": "PARTIAL",
+ "correctness": 0.7,
+ "faithfulness": 0.6,
+ "groundedness": 0.7,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "G0034 has no USES relationships in this catalogue"
+ ],
+ "rationale": "The answer does state the expected group G0034 and the queried software S1125, satisfying the core retrieval target. However, it also asserts that G0034 has no USES relationships, which is contradicted by the executed USES query returning G0034 related to S1125. This makes the answer partially correct but not fully faithful.",
+ "judge": {
+  "model": "default-model",
+  "alias": "default-model",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

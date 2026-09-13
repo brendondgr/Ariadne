@@ -1,0 +1,24 @@
+{
+ "case_id": "D3-PeerOf-CAPEC-34-8b04c9::indirect",
+ "verdict": "CORRECT",
+ "correctness": 1.0,
+ "faithfulness": 1.0,
+ "groundedness": 1.0,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer states that CAPEC-34 has PeerOf peers CAPEC-105 and CAPEC-34, and the evidence record for CAPEC-34 lists CAPEC-105 and CAPEC-34 as PEER_OF related items. It therefore includes the expected gold peer CAPEC-105 while also naming the anchor CAPEC-34, which is supported by the related list. No cross-source mapping or unsupported identifier is asserted.",
+ "judge": {
+  "model": "default-model",
+  "alias": "default-model",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

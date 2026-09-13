@@ -1,0 +1,24 @@
+{
+ "case_id": "D5-CanPrecede-Abstraction-CAPEC-600-1a0fa9::formal",
+ "verdict": "PARTIAL",
+ "correctness": 0.7,
+ "faithfulness": 0.9,
+ "groundedness": 0.9,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer includes the required gold neighbor CAPEC-653 and correctly states that CAPEC-600 has Abstraction: Standard. However, it lists all 11 CanPrecede successors, including CAPEC-50, CAPEC-101, CAPEC-565, and CAPEC-653, without explicitly filtering to Standard-level patterns, so it over-answers the requested subset. The listed identifiers are supported by the evidence, so faithfulness and groundedness remain high.",
+ "judge": {
+  "model": "default-model",
+  "alias": "default-model",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

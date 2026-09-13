@@ -1,0 +1,32 @@
+{
+ "case_id": "D5-uses-x_mitre_platforms-G0006-0eed87::analyst",
+ "verdict": "PARTIAL",
+ "correctness": 0.5,
+ "faithfulness": 0.4,
+ "groundedness": 0.5,
+ "completeness": 1.0,
+ "gold_expected": 12,
+ "gold_present": 12,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "T1049 explicitly indicates macOS applicability",
+  "T1135 explicitly indicates macOS applicability",
+  "T1007 explicitly indicates macOS applicability",
+  "T1087.001 explicitly indicates macOS applicability",
+  "T1560.001 explicitly indicates macOS applicability",
+  "T1016's description references ifconfig without explicitly naming macOS",
+  "The six listed techniques are the only related entries that explicitly name macOS or Mac"
+ ],
+ "rationale": "The answer retrieves G0006 and lists all 12 expected macOS-related identifiers, including T1005, T1007, T1016, T1036.005, T1049, T1057, T1087.001, T1119, T1135, T1560.001, T1566.001, and T1566.002, but its final macOS subset only names T1057, T1049, T1135, T1007, T1087.001, and T1560.001. It therefore omits T1005, T1016, T1036.005, T1119, T1566.001, and T1566.002 from the direct answer. Several macOS-applicability claims, especially for T1049, T1135, T1007, T1087.001, T1560.001, and the T1016 ifconfig detail, are not clearly supported by the evidence shown.",
+ "judge": {
+  "model": "default-model",
+  "alias": "default-model",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

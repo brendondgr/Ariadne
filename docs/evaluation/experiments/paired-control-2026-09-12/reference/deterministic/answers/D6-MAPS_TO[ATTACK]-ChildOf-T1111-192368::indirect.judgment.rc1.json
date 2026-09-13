@@ -1,0 +1,27 @@
+{
+ "case_id": "D6-MAPS_TO[ATTACK]-ChildOf-T1111-192368::indirect",
+ "verdict": "PARTIAL",
+ "correctness": 0.25,
+ "faithfulness": 0.6,
+ "groundedness": 0.6,
+ "completeness": 0.333,
+ "gold_expected": 3,
+ "gold_present": 1,
+ "abstained": true,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "The attack source doesn't establish this \u2014 it doesn't model the entities this question asks about",
+  "no query was executed for: For T1111: the CAPEC attack patterns that correspond to it"
+ ],
+ "rationale": "The answer mentions T1111 and lists non-gold CAPEC-651, CAPEC-158, and CAPEC-609 as T1111 mappings, but it never states the expected CAPEC-117 or CAPEC-157. It also does not identify a broader CAPEC parent for those expected patterns. The partial abstention is not fully supported by the shown records, so the answer is only partial.",
+ "judge": {
+  "model": "default-model",
+  "alias": "default-model",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

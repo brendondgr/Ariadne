@@ -1,0 +1,26 @@
+{
+ "case_id": "D5-uses-x_mitre_platforms-S0435-07fa38::formal",
+ "verdict": "PARTIAL",
+ "correctness": 0.8,
+ "faithfulness": 0.85,
+ "groundedness": 0.9,
+ "completeness": 1.0,
+ "gold_expected": 14,
+ "gold_present": 14,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "T1059.003 as a Linux-applicable technique"
+ ],
+ "rationale": "The answer lists all 14 expected PLEAD/S0435 technique identifiers, including T1001.001, T1010, T1057, T1070.004, T1071.001, T1083, T1090, T1105, T1106, T1204.001, T1204.002, T1555, T1555.003, and T1573.001. It is grounded in the S0435 record and its related techniques, but it does not explicitly state that the listed techniques apply to Linux. The extra T1059.003 is supported as related to S0435, but the evidence does not support it as Linux-applicable, so the answer is partial rather than fully correct.",
+ "judge": {
+  "model": "default-model",
+  "alias": "default-model",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

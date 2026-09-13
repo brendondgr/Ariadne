@@ -1,0 +1,26 @@
+{
+ "case_id": "D5-uses-x_mitre_platforms-G0006-0eed87::formal",
+ "verdict": "PARTIAL",
+ "correctness": 0.58,
+ "faithfulness": 0.7,
+ "groundedness": 0.8,
+ "completeness": 0.58,
+ "gold_expected": 12,
+ "gold_present": 7,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "T1057 has no USES relationships in this catalogue"
+ ],
+ "rationale": "The answer lists seven of the twelve expected macOS techniques\u2014T1005, T1007, T1016, T1049, T1057, T1119, and T1135\u2014but omits T1036.005, T1087.001, T1560.001, T1566.001, and T1566.002. It does not explicitly assert that the listed techniques apply to macOS, and its claim that T1057 has no USES relationships is not clearly supported because the executed query returns a USES relationship to T1057. This makes the answer partial rather than fully correct.",
+ "judge": {
+  "model": "default-model",
+  "alias": "default-model",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

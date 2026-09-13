@@ -1,0 +1,28 @@
+{
+ "case_id": "D0-Analytic-kill_chain_phase-AN0662-9c5459::formal",
+ "verdict": "CORRECT",
+ "correctness": 1.0,
+ "faithfulness": 0.9,
+ "groundedness": 0.9,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "T1566",
+  "M1017",
+  "CAPEC-98"
+ ],
+ "rationale": "The answer is an honest abstention: the attack query returned zero rows and the narrative states that AN0662 was not found, while still naming AN0662 as the queried identifier. It includes the executed Cypher query, so the abstention is grounded and no tactic mapping is fabricated. The only unsupported items are the example IDs T1566, M1017, and CAPEC-98, which slightly reduce faithfulness but do not affect the core answer.",
+ "judge": {
+  "model": "default-model",
+  "alias": "default-model",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

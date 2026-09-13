@@ -1,0 +1,27 @@
+{
+ "case_id": "D5-uses-x_mitre_platforms-G0139-fa8fa1::indirect",
+ "verdict": "CORRECT",
+ "correctness": 1.0,
+ "faithfulness": 0.9,
+ "groundedness": 0.85,
+ "completeness": 1.0,
+ "gold_expected": 2,
+ "gold_present": 2,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "T1685",
+  "T1059.013"
+ ],
+ "rationale": "The answer states the required anchor G0139 and both gold software neighbours S0601 (Hildegard) and S0683 (Peirates), directly answering which malware/tools work against Containers. It also lists additional technique IDs, including T1685 and T1059.013, which are not explicitly present in the visible related records, so minor faithfulness and groundedness deductions apply. The core requested set is complete and not fabricated.",
+ "judge": {
+  "model": "default-model",
+  "alias": "default-model",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

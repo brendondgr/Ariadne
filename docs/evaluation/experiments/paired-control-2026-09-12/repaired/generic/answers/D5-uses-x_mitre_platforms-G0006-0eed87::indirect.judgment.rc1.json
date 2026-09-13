@@ -1,0 +1,24 @@
+{
+ "case_id": "D5-uses-x_mitre_platforms-G0006-0eed87::indirect",
+ "verdict": "CORRECT",
+ "correctness": 1.0,
+ "faithfulness": 1.0,
+ "groundedness": 0.9,
+ "completeness": 1.0,
+ "gold_expected": 12,
+ "gold_present": 12,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer directly answers the macOS-filtered technique question for G0006 and states all 12 expected technique identifiers: T1005, T1007, T1016, T1036.005, T1049, T1057, T1087.001, T1119, T1135, T1560.001, T1566.001, and T1566.002. The evidence record for G0006 contains these 12 related USES techniques, and the query shows the macOS platform filter. Groundedness is slightly below perfect because the claims cite the G0006 record rather than each individual technique record, but the related list in that record supports the enumeration.",
+ "judge": {
+  "model": "default-model",
+  "alias": "default-model",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

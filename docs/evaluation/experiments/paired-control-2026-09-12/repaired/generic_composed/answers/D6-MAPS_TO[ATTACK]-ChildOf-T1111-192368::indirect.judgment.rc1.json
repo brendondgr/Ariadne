@@ -1,0 +1,29 @@
+{
+ "case_id": "D6-MAPS_TO[ATTACK]-ChildOf-T1111-192368::indirect",
+ "verdict": "PARTIAL",
+ "correctness": 0.8,
+ "faithfulness": 0.7,
+ "groundedness": 0.9,
+ "completeness": 1.0,
+ "gold_expected": 2,
+ "gold_present": 2,
+ "abstained": false,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "CAPEC-651 is a more specific case of CAPEC-508",
+  "CAPEC-651 is a more specific case of CAPEC-634",
+  "CAPEC-651 is a more specific case of CAPEC-699",
+  "The capec source has no linked records for the broader-pattern subquestion"
+ ],
+ "rationale": "The answer correctly identifies T1111's corresponding CAPEC patterns CAPEC-158, CAPEC-609, and CAPEC-651 and includes the expected broader patterns CAPEC-117 and CAPEC-157. It over-asserts that CAPEC-651 is a child of CAPEC-508, CAPEC-634, and CAPEC-699, which the evidence only shows as CHILD_OF-related and which are likely more specific eavesdropping variants. The contradictory abstention also claims no linked records despite the q2 related entries. Thus it is partial: complete on gold identifiers but not fully faithful.",
+ "judge": {
+  "model": "default-model",
+  "alias": "default-model",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

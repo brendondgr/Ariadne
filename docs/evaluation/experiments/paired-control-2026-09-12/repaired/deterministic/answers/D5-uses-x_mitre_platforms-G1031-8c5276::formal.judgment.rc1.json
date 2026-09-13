@@ -1,0 +1,26 @@
+{
+ "case_id": "D5-uses-x_mitre_platforms-G1031-8c5276::formal",
+ "verdict": "PARTIAL",
+ "correctness": 0.55,
+ "faithfulness": 0.7,
+ "groundedness": 0.7,
+ "completeness": 1.0,
+ "gold_expected": 2,
+ "gold_present": 2,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "T1203 has no USES relationships in this catalogue"
+ ],
+ "rationale": "The answer includes the expected techniques T1059 and T1685, but it reports five techniques (T1203, T1685, T1497, T1059, T1112) and does not explicitly identify which ones apply to Containers or name G1031. The absence claim about T1203 is not directly supported by the shown records. Therefore it is partial: complete on the gold technique identifiers but imprecise in answering the asked filter.",
+ "judge": {
+  "model": "default-model",
+  "alias": "default-model",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

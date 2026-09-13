@@ -1,0 +1,26 @@
+{
+ "case_id": "D6-MAPS_TO[ATTACK]-REQUIRES_RESOURCE-T1599-5d82f5::indirect",
+ "verdict": "CORRECT",
+ "correctness": 0.9,
+ "faithfulness": 0.8,
+ "groundedness": 0.9,
+ "completeness": 1.0,
+ "gold_expected": 2,
+ "gold_present": 2,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "The capec source doesn't establish this \u2014 the executed query ran cleanly and returned CAPEC-700 with no linked records for: For each of those: the resources each of those requires."
+ ],
+ "rationale": "The answer correctly identifies CAPEC-700 as the CAPEC attack pattern mapped to T1599 and states the required resource text, which satisfies the two-hop question. It also correctly notes T1599.001 as a related ATT&CK sub-technique, though that was not required. The main weakness is the contradictory abstention claiming the CAPEC source has no linked resource records, even though the evidence shows CAPEC-700 has a REQUIRES_RESOURCE record with the expected text.",
+ "judge": {
+  "model": "default-model",
+  "alias": "default-model",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

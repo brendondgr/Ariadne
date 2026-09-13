@@ -1,0 +1,24 @@
+{
+ "case_id": "D4-uses-uses-C0023-47ddc0::indirect",
+ "verdict": "PARTIAL",
+ "correctness": 0.2,
+ "faithfulness": 0.8,
+ "groundedness": 0.7,
+ "completeness": 0.0,
+ "gold_expected": 34,
+ "gold_present": 0,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer abstains after showing a Campaign-USES-Technique query for C0023 that returned zero rows, but the question asks for malware/tooling and the techniques used by each, so it states only the anchor C0023 and none of the expected technique IDs such as T1005, T1059.001, or T1573.001. It is an honest, query-backed abstention rather than a fabricated mapping, but it misses all 34 expected technique identifiers.",
+ "judge": {
+  "model": "default-model",
+  "alias": "default-model",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

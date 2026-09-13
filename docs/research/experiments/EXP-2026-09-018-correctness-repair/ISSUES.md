@@ -730,3 +730,55 @@ reference side and the repaired side saw different data, which is the one thing
 a paired control exists to prevent. It is a decision for the operator: fix it
 before Step 3 and reload both stores so both sides see it, or ship the close-out
 with it recorded and measure it separately afterwards.
+
+## I-18 — A CAPEC mapping to OWASP or WASC was stated as an ATT&CK mapping (RESOLVED 2026-09-13)
+
+**Found by the paired control's kill gate, which is what that gate is for.**
+
+The Step 3 control read `fabricated_mapping` 1 → 3 and so FAILED its
+pre-registered gate. Taking the three apart:
+
+* two are the same template-arm case counted in both grading positions
+  (`D6-MAPS_TO[ATTACK]-MAPS_TO[WASC]-T1110`, the `deterministic` control arm);
+* the third is on the LLM arm, and is the **same answer graded twice** —
+  position 1 records `fabricated_mapping: false` at correctness 1.0, position 2
+  records `true` at 0.9. Three of its four flagged items
+  (`CAPEC-648 -> T1513`, `CAPEC-268 -> T1562.002/003/008`) were checked against
+  the evidence and are all **retrieved**: they are the `gold_omits_identifier`
+  class, not inventions.
+
+The fourth was real:
+
+> `CAPEC-126 (Path Traversal) has 2 ATT&CK mappings: OWASP Attacks:Path
+> Traversal; WASC:33.`
+
+Neither is an ATT&CK mapping. `_REL_NOUNS["MAPS_TO"]` was hard-coded to "ATT&CK
+mapping", and `_NOUN_EXPECTS` — which exists to stop a noun asserting a kind the
+neighbours are not — could not see it, because it checks the neighbour's
+**label** and ATT&CK, OWASP and WASC entries all arrive as `TaxonomyEntry`. The
+distinguishing field is `taxonomy_name`, which every entry carries
+(ATTACK 159, OWASP Attacks 20, WASC 16 on one capture).
+
+**Why it matters more than its size.** Nine answers per arm is small; stating a
+cross-catalogue mapping that does not exist is not, because federated
+cross-catalogue routing is the capability this system is claimed for. On
+`CAPEC-126` *neither* of the two listed mappings is ATT&CK, so the sentence is
+false outright rather than imprecise.
+
+**Resolution.** The noun is taken from the data: ATT&CK only when every entry
+says `ATTACK`, the catalogue's own name when they all agree on another, and
+"catalogue mapping" when they are mixed or when any entry does not say. One-way,
+like every other noun guard here — an unknown taxonomy can never earn the ATT&CK
+noun.
+
+**Verification.** Answers calling a non-ATT&CK entry an ATT&CK mapping: **9 → 0**
+on the development half. Gold-text recall unmoved at 0.9791 with zero questions
+regressing; absence contradictions still 0. Four unit tests cover the mixed,
+single-non-ATT&CK, all-ATT&CK and unknown-taxonomy cases.
+
+**Cost to the schedule, recorded because it was a judgement call.** The fix
+changes the tree the Step 3 control measured, so the control's repaired side is
+being re-run against it. The reference side is not: it is a different commit,
+unaffected, and its re-run had already reproduced the committed Step 6 reference
+to within 0.0016 (0.7195 against 0.71875) — which is also the best evidence yet
+that the between-session grader drift `Q46` records is not moving these figures.

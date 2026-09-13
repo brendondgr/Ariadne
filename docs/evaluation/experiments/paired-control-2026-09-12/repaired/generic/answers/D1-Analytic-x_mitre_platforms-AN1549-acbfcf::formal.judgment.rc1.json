@@ -1,0 +1,24 @@
+{
+ "case_id": "D1-Analytic-x_mitre_platforms-AN1549-acbfcf::formal",
+ "verdict": "CORRECT",
+ "correctness": 0.8,
+ "faithfulness": 1.0,
+ "groundedness": 0.8,
+ "completeness": 0.5,
+ "gold_expected": 2,
+ "gold_present": 1,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer abstains and includes the executed query, and the evidence shows that the attack query returned no records, so the abstention is honest and not a fabricated mapping. It mentions AN1549 but does not state the expected platform Linux, so completeness is partial. Because the retrieved evidence contains no records, the answer is better treated as a supported abstention than as a missed answer.",
+ "judge": {
+  "model": "default-model",
+  "alias": "default-model",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

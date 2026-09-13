@@ -1,0 +1,27 @@
+{
+ "case_id": "D6-MAPS_TO[ATTACK]-MAPS_TO[OWASP Attacks]-T1110-6a5f44::indirect",
+ "verdict": "PARTIAL",
+ "correctness": 0.3,
+ "faithfulness": 0.6,
+ "groundedness": 0.6,
+ "completeness": 0.5,
+ "gold_expected": 2,
+ "gold_present": 1,
+ "abstained": true,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "The attack source doesn't establish this",
+  "no query was executed for: For T1110: the CAPEC attack patterns that correspond to it"
+ ],
+ "rationale": "The answer mentions T1110 and lists relevant CAPEC records such as CAPEC-112 with capec:taxonomy:ATTACK:1110, but it never states the expected OWASP Attacks:Brute force attack mapping. It also asserts that the attack source does not establish the T1110-to-CAPEC relation and that no query was executed, which is an abstention but not fully supported by the shown evidence. Therefore it is partial: it identifies some relevant CAPEC/ATT&CK links but omits the requested OWASP target.",
+ "judge": {
+  "model": "default-model",
+  "alias": "default-model",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

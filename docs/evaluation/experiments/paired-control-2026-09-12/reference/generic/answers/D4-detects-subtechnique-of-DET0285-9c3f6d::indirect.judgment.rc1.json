@@ -1,0 +1,26 @@
+{
+ "case_id": "D4-detects-subtechnique-of-DET0285-9c3f6d::indirect",
+ "verdict": "CORRECT",
+ "correctness": 0.95,
+ "faithfulness": 0.85,
+ "groundedness": 0.8,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "T1021 is named Remote Access"
+ ],
+ "rationale": "The answer correctly identifies DET0285 as detecting T1021.003 and supplies the expected parent technique T1021. The detected subtechnique is directly supported by the DET0285 record's related T1021.003 entry. The parent T1021 is inferable from the T1021.003 identifier, but the name Remote Access is not present in the shown evidence.",
+ "judge": {
+  "model": "default-model",
+  "alias": "default-model",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

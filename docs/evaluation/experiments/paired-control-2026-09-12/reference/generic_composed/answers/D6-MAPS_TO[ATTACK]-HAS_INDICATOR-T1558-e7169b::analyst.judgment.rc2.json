@@ -1,0 +1,28 @@
+{
+ "case_id": "D6-MAPS_TO[ATTACK]-HAS_INDICATOR-T1558-e7169b::analyst",
+ "verdict": "CORRECT",
+ "correctness": 0.7,
+ "faithfulness": 0.9,
+ "groundedness": 0.8,
+ "completeness": 0.17,
+ "gold_expected": 6,
+ "gold_present": 1,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "T1566",
+  "M1017",
+  "CAPEC-98"
+ ],
+ "rationale": "The answer abstains rather than asserting a T1558-to-CAPEC mapping, and the CAPEC abstention shows an executed query that returned no records. It states T1558 but none of the five expected indicator strings, so completeness is low. The only unsupported identifiers are the illustrative T1566, M1017, and CAPEC-98.",
+ "judge": {
+  "model": "default-model",
+  "alias": "default-model",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

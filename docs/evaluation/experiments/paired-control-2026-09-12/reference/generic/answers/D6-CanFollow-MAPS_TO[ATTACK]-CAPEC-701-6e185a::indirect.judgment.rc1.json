@@ -1,0 +1,26 @@
+{
+ "case_id": "D6-CanFollow-MAPS_TO[ATTACK]-CAPEC-701-6e185a::indirect",
+ "verdict": "PARTIAL",
+ "correctness": 0.35,
+ "faithfulness": 0.9,
+ "groundedness": 0.95,
+ "completeness": 0.333,
+ "gold_expected": 3,
+ "gold_present": 1,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "Headline says 1 question(s) the sources don't establish, but two abstentions are listed."
+ ],
+ "rationale": "The answer correctly identifies and grounds CAPEC-701, but it does not state the expected related ATT&CK techniques T1566 or T1598. It abstains with a shown query for the predecessor-pattern subquestion, so it is not a fabricated mapping, but it only partially answers the requested two-hop question.",
+ "judge": {
+  "model": "default-model",
+  "alias": "default-model",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

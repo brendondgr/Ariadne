@@ -1,0 +1,29 @@
+{
+ "case_id": "D5-uses-x_mitre_platforms-S1245-8027f0::formal",
+ "verdict": "PARTIAL",
+ "correctness": 0.8,
+ "faithfulness": 0.7,
+ "groundedness": 0.75,
+ "completeness": 1.0,
+ "gold_expected": 33,
+ "gold_present": 33,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "S1245 has 15 used techniques",
+  "S1245 has 20 used techniques",
+  "T1547.013 applies to Windows",
+  "T1543.001 applies to Windows"
+ ],
+ "rationale": "The answer states S1245 and all 33 expected Windows-related technique IDs, including T1005, T1048.003, and T1679, so completeness is full. However, it lists 35 techniques and does not explicitly filter to Windows, including non-Windows T1547.013 and T1543.001, and its 15/20 split is not supported by the single S1245 record.",
+ "judge": {
+  "model": "default-model",
+  "alias": "default-model",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

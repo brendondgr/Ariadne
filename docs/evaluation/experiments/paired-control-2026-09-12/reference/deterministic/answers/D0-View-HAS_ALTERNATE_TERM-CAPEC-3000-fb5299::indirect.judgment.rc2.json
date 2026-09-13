@@ -1,0 +1,24 @@
+{
+ "case_id": "D0-View-HAS_ALTERNATE_TERM-CAPEC-3000-fb5299::indirect",
+ "verdict": "PARTIAL",
+ "correctness": 0.4,
+ "faithfulness": 1.0,
+ "groundedness": 1.0,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer correctly identifies the anchor record capec:view:3000, corresponding to CAPEC-3000, and its statements are supported by the cited CAPEC record. However, it does not directly answer the question about other names, instead describing the record's status, type, members, and objective. Because the expected identifier CAPEC-3000 is present, completeness is high, but the lack of an explicit alternate-name answer makes it only partially correct.",
+ "judge": {
+  "model": "default-model",
+  "alias": "default-model",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

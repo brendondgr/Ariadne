@@ -1,0 +1,24 @@
+{
+ "case_id": "D4-uses-uses-C0023-47ddc0::indirect",
+ "verdict": "PARTIAL",
+ "correctness": 0.2,
+ "faithfulness": 0.8,
+ "groundedness": 0.8,
+ "completeness": 0.0,
+ "gold_expected": 34,
+ "gold_present": 0,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer honestly abstains for C0023 and shows the executed query, which returned zero rows, so it is faithful and not fabricated. However, it states none of the 34 expected technique identifiers, such as T1005 and T1573.001, and it does not name any malware or tool entities. The shown query also omits Software, so the abstention is only partially aligned with the question.",
+ "judge": {
+  "model": "default-model",
+  "alias": "default-model",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

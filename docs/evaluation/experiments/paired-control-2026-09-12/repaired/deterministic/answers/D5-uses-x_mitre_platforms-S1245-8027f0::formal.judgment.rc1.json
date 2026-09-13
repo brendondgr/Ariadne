@@ -1,0 +1,28 @@
+{
+ "case_id": "D5-uses-x_mitre_platforms-S1245-8027f0::formal",
+ "verdict": "PARTIAL",
+ "correctness": 0.8,
+ "faithfulness": 0.8,
+ "groundedness": 0.85,
+ "completeness": 1.0,
+ "gold_expected": 33,
+ "gold_present": 33,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "S1245 has no USES relationships in this catalogue",
+  "T1547.013 applies to Windows",
+  "T1543.001 applies to Windows"
+ ],
+ "rationale": "The answer states all 33 expected Windows-related technique identifiers, including T1005, T1048.003, and T1679, so completeness is full. However, it also includes non-Windows related techniques T1547.013 and T1543.001 in the answer set and asserts that S1245 has no USES relationships despite the USES query returning 35 rows. These issues make it partial rather than fully correct.",
+ "judge": {
+  "model": "default-model",
+  "alias": "default-model",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

@@ -1,0 +1,24 @@
+{
+ "case_id": "D4-PeerOf-HAS_EXAMPLE-CAPEC-34-68e5d3::formal",
+ "verdict": "PARTIAL",
+ "correctness": 0.3,
+ "faithfulness": 0.9,
+ "groundedness": 0.9,
+ "completeness": 0.5,
+ "gold_expected": 2,
+ "gold_present": 1,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer states CAPEC-34 and its peer CAPEC-105, and it names capec:attack-pattern:34:example:1 as an example instance. However, the expected gold example text about Microsoft Internet Explorer HTTP request splitting/smuggling is not stated, and the named example is tied to CAPEC-34 rather than the peer pattern. Thus the response is grounded and mostly faithful but incomplete.",
+ "judge": {
+  "model": "default-model",
+  "alias": "default-model",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

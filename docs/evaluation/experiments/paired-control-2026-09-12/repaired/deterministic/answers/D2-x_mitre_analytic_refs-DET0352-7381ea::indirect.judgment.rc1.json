@@ -1,0 +1,24 @@
+{
+ "case_id": "D2-x_mitre_analytic_refs-DET0352-7381ea::indirect",
+ "verdict": "INCORRECT",
+ "correctness": 0.2,
+ "faithfulness": 1.0,
+ "groundedness": 1.0,
+ "completeness": 0.0,
+ "gold_expected": 1,
+ "gold_present": 0,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer only reports the anchor DET0352 and its properties; it does not state the expected analytic AN1000. Although the evidence facet shows one HAS_ANALYTIC neighbor, the answer text never names a detection analytic, so it does not answer the question. Its statements are faithful and grounded in the DET0352 record, but completeness is zero for the expected AN1000 identifier.",
+ "judge": {
+  "model": "default-model",
+  "alias": "default-model",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

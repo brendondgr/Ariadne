@@ -1,0 +1,28 @@
+{
+ "case_id": "D0-View-HAS_CONSEQUENCE-CAPEC-284-d81b5a::analyst",
+ "verdict": "CORRECT",
+ "correctness": 1.0,
+ "faithfulness": 0.85,
+ "groundedness": 0.85,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "T1566",
+  "M1017",
+  "CAPEC-98"
+ ],
+ "rationale": "The answer is an honest abstention for CAPEC-284 and includes the executed HAS_CONSEQUENCE query that returned zero rows, matching the evidence. It states the only expected identifier, CAPEC-284, and does not assert any consequence neighbors, so completeness is full. The minor unsupported items are the example identifiers T1566, M1017, and CAPEC-98 in the narrative, which are not present in the evidence but do not create a fabricated mapping.",
+ "judge": {
+  "model": "default-model",
+  "alias": "default-model",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

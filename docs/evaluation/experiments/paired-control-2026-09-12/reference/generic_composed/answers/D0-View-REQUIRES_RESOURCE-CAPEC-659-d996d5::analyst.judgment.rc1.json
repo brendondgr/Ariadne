@@ -1,0 +1,28 @@
+{
+ "case_id": "D0-View-REQUIRES_RESOURCE-CAPEC-659-d996d5::analyst",
+ "verdict": "CORRECT",
+ "correctness": 1.0,
+ "faithfulness": 0.9,
+ "groundedness": 0.9,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "T1566",
+  "M1017",
+  "CAPEC-98"
+ ],
+ "rationale": "The executed CAPEC query for CAPEC-659 returned zero rows, and the abstention explicitly shows that query, so the no-mapping answer is honest. The only expected gold identifier, CAPEC-659, is stated, and no related resource identifiers were expected. The narrative's example IDs T1566, M1017, and CAPEC-98 are not in the evidence but are illustrative rather than core claims.",
+ "judge": {
+  "model": "default-model",
+  "alias": "default-model",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

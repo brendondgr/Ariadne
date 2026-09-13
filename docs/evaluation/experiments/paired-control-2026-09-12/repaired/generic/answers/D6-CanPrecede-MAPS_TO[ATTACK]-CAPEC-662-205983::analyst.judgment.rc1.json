@@ -1,0 +1,28 @@
+{
+ "case_id": "D6-CanPrecede-MAPS_TO[ATTACK]-CAPEC-662-205983::analyst",
+ "verdict": "PARTIAL",
+ "correctness": 0.75,
+ "faithfulness": 0.7,
+ "groundedness": 0.8,
+ "completeness": 1.0,
+ "gold_expected": 2,
+ "gold_present": 2,
+ "abstained": false,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "CAPEC-662 has 4 CanPrecede successors (direction not established by the shown CAN_PRECEDE neighbors)",
+  "CAPEC-662 has 2 ATT&CK mappings including OWASP Attacks:Man-in-the-browser attack (evidence shows one ATTACK mapping T1185 and one OWASP mapping)",
+  "The capec source doesn't establish this ... no linked records (q1 returned 4 related CAPEC records)"
+ ],
+ "rationale": "The answer includes CAPEC-662 and the expected ATT&CK techniques T1027 and T1587.001, tying them to CAPEC-542, so the gold set is fully present. It also lists CAPEC-185, CAPEC-542, CAPEC-159, and CAPEC-475, but calls them 'successors' rather than patterns that can precede CAPEC-662, and it mislabels CAPEC-662's mappings as two ATT&CK entries while including an OWASP entry. The cross-source correlations for T1027 and T1587.001 are supported by the CAPEC-to-ATT&CK mappings, so no fabricated mapping is present.",
+ "judge": {
+  "model": "default-model",
+  "alias": "default-model",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

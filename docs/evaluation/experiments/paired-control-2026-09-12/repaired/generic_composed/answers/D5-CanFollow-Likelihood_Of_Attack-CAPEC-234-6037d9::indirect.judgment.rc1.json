@@ -1,0 +1,26 @@
+{
+ "case_id": "D5-CanFollow-Likelihood_Of_Attack-CAPEC-234-6037d9::indirect",
+ "verdict": "CORRECT",
+ "correctness": 1.0,
+ "faithfulness": 0.9,
+ "groundedness": 1.0,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "The answer labels CAPEC-175 as a predecessor, but the evidence only shows a CAN_FOLLOW relation without explicit direction."
+ ],
+ "rationale": "The answer correctly identifies CAPEC-234 and states that the Medium-likelihood related pattern is CAPEC-175, which matches the expected gold neighbor. The evidence supports CAPEC-175 as a CAN_FOLLOW-related record with Likelihood_Of_Attack Medium. The only minor unsupported detail is the explicit predecessor direction, so faithfulness is slightly reduced.",
+ "judge": {
+  "model": "default-model",
+  "alias": "default-model",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

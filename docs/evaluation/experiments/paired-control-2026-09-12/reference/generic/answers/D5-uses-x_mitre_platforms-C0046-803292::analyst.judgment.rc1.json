@@ -1,0 +1,27 @@
+{
+ "case_id": "D5-uses-x_mitre_platforms-C0046-803292::analyst",
+ "verdict": "PARTIAL",
+ "correctness": 0.8,
+ "faithfulness": 0.65,
+ "groundedness": 0.5,
+ "completeness": 1.0,
+ "gold_expected": 21,
+ "gold_present": 21,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "The 25 technique/subtechnique items are asserted to apply to Windows without explicit platform evidence in the shown records",
+  "T1583.006, T1583.003, T1587.001, and T1587.003 are included as Windows-applicable despite not being in the expected Windows set"
+ ],
+ "rationale": "The answer states all 21 expected Windows-related technique identifiers for C0046, including T1014, T1055, T1070.004, and T1690, so completeness is full. It also includes T1583.006, T1583.003, T1587.001, and T1587.003 as Windows-applicable, but the shown records do not provide explicit platform evidence for those or most of the list. Therefore the answer is partial: it retrieves and states the expected set but over-asserts Windows applicability.",
+ "judge": {
+  "model": "default-model",
+  "alias": "default-model",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

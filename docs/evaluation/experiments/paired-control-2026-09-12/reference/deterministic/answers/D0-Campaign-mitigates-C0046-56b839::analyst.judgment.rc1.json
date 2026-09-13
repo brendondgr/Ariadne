@@ -1,0 +1,26 @@
+{
+ "case_id": "D0-Campaign-mitigates-C0046-56b839::analyst",
+ "verdict": "PARTIAL",
+ "correctness": 0.3,
+ "faithfulness": 0.8,
+ "groundedness": 0.9,
+ "completeness": 0.0,
+ "gold_expected": 1,
+ "gold_present": 0,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "C0046 mitigates the 18 listed techniques"
+ ],
+ "rationale": "The answer enumerates 18 technique IDs such as T1556, T1653, and T1037, all of which are present in the cited ATT&CK records. However, it never states the required anchor C0046, and the executed query used Campaign-[:USES]->Technique rather than an explicit MITIGATES edge. Thus it is grounded and on-topic but incomplete relative to the expected C0046 identifier.",
+ "judge": {
+  "model": "default-model",
+  "alias": "default-model",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

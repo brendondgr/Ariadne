@@ -1,0 +1,26 @@
+{
+ "case_id": "D6-PeerOf-MAPS_TO[ATTACK]-CAPEC-151-b0af54::formal",
+ "verdict": "CORRECT",
+ "correctness": 1.0,
+ "faithfulness": 0.8,
+ "groundedness": 0.9,
+ "completeness": 1.0,
+ "gold_expected": 3,
+ "gold_present": 3,
+ "abstained": false,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "The capec source doesn't establish this \u2014 the executed query ran cleanly and returned CAPEC-151 with no linked records for peers"
+ ],
+ "rationale": "The answer correctly identifies CAPEC-151's peer CAPEC-665 and the corresponding ATT&CK techniques T1211, T1542.002, and T1556, which matches the expected gold set. These claims are grounded in the CAPEC-665 MAPS_TO records and the retrieved ATT&CK records. The main weakness is a contradictory abstention claiming CAPEC-151 had no linked peer records, even though the evidence shows CAPEC-665 as a PEER_OF record.",
+ "judge": {
+  "model": "default-model",
+  "alias": "default-model",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

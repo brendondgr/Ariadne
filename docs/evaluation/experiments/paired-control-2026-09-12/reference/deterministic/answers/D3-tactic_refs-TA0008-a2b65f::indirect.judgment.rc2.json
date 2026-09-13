@@ -1,0 +1,24 @@
+{
+ "case_id": "D3-tactic_refs-TA0008-a2b65f::indirect",
+ "verdict": "PARTIAL",
+ "correctness": 0.2,
+ "faithfulness": 1.0,
+ "groundedness": 1.0,
+ "completeness": 0.0,
+ "gold_expected": 1,
+ "gold_present": 0,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer correctly retrieves and describes TA0008 (Lateral Movement), but it never states the expected matrix/domain enterprise-attack. The evidence contains x_mitre_domains: [\"enterprise-attack\"] and a HAS_TACTIC Matrix facet, yet the narrative and claims omit that identifier. No unsupported cross-source mapping is asserted, so the main failure is omission rather than fabrication.",
+ "judge": {
+  "model": "default-model",
+  "alias": "default-model",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

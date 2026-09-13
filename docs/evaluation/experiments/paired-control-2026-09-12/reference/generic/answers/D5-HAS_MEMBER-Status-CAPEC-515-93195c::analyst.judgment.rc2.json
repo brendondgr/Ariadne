@@ -1,0 +1,28 @@
+{
+ "case_id": "D5-HAS_MEMBER-Status-CAPEC-515-93195c::analyst",
+ "verdict": "CORRECT",
+ "correctness": 0.75,
+ "faithfulness": 0.85,
+ "groundedness": 0.8,
+ "completeness": 0.08,
+ "gold_expected": 12,
+ "gold_present": 1,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "T1566",
+  "M1017",
+  "CAPEC-98"
+ ],
+ "rationale": "The answer abstains and shows the executed CAPEC query for CAPEC-515, and the evidence shows row_count 0, so the no-records claim is faithful. It does not state any of the expected related CAPEC-113, CAPEC-114, CAPEC-122, CAPEC-124, CAPEC-161, CAPEC-176, CAPEC-233, CAPEC-438, CAPEC-439, CAPEC-548, or CAPEC-607, so completeness is low. The only gold identifier stated is CAPEC-515 in the abstention statement, while T1566, M1017, and CAPEC-98 are unsupported examples.",
+ "judge": {
+  "model": "default-model",
+  "alias": "default-model",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

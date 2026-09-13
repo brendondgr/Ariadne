@@ -1,0 +1,26 @@
+{
+ "case_id": "D2-MAPS_TO[WASC]-CAPEC-126-d48ec7::indirect",
+ "verdict": "CORRECT",
+ "correctness": 0.9,
+ "faithfulness": 0.85,
+ "groundedness": 0.85,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "CAPEC-126 has 2 ATT&CK mappings"
+ ],
+ "rationale": "The answer states the expected WASC mapping WASC:33 for CAPEC-126, satisfying the question. It also mentions OWASP Attacks:Path Traversal, which is supported as a MAPS_TO related entry, but labels both as ATT&CK mappings, a term not present in the evidence. The core mapping is grounded in the CAPEC-126 record and its related entries.",
+ "judge": {
+  "model": "default-model",
+  "alias": "default-model",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

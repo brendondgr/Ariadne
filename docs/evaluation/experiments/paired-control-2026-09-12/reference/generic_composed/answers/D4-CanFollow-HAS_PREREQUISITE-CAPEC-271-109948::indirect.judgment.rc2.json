@@ -1,0 +1,24 @@
+{
+ "case_id": "D4-CanFollow-HAS_PREREQUISITE-CAPEC-271-109948::indirect",
+ "verdict": "PARTIAL",
+ "correctness": 0.25,
+ "faithfulness": 1.0,
+ "groundedness": 0.95,
+ "completeness": 0.17,
+ "gold_expected": 6,
+ "gold_present": 1,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer correctly identifies CAPEC-271 and notes CAPEC-94 as a related item, but it does not state the five expected prerequisites for the predecessor pattern. It instead lists CAPEC-271's own prerequisites, capec:attack-pattern:271:prerequisite:1 and capec:attack-pattern:271:prerequisite:2, rather than the required CAPEC-94 prerequisite texts. All stated claims are supported by the CAPEC-271 record, so faithfulness is high but completeness is low.",
+ "judge": {
+  "model": "default-model",
+  "alias": "default-model",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

@@ -1,0 +1,24 @@
+{
+ "case_id": "D5-HAS_MEMBER-Abstraction-CAPEC-703-59080d::indirect",
+ "verdict": "PARTIAL",
+ "correctness": 0.4,
+ "faithfulness": 1.0,
+ "groundedness": 0.85,
+ "completeness": 1.0,
+ "gold_expected": 15,
+ "gold_present": 15,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer correctly retrieves CAPEC-703 and enumerates all 46 member attack patterns, including the expected Meta-level IDs such as CAPEC-438, CAPEC-560, CAPEC-607, CAPEC-690, and CAPEC-94. However, it does not filter or state which of those members have Abstraction: Meta, so it only partially answers the question. All expected identifiers are present, but the non-Meta members are also listed without distinction.",
+ "judge": {
+  "model": "default-model",
+  "alias": "default-model",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

@@ -1,0 +1,24 @@
+{
+ "case_id": "D4-PeerOf-MAPS_TO[WASC]-CAPEC-33-60d908::analyst",
+ "verdict": "INCORRECT",
+ "correctness": 0.1,
+ "faithfulness": 1.0,
+ "groundedness": 1.0,
+ "completeness": 0.0,
+ "gold_expected": 1,
+ "gold_present": 0,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer only states the anchor CAPEC-33 and its CAPEC properties; it never names the peer attack pattern(s) or the expected WASC:27 mapping. Although the CAPEC-33 statements are supported by the cited record, the question asked for peers and their WASC taxonomy entries, so completeness is zero. No cross-source mapping is fabricated, but the missing WASC:27 makes it incorrect rather than an honest abstention.",
+ "judge": {
+  "model": "default-model",
+  "alias": "default-model",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}
