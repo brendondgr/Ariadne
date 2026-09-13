@@ -400,6 +400,13 @@ def stage_latency() -> int:
     return 0
 
 
+#: Where the chain stops unless told otherwise. The operator asked for the
+#: paired control and the fresh set and nothing beyond them (2026-09-13), so the
+#: three stages after it stay defined — they are written and validated — but are
+#: not run. `--through latency` or `--through regression-judge` turns them back
+#: on without editing anything.
+DEFAULT_THROUGH = "fresh-judge"
+
 #: Order matters and is the plan's order. The fresh set is sealed before it is
 #: generated, and the holdout regression runs last because it is the only stage
 #: whose result is not new evidence.
@@ -469,6 +476,8 @@ def main() -> int:
     ap.add_argument("--list", action="store_true")
     ap.add_argument("--force", action="append", default=[],
                     help="re-run a stage already marked done")
+    ap.add_argument("--through", default=DEFAULT_THROUGH,
+                    help="last stage to run; later stages are not attempted")
     ap.add_argument("--skip-guards", action="store_true",
                     help="only for a resume where the guards were already met")
     args = ap.parse_args()
@@ -481,9 +490,17 @@ def main() -> int:
     if not args.skip_guards:
         guards(bool(args.only))
 
+    names = [n for n, _fn in STAGES]
+    if args.through not in names:
+        raise SystemExit(f"--through {args.through!r} is not a stage: {names}")
+    last = names.index(args.through)
+
     state = json.loads(STATE.read_text()) if STATE.is_file() else {}
     state.setdefault("started", datetime.now().isoformat(timespec="seconds"))
-    for name, fn in STAGES:
+    for index, (name, fn) in enumerate(STAGES):
+        if index > last:
+            print(f"[{name}] not requested (--through {args.through})", flush=True)
+            continue
         if args.only and name not in args.only:
             continue
         if state.get(name, {}).get("ok") and name not in args.force:
@@ -502,7 +519,7 @@ def main() -> int:
             print(f"[{name}] FAILED — chain stopped. Fix, then re-run; "
                   "completed stages are skipped.", flush=True)
             return code
-    print("close-out chain complete", flush=True)
+    print(f"close-out chain complete (through {args.through})", flush=True)
     return 0
 
 
