@@ -436,14 +436,27 @@ def guards(skip_seal: bool) -> None:
     # output under `docs/evaluation/experiments` is exempt: the chain writes
     # there while it runs, and a guard that fails on its own output would stop
     # the chain the moment it started working.
+    def _path_of(line: str) -> str:
+        """The path a porcelain line is about, unquoted, rename-aware.
+
+        git QUOTES a path containing anything unusual, and these case ids carry
+        `[`, `]` and `::`, so a prefix test against the raw line matched nothing
+        and the guard refused on its own run output the moment a stage renamed a
+        directory. A rename line is `old -> new`; the destination is the one
+        that matters.
+        """
+        path = line[3:].strip()
+        if " -> " in path:
+            path = path.split(" -> ", 1)[1].strip()
+        return path.strip('"')
+
     dirty = [
         line for line in subprocess.check_output(
             ["git", "status", "--porcelain", "--untracked-files=no"],
             cwd=REPO, text=True,
         ).splitlines()
-        if line[3:].strip() and not line[3:].strip().startswith(
-            "docs/evaluation/experiments/"
-        )
+        if _path_of(line)
+        and not _path_of(line).startswith("docs/evaluation/experiments/")
     ]
     if dirty:
         raise SystemExit(
