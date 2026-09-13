@@ -1,0 +1,24 @@
+{
+ "case_id": "D4-CanAlsoBe-HAS_CONSEQUENCE-CAPEC-248-02edba::indirect",
+ "verdict": "PARTIAL",
+ "correctness": 0.65,
+ "faithfulness": 0.85,
+ "groundedness": 0.8,
+ "completeness": 0.667,
+ "gold_expected": 6,
+ "gold_present": 4,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer correctly anchors on CAPEC-248 and identifies the related attack pattern CAPEC-182, then lists six consequence texts derived from the evidence\u2019s impacts and scopes. It captures four of the six expected consequence strings, including the Integrity/Modify Data, Confidentiality/Read Data, Gain Privileges, and Bypass Protection Mechanism items, but omits \u201cRun Arbitrary Code\u201d and \u201cInformation Leakage\u201d and reverses the scope/impact order. The claims are mostly grounded in the CAPEC-248 record and its related consequence nodes, though the narrative attributes the consequences to CAPEC-248 rather than explicitly to CAPEC-182.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 8192,
+  "escalated": false,
+  "position": 1
+ }
+}

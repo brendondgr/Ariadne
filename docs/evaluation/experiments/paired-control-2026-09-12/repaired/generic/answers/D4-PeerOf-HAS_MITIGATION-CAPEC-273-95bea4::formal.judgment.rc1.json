@@ -1,0 +1,24 @@
+{
+ "case_id": "D4-PeerOf-HAS_MITIGATION-CAPEC-273-95bea4::formal",
+ "verdict": "CORRECT",
+ "correctness": 0.95,
+ "faithfulness": 0.95,
+ "groundedness": 0.9,
+ "completeness": 1.0,
+ "gold_expected": 13,
+ "gold_present": 13,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer identifies CAPEC-273 and the related peer CAPEC-33, then lists all 13 expected mitigation texts associated with CAPEC-33. The long Transfer-Encoding mitigation is truncated in the narrative but is still identifiable and supported by the cited CAPEC-273 record and mitigation IDs. The main minor weakness is that the peer relationship is phrased as \u201chas 1 attack pattern\u201d rather than explicitly as a peer, but the expected mitigation set is fully present.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 8192,
+  "escalated": false,
+  "position": 1
+ }
+}

@@ -1,0 +1,24 @@
+{
+ "case_id": "D2-HAS_EXECUTION_STEP-CAPEC-135-8e3d3e::analyst",
+ "verdict": "PARTIAL",
+ "correctness": 0.75,
+ "faithfulness": 0.95,
+ "groundedness": 0.9,
+ "completeness": 0.8,
+ "gold_expected": 3,
+ "gold_present": 3,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer correctly identifies CAPEC-135 and lists the three expected execution-step neighbors, capec:attack-pattern:135:step:1, capec:attack-pattern:135:step:2, and capec:attack-pattern:135:step:3. However, it truncates the gold step texts and omits the technique details for all three steps, so it is partial rather than fully complete. The claims are grounded in the CAPEC-135 record and do not fabricate a cross-source mapping.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 8192,
+  "escalated": false,
+  "position": 1
+ }
+}

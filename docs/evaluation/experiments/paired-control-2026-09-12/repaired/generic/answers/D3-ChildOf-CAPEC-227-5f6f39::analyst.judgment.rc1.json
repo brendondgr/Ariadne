@@ -1,0 +1,26 @@
+{
+ "case_id": "D3-ChildOf-CAPEC-227-5f6f39::analyst",
+ "verdict": "PARTIAL",
+ "correctness": 0.7,
+ "faithfulness": 0.75,
+ "groundedness": 0.9,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "CAPEC-227 has CAPEC-469 as a ChildOf parent (i.e., CAPEC-469 is the parent of CAPEC-227)"
+ ],
+ "rationale": "The answer identifies the expected related pattern CAPEC-469 and correctly cites CAPEC-227's description, abstraction, and status. However, it frames CAPEC-469 as a ChildOf parent of CAPEC-227 rather than as a more specific child case, so it only partially answers the asked direction. The relation is grounded in the CAPEC-227 related record, but the parent direction is not explicitly supported by the evidence.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 8192,
+  "escalated": false,
+  "position": 1
+ }
+}

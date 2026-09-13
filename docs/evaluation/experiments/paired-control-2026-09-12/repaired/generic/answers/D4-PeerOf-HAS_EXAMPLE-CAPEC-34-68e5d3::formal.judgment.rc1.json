@@ -1,0 +1,26 @@
+{
+ "case_id": "D4-PeerOf-HAS_EXAMPLE-CAPEC-34-68e5d3::formal",
+ "verdict": "PARTIAL",
+ "correctness": 0.6,
+ "faithfulness": 0.7,
+ "groundedness": 0.8,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "CAPEC-34 has 1 Example, when the example capec:attack-pattern:105:example:1 is associated with peer CAPEC-105 rather than CAPEC-34"
+ ],
+ "rationale": "The answer includes CAPEC-34 and the expected example text for capec:attack-pattern:105:example:1, so the gold example is present. However, it attributes the example to CAPEC-34 instead of clearly stating that it illustrates peer CAPEC-105. The CAPEC-105 peer relationship is supported by the query, but the 'has 1 Example' phrasing is not fully grounded.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 8192,
+  "escalated": false,
+  "position": 1
+ }
+}

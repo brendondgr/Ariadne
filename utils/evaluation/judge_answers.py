@@ -133,6 +133,48 @@ class JudgeConfig:
     position: int | None = None
 
 
+#: The relay's hard ceiling on prompt + completion. `max_tokens` alone is not
+#: the limit: the server rejects when `prompt_tokens + max_tokens` exceeds this,
+#: and it rejects with HTTP 400 rather than truncating.
+MAX_TOTAL_TOKENS = int(os.environ.get("JUDGE_MAX_TOTAL_TOKENS", "84000"))
+#: Characters per token, deliberately low. Under-estimating tokens would ask for
+#: a budget the server refuses; over-estimating only costs headroom.
+CHARS_PER_TOKEN = 3
+
+
+def _budgets(config: JudgeConfig, prompt: str) -> list[int]:
+    """The escalation ladder, clamped to what the server can actually accept.
+
+    The ladder exists because an empty or unparseable reply is usually the token
+    ceiling rather than a broken model, and `EXP-2026-08-021` showed those
+    failures are not random — all six were in the top 5% of answers by size, so
+    losing them skews a judged mean rather than thinning it.
+
+    Unclamped it defeated itself. At a base of 32768 it asked for 32768, 65536
+    and 131072; the third exceeds `max_total_tokens=84000` unconditionally and
+    the second exceeds it for any prompt over roughly 18k tokens. So every case
+    that reached escalation was guaranteed to fail, and on 2026-09-13 that was
+    22 of 284 on the LLM arm — whose answers are the longest, which is exactly
+    the population the ladder was written to rescue.
+
+    Clamping keeps the intent and makes every rung requestable. Duplicate rungs
+    after clamping are dropped: asking twice for the same budget cannot succeed
+    the second time.
+    """
+    room = max(1024, MAX_TOTAL_TOKENS - len(prompt) // CHARS_PER_TOKEN - 512)
+    ladder = [
+        config.max_tokens,
+        config.max_tokens * 2,
+        max(config.max_tokens * 4, 32768),
+    ]
+    budgets: list[int] = []
+    for rung in ladder:
+        clamped = min(rung, room)
+        if clamped not in budgets:
+            budgets.append(clamped)
+    return budgets
+
+
 def _post(config: JudgeConfig, prompt: str, max_tokens: int | None = None) -> tuple[str, str | None]:
     """Returns ``(content, served_model)``.
 
@@ -162,6 +204,23 @@ def _post(config: JudgeConfig, prompt: str, max_tokens: int | None = None) -> tu
             with urllib.request.urlopen(request, timeout=config.timeout_s) as response:
                 payload = json.load(response)
             return payload["choices"][0]["message"]["content"] or "", payload.get("model")
+        except urllib.error.HTTPError as exc:
+            # Read the BODY. `str(HTTPError)` is "HTTP Error 400: Bad Request"
+            # and nothing else, so a rejection the server explains precisely —
+            # "max_tokens=131072 cannot be greater than max_model_len=84000" —
+            # reaches the log as four useless words. That cost an afternoon of
+            # inferring a cause the server had been stating all along.
+            try:
+                detail = exc.read().decode("utf-8", "replace")[:400]
+            except Exception:  # noqa: BLE001
+                detail = "<body unreadable>"
+            last = RuntimeError(f"HTTP {exc.code}: {detail}")
+            # A 4xx is the server declining THIS request, not a blip; retrying
+            # the identical body cannot change its mind.
+            if 400 <= exc.code < 500:
+                break
+            if attempt < config.retries:
+                time.sleep(min(2**attempt, 30))
         except Exception as exc:  # noqa: BLE001 — the server restarts; that is the point
             last = exc
             if attempt < config.retries:
@@ -305,7 +364,7 @@ def judge_one(path: Path, config: JudgeConfig, suffix: str) -> tuple[str, str]:
         # question *type*, so the loss skews a judged mean rather than thinning it.
         # The third rung is EXP-2026-08-009's 32768, which recovered exactly this
         # class of oversized case.
-        budgets = [config.max_tokens, config.max_tokens * 2, max(config.max_tokens * 4, 32768)]
+        budgets = _budgets(config, prompt)
         raw, served_model, used_budget, last_error = None, None, None, None
         for budget in budgets:
             try:

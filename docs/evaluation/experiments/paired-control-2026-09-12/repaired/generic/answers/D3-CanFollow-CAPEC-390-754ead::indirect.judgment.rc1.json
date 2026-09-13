@@ -1,0 +1,26 @@
+{
+ "case_id": "D3-CanFollow-CAPEC-390-754ead::indirect",
+ "verdict": "PARTIAL",
+ "correctness": 0.7,
+ "faithfulness": 0.75,
+ "groundedness": 0.85,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "CAPEC-390 has a CanFollow predecessor CAPEC-665"
+ ],
+ "rationale": "The answer identifies the expected related pattern CAPEC-665 for CAPEC-390 and ties it to the CAPEC record. However, it labels CAPEC-665 as a 'CanFollow predecessor' rather than clearly stating it as a pattern that can follow CAPEC-390, which weakens the direct answer to 'move on to next.' The directional term is not explicitly present in the shown evidence, so a small faithfulness deduction is warranted.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 8192,
+  "escalated": false,
+  "position": 1
+ }
+}

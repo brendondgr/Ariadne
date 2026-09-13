@@ -1,0 +1,26 @@
+{
+ "case_id": "D4-PeerOf-MAPS_TO[WASC]-CAPEC-33-60d908::analyst",
+ "verdict": "PARTIAL",
+ "correctness": 0.7,
+ "faithfulness": 0.8,
+ "groundedness": 0.75,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "CAPEC-273 is described as restricted to taxonomy name WASC"
+ ],
+ "rationale": "The answer states the expected WASC:27 identifier and also names CAPEC-273, which is the peer attack pattern in the evidence. However, it does not explicitly say that CAPEC-273 is a peer of CAPEC-33 or that CAPEC-273 corresponds to WASC:27; it instead frames both as things CAPEC-33 has. The claims are mostly grounded in the CAPEC-33 record and related rows, but the relational answer is only implicit.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 8192,
+  "escalated": false,
+  "position": 1
+ }
+}

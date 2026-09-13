@@ -1,0 +1,24 @@
+{
+ "case_id": "D4-ChildOf-HAS_EXECUTION_STEP-CAPEC-635-952560::indirect",
+ "verdict": "PARTIAL",
+ "correctness": 0.7,
+ "faithfulness": 0.85,
+ "groundedness": 0.9,
+ "completeness": 1.0,
+ "gold_expected": 5,
+ "gold_present": 5,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer anchors CAPEC-635 and lists related CAPEC-165, CAPEC-11, and CAPEC-649, plus the four CAPEC-11 execution steps capec:attack-pattern:11:step:1 through step:4. It is partial because it does not explicitly identify which attack patterns are the more specific children and it attributes the execution steps to CAPEC-635 rather than clearly to CAPEC-11. It also omits the technique details included in the gold step texts, though the core step descriptions are present.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 8192,
+  "escalated": false,
+  "position": 1
+ }
+}

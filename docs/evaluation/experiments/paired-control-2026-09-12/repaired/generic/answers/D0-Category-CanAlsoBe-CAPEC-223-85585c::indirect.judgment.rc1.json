@@ -1,0 +1,24 @@
+{
+ "case_id": "D0-Category-CanAlsoBe-CAPEC-223-85585c::indirect",
+ "verdict": "CORRECT",
+ "correctness": 1.0,
+ "faithfulness": 1.0,
+ "groundedness": 1.0,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The CAPEC query seeded on CAPEC-223 returned row_count 0 and no records, so the abstention is an honest no-mapping answer. It states CAPEC-223 and shows the executed query, satisfying the required identifier. No related CAPEC patterns or cross-source mappings are asserted, matching the empty expected neighbor set.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 8192,
+  "escalated": false,
+  "position": 1
+ }
+}
