@@ -1,75 +1,99 @@
-# Filled by scripts/new_experiment.py. Every field below is required unless
-# marked optional. Do not delete a field you do not know — record it as null or
-# "unknown" and explain in ISSUES.md. Inventing a value is worse than admitting
-# a gap.
+# Filled by scripts/new_experiment.py, then by hand as the steps completed.
 id: EXP-2026-09-019
 slug: small-model-generic
-title: <one line, the question this answers>
-status: planned            # planned | running | complete | failed | superseded
+title: Does the Generic tier need a big model, and does it need a planner?
+status: running            # planned | running | complete | failed | superseded
 date_started: 2026-09-13
-date_completed: null       # null until status is complete/failed
-authors: []
+date_completed: null
+authors: [brendondgr]
 
 purpose: >
-  One paragraph. What question does this answer, and which paper claim
-  does it support or refute?
+  Two questions sit underneath every figure this programme has published and
+  neither is answered by any run on record. First, the Generic tier scores
+  0.9255 with a 27B model and 0.9205 without one, so the model is worth 0.005 --
+  can a 2B model hold that? Second, and cheaper to answer: every headline arm
+  replays an authored plan, so 0.92 is the ceiling for retrieval and composition
+  GIVEN a correct plan, and nobody has measured what happens when the planner
+  actually runs. Step 2 answers the second question; Steps 3-5 answer the first.
 
 hypothesis: >
-  Stated before the run. If exploratory, write "exploratory — no prior hypothesis".
+  Exploratory on the model size. On the planner: pre-registered as a measured
+  difference rather than a judgement -- generic_planned minus generic_composed
+  on the same 284 development questions, paired per question, with the plan as
+  the only variable. A difference inside the grader's own spread would mean the
+  authored plan is not carrying the result.
 
-# --- Reproducibility block (all fields mandatory) ---
+# --- Reproducibility block ---
 code:
-  commit: 8d181e1274fa87554d3d6129e4019da2bc1e0cf3          # 40-char sha, or "unknown" for a back-filled experiment
+  commit: 9e181317aa1068130bd00ec7450678fbc5703a52
   branch: main
-  entrypoint: "<exact command>"
-  dirty: true             # uncommitted changes at run time? if true, explain in ISSUES.md
+  entrypoint: "uv run python scripts/local_endpoint_probe.py --base-url http://localhost:7070/v1 --alias minicpm-5-2B --expect minicpm; uv run python -m utils.evaluation.experiment_untruncated --arm {generic_composed,generic_planned} --bank docs/evaluation/composition/bank/bank-dev.json --root docs/evaluation/experiments/small-model-generic-2026-09-13/planner-cost --workers 8; uv run python scripts/planner_cost_score.py --root docs/evaluation/experiments/small-model-generic-2026-09-13/planner-cost"
+  dirty: false
 config:
-  path: null               # repo-relative path, or null if the run takes no config file
-  hash: null               # sha256:... of that file
+  path: null
+  hash: null
 data:
-  name: <dataset>
-  version: <version>
-  split: <split>
-  n_examples: 0
-  dvc_path: null           # this repository does not use DVC; leave null
-  hash: null               # md5:... or sha256:... of the dataset artifact
-seeds: []                  # [] means seeds were not recorded — say so in ISSUES.md
-n_runs: 1                  # SYSTEM runs over the question set — grading passes are not runs
+  name: composition development bank
+  version: bank-dev.json @ 9e181317aa1068130bd00ec7450678fbc5703a52
+  split: dev
+  n_examples: 284
+  dvc_path: null
+  hash: null
+seeds: []                  # both arms are model-free and byte-reproducible; see ISSUES.md
+n_runs: 1
 environment:
   python: "3.13"
   lockfile: env/requirements.lock
   container: null
 compute:
-  hardware: "<cpu/gpu, ram>"
-  wall_clock_hours: 0.0
+  hardware: "32-core x86_64 workstation; llama.cpp on local GPU"
+  wall_clock_hours: 0.05
   estimated_cost_usd: 0.0
 
-# --- LLM / agentic block (delete entirely if no model was in the loop) ---
+# --- LLM block ---
+# Step 2's two arms are model-free -- verified at the socket, not asserted from
+# config (see RESULTS.md and ISSUES.md I-1). The entry below describes the
+# endpoint characterised in Step 1 and used by Steps 3-5, which have not run.
 llm:
-  model: "<provider>/<model>@<version-or-date>"
+  model: "relay/minicpm-5-2B@2026-09-13"
   temperature: 0.0
   top_p: 1.0
   max_tokens: 2048
   prompt_files: []
   prompt_hash: null
   tool_schema_hash: null
-  total_input_tokens: null
-  total_output_tokens: null
+  total_input_tokens: 0
+  total_output_tokens: 0
   nondeterminism_note: >
-    Provider-side nondeterminism remains even at temperature 0; results
-    are reported as mean ± std over n_runs.
+    No model was in the loop for the Step 2 figures: a socket-level trace of one
+    question recorded zero connections to any model port and the token meter
+    recorded zero calls. Steps 3-5 will put minicpm-5-2B on the narrator and
+    specialist seams and this block will be amended then.
 
 # --- Results block ---
 metrics:
-  primary: <metric name>
-  values: {}               # {metric: {mean: 0.0, std: 0.0, n: 1}} — must be non-empty when status: complete
-  withdrawn: {}            # values later retracted by amendment: {metric: {mean, std, n, withdrawn_on, reason, replaced_by}}
-baselines_compared: []
-statistical_test: null
+  primary: paired_gold_coverage_difference
+  values:
+    gold_coverage_generic_composed: {mean: 0.8611, std: null, n: 284}
+    gold_coverage_generic_planned: {mean: 0.4797, std: null, n: 284}
+    paired_gold_coverage_difference: {mean: -0.3814, std: 0.4413, n: 284}
+    questions_planner_retrieved_nothing: {mean: 77, std: null, n: 284}
+    absence_contradictions_generic_planned: {mean: 0, std: null, n: 284}
+    endpoint_knee_concurrency_minicpm_5_2B: {mean: 4, std: null, n: 1}
+    endpoint_aggregate_tokens_per_s_minicpm_5_2B: {mean: 210.5, std: null, n: 1}
+    endpoint_single_stream_tokens_per_s_minicpm_5_2B: {mean: 73.0, std: null, n: 1}
+  withdrawn: {}
+baselines_compared: [generic_composed]
+statistical_test: >
+  Paired per question over the same 284-question bank; standard error 0.0262,
+  separable by the |difference| > 2*SE rule EXP-2026-09-018 used. Both arms are
+  deterministic, so the difference is not run variance. The metric is
+  deterministic gold coverage, not a graded score -- the plan gates a judged
+  pass on this exceeding 0.02, which it does by a wide margin.
 
 # --- Linkage ---
-supports_claims: []        # every ID here must exist in ../../CLAIMS.md
-figures: []                # every name here must have a file in figures/ and vice versa
-supersedes: null           # set in BOTH manifests or in neither; the validator checks symmetry
+supports_claims: []
+figures: []
+supersedes: null
 superseded_by: null
-related: []
+related: [EXP-2026-09-014, EXP-2026-09-018]

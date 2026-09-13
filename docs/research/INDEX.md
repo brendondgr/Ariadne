@@ -10,8 +10,8 @@ that a dead end is walked into once rather than twice.
 
 | ID | Date | Title | Status | Primary metric | Claims | Link |
 |---|---|---|---|---|---|---|
+| `EXP-2026-09-019` | 2026-09-13 | Does the Generic tier need a big model, and does it need a planner? | running | paired_gold_coverage_difference -0.3814 ± 0.4413 (n=284) | — | [small-model-generic](experiments/EXP-2026-09-019-small-model-generic/) |
 | `EXP-2026-09-018` | 2026-09-11 | Correctness repair: six located defects, measured against a concurrent control | planned | generic_judged_correctness_dev (not recorded) | C-017, C-023 | [correctness-repair](experiments/EXP-2026-09-018-correctness-repair/) |
-| `EXP-2026-09-019` | 2026-09-13 | <one line, the question this answers> | planned | <metric name> (not recorded) | — | [small-model-generic](experiments/EXP-2026-09-019-small-model-generic/) |
 | `EXP-2026-07-001` | 2026-07-26 | Arm A — fully deterministic pipeline (planning, extraction, synthesis) | complete | correctness 0.9972 (n=1) | C-001, C-004 | [arm-a-deterministic](experiments/EXP-2026-07-001-arm-a-deterministic/) |
 | `EXP-2026-07-002` | 2026-07-26 | Arm B — LLM planning with deterministic extraction and an LLM writer | complete | correctness 0.8505 (n=1) | C-002, C-003, C-016 | [arm-b-llm-planned](experiments/EXP-2026-07-002-arm-b-llm-planned/) |
 | `EXP-2026-07-003` | 2026-07-26 | Arm C — authored plan with an LLM writer reading raw evidence | complete | correctness 0.9690 (n=1) | C-002, C-005 | [arm-c-llm-writer-evidence](experiments/EXP-2026-07-003-arm-c-llm-writer-evidence/) |
