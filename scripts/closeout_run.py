@@ -211,12 +211,8 @@ def stage_control_rejudge() -> int:
     """Judge the rebuilt repaired half, both positions."""
     for suffix, position in PASSES:
         for arm in ARMS:
-            code = _run(f"control-rejudge-{arm}{suffix}",
-                        _judge(CONTROL / "repaired", arm, suffix, position))
-            if code:
-                return code
-            if _report_ungraded("control-rejudge", f"repaired/{arm}{suffix}",
-                                _ungraded(CONTROL / "repaired", arm, suffix)):
+            if _judge_pass("control-rejudge", CONTROL / "repaired", arm, suffix,
+                           position, f"repaired/{arm}{suffix}"):
                 return 1
     return 0
 
@@ -371,15 +367,32 @@ def _report_ungraded(label: str, cell: str, missing: list[str]) -> int:
     return 0
 
 
+def _judge_pass(label: str, root: Path, arm: str, suffix: str, position: int,
+                cell: str) -> int:
+    """Run one grading pass and decide on the OUTCOME, not the exit code.
+
+    `judge_answers` exits non-zero if any single case failed, which is the right
+    behaviour for a command and the wrong question for this chain: what matters
+    is whether judgments exist, and the tolerance for how many may be missing
+    already lives in `_report_ungraded`. Returning the exit code here meant two
+    stragglers would loop the chain forever rather than be tolerated and
+    recorded — the exact outcome the tolerance was added to prevent.
+
+    A crash that grades nothing still fails, because then everything is
+    ungraded and the threshold catches it.
+    """
+    code = _run(f"{label}-judge-{arm}{suffix}", _judge(root, arm, suffix, position))
+    missing = _ungraded(root, arm, suffix)
+    if code and missing:
+        print(f"[{label}] {cell}: judge exited {code} with {len(missing)} "
+              "ungraded; the count decides, not the exit code.", flush=True)
+    return _report_ungraded(label, cell, missing)
+
+
 def _judge_all(root: Path, label: str) -> int:
     for suffix, position in PASSES:
         for arm in ARMS:
-            code = _run(f"{label}-judge-{arm}{suffix}",
-                        _judge(root, arm, suffix, position))
-            if code:
-                return code
-            if _report_ungraded(label, f"{arm}{suffix}",
-                                _ungraded(root, arm, suffix)):
+            if _judge_pass(label, root, arm, suffix, position, f"{arm}{suffix}"):
                 return 1
     return 0
 
