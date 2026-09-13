@@ -15,6 +15,18 @@ LOG=logs/closeout-2026-09-12/supervisor.log
 mkdir -p logs/closeout-2026-09-12
 STAGES="control-generate control-judge control-score fresh-seal fresh-generate fresh-judge regression-generate regression-judge t6-rates latency"
 
+# Is the chain ACTUALLY running?
+#
+# `pgrep -f` is the wrong tool and cost two hours here: any shell command whose
+# own text contains the pattern matches it, so a monitor that merely *mentioned*
+# the script held this loop open forever while nothing ran. Match on the
+# process's second argv field instead — that is the interpreter, and a shell
+# wrapper or a pgrep never has python there.
+chain_running() {
+  ps -eo pid,args --no-headers \
+    | awk '$2 ~ /python/ && $0 ~ /scripts\/closeout_run\.py/ { found = 1 } END { exit !found }'
+}
+
 done_yet() {
   python3 - "$STAGES" <<'PY'
 import json, sys, pathlib
@@ -28,7 +40,7 @@ PY
 }
 
 for attempt in $(seq 1 60); do
-  while pgrep -f "scripts/closeout_run.py" >/dev/null; do sleep 60; done
+  while chain_running; do sleep 60; done
   if done_yet; then
     echo "$(date '+%F %T') all stages complete after $((attempt-1)) restart(s)" >> "$LOG"
     exit 0
