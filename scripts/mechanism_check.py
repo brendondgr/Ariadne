@@ -144,15 +144,18 @@ def contradictions(answer: dict) -> list[dict]:
                 found.append({"anchor": anchor, "denied": noun,
                               "shape": "resolved-edge", "text": claim.get("text")})
                 continue
-        singular = noun[:-1] if noun.endswith("s") else noun
-        counted = re.compile(
-            rf"\b{re.escape(anchor)}\b[^.]*\bhas \d+ "
-            rf"(?:{re.escape(noun)}|{re.escape(singular)})\b"
-        )
+        # Compare nouns by shape, not spelling: "sub-technique" and
+        # "subtechniques" are the same noun, and comparing them literally hid
+        # two real self-contradictions.
+        from utils.synthesis.composer import _noun_key
+
+        wanted = _noun_key(noun)
+        counted = re.compile(rf"\b{re.escape(anchor)}\b[^.]*\bhas \d+ ([A-Za-z\- ]+?)[:,.]")
         for other in claims:
             if other is claim or other.get("kind") == "absence":
                 continue
-            if counted.search(str(other.get("text") or "")):
+            hit = counted.search(str(other.get("text") or ""))
+            if hit and _noun_key(hit.group(1)) == wanted:
                 found.append({"anchor": anchor, "denied": noun,
                               "shape": "enumerated-noun", "text": claim.get("text"),
                               "beside": other.get("text")})

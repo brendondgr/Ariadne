@@ -2,18 +2,16 @@
  "case_id": "D6-MAPS_TO[ATTACK]-MAPS_TO[WASC]-T1110-d01d69::analyst",
  "verdict": "PARTIAL",
  "correctness": 0.5,
- "faithfulness": 0.7,
- "groundedness": 0.7,
+ "faithfulness": 1.0,
+ "groundedness": 1.0,
  "completeness": 0.5,
  "gold_expected": 2,
  "gold_present": 1,
  "abstained": false,
  "abstention_carries_query": false,
- "fabricated_mapping": true,
- "hallucinations": [
-  "CAPEC-112 has a mapping restricted to taxonomy name WASC: T1110"
- ],
- "rationale": "The answer correctly identifies CAPEC-112 as the CAPEC pattern associated with T1110, but it does not state the required WASC:11 entry. It also asserts a WASC-restricted mapping to T1110, while the evidence only shows an ATTACK taxonomy mapping and no WASC:11 record. Therefore it is partial, with one of two expected identifiers present and a fabricated WASC-related mapping.",
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer correctly identifies CAPEC-112 as the CAPEC pattern associated with T1110, but it does not state the expected WASC:11 entry for the second hop. Its statements are supported by the CAPEC-112 record and its T1110 relation, and it does not assert an unsupported WASC mapping. Because it omits WASC:11, it is only partially correct.",
  "judge": {
   "model": "skynet",
   "alias": "skynet",

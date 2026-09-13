@@ -572,6 +572,23 @@ def _relation_aliases(relation: str) -> frozenset[str]:
     return membership if wanted in membership else frozenset({wanted})
 
 
+def _noun_key(noun: str) -> str:
+    """A noun's identity for comparison: no hyphens, no spaces, no plural.
+
+    `_LABEL_NOUNS` spells it "sub-technique" and `_relation_noun` spells the
+    same thing "subtechniques", so comparing them literally missed a
+    self-contradiction the composer had emitted twice — "AN0749 has 1
+    sub-technique: T1560.002" sitting beside "AN0749 has no subtechniques".
+    Both my emission guard and the contradiction scanner reported clean because
+    they were comparing spellings rather than nouns.
+    """
+    key = "".join(ch for ch in (noun or "").lower() if ch.isalnum())
+    # A single trailing "s", never two. Stripping "es" turns "subtechniques"
+    # into "subtechnic", which matches nothing — and that was the bug this
+    # function was written to fix, reintroduced one line lower down.
+    return key[:-1] if key.endswith("s") else key
+
+
 def _enumerated_nouns(result: SpecialistResult) -> frozenset[str]:
     """The nouns this result's enumeration claims will use, singular and plural.
 
@@ -599,7 +616,7 @@ def _enumerated_nouns(result: SpecialistResult) -> frozenset[str]:
             nouns.add(singular)
             nouns.add(_plural(singular, 2))
             nouns.add(_related_noun(record, len(group), group))
-    return frozenset(n.strip().lower() for n in nouns if n)
+    return frozenset(_noun_key(n) for n in nouns if n)
 
 
 def _normalise_rel(name: str) -> str:
@@ -654,7 +671,7 @@ def _relation_is_empty(result: SpecialistResult, relation: str) -> bool:
     # the edge names cannot be reconciled at all: if the enumeration about to be
     # written calls these neighbours by the noun the absence is about to deny,
     # the walk answered the question and the absence is simply false.
-    if _relation_noun(relation).strip().lower() in _enumerated_nouns(result):
+    if _noun_key(_relation_noun(relation)) in _enumerated_nouns(result):
         return False
     for record in result.records:
         for rel in record.related or ():
@@ -848,6 +865,11 @@ _REL_NOUNS = {
     "MAPS_TO": "ATT&CK mapping",
     "SUBTECHNIQUE_OF": "parent technique",
     "USES": "used technique",
+    # Without this the noun falls through to the neighbour's LABEL, and an
+    # Analytic that DETECTS a SubTechnique was rendered "has 1 sub-technique",
+    # which asserts a hierarchy that does not exist. The edge is the relation;
+    # the label is only what sits at the other end of it.
+    "DETECTS": "detected technique",
     "MITIGATES": "mitigated technique",
 }
 
@@ -884,6 +906,7 @@ def _plural(noun: str, count: int) -> str:
 _NOUN_EXPECTS: dict[str, frozenset[str]] = {
     "used technique": frozenset({"Technique", "SubTechnique"}),
     "mitigated technique": frozenset({"Technique", "SubTechnique"}),
+    "detected technique": frozenset({"Technique", "SubTechnique"}),
     "parent technique": frozenset({"Technique"}),
     "exploited weakness": frozenset({"Weakness"}),
     "mitigation": frozenset({"Mitigation"}),

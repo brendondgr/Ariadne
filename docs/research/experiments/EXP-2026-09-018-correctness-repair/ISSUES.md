@@ -782,3 +782,50 @@ being re-run against it. The reference side is not: it is a different commit,
 unaffected, and its re-run had already reproduced the committed Step 6 reference
 to within 0.0016 (0.7195 against 0.71875) — which is also the best evidence yet
 that the between-session grader drift `Q46` records is not moving these figures.
+
+## I-20 — A noun taken from the neighbour's label asserted a hierarchy that does not exist (RESOLVED 2026-09-13)
+
+**And the I-16 scanner could not see the contradiction it caused.** Both halves
+matter; the second more than the first.
+
+"Which ATT&CK techniques is AN0749 a sub-technique of?" is a D0 question whose
+gold answer is *none*. The system said:
+
+> AN0749 (Analytic 0749) has 1 sub-technique: T1560.002.
+> AN0749 has no subtechniques in this catalogue.
+
+The retrieved edge is `AN0749 -[DETECTS]-> T1560.002`. `_REL_NOUNS` had no entry
+for `DETECTS`, so `_related_noun` fell through to the neighbour's **label** —
+`SubTechnique` — and asserted a parent/child relationship the edge does not
+support. The two claims also contradict each other outright.
+
+**Why I-16's scanner reported zero on it.** `_LABEL_NOUNS` spells the noun
+`"sub-technique"`; `_relation_noun("HAS_SUBTECHNIQUE")` spells the same noun
+`"subtechniques"`. The emission guard and the contradiction scanner both
+compared *spellings*, so both passed. **The "contradictions: 0" recorded against
+I-16 was therefore true only of what that scanner could detect** — two existed
+in the same captures that it could not. With the scanner made noun-aware, the
+committed control answers read **2**, and the fixed tree reads **0**.
+
+**Resolution.** `_noun_key` normalises a noun to its shape — alphanumerics only,
+one trailing "s" removed — and both the guard and the scanner compare through
+it. `DETECTS` gains its own entry (`"detected technique"`, expecting
+`Technique`/`SubTechnique`) so the noun names the edge rather than whatever
+happens to sit at the other end of it.
+
+The fix contains a lesson about itself: the first version of `_noun_key` stripped
+a trailing `"es"`, turning `"subtechniques"` into `"subtechnic"`, which matched
+nothing — the exact bug it was written to fix, reintroduced one line lower down
+and caught only because the scanner still reported a clean 0 on answers known to
+contain the defect. A normaliser that reports "no problems" is indistinguishable
+from a normaliser that does nothing, which is why the check was run against a
+capture whose answer was already known.
+
+**Verification.** The two cases now read "has 1 detected technique: T1560.002"
+with a true and uncontradicted absence claim. Gold-text recall unmoved at 0.9791
+with zero questions regressing. Contradictions: control answers 2, fixed tree 0,
+on both model-free arms.
+
+**Scope note.** The paired control's answers predate this fix, so its cells carry
+these 2 contradictions in 284 — recorded here rather than re-run, since the fix
+changes 2 answers of 852 and the control is otherwise complete.
