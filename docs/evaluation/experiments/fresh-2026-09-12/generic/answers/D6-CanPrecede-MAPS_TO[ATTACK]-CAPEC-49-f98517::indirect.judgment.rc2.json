@@ -1,0 +1,26 @@
+{
+ "case_id": "D6-CanPrecede-MAPS_TO[ATTACK]-CAPEC-49-f98517::indirect",
+ "verdict": "PARTIAL",
+ "correctness": 0.8,
+ "faithfulness": 0.75,
+ "groundedness": 0.8,
+ "completeness": 1.0,
+ "gold_expected": 3,
+ "gold_present": 3,
+ "abstained": false,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "The capec source doesn't establish this / returned CAPEC-49 with no linked records for the CAPEC attack patterns that can follow it, despite the visible CAN_PRECEDE related records for CAPEC-49."
+ ],
+ "rationale": "The answer states CAPEC-49 and the expected follow-on ATT&CK techniques T1021.002, T1078, and T1110.004 via CAPEC-561, CAPEC-560, and CAPEC-600, so the gold set is fully present. It is not a pure abstention because it asserts the mappings, but the included abstention claiming no linked records is contradicted by the visible CAN_PRECEDE neighbours. Extra mappings such as T1005, T1555.001, T1036.003, and T1110.001 make the answer overinclusive, but the core question is addressed.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 16384,
+  "escalated": true,
+  "position": 2
+ }
+}

@@ -1,0 +1,27 @@
+{
+ "case_id": "D6-MAPS_TO[ATTACK]-HAS_INDICATOR-T1499.002-427629::analyst",
+ "verdict": "CORRECT",
+ "correctness": 0.9,
+ "faithfulness": 0.75,
+ "groundedness": 0.85,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": false,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "T1499.002 has 1 technique: T1499",
+  "The capec source doesn't establish this ... no linked records for indicators"
+ ],
+ "rationale": "The answer states the expected CAPEC-528 indicator text for T1499.002 and also lists the mapped CAPEC patterns, so the gold indicator is present. It is slightly weakened by an unsupported abstention claiming no linked indicator records and by the extra T1499 relation, which is not fully visible in the provided evidence. No fabricated cross-source mapping is asserted.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 8192,
+  "escalated": false,
+  "position": 2
+ }
+}

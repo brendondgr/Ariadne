@@ -829,3 +829,51 @@ on both model-free arms.
 **Scope note.** The paired control's answers predate this fix, so its cells carry
 these 2 contradictions in 284 — recorded here rather than re-run, since the fix
 changes 2 answers of 852 and the control is otherwise complete.
+
+## Step 7 — the fresh set, drawn at seed 10140325 and spent once (2026-09-14)
+
+| arm | correctness | `fabricated_mapping` |
+|---|---|---|
+| `deterministic` | 0.5508 ± 0.0198 | 0 |
+| `generic_composed` | **0.9037 ± 0.0097** | 0 |
+| `generic` | **0.9043 ± 0.0097** | 0 |
+
+282 questions, both grading positions, graded once. Against the development
+half's 0.9247 this is a drop of 0.020 — about two standard errors — so the
+configuration generalises rather than having been fitted to the set that
+selected it. The two real arms converge to within **0.0006**: on questions
+neither had seen, the 27B model is worth six ten-thousandths. The kill-gate
+metric is **0 on all three arms**, the template control included.
+
+**What "fresh" does and does not mean here**, stated so nobody has to
+reconstruct it later:
+
+* **No question in the set has ever been asked.** `already_asked_pairs` is
+  empty — every (spec, register) pair is new.
+* **Nothing in it had been answered or graded.** `scripts/fresh_seal.py`
+  confirmed that before the first arm ran, on a scan proved to work by 24,834
+  control judgments and proved able to fail by refusing the spent holdout. It
+  earned its keep immediately: three drawn questions had already been answered
+  by `probe-2026-09-01` — never graded, but answered — which an exclusion
+  reading only the three committed banks could not see.
+* **86 of the 288 drawn specs reuse an anchor asked before in another
+  register**, so for roughly 30% of the set the wording is new and the entity is
+  not. That is concentrated in D3, where **all 41** are recycled because every
+  one of the pool's 73 reverse-single-hop specs was already spent. D3's tier
+  figure should be read with that in mind.
+* Six drawn specs did not ship: three are unrenderable by construction (their
+  anchor is the literal string `enterprise-attack`, which the anchor validator's
+  identifier matcher can never match, however the question is phrased — the
+  existing bank dropped 8 for the same reason), and three are the probe
+  contamination above.
+
+**The standing caveat.** Both headline arms replay an authored plan — `generic`
+through `run_gold_loop_llm`, `generic_composed` through `run_deterministic`, and
+neither runs the planner. So 0.9043 is the ceiling for retrieval and composition
+*given a correct decomposition*, not an end-to-end figure. What the planner costs
+when it actually runs is the subject of
+`docs/plans/2026-09-13-small-model-and-planner-necessity.md`, Step 2.
+
+**Grading gaps.** A handful of cases timed out and are recorded rather than
+hidden: `generic_composed` scored on 280 of 282, `generic` on 278. A sweep is
+re-attempting them; the scorer averages whichever positions a case actually has.

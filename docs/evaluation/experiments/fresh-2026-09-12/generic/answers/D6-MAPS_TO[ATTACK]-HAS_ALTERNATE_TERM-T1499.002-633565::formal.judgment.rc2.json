@@ -1,0 +1,27 @@
+{
+ "case_id": "D6-MAPS_TO[ATTACK]-HAS_ALTERNATE_TERM-T1499.002-633565::formal",
+ "verdict": "CORRECT",
+ "correctness": 0.95,
+ "faithfulness": 0.8,
+ "groundedness": 0.9,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": false,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "T1499.002 has 1 technique: T1499",
+  "The capec query returned CAPEC-528 with no linked records for alternate names"
+ ],
+ "rationale": "The answer states the required alternate name \"XML Denial of Service (XML DoS)\" for CAPEC-528 and ties it to T1499.002, satisfying the gold expectation. It also correctly lists the five CAPEC patterns mapped to T1499.002, but its abstention says CAPEC-528 had no linked alternate-term records, which conflicts with the q2 record. The T1499 parent-technique claim is not fully visible in the provided evidence, so faithfulness is slightly reduced.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 16384,
+  "escalated": true,
+  "position": 2
+ }
+}
