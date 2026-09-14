@@ -37,5 +37,22 @@
     "seconds_per_answer": 0.05,
     "corroboration": "EXP-2026-09-019's independent 1-worker measurement of the same configuration on a tier-balanced 9-question slice gives 0.07s mean / 0.01s median \u2014 same order."
   },
-  "comparison": "Single-user, one worker, the same 20 dev questions: generic 66.82s per answer against generic_composed 0.05s per answer. The narrator seam costs roughly 1,340x in wall time for a fresh-set difference of -0.0014 (0.8991 against 0.9005) \u2014 a difference inside the grader's noise."
+  "comparison": "Single-user, one worker, the same 20 dev questions: generic 66.82s per answer against generic_composed 0.05s per answer. The narrator seam costs roughly 1,340x in wall time for a fresh-set difference of -0.0014 (0.8991 against 0.9005) \u2014 a difference inside the grader's noise.",
+  "arm_comparators_1worker": {
+    "bank": "bank-dev.json first 20, identical slice to the generic latency sample",
+    "workers": 1,
+    "deterministic": {
+      "wall_s": 0.8,
+      "seconds_per_answer": 0.04
+    },
+    "generic_composed": {
+      "wall_s": 1.0,
+      "seconds_per_answer": 0.05
+    },
+    "generic": {
+      "seconds_per_answer": 66.82,
+      "budget": "120s"
+    },
+    "finding": "The template engine is 0.01s per answer faster than the model-free primitive composer. That is the whole of its speed advantage, against -0.3480 correctness on the sealed fresh set (0.5525 against 0.9005) and 3 fabricated mappings against 0 on the regression. The deterministic arm is dominated: there is no measured dimension on which it wins."
+  }
 }
