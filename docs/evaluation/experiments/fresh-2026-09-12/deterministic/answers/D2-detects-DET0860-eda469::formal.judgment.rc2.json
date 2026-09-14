@@ -1,0 +1,24 @@
+{
+ "case_id": "D2-detects-DET0860-eda469::formal",
+ "verdict": "INCORRECT",
+ "correctness": 0.2,
+ "faithfulness": 1.0,
+ "groundedness": 1.0,
+ "completeness": 0.0,
+ "gold_expected": 1,
+ "gold_present": 0,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer identifies DET0860 and states supported metadata for that detection strategy, but it never states the expected detected technique T1596. It therefore describes the anchor rather than answering which ATT&CK techniques are detected. All asserted facts are grounded in the DET0860 record, but the gold technique is absent.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 8192,
+  "escalated": false,
+  "position": 2
+ }
+}

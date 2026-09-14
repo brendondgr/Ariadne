@@ -1,0 +1,26 @@
+{
+ "case_id": "D2-subtechnique-of-T1222.002-73481c::indirect",
+ "verdict": "PARTIAL",
+ "correctness": 0.6,
+ "faithfulness": 0.7,
+ "groundedness": 0.8,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "T1222 has no subtechniques in this catalogue"
+ ],
+ "rationale": "The answer identifies the expected parent technique T1222 in relation to T1222.002, so the gold identifier is present. However, it only says T1222 has a related item rather than clearly stating that T1222 sits above T1222.002. It also asserts that T1222 has no subtechniques, which is unsupported by the returned T1222-to-T1222.002 relationship.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 8192,
+  "escalated": false,
+  "position": 2
+ }
+}

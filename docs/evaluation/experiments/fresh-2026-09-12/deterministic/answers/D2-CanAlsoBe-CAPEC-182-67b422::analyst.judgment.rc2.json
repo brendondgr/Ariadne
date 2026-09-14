@@ -1,0 +1,24 @@
+{
+ "case_id": "D2-CanAlsoBe-CAPEC-182-67b422::analyst",
+ "verdict": "PARTIAL",
+ "correctness": 0.4,
+ "faithfulness": 1.0,
+ "groundedness": 1.0,
+ "completeness": 0.5,
+ "gold_expected": 2,
+ "gold_present": 1,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer correctly identifies and describes CAPEC-182, and all stated properties are supported by the cited CAPEC record. However, it never states the expected related pattern CAPEC-248, which is the actual answer to the 'can also be carried out as' question. It is therefore partial: it mentions the required anchor but omits the required neighbor. No fabricated mapping or hallucinated identifiers are asserted.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 8192,
+  "escalated": false,
+  "position": 2
+ }
+}

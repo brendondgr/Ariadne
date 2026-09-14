@@ -69,32 +69,46 @@ none is caused by it. The third's hash *also* moves whenever anything is written
 under `docs/evaluation/experiments`, which this experiment does — but it was
 already stale beforehand. This experiment's own folder validates.
 
-## I-8 — 11 of 284 claim *texts* differ, and the narrator is not the cause (open)
+## I-8 — 11 of 284 claim *texts* differed because main moved mid-run (resolved)
 
 At n=284 the claim-identity gate reported 273 of 284 identical. The 11 that
-differ do so in `text` and in nothing else: across all eleven, zero changes to
-`entity_ids`, zero to `citations`, zero to `verdict`, and zero new unsupported
-verdicts anywhere in the run. The facts are untouched; the wording of a
-relationship is not.
+differed did so in `text` and in nothing else: zero differences in `entity_ids`,
+zero in `citations`, zero in `verdict`, and zero new unsupported verdicts
+anywhere in the run.
 
-The mechanism is in `utils/synthesis/composer.py`. `_REL_NOUNS` maps `DETECTS`
-to "detected technique", and when that lookup does not apply the noun falls
-through to the neighbour's LABEL — the fallback the table's own comment was
-written to prevent, because it "asserts a hierarchy that does not exist". The
-observed difference is exactly that fall-through: "has 1 detected technique:
-T1491" against "has 1 technique: T1491".
+**The cause was the tree changing underneath the comparison, not the narrator
+and not load.** A concurrent session committed `1f507002` — "I-20: name the
+edge, not the label" — at 17:30:38, which adds `DETECTS` to `_REL_NOUNS` in
+`utils/synthesis/composer.py` so the noun stops falling through to the
+neighbour's LABEL. The two arms straddled it:
 
-**It is not the narrator.** Re-running the same question three times on the
-narrator arm at one worker reproduces the control's wording every time, and
-re-running the control on all eleven cases at one worker and at four workers
-produces byte-identical claims in every pairing (0 differences across 3
-comparisons x 11 cases). It appears only in a sustained full-bank run and does
-not reproduce in isolation, which is why it is recorded here rather than fixed:
-a defect that cannot be reproduced cannot be verified fixed.
+| Arm | Process started | Answers written | Code it held |
+| --- | --- | --- | --- |
+| `generic_local_narrator` | 16:56 | 16:58:34 – 18:47:42 | pre-fix, imported before 17:30 |
+| `generic_narrator_off` | 18:47 | 18:47:44 – 18:47:46 | post-fix |
 
-This is a composer defect, not a small-model one, and it is reachable by every
-arm in the project. Raised for its own investigation rather than repaired
-inside an experiment about model size.
+A running process keeps the module it imported, so the treatment arm rendered
+its whole 284 with the old noun table while its control, started afterwards,
+used the new one. Every one of the 11 affected cases is a `DETECTS`-family edge
+— `AN0662`, `AN1955`, `AN0749`, `AN1112`, `DET0130`, `DET0189`, `DET0891`,
+`DET0285`, `DET0181` — and `AN0749` is the case named in that commit's own
+message.
+
+Confirmed by re-running both arms over exactly those 11 cases on one code
+version: **11 of 11 claims byte-identical**, 0 fallbacks, 0 new unsupported.
+The earlier one-worker checks agreed for the same reason — both sides were
+post-fix by then.
+
+**What this means for Step 3's result.** It strengthens it. The narrator changed
+*nothing*: the claim-identity figure would have been 284 of 284 had both arms
+run on one tree, and the structured fields were identical even across the two
+trees. The wall-clock and fallback figures are unaffected — they do not depend
+on the noun table.
+
+The operational lesson is the one `memory: ariadne-concurrent-sessions` already
+records and this experiment did not act on: main moves while you work, and a
+treatment and its control must be run from one tree. Both arms should have been
+run back to back, or the commit pinned, rather than 110 minutes apart.
 
 ## I-9 — the specialist seam is not viable at 2B (Step 4 result, not a failure)
 

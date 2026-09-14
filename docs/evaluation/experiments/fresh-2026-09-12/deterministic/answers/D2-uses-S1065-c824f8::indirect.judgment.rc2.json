@@ -1,0 +1,26 @@
+{
+ "case_id": "D2-uses-S1065-c824f8::indirect",
+ "verdict": "PARTIAL",
+ "correctness": 0.85,
+ "faithfulness": 0.75,
+ "groundedness": 0.9,
+ "completeness": 1.0,
+ "gold_expected": 30,
+ "gold_present": 30,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "S1065 has no USES relationships in this catalogue"
+ ],
+ "rationale": "The answer lists all 30 expected ATT&CK technique identifiers for S1065, including T1005, T1055.012, T1573.001, and T1685, so completeness is full. However, it also asserts that S1065 has no USES relationships, which is contradicted by the executed USES query returning 30 technique rows. This contradiction makes the answer partial rather than fully correct.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 8192,
+  "escalated": false,
+  "position": 2
+ }
+}

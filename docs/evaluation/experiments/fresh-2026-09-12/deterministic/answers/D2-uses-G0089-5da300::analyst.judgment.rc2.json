@@ -1,0 +1,26 @@
+{
+ "case_id": "D2-uses-G0089-5da300::analyst",
+ "verdict": "PARTIAL",
+ "correctness": 0.8,
+ "faithfulness": 0.6,
+ "groundedness": 0.7,
+ "completeness": 1.0,
+ "gold_expected": 2,
+ "gold_present": 2,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "G0089 has no USES relationships in this catalogue"
+ ],
+ "rationale": "The answer states both expected software identifiers, S0379 and S0198, for G0089, so it fully covers the gold set. However, it also claims that G0089 has no USES relationships, which is contradicted by the executed USES query returning two related software records. This makes the answer partially correct and less than fully faithful.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 8192,
+  "escalated": false,
+  "position": 2
+ }
+}
