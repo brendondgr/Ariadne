@@ -1,0 +1,30 @@
+{
+  "measurement": "single-user latency, one worker, generic arm, 20 questions",
+  "endpoint": "localhost:9090 default-model (qwen38-27B-v2)",
+  "budgets": {
+    "t120": {
+      "synthesis_timeout_s": 120,
+      "questions": 20,
+      "answered": 20,
+      "wall_s": 1336.4,
+      "seconds_per_answer": 66.82,
+      "fallbacks": 3,
+      "fell_back": [
+        "D6-HAS_MEMBER-MAPS_TO[ATTACK]-CAPEC-513-f08e34::indirect",
+        "D6-HAS_MEMBER-MAPS_TO[ATTACK]-CAPEC-703-a8f98a::formal",
+        "D6-MAPS_TO[ATTACK]-CanFollow-T1078.001-0085e9::formal"
+      ]
+    },
+    "t600": {
+      "synthesis_timeout_s": 600,
+      "questions": 20,
+      "answered": 20,
+      "wall_s": 1359.0,
+      "seconds_per_answer": 67.95,
+      "fallbacks": 0,
+      "fell_back": []
+    }
+  },
+  "finding": "Raising the synthesis budget from 120s to 600s costs 1.13s per answer and removes all three fallbacks. The timeout binds only on answers that were already slow, so the mean barely moves. All three that fell back at 120s are D6 cross-catalogue questions \u2014 the largest answers in the bank \u2014 which is the same size-correlated failure EXP-2026-08-021 recorded: a budget never loses a random sample, it loses the biggest answers.",
+  "comparison": "generic_composed answers the same questions in 0.75s, so the model costs roughly 90x in single-user wall time for a fresh-set difference of -0.0014 (0.8991 against 0.9005)."
+}
