@@ -1,0 +1,173 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><title>Ariadne — Retiring the Template Engine</title>
+<style>
+@page { size: A4; margin: 11mm 13mm 10mm 13mm; }
+* { box-sizing: border-box; }
+body { font-family: "Charter","Georgia",serif; font-size: 9.0pt; line-height: 1.4; color:#16181d; margin:0; }
+h1 { font-size: 16pt; margin:0 0 .8mm; letter-spacing:-.3px; }
+h2 { font-size: 11pt; page-break-after:avoid; margin: 3.6mm 0 1.2mm; padding-bottom:1mm; border-bottom:1.5px solid #16181d; letter-spacing:-.2px;}
+h3 { font-size: 9.7pt; margin: 2.6mm 0 .8mm; color:#2c3140; }
+p { margin: 0 0 1.6mm; }
+.sub { color:#5b6170; font-size:8.5pt; margin:0 0 2.8mm; }
+table { border-collapse: collapse; width:100%; margin: 1.4mm 0 2.6mm; font-size:8.8pt; }
+th { text-align:left; border-bottom:1.2px solid #16181d; padding:1.35mm 1.9mm; font-weight:600; }
+td { padding:1.25mm 1.9mm; border-bottom:.5px solid #d8dbe2; }
+td.n, th.n { text-align:right; font-variant-numeric: tabular-nums; }
+tr.hl td { background:#eef4ff; font-weight:600; }
+b, strong { color:#0b1020; }
+.box { border-left:3px solid #2f5fd0; background:#f5f8ff; padding:1.9mm 2.4mm; margin:1.8mm 0 2.4mm; }
+.box.warn { border-left-color:#b8580f; background:#fff8f1; }
+.box.good { border-left-color:#1d7a44; background:#f2fbf5; }
+.box p:last-child { margin-bottom:0; }
+.k { font-family:"SF Mono",Menlo,monospace; font-size:8.2pt; background:#eef0f4; padding:.3mm 1mm; border-radius:2px; }
+.pagebreak { page-break-before: always; }
+.cap { font-size:8pt; color:#5b6170; margin:-.8mm 0 2.2mm; }
+ul { margin:0 0 1.8mm; padding-left:4mm; } li { margin-bottom:.8mm; }
+.foot { margin-top:3mm; padding-top:1.6mm; border-top:.5px solid #c7ccd6; font-size:7.6pt; color:#5b6170; }
+.two { display:flex; gap:5mm; } .two > * { flex:1; }
+</style></head><body>
+
+<h1>Retiring the template engine</h1>
+<p class="sub">Ariadne — knowledge-graph question answering over ATT&amp;CK and CAPEC &nbsp;·&nbsp; results brief, 14 September 2026<br>
+Every figure below is recomputed from judgment files, not quoted from prose. Sources named in the footer.</p>
+
+<div class="box">
+<p><b>Two questions were on trial.</b></p>
+<p><b>1. Can the template engine be retired?</b> It answers only questions someone wrote a template for — it is not an open-ended process, so an arbitrary question cannot be fed to it. The replacement composes answers from five universal primitives instead.</p>
+<p><b>2. Can a small (2B) model make answers readable for humans?</b> Its job is presentation, not retrieval — turn a correct structured answer into clear prose without disturbing a single fact.</p>
+</div>
+
+<h2>Headline</h2>
+
+<p><b>Both answers are yes, with one honest caveat that reframes the programme.</b> The open-ended engine beats the template engine by <b>+0.348</b> on questions nothing had ever seen, with zero fabricated mappings, and it is not meaningfully slower. The 2B model rewrites prose without touching facts — provably, across 284 answers. The caveat is that both headline arms replay a human-authored retrieval plan, and letting the system plan for itself costs <b>−0.381</b>.</p>
+
+<table>
+<tr><th>Arm</th><th>What it is</th><th class="n">Correctness</th><th class="n">Fabricated<br>mappings</th><th class="n">s / answer</th></tr>
+<tr><td><span class="k">deterministic</span></td><td>hand-written templates</td><td class="n">0.5525 ±0.0197</td><td class="n">0</td><td class="n">0.04</td></tr>
+<tr class="hl"><td><span class="k">generic_composed</span></td><td>5 primitives, <b>no model anywhere</b></td><td class="n">0.9005 ±0.0102</td><td class="n">0</td><td class="n">0.05</td></tr>
+<tr><td><span class="k">generic</span></td><td>5 primitives + LLM narrator</td><td class="n">0.8991 ±0.0103</td><td class="n">0</td><td class="n">66.82</td></tr>
+</table>
+<p class="cap">282 questions, seed 10140325, authored blind and sealed before use — never asked, never graded. Both grading positions, counterbalanced. Latency at one worker on a matched 20-question slice.</p>
+
+<h2>How the two engines differ</h2>
+
+<svg viewBox="0 0 760 186" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:auto">
+  <defs><marker id="a" markerWidth="7" markerHeight="7" refX="6" refY="2.4" orient="auto"><path d="M0,0 L6,2.4 L0,4.8 z" fill="#5b6170"/></marker></defs>
+  <text x="0" y="12" font-family="Georgia,serif" font-size="11.5" font-weight="bold" fill="#16181d">Template engine — closed set</text>
+  <rect x="0" y="22" width="96" height="30" rx="3" fill="#fff" stroke="#8a90a0"/><text x="48" y="41" font-size="10" text-anchor="middle" font-family="Georgia,serif">question</text>
+  <line x1="96" y1="37" x2="126" y2="37" stroke="#5b6170" stroke-width="1.3" marker-end="url(#a)"/>
+  <rect x="128" y="22" width="132" height="30" rx="3" fill="#fff8f1" stroke="#b8580f"/><text x="194" y="41" font-size="10" text-anchor="middle" font-family="Georgia,serif">match a template</text>
+  <line x1="260" y1="37" x2="290" y2="37" stroke="#5b6170" stroke-width="1.3" marker-end="url(#a)"/>
+  <rect x="292" y="22" width="128" height="30" rx="3" fill="#fff" stroke="#8a90a0"/><text x="356" y="41" font-size="10" text-anchor="middle" font-family="Georgia,serif">fixed query</text>
+  <line x1="420" y1="37" x2="450" y2="37" stroke="#5b6170" stroke-width="1.3" marker-end="url(#a)"/>
+  <rect x="452" y="22" width="128" height="30" rx="3" fill="#fff" stroke="#8a90a0"/><text x="516" y="41" font-size="10" text-anchor="middle" font-family="Georgia,serif">fixed wording</text>
+  <path d="M194,52 L194,70" stroke="#b8580f" stroke-width="1.3" marker-end="url(#a)"/>
+  <text x="204" y="68" font-size="9.5" fill="#b8580f" font-family="Georgia,serif">no template → no answer.</text>
+  <text x="204" y="81" font-size="9.5" fill="#b8580f" font-family="Georgia,serif">This is the ceiling: <tspan font-weight="bold">0.5525</tspan></text>
+
+  <text x="0" y="112" font-family="Georgia,serif" font-size="11.5" font-weight="bold" fill="#16181d">Open-ended engine — five primitives, composed per question</text>
+  <rect x="0" y="122" width="96" height="30" rx="3" fill="#fff" stroke="#8a90a0"/><text x="48" y="141" font-size="10" text-anchor="middle" font-family="Georgia,serif">question</text>
+  <line x1="96" y1="137" x2="126" y2="137" stroke="#5b6170" stroke-width="1.3" marker-end="url(#a)"/>
+  <rect x="128" y="122" width="132" height="30" rx="3" fill="#f5f8ff" stroke="#2f5fd0"/><text x="194" y="135" font-size="9.2" text-anchor="middle" font-family="Georgia,serif">read the schema,</text><text x="194" y="146" font-size="9.2" text-anchor="middle" font-family="Georgia,serif">pick primitives</text>
+  <line x1="260" y1="137" x2="290" y2="137" stroke="#5b6170" stroke-width="1.3" marker-end="url(#a)"/>
+  <rect x="292" y="122" width="128" height="30" rx="3" fill="#f5f8ff" stroke="#2f5fd0"/><text x="356" y="135" font-size="9.2" text-anchor="middle" font-family="Georgia,serif">compose the whole</text><text x="356" y="146" font-size="9.2" text-anchor="middle" font-family="Georgia,serif">query, then execute</text>
+  <line x1="420" y1="137" x2="450" y2="137" stroke="#5b6170" stroke-width="1.3" marker-end="url(#a)"/>
+  <rect x="452" y="122" width="128" height="30" rx="3" fill="#f5f8ff" stroke="#2f5fd0"/><text x="516" y="141" font-size="10" text-anchor="middle" font-family="Georgia,serif">compose answer</text>
+  <line x1="580" y1="137" x2="610" y2="137" stroke="#5b6170" stroke-width="1.3" stroke-dasharray="3,2" marker-end="url(#a)"/>
+  <rect x="612" y="122" width="146" height="30" rx="3" fill="#f2fbf5" stroke="#1d7a44"/><text x="685" y="135" font-size="9.2" text-anchor="middle" font-family="Georgia,serif">2B narrator</text><text x="685" y="146" font-size="8.6" text-anchor="middle" fill="#1d7a44" font-family="Georgia,serif">optional · prose only</text>
+  <text x="128" y="171" font-size="9.5" fill="#1d7a44" font-family="Georgia,serif">Any question the schema can express is answerable. <tspan font-weight="bold">0.9005</tspan>, with no model in the answer path.</text>
+</svg>
+
+<p>The five primitives — <span class="k">describe</span>, <span class="k">generic_neighbors</span>, <span class="k">generic_walk</span>, <span class="k">generic_chain</span>, <span class="k">generic_bridge</span> — are the whole vocabulary. The engine reads a precomputed schema registry (which relation types connect which node labels, and in which direction), composes the entire query before touching the database, and executes once. Nothing about the graph's contents is needed to plan the shape of the query, which is why it works on questions no one anticipated.</p>
+
+<h2>Result 1 — the template engine is dominated</h2>
+
+<p>The decisive test was a <b>sealed set</b>: 282 questions generated at a fixed seed, authored blind against briefs, and cryptographically sealed before any arm saw them. A self-test confirmed the sealing tool would refuse a previously used bank — it did refuse the old holdout, on 3,456 prior judgments.</p>
+
+<table>
+<tr><th>Dimension</th><th class="n">deterministic</th><th class="n">generic_composed</th><th>Verdict</th></tr>
+<tr><td>Correctness, unseen questions</td><td class="n">0.5525</td><td class="n"><b>0.9005</b></td><td>−0.348 against templates</td></tr>
+<tr><td>Fabricated mappings (sealed set)</td><td class="n">0</td><td class="n">0</td><td>tie</td></tr>
+<tr><td>Fabricated mappings (regression)</td><td class="n">3</td><td class="n"><b>0</b></td><td>templates still fabricate</td></tr>
+<tr><td>Wrong-entity rate</td><td colspan="2" class="n">0.0950 shipped — lowest of 7 reference captures</td><td>no regression</td></tr>
+<tr><td>Latency, single user</td><td class="n">0.04 s</td><td class="n">0.05 s</td><td>0.01 s — not a fast path</td></tr>
+<tr><td>Questions it can accept</td><td class="n">template must exist</td><td class="n"><b>any</b></td><td>the original motivation</td></tr>
+</table>
+
+<div class="box good"><p><b>There is no measured dimension on which the template engine wins.</b> The one argument that could have survived a coverage loss — that templates are the fast path — is worth a hundredth of a second per answer. Retiring it costs nothing and removes a maintenance surface that grows with every new question type.</p></div>
+
+<h3>The result holds on a second, independent question bank</h3>
+<p>The same three arms were re-run over a separate 288-question bank on a different night. Both engines land within <b>0.003</b> of their sealed-set scores.</p>
+
+<table>
+<tr><th>Arm</th><th class="n">Sealed set (282)</th><th class="n">Second bank (288)</th><th class="n">Difference</th></tr>
+<tr><td><span class="k">deterministic</span></td><td class="n">0.5525</td><td class="n">0.5443</td><td class="n">0.008</td></tr>
+<tr><td><span class="k">generic_composed</span></td><td class="n">0.9005</td><td class="n">0.8987</td><td class="n">0.002</td></tr>
+<tr><td><span class="k">generic</span></td><td class="n">0.8991</td><td class="n">0.9014</td><td class="n">0.002</td></tr>
+</table>
+<p class="cap">The second bank had been used before, so it is reported as a regression check and never as a capability figure. Its value is the agreement, not the level: the result generalises rather than fitting the set it was tuned on.</p>
+
+<h2>Result 2 — the 2B model does its job, and only its job</h2>
+
+<p>The small model was never asked to improve correctness. It was asked to make a correct structured answer read well for a human. The test is therefore <b>fidelity</b>, not accuracy: did the prose change any fact?</p>
+
+<table>
+<tr><th>Check, across 284 answers</th><th class="n">Result</th><th>Reading</th></tr>
+<tr class="hl"><td>Claims byte-identical to the model-free control</td><td class="n">284 / 284</td><td>no fact was altered</td></tr>
+<tr><td>Changes to entity identifiers</td><td class="n">0</td><td>no entity substitution</td></tr>
+<tr><td>Changes to citations</td><td class="n">0</td><td>evidence links intact</td></tr>
+<tr><td>Changes to verdicts</td><td class="n">0</td><td>no abstention overturned</td></tr>
+<tr><td>New unsupported statements</td><td class="n">0</td><td>nothing invented</td></tr>
+<tr><td>Effect on retrieval coverage</td><td class="n">+0.0000</td><td>exactly zero, zero spread</td></tr>
+<tr><td>Fallback rate (transport failures)</td><td class="n">0.0282</td><td>within the 0.14 bar</td></tr>
+</table>
+
+<div class="box good"><p><b>This is the result the presentation goal needed.</b> A narrator that cannot move a correctness metric is a narrator that cannot corrupt an answer. The +0.0000 is not a disappointing null — it is the safety property, measured from two directions independently.</p></div>
+
+<h3>What it costs, and the one thing it cannot do</h3>
+<p>The seam costs time, not accuracy: <b>66.8 s per answer against 0.05 s</b> — roughly 1,340×, for a correctness difference of −0.0014 that sits inside the grader's noise. So prose generation belongs <b>on demand, per answer</b>, not in the default path.</p>
+<p>The same 2B model was also tried at the harder seam — <b>drafting database queries</b>. It is not usable there: <b>0 working drafts out of 17</b>, and quadrupling its token budget changed the failure mode without changing the outcome. Query construction stays deterministic.</p>
+
+<div class="pagebreak"></div>
+<h2>Result 3 — the caveat that reframes every figure above</h2>
+
+<p>Both 0.90 arms answer using a <b>human-authored retrieval plan</b>, replayed. The planner does not run. When the system is made to produce its own plan, retrieval coverage falls by <b>−0.381</b> (paired, n = 284, SE 0.0262 — fourteen standard errors, not noise).</p>
+
+<table>
+<tr><th>Gold coverage, 284 questions</th><th class="n">no model</th><th class="n">2B narrator</th><th class="n">model effect</th></tr>
+<tr class="hl"><td><b>authored plan</b></td><td class="n">0.8611</td><td class="n">0.8611</td><td class="n">+0.0000</td></tr>
+<tr><td><b>system plans for itself</b></td><td class="n">0.4797</td><td class="n">0.4824</td><td class="n">+0.0026</td></tr>
+<tr><td><b>plan effect</b></td><td class="n">−0.3814</td><td class="n">−0.3787</td><td class="n">interaction +0.0027</td></tr>
+</table>
+<p class="cap">All four cells run and paired per question — the fourth had never been measured. The two variables do not interact, so the corners are not misleading each other.</p>
+
+<p>On <b>77 of 284 questions the planner retrieved nothing where the authored plan retrieved records. The reverse never happened once.</b> The loss is worst on chained and cross-catalogue questions (−0.50 and −0.55), which are exactly the questions with the most plan structure to get wrong.</p>
+
+<div class="box warn"><p><b>What this means, stated precisely.</b> 0.90 is a measured ceiling for <b>retrieval and composition given a correct plan</b>. It is a real ceiling — it is what the engine achieves on questions nobody wrote a template for — but it is not yet an end-to-end figure for a system answering arbitrary questions unaided. The open-endedness claim is proven for the <i>engine</i> and not yet for the <i>planner</i>.</p>
+<p>One limit on the −0.381 itself: the self-planning arm also inherits tighter per-plan bounds, so "chose a worse decomposition" is not yet separated from "chose tighter limits". That separation needs a third arm and is recorded as an open issue rather than assumed away.</p></div>
+
+<h2>What follows concretely</h2>
+
+<table>
+<tr><th>Decision</th><th>Supported?</th><th>Evidence</th></tr>
+<tr><td>Retire the deterministic template engine</td><td><b>Yes</b></td><td>−0.348 coverage, still fabricates, 0.01 s slower to replace</td></tr>
+<tr><td>Ship the answer path with no model in it</td><td><b>Yes</b></td><td><span class="k">generic_composed</span> 0.9005 with every LLM seam off</td></tr>
+<tr><td>Use the 2B model for human-facing prose</td><td><b>Yes, on demand</b></td><td>284/284 facts preserved; 1,340× latency forbids it as default</td></tr>
+<tr><td>Use the 2B model to draft queries</td><td><b>No</b></td><td>0 working drafts of 17; budget increase does not help</td></tr>
+<tr><td>Claim end-to-end open-ended QA at 0.90</td><td><b>Not yet</b></td><td>planner costs −0.381; that gap is the next experiment</td></tr>
+</table>
+
+<p><b>Recommended shape.</b> One engine, not two: primitives compose every answer, deterministically, with no model in the fact path. The 2B narrator becomes a presentation layer the reader opts into per answer. The remaining engineering question is no longer "can this generalise" — it is "can the planner reach the ceiling the engine already demonstrates".</p>
+
+<h2>How much to trust these numbers</h2>
+<ul>
+<li><b>A pre-registered kill gate that fired.</b> The first judged pass produced this project's first non-zero fabrication count. One defect explained it — a scope line asserted from the intended filter rather than from what the query actually did — and the fix made the claim one-way: it can withhold a true statement, never assert a false one.</li>
+<li><b>Five composer defects found and repaired</b> during the run; four were caught before any result was read.</li>
+<li><b>A size-correlated grading bias, found and closed three times.</b> Answers that failed to grade were always the largest, never a random sample. Recovering eight moved the LLM arm <i>down</i>, 0.9043 → 0.8991. Every figure here is over the complete set.</li>
+<li><b>One figure withdrawn and corrected here.</b> The narrator's latency cost was recorded as "90×"; that divided a per-answer rate by a 20-question total. Re-measured: ~1,340×. The erroneous value is retained as withdrawn, not deleted.</li>
+<li><b>Grading:</b> capability figures average two counterbalanced positions. Single-tier differences below ~0.06 are indistinguishable from grader noise and are not claimed.</li>
+</ul>
+
+<p class="foot">Sources — <span class="k">EXP-2026-09-018</span> (repair, paired control, sealed set, regression, latency, T6) and <span class="k">EXP-2026-09-019</span> (endpoint, planner cost, 2B narrator and specialist seams, 2×2). All values recomputed from judgment sidecars via each experiment's <span class="k">data/*.json</span>; none transcribed from prose. Grading by a single model family on one endpoint — a threat to validity recorded in both protocols.</p>
+
+</body></html>
