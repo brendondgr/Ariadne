@@ -291,3 +291,75 @@ through that instrument.** Coverage is a recall measure and cannot fall when
 evidence is added, so every figure in this amendment is guaranteed to look good
 by construction. T6 is the check that says whether the answers are still about
 what was asked, and it must run before any of this ships.
+
+## Amendment A-4 — A-3's bound was wrong, and the mechanism is the opposite (2026-09-14)
+
+`A-3` bounded exhaustive relation union at **0.7350** by assuming that when the
+gold relation is among those the anchor declares, walking them all reaches the
+authored-plan coverage for that question. **Implemented and measured, it does the
+reverse.**
+
+| | Coverage | Empty | Median records |
+|---|---:|---:|---:|
+| planner, as shipped | 0.4797 | 85 | 1 |
+| planner + relation union | **0.4611** | 85 | 1 |
+
+**−0.0187** (SE 0.0109), 6 questions improved and **18 worsened**. The change
+did what it was designed to do — `describe` fell from 59 answers to 20 and
+`generic_neighbors` rose from 10 to 49, so 39 questions switched from describing
+the anchor to walking every declared relationship — and those questions got
+worse.
+
+**Why the bound was wrong.** `describe` is not the weak fallback `A-3` assumed.
+It returns the anchor's full record *plus a bounded facet block*, and for a
+question whose gold is reachable from the anchor's own properties that block
+already carries the answer. Replacing it with a neighbour walk over a 19-way
+alternation trades a record that contained the gold for neighbour rows that do
+not. Coverage is a recall measure, so the only way it can fall on added evidence
+is if the added evidence *replaced* rather than extended what was there — which
+is exactly what a routing change does.
+
+**The lesson is about the bound, not the feature.** `A-3` reasoned from schema
+structure to a coverage number without running anything, and the number was
+0.27 too high. Every other union in this experiment (`A-1`, `A-2`) was measured
+before it was claimed. This one was not, and it is withdrawn:
+`exhaustive_relation_union_upper_bound` 0.7350 does not stand.
+
+The implementation is reverted rather than kept behind its flag. A public
+repository carrying a measured-negative routing switch is a trap for the next
+reader.
+
+## Amendment A-5 — the merged configuration fails T6 (2026-09-14)
+
+Every amendment above reports a coverage gain, and coverage is a recall measure
+that **cannot fall when evidence is added**. `T6` is the instrument that asks the
+other question — is the answer still about the entity that was asked for — and it
+was run on the merged configuration (`SPECIALIST_ENGINE_MERGE=1`,
+`ORCH_CHASE_FACETS=1`, 8 expansions) over the same 579 paraphrase variants.
+
+| | shipped tree | merged | change |
+|---|---:|---:|---:|
+| `wrong_entity` | 0.0950 | **0.1071** | +0.0121 (+13%) |
+| `catalogue_dump` | 0.0915 | **0.1157** | +0.0242 (**+26%**) |
+| `abstained` | 0.4663 | 0.5147 | +0.0484 |
+
+**It fails.** `EXP-2026-09-018`'s bar was "not above the reference", and the
+merged configuration is above it on both fidelity measures. The worst tiers are
+`T3`–`T5`, where `catalogue_dump` reaches 0.2277, 0.2308 and 0.1731.
+
+This is the trade the coverage figures could not show. Merging buys +0.0548 of
+recall and spends roughly a quarter again as much catalogue dumping — the failure
+mode where an answer contains what was asked for inside a list of everything
+else. For an analyst tool those are not equivalent currencies: a dumped catalogue
+is an answer a reader cannot act on, and it is the specific complaint
+`EXP-2026-09-016` built this instrument to detect.
+
+**Consequence: `SPECIALIST_ENGINE_MERGE` must not ship on by default in its
+current form.** It stays off, with this amendment as the reason. The coverage
+result stands; what does not stand is the inference from it to a shipping
+decision.
+
+What would make it shippable is bounding what reaches the composer rather than
+bounding what is retrieved — the merge adds rows the enumeration then lists in
+full. That is a composer change, not a retrieval one, and it has not been
+attempted.
