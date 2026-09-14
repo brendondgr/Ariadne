@@ -156,8 +156,11 @@ TRANSIENT_400 = re.compile(
     r"service unavailable", re.I
 )
 #: A tunnel flap outlasts an ordinary retry ladder, so this one is longer and
-#: slower: roughly eight minutes of patience before a case is given up on.
-TRANSIENT_RETRIES = 8
+#: slower. Raised to thirty minutes on 2026-09-13: the operator warned the
+#: server goes down for roughly twenty minutes around 04:00, and eight minutes
+#: of patience would have turned a planned outage into a few hundred ungraded
+#: cases that the sweep then has to re-run.
+TRANSIENT_RETRIES = 30
 TRANSIENT_BACKOFF_S = 60
 
 
@@ -253,6 +256,24 @@ def _post(config: JudgeConfig, prompt: str, max_tokens: int | None = None) -> tu
                 break
             if attempt < config.retries:
                 time.sleep(min(2**attempt, 30))
+        except urllib.error.URLError as exc:
+            # The endpoint is UNREACHABLE rather than objecting — the tunnel is
+            # down, not the request bad. Same treatment as a missing alias: wait
+            # it out rather than burning the retry budget in ninety seconds.
+            # A read timeout is NOT this: it means the server accepted the
+            # request and is still thinking, which is an ordinary slow case.
+            reason = str(getattr(exc, "reason", exc))
+            if isinstance(getattr(exc, "reason", None), TimeoutError) or "timed out" in reason:
+                last = exc
+                if attempt < config.retries:
+                    time.sleep(min(2**attempt, 30))
+                continue
+            last = exc
+            transient += 1
+            if transient >= TRANSIENT_RETRIES:
+                break
+            time.sleep(TRANSIENT_BACKOFF_S)
+            continue
         except Exception as exc:  # noqa: BLE001 — the server restarts; that is the point
             last = exc
             if attempt < config.retries:
