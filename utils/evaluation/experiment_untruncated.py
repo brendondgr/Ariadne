@@ -44,6 +44,7 @@ DEFAULT_ROOT = "docs/evaluation/experiments/untruncated"
 # un-truncation, A − C isolates the composer, and B − C isolates LLM planning.
 ARMS = ("deterministic", "llm", "gold_llm", "llm_loop", "gold_loop_llm", "generic",
         "llm_query", "merged", "generic_composed", "generic_planned",
+        "deterministic_planned",
         "generic_local_narrator", "generic_local_full", "generic_narrator_off",
         "generic_planned_local",
         "rewrite_off", "rewrite_det", "rewrite_model")
@@ -252,6 +253,37 @@ def untruncated_env(*, arm: str, llm_model: str, llm_max_tokens: int) -> dict[st
         # into one number.
         env.update({
             "SPECIALIST_GENERIC_ONLY": "true",
+            "PLANNER_LLM_ENABLED": "false",
+            "SPECIALIST_LLM_ENABLED": "false",
+            "SYNTHESIS_LLM_ENABLED": "false",
+            "CONVERSATION_LLM_ENABLED": "false",
+            "ARIADNE_REWRITE": "0",
+            "ARIADNE_REWRITE_MODEL": "0",
+        })
+    elif arm == "deterministic_planned":
+        # The cell that decides whether the shipped workbench should swap its
+        # engine, and the one the 2x2 in EXP-2026-09-019 does not contain.
+        #
+        # `app.py` runs the REAL planner (api/services/query.py calls
+        # iter_pipeline) with the template cascade, because
+        # SPECIALIST_GENERIC_ONLY is unset. No arm on record is that
+        # configuration: every `deterministic`-family arm drives
+        # `run_deterministic`, which replays the authored plan. So the question
+        # "is the primitive engine better than what we ship" has been answered
+        # only at a plan source production does not have.
+        #
+        # This is `generic_planned` with exactly one flag inverted. Both drive
+        # `run_planned`, so both execute the planner for real and both load
+        # SynthesisConfig by the same route — the confound I-8 caught between
+        # gold-replay and real-pipeline arms cannot appear between these two.
+        # A paired difference is therefore the query-construction engine and
+        # nothing else, measured where production actually stands.
+        #
+        # The flag is stated false rather than omitted. Omitting it would let a
+        # stray SPECIALIST_GENERIC_ONLY in the caller's environment silently
+        # turn this arm into `generic_planned` and report a difference of zero.
+        env.update({
+            "SPECIALIST_GENERIC_ONLY": "false",
             "PLANNER_LLM_ENABLED": "false",
             "SPECIALIST_LLM_ENABLED": "false",
             "SYNTHESIS_LLM_ENABLED": "false",
@@ -998,6 +1030,11 @@ RUNNERS = {
     # precisely the variable this arm exists to remove. `run_rewrite` drives the
     # real pipeline with the planner in it and no language model anywhere.
     "generic_planned": run_planned,
+    # Same driver, and that is the point: the templates-vs-primitives question
+    # is only answerable at production's plan source if BOTH sides run the
+    # planner. `run_deterministic` would replay the authored plan and answer a
+    # question that has already been answered.
+    "deterministic_planned": run_planned,
     # Deterministic planner, deterministic queries, 2B narrator — the one cell
     # of the 2x2 that had never been run.
     "generic_planned_local": run_planned_local,
@@ -1154,6 +1191,7 @@ def run_arm(
 #: fail a run that cannot be affected by the relay at all.
 _MODEL_FREE_ARMS = frozenset({
     "deterministic", "generic_composed", "generic_planned", "merged",
+    "deterministic_planned",
     # No live seam: SYNTHESIS_LLM_ENABLED=false, and every other seam off. It
     # names an endpoint only so that its config resolves identically to the
     # arms it is the control for.

@@ -30,8 +30,8 @@ import statistics
 from pathlib import Path
 from typing import Any
 
-CONTROL_ARM = "generic_composed"
-TREATMENT_ARM = "generic_planned"
+DEFAULT_CONTROL_ARM = "generic_composed"
+DEFAULT_TREATMENT_ARM = "generic_planned"
 
 
 def load_arm(root: Path, arm: str) -> dict[str, dict]:
@@ -60,7 +60,9 @@ def records(artifact: dict) -> int:
     return int((artifact.get("evidence_volume") or {}).get("records") or 0)
 
 
-def summarize(control: dict[str, dict], treatment: dict[str, dict]) -> dict[str, Any]:
+def summarize(control: dict[str, dict], treatment: dict[str, dict],
+              control_arm: str = DEFAULT_CONTROL_ARM,
+              treatment_arm: str = DEFAULT_TREATMENT_ARM) -> dict[str, Any]:
     """The paired difference, overall and per tier, plus the retrieval failures."""
     ids = sorted(set(control) & set(treatment))
     diffs: list[float] = []
@@ -93,8 +95,8 @@ def summarize(control: dict[str, dict], treatment: dict[str, dict]) -> dict[str,
     return {
         "n_paired": n,
         "metric": "deterministic gold coverage (deterministic_scores.coverage)",
-        "control": {"arm": CONTROL_ARM, "mean": round(statistics.fmean(control_values), 4) if n else None},
-        "treatment": {"arm": TREATMENT_ARM, "mean": round(statistics.fmean(treatment_values), 4) if n else None},
+        "control": {"arm": control_arm, "mean": round(statistics.fmean(control_values), 4) if n else None},
+        "treatment": {"arm": treatment_arm, "mean": round(statistics.fmean(treatment_values), 4) if n else None},
         "paired_difference": {
             "mean": round(mean, 4),
             "sd": round(sd, 4),
@@ -120,18 +122,23 @@ def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--root", required=True, help="run root holding both arms' answers/")
     parser.add_argument("--out", default=None)
+    parser.add_argument("--control", default=DEFAULT_CONTROL_ARM,
+                        help=f"control arm directory (default {DEFAULT_CONTROL_ARM})")
+    parser.add_argument("--treatment", default=DEFAULT_TREATMENT_ARM,
+                        help=f"treatment arm directory (default {DEFAULT_TREATMENT_ARM})")
     args = parser.parse_args()
 
     root = Path(args.root)
-    control = load_arm(root, CONTROL_ARM)
-    treatment = load_arm(root, TREATMENT_ARM)
+    control_arm, treatment_arm = args.control, args.treatment
+    control = load_arm(root, control_arm)
+    treatment = load_arm(root, treatment_arm)
     if not control or not treatment:
         raise SystemExit(f"missing an arm under {root}: "
-                         f"{CONTROL_ARM}={len(control)} {TREATMENT_ARM}={len(treatment)}")
+                         f"{control_arm}={len(control)} {treatment_arm}={len(treatment)}")
 
-    result = summarize(control, treatment)
+    result = summarize(control, treatment, control_arm, treatment_arm)
     result["source_root"] = str(root)
-    result["counts"] = {CONTROL_ARM: len(control), TREATMENT_ARM: len(treatment)}
+    result["counts"] = {control_arm: len(control), treatment_arm: len(treatment)}
 
     text = json.dumps(result, indent=2) + "\n"
     if args.out:
@@ -139,8 +146,8 @@ def main() -> int:
         Path(args.out).write_text(text)
         print(f"written: {args.out}")
     diff = result["paired_difference"]
-    print(f"{CONTROL_ARM} {result['control']['mean']}  ->  "
-          f"{TREATMENT_ARM} {result['treatment']['mean']}")
+    print(f"{control_arm} {result['control']['mean']}  ->  "
+          f"{treatment_arm} {result['treatment']['mean']}")
     print(f"paired difference {diff['mean']:+} (se {diff['standard_error']}), "
           f"separable={diff['separable']}, n={result['n_paired']}")
     print(f"treatment retrieved nothing where control retrieved: "
