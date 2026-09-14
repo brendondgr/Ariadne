@@ -117,3 +117,53 @@ reaches that quality.
   effect. Both cells of the engine comparison at the real planner inherit the
   same bounds from the same planner, so that term cancels. It still applies to
   the plan-effect column.
+
+## Amendment A-1 — run both engines instead of choosing one (2026-09-14)
+
+The 2×2 above was read as a choice, and the choice is the wrong frame. Both
+engines cost **0.095 s per answer single-user with the planner running**, so
+running both costs about a tenth of a second in parallel. Scoring the union of
+what they retrieve — a gold id counts as found if *either* engine found it —
+against each alone, on the same 284 questions at production's plan source:
+
+| Configuration | Gold coverage | Empty answers |
+|---|---:|---:|
+| templates only | 0.4536 | 55 |
+| primitives only | 0.4797 | 85 |
+| **both, evidence merged** | **0.5862** | **34** |
+| both, oracle pick-best | 0.5862 | — |
+
+**The merge equals the oracle.** Picking the better engine per question with
+perfect foreknowledge scores exactly what merging scores, to four decimals. The
+two engines' evidence sets are **complementary rather than competing**, which
+means the routing rule I recommended earlier is unnecessary: there is nothing to
+predict, because taking both loses nothing against choosing perfectly.
+
+**+0.1064 over the better single engine** — four times the +0.0261 that choosing
+between them is worth, and it needs no tier classifier, no held-out validation of
+a routing rule, and no model.
+
+Empty answers fall from 55 (templates) and 85 (primitives) to **34**. That is the
+analyst-visible failure mode, down 38% against the better single engine.
+
+### A rule that needs no foreknowledge, if merging is too invasive
+
+| Rule | Coverage |
+|---|---:|
+| prefer primitives, fall back when they retrieved nothing | **0.5713** |
+| prefer templates, fall back when they retrieved nothing | 0.5020 |
+
+The first captures 87% of the merge benefit with a one-line condition, and is the
+cheaper thing to ship first.
+
+### What this does not establish
+
+- **Merging more evidence is not proven free.** More records reaching the
+  composer could raise wrong-entity or catalogue-dump rates; `EXP-2026-09-018`'s
+  T6 instrument is the thing that would catch it and has not been run on a merged
+  configuration. The coverage gain is measured; the fidelity cost is not.
+- **Still retrieval, not judged correctness**, and still at a plan source that
+  loses 0.38 to the authored path. Merging raises the floor; it does not reach the
+  0.8611 ceiling, and the planner remains the dominant term.
+- The 34 questions where **both** engines retrieve nothing are a planner
+  diagnostic set, not an engine one.
