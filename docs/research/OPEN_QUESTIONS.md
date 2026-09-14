@@ -52,6 +52,8 @@ below.)
 | Q54 | Two CAPEC properties the questions filter on were never parsed from the source | EXP-2026-09-018 Step 4 | 10 dev and 16 holdout filtered questions; part of Q52's slice *(open)* |
 | Q55 | The Neo4j loader packs every non-core property into a JSON string, so no Cypher filter can see it | EXP-2026-09-018 Step 4 | every ATT&CK-side filter push-down *(open)* |
 | Q56 | The arm runner's default model was one the configured endpoint does not serve, so an LLM arm ran model-free and finished | EXP-2026-09-018 Step 5 preflight | answered and fixed; archived runners still carry the old default *(partly)* |
+| Q57 | Every headline figure replays an authored retrieval plan; the system's own planner costs −0.3814 gold coverage | EXP-2026-09-019 Steps 2, 5 | **the meaning of every 0.90 this project reports** — a ceiling given a correct plan, not an end-to-end result *(open)* |
+| Q58 | The planner arm's loss is not separated from the tighter per-plan bounds it inherits | EXP-2026-09-019 I-2 | how much of Q57 is a worse decomposition; what a fix should target *(open)* |
 
 ---
 
@@ -891,6 +893,62 @@ the fallback when a chain returns nothing. This is the minimum form of the typed
 multi-hop chain of Guo et al. (EMNLP 2023); the execution-feedback replanning
 they describe is not attempted. **From:** `EXP-2026-09-017` `A-2`. **Cost:** a
 day, plus judged confirmation. **Where it lands:** `EXP-2026-09-018` Step 3.
+
+### Q57 — Every headline figure replays an authored retrieval plan
+
+**Why it matters:** this is the largest single caveat on the project's results,
+and it is not a caveat about grading or about sample size. Both arms that reach
+0.90 — `generic` and `generic_composed` — run against a human-authored gold
+plan that is replayed rather than produced. The planner does not execute in
+either. When it is allowed to produce the decomposition, gold coverage falls
+from **0.8611 to 0.4797**: a paired difference of **−0.3814** (n = 284, SE
+0.0262, fourteen standard errors), stable at −0.3787 with a 2B narrator in the
+path, so it is not an interaction with the model seam either.
+
+**The failure is one-sided, which is what makes it a defect rather than a
+trade-off.** On **77 of 284 questions the planner retrieved nothing where the
+authored plan retrieved records. The reverse never happened once** — there is no
+question the planner did better on. Eight returned nothing on both sides. The
+loss concentrates in D5 (−0.5025) and D6 (−0.5534), the chained and
+cross-catalogue tiers, where a plan has the most structure to get wrong.
+
+**What does not degrade:** the planner arm retrieves less but does not start
+asserting absence — `scripts/mechanism_check.py` reports 0 absence
+contradictions across 284 answers. One slice improves: name-search coverage
+rises from 0.0443 to 0.4443.
+
+**What this changes about how the figures must be read.** 0.9005 on the sealed
+set is a measured ceiling for *retrieval and composition given a correct plan*.
+That is a real and useful quantity — it is what the engine achieves on questions
+nobody wrote a template for, which is the claim the primitive path was built to
+support — but it is not an end-to-end figure for a system answering arbitrary
+questions unaided, and it must not be quoted as one.
+
+**What resolves it:** a judged pass on the planner arm (the model-free
+difference clears the 0.02 threshold by a factor of nineteen, so the judged read
+is warranted and has not been run), then attribution of the 77 empty-retrieval
+cases to specific planner decisions. `Q58` must be settled first or in parallel,
+or the target of any fix is guessed. **From:** `EXP-2026-09-019` Steps 2 and 5.
+**Cost:** a judged pass plus a third arm. **Where it lands:** unassigned.
+
+### Q58 — The planner arm's loss is not separated from its tighter per-plan bounds
+
+**Why it matters:** `generic_planned` runs the real pipeline, so the planner's
+own limits travel with its decomposition — the observed plans set
+`max_result_rows: 1000` and `max_traversal_depth: 3`, where the gold-replay path
+inherits lifted bounds. "The planner chose a worse decomposition" and "the
+planner chose tighter limits" both produce less retrieval, and `Q57`'s −0.3814
+is currently their sum.
+
+**Why it cannot be waved away:** the two have opposite fixes. Tighter bounds are
+a configuration change; a worse decomposition is a planning defect. Spending
+effort on the wrong one is the cost of not separating them.
+
+**What resolves it:** a third arm — the real planner's decomposition executed
+under the gold-replay path's bounds. The difference between that arm and
+`generic_planned` is the bounds; the difference between it and
+`generic_composed` is the decomposition. **From:** `EXP-2026-09-019` `I-2`.
+**Cost:** one run, no grading. **Where it lands:** unassigned.
 
 ### Q52 — A declared property filter reaches neither the query nor the composer
 
