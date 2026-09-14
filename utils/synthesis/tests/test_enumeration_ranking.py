@@ -82,3 +82,43 @@ def test_a_complete_list_never_claims_to_have_withheld_anything() -> None:
         {"id": "M1041", "name": "b", "label": "Mitigation", "type": "MITIGATES"},
     ]
     assert "withheld" not in _claim(related).text
+
+
+def test_narrative_source_says_who_wrote_the_prose() -> None:
+    """`composer` names who wrote the CLAIMS; this names who wrote the sentence.
+
+    They are different seams. A workbench that cites the record and the query
+    behind every claim should not leave the prose layer's provenance invisible.
+    """
+    from utils.synthesis.contracts import SynthesizedAnswer
+
+    answer = SynthesizedAnswer(request="q")
+    assert answer.narrative_source == "deterministic"
+    assert answer.to_dict()["narrative_source"] == "deterministic"
+
+
+def test_a_failed_narrator_does_not_claim_to_have_written_the_prose() -> None:
+    """The stamp lands after the call returns, never before it."""
+    from utils.synthesis.config import SynthesisConfig
+    from utils.synthesis.contracts import Claim, SynthesizedAnswer
+    from utils.synthesis import factory
+    from utils.synthesis.llm_composer import ComposerUnavailable
+
+    answer = SynthesizedAnswer(request="q", narrative="deterministic prose")
+    answer.claims = [Claim(text="x", kind="fact")]
+
+    def _boom(*a, **kw):
+        raise ComposerUnavailable("endpoint down")
+
+    original = factory.compose_narrative
+    factory.compose_narrative = _boom
+    try:
+        factory.apply_llm_narrative(
+            answer, object(), SynthesisConfig(llm_enabled=True)
+        )
+    finally:
+        factory.compose_narrative = original
+
+    assert answer.narrative == "deterministic prose"
+    assert answer.narrative_source == "deterministic"
+    assert "narrator unavailable" in (answer.fallback_reason or "").lower()

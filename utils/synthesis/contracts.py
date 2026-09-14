@@ -302,6 +302,14 @@ class SynthesizedAnswer:
 
     request: str
     headline: str = ""
+    #: Who wrote the readable prose above the claim table. ``composer`` names who
+    #: wrote the CLAIMS, which is the trust surface; this names who wrote the
+    #: sentence a reader actually reads first. They are different seams and can
+    #: differ: the deterministic composer plus the narrator seam yields
+    #: ``composer="deterministic"`` with ``narrative_source="llm"``. Recorded
+    #: because a workbench that cites the record and the query behind every claim
+    #: should not leave the prose layer's provenance invisible.
+    narrative_source: str = "deterministic"
     # A direct, natural-language answer to the analyst's question, grounded in
     # the gathered evidence — the LLM composer writes it; the deterministic
     # composer assembles it from the claim sentences. The verified claim table
@@ -367,6 +375,7 @@ class SynthesizedAnswer:
             "abstentions": [a.to_dict() for a in self.abstentions],
             "notes": list(self.notes),
             "composer": self.composer,
+            "narrative_source": self.narrative_source,
             "fallback_reason": self.fallback_reason,
             "verification": self.verification.to_dict() if self.verification else None,
             "edges": [e.to_dict() for e in self.edges],

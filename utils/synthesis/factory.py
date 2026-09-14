@@ -150,6 +150,9 @@ def apply_llm_narrative(
         # composer — which is how prose came to enumerate less than the claims
         # already had, and to assert what no claim supported.
         answer.narrative = compose_narrative(evidence, config, answer)
+        # Stamped only after the call returns: a narrator that raised leaves the
+        # deterministic narrative in place, and the provenance must say so.
+        answer.narrative_source = "llm"
     except ComposerUnavailable as exc:
         logger.info("LLM narrator unavailable (%s); keeping deterministic answer", exc)
         answer.fallback_reason = answer.fallback_reason or f"LLM narrator unavailable ({exc})"
