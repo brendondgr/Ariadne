@@ -1,0 +1,307 @@
+{
+  "note": "Built by build_metrics.py from the sidecars and the per-step files. Do not hand-edit; re-run the script.",
+  "paired_control": {
+    "deterministic": {
+      "reference": {
+        "mean": 0.501127,
+        "std": 0.323977,
+        "n": 284,
+        "standard_error": 0.019224
+      },
+      "repaired": {
+        "mean": 0.609771,
+        "std": 0.334347,
+        "n": 284,
+        "standard_error": 0.01984
+      },
+      "gain": {
+        "mean": 0.108644,
+        "std": 0.29173,
+        "n": 284,
+        "standard_error": 0.017311
+      }
+    },
+    "generic_composed": {
+      "reference": {
+        "mean": 0.656285,
+        "std": 0.289204,
+        "n": 284,
+        "standard_error": 0.017161
+      },
+      "repaired": {
+        "mean": 0.920915,
+        "std": 0.159559,
+        "n": 284,
+        "standard_error": 0.009468
+      },
+      "gain": {
+        "mean": 0.26463,
+        "std": 0.279857,
+        "n": 284,
+        "standard_error": 0.016606
+      }
+    },
+    "generic": {
+      "reference": {
+        "mean": 0.719454,
+        "std": 0.286764,
+        "n": 284,
+        "standard_error": 0.017016
+      },
+      "repaired": {
+        "mean": 0.924683,
+        "std": 0.15015,
+        "n": 284,
+        "standard_error": 0.00891
+      },
+      "gain": {
+        "mean": 0.205229,
+        "std": 0.253453,
+        "n": 284,
+        "standard_error": 0.01504
+      }
+    }
+  },
+  "fresh_set": {
+    "set": "bank-fresh-2026-09-12.json",
+    "seed": 10140325,
+    "questions": 282,
+    "author": "claude-opus-5 via subagent, blind briefs",
+    "sealed_before_use": true,
+    "grading_positions": 2,
+    "arms": {
+      "deterministic": {
+        "n": 282,
+        "both_positions": 282,
+        "correctness": 0.5525,
+        "standard_error": 0.0197,
+        "fabricated_mapping": 0,
+        "by_tier": {
+          "D0": 0.899,
+          "D1": 0.9705,
+          "D2": 0.5689,
+          "D3": 0.5659,
+          "D4": 0.3215,
+          "D5": 0.4621,
+          "D6": 0.5136
+        }
+      },
+      "generic_composed": {
+        "n": 282,
+        "both_positions": 282,
+        "correctness": 0.9005,
+        "standard_error": 0.0102,
+        "fabricated_mapping": 0,
+        "by_tier": {
+          "D0": 0.9314,
+          "D1": 0.9732,
+          "D2": 0.9886,
+          "D3": 0.9425,
+          "D4": 0.8395,
+          "D5": 0.8612,
+          "D6": 0.865
+        }
+      },
+      "generic": {
+        "n": 282,
+        "both_positions": 281,
+        "correctness": 0.8991,
+        "standard_error": 0.0103,
+        "fabricated_mapping": 0,
+        "by_tier": {
+          "D0": 0.955,
+          "D1": 0.95,
+          "D2": 0.9652,
+          "D3": 0.9344,
+          "D4": 0.8525,
+          "D5": 0.8701,
+          "D6": 0.8493
+        }
+      }
+    },
+    "note": "Questions never asked and never graded before. 86 of 288 drawn specs reuse an anchor previously asked in ANOTHER register (41 of them D3, whose pool was exhausted); the remainder are anchors never asked. Both headline arms replay an authored plan, so this is a ceiling for retrieval and composition given a correct decomposition. FINAL after the straggler sweep: closing 8 timed-out cases moved generic 0.9043 -> 0.8991 and generic_composed 0.9037 -> 0.9005, because those cases were the slowest and hardest. The two real arms are then separated by 0.0014 against a standard error of 0.010 \u2014 statistically indistinguishable."
+  },
+  "holdout_regression": {
+    "measurement": "holdout regression \u2014 the spent holdout re-answered on the shipped tree",
+    "status": "REGRESSION EVIDENCE ONLY. The holdout was spent by holdout-spend-2026-09-05 (1,152 judgments per arm). These questions have been seen. This is a check that the repair did not break the arms on a bank they were previously measured on; it is NOT a capability figure and must never be quoted as one. The capability figure is fresh_set.json.",
+    "set": "holdout bank, 288 questions",
+    "grading_positions": 1,
+    "position": 1,
+    "arms": {
+      "deterministic": {
+        "n": 288,
+        "correctness": 0.5443,
+        "standard_error": 0.0193,
+        "fabricated_mapping": 3,
+        "abstained": 35,
+        "hallucination_statements": 89
+      },
+      "generic_composed": {
+        "n": 288,
+        "correctness": 0.8987,
+        "standard_error": 0.0104,
+        "fabricated_mapping": 0,
+        "abstained": 15,
+        "hallucination_statements": 93
+      },
+      "generic": {
+        "n": 288,
+        "correctness": 0.9014,
+        "standard_error": 0.01,
+        "fabricated_mapping": 0,
+        "abstained": 20,
+        "hallucination_statements": 130
+      }
+    },
+    "paired": {
+      "generic_minus_generic_composed": {
+        "difference": 0.0026,
+        "standard_error": 0.0044,
+        "n": 288
+      },
+      "generic_composed_minus_deterministic": {
+        "difference": 0.3545,
+        "standard_error": 0.0204,
+        "n": 288
+      }
+    },
+    "agreement_with_fresh_set": {
+      "fresh_generic_composed": 0.9005,
+      "fresh_generic": 0.8991,
+      "note": "The sealed fresh set and the spent holdout land within 0.003 of each other on both repaired arms, on disjoint question banks graded on different nights. The repair generalises; it is not fitted to the fresh set."
+    }
+  },
+  "latency": {
+    "measurement": "single-user latency, one worker, generic arm, 20 questions",
+    "endpoint": "localhost:9090 default-model (qwen38-27B-v2)",
+    "budgets": {
+      "t120": {
+        "synthesis_timeout_s": 120,
+        "questions": 20,
+        "answered": 20,
+        "wall_s": 1336.4,
+        "seconds_per_answer": 66.82,
+        "fallbacks": 3,
+        "fell_back": [
+          "D6-HAS_MEMBER-MAPS_TO[ATTACK]-CAPEC-513-f08e34::indirect",
+          "D6-HAS_MEMBER-MAPS_TO[ATTACK]-CAPEC-703-a8f98a::formal",
+          "D6-MAPS_TO[ATTACK]-CanFollow-T1078.001-0085e9::formal"
+        ]
+      },
+      "t600": {
+        "synthesis_timeout_s": 600,
+        "questions": 20,
+        "answered": 20,
+        "wall_s": 1359.0,
+        "seconds_per_answer": 67.95,
+        "fallbacks": 0,
+        "fell_back": []
+      }
+    },
+    "finding": "Raising the synthesis budget from 120s to 600s costs 1.13s per answer and removes all three fallbacks. The timeout binds only on answers that were already slow, so the mean barely moves. All three that fell back at 120s are D6 cross-catalogue questions \u2014 the largest answers in the bank \u2014 which is the same size-correlated failure EXP-2026-08-021 recorded: a budget never loses a random sample, it loses the biggest answers.",
+    "comparison_withdrawn": "generic_composed answers the same questions in 0.75s, so the model costs roughly 90x in single-user wall time for a fresh-set difference of -0.0014 (0.8991 against 0.9005).",
+    "comparison_withdrawn_note": "WITHDRAWN 2026-09-14. It read 'generic_composed answers the same questions in 0.75s, so the model costs roughly 90x'. That divided generic's PER-ANSWER 66.82s by generic_composed's TOTAL for 20 questions \u2014 a unit mismatch that understated the ratio by about fifteen-fold. Replaced by 'comparison', re-measured rather than re-derived.",
+    "model_free_comparator": {
+      "arm": "generic_composed",
+      "bank": "bank-dev.json first 20, identical to the generic sample",
+      "workers": 1,
+      "questions": 20,
+      "wall_s": 1.0,
+      "seconds_per_answer": 0.05,
+      "corroboration": "EXP-2026-09-019's independent 1-worker measurement of the same configuration on a tier-balanced 9-question slice gives 0.07s mean / 0.01s median \u2014 same order."
+    },
+    "comparison": "Single-user, one worker, the same 20 dev questions: generic 66.82s per answer against generic_composed 0.05s per answer. The narrator seam costs roughly 1,340x in wall time for a fresh-set difference of -0.0014 (0.8991 against 0.9005) \u2014 a difference inside the grader's noise.",
+    "arm_comparators_1worker": {
+      "bank": "bank-dev.json first 20, identical slice to the generic latency sample",
+      "workers": 1,
+      "deterministic": {
+        "wall_s": 0.8,
+        "seconds_per_answer": 0.04
+      },
+      "generic_composed": {
+        "wall_s": 1.0,
+        "seconds_per_answer": 0.05
+      },
+      "generic": {
+        "seconds_per_answer": 66.82,
+        "budget": "120s"
+      },
+      "finding": "The template engine is 0.01s per answer faster than the model-free primitive composer. That is the whole of its speed advantage, against -0.3480 correctness on the sealed fresh set (0.5525 against 0.9005) and 3 fabricated mappings against 0 on the regression. The deterministic arm is dominated: there is no measured dimension on which it wins."
+    }
+  },
+  "t6_rates": {
+    "measurement": "T6 \u2014 entity fidelity under rewording",
+    "capture": "scored_closeout-2026-09-13.json",
+    "shipped_tree": {
+      "n": 579,
+      "wrong_entity": 0.095,
+      "catalogue_dump": 0.0915,
+      "abstained": 0.4663
+    },
+    "reference_arms": {
+      "scored_arm0": {
+        "n": 699,
+        "wrong_entity": 0.1102,
+        "catalogue_dump": 0.1359,
+        "abstained": 0.3691
+      },
+      "scored_arm1": {
+        "n": 699,
+        "wrong_entity": 0.1416,
+        "catalogue_dump": 0.176,
+        "abstained": 0.3348
+      },
+      "scored_arm2": {
+        "n": 699,
+        "wrong_entity": 0.093,
+        "catalogue_dump": 0.0987,
+        "abstained": 0.4192
+      },
+      "scored_arm3": {
+        "n": 699,
+        "wrong_entity": 0.1102,
+        "catalogue_dump": 0.0973,
+        "abstained": 0.392
+      },
+      "scored_arm4": {
+        "n": 699,
+        "wrong_entity": 0.1073,
+        "catalogue_dump": 0.0987,
+        "abstained": 0.392
+      },
+      "scored_arm5": {
+        "n": 699,
+        "wrong_entity": 0.0944,
+        "catalogue_dump": 0.0987,
+        "abstained": 0.4077
+      },
+      "scored_arm6": {
+        "n": 699,
+        "wrong_entity": 0.0987,
+        "catalogue_dump": 0.0715,
+        "abstained": 0.4134
+      }
+    },
+    "verdict": "passes the plan's bar of 'not above the reference'. wrong_entity 0.0950 is the lowest of the seven arm captures; catalogue_dump 0.0915 is below four of them.",
+    "caveat": "NOT a paired comparison: the variants file has grown since August, so this is 579 variants against their 699. Sufficient to answer 'did the repairs make rewording worse' (no); insufficient for a precise delta.",
+    "note": "abstained 0.4663 is the safe failure \u2014 under severe rewording the system declines rather than answering about the wrong entity. Mild rewordings abstain 17% of the time, severe ones 93%."
+  },
+  "headline": {
+    "fresh_deterministic": 0.5525,
+    "fresh_generic_composed": 0.9005,
+    "fresh_generic": 0.8991,
+    "fresh_generic_composed_minus_deterministic": 0.348,
+    "fresh_generic_minus_generic_composed": -0.0014,
+    "paired_gain_deterministic": 0.108644,
+    "paired_gain_generic_composed": 0.26463,
+    "paired_gain_generic": 0.205229,
+    "regression_deterministic": 0.5443,
+    "regression_generic_composed": 0.8987,
+    "regression_generic": 0.9014,
+    "seconds_per_answer_deterministic": 0.04,
+    "seconds_per_answer_generic_composed": 0.05,
+    "seconds_per_answer_generic": 66.82,
+    "t6_wrong_entity": 0.095,
+    "t6_catalogue_dump": 0.0915
+  }
+}

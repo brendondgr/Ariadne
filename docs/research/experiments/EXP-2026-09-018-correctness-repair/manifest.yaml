@@ -5,9 +5,9 @@
 id: EXP-2026-09-018
 slug: correctness-repair
 title: "Correctness repair: six located defects, measured against a concurrent control"
-status: planned            # planned | running | complete | failed | superseded
+status: complete           # planned | running | complete | failed | superseded
 date_started: 2026-09-11
-date_completed: null       # null until status is complete/failed
+date_completed: 2026-09-14 # null until status is complete/failed
 authors:
 - Claude Opus 5
 - brendondgr
@@ -50,7 +50,7 @@ environment:
   container: null
 compute:
   hardware: "CPU for Steps 0-4; the :9090 relay for Steps 5-8"
-  wall_clock_hours: 0.0
+  wall_clock_hours: 31.0
   estimated_cost_usd: 0.0
 
 # --- LLM / agentic block (delete entirely if no model was in the loop) ---
@@ -70,11 +70,34 @@ llm:
 
 # --- Results block ---
 metrics:
-  primary: generic_judged_correctness_dev
-  values: {}               # {metric: {mean: 0.0, std: 0.0, n: 1}} — must be non-empty when status: complete
+  primary: fresh_generic_composed_correctness
+  values:
+    fresh_deterministic_correctness: {mean: 0.5525, std: 0.330819, n: 282}
+    fresh_generic_composed_correctness: {mean: 0.9005, std: 0.171287, n: 282}
+    fresh_generic_correctness: {mean: 0.8991, std: 0.172966, n: 282}
+    fresh_generic_composed_minus_deterministic: {mean: 0.348, std: 0.0, n: 282}
+    fresh_generic_minus_generic_composed: {mean: -0.0014, std: 0.0, n: 282}
+    paired_gain_deterministic: {mean: 0.108644, std: 0.29173, n: 284}
+    paired_gain_generic_composed: {mean: 0.26463, std: 0.279857, n: 284}
+    paired_gain_generic: {mean: 0.205229, std: 0.253453, n: 284}
+    regression_deterministic_correctness: {mean: 0.5443, std: 0.327532, n: 288}
+    regression_generic_composed_correctness: {mean: 0.8987, std: 0.176494, n: 288}
+    regression_generic_correctness: {mean: 0.9014, std: 0.169706, n: 288}
+    seconds_per_answer_deterministic: {mean: 0.04, std: 0.0, n: 20}
+    seconds_per_answer_generic_composed: {mean: 0.05, std: 0.0, n: 20}
+    seconds_per_answer_generic: {mean: 66.82, std: 0.0, n: 20}
+    t6_wrong_entity: {mean: 0.095, std: 0.0, n: 579}
+    t6_catalogue_dump: {mean: 0.0915, std: 0.0, n: 579}
   withdrawn: {}            # values later retracted by amendment: {metric: {mean, std, n, withdrawn_on, reason, replaced_by}}
-baselines_compared: []
-statistical_test: null
+baselines_compared:
+- deterministic
+- generic_composed
+- generic
+statistical_test: >
+  Paired per question with both counterbalanced grading positions averaged before
+  differencing, so a question graded once does not count as one graded twice.
+  Separability by |difference| > 2*SE. Single-tier differences below ~0.06 are
+  inside grader noise at these tier sizes (Step 5) and are not claimed.
 
 # --- Linkage ---
 supports_claims:
