@@ -229,3 +229,65 @@ an estimate of the whole.
   measured today is free.
 - 0.6596 against a 0.8611 ceiling. The union closes 47% of the planner gap and
   leaves the rest.
+
+## Amendment A-3 — the ceiling cannot be replayed, but most of it can be reached without selecting anything (2026-09-14)
+
+**The authored plan cannot be shipped.** `utils/specialists/evalset/spec_bank.py`
+builds it from a `spec`, and that same `spec` produces the question text *and*
+`ex_gold`. Replaying it hands the system the traversal that defines the correct
+answer, so using it in production would require knowing the answer in order to
+plan the query. This is recorded as `Q57` and is not an engineering obstacle.
+
+**What the ceiling represents, however, is reachable by a different route.**
+0.8611 is what the engine achieves when handed a correct traversal. The planner
+has been trying to *select* that traversal from the question text, and three
+deterministic selectors and one LLM all fail to clear 55% predicate accuracy. The
+measurement below says selection is the wrong goal.
+
+### The candidate set is tiny
+
+| | |
+|---|---:|
+| distinct predicates in the whole 284-question bank | **26** |
+| declared relations per anchor label, median | **5** |
+| … mean / max | 8.9 / 19 |
+| gold predicate is declared on its anchor | **78.6%** of legs |
+
+Most labels carry one or two relations. `Mitigation`, `Software`, `View` and
+`DataComponent` each declare exactly one — for those there is nothing to select.
+`AttackPattern` is the outlier at 19.
+
+### So ask them all
+
+| | Coverage | Cost |
+|---|---:|---|
+| planner today | 0.4797 | 1 query |
+| **exhaustive single-hop union (upper bound)** | **0.7350** | median **2** queries, **0.19 s**; worst 38 queries, 3.6 s |
+| authored-plan ceiling | 0.8611 | — |
+
+Querying every relation the anchor declares and unioning the results reaches an
+upper bound of **0.7350** — 67% of the distance from today's planner to the
+ceiling — and it needs no relation selection at all, no model, and a median of a
+fifth of a second. On 190 of 284 questions the gold traversal is included **by
+construction**.
+
+### What it cannot reach, and why
+
+The remaining 94 questions are **compressed multi-hop triples**: the authored
+leg `Analytic -[HAS_TECHNIQUE]-> Tactic` is really
+`Analytic -> DetectionStrategy -> Technique -> Tactic`, so `HAS_TECHNIQUE` is not
+declared on `Analytic` at all. Reaching those needs two-hop exhaustive expansion,
+which squares the fan-out; `utils/specialists/schema/paths.py` already does the
+breadth-first search, so the machinery exists, but the cost and the precision
+consequence are unmeasured.
+
+### The precision consequence is the real open question
+
+Every union recorded in this experiment — engines (`A-1`), planners (`A-2`), and
+now relations — puts more records in front of a composer that enumerates what it
+is handed. `EXP-2026-09-018` records `catalogue_dump` at 0.0915 and
+`wrong_entity` at 0.0950 on the shipped tree. **No merged configuration has been
+through that instrument.** Coverage is a recall measure and cannot fall when
+evidence is added, so every figure in this amendment is guaranteed to look good
+by construction. T6 is the check that says whether the answers are still about
+what was asked, and it must run before any of this ships.
