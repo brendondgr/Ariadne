@@ -363,3 +363,56 @@ What would make it shippable is bounding what reaches the composer rather than
 bounding what is retrieved — the merge adds rows the enumeration then lists in
 full. That is a composer change, not a retrieval one, and it has not been
 attempted.
+
+## Amendment A-6 — the gated rollout: what shipped, and what the gate refused (2026-09-14)
+
+`A-5` refused the merged configuration. `docs/plans/2026-09-14-frontend-prototype-configuration.md`
+set the order that follows from it: bound the composer first, then admit each
+coverage win only if `T6` holds. Run over the same 579 paraphrase variants,
+against the shipped reference of `wrong_entity` **0.0950** / `catalogue_dump`
+**0.0915**.
+
+| Configuration | `wrong_entity` | `catalogue_dump` | `abstained` | Verdict |
+|---|---:|---:|---:|---|
+| shipped reference | 0.0950 | 0.0915 | 0.4663 | — |
+| ranked composer only | **0.0950** | **0.0915** | 0.4663 | **passes** |
+| ranked + facet chasing | **0.0950** | **0.0915** | 0.5078 | **passes** |
+| ranked + engine merge | 0.1088 | 0.1140 | 0.4836 | **fails** |
+
+### The ranked composer is a no-op on T6, which is the right answer
+
+Identical on all three rates. That is what it should be with no merge on: related
+sets rarely exceed `MAX_ENUMERATION_IDS`, so nothing is withheld and reordering a
+list that is shown in full changes no answer. It earns its place as the gate that
+lets the next two steps be *tried*, not as a gain in itself.
+
+### Facet chasing ships
+
+**+0.0358 gold coverage** (separable, 15 questions improved and 0 worsened) at
+**no measurable fidelity cost**. The cheapest real gain on record. Abstentions
+rise 0.4663 → 0.5078, which the gate does not price: an abstention carries its
+executed query as proof and is an honest empty, not a wrong answer.
+`ORCH_CHASE_FACETS` now ships `true`.
+
+### The engine merge is refused, and ranking does not rescue it
+
+`0.1088` / `0.1140` against the reference — still failing, and essentially where
+it was unranked (`0.1071` / `0.1157`). **This falsifies A-5's proposed remedy.**
+`A-5` reasoned that the merge's cost was "the merge adds rows the enumeration then
+lists in full", so bounding the enumeration would absorb it. It does not, and the
+reason is visible in the numbers: the merge's extra rows arrive as additional
+**records**, each of which composes its own claim, and the enumeration bound
+governs entries *within* a record's related set rather than the number of records.
+The bound that would govern it is `SYNTHESIS_MAX_RECORDS_PER_RESULT`, and lowering
+that discards retrieved evidence rather than ranking it.
+
+`SPECIALIST_ENGINE_MERGE` stays off. Its +0.0548 coverage remains real and remains
+unshippable on this instrument.
+
+### What the shipped prototype is, after this
+
+Ranked, bounded composition plus facet chasing, with every LLM seam off and
+`ORCH_MAX_HOPS` at the 5 every figure was measured with. The merge and the LLM
+planner — the two largest coverage wins measured today, +0.0548 and +0.1799 — are
+both implemented, both off, and both refused for stated reasons rather than
+forgotten.
