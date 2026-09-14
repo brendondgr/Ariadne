@@ -22,6 +22,7 @@ Composition rules:
 
 from __future__ import annotations
 
+import os
 import re
 from typing import Any
 
@@ -1274,6 +1275,61 @@ def _entries_contradict_filter(
     return True
 
 
+def _enumeration_ranked() -> bool:
+    """Rank a related set before enumerating it, and say what was withheld?
+
+    Default **on**. `EXP-2026-09-020` A-5 measured why. Every retrieval widening
+    on record raises coverage -- a recall measure that cannot fall when evidence
+    is added -- and then raises `catalogue_dump` with it, because the enumeration
+    lists whatever it is handed in whatever order it arrived and stops at
+    `MAX_ENUMERATION_IDS` without saying so. The merged configuration moved
+    `catalogue_dump` from 0.0915 to 0.1157 on that mechanism alone.
+
+    Ranking does not change WHAT was retrieved or what may be claimed; the
+    verifier still grounds every listed id against the cited evidence. It changes
+    which of an over-wide set an analyst is shown first, and it makes the
+    truncation explicit instead of silent.
+    """
+    return os.environ.get("SYNTHESIS_RANK_ENUMERATION", "1").strip().lower() not in {"0", "false", "no", "off"}
+
+
+def _request_terms(result: SpecialistResult) -> tuple[frozenset[str], frozenset[str]]:
+    """The labels/relations the plan named, and the content words of its text.
+
+    Both come off the task the planner produced, so this reads what was ASKED
+    rather than guessing from what was returned.
+    """
+    task = getattr(result, "task", None)
+    named = frozenset(
+        str(e).strip().lower() for e in (getattr(task, "entities", ()) or ()) if e
+    )
+    words = frozenset(
+        w for w in re.findall(r"[a-z0-9]+", (getattr(task, "text", "") or "").lower())
+        if len(w) > 2
+    )
+    return named, words
+
+
+def _entry_rank(
+    entry: dict, named: frozenset[str], words: frozenset[str], position: int = 0
+) -> tuple:
+    """Sort key for one related entry: most-requested first, ties stable.
+
+    Negated counts so that ``sorted`` puts the strongest match first without a
+    reverse flag, and the final element is the original position so the order is
+    deterministic and an unranked tie never reshuffles between runs.
+    """
+    label = str(entry.get("label") or "").strip().lower()
+    rel = str(entry.get("type") or "").strip().lower()
+    name = str(entry.get("name") or "").lower()
+    return (
+        0 if label and label in named else 1,          # the label the plan asked for
+        0 if rel and rel in named else 1,              # reached through a named relation
+        -len(words & set(re.findall(r"[a-z0-9]+", name))),  # names the question's words
+        position,
+    )
+
+
 def _enumeration_text(
     anchor: str,
     total: int,
@@ -1282,6 +1338,7 @@ def _enumeration_text(
     parts: list[str],
     quoted: list[str],
     sep: str,
+    withheld: int = 0,
 ) -> str:
     """One sentence for identifiers, one clause for text, never one list.
 
@@ -1292,6 +1349,17 @@ def _enumeration_text(
     says how many of the set are named only as text.
     """
     head = f"{anchor} has {total} {noun}{scope}"
+    # A bounded list that does not say it is bounded reads as a complete one.
+    # The contract already refuses silent truncation everywhere else (the
+    # specialists carry an explicit `truncated` flag, an empty result becomes an
+    # abstention carrying its query); an enumeration that stopped at
+    # MAX_ENUMERATION_IDS was the one place it did not.
+    if withheld > 0:
+        head = (
+            f"{anchor} has {total + withheld} {noun}{scope}; "
+            f"the {total} most relevant to the question are listed and "
+            f"{withheld} further {'is' if withheld == 1 else 'are'} withheld"
+        )
     if parts and not quoted:
         return f"{head}: {sep.join(parts)}."
     if quoted and not parts:
@@ -1325,6 +1393,26 @@ def _enumeration_claim(
     quoted_parts: list[str] = []
     seen: set[str] = set()
     entries = record.related if related is None else related
+    # Rank before enumerating, so that when the set is wider than the bound the
+    # analyst sees the entries the question asked for rather than the ones the
+    # database happened to return first. Retrieval is unchanged; this is purely
+    # which of an over-wide set is shown. `withheld` is counted here rather than
+    # inferred later, because the loop below stops early and the caller cannot
+    # otherwise tell a bounded list from a complete one.
+    if _enumeration_ranked() and entries:
+        named, words = _request_terms(result)
+        # Sort (position, entry) pairs rather than annotating the entries: a key
+        # added to the dict travels into `_related_display`, where a composite
+        # child renders its own properties and an injected `_pos` surfaced inside
+        # the quoted text.
+        pairs = [(i, e) for i, e in enumerate(entries) if isinstance(e, dict)]
+        pairs.sort(key=lambda pe: _entry_rank(pe[1], named, words, pe[0]))
+        entries = [e for _, e in pairs]
+    distinct_available = len({
+        str(e.get("id") or e.get("entry_id"))
+        for e in entries
+        if isinstance(e, dict) and (e.get("id") or e.get("entry_id"))
+    })
     for rel in entries:
         if not isinstance(rel, dict):
             continue
@@ -1357,6 +1445,7 @@ def _enumeration_claim(
         (parts if published else quoted_parts).append(shown)
         if len(ids) >= _enum_bound("MAX_ENUMERATION_IDS", _MAX_ENUMERATION_IDS):
             break
+    withheld = max(0, distinct_available - len(ids))
     noun = _related_noun(record, len(ids), entries)
     anchor = record.name and f"{record.primary_id} ({record.name})" or record.primary_id
     # Say what the set was restricted to — but only when the executed query
@@ -1404,7 +1493,9 @@ def _enumeration_claim(
     # given its own clause, where neither a reader nor a grader can mistake a
     # quotation for a claim about an identifier.
     sep = "; " if any(" " in part for part in parts) else ", "
-    text = _enumeration_text(anchor, len(ids), noun, scope, parts, quoted_parts, sep)
+    text = _enumeration_text(
+        anchor, len(ids), noun, scope, parts, quoted_parts, sep, withheld=withheld
+    )
     return Claim(
         text=text,
         citations=(
