@@ -1,0 +1,26 @@
+{
+ "case_id": "D5-mitigates-x_mitre_platforms-M1042-ad62f1::formal",
+ "verdict": "CORRECT",
+ "correctness": 1.0,
+ "faithfulness": 0.85,
+ "groundedness": 0.9,
+ "completeness": 1.0,
+ "gold_expected": 4,
+ "gold_present": 4,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "restricted to SaaS platforms"
+ ],
+ "rationale": "The answer names all four expected M1042-related techniques/subtechniques: T1671, T1059, T1098, and T1098.001, so it fully answers the query. The minor unsupported nuance is \"restricted to SaaS platforms,\" because the shown record does not expose x_mitre_platforms and the query only filters for SaaS applicability. No cross-source mapping is asserted.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

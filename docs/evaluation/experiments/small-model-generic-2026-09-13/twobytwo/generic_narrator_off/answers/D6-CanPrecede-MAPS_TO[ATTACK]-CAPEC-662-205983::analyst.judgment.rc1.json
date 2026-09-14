@@ -1,0 +1,27 @@
+{
+ "case_id": "D6-CanPrecede-MAPS_TO[ATTACK]-CAPEC-662-205983::analyst",
+ "verdict": "PARTIAL",
+ "correctness": 0.7,
+ "faithfulness": 0.8,
+ "groundedness": 0.9,
+ "completeness": 1.0,
+ "gold_expected": 3,
+ "gold_present": 3,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "CAPEC-662 has 4 CanPrecede successors (directionality not established by the evidence)",
+  "The capec source returned CAPEC-662 with no linked records for the patterns that can precede it"
+ ],
+ "rationale": "The answer states the required anchor CAPEC-662 and the expected ATT&CK techniques T1027 and T1587.001, tied to CAPEC-542, and it also lists supported mappings such as CAPEC-159 to T1574.008 and CAPEC-662 to T1185. However, it frames CAPEC-185, CAPEC-542, CAPEC-159, and CAPEC-475 as CanPrecede successors of CAPEC-662 rather than clearly identifying which patterns can precede CAPEC-662. Its abstention also says there were no linked records for the preceding-patterns subquestion, which is not fully consistent with the q1 evidence showing four CAN_PRECEDE related records.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

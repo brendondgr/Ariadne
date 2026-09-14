@@ -1,0 +1,26 @@
+{
+ "case_id": "D4-ChildOf-HAS_INDICATOR-CAPEC-108-f3d9eb::analyst",
+ "verdict": "CORRECT",
+ "correctness": 0.95,
+ "faithfulness": 0.9,
+ "groundedness": 0.95,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "CAPEC-108 has 1 Indicator, named only as text"
+ ],
+ "rationale": "The answer states that CAPEC-108 is a more specific case of CAPEC-66 and provides the expected indicator text associated with capec:attack-pattern:66:indicator:1. It is grounded in the CAPEC-108 record and its related CAPEC-66 and indicator entries. Minor faithfulness deduction is warranted because the evidence shows the indicator's name as the URI, not the text, and the ChildOf direction is not explicitly shown in the record.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

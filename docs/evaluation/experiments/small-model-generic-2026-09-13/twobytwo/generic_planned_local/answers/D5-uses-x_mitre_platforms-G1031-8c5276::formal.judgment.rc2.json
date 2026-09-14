@@ -1,0 +1,26 @@
+{
+ "case_id": "D5-uses-x_mitre_platforms-G1031-8c5276::formal",
+ "verdict": "PARTIAL",
+ "correctness": 0.3,
+ "faithfulness": 0.8,
+ "groundedness": 0.7,
+ "completeness": 0.0,
+ "gold_expected": 2,
+ "gold_present": 0,
+ "abstained": true,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "None of the live graph sources cover this request"
+ ],
+ "rationale": "The answer abstains after the attack specialist returned no records, which is supported by the empty evidence volume. It does not state the expected techniques T1059 or T1685 for G1031, so completeness is zero. The claim that no live graph sources cover the request is slightly stronger than the shown failed-query evidence.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

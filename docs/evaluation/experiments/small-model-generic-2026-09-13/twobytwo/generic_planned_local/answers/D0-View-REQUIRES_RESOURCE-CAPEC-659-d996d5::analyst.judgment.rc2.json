@@ -1,0 +1,24 @@
+{
+ "case_id": "D0-View-REQUIRES_RESOURCE-CAPEC-659-d996d5::analyst",
+ "verdict": "CORRECT",
+ "correctness": 0.9,
+ "faithfulness": 0.95,
+ "groundedness": 0.9,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer abstains for CAPEC-659 and shows the executed capec query, which returned zero rows, so it does not guess a resource mapping. It states the anchor CAPEC-659 and the relevant relationship context REQUIRES_RESOURCE/REQUIRES_SKILL, matching the gold expectation that no related resource identifiers are required. The only weakness is that the displayed query traverses REQUIRES_SKILL rather than REQUIRES_RESOURCE, but the abstention remains grounded in the returned empty result.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

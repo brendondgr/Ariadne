@@ -1,0 +1,26 @@
+{
+ "case_id": "D5-uses-x_mitre_platforms-S1123-714517::indirect",
+ "verdict": "PARTIAL",
+ "correctness": 0.75,
+ "faithfulness": 0.9,
+ "groundedness": 0.8,
+ "completeness": 1.0,
+ "gold_expected": 4,
+ "gold_present": 4,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "T1059.004 is included as if it were a Windows-applicable technique, although the evidence describes Unix Shell for Linux, macOS, and ESXi"
+ ],
+ "rationale": "The answer states all four expected Windows-related techniques for S1123: T1140, T1205.002, T1559, and T1573.002. It is therefore complete on the gold identifiers, but it also includes T1059.004 and does not explicitly filter the used techniques to those applicable to Windows. The claims are grounded in the S1123 record and its USES neighbours, but the Windows-specific selection is not directly tied to the cited evidence.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

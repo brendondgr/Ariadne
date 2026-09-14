@@ -1,0 +1,26 @@
+{
+ "case_id": "D6-MAPS_TO[ATTACK]-MAPS_TO[OWASP Attacks]-T1110-6a5f44::indirect",
+ "verdict": "CORRECT",
+ "correctness": 0.9,
+ "faithfulness": 0.85,
+ "groundedness": 0.95,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "WASC:11 is an OWASP taxonomy entry"
+ ],
+ "rationale": "The answer correctly identifies CAPEC-112 as the CAPEC attack pattern corresponding to T1110 and states the required OWASP mapping OWASP Attacks:Brute force attack. It also reports WASC:11, which is supported as a catalogue mapping, but the narrative treats it as an OWASP taxonomy entry, a minor unsupported classification. The core claims are grounded in the CAPEC-112 record and its related entries.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

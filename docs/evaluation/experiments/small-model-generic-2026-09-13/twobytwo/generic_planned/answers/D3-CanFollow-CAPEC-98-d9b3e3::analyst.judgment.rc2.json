@@ -1,0 +1,26 @@
+{
+ "case_id": "D3-CanFollow-CAPEC-98-d9b3e3::analyst",
+ "verdict": "CORRECT",
+ "correctness": 0.9,
+ "faithfulness": 0.85,
+ "groundedness": 0.9,
+ "completeness": 1.0,
+ "gold_expected": 2,
+ "gold_present": 2,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "CAPEC-98 has CanFollow predecessors (directional role)"
+ ],
+ "rationale": "The answer states both expected CanFollow neighbors of CAPEC-98, CAPEC-701 and CAPEC-186, and also names the anchor CAPEC-98. The only minor unsupported element is the directional term 'predecessors,' since the evidence shows CAN_FOLLOW related records but not explicit direction. No cross-source mapping is asserted, so the answer is substantively complete.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

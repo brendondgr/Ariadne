@@ -1,0 +1,24 @@
+{
+ "case_id": "D4-log_source-x_mitre_analytic_refs-DC0005-0c68b6::indirect",
+ "verdict": "INCORRECT",
+ "correctness": 0.1,
+ "faithfulness": 0.9,
+ "groundedness": 0.8,
+ "completeness": 0.0,
+ "gold_expected": 3,
+ "gold_present": 0,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer only states DC0005 and asserts that it has no analytics, omitting the expected DET0117, DET0151, and DET0399. It is largely faithful to the single retrieved record and empty related list, but it does not provide the expected analytics or their strategies. Because it asserts absence rather than explicitly abstaining, it is incorrect relative to the gold set.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

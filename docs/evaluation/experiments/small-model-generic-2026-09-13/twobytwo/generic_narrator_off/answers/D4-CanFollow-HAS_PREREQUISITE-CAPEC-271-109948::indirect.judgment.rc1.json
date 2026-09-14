@@ -1,0 +1,26 @@
+{
+ "case_id": "D4-CanFollow-HAS_PREREQUISITE-CAPEC-271-109948::indirect",
+ "verdict": "PARTIAL",
+ "correctness": 0.7,
+ "faithfulness": 0.7,
+ "groundedness": 0.8,
+ "completeness": 1.0,
+ "gold_expected": 5,
+ "gold_present": 5,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "CAPEC-271 has 5 Prerequisites; the evidence associates the five prerequisite texts with CAPEC-94 via a CAN_FOLLOW path, not directly with CAPEC-271."
+ ],
+ "rationale": "The answer includes CAPEC-271 and all five expected prerequisite texts, so completeness is high. It also identifies CAPEC-94 as the related attack pattern, which is the key preceding pattern in the evidence. However, it states that CAPEC-271 has the five prerequisites, whereas the evidence shows they are prerequisites of CAPEC-94 reached through CAN_FOLLOW.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

@@ -1,0 +1,26 @@
+{
+ "case_id": "D4-ChildOf-MAPS_TO[OWASP Attacks]-CAPEC-100-3a35a0::analyst",
+ "verdict": "PARTIAL",
+ "correctness": 0.3,
+ "faithfulness": 0.7,
+ "groundedness": 0.8,
+ "completeness": 0.0,
+ "gold_expected": 1,
+ "gold_present": 0,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "capec query returned CAPEC-100 with no linked records"
+ ],
+ "rationale": "The answer retrieves CAPEC-100 and its direct MAPS_TO entries OWASP Attacks:Buffer overflow attack and WASC:07, but it does not state the expected OWASP Attacks:Buffer Overflow via Environment Variables or any more specific child attack patterns. Its capec abstention says the query returned no linked records, which is contradicted by the two related taxonomy entries in the evidence. Therefore it is partial, with low completeness and modest faithfulness.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

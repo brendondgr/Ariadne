@@ -1,0 +1,24 @@
+{
+ "case_id": "D4-CanFollow-HAS_PREREQUISITE-CAPEC-271-109948::indirect",
+ "verdict": "PARTIAL",
+ "correctness": 0.2,
+ "faithfulness": 1.0,
+ "groundedness": 1.0,
+ "completeness": 0.1667,
+ "gold_expected": 6,
+ "gold_present": 1,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer correctly identifies and describes CAPEC-271, but it does not state the expected prerequisite texts for patterns that can come before it, such as 'There are two components communicating with each other' or 'Strong mutual authentication is not used between the two target components yielding opportunity for attacker interposition.' It therefore satisfies the anchor requirement but omits the five expected related prerequisites. No unsupported cross-source mapping is asserted.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

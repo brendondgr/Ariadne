@@ -1,0 +1,28 @@
+{
+ "case_id": "D4-ChildOf-MAPS_TO[OWASP Attacks]-CAPEC-100-3a35a0::analyst",
+ "verdict": "PARTIAL",
+ "correctness": 0.6,
+ "faithfulness": 0.7,
+ "groundedness": 0.75,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "WASC:35 is presented as an OWASP taxonomy entry",
+  "WASC:06 is presented as an OWASP taxonomy entry",
+  "CAPEC-100 corresponds to 3 OWASP taxonomy entries"
+ ],
+ "rationale": "The answer lists CAPEC-100's 13 child CAPEC patterns and includes the expected OWASP Attacks:Buffer Overflow via Environment Variables. However, it does not state which specific child pattern maps to that OWASP entry, and it labels WASC:35 and WASC:06 as OWASP taxonomy entries even though the evidence identifies them as WASC. Therefore it is partial: grounded in the CAPEC-100 record but incomplete on the per-pattern OWASP mapping.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

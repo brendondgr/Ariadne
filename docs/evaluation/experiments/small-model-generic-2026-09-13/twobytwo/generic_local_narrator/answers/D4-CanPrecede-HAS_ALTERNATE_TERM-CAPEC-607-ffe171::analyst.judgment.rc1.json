@@ -1,0 +1,24 @@
+{
+ "case_id": "D4-CanPrecede-HAS_ALTERNATE_TERM-CAPEC-607-ffe171::analyst",
+ "verdict": "PARTIAL",
+ "correctness": 0.8,
+ "faithfulness": 0.85,
+ "groundedness": 0.9,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer identifies CAPEC-548 as the preceding attack pattern and includes the expected alternate-term text associated with capec:attack-pattern:548:alternate-term:1. It is slightly imprecise by describing that alternate term as CAPEC-607's rather than CAPEC-548's, even though the evidence links it to CAPEC-607 through the CAN_PRECEDE traversal. The required gold content is present, so completeness is full while correctness is reduced for the attribution.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

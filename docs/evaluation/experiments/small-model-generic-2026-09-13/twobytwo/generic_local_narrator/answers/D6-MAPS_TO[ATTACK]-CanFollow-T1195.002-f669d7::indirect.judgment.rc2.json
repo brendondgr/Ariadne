@@ -1,0 +1,27 @@
+{
+ "case_id": "D6-MAPS_TO[ATTACK]-CanFollow-T1195.002-f669d7::indirect",
+ "verdict": "CORRECT",
+ "correctness": 0.9,
+ "faithfulness": 0.75,
+ "groundedness": 0.8,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "CAPEC-98 is named Phishing",
+  "The capec query returned CAPEC-186 with no linked records"
+ ],
+ "rationale": "The answer states the expected gold identifier CAPEC-98 as the predecessor of CAPEC-186 and also lists the CAPEC patterns mapped to T1195.002. It honestly abstains for the other patterns and includes the executed query. Minor deductions are for the unsupported name for CAPEC-98 and the abstention wording that conflicts with the CAPEC-98 predecessor claim.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

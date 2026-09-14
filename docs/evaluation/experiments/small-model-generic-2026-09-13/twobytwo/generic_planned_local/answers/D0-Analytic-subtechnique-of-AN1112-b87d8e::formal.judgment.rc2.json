@@ -1,0 +1,24 @@
+{
+ "case_id": "D0-Analytic-subtechnique-of-AN1112-b87d8e::formal",
+ "verdict": "PARTIAL",
+ "correctness": 0.6,
+ "faithfulness": 1.0,
+ "groundedness": 0.8,
+ "completeness": 0.0,
+ "gold_expected": 1,
+ "gold_present": 0,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer is an honest abstention backed by the executed query and zero returned records, so it does not fabricate a mapping. However, it never states the anchor identifier AN1112 and asks for a catalogue id even though the question supplied AN1112. The only expected gold identifier is AN1112, which is absent from the answer text.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

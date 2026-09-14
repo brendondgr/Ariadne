@@ -1,0 +1,24 @@
+{
+ "case_id": "D5-uses-x_mitre_platforms-G0139-fa8fa1::indirect",
+ "verdict": "PARTIAL",
+ "correctness": 0.4,
+ "faithfulness": 1.0,
+ "groundedness": 0.9,
+ "completeness": 0.0,
+ "gold_expected": 2,
+ "gold_present": 0,
+ "abstained": true,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer correctly anchors on G0139 and honestly states that the available evidence does not list the specific malware/tools used by TeamTNT. However, it does not state the expected container-related software identifiers S0601 or S0683, so completeness is zero. The abstention is reasonable and well-grounded in the G0139 record, but it does not show the executed query as proof, making it partial rather than fully correct.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

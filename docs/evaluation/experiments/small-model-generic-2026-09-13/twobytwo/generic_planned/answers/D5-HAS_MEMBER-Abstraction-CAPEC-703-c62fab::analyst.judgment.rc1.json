@@ -1,0 +1,24 @@
+{
+ "case_id": "D5-HAS_MEMBER-Abstraction-CAPEC-703-c62fab::analyst",
+ "verdict": "PARTIAL",
+ "correctness": 0.2,
+ "faithfulness": 1.0,
+ "groundedness": 0.9,
+ "completeness": 0.0,
+ "gold_expected": 12,
+ "gold_present": 0,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer abstains and shows the executed CAPEC query, and the evidence shows row_count 0, so its no-records claim is faithful. The gold expected 12 related CAPEC attack patterns: CAPEC-158, CAPEC-163, CAPEC-177, CAPEC-191, CAPEC-457, CAPEC-552, CAPEC-57, CAPEC-648, CAPEC-649, CAPEC-65, CAPEC-692, and CAPEC-70, but the answer states none of them. It mentions CAPEC-703 only as the anchor in the quoted question, so it is an honest but incomplete abstention.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

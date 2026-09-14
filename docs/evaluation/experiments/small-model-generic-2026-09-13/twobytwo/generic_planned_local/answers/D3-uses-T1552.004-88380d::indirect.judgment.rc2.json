@@ -1,0 +1,26 @@
+{
+ "case_id": "D3-uses-T1552.004-88380d::indirect",
+ "verdict": "PARTIAL",
+ "correctness": 0.25,
+ "faithfulness": 0.8,
+ "groundedness": 0.8,
+ "completeness": 0.0,
+ "gold_expected": 11,
+ "gold_present": 0,
+ "abstained": true,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "The record does not provide information about malware and tooling that goes after Private Keys, despite the evidence showing 11 incoming USES Software neighbors for T1552.004"
+ ],
+ "rationale": "The answer correctly identifies the anchor T1552.004 but states none of the expected software identifiers, including S0002, S0283, S0363, S0377, S0409, S0599, S0601, S0661, S0677, S1060, and S1196. The evidence facets show 11 Software neighbors via USES, so the claim that the record provides no malware/tooling information is only partially supported. It is a soft abstention rather than a formal query-backed abstention, so it is partial rather than fully correct.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

@@ -1,0 +1,24 @@
+{
+ "case_id": "D4-ChildOf-HAS_CONSEQUENCE-CAPEC-320-829ce0::indirect",
+ "verdict": "CORRECT",
+ "correctness": 0.95,
+ "faithfulness": 0.95,
+ "groundedness": 0.9,
+ "completeness": 1.0,
+ "gold_expected": 2,
+ "gold_present": 2,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer identifies CAPEC-312 as the general pattern for CAPEC-320 and states both expected consequence concepts: Read Data/Confidentiality and Hide Activities/Confidentiality/Access Control/Authorization. These match the two gold consequence strings despite reversed word order. The claims are grounded in the CAPEC-320 record and its related CAPEC-312 consequence nodes, with no unsupported cross-source mapping.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

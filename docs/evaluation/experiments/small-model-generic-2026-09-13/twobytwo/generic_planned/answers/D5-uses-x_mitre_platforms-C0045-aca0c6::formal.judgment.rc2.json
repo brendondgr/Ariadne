@@ -1,0 +1,29 @@
+{
+ "case_id": "D5-uses-x_mitre_platforms-C0045-aca0c6::formal",
+ "verdict": "PARTIAL",
+ "correctness": 0.8,
+ "faithfulness": 0.75,
+ "groundedness": 0.8,
+ "completeness": 1.0,
+ "gold_expected": 4,
+ "gold_present": 4,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "T1027.013",
+  "T1027",
+  "C0045 has 10 techniques",
+  "C0045 has 6 used techniques"
+ ],
+ "rationale": "The answer states C0045 and all four expected related identifiers, T1016, T1059.006, T1105, and T1190, so completeness is full. However, it presents them as part of a broader list of C0045 techniques rather than explicitly identifying the ESXi-applicable subset. It also asserts T1027/T1027.013 and exact technique counts that are not directly visible in the provided evidence.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

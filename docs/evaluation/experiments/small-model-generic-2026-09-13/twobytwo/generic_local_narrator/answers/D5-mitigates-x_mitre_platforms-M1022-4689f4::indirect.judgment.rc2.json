@@ -1,0 +1,24 @@
+{
+ "case_id": "D5-mitigates-x_mitre_platforms-M1022-4689f4::indirect",
+ "verdict": "CORRECT",
+ "correctness": 1.0,
+ "faithfulness": 0.95,
+ "groundedness": 0.9,
+ "completeness": 1.0,
+ "gold_expected": 43,
+ "gold_present": 43,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer names M1022 and enumerates all 43 expected Windows-applicable mitigated techniques, including T1036.003, T1564.004, T1686.003, and T1574.014. The union of its 25- and 18-item lists matches the gold set and the M1022-related evidence. The only minor weakness is the arbitrary 25/18 split, but it does not omit or invent identifiers.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

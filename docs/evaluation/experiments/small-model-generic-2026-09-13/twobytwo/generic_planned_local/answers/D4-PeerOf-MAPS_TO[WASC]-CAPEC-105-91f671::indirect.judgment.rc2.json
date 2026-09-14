@@ -1,0 +1,24 @@
+{
+ "case_id": "D4-PeerOf-MAPS_TO[WASC]-CAPEC-105-91f671::indirect",
+ "verdict": "PARTIAL",
+ "correctness": 0.45,
+ "faithfulness": 0.9,
+ "groundedness": 0.9,
+ "completeness": 0.5,
+ "gold_expected": 2,
+ "gold_present": 1,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer states CAPEC-105 and its supported WASC:24 mapping, but it omits the expected gold-related identifier WASC:25. It also abstains on peer patterns with an executed query, which is grounded, but the missing WASC:25 makes the answer only partially complete.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

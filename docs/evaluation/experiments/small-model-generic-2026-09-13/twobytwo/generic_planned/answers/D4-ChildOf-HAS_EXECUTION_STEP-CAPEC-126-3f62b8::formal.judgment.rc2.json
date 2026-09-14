@@ -1,0 +1,31 @@
+{
+ "case_id": "D4-ChildOf-HAS_EXECUTION_STEP-CAPEC-126-3f62b8::formal",
+ "verdict": "PARTIAL",
+ "correctness": 0.38,
+ "faithfulness": 0.55,
+ "groundedness": 0.5,
+ "completeness": 0.36,
+ "gold_expected": 11,
+ "gold_present": 4,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "CAPEC-126 has Abstraction: Standard; Likelihood_Of_Attack: High; Status: Draft; Typical_Severity: Very High",
+  "CAPEC-126 has 4 ExecutionSteps",
+  "capec:attack-pattern:126:step:1",
+  "capec:attack-pattern:126:step:2",
+  "capec:attack-pattern:126:step:3",
+  "capec:attack-pattern:126:step:4"
+ ],
+ "rationale": "The answer identifies CAPEC-126 and lists four execution-step texts that overlap with the expected set, including fingerprinting, survey, vary-inputs, and manipulate-files steps. It omits seven expected execution steps and frames the result as CAPEC-126's own steps rather than the more specific child patterns. Some attribute and step-ID assertions are not visible in the shown CAPEC-126 record, reducing faithfulness and groundedness.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

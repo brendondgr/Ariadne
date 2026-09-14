@@ -1,0 +1,24 @@
+{
+ "case_id": "D2-HAS_ALTERNATE_TERM-CAPEC-656-8282b3::formal",
+ "verdict": "CORRECT",
+ "correctness": 0.7,
+ "faithfulness": 1.0,
+ "groundedness": 1.0,
+ "completeness": 0.0,
+ "gold_expected": 2,
+ "gold_present": 0,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer abstains from naming the alternate terms because the only retrieved record is CAPEC-656 and its HAS_ALTERNATE_TERM facet count is 2, while no AlternateTerm neighbours are present. It does not state the expected Vishing or VoIP Phishing names, so completeness is 0, but it does not guess or fabricate a mapping. The executed query is shown in the logic flow, making the abstention grounded and honest.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

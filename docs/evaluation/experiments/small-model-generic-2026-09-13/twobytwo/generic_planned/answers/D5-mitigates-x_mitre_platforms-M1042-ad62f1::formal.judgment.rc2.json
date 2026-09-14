@@ -1,0 +1,27 @@
+{
+ "case_id": "D5-mitigates-x_mitre_platforms-M1042-ad62f1::formal",
+ "verdict": "PARTIAL",
+ "correctness": 0.8,
+ "faithfulness": 0.7,
+ "groundedness": 0.8,
+ "completeness": 1.0,
+ "gold_expected": 4,
+ "gold_present": 4,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "M1042 has 45 mitigated techniques",
+  "M1042 has 34 techniques"
+ ],
+ "rationale": "The answer includes all expected identifiers, T1059, T1098, T1098.001, and T1671, so completeness is full. However, it presents broader M1042-related lists rather than explicitly identifying the SaaS-applicable subset, making it overinclusive. The exact counts of 45 and 34 are not directly visible in the shown evidence, so faithfulness is reduced.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

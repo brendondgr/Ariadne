@@ -1,0 +1,24 @@
+{
+ "case_id": "D0-Group-kill_chain_phase-G0001-df09db::indirect",
+ "verdict": "CORRECT",
+ "correctness": 0.8,
+ "faithfulness": 0.95,
+ "groundedness": 0.7,
+ "completeness": 0.0,
+ "gold_expected": 1,
+ "gold_present": 0,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The expected identifier is G0001, and the evidence shows zero returned records and zero related tactics, so an abstention is appropriate. The answer says no records were returned and the logic flow includes the rejected G0001 query, but the answer text does not explicitly state G0001, so completeness is low. No tactics or cross-source mappings are asserted, so there is no fabricated mapping.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

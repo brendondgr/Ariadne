@@ -1,0 +1,24 @@
+{
+ "case_id": "D1-Technique-description-T1037-788ee4::indirect",
+ "verdict": "PARTIAL",
+ "correctness": 0.6,
+ "faithfulness": 0.85,
+ "groundedness": 0.8,
+ "completeness": 0.5,
+ "gold_expected": 2,
+ "gold_present": 1,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer correctly identifies T1037 and lists its five sub-techniques, T1037.001, T1037.002, T1037.003, T1037.004, and T1037.005, all of which are present in the evidence. It also gives a supported but narrow description focused on logon scripts, rather than the fuller expected description covering boot or logon initialization scripts, administrative/logging functions, OS/local/remote variation, and privilege escalation. Therefore it is partial: it states the anchor identifier and some relevant detail, but omits much of the expected descriptive content.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

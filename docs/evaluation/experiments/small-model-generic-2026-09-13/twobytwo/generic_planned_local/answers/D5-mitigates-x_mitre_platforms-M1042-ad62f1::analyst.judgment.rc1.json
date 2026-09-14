@@ -1,0 +1,27 @@
+{
+ "case_id": "D5-mitigates-x_mitre_platforms-M1042-ad62f1::analyst",
+ "verdict": "PARTIAL",
+ "correctness": 0.6,
+ "faithfulness": 0.7,
+ "groundedness": 0.8,
+ "completeness": 1.0,
+ "gold_expected": 4,
+ "gold_present": 4,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "M1042 has 45 mitigated techniques",
+  "M1042 has 34 techniques"
+ ],
+ "rationale": "The answer includes all expected identifiers, T1059, T1098, T1098.001, and T1671, while citing M1042. However, it presents them inside broader M1042 mitigation and technique lists rather than explicitly selecting the SaaS-applicable subset, so it only partially answers the question. Faithfulness is reduced because the exact 45 and 34 counts are not directly visible in the truncated evidence.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

@@ -1,0 +1,24 @@
+{
+ "case_id": "D5-uses-x_mitre_platforms-C0046-803292::analyst",
+ "verdict": "CORRECT",
+ "correctness": 1.0,
+ "faithfulness": 0.95,
+ "groundedness": 0.95,
+ "completeness": 1.0,
+ "gold_expected": 22,
+ "gold_present": 22,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer names C0046 and lists all 21 expected Windows-related ATT&CK identifiers, including T1014, T1020, T1036, T1037, T1040, T1041, T1055, T1059, T1070.004, T1071.001, T1082, T1102.003, T1119, T1133, T1140, T1190, T1556, T1557, T1653, T1685, and T1690. The cited query filters USES neighbors by x_mitre_platforms, which supports the Windows restriction. The wording \u201crestricted to\u201d is slightly stronger than the filter evidence, so faithfulness is slightly reduced.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

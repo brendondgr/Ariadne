@@ -1,0 +1,24 @@
+{
+ "case_id": "D0-Category-REQUIRES_RESOURCE-CAPEC-685-bbd4d7::analyst",
+ "verdict": "CORRECT",
+ "correctness": 0.9,
+ "faithfulness": 0.9,
+ "groundedness": 0.9,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer names CAPEC-685 and abstains rather than asserting any required resources, which matches the expected identifier set. The shown executed query returned zero rows, so the no-records abstention is grounded in the evidence. The query uses REQUIRES_SKILL rather than REQUIRES_RESOURCE, which is a minor mismatch, but the answer does not overclaim a mapping.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

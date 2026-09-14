@@ -1,0 +1,26 @@
+{
+ "case_id": "D6-MAPS_TO[ATTACK]-CanFollow-T1195.002-f669d7::indirect",
+ "verdict": "CORRECT",
+ "correctness": 0.9,
+ "faithfulness": 0.85,
+ "groundedness": 0.9,
+ "completeness": 1.0,
+ "gold_expected": 2,
+ "gold_present": 2,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "The capec source returned CAPEC-186 with no linked CAN_FOLLOW records"
+ ],
+ "rationale": "The answer states the required anchor T1195.002 and the expected predecessor CAPEC-98 for CAPEC-186, while also listing the CAPEC patterns mapped to T1195.002. It therefore covers the gold identifiers, but the abstention wording that CAPEC-186 had no linked records conflicts with the asserted CAPEC-98 predecessor. The claims are tied to specific CAPEC records and the executed CAN_FOLLOW query, so groundedness remains high.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

@@ -1,0 +1,28 @@
+{
+ "case_id": "D6-MAPS_TO[ATTACK]-ChildOf-T1111-192368::indirect",
+ "verdict": "PARTIAL",
+ "correctness": 0.8,
+ "faithfulness": 0.7,
+ "groundedness": 0.85,
+ "completeness": 1.0,
+ "gold_expected": 2,
+ "gold_present": 2,
+ "abstained": false,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "CAPEC-651 is a more specific case of CAPEC-508",
+  "CAPEC-651 is a more specific case of CAPEC-634",
+  "CAPEC-651 has 4 ChildOf parents"
+ ],
+ "rationale": "The answer correctly identifies T1111's CAPEC correspondents CAPEC-158, CAPEC-651, and CAPEC-609 and includes the expected broader patterns CAPEC-117 and CAPEC-157. It is less faithful because it treats all CAPEC-651 CHILD_OF neighbours as broader patterns, especially CAPEC-508 and CAPEC-634, whose direction is not established by the evidence. Therefore it is complete on the expected identifiers but only partially correct due to over-asserted parent relationships.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

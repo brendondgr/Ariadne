@@ -1,0 +1,24 @@
+{
+ "case_id": "D4-uses-kill_chain_phase-C0063-80f876::indirect",
+ "verdict": "CORRECT",
+ "correctness": 0.9,
+ "faithfulness": 0.85,
+ "groundedness": 0.85,
+ "completeness": 1.0,
+ "gold_expected": 15,
+ "gold_present": 15,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer states C0063 and all 15 expected tactics (TA0001-TA0011, TA0040, TA0042, TA0043, TA0112), so the gold set is complete. It also enumerates used techniques/subtechniques such as T1584.001, T1529, T1048.003, and T1133, addressing the technique portion. The tactic-via-technique details are not all directly visible in the truncated record, so faithfulness and groundedness are slightly reduced, but no cross-source mapping is asserted.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

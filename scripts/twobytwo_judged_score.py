@@ -41,6 +41,14 @@ CELLS: dict[tuple[str, str], str] = {
 #: while hallucinating is not the same result as one that scores well without.
 FLAGS = ("abstained", "fabricated_mapping", "hallucinations")
 
+#: The grader's other dimensions. `correctness` alone hides the trade this
+#: experiment found: the 2B narrator scores HIGHER on correctness while scoring
+#: LOWER on faithfulness and groundedness and roughly doubling the hallucination
+#: count. Reporting the headline without these would describe a model that helps
+#: and omit that it invents — in a system whose premise is that every statement
+#: traces to the graph.
+DIMENSIONS = ("correctness", "faithfulness", "groundedness", "completeness")
+
 
 def scores(directory: Path) -> dict[str, float]:
     """Case id -> mean correctness across grading positions."""
@@ -67,6 +75,29 @@ def positions(directory: Path) -> dict[str, int]:
         case = judgment.get("case_id") or path.name.split(".judgment")[0]
         counts[str(case)] += 1
     return dict(counts)
+
+
+def dimensions(directory: Path) -> dict[str, float | None]:
+    """Mean of every grader dimension, plus hallucinations per judgment."""
+    per: dict[str, list[float]] = {d: [] for d in DIMENSIONS}
+    hallucinated = 0
+    judgments = 0
+    for path in sorted(directory.glob("*.judgment*.json")):
+        judgment = json.loads(path.read_text())
+        judgments += 1
+        for field in DIMENSIONS:
+            value = judgment.get(field)
+            if value is not None:
+                per[field].append(float(value))
+        found = judgment.get("hallucinations")
+        hallucinated += len(found) if isinstance(found, list) else (1 if found else 0)
+    out: dict[str, float | None] = {
+        d: (round(statistics.fmean(v), 4) if v else None) for d, v in per.items()
+    }
+    out["hallucinations_per_judgment"] = (
+        round(hallucinated / judgments, 4) if judgments else None
+    )
+    return out
 
 
 def flags(directory: Path) -> dict[str, int]:
@@ -129,6 +160,7 @@ def main() -> int:
             "judged_cases": len(sc),
             "fully_graded_cases": sum(1 for v in pos.values() if v >= 2),
             "correctness_mean": round(statistics.fmean(sc.values()), 4) if sc else None,
+            "dimensions": dimensions(directory),
             "flags": flags(directory),
         }
 
@@ -162,10 +194,16 @@ def main() -> int:
         Path(args.out).write_text(text)
         print(f"written: {args.out}")
 
-    print(f"{'cell':22} {'judged':>7} {'both pos':>9} {'correctness':>12}")
+    header = f"{'cell':18}" + "".join(f"{d[:12]:>13}" for d in DIMENSIONS)
+    print(header + f"{'halluc/judg':>13}")
     for name, cell in result["cells"].items():
-        print(f"{name:22} {cell['judged_cases']:>7} {cell['fully_graded_cases']:>9} "
-              f"{str(cell['correctness_mean']):>12}")
+        dims = cell["dimensions"]
+        row = "".join(f"{str(dims[d]):>13}" for d in DIMENSIONS)
+        print(f"{name:18}{row}{str(dims['hallucinations_per_judgment']):>13}")
+    print()
+    print(f"{'cell':18} {'judged':>7} {'both positions':>15}")
+    for name, cell in result["cells"].items():
+        print(f"{name:18} {cell['judged_cases']:>7} {cell['fully_graded_cases']:>15}")
     print()
     for model, eff in result["plan_effect"].items():
         print(f"plan effect  ({model:>4} model): {eff['mean']} "

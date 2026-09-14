@@ -1,0 +1,24 @@
+{
+ "case_id": "D0-DetectionStrategy-mitigates-DET0130-5df6ac::formal",
+ "verdict": "CORRECT",
+ "correctness": 1.0,
+ "faithfulness": 1.0,
+ "groundedness": 0.95,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer abstains and includes DET0130 in the attack abstention, satisfying the only required identifier. The evidence shows the CAPEC query returned 0 records and the attack sub-question was skipped because q2 produced no join values, so no technique neighbors are asserted. No unsupported DET0130-to-Technique mapping is claimed.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

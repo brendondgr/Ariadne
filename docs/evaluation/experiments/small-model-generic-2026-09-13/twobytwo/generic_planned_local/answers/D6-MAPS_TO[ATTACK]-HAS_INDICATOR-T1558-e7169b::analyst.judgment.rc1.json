@@ -1,0 +1,24 @@
+{
+ "case_id": "D6-MAPS_TO[ATTACK]-HAS_INDICATOR-T1558-e7169b::analyst",
+ "verdict": "PARTIAL",
+ "correctness": 0.3,
+ "faithfulness": 0.95,
+ "groundedness": 0.9,
+ "completeness": 0.0,
+ "gold_expected": 5,
+ "gold_present": 0,
+ "abstained": true,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer correctly retrieves and cites T1558, but it does not state any of the five expected CAPEC indicator strings, such as 'Authentication attempts use expired or invalid credentials.' It treats the missing CAPEC result as an abstention, but it only reports a binding mismatch rather than the executed query, so it is partial rather than fully correct. No positive cross-source mapping is fabricated.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

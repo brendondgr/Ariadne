@@ -1,0 +1,24 @@
+{
+ "case_id": "D4-ChildOf-HAS_INDICATOR-CAPEC-108-f3d9eb::analyst",
+ "verdict": "PARTIAL",
+ "correctness": 0.5,
+ "faithfulness": 0.9,
+ "groundedness": 0.7,
+ "completeness": 0.5,
+ "gold_expected": 2,
+ "gold_present": 1,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer is an abstention that shows the executed CAPEC query and correctly reports that it returned no records for CAPEC-108. However, it does not state the expected related indicator, \"Too many false or invalid queries to the database, especially those caused by malformed input.\" The shown query also only traverses HAS_INDICATOR rather than the ChildOf-style \"more specific case of\" relation implied by the question, so the abstention is only partially responsive.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

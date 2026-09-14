@@ -1,0 +1,24 @@
+{
+ "case_id": "D5-CanFollow-Likelihood_Of_Attack-CAPEC-234-6037d9::indirect",
+ "verdict": "PARTIAL",
+ "correctness": 0.3,
+ "faithfulness": 0.95,
+ "groundedness": 0.8,
+ "completeness": 0.0,
+ "gold_expected": 1,
+ "gold_present": 0,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The expected Medium-likelihood related pattern is CAPEC-175 for CAPEC-234, but the answer abstained after a REQUIRES_SKILL query returned no records. It shows the executed query and does not fabricate a mapping, so it is partially acceptable. It states the anchor CAPEC-234 but omits the expected related identifier CAPEC-175.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

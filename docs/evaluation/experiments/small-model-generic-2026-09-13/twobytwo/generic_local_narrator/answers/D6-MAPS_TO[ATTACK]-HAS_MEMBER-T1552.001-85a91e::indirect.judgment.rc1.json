@@ -1,0 +1,26 @@
+{
+ "case_id": "D6-MAPS_TO[ATTACK]-HAS_MEMBER-T1552.001-85a91e::indirect",
+ "verdict": "CORRECT",
+ "correctness": 1.0,
+ "faithfulness": 0.9,
+ "groundedness": 0.9,
+ "completeness": 1.0,
+ "gold_expected": 2,
+ "gold_present": 2,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "CAPEC-191 was returned with no linked records"
+ ],
+ "rationale": "The answer identifies CAPEC-191 and CAPEC-639 as the CAPEC attack patterns mapped to T1552.001, and states that CAPEC-191 appears in CAPEC-703 while CAPEC-639 has no retrieved view. It includes the required gold identifiers T1552.001 and CAPEC-703, so completeness is full. The minor unsupported abstention that CAPEC-191 was returned with no linked records slightly reduces faithfulness and groundedness.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

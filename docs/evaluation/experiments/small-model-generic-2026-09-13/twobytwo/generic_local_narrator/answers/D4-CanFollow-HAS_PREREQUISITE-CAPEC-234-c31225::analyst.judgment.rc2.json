@@ -1,0 +1,26 @@
+{
+ "case_id": "D4-CanFollow-HAS_PREREQUISITE-CAPEC-234-c31225::analyst",
+ "verdict": "PARTIAL",
+ "correctness": 0.7,
+ "faithfulness": 0.8,
+ "groundedness": 0.8,
+ "completeness": 1.0,
+ "gold_expected": 6,
+ "gold_present": 6,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "The evidence does not specify the prerequisites for each of these attack patterns"
+ ],
+ "rationale": "The answer identifies CAPEC-100, CAPEC-175, and CAPEC-242 as preceding CAPEC-234 and lists all six expected prerequisite texts. However, the narrative says the evidence does not specify prerequisites for each pattern, while the claims enumerate them and tie them to capec:attack-pattern:100, capec:attack-pattern:175, and capec:attack-pattern:242 prerequisite IDs. This contradiction makes the answer partial rather than fully correct.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

@@ -1,0 +1,24 @@
+{
+ "case_id": "D6-MAPS_TO[ATTACK]-MAPS_TO[WASC]-T1110-d01d69::analyst",
+ "verdict": "PARTIAL",
+ "correctness": 0.5,
+ "faithfulness": 1.0,
+ "groundedness": 1.0,
+ "completeness": 0.5,
+ "gold_expected": 2,
+ "gold_present": 1,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer identifies CAPEC-112 as the CAPEC attack pattern associated with T1110, but it does not state the requested WASC:11 taxonomy entry. It also correctly states the anchor T1110, but the missing WASC target makes the response only partially complete. All asserted facts are supported by the T1110 and CAPEC-112 records, with no fabricated cross-source mapping.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

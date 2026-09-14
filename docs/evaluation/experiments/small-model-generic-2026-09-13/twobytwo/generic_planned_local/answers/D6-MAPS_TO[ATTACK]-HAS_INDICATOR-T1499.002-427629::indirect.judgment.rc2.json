@@ -1,0 +1,26 @@
+{
+ "case_id": "D6-MAPS_TO[ATTACK]-HAS_INDICATOR-T1499.002-427629::indirect",
+ "verdict": "PARTIAL",
+ "correctness": 0.5,
+ "faithfulness": 0.85,
+ "groundedness": 0.9,
+ "completeness": 0.5,
+ "gold_expected": 2,
+ "gold_present": 1,
+ "abstained": true,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "The cross-source join values were empty"
+ ],
+ "rationale": "The answer correctly identifies and describes T1499.002, but it does not state the expected CAPEC-related text, \"A large amount of data is passed to the XML parser possibly making it crash or otherwise unavailable to end users.\" It honestly notes that the CAPEC sub-question failed due to a binding mismatch, so it is partial rather than fabricated. Completeness is 1/2 because only T1499.002 is present.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

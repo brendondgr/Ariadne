@@ -155,3 +155,39 @@ rule in any case. The audited population is unchanged.
 and this entry is the first where the tree's *sidecar* count moved as well — so
 the fix named on 2026-09-11 would not have avoided this particular re-hash, only
 the three before it. It remains worth doing.
+
+## 2026-09-14 — Fifth re-hash; the close-out finished and the tree grew 200 MB
+
+**What moved.** `EXP-2026-09-018` wrote its paired control (two halves × three
+arms × 284), its sealed fresh set (three arms × 282, both grading positions) and
+its holdout regression (three arms × 288), and `EXP-2026-09-019` wrote the four
+cells of its 2×2 and had them graded. The tree goes 1,313,336,567 → 1,514,738,557
+bytes and the hash with it.
+
+**Impact on this experiment: none, again.** All of it is new capture
+directories, not edits to the 218 cells `data/recompute-audit.json` audited. The
+one thing worth checking rather than asserting was whether any *existing*
+audited directory gained judgments: the new sidecars are confined to
+`paired-control-2026-09-12`, `fresh-2026-09-12`, `holdout-regression-2026-09-12`
+and `small-model-generic-2026-09-13`, none of which existed when the audit ran.
+
+**Resolution:** re-hashed, superseded hash kept inline. That is five times in
+three days, and the cause is structural rather than incidental: this pointer's
+target is *every experiment's output tree*, so it moves whenever anybody runs
+anything. The fix named on 2026-09-11 stands and is now overdue — hash the
+audit's own input list (the 218 cell paths and their per-cell judgment counts,
+which `data/recompute-audit.json` already records) instead of the tree that
+contains them. That artifact is immutable once the audit has run, which is the
+property a pointer needs and a live output tree can never have.
+
+**Paper implication:** none for the figures. It is a worked example of a
+research-record rule meeting a target it does not fit, and the cost is five
+manual re-hashes rather than a wrong number — which is the tradeoff the rule was
+chosen for.
+
+## Pointer re-hash, 2026-09-14 (sixth)
+
+`docs/evaluation/experiments` moved again: `EXP-2026-09-019`'s judged pass wrote 2,272 judgment sidecars under `small-model-generic-2026-09-13/twobytwo`. Re-hashed to `sha256:856f1092f26b…` (1560078132 bytes).
+
+No figure of this experiment changed, and none can: the row pins a *shared parent directory* that every experiment writes into, so it moves whenever anyone runs anything, whether or not this experiment's own inputs are touched. That is a property of the pointer rather than of the data, and it has now cost six re-hashes. A pointer to the specific judgment trees this experiment actually reads would not have moved once.
+

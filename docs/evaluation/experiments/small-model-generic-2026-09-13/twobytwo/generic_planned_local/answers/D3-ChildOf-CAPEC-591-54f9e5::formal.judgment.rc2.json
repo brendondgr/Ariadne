@@ -1,0 +1,26 @@
+{
+ "case_id": "D3-ChildOf-CAPEC-591-54f9e5::formal",
+ "verdict": "PARTIAL",
+ "correctness": 0.2,
+ "faithfulness": 0.75,
+ "groundedness": 0.85,
+ "completeness": 0.0,
+ "gold_expected": 9,
+ "gold_present": 0,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "No other CAPEC attack patterns are present in the evidence"
+ ],
+ "rationale": "The answer correctly identifies the anchor CAPEC-591 but does not state any of the expected more specific patterns: CAPEC-18, CAPEC-198, CAPEC-199, CAPEC-243, CAPEC-244, CAPEC-245, CAPEC-247, CAPEC-32, or CAPEC-86. The evidence includes a CHILD_OF incoming facet count of 9 for CAPEC-591, so the claim that no other CAPEC patterns are present is under-supported. It is grounded in the CAPEC-591 record but incomplete for the question asked.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

@@ -1,0 +1,24 @@
+{
+ "case_id": "D4-ChildOf-REQUIRES_RESOURCE-CAPEC-473-28f5ac::indirect",
+ "verdict": "PARTIAL",
+ "correctness": 0.55,
+ "faithfulness": 0.9,
+ "groundedness": 0.8,
+ "completeness": 0.33,
+ "gold_expected": 3,
+ "gold_present": 1,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer honestly abstains and shows the executed CAPEC query, which returned zero rows for seed CAPEC-473, so it does not fabricate a mapping. It states CAPEC-473 but omits the two expected resource texts, and the shown query traverses REQUIRES_RESOURCE rather than the child-pattern relation asked for. This supports partial credit for an honest but incomplete abstention.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

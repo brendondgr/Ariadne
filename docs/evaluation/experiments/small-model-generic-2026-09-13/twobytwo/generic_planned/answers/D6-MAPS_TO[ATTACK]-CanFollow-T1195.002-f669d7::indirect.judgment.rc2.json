@@ -1,0 +1,24 @@
+{
+ "case_id": "D6-MAPS_TO[ATTACK]-CanFollow-T1195.002-f669d7::indirect",
+ "verdict": "INCORRECT",
+ "correctness": 0.1,
+ "faithfulness": 0.95,
+ "groundedness": 0.95,
+ "completeness": 0.0,
+ "gold_expected": 1,
+ "gold_present": 0,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer only states the anchor T1195.002 and its ATT&CK record details, but it never states the expected corresponding CAPEC pattern CAPEC-98 or any preceding attack patterns. The CAPEC subquery failed and returned no records, so the requested cross-source correspondence and predecessor relationship are not addressed. The statements that are made are supported by the T1195.002 evidence, but the gold expected identifier CAPEC-98 is absent.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

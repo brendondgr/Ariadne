@@ -1,0 +1,24 @@
+{
+ "case_id": "D4-CanFollow-HAS_PREREQUISITE-CAPEC-234-c31225::analyst",
+ "verdict": "PARTIAL",
+ "correctness": 0.2,
+ "faithfulness": 0.95,
+ "groundedness": 0.95,
+ "completeness": 0.14,
+ "gold_expected": 7,
+ "gold_present": 1,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer correctly identifies CAPEC-234 and its own prerequisite capec:attack-pattern:234:prerequisite:1, but it does not state any attack patterns that can precede CAPEC-234 or the six expected prerequisite texts. It is grounded in the cited CAPEC record and does not fabricate a cross-source mapping, but it is incomplete because it addresses the anchor's prerequisite rather than the requested preceding patterns' prerequisites.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

@@ -1,0 +1,26 @@
+{
+ "case_id": "D5-PeerOf-Likelihood_Of_Attack-CAPEC-80-32fe05::indirect",
+ "verdict": "PARTIAL",
+ "correctness": 0.7,
+ "faithfulness": 0.7,
+ "groundedness": 0.8,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "CAPEC-80 has no PeerOf relationships in this catalogue"
+ ],
+ "rationale": "The answer correctly identifies the expected related high-likelihood attack pattern CAPEC-64 and also mentions the anchor CAPEC-80. However, it asserts that CAPEC-80 has no PeerOf relationships, which is not clearly supported and is inconsistent with presenting CAPEC-64 as the relevant peer-like result. Because the gold identifier is present but the peer relationship is muddled, the answer is partial rather than fully correct.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

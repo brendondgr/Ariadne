@@ -1,0 +1,27 @@
+{
+ "case_id": "D4-uses-uses-C0042-f5bc89::analyst",
+ "verdict": "CORRECT",
+ "correctness": 0.9,
+ "faithfulness": 0.8,
+ "groundedness": 0.8,
+ "completeness": 1.0,
+ "gold_expected": 16,
+ "gold_present": 16,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "The campaign uses 17 techniques",
+  "14 techniques are used in the campaign"
+ ],
+ "rationale": "The answer identifies C0042's software S1166 and S1168 and states all 16 expected technique/subtechnique identifiers, including T1020, T1041, T1053.005, T1059.003, T1070.004, T1071.001, T1074.001, T1082, T1102.002, T1105, T1132.001, T1140, T1560.001, T1567, T1573.001, and T1680. It is therefore complete and largely correct, though the exact 17/14 technique counts and some parent-technique inferences are not fully visible in the truncated C0042 record. No cross-source mapping is asserted.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

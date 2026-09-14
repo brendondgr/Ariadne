@@ -1,0 +1,31 @@
+{
+ "case_id": "D5-uses-x_mitre_platforms-S1245-8027f0::formal",
+ "verdict": "PARTIAL",
+ "correctness": 0.55,
+ "faithfulness": 0.55,
+ "groundedness": 0.8,
+ "completeness": 1.0,
+ "gold_expected": 33,
+ "gold_present": 33,
+ "abstained": true,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "T1547.013",
+  "T1543.001",
+  "enterprise-attack",
+  "35 detection strategies (DET0149, DET0060, ...)",
+  "130 Analytics (AN0423, ...)",
+  "10 tactics (TA0010, ...)"
+ ],
+ "rationale": "The answer states S1245 and all 33 expected technique/subtechnique identifiers, including T1005, T1048.003, and T1679, so completeness is high. However, it does not clearly assert which of those apply to Windows; instead it says the evidence does not specify OS applicability and also lists non-gold T1547.013 and T1543.001. The abstention is not fully rewarded because the answer does not show the executed query as proof.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

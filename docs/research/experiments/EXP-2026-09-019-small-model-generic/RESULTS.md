@@ -1,6 +1,6 @@
 # Results — EXP-2026-09-019
 
-Status: **running**. Steps 1 and 2 are complete; Steps 3–5 have not run.
+Status: **complete**. All five steps ran.
 Every number here is read from `data/endpoint.json`, `data/endpoint-gemma-4-26B-it.json`
 and `data/planner_cost.json`.
 
@@ -245,3 +245,85 @@ and how much is tighter limits is not separated here and needs a third arm.
 Nothing here was judged. The model-free difference clears the plan's 0.02
 threshold for a judged pass by a wide margin, so that pass is warranted and has
 not been run.
+
+## The judged pass — the 2x2 on the grader's own scale
+
+Run 2026-09-14, `default-model` on `:9090` asserted from the response envelope
+to be `qwen38-27B-v2`, 32768 max tokens, every cell graded in **both**
+counterbalanced positions. 2,272 judgments, no failed cells. Judge
+co-authorship is clean: two cells have no model at all and two were narrated by
+`minicpm-5-2B`, so the grader never scores its own prose.
+
+| | no model | 2B narrator |
+| --- | ---: | ---: |
+| **authored plan** | 0.9225 | 0.9396 |
+| **real planner** | 0.593 | 0.6402 |
+
+| Effect | Difference | SE | Separable |
+| --- | ---: | ---: | --- |
+| Plan, no model | **-0.3294** | 0.0197 | True |
+| Plan, 2B narrator | **-0.2994** | 0.0178 | True |
+| Model, authored plan | **+0.0171** | 0.0061 | True |
+| Model, real planner | **+0.0471** | 0.0107 | True |
+
+**The plan effect survives the change of metric.** Gold coverage put it at
+-0.3814; the grader puts it at -0.3294. Two different
+instruments, one without a model in it at all, agreeing on the size of the gap.
+That is the strongest form the Step 2 result can take, and it is now on the
+scale every other figure in this project uses.
+
+Per tier, no-model column: D0 -0.1285,
+D1 -0.2150,
+D2 -0.3065,
+D3 -0.3011,
+D4 -0.3788,
+D5 -0.4191,
+D6 -0.5691 — monotone in tier difficulty,
+worst where a plan has the most structure to get wrong.
+
+### The model effect reverses sign when the metric can see prose
+
+Gold coverage measured the narrator at +0.0000 and +0.0026, neither separable.
+The grader measures it at +0.0171 and
++0.0471, **both separable**. The difference between the two
+instruments is the narrative: coverage counts identifiers, the grader reads the
+answer. So the 2B narrator does something measurable, and on this metric it
+helps — more so when the plan is worse (+0.0471 against
++0.0171), which is consistent with prose partially
+compensating for thinner retrieval.
+
+### What the headline hides
+
+`correctness` is not the only dimension the grader reports, and the others move
+the other way.
+
+| Cell | correctness | faithfulness | groundedness | completeness | hallucinations per judgment |
+| --- | ---: | ---: | ---: | ---: | ---: |
+| authored, no model | 0.9225 | 0.9523 | 0.956 | 0.9715 | 0.1743 |
+| authored, 2B | 0.9396 | 0.9355 | 0.9484 | 0.9759 | **0.3609** |
+| planner, no model | 0.593 | 0.9354 | 0.895 | 0.497 | 0.2377 |
+| planner, 2B | 0.6402 | 0.9258 | 0.8906 | 0.4869 | **0.3134** |
+
+Adding the 2B narrator raises correctness and **lowers faithfulness and
+groundedness in both rows**, while roughly **doubling** flagged hallucinations
+with an authored plan (0.1743 to
+0.3609 per judgment). Fabricated
+mappings rise from 1 to
+3 with an authored plan and from
+0 to
+8 with a real one.
+
+This corroborates, from the grader's side, the independent measurement made
+directly on the prose: 5 of 284 narratives named an identifier that appears
+nowhere in the verified claims — not invented nonsense but real outside
+knowledge, `TA2541` and a parent technique `T1027` the evidence never carried.
+
+**The trade is fluency against provenance, and it is not obviously worth
+taking.** The system's premise is that every statement traces to the graph. A
+narrator that scores better because it writes more confidently, while importing
+facts the evidence does not contain, is improving the number this project
+measures and damaging the property it exists to guarantee. The cheap remedy is
+structural rather than a matter of model size: the grounding check already runs,
+it simply runs one step too early. `compose -> verify -> narrate` puts the
+narrator *after* the verifier, so its prose is the one output nothing checks.
+Recorded as I-10.

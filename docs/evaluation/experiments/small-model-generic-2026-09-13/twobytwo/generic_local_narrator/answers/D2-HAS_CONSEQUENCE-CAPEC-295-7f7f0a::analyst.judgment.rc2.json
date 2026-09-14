@@ -1,0 +1,24 @@
+{
+ "case_id": "D2-HAS_CONSEQUENCE-CAPEC-295-7f7f0a::analyst",
+ "verdict": "PARTIAL",
+ "correctness": 0.8,
+ "faithfulness": 0.9,
+ "groundedness": 1.0,
+ "completeness": 0.5,
+ "gold_expected": 2,
+ "gold_present": 1,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer correctly identifies CAPEC-295 and its single HAS_CONSEQUENCE neighbor capec:attack-pattern:295:consequence:1. It reports the consequence as 'Other Confidentiality', which is supported by the evidence's impacts ['Other'] and scopes ['Confidentiality'], but it does not state the expected exact text 'Confidentiality Other'. Therefore it is partial rather than fully correct.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

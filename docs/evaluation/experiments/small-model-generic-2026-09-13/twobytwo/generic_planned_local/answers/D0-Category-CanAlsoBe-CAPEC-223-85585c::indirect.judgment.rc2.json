@@ -1,0 +1,24 @@
+{
+ "case_id": "D0-Category-CanAlsoBe-CAPEC-223-85585c::indirect",
+ "verdict": "CORRECT",
+ "correctness": 1.0,
+ "faithfulness": 1.0,
+ "groundedness": 1.0,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The executed CAPEC query seeded CAPEC-223 and traversed CAN_ALSO_BE, but returned row_count 0 and no records, so the abstention is honest. The answer explicitly includes CAPEC-223 and the executed query, satisfying the only expected identifier. It asserts no related CAPEC patterns, matching the empty expected neighbor set.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

@@ -1,0 +1,26 @@
+{
+ "case_id": "D5-HAS_MEMBER-Status-CAPEC-515-93195c::indirect",
+ "verdict": "PARTIAL",
+ "correctness": 0.5,
+ "faithfulness": 0.6,
+ "groundedness": 0.8,
+ "completeness": 1.0,
+ "gold_expected": 11,
+ "gold_present": 11,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "The evidence does not provide the Draft status of the individual attack patterns; only the category's status is given."
+ ],
+ "rationale": "The answer correctly identifies CAPEC-515 and lists all 24 related attack patterns, including the 11 expected Draft-status patterns CAPEC-113, CAPEC-114, CAPEC-122, CAPEC-124, CAPEC-161, CAPEC-176, CAPEC-233, CAPEC-438, CAPEC-439, CAPEC-548, and CAPEC-607. However, it does not filter or explicitly identify those 11 as the Draft-status answer, and it falsely claims that individual pattern statuses are not provided even though the related records include Status values. This makes it partially correct: all gold identifiers are present, but the question is not fully answered.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

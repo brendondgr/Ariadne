@@ -1,0 +1,27 @@
+{
+ "case_id": "D5-mitigates-x_mitre_platforms-M1022-4689f4::analyst",
+ "verdict": "CORRECT",
+ "correctness": 0.9,
+ "faithfulness": 0.7,
+ "groundedness": 0.8,
+ "completeness": 1.0,
+ "gold_expected": 43,
+ "gold_present": 43,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "M1022 has 18 mitigated techniques, restricted to mitre platforms Windows",
+  "The remaining 18 techniques, such as T1556 and T1686, are not restricted to Windows"
+ ],
+ "rationale": "The answer states all 43 expected technique identifiers, including T1036, T1036.003, T1070.009, T1564.004, and T1686.003, so it fully covers the expected set. It is mostly correct because the query evidence supports that these techniques are related to M1022 and match the Windows platform filter. However, the answer overstates or contradicts itself by calling the 18 parent techniques both restricted to Windows and not restricted to Windows, which is not directly supported by the shown records.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

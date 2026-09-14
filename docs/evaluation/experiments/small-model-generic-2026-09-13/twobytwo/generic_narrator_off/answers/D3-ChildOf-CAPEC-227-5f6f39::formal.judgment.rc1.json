@@ -1,0 +1,24 @@
+{
+ "case_id": "D3-ChildOf-CAPEC-227-5f6f39::formal",
+ "verdict": "PARTIAL",
+ "correctness": 0.2,
+ "faithfulness": 1.0,
+ "groundedness": 0.9,
+ "completeness": 0.0,
+ "gold_expected": 1,
+ "gold_present": 0,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer correctly identifies and describes CAPEC-227, but it never states the expected more-specific child CAPEC-469 (HTTP DoS) that is present in the evidence. It therefore describes the anchor without fully answering the requested relation. The statements are faithful and grounded, but completeness is low because the gold identifier CAPEC-469 is omitted.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

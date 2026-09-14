@@ -1,0 +1,26 @@
+{
+ "case_id": "D4-CanPrecede-HAS_ALTERNATE_TERM-CAPEC-607-ffe171::analyst",
+ "verdict": "PARTIAL",
+ "correctness": 0.6,
+ "faithfulness": 0.65,
+ "groundedness": 0.75,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "CAPEC-607 has 1 AlternateTerm"
+ ],
+ "rationale": "The answer states the expected alternate-term text and also names CAPEC-548, which is the relevant neighboring attack pattern in the evidence. However, it does not clearly say that CAPEC-548 can precede CAPEC-607, and it misattributes the alternate term to CAPEC-607 instead of to CAPEC-548. Because the gold text is present but the requested relationship is only implied and partly misattributed, the answer is partial.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

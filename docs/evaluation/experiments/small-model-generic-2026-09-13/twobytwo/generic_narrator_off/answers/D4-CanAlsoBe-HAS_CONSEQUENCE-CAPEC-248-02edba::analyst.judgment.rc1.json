@@ -1,0 +1,24 @@
+{
+ "case_id": "D4-CanAlsoBe-HAS_CONSEQUENCE-CAPEC-248-02edba::analyst",
+ "verdict": "PARTIAL",
+ "correctness": 0.7,
+ "faithfulness": 0.8,
+ "groundedness": 0.9,
+ "completeness": 0.667,
+ "gold_expected": 6,
+ "gold_present": 4,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer identifies CAPEC-182 as the related attack pattern and lists six consequence texts tied to the CAPEC-248 record. However, two expected consequence strings are incomplete: it omits \u201cRun Arbitrary Code\u201d from \u201cAuthorization Execute Unauthorized Commands Run Arbitrary Code\u201d and \u201cInformation Leakage\u201d from \u201cConfidentiality Other Information Leakage.\u201d It also attributes the consequences to CAPEC-248 rather than explicitly to CAPEC-182, though the cited record does contain the CAPEC-182 consequence neighbors.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

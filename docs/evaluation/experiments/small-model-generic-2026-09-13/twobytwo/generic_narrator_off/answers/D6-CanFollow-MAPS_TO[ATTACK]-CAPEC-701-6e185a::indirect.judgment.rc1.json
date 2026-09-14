@@ -1,0 +1,26 @@
+{
+ "case_id": "D6-CanFollow-MAPS_TO[ATTACK]-CAPEC-701-6e185a::indirect",
+ "verdict": "CORRECT",
+ "correctness": 1.0,
+ "faithfulness": 0.9,
+ "groundedness": 1.0,
+ "completeness": 1.0,
+ "gold_expected": 3,
+ "gold_present": 3,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "The capec source returned CAPEC-701 with no linked records for preceding attack patterns"
+ ],
+ "rationale": "The answer identifies CAPEC-98 as the CanFollow predecessor of CAPEC-701 and states that CAPEC-98 maps to T1566 and T1598, which are supported by the evidence. It includes the required identifiers CAPEC-701, T1566, and T1598. The main weakness is a residual abstention claiming no linked records for preceding attack patterns, which is contradicted by the CAPEC-98 related record.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

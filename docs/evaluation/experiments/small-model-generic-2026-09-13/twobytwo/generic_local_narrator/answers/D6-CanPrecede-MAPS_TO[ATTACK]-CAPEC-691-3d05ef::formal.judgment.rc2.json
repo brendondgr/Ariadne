@@ -1,0 +1,27 @@
+{
+ "case_id": "D6-CanPrecede-MAPS_TO[ATTACK]-CAPEC-691-3d05ef::formal",
+ "verdict": "CORRECT",
+ "correctness": 1.0,
+ "faithfulness": 0.85,
+ "groundedness": 0.9,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "CAPEC-691 returned no linked records for preceding patterns",
+  "CAPEC-691 has three CanPrecede successors"
+ ],
+ "rationale": "The answer correctly identifies the expected external technique T1036.005 through CAPEC-616, and it correctly notes that CAPEC-184 and CAPEC-444 have no ATT&CK mappings in the evidence. It is grounded in the CAPEC-691, CAPEC-616, CAPEC-184, and CAPEC-444 records. The main faithfulness issue is the contradictory abstention claiming CAPEC-691 had no linked preceding-pattern records, despite the evidence showing CAPEC-616, CAPEC-184, and CAPEC-444.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

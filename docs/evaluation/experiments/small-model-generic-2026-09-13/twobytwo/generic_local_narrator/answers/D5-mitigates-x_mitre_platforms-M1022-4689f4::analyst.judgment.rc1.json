@@ -1,0 +1,28 @@
+{
+ "case_id": "D5-mitigates-x_mitre_platforms-M1022-4689f4::analyst",
+ "verdict": "PARTIAL",
+ "correctness": 0.8,
+ "faithfulness": 0.6,
+ "groundedness": 0.7,
+ "completeness": 1.0,
+ "gold_expected": 43,
+ "gold_present": 43,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "The 25 listed techniques are restricted to Windows",
+  "The 18 listed techniques are restricted to Windows",
+  "The 18 remaining techniques are not restricted to Windows"
+ ],
+ "rationale": "The answer states M1022 and all 43 expected technique IDs, including T1036, T1070.009, T1564.004, and T1686.003, so completeness is full. However, it partitions the set into 25 and 18 and asserts 'restricted to' or 'not restricted to' Windows, which the shown M1022 record and Windows-filtered query do not explicitly support. The internal contradiction between the narrative and the third claim reduces faithfulness.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

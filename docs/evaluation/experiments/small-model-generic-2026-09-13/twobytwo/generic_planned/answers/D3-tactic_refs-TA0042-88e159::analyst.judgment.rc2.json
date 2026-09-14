@@ -1,0 +1,24 @@
+{
+ "case_id": "D3-tactic_refs-TA0042-88e159::analyst",
+ "verdict": "PARTIAL",
+ "correctness": 0.6,
+ "faithfulness": 1.0,
+ "groundedness": 0.8,
+ "completeness": 0.5,
+ "gold_expected": 2,
+ "gold_present": 1,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer abstains and is supported by the evidence showing zero returned records, but it only echoes TA0042 and never states the expected matrix enterprise-attack. The relevant attack sub-question was skipped rather than executed, so the abstention is not fully proven for the source the question targets. This makes the answer partial rather than fully correct.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

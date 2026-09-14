@@ -1,0 +1,27 @@
+{
+ "case_id": "D0-Category-ChildOf-CAPEC-210-c437b1::analyst",
+ "verdict": "CORRECT",
+ "correctness": 0.9,
+ "faithfulness": 0.7,
+ "groundedness": 0.8,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": true,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "CAPEC-210 is described as having the label \"Abuse Existing Functionality\", but the evidence shows label Category and name Abuse Existing Functionality",
+  "The narrative says the only information available is the label and Status, while the evidence also includes a summary and facet counts"
+ ],
+ "rationale": "The answer correctly anchors CAPEC-210 and reports no verified more-specific or parent CAPEC attack patterns, matching the empty expected related set. It does not fabricate a cross-source mapping, but it slightly overstates the available evidence and conflates name with label. The executed query is present in the evidence but not shown in the answer's abstention.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

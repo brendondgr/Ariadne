@@ -1,0 +1,27 @@
+{
+ "case_id": "D6-MAPS_TO[ATTACK]-MAPS_TO[OWASP Attacks]-T1505.005-d82694::formal",
+ "verdict": "PARTIAL",
+ "correctness": 0.3,
+ "faithfulness": 0.6,
+ "groundedness": 0.7,
+ "completeness": 0.0,
+ "gold_expected": 1,
+ "gold_present": 0,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": true,
+ "hallucinations": [
+  "OWASP taxonomy entry 'Server Software Component: Terminal Services DLL'",
+  "CAPEC-558, CAPEC-640, and CAPEC-642 correspond to an OWASP taxonomy entry"
+ ],
+ "rationale": "The answer correctly identifies CAPEC-558, CAPEC-640, and CAPEC-642 as related to T1505.005, but it omits the expected OWASP entry OWASP Attacks:Binary planting. It instead treats the related ATTACK taxonomy entry 'Server Software Component: Terminal Services DLL' as an OWASP entry, which the evidence does not support. This makes the final mapping partially relevant but not fully correct.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

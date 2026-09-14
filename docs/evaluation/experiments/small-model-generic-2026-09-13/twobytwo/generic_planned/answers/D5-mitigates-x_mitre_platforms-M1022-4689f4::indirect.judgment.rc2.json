@@ -1,0 +1,29 @@
+{
+ "case_id": "D5-mitigates-x_mitre_platforms-M1022-4689f4::indirect",
+ "verdict": "PARTIAL",
+ "correctness": 0.8,
+ "faithfulness": 0.85,
+ "groundedness": 0.85,
+ "completeness": 1.0,
+ "gold_expected": 43,
+ "gold_present": 43,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "T1574.004 included as a Windows-applicable technique",
+  "T1548.006 included as a Windows-applicable technique",
+  "T1547.013 included as a Windows-applicable technique",
+  "T1543.002 included as a Windows-applicable technique"
+ ],
+ "rationale": "The answer states M1022 and includes all 43 expected Windows-related technique/subtechnique identifiers, such as T1036.003, T1564.004, T1569.002, and T1686.003. However, it presents the broader related set of 41 subtechniques and 26 parent techniques rather than an explicit Windows-filtered answer. It also includes clearly non-Windows items such as T1574.004, T1548.006, T1547.013, and T1543.002, so it is complete but only partially correct.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

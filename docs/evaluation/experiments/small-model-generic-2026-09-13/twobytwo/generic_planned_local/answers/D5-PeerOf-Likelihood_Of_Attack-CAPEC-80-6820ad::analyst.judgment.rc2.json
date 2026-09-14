@@ -1,0 +1,27 @@
+{
+ "case_id": "D5-PeerOf-Likelihood_Of_Attack-CAPEC-80-6820ad::analyst",
+ "verdict": "PARTIAL",
+ "correctness": 0.85,
+ "faithfulness": 0.7,
+ "groundedness": 0.9,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "CAPEC-80 has no PeerOf relationships in this catalogue",
+  "CAPEC-80's two skills are restricted to Likelihood_Of_Attack Medium"
+ ],
+ "rationale": "The answer correctly identifies CAPEC-71 as the Medium-likelihood peer of CAPEC-80, which is the expected gold identifier. However, it also asserts that CAPEC-80 has no PeerOf relationships, which is contradicted by the CAPEC-71 peer returned through the PEER_OF query. The skill restriction claim is also not clearly supported by the evidence, so the answer is partial rather than fully correct.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

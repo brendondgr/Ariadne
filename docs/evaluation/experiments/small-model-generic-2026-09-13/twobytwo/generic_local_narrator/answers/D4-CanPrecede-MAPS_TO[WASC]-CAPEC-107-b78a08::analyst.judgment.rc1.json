@@ -1,0 +1,26 @@
+{
+ "case_id": "D4-CanPrecede-MAPS_TO[WASC]-CAPEC-107-b78a08::analyst",
+ "verdict": "CORRECT",
+ "correctness": 1.0,
+ "faithfulness": 0.85,
+ "groundedness": 0.9,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "CAPEC-107 has 1 attack pattern restricted to taxonomy name WASC: CAPEC-63"
+ ],
+ "rationale": "The answer identifies CAPEC-63 as the preceding attack pattern for CAPEC-107 and states the expected WASC:08 mapping. The query path through CAN_PRECEDE and MAPS_TO supports the CAPEC-63 to WASC:08 relationship, though the normalized record does not explicitly show edge direction. A minor unsupported phrasing about 'taxonomy name WASC: CAPEC-63' slightly reduces faithfulness.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

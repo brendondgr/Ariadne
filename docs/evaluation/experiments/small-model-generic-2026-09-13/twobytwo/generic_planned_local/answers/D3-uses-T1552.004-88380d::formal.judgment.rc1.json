@@ -1,0 +1,26 @@
+{
+ "case_id": "D3-uses-T1552.004-88380d::formal",
+ "verdict": "PARTIAL",
+ "correctness": 0.3,
+ "faithfulness": 0.8,
+ "groundedness": 0.6,
+ "completeness": 0.0,
+ "gold_expected": 11,
+ "gold_present": 0,
+ "abstained": true,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "None of the live graph sources cover this request"
+ ],
+ "rationale": "The answer abstains for T1552.004 and states that no records were returned, which matches the empty evidence volume. However, the gold expects 11 software neighbours, including S0002, S0283, S0363, S0377, S0409, S0599, S0601, S0661, S0677, S1060, and S1196, and the answer names none of them. The abstention is not fully proven by an executed query in the answer, and the claim that no live graph sources cover the request is a slight overclaim.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

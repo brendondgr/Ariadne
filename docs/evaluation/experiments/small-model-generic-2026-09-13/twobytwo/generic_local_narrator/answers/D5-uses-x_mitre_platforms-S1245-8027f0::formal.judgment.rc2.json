@@ -1,0 +1,24 @@
+{
+ "case_id": "D5-uses-x_mitre_platforms-S1245-8027f0::formal",
+ "verdict": "PARTIAL",
+ "correctness": 0.85,
+ "faithfulness": 0.95,
+ "groundedness": 0.95,
+ "completeness": 1.0,
+ "gold_expected": 33,
+ "gold_present": 33,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer states all 33 expected Windows-applicable technique identifiers, including T1005, T1048.003, T1547.001, and T1679, and ties them to S1245. However, it also includes T1547.013 and T1543.001, which the evidence describes as Linux/macOS subtechniques, and it does not explicitly filter the list to the Windows platform. Therefore it is complete but over-inclusive.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

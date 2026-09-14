@@ -1,0 +1,28 @@
+{
+ "case_id": "D6-CanPrecede-MAPS_TO[ATTACK]-CAPEC-662-205983::analyst",
+ "verdict": "PARTIAL",
+ "correctness": 0.75,
+ "faithfulness": 0.8,
+ "groundedness": 0.85,
+ "completeness": 1.0,
+ "gold_expected": 2,
+ "gold_present": 2,
+ "abstained": false,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "CAPEC-662 has 4 CanPrecede successors",
+  "The preceding patterns CAPEC-185 and CAPEC-475",
+  "The capec source doesn't establish this \u2014 the executed query ran cleanly and returned CAPEC-662 with no linked records for: For CAPEC-662: the CAPEC attack patterns that can precede it."
+ ],
+ "rationale": "The answer includes the required CAPEC-662 and the gold ATT&CK techniques T1027 and T1587.001 via CAPEC-542, so completeness is full. It also lists CAPEC-159, CAPEC-185, and CAPEC-475 with supported mappings or no mappings, but the direction is muddled: it calls the CAN_PRECEDE neighbours successors and then only CAPEC-185/CAPEC-475 preceding. The abstention claiming no linked records for can-precede is not clearly supported by the shown related records.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

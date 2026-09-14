@@ -1,0 +1,24 @@
+{
+ "case_id": "D4-CanAlsoBe-HAS_CONSEQUENCE-CAPEC-248-02edba::analyst",
+ "verdict": "PARTIAL",
+ "correctness": 0.7,
+ "faithfulness": 0.9,
+ "groundedness": 0.9,
+ "completeness": 0.67,
+ "gold_expected": 6,
+ "gold_present": 4,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer identifies CAPEC-182 as the related attack pattern and lists six consequence texts, but only four match the expected consequence identifiers: Access Control Authorization Bypass Protection Mechanism, Accountability Authentication Authorization Non-Repudiation Gain Privileges, Confidentiality Read Data, and Integrity Modify Data. It omits the expected 'Run Arbitrary Code' and 'Information Leakage' terms, and it attributes the consequences to CAPEC-248 rather than explicitly to CAPEC-182. The statements are otherwise grounded in the CAPEC-248 record and its related consequence nodes.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

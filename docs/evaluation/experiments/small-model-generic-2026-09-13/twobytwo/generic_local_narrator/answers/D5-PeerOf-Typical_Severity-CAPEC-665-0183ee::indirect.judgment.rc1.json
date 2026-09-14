@@ -1,0 +1,27 @@
+{
+ "case_id": "D5-PeerOf-Typical_Severity-CAPEC-665-0183ee::indirect",
+ "verdict": "PARTIAL",
+ "correctness": 0.5,
+ "faithfulness": 0.6,
+ "groundedness": 0.8,
+ "completeness": 1.0,
+ "gold_expected": 2,
+ "gold_present": 2,
+ "abstained": true,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "The peer attack patterns' typical severities are not listed in the records",
+  "The request cannot be answered from the available evidence"
+ ],
+ "rationale": "The evidence shows CAPEC-665 has PEER_OF neighbors CAPEC-148 and CAPEC-151, both with Typical_Severity Medium, while CAPEC-458 lacks a listed severity. The answer lists CAPEC-148 and CAPEC-151, so it states the expected identifiers, but it also says the severities are not listed and that the question cannot be answered. That makes it partial rather than fully correct.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

@@ -1,0 +1,24 @@
+{
+ "case_id": "D5-HAS_MEMBER-Likelihood_Of_Attack-CAPEC-223-3531a3::formal",
+ "verdict": "PARTIAL",
+ "correctness": 0.25,
+ "faithfulness": 1.0,
+ "groundedness": 0.85,
+ "completeness": 0.0,
+ "gold_expected": 1,
+ "gold_present": 0,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer abstains and shows the executed CAPEC query, and the evidence reports row_count 0, so its no-records claim is faithful. The expected gold identifier CAPEC-28 is not stated, and the query does not surface the CAPEC-223 to CAPEC-28 membership, so completeness is low. It avoids fabricated mapping but only partially addresses the question by reporting an empty result.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

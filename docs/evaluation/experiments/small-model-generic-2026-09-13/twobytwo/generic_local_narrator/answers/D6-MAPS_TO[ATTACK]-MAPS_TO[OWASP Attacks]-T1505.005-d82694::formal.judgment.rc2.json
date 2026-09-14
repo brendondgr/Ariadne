@@ -1,0 +1,28 @@
+{
+ "case_id": "D6-MAPS_TO[ATTACK]-MAPS_TO[OWASP Attacks]-T1505.005-d82694::formal",
+ "verdict": "PARTIAL",
+ "correctness": 0.6,
+ "faithfulness": 0.6,
+ "groundedness": 0.7,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": true,
+ "hallucinations": [
+  "CAPEC-640 corresponds to OWASP taxonomy entry T1620",
+  "T1620 is an OWASP taxonomy entry",
+  "CAPEC-640 has 1 ATT&CK mapping: T1505.005"
+ ],
+ "rationale": "The answer correctly states that CAPEC-642 maps to OWASP Attacks:Binary planting and that CAPEC-558 has no OWASP mapping in the evidence. However, it incorrectly labels CAPEC-640's T1620 mapping as an OWASP taxonomy entry, while the cited record shows T1620 has taxonomy_name ATTACK. It also asserts that CAPEC-640 has only one ATT&CK mapping despite evidence showing T1505.005, T1574.006, T1574.013, and T1620.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

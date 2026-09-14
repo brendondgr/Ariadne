@@ -1,0 +1,26 @@
+{
+ "case_id": "D5-ChildOf-Typical_Severity-CAPEC-634-446005::analyst",
+ "verdict": "PARTIAL",
+ "correctness": 0.5,
+ "faithfulness": 0.7,
+ "groundedness": 0.8,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "The evidence does not provide Typical_Severity values for CAPEC-545, CAPEC-651, CAPEC-116, and CAPEC-117"
+ ],
+ "rationale": "The answer states the expected gold related identifier CAPEC-651 among the broader patterns for CAPEC-634, but it does not explicitly identify CAPEC-651 as the Medium-severity answer. It also incorrectly claims that Typical_Severity is missing for all broader patterns, even though the evidence shows CAPEC-651, CAPEC-116, and CAPEC-117 have Medium Typical_Severity. Therefore it is partially correct and partially faithful.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

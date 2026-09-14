@@ -1,0 +1,24 @@
+{
+ "case_id": "D4-mitigates-uses-M1047-b63672::indirect",
+ "verdict": "PARTIAL",
+ "correctness": 0.2,
+ "faithfulness": 1.0,
+ "groundedness": 0.8,
+ "completeness": 0.0,
+ "gold_expected": 47,
+ "gold_present": 0,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer abstains and reports no records, which is supported by the empty CAPEC result and the skipped attack q1, but it states none of the 47 expected campaign IDs from C0001 through C0063. It mentions M1047 only in the repeated query context rather than resolving the mitigation-to-campaign mapping. Because it is a faithful, query-backed abstention but omits all gold campaigns, it is partial rather than correct.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

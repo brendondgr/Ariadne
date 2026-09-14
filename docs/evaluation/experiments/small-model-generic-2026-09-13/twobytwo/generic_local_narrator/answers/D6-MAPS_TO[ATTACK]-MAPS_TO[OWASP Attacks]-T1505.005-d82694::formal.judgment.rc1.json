@@ -1,0 +1,26 @@
+{
+ "case_id": "D6-MAPS_TO[ATTACK]-MAPS_TO[OWASP Attacks]-T1505.005-d82694::formal",
+ "verdict": "PARTIAL",
+ "correctness": 0.6,
+ "faithfulness": 0.7,
+ "groundedness": 0.8,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": true,
+ "hallucinations": [
+  "CAPEC-640 corresponds to OWASP taxonomy entry T1620, Reflective Code Loading"
+ ],
+ "rationale": "The answer correctly identifies CAPEC-640, CAPEC-642, and CAPEC-558 as corresponding to T1505.005, and it correctly states that CAPEC-642 maps to OWASP Attacks:Binary planting while CAPEC-558 has no OWASP entry. However, it incorrectly claims that CAPEC-640 maps to OWASP T1620, whereas the evidence shows T1620 is an ATTACK taxonomy entry, not OWASP. This makes the answer partial rather than fully correct.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

@@ -1,0 +1,24 @@
+{
+ "case_id": "D5-CanFollow-Likelihood_Of_Attack-CAPEC-234-6037d9::indirect",
+ "verdict": "PARTIAL",
+ "correctness": 0.3,
+ "faithfulness": 0.9,
+ "groundedness": 0.7,
+ "completeness": 0.0,
+ "gold_expected": 1,
+ "gold_present": 0,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer abstains and shows the executed CAPEC query, but it does not state the expected Medium-likelihood predecessor CAPEC-175 for CAPEC-234. Its no-records claim is supported by the zero-row result, so it is faithful and grounded, though the query appears to use REQUIRES_SKILL rather than the CanFollow relation implied by the question. It is partial because it identifies the anchor and abstains honestly but misses the gold related identifier.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

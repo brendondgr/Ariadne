@@ -1,0 +1,24 @@
+{
+ "case_id": "D5-x_mitre_analytic_refs-x_mitre_platforms-DET0338-3be277::analyst",
+ "verdict": "PARTIAL",
+ "correctness": 0.3,
+ "faithfulness": 0.9,
+ "groundedness": 0.6,
+ "completeness": 0.0,
+ "gold_expected": 1,
+ "gold_present": 0,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer honestly reports that the routed sources returned no records and includes a CAPEC query in its abstention, but it does not state the expected analytic AN0958. It mentions DET0338 only in the restated question/abstention rather than as a retrieved result. Because the gold expected one analytic and the answer states none, it is partial rather than correct.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

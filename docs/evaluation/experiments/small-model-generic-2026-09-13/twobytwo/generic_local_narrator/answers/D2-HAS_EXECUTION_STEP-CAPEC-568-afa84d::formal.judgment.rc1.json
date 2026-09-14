@@ -1,0 +1,26 @@
+{
+ "case_id": "D2-HAS_EXECUTION_STEP-CAPEC-568-afa84d::formal",
+ "verdict": "CORRECT",
+ "correctness": 0.95,
+ "faithfulness": 0.9,
+ "groundedness": 0.95,
+ "completeness": 1.0,
+ "gold_expected": 5,
+ "gold_present": 5,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "The execution steps are named only as text"
+ ],
+ "rationale": "The answer identifies CAPEC-568 and states all five expected execution steps, corresponding to capec:attack-pattern:568:step:1 through capec:attack-pattern:568:step:5. It omits the technique details for steps 2 and 4 and slightly overstates that the steps are named only as text, but the core query is answered. The main claims are grounded in the CAPEC-568 record and its related ExecutionStep records.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

@@ -1,0 +1,24 @@
+{
+ "case_id": "D4-detects-x_mitre_analytic_refs-T1003.005-a591fa::indirect",
+ "verdict": "PARTIAL",
+ "correctness": 0.2,
+ "faithfulness": 0.7,
+ "groundedness": 0.6,
+ "completeness": 0.0,
+ "gold_expected": 2,
+ "gold_present": 0,
+ "abstained": true,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer abstains after the attack specialist failed and no records were returned, so it does not assert a false mapping for T1003.005. However, the expected analytics AN1417 and AN1418 are not stated, and the answer does not explicitly name the anchor T1003.005. The abstention is supported by the empty evidence volume, but the executed query is only visible in the logic flow rather than in the answer's abstention.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

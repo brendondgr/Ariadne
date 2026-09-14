@@ -1,0 +1,24 @@
+{
+ "case_id": "D3-HAS_MEMBER-CAPEC-130-d7b062::analyst",
+ "verdict": "PARTIAL",
+ "correctness": 0.4,
+ "faithfulness": 0.8,
+ "groundedness": 0.8,
+ "completeness": 0.0,
+ "gold_expected": 1,
+ "gold_present": 0,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer honestly abstains and shows the executed query, which returned no records for CAPEC-130. However, it does not state the expected related view CAPEC-703, and the shown query only traverses HAS_EXECUTION_STEP rather than the IN_VIEW relationship asked for. It is partial because it avoids guessing but still fails to provide the expected identifier.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

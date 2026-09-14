@@ -1,0 +1,27 @@
+{
+ "case_id": "D2-ChildOf-CAPEC-182-15f8e0::formal",
+ "verdict": "PARTIAL",
+ "correctness": 0.7,
+ "faithfulness": 0.7,
+ "groundedness": 0.8,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "CAPEC-178 is a ChildOf parent of CAPEC-182",
+  "CAPEC-174 is a ChildOf parent of CAPEC-182"
+ ],
+ "rationale": "The answer correctly states the expected gold identifier, CAPEC-137, as a more general pattern related to CAPEC-182. It also includes CAPEC-178 and CAPEC-174, which are present in the evidence as CHILD_OF neighbors, but the answer asserts they are parents of CAPEC-182 rather than merely related patterns. Because the question asks for patterns that CAPEC-182 is a more specific case of, the extra parent claims make the answer partial rather than fully correct.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

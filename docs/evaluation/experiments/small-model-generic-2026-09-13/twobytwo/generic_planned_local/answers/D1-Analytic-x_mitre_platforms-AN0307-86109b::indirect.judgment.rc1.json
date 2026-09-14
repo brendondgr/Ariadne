@@ -1,0 +1,24 @@
+{
+ "case_id": "D1-Analytic-x_mitre_platforms-AN0307-86109b::indirect",
+ "verdict": "PARTIAL",
+ "correctness": 0.4,
+ "faithfulness": 0.9,
+ "groundedness": 0.8,
+ "completeness": 0.5,
+ "gold_expected": 2,
+ "gold_present": 1,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer abstains and shows a query that returned no records, so it avoids fabricating a mapping for AN0307. However, it omits the expected platform Linux and only mentions the anchor AN0307, so it is partially responsive. The query searched names rather than the provided seed id AN0307, making the abstention less than fully conclusive.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

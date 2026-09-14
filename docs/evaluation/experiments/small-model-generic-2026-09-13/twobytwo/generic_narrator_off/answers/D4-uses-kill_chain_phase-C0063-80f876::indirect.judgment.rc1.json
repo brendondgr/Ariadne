@@ -1,0 +1,26 @@
+{
+ "case_id": "D4-uses-kill_chain_phase-C0063-80f876::indirect",
+ "verdict": "CORRECT",
+ "correctness": 0.95,
+ "faithfulness": 0.9,
+ "groundedness": 0.9,
+ "completeness": 1.0,
+ "gold_expected": 15,
+ "gold_present": 15,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "The specific tactic-via-technique mappings, such as TA0042 via T1584.001 and TA0040 via T1529, are not explicitly shown in the truncated evidence."
+ ],
+ "rationale": "The answer identifies C0063 and states all 15 expected tactics: TA0001, TA0002, TA0003, TA0004, TA0005, TA0006, TA0007, TA0008, TA0009, TA0010, TA0011, TA0040, TA0042, TA0043, and TA0112. It also enumerates used techniques and subtechniques, so it addresses both parts of the question. The main deduction is that the exact tactic-via-technique pairs are not fully visible in the truncated evidence, though the claims are tied to the C0063 record.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

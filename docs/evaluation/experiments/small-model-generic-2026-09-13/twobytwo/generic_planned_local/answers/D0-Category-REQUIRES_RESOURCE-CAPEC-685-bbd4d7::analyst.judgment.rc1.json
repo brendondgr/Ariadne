@@ -1,0 +1,24 @@
+{
+ "case_id": "D0-Category-REQUIRES_RESOURCE-CAPEC-685-bbd4d7::analyst",
+ "verdict": "CORRECT",
+ "correctness": 1.0,
+ "faithfulness": 0.95,
+ "groundedness": 0.9,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer abstains and shows the executed CAPEC query for seed CAPEC-685, and the evidence shows row_count 0 and no records. It states CAPEC-685 in the abstention, satisfying the only expected identifier, and it does not assert any resource neighbors. The minor mismatch between the subquestion mentioning REQUIRES_RESOURCE and the query traversing REQUIRES_SKILL does not create a fabricated mapping because the answer only reports no records.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

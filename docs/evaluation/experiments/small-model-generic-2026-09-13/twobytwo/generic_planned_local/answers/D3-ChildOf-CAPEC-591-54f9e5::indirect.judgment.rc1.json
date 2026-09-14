@@ -1,0 +1,28 @@
+{
+ "case_id": "D3-ChildOf-CAPEC-591-54f9e5::indirect",
+ "verdict": "PARTIAL",
+ "correctness": 0.8,
+ "faithfulness": 0.75,
+ "groundedness": 0.8,
+ "completeness": 1.0,
+ "gold_expected": 9,
+ "gold_present": 9,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "CAPEC-63 is a more specific variant/child of CAPEC-591",
+  "CAPEC-242 is a more specific variant/child of CAPEC-591",
+  "CAPEC-591 has 11 ChildOf parents"
+ ],
+ "rationale": "The answer includes all nine expected related patterns: CAPEC-18, CAPEC-32, CAPEC-86, CAPEC-198, CAPEC-199, CAPEC-243, CAPEC-244, CAPEC-245, and CAPEC-247, along with the anchor CAPEC-591. It also asserts that CAPEC-63 and CAPEC-242 are more specific variants, which is not well supported because the evidence only shows them as related ChildOf records and their abstractions are Standard and Meta rather than Detailed. The answer is therefore complete but partially over-inclusive.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

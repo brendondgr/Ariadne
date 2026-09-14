@@ -1,0 +1,24 @@
+{
+ "case_id": "D0-Group-kill_chain_phase-G0001-df09db::indirect",
+ "verdict": "PARTIAL",
+ "correctness": 0.5,
+ "faithfulness": 1.0,
+ "groundedness": 0.8,
+ "completeness": 0.0,
+ "gold_expected": 1,
+ "gold_present": 0,
+ "abstained": true,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer honestly abstains by reporting that no records were returned, which is supported by the attack specialist result having zero records and a pre-run gate failure. However, it does not state the expected anchor identifier G0001 or explicitly say that G0001 has no tactics. It also does not show the executed query in the answer itself, so it is partial rather than fully correct.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

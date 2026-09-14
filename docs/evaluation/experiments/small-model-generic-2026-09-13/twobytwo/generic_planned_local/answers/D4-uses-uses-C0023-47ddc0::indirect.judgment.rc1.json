@@ -1,0 +1,24 @@
+{
+ "case_id": "D4-uses-uses-C0023-47ddc0::indirect",
+ "verdict": "PARTIAL",
+ "correctness": 0.4,
+ "faithfulness": 0.9,
+ "groundedness": 0.7,
+ "completeness": 0.0,
+ "gold_expected": 34,
+ "gold_present": 0,
+ "abstained": true,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer abstains after the attack specialist failed for C0023 and returned no records, so it does not assert any of the expected technique IDs such as T1005, T1059.001, or T1573.001. It is faithful to the empty result and failure note, but it does not state the executed query in the answer and provides none of the 34 expected technique identifiers. Therefore it is an honest partial abstention rather than a complete answer.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

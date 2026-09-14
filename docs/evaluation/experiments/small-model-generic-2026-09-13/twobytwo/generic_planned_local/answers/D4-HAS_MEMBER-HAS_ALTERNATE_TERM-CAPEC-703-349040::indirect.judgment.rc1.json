@@ -1,0 +1,24 @@
+{
+ "case_id": "D4-HAS_MEMBER-HAS_ALTERNATE_TERM-CAPEC-703-349040::indirect",
+ "verdict": "CORRECT",
+ "correctness": 0.85,
+ "faithfulness": 1.0,
+ "groundedness": 0.85,
+ "completeness": 0.0,
+ "gold_expected": 5,
+ "gold_present": 0,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer abstains and includes the executed CAPEC query, and the evidence shows row_count 0 and no records for seed CAPEC-703, so the abstention is faithful and grounded. It does not state any of the expected alternate terms: Man-in-the-Middle / MITM, Monkey-in-the-Middle, Monster-in-the-Middle, On-path Attacker, or Person-in-the-Middle / PiTM. Therefore completeness is 0 despite the honest no-records response.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

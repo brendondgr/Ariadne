@@ -1,0 +1,24 @@
+{
+ "case_id": "D2-log_source-AN0280-dd36b8::formal",
+ "verdict": "CORRECT",
+ "correctness": 1.0,
+ "faithfulness": 1.0,
+ "groundedness": 1.0,
+ "completeness": 0.0,
+ "gold_expected": 1,
+ "gold_present": 0,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer abstains instead of guessing and includes the executed attack query that returned no records, which supports the claim that the sources do not establish a data component for AN0280. It does not state the expected related identifier DC0064, so completeness is zero, but the abstention is query-backed and not a fabricated mapping.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

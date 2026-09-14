@@ -103,7 +103,7 @@ this file says which number is *current*.
 | [`EXP-2026-09-016`](experiments/EXP-2026-09-016-arm-cost-and-latency/) | 2026-09-10 | `cost_ratio_wall_clock_llm_query_over_deterministic` | 3083.2000 ± 0.0000 (n=284) | C-012, C-004 | — |
 | [`EXP-2026-09-017`](experiments/EXP-2026-09-017-correctness-improvement-diagnostic/) | 2026-09-11 | `D4_generic_headroom` | 0.1116 (n=55) | — | — |
 | [`EXP-2026-09-018`](experiments/EXP-2026-09-018-correctness-repair/) | 2026-09-14 | `fresh_generic_composed_correctness` | 0.9005 ± 0.1713 (n=282) | C-017, C-023 | — |
-| [`EXP-2026-09-019`](experiments/EXP-2026-09-019-small-model-generic/) | 2026-09-13 | `paired_gold_coverage_difference` | -0.3814 ± 0.4413 (n=284) | — | — |
+| [`EXP-2026-09-019`](experiments/EXP-2026-09-019-small-model-generic/) | 2026-09-13 | `judged_plan_effect_no_model` | -0.3294 ± 0.3324 (n=284) | — | — |
 | [`EXP-2026-09-020`](experiments/EXP-2026-09-020-plan-source-crossed/) | 2026-09-14 | `engine_effect_at_real_planner` | 0.0261 ± 0.4295 (n=284) | C-023 | — |
 
 **24 withdrawn figure(s), 6 superseded experiment(s), 47 current headline(s).**

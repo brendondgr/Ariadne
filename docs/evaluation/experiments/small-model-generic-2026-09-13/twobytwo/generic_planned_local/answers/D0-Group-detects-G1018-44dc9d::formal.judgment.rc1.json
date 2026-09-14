@@ -1,0 +1,24 @@
+{
+ "case_id": "D0-Group-detects-G1018-44dc9d::formal",
+ "verdict": "PARTIAL",
+ "correctness": 0.65,
+ "faithfulness": 0.8,
+ "groundedness": 0.9,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer correctly identifies the anchor G1018 and reports detected DET neighbors such as DET0281 and DET0066, but it does not clearly state that G1018 detects no ATT&CK technique IDs. It also lists used techniques such as T1027.015 and T1105, which are not the requested detected techniques. Since the gold expectation includes G1018 and no related technique IDs, completeness is high, but the question is only partially addressed.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

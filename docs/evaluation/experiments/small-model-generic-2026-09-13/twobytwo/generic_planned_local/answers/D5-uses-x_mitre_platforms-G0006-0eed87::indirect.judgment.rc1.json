@@ -1,0 +1,26 @@
+{
+ "case_id": "D5-uses-x_mitre_platforms-G0006-0eed87::indirect",
+ "verdict": "INCORRECT",
+ "correctness": 0.1,
+ "faithfulness": 0.6,
+ "groundedness": 0.8,
+ "completeness": 0.0,
+ "gold_expected": 12,
+ "gold_present": 0,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "G0006 has no techniques in this catalogue"
+ ],
+ "rationale": "The answer identifies only G0006 and asserts that it has no techniques, but the expected macOS-relevant techniques include T1005, T1007, T1016, T1036.005, T1049, T1057, T1087.001, T1119, T1135, T1560.001, T1566.001, and T1566.002. The evidence contains only the G0006 record with no related rows, and the executed query traversed HAS_SUBTECHNIQUE rather than the USES relationship needed for group techniques, so the absence claim is only weakly supported. No cross-source mapping is fabricated.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

@@ -1,0 +1,26 @@
+{
+ "case_id": "D3-ChildOf-CAPEC-227-5f6f39::formal",
+ "verdict": "PARTIAL",
+ "correctness": 0.2,
+ "faithfulness": 0.7,
+ "groundedness": 0.8,
+ "completeness": 0.0,
+ "gold_expected": 1,
+ "gold_present": 0,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "No other CAPEC attack patterns are identified as more specific cases of CAPEC-227"
+ ],
+ "rationale": "The answer correctly retrieves and cites CAPEC-227, but it does not state the expected more-specific pattern CAPEC-469. It also asserts that no other CAPEC patterns are more specific, which is not fully supported because the CAPEC-227 record has a CHILD_OF in facet count of 1. Because it addresses the question and includes the anchor but misses the only expected related identifier, it is partial.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

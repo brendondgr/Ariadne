@@ -1,0 +1,24 @@
+{
+ "case_id": "D6-MAPS_TO[ATTACK]-MAPS_TO[OWASP Attacks]-T1491-8c3fa2::analyst",
+ "verdict": "PARTIAL",
+ "correctness": 0.5,
+ "faithfulness": 0.95,
+ "groundedness": 0.9,
+ "completeness": 0.5,
+ "gold_expected": 2,
+ "gold_present": 1,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer correctly identifies T1491 and CAPEC-148 as the corresponding CAPEC pattern, but it omits the expected OWASP Attacks:Content Spoofing entry and instead says the evidence does not provide OWASP entries. Its claims are tied to the T1491 and CAPEC-148 records, so it is faithful and grounded, but only partially complete.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

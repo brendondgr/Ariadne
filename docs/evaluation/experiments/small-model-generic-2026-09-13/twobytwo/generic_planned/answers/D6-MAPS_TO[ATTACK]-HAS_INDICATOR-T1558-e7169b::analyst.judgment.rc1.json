@@ -1,0 +1,24 @@
+{
+ "case_id": "D6-MAPS_TO[ATTACK]-HAS_INDICATOR-T1558-e7169b::analyst",
+ "verdict": "INCORRECT",
+ "correctness": 0.1,
+ "faithfulness": 1.0,
+ "groundedness": 1.0,
+ "completeness": 0.0,
+ "gold_expected": 5,
+ "gold_present": 0,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer only states T1558 and its ATT&CK record details; it never names any CAPEC attack patterns or the expected CAPEC indicators such as 'Authentication attempts use expired or invalid credentials.' Therefore it describes the anchor but does not answer the requested CAPEC-to-indicator mapping. All stated facts are supported by the T1558 record, so faithfulness is high, but completeness is low.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

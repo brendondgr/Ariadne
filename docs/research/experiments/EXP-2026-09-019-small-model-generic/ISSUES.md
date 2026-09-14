@@ -156,3 +156,61 @@ right, and it is not specific to a small model.
 The plan's rule is that above a 25% rejection rate this seam is not viable at 2B
 and the step records that rather than widening. The observed figure is a total
 retrieval failure, so the full 284-question pass was not run.
+
+## I-10 — the sidecar-exclusion this file claimed was never implemented
+
+**What happened.** `data/POINTERS.md` stated that its directory hashes were
+taken "judgment sidecars excluded". They were not. `sha256_tree` folds in every
+file under the root and has no exclusion of any kind. The three `twobytwo`
+answer directories were hashed before they had been graded, so the claim
+happened to describe the numbers — until a judged pass wrote sidecars into them
+and all three rows broke at once.
+
+**Why the tool is right and the sentence was wrong.** Auditing all 34 directory
+pointers on record: **30 match only with sidecars included**, 3 match only
+without (these three, hashed pre-judging), and 1 matches neither. Changing
+`sha256_tree` to implement the documented exclusion would therefore invalidate
+30 correct rows across nine experiments to rescue 3. The prose has been
+corrected to describe what the tool does.
+
+**What this does not change.** No number in `RESULTS.md` moves. The answers
+themselves were never touched — which is exactly what the audit shows, since
+these three directories hash correctly under the sidecar-free rule, meaning
+their answer payloads are byte-identical to when the figures were computed.
+
+**Resolution.** Prose corrected; the three rows re-hashed against the graded
+directories, with the answer count kept in the Files column so a reader can see
+284 answers where the directory now holds 568 files. The general lesson is
+recorded rather than smoothed over: **a pointer to a directory that will later
+be graded is a pointer to a moving target**, and the fix is either to hash a
+manifest of answer payloads or to accept that grading re-hashes the row.
+
+**Paper implication:** none for any figure. It belongs in the account of how the
+record checks itself: the check that failed here was a check whose description
+and whose behaviour had drifted apart, which is the same class of defect as the
+composer's scope line in `EXP-2026-09-018` — a statement asserted from what was
+intended rather than from what was done.
+
+## I-10 — the narrator runs after the verifier, so its prose is unchecked (open)
+
+`utils/orchestration/agents/synthesis/graph.py` wires `compose -> verify ->
+narrate`. The verifier therefore grounds the *claims* and never sees the
+narrative, which is the only part of the answer a language model writes.
+
+Measured two ways and they agree. Directly on the prose: 5 of 284 narratives
+name an identifier absent from the verified claims — `TA2541`, and a parent
+technique `T1027` where the evidence held only `T1027.006`. Not fabricated
+nonsense; real ATT&CK knowledge the model brought from outside the graph, which
+in a system whose premise is graph-provenance is a violation regardless of
+whether it happens to be true. And from the grader: adding the narrator roughly
+doubles flagged hallucinations (0.1743
+to 0.3609 per judgment on the
+authored plan) and lowers both faithfulness
+(0.9523 to 0.9355)
+and groundedness (0.956 to
+0.9484).
+
+The remedy is structural and small: the grounding predicate already exists and
+already runs. Moving it, or a copy of it, after `narrate` would have caught all
+five. Not done here — this experiment measures model size and a change to the
+synthesis graph would move every recorded arm.

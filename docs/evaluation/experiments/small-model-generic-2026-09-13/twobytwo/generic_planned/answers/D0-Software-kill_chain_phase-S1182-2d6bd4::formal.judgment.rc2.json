@@ -1,0 +1,24 @@
+{
+ "case_id": "D0-Software-kill_chain_phase-S1182-2d6bd4::formal",
+ "verdict": "PARTIAL",
+ "correctness": 0.5,
+ "faithfulness": 0.9,
+ "groundedness": 0.6,
+ "completeness": 0.0,
+ "gold_expected": 1,
+ "gold_present": 0,
+ "abstained": true,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer abstains for MagicRAT/S1182 and reports that no records were returned, which is supported by the empty attack result. However, it does not state the required anchor S1182 in the answer text and does not show the executed query as proof. It makes no tactic assertions, so there is no fabricated mapping, but completeness is zero because the only expected identifier, S1182, is absent.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

@@ -1,0 +1,26 @@
+{
+ "case_id": "D4-CanAlsoBe-HAS_CONSEQUENCE-CAPEC-248-02edba::indirect",
+ "verdict": "PARTIAL",
+ "correctness": 0.2,
+ "faithfulness": 0.85,
+ "groundedness": 0.8,
+ "completeness": 0.0,
+ "gold_expected": 6,
+ "gold_present": 0,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "The consequence is presented as a single named text 'Execute Unauthorized Commands Confidentiality Integrity Availability', while the evidence records separate impacts and scopes."
+ ],
+ "rationale": "The answer anchors CAPEC-248 and reports a recorded consequence, but it omits all six expected consequence names, including 'Authorization Execute Unauthorized Commands Run Arbitrary Code' and 'Confidentiality Read Data'. It therefore partially addresses the question rather than fully answering it. The only minor unsupported detail is the combined consequence string, since the evidence lists impacts and scopes separately.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

@@ -1,0 +1,26 @@
+{
+ "case_id": "D5-PeerOf-Likelihood_Of_Attack-CAPEC-665-a50fa5::formal",
+ "verdict": "PARTIAL",
+ "correctness": 0.85,
+ "faithfulness": 0.75,
+ "groundedness": 0.8,
+ "completeness": 1.0,
+ "gold_expected": 2,
+ "gold_present": 2,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "CAPEC-665 has no PeerOf relationships in this catalogue"
+ ],
+ "rationale": "The answer correctly identifies CAPEC-148 and CAPEC-151 as the Medium-likelihood peer attack patterns for CAPEC-665, satisfying the expected gold set. It is grounded in the CAPEC-665 record and the PEER_OF query that surfaced those related patterns. However, the added absence claim that CAPEC-665 has no PeerOf relationships is inconsistent with the PEER_OF traversal that returned CAPEC-148 and CAPEC-151, so it is partial rather than fully faithful.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

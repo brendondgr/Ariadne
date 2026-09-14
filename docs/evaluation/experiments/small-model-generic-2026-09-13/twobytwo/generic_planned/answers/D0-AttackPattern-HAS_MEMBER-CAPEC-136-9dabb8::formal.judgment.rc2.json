@@ -1,0 +1,26 @@
+{
+ "case_id": "D0-AttackPattern-HAS_MEMBER-CAPEC-136-9dabb8::formal",
+ "verdict": "PARTIAL",
+ "correctness": 0.5,
+ "faithfulness": 0.9,
+ "groundedness": 0.9,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "The narrative says the execution steps are 'named only as text' and presents constructed labels such as 'Explore 1', 'Experiment 2', and 'Experiment 3', which are not explicit names in the cited CAPEC-136 record."
+ ],
+ "rationale": "The answer correctly states CAPEC-136 and its three execution steps, capec:attack-pattern:136:step:1 through step:3, all grounded in the CAPEC evidence. However, it does not explicitly answer the asked containment question by saying that CAPEC-136 contains no CAPEC attack patterns, so it is only partial. The only expected gold identifier, CAPEC-136, is present, and no cross-source mapping is fabricated.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

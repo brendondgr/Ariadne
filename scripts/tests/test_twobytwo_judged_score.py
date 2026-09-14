@@ -9,7 +9,7 @@ from __future__ import annotations
 
 import json
 
-from scripts.twobytwo_judged_score import flags, paired, positions, scores
+from scripts.twobytwo_judged_score import dimensions, flags, paired, positions, scores
 
 
 def _write(directory, case, correctness, suffix=".rc1", **extra):
@@ -75,3 +75,26 @@ class TestFlags:
         assert out["hallucinations"] == 2
         assert out["abstained"] == 1
         assert out["fabricated_mapping"] == 0
+
+
+class TestDimensions:
+    def test_every_grader_dimension_is_reported_not_just_correctness(self, tmp_path):
+        # The headline hides the trade: higher correctness, lower faithfulness.
+        _write(tmp_path, "D0-a", 0.9, ".rc1", faithfulness=0.8,
+               groundedness=0.7, completeness=0.6)
+        out = dimensions(tmp_path)
+        assert out["correctness"] == 0.9
+        assert out["faithfulness"] == 0.8
+        assert out["groundedness"] == 0.7
+        assert out["completeness"] == 0.6
+
+    def test_hallucinations_are_per_judgment_not_per_case(self, tmp_path):
+        # Two positions per case means two judgments; dividing by cases would
+        # halve the rate and make a doubling look like no change.
+        _write(tmp_path, "D0-a", 1.0, ".rc1", hallucinations=["T1", "T2"])
+        _write(tmp_path, "D0-a", 1.0, ".rc2", hallucinations=["T3"])
+        assert dimensions(tmp_path)["hallucinations_per_judgment"] == 1.5
+
+    def test_a_missing_dimension_is_none_not_zero(self, tmp_path):
+        _write(tmp_path, "D0-a", 1.0, ".rc1")
+        assert dimensions(tmp_path)["faithfulness"] is None

@@ -1,0 +1,26 @@
+{
+ "case_id": "D6-HAS_MEMBER-MAPS_TO[ATTACK]-CAPEC-703-a8f98a::formal",
+ "verdict": "CORRECT",
+ "correctness": 0.95,
+ "faithfulness": 0.85,
+ "groundedness": 0.9,
+ "completeness": 1.0,
+ "gold_expected": 50,
+ "gold_present": 50,
+ "abstained": false,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "CAPEC-703 has no linked attack patterns, which conflicts with the q1 result row_count of 46"
+ ],
+ "rationale": "The answer names CAPEC-703 and all 50 expected ATT&CK techniques, including T1014, T1036.007, and T1598.003, so it fully answers the query. Its mappings are tied to cited CAPEC records such as CAPEC-552, CAPEC-163, and CAPEC-268. The main unsupported statement is the abstention claiming CAPEC-703 returned no linked patterns despite the executed query returning 46 rows.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

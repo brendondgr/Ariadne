@@ -1,0 +1,24 @@
+{
+ "case_id": "D0-Software-detects-S0065-976cdd::analyst",
+ "verdict": "PARTIAL",
+ "correctness": 0.5,
+ "faithfulness": 1.0,
+ "groundedness": 1.0,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer correctly identifies the anchor S0065 (4H RAT) and is fully supported by the single normalized record. However, it does not explicitly state that no ATT&CK technique neighbors were found, which is the direct answer to the question. Since the evidence has related=0 and the expected technique set is empty, no technique identifiers are missing, but the lack of an explicit 'none' makes it partial.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

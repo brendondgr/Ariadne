@@ -1,0 +1,24 @@
+{
+ "case_id": "D2-uses-C0060-ae540c::indirect",
+ "verdict": "PARTIAL",
+ "correctness": 0.2,
+ "faithfulness": 0.9,
+ "groundedness": 0.8,
+ "completeness": 0.0,
+ "gold_expected": 27,
+ "gold_present": 0,
+ "abstained": true,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer abstains, reporting that no records were returned for C0060, and the evidence shows the attack specialist failed with zero records, so it is faithful and not fabricated. It states none of the expected identifiers, including C0060 and the 26 technique/subtechnique IDs such as T1016, T1059.001, and T1566.001, so completeness is zero. It is partial rather than incorrect because it honestly reports the failed retrieval instead of guessing a technique set.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

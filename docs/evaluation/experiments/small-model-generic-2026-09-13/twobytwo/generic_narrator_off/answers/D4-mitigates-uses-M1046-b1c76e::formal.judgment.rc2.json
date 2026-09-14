@@ -1,0 +1,24 @@
+{
+ "case_id": "D4-mitigates-uses-M1046-b1c76e::formal",
+ "verdict": "CORRECT",
+ "correctness": 1.0,
+ "faithfulness": 0.85,
+ "groundedness": 0.9,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer directly states that M1046 (Boot Integrity) is associated with campaign C0063 via T1495, which is the expected campaign. It also includes the anchor M1046 and the mitigated technique T1495, so the query is answered. Extra enumerations of techniques, software, and groups are tied to the M1046 record, though the visible evidence only partially displays the 43 related items, so a minor faithfulness deduction is applied.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

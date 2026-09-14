@@ -1,0 +1,24 @@
+{
+ "case_id": "D2-kill_chain_phase-T1021.008-38d7af::indirect",
+ "verdict": "CORRECT",
+ "correctness": 1.0,
+ "faithfulness": 1.0,
+ "groundedness": 1.0,
+ "completeness": 0.0,
+ "gold_expected": 1,
+ "gold_present": 0,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer reports that the retrieved T1021.008 record has no related tactics, and the executed query is present in the logic flow, making this an honest absence rather than a guessed mapping. It does not state the expected TA0008, so completeness is zero, but it does not assert a tactic mapping unsupported by the evidence. No hallucinated identifiers are present.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

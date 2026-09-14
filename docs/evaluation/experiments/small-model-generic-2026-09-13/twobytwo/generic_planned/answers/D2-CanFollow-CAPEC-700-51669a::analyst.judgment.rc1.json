@@ -1,0 +1,24 @@
+{
+ "case_id": "D2-CanFollow-CAPEC-700-51669a::analyst",
+ "verdict": "PARTIAL",
+ "correctness": 0.2,
+ "faithfulness": 1.0,
+ "groundedness": 0.8,
+ "completeness": 0.0,
+ "gold_expected": 2,
+ "gold_present": 0,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer abstains and shows the executed CAPEC query seeded on CAPEC-700, and its no-records claim is supported by the zero-row result. However, it does not state the expected preceding patterns CAPEC-560 or CAPEC-70, so it is incomplete relative to the gold set. It is faithful and grounded in the shown query and result, but only partial because the expected gold identifiers are non-empty.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

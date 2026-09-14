@@ -1,0 +1,24 @@
+{
+ "case_id": "D3-mitigates-T1535-8132d3::formal",
+ "verdict": "PARTIAL",
+ "correctness": 0.3,
+ "faithfulness": 0.9,
+ "groundedness": 0.6,
+ "completeness": 0.0,
+ "gold_expected": 1,
+ "gold_present": 0,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer abstains by saying no records were returned, and the logic-flow trace shows the T1535 seed query was rejected before execution. It does not state the expected mitigation M1054, so it misses the requested answer set. The statements are faithful to the failed attack specialist evidence, but completeness is zero because no gold identifier is asserted.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

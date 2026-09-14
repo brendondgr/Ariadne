@@ -1,0 +1,27 @@
+{
+ "case_id": "D5-ChildOf-Typical_Severity-CAPEC-634-446005::analyst",
+ "verdict": "PARTIAL",
+ "correctness": 0.4,
+ "faithfulness": 0.6,
+ "groundedness": 0.75,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "The evidence does not provide Typical_Severity values for the broader attack patterns CAPEC-545, CAPEC-651, CAPEC-116, and CAPEC-117",
+  "The request cannot be fully answered from the available records"
+ ],
+ "rationale": "The answer lists CAPEC-651 among CAPEC-634's parents, so it states the expected gold identifier. However, it fails to identify CAPEC-651 as the Medium-severity broader pattern and incorrectly says the evidence lacks Typical_Severity values for the parents, even though CAPEC-651, CAPEC-116, and CAPEC-117 have Medium severity in the related records. This makes it a partial, somewhat unfaithful answer.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

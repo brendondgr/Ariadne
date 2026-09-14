@@ -1,0 +1,24 @@
+{
+ "case_id": "D4-ChildOf-REQUIRES_RESOURCE-CAPEC-385-f5be02::formal",
+ "verdict": "PARTIAL",
+ "correctness": 0.6,
+ "faithfulness": 1.0,
+ "groundedness": 1.0,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer correctly identifies CAPEC-385 and cites its REQUIRES_RESOURCE record capec:attack-pattern:385:resource:1, which is a man-in-the-middle proxy resource. It partially answers the query because it presents that resource as associated with CAPEC-385 rather than explicitly with the parent attack patterns that CAPEC-385 is a more specific case of. The stated resource text is close to the expected gold text but not verbatim, so the answer is partial rather than fully correct.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

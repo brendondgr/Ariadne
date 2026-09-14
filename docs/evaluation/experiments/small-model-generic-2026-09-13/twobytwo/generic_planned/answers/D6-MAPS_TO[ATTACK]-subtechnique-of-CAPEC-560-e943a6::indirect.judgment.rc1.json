@@ -1,0 +1,24 @@
+{
+ "case_id": "D6-MAPS_TO[ATTACK]-subtechnique-of-CAPEC-560-e943a6::indirect",
+ "verdict": "CORRECT",
+ "correctness": 0.8,
+ "faithfulness": 1.0,
+ "groundedness": 0.8,
+ "completeness": 0.0,
+ "gold_expected": 4,
+ "gold_present": 0,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer abstains and shows the CAPEC query for CAPEC-560 that returned no records, so it does not fabricate a mapping to T1078.001, T1078.002, T1078.003, or T1078.004. It states the anchor CAPEC-560 but none of the four expected ATT&CK sub-techniques. This is an honest abstention rather than a guessed cross-source correlation, though completeness is low because no expected attack identifiers are stated.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

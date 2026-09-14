@@ -1,0 +1,26 @@
+{
+ "case_id": "D3-CanFollow-CAPEC-390-754ead::indirect",
+ "verdict": "CORRECT",
+ "correctness": 0.9,
+ "faithfulness": 0.8,
+ "groundedness": 0.85,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "CAPEC-390 has 1 CanFollow predecessor: CAPEC-665"
+ ],
+ "rationale": "The answer correctly identifies CAPEC-665 as the next attack pattern after CAPEC-390, satisfying the expected related identifier. It is grounded in the cited CAPEC-390 record and its related CAPEC-665 entry. Minor faithfulness deduction for calling CAPEC-665 a 'CanFollow predecessor' and implying a direction not explicit in the evidence.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

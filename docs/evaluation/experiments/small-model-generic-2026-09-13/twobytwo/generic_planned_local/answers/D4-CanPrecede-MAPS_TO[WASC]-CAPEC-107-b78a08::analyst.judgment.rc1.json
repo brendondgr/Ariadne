@@ -1,0 +1,24 @@
+{
+ "case_id": "D4-CanPrecede-MAPS_TO[WASC]-CAPEC-107-b78a08::analyst",
+ "verdict": "CORRECT",
+ "correctness": 0.8,
+ "faithfulness": 0.9,
+ "groundedness": 0.9,
+ "completeness": 0.0,
+ "gold_expected": 1,
+ "gold_present": 0,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer correctly abstains because the shown CAPEC result for CAPEC-107 contains only an OWASP Attacks mapping and no CanPrecede or WASC:08 neighbor. It states CAPEC-107 and its properties, but it does not state the expected WASC:08, so completeness is low. The capec abstention includes the executed query, and no unsupported cross-source mapping is asserted.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

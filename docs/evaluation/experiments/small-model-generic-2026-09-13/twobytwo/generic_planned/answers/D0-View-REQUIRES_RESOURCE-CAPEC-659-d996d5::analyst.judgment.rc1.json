@@ -1,0 +1,24 @@
+{
+ "case_id": "D0-View-REQUIRES_RESOURCE-CAPEC-659-d996d5::analyst",
+ "verdict": "CORRECT",
+ "correctness": 0.9,
+ "faithfulness": 0.8,
+ "groundedness": 0.8,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer names CAPEC-659, the only gold identifier expected, and abstains rather than inventing resources. It shows the executed CAPEC query and the evidence reports zero records, supporting the no-mapping abstention. The query traverses REQUIRES_SKILL rather than REQUIRES_RESOURCE, so the abstention is slightly under-grounded, but no unsupported resource or cross-source mapping is asserted.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

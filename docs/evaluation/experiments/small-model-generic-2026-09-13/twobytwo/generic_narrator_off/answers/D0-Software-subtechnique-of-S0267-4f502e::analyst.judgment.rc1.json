@@ -1,0 +1,26 @@
+{
+ "case_id": "D0-Software-subtechnique-of-S0267-4f502e::analyst",
+ "verdict": "PARTIAL",
+ "correctness": 0.4,
+ "faithfulness": 0.75,
+ "groundedness": 0.8,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "S0267 has no subtechniques"
+ ],
+ "rationale": "The question asks for the parent ATT&CK techniques of S0267, and the expected neighbor set is empty because S0267 is a Software object. The answer correctly names S0267 and lists related USES neighbors such as T1124, T1680, and T1105, but it says S0267 has no subtechniques rather than stating that S0267 is not a sub-technique of any technique. That makes it partially responsive and mostly grounded, but not fully correct.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

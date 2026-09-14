@@ -1,0 +1,24 @@
+{
+ "case_id": "D0-Technique-detects-T1555.005-df61d4::indirect",
+ "verdict": "PARTIAL",
+ "correctness": 0.4,
+ "faithfulness": 0.95,
+ "groundedness": 0.9,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer states the required anchor T1555.005 and cites supported neighbours DET0597, TA0006, T1555, and enterprise-attack. However, the question asks which techniques T1555.005 detects, and the evidence shows no Technique neighbour via DETECTS; T1555 is only a parent technique via HAS_SUBTECHNIQUE. Therefore it is partial: it identifies the anchor but does not clearly answer that no detected techniques are present.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

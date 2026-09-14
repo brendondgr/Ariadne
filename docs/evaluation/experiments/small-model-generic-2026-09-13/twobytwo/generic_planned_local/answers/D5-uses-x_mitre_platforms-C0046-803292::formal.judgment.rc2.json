@@ -1,0 +1,24 @@
+{
+ "case_id": "D5-uses-x_mitre_platforms-C0046-803292::formal",
+ "verdict": "PARTIAL",
+ "correctness": 0.75,
+ "faithfulness": 0.9,
+ "groundedness": 0.9,
+ "completeness": 1.0,
+ "gold_expected": 21,
+ "gold_present": 21,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer states C0046 and all 21 expected Windows-related technique/subtechnique IDs, including T1014, T1059, T1070.004, T1071.001, and T1102.003, so completeness is full. It is partial because it lists all used techniques and subtechniques, including non-gold T1583, T1587, T1583.006, and T1587.003, while saying the evidence does not explicitly identify which apply to Windows. The claims are grounded in the C0046 record and its related ATT&CK entries, with no cross-source mapping asserted.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

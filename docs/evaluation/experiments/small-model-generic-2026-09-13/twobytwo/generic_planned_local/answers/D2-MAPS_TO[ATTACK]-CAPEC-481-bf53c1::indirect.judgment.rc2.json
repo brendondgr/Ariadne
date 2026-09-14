@@ -1,0 +1,24 @@
+{
+ "case_id": "D2-MAPS_TO[ATTACK]-CAPEC-481-bf53c1::indirect",
+ "verdict": "PARTIAL",
+ "correctness": 0.5,
+ "faithfulness": 0.9,
+ "groundedness": 0.9,
+ "completeness": 0.0,
+ "gold_expected": 1,
+ "gold_present": 0,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer correctly identifies CAPEC-481 and honestly abstains, showing the executed CAPEC query and explaining that no join values were produced. However, it does not state the expected ATT&CK technique T1090.004, so completeness is zero. The evidence supports the abstention because the CAPEC record has empty join_values and related records, even though it has a MAPS_TO facet count.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

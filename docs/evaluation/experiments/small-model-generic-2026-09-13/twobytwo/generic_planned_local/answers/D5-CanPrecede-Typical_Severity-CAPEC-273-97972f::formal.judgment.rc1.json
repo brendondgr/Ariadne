@@ -1,0 +1,24 @@
+{
+ "case_id": "D5-CanPrecede-Typical_Severity-CAPEC-273-97972f::formal",
+ "verdict": "INCORRECT",
+ "correctness": 0.1,
+ "faithfulness": 0.85,
+ "groundedness": 0.8,
+ "completeness": 0.0,
+ "gold_expected": 3,
+ "gold_present": 0,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The question expected the CanFollow neighbors CAPEC-115, CAPEC-148, and CAPEC-154, but the answer only states CAPEC-273 and asserts that no CanFollow relationships exist. It therefore directly answers the question with a negative result, but omits all expected related identifiers. The evidence shows only CAPEC-273 and three Skill relations, so the negative claim is mostly grounded but not correct against the gold set.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

@@ -1,0 +1,26 @@
+{
+ "case_id": "D5-ChildOf-Typical_Severity-CAPEC-634-446005::analyst",
+ "verdict": "INCORRECT",
+ "correctness": 0.1,
+ "faithfulness": 0.9,
+ "groundedness": 0.8,
+ "completeness": 0.0,
+ "gold_expected": 1,
+ "gold_present": 0,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "The skill is named only as text 'High To deploy a hidden process or malware on the system to automatically collect audio and video data.'"
+ ],
+ "rationale": "The answer only reports the anchor CAPEC-634 and its required skill, but never states the expected broader pattern CAPEC-651. It therefore does not answer the question about Medium-severity broader attack patterns. The CAPEC-634 facts are mostly supported by the cited record, with a minor unsupported skill-name phrasing.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

@@ -1,0 +1,24 @@
+{
+ "case_id": "D5-uses-x_mitre_platforms-S0435-07fa38::formal",
+ "verdict": "PARTIAL",
+ "correctness": 0.4,
+ "faithfulness": 0.9,
+ "groundedness": 0.8,
+ "completeness": 0.0,
+ "gold_expected": 14,
+ "gold_present": 0,
+ "abstained": true,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer abstains by saying no records were returned, which is supported by the attack specialist's failed query and zero records. It does not state S0435 or any expected technique IDs such as T1057, T1090, T1105, T1555.003, so completeness is zero. The abstention is honest but not fully query-grounded because the answer text does not show the executed query. No cross-source mapping is fabricated.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

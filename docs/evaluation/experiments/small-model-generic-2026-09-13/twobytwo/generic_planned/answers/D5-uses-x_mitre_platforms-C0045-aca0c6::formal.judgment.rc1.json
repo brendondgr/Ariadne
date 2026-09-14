@@ -1,0 +1,27 @@
+{
+ "case_id": "D5-uses-x_mitre_platforms-C0045-aca0c6::formal",
+ "verdict": "PARTIAL",
+ "correctness": 0.7,
+ "faithfulness": 0.7,
+ "groundedness": 0.8,
+ "completeness": 1.0,
+ "gold_expected": 4,
+ "gold_present": 4,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "T1027.013",
+  "T1027"
+ ],
+ "rationale": "The answer states C0045 and all four expected ESXi-relevant techniques T1016, T1059.006, T1105, and T1190, so completeness is full. However, it does not explicitly identify which listed techniques apply to ESXi and adds extra techniques such as T1068 and T1027.013. T1027.013/T1027 are not visible in the provided related records, making the answer overinclusive and only partially faithful.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

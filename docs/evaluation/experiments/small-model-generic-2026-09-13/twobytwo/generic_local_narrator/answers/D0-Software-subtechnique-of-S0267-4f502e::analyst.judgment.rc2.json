@@ -1,0 +1,27 @@
+{
+ "case_id": "D0-Software-subtechnique-of-S0267-4f502e::analyst",
+ "verdict": "PARTIAL",
+ "correctness": 0.75,
+ "faithfulness": 0.7,
+ "groundedness": 0.85,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "S0267 is a technique",
+  "S0267 has 8 subtechniques"
+ ],
+ "rationale": "The answer correctly identifies S0267/FELIXROOT and states that it is not a sub-technique of any other ATT&CK technique, matching the expected empty related set. However, it mislabels S0267 as a technique when the evidence record labels it Software, and it contradicts itself by saying S0267 has 8 subtechniques such as T1071.001 and T1070.004 while also saying it has no subtechniques. The USES-related identifiers are grounded in the cited S0267 record, but the extra subtechnique claims reduce faithfulness.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

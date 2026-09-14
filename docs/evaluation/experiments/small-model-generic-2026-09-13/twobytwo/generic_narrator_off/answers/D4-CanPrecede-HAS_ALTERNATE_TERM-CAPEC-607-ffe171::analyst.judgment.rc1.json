@@ -1,0 +1,26 @@
+{
+ "case_id": "D4-CanPrecede-HAS_ALTERNATE_TERM-CAPEC-607-ffe171::analyst",
+ "verdict": "PARTIAL",
+ "correctness": 0.7,
+ "faithfulness": 0.7,
+ "groundedness": 0.8,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "CAPEC-607 has an AlternateTerm; the evidence associates the Data Spill alternate term with CAPEC-548"
+ ],
+ "rationale": "The answer identifies CAPEC-548 and includes the expected Data Spill alternate-term text for CAPEC-607. However, it attributes the alternate term to CAPEC-607 rather than clearly tying it to CAPEC-548, and it does not explicitly state that CAPEC-548 can precede CAPEC-607.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

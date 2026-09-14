@@ -1,0 +1,24 @@
+{
+ "case_id": "D0-Analytic-kill_chain_phase-AN0662-9c5459::formal",
+ "verdict": "CORRECT",
+ "correctness": 0.85,
+ "faithfulness": 1.0,
+ "groundedness": 0.9,
+ "completeness": 0.0,
+ "gold_expected": 1,
+ "gold_present": 0,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer is an honest abstention: it reports zero records from the attack source and includes the executed Cypher query, so no tactic mapping is fabricated. The expected anchor AN0662 is not explicitly stated in the answer text, so gold_present is 0 even though the question supplies it. No unsupported identifiers or cross-source correlations are asserted.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

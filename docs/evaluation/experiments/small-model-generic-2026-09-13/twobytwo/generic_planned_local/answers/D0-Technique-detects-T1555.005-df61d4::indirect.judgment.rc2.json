@@ -1,0 +1,27 @@
+{
+ "case_id": "D0-Technique-detects-T1555.005-df61d4::indirect",
+ "verdict": "PARTIAL",
+ "correctness": 0.4,
+ "faithfulness": 0.6,
+ "groundedness": 0.65,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": true,
+ "hallucinations": [
+  "T1555.005 detects T1555",
+  "T1555.005 has one technique: T1555"
+ ],
+ "rationale": "The answer states the required anchor T1555.005 and correctly lists related DET0597, TA0006, T1555, and enterprise-attack from the single record. However, it concludes that T1555.005 detects T1555, whereas the evidence only shows T1555 as a related technique via HAS_SUBTECHNIQUE and DET0597 as a detection strategy, not an outgoing DETECTS edge from T1555.005. Because the expected related set is empty, the answer should have said no techniques are detected or abstained, so it is partial rather than correct.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

@@ -1,0 +1,24 @@
+{
+ "case_id": "D5-uses-x_mitre_platforms-G1031-8c5276::formal",
+ "verdict": "PARTIAL",
+ "correctness": 0.25,
+ "faithfulness": 0.9,
+ "groundedness": 0.7,
+ "completeness": 0.0,
+ "gold_expected": 2,
+ "gold_present": 0,
+ "abstained": true,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer abstains by saying no records were returned for G1031, but it does not state the expected techniques T1059 or T1685. Its no-records claim is supported by the empty evidence volume and the failed attack specialist trace, but the abstention does not itself show the executed query. It is therefore partial: faithful to the failure evidence, but complete on 0 of 2 gold identifiers.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

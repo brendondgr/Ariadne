@@ -1,0 +1,27 @@
+{
+ "case_id": "D4-ChildOf-HAS_EXECUTION_STEP-CAPEC-126-3f62b8::formal",
+ "verdict": "PARTIAL",
+ "correctness": 0.42,
+ "faithfulness": 0.58,
+ "groundedness": 0.55,
+ "completeness": 0.36,
+ "gold_expected": 11,
+ "gold_present": 4,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "CAPEC-126 has 4 ExecutionSteps (the visible evidence shows 10 related rows but no explicit unique step count)",
+  "CAPEC-126 attributes Abstraction: Standard, Status: Draft, and Typical_Severity: Very High are not shown in the visible CAPEC-126 record"
+ ],
+ "rationale": "The answer correctly anchors CAPEC-126 and lists four execution-step texts that overlap with the gold set, including Explore 1 fingerprinting, Explore 2 surveying user-controllable inputs, Experiment 3 varying inputs, and Exploit 4 manipulating files. However, it frames them as CAPEC-126's own steps rather than the execution steps of more specific child patterns, and it omits seven of the eleven expected step texts. Some asserted attributes and the exact count of four steps are not fully supported by the visible evidence.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

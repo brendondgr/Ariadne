@@ -1,0 +1,26 @@
+{
+ "case_id": "D6-HAS_MEMBER-MAPS_TO[ATTACK]-CAPEC-513-f08e34::indirect",
+ "verdict": "CORRECT",
+ "correctness": 0.9,
+ "faithfulness": 0.82,
+ "groundedness": 0.93,
+ "completeness": 1.0,
+ "gold_expected": 17,
+ "gold_present": 17,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "The abstention says the executed query returned CAPEC-513 with no linked attack patterns, although the same query returned 52 linked CAPEC records."
+ ],
+ "rationale": "The answer identifies CAPEC-513 and enumerates its 52 member attack patterns, then states all 17 expected ATT&CK technique IDs, including T1036.003, T1078, T1110, T1134, T1195, T1217, T1491, T1498.001, T1499, T1499.003, T1499.004, T1528, T1539, T1548, T1557, T1592, and T1595. It is slightly undermined by a contradictory abstention claiming no linked records and a summary line that lists only five ATT&CK mappings before the detailed claims list the full set. The mappings are tied to cited CAPEC records, so the core cross-source answer is grounded and complete.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

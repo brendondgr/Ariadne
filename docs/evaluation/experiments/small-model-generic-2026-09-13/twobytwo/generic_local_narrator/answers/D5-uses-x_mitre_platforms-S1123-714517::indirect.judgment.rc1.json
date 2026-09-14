@@ -1,0 +1,26 @@
+{
+ "case_id": "D5-uses-x_mitre_platforms-S1123-714517::indirect",
+ "verdict": "PARTIAL",
+ "correctness": 0.8,
+ "faithfulness": 0.85,
+ "groundedness": 0.85,
+ "completeness": 1.0,
+ "gold_expected": 4,
+ "gold_present": 4,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "T1573.002 is not OS-specific"
+ ],
+ "rationale": "The answer names all four expected related identifiers, T1140, T1205.002, T1559, and T1573.002, and correctly ties T1140, T1205.002, and T1559 to Windows from the provided descriptions. It also says T1573.002 is not OS-specific, which implies Windows applicability, but its final list omits T1573.002, so the answer is partial. The 'not OS-specific' characterization is a mild inference not explicitly stated in the T1573.002 record.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

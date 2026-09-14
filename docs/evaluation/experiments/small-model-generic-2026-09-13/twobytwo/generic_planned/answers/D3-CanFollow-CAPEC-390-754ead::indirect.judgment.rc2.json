@@ -1,0 +1,24 @@
+{
+ "case_id": "D3-CanFollow-CAPEC-390-754ead::indirect",
+ "verdict": "PARTIAL",
+ "correctness": 0.4,
+ "faithfulness": 0.9,
+ "groundedness": 0.8,
+ "completeness": 0.5,
+ "gold_expected": 2,
+ "gold_present": 1,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer abstains and shows the executed CAPEC query, but it does not state the expected next pattern CAPEC-665. It does mention the anchor CAPEC-390 in the abstention statement, so it is partially complete. The no-records claim is supported by the zero-row result, but the query traverses HAS_CONSEQUENCE rather than the task's NEXT_STEP/CanFollow, making the abstention less decisive.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

@@ -1,0 +1,27 @@
+{
+ "case_id": "D0-Group-detects-G1018-44dc9d::formal",
+ "verdict": "PARTIAL",
+ "correctness": 0.4,
+ "faithfulness": 0.6,
+ "groundedness": 0.7,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "G1018 is said to detect 28 DET* detection strategies, but the question asks for techniques and the visible evidence does not explicitly show those DET* IDs or a direct Group-to-DetectionStrategy detection edge.",
+  "The 22 T* subtechnique IDs, 6 T* technique IDs, 9 TA* tactic IDs, and enterprise-attack are not explicitly visible in the truncated evidence record."
+ ],
+ "rationale": "The answer correctly anchors on G1018/TA2541 and reports related ATT&CK items, but it answers with DET* detection strategies rather than the requested techniques. It also lists T* used techniques without clearly stating that they are the techniques detected, so it is only partial. The claims are tied to the G1018 record, but many specific IDs are not visible in the provided evidence.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

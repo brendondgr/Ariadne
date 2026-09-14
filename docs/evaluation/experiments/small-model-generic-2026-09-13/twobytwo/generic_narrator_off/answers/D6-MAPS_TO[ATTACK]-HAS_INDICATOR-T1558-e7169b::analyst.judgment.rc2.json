@@ -1,0 +1,26 @@
+{
+ "case_id": "D6-MAPS_TO[ATTACK]-HAS_INDICATOR-T1558-e7169b::analyst",
+ "verdict": "CORRECT",
+ "correctness": 0.95,
+ "faithfulness": 0.8,
+ "groundedness": 0.85,
+ "completeness": 1.0,
+ "gold_expected": 5,
+ "gold_present": 5,
+ "abstained": false,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "The capec source doesn't establish this \u2014 the executed query ran cleanly and returned CAPEC-652 with no linked records for indicators"
+ ],
+ "rationale": "The answer correctly identifies CAPEC-652 as the CAPEC pattern mapped to T1558 and lists all five expected indicator texts for CAPEC-652, corresponding to capec:attack-pattern:652:indicator:1 through 5. The residual abstention claiming no linked indicator records contradicts the five HAS_INDICATOR rows in the evidence, so faithfulness is reduced. No unsupported cross-source mapping is asserted.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

@@ -1,0 +1,27 @@
+{
+ "case_id": "D4-PeerOf-MAPS_TO[WASC]-CAPEC-105-91f671::indirect",
+ "verdict": "PARTIAL",
+ "correctness": 0.3,
+ "faithfulness": 0.75,
+ "groundedness": 0.85,
+ "completeness": 0.0,
+ "gold_expected": 1,
+ "gold_present": 0,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "The capec abstention says the query returned CAPEC-105 with no linked records, but the evidence shows a linked WASC:24 TaxonomyEntry.",
+  "The capec abstention treats the source as not establishing PeerOf mappings, although the shown query did not traverse PeerOf."
+ ],
+ "rationale": "The answer correctly states CAPEC-105 and its supported WASC:24 mapping, but it does not state the expected peer-related WASC:25 or any peer CAPEC pattern. Its capec abstention includes a query, but that query only projects the seed and MAPS_TO rather than traversing PeerOf, so the abstention is only partially justified. It is therefore partial: grounded and mostly faithful, but incomplete on the asked peer/WASC set.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

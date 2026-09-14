@@ -1,0 +1,24 @@
+{
+ "case_id": "D0-Technique-detects-T1555.005-df61d4::indirect",
+ "verdict": "PARTIAL",
+ "correctness": 0.5,
+ "faithfulness": 1.0,
+ "groundedness": 1.0,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer correctly states the required anchor T1555.005 and lists supported related records DET0597, TA0006, T1555, and enterprise-attack. However, it does not explicitly answer the detection question by saying that T1555.005 detects no techniques or that T1555 is a detected technique; it only says T1555.005 has technique T1555 and detection strategy DET0597. This makes it grounded and complete for the required identifier, but only partially responsive to the asked detect relationship.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

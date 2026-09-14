@@ -1,0 +1,26 @@
+{
+ "case_id": "D6-MAPS_TO[ATTACK]-HAS_MEMBER-T1552.001-85a91e::indirect",
+ "verdict": "CORRECT",
+ "correctness": 0.9,
+ "faithfulness": 0.85,
+ "groundedness": 0.9,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "CAPEC-191 was returned with no linked records for CAPEC views"
+ ],
+ "rationale": "The answer identifies CAPEC-191 and CAPEC-639 as corresponding to T1552.001 and states that CAPEC-191 appears in CAPEC-703, which is the expected gold identifier. It does not explicitly say that CAPEC-639 has no CAPEC view, but the abstention and executed query indicate the missing link. The abstention's claim that CAPEC-191 was returned with no linked records is slightly inconsistent with the evidence showing CAPEC-703, so faithfulness is reduced.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

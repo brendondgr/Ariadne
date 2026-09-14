@@ -1,0 +1,28 @@
+{
+ "case_id": "D5-HAS_MEMBER-Status-CAPEC-515-93195c::formal",
+ "verdict": "PARTIAL",
+ "correctness": 0.65,
+ "faithfulness": 0.8,
+ "groundedness": 0.85,
+ "completeness": 1.0,
+ "gold_expected": 11,
+ "gold_present": 11,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "CAPEC-441",
+  "CAPEC-151",
+  "CAPEC-515 has no execution steps in this catalogue"
+ ],
+ "rationale": "The answer correctly identifies CAPEC-515 and includes all 11 expected Draft patterns, including CAPEC-113, CAPEC-114, CAPEC-122, CAPEC-124, CAPEC-161, CAPEC-176, CAPEC-233, CAPEC-438, CAPEC-439, CAPEC-548, and CAPEC-607. It is partial because it lists all 24 related patterns instead of filtering to Draft, over-including Stable patterns such as CAPEC-188 and CAPEC-26. The shown evidence does not explicitly support CAPEC-441, CAPEC-151, or the no-execution-steps absence claim.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

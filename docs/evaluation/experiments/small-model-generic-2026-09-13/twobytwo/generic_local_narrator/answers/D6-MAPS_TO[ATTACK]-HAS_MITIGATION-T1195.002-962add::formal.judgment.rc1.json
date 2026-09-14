@@ -1,0 +1,24 @@
+{
+ "case_id": "D6-MAPS_TO[ATTACK]-HAS_MITIGATION-T1195.002-962add::formal",
+ "verdict": "CORRECT",
+ "correctness": 1.0,
+ "faithfulness": 1.0,
+ "groundedness": 1.0,
+ "completeness": 1.0,
+ "gold_expected": 26,
+ "gold_present": 26,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer states T1195.002 and the eight CAPEC patterns (CAPEC-186, CAPEC-442, CAPEC-443, CAPEC-523, CAPEC-669, CAPEC-673, CAPEC-678, CAPEC-691) and lists all 26 expected mitigation texts, including 'Validate software updates before installing' and 'Sign everything, including configuration files, XML files and packages.' The mitigation claims are tied to CAPEC primary IDs and mitigation entity IDs, so the T1195.002 mappings are grounded rather than fabricated. No expected mitigation text is omitted, so completeness is full.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

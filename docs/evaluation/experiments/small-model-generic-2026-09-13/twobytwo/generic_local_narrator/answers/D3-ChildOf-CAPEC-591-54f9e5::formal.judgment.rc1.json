@@ -1,0 +1,28 @@
+{
+ "case_id": "D3-ChildOf-CAPEC-591-54f9e5::formal",
+ "verdict": "PARTIAL",
+ "correctness": 0.8,
+ "faithfulness": 0.7,
+ "groundedness": 0.8,
+ "completeness": 1.0,
+ "gold_expected": 9,
+ "gold_present": 9,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "CAPEC-63 is asserted as a child or more specific case of CAPEC-591",
+  "CAPEC-242 is asserted as a child or more specific case of CAPEC-591",
+  "CAPEC-591 has 11 ChildOf parents, which is not directionally established by the evidence"
+ ],
+ "rationale": "The answer includes all nine expected more-specific CAPEC patterns: CAPEC-18, CAPEC-198, CAPEC-199, CAPEC-243, CAPEC-244, CAPEC-245, CAPEC-247, CAPEC-32, and CAPEC-86. It also includes CAPEC-63 and CAPEC-242 as child/more-specific patterns, but the evidence only shows them as related via CHILD_OF and does not clearly establish that direction. The mixed wording of 'child attack patterns' and 'ChildOf parents' makes the answer partially supported rather than fully correct.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

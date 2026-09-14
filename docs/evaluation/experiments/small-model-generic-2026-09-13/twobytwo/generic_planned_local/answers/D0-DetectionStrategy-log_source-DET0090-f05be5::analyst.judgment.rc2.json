@@ -1,0 +1,24 @@
+{
+ "case_id": "D0-DetectionStrategy-log_source-DET0090-f05be5::analyst",
+ "verdict": "CORRECT",
+ "correctness": 1.0,
+ "faithfulness": 1.0,
+ "groundedness": 1.0,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer correctly states the required anchor DET0090 and abstains from naming data components because the DET0090 record has empty join_values and no DataComponent neighbours in its facets. The cited record supports the stated properties and the observed Technique and Analytic facets, while the executed query shows no DataComponent mapping. Since the expected related set is empty and DET0090 is present, the answer is complete and well-grounded.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

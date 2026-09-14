@@ -1,0 +1,26 @@
+{
+ "case_id": "D6-MAPS_TO[ATTACK]-CanFollow-T1195.002-f669d7::indirect",
+ "verdict": "PARTIAL",
+ "correctness": 0.8,
+ "faithfulness": 0.8,
+ "groundedness": 0.9,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "The capec source doesn't establish this \u2014 the executed query ran cleanly and returned CAPEC-186 with no linked records"
+ ],
+ "rationale": "The answer lists the CAPEC patterns mapped to T1195.002 and states CAPEC-98 as the CanFollow predecessor of CAPEC-186, which satisfies the expected gold identifier. However, it does not explicitly state that the other mapped CAPEC patterns have no predecessors, and the abstention says CAPEC-186 had no linked records, contradicting the CAPEC-98 assertion.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

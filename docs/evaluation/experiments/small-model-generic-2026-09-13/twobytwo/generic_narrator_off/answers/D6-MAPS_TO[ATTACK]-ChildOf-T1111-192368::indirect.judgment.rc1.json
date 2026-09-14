@@ -1,0 +1,27 @@
+{
+ "case_id": "D6-MAPS_TO[ATTACK]-ChildOf-T1111-192368::indirect",
+ "verdict": "PARTIAL",
+ "correctness": 0.8,
+ "faithfulness": 0.7,
+ "groundedness": 0.9,
+ "completeness": 1.0,
+ "gold_expected": 2,
+ "gold_present": 2,
+ "abstained": false,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "The capec source doesn't establish this ... with no linked records for broader patterns, despite the q2 evidence returning CHILD_OF related records",
+  "CAPEC-651 has 4 ChildOf parents: CAPEC-508, CAPEC-634, CAPEC-699, CAPEC-117, where the parent direction is not fully established by the in/out CHILD_OF query"
+ ],
+ "rationale": "The answer correctly identifies T1111's corresponding CAPEC patterns CAPEC-158, CAPEC-609, and CAPEC-651 and includes the expected broader patterns CAPEC-117 and CAPEC-157. It is well grounded in the cited CAPEC records, but the abstention claiming no linked broader records contradicts the returned CHILD_OF neighbours. The extra CAPEC-651 neighbours are present in evidence, though calling all of them parents is over-specific.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

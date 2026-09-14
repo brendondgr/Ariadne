@@ -1,0 +1,26 @@
+{
+ "case_id": "D3-ChildOf-CAPEC-591-54f9e5::formal",
+ "verdict": "PARTIAL",
+ "correctness": 0.8,
+ "faithfulness": 0.85,
+ "groundedness": 0.95,
+ "completeness": 1.0,
+ "gold_expected": 9,
+ "gold_present": 9,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "CAPEC-591 is stated to have 11 ChildOf parents, including CAPEC-18, CAPEC-198, CAPEC-199, CAPEC-243, CAPEC-244, CAPEC-245, CAPEC-247, CAPEC-32, CAPEC-86, CAPEC-63, and CAPEC-242, although the evidence only shows 11 CHILD_OF-related patterns without confirming all are parents."
+ ],
+ "rationale": "The answer includes the anchor CAPEC-591 and all nine expected more-specific patterns: CAPEC-18, CAPEC-198, CAPEC-199, CAPEC-243, CAPEC-244, CAPEC-245, CAPEC-247, CAPEC-32, and CAPEC-86. It also includes CAPEC-63 and CAPEC-242, which are present in the evidence but are broader parents rather than the requested more-specific cases. The wording 'ChildOf parents' overstates the direction of the relationship, so the answer is complete but only partially correct.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}
