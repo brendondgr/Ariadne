@@ -924,6 +924,29 @@ nobody wrote a template for, which is the claim the primitive path was built to
 support — but it is not an end-to-end figure for a system answering arbitrary
 questions unaided, and it must not be quoted as one.
 
+**The plan is not merely "authored" — it is derived from the answer key.**
+Established 2026-09-14 by reading `utils/specialists/evalset/spec_bank.py:230`.
+A bank entry is generated from a `spec`, and three things come out of that one
+object: the question text, the `sub_questions` plan, and `ex_gold`. The plan's
+`entities` triple for each leg is a mechanical transcription of
+`spec.steps[i]` — `(anchor_label, step.predicate, step.label)` — and `ex_gold`
+is computed by walking those same steps. For the worked case
+`T1078.001`, the spec's two steps are `MAPS_TO[ATTACK]` reversed and
+`CanFollow` reversed, and the replayed plan states exactly those predicates.
+
+The consequence is sharper than "the plan was written by a human". Replaying it
+hands the system **the traversal that defines the correct answer**, so the
+gold-replay arms are not measuring question answering at all. They measure
+whether the engine executes a given traversal and reports it faithfully — which
+is a real and separable quantity, and is what makes the templates-versus-
+primitives comparison valid, since both sides receive the same plan. It is not a
+capability figure and no prose in this repository may present it as one.
+
+This also settles whether the configuration could be shipped: it cannot, and not
+for engineering reasons. Production has no spec for a question a user types, and
+producing one is the planning problem itself. `EXP-2026-09-020` records the
+consequence for the deployment decision.
+
 **What resolves it:** a judged pass on the planner arm (the model-free
 difference clears the 0.02 threshold by a factor of nineteen, so the judged read
 is warranted and has not been run), then attribution of the 77 empty-retrieval

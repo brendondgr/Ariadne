@@ -232,11 +232,16 @@ which local graders can resolve a 0.03 difference at all. Against two published 
 benchmarks, scored against an oracle graph read rather than against 1.0, the cascade reaches
 recall 0.7633 against a ceiling of 0.9863.
 
-**The limit that matters most, stated plainly: every headline figure above replays an
-authored retrieval plan.** 0.9005 is a measured ceiling for *retrieval and composition given a
-correct plan* — it is real, and it is reached on questions nobody wrote a template for — but it is
-not an end-to-end figure for a system answering arbitrary questions unaided. Closing that
-−0.3814 is the project's next experiment, not a footnote to this one.
+**The limit that matters most, stated plainly: every headline figure above replays a retrieval
+plan derived from the answer key.** A bank entry is generated from a `spec`, and that one object
+produces three things — the question text, the plan, and the expected answer
+([`spec_bank.py:230`](utils/specialists/evalset/spec_bank.py:230) transcribes each plan leg
+straight from `spec.steps`). So replaying it hands the system the traversal that *defines* the
+correct answer. 0.9005 therefore measures something real and separable — **given a correct
+traversal, does the engine execute it and state the results faithfully** — and it is what makes the
+arm comparisons valid, since every arm receives the same plan. It is **not** a figure for answering
+a question, and nothing here may present it as one. The figure for that is the system finding its
+own path: **0.4797**. Closing the gap is the project's critical path, not a footnote to it.
 
 Four further limits carry across all of it: every question is anchored, so open-ended asks are
 unmeasured; the development catalogue was co-authored with the system; no published external
