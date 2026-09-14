@@ -65,7 +65,11 @@ DEFAULT_MODEL = _EVAL_LLM.model
 # lot. The escalation in ``judge_one`` is the belt to this braces.
 DEFAULT_MAX_TOKENS = 8192
 DEFAULT_WORKERS = 12
-DEFAULT_TIMEOUT_S = 600.0
+#: Overridable, because a maximal prompt takes longer than a typical one and the
+#: cases that hit the cap are exactly the ones worth recovering. On the holdout
+#: regression, all 26 timeouts were prompts at the 26,248-character truncation
+#: cap while graded cases averaged half that — they were slow, not stuck.
+DEFAULT_TIMEOUT_S = float(os.environ.get("JUDGE_TIMEOUT_S", "600.0"))
 
 # Every field ``holdout_report`` and ``answer_gap`` read.
 REQUIRED_FIELDS = (
