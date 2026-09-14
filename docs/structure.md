@@ -72,7 +72,7 @@ in [`commands.md`](commands.md); what each number means is in
 | `graph_loader/` | Runtime load, verify, health; `fixture_qa/` reconciles raw == manifest == live |
 | `infrastructure/` | Docker Compose lifecycle |
 | `planner/` | Cards, discovery, intent, canonicalize (`canonical.py`, `rewrite_llm.py`), drafters, gate, agent, join keys, `card_enrichment.py`, planner evaluation |
-| `specialists/` | Shared scaffold + Cypher and Gremlin swap points, `primitives/` (`describe`, `expand`), `schema/` registry, `llm_builder.py` baseline, federation, `evalset/` banks and scorers, `pipeline.py` shim |
+| `specialists/` | Shared scaffold + Cypher and Gremlin swap points, `primitives/` (`describe`, `expand`; the other generic identifiers — `generic_walk`, `generic_chain`, `generic_bridge`, `generic_neighbors` — are emitted by the builders), `schema/` registry, `llm_builder.py` baseline, federation, `evalset/` banks and scorers, `pipeline.py` shim |
 | `synthesis/` | Deterministic composer, verifier, reconciler, narrator, hybrid composer |
 | `orchestration/` | The LangGraph pipeline graph (`main.py`), state, planner/specialists/assess/synthesis subgraphs, `studio.py` |
 | `conversation/` | The conversational graph wrapping the pipeline (router, extraction, validation, answer, naming, SQLite persistence) |

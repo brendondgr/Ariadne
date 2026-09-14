@@ -196,14 +196,24 @@ query is drafted: the specialist returns an honest empty with the boundary named
 
 Three query-construction paths exist. The **template cascade** is the shipped
 default: a priority-ordered dispatcher over the resolved task's shape selects a
-bounded, parameterized template. The **schema-derived primitives**
-(`utils/specialists/primitives/`) are the generic path the same builders route
-to when no question-shape applies: `describe` returns every property on an
-anchor plus a bounded *facet block* (a count per relationship, direction and
-neighbour label, real zeros folded in from the schema registry); `expand` pages
-one facet's members with a bounded description and an explicit `truncated`
-flag — never truncating silently. Both read `utils/specialists/schema/`, not
-catalogue knowledge. The **LLM query builder** (`utils/specialists/llm_builder.py`)
+bounded, parameterized template. The **schema-derived primitives** are the
+generic path the same builders route to when no question-shape applies, and
+they are what every `generic` and `generic_composed` figure in the research
+record is built from. Two live in `utils/specialists/primitives/`: `describe`
+returns every property on an anchor plus a bounded *facet block* (a count per
+relationship, direction and neighbour label, real zeros folded in from the
+schema registry), and `expand` pages one facet's members with a bounded
+description and an explicit `truncated` flag — never truncating silently. Four
+more are emitted by the builders themselves as generic template identifiers —
+`generic_walk`, `generic_chain`, `generic_bridge` and `generic_neighbors` — and
+a fifth, `generic_intersect`, exists but is not exercised by any current bank.
+All read `utils/specialists/schema/`, not catalogue knowledge.
+
+The distribution is measured rather than asserted. Over the 282-question sealed
+set of `EXP-2026-09-018`, the generic arm emitted `generic_walk` 138 times,
+`generic_chain` 105, `generic_bridge` 40, `describe` 28 and `generic_neighbors`
+4 — five identifiers covering every question, against the 29 shape-specific
+templates the cascade carries. The **LLM query builder** (`utils/specialists/llm_builder.py`)
 hands a model the schema, seeds and gate constraints and lets it write the query
 string; the gate validates it exactly as a template, and it never falls back to
 templates. It is **kept as a measured baseline only** and is off by default.
