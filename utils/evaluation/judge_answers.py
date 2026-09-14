@@ -164,6 +164,28 @@ TRANSIENT_RETRIES = 30
 TRANSIENT_BACKOFF_S = 60
 
 
+def _endpoint_alive(config: JudgeConfig) -> bool:
+    """Is the endpoint actually there, or did it go away mid-request?
+
+    A read timeout is ambiguous and that ambiguity cost eight cases during the
+    planned outage on 2026-09-14. A request sent to a healthy server that is
+    still thinking times out; so does a request sent moments before the server
+    vanished. The exception is identical, so the exception cannot decide it —
+    only asking the endpoint can.
+
+    Cheap, and failing closed: anything other than a clean model listing is
+    read as "not there", which routes the caller to the patient path. The worst
+    case is waiting on a server that was fine, which costs a minute.
+    """
+    try:
+        request = urllib.request.Request(f"{config.base_url.rstrip('/')}/models")
+        with urllib.request.urlopen(request, timeout=20) as response:
+            body = json.load(response)
+        return any(m.get("id") == config.model for m in body.get("data", []))
+    except Exception:  # noqa: BLE001
+        return False
+
+
 def _budgets(config: JudgeConfig, prompt: str) -> list[int]:
     """The escalation ladder, clamped to what the server can actually accept.
 
@@ -263,11 +285,17 @@ def _post(config: JudgeConfig, prompt: str, max_tokens: int | None = None) -> tu
             # A read timeout is NOT this: it means the server accepted the
             # request and is still thinking, which is an ordinary slow case.
             reason = str(getattr(exc, "reason", exc))
-            if isinstance(getattr(exc, "reason", None), TimeoutError) or "timed out" in reason:
+            timed_out = (
+                isinstance(getattr(exc, "reason", None), TimeoutError)
+                or "timed out" in reason
+            )
+            if timed_out and _endpoint_alive(config):
+                # The server is there and was simply slow. Ordinary ladder.
                 last = exc
                 if attempt < config.retries:
                     time.sleep(min(2**attempt, 30))
                 continue
+            # Either unreachable, or timed out BECAUSE it went away. Wait.
             last = exc
             transient += 1
             if transient >= TRANSIENT_RETRIES:
