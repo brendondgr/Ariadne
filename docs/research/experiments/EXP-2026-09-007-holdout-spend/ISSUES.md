@@ -56,3 +56,9 @@ tree at run time. An empty file is fine; a missing one is not.
 **Cause:** the results were written up in stages while later passes were still grading.
 **Resolution:** not resolved; recorded. The model-free arms are byte-reproducible from any of these trees; the judged figures depend on the sidecars, which are pinned by tree hash in `data/POINTERS.md`.
 **Paper implication:** none.
+
+## 2026-09-14 — I-9: the judge is no longer the file that graded this experiment
+**Impact:** `data/POINTERS.md` pointed at `utils/evaluation/judge_answers.py` "as at HEAD", and HEAD has moved: `sha256:eb7c3edb…` (21793 B) → `sha256:d39545182c25…` (29003 B). Re-hashed, with the superseded hash kept in the note column so the grading file is still identifiable. The file that produced this experiment's 1,152 judgments per arm is recoverable at `git show 8d181e12:utils/evaluation/judge_answers.py`.
+**Cause:** five commits during `EXP-2026-09-018` (`6c5469ff`, `f2ba0368`, `98938743`, `db09b799`, `a4fcf903`). All are transport reliability rather than grading semantics: the escalation ladder was clamped below the server's context limit, HTTP error bodies are read into the message, a missing model alias and a planned endpoint outage are waited out instead of failing the case, timeouts are distinguished from a dead endpoint by probing `/models`, and the per-case timeout became overridable.
+**Resolution:** recorded, not reverted. The grader prompt and the sidecar schema are untouched, so this experiment's figures stand as recorded; but a re-run on today's file would not be the same binary and must not be reported as a repeat of this one.
+**Paper implication:** none for the figures. It is an argument for pinning the grader by hash in any experiment that compares across nights — which `EXP-2026-09-018` does, and which is why this was noticed.

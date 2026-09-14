@@ -147,3 +147,23 @@ the dependency set is the repository's `uv.lock` at `code.commit`.
 **Commit.** `code.commit` was `8ab0d2ba`, a commit that predates the census
 module by a day. Corrected to `eeef322` in A-6, established by an empty
 `git diff --stat eeef322` over every pointed path.
+
+## I-10 — 2026-09-14: the brief writer changed again, for a later experiment
+
+**Impact:** none on this experiment's numbers. `data/POINTERS.md` recorded
+`scripts/prepare_briefs.py` at `sha256:68aa5e05…` (10388 B); it is now
+`sha256:3d9d6ee5…` (11584 B) and the pointer has been re-hashed.
+
+**Cause:** `a624292b` changed it for `EXP-2026-09-018` Step 7, which needed a
+freshly sealed question set. Two ways a brief could leak its answer were closed:
+`brief_text()` was passed the register it was supposed to vary over, and
+`self_leaks()` was added to drop specs whose brief names its own gold.
+
+**Resolution:** re-hashed with the change and its commit named in the note
+column, which is the same treatment `1dd69d9` and `eeef322` already have. This
+experiment's briefs are not regenerated and its recorded counts are unaffected —
+the census is over the schema, not over brief wording.
+
+**Paper implication:** none, beyond the general point that a pointer to a live
+script records the script's state and not the run's. The artifacts this
+experiment's numbers were computed from are pinned separately.
