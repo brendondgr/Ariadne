@@ -235,7 +235,7 @@ recall 0.7633 against a ceiling of 0.9863.
 **The limit that matters most, stated plainly: every headline figure above replays a retrieval
 plan derived from the answer key.** A bank entry is generated from a `spec`, and that one object
 produces three things — the question text, the plan, and the expected answer
-([`spec_bank.py:230`](utils/specialists/evalset/spec_bank.py:230) transcribes each plan leg
+([`spec_bank.py`](utils/specialists/evalset/spec_bank.py) transcribes each plan leg
 straight from `spec.steps`). So replaying it hands the system the traversal that *defines* the
 correct answer. 0.9005 therefore measures something real and separable — **given a correct
 traversal, does the engine execute it and state the results faithfully** — and it is what makes the

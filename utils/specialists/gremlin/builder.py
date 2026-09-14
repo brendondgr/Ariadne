@@ -468,6 +468,8 @@ class GremlinQueryBuilder:
         self,
         resolved: ResolvedTask,
         feedback: list[str] | None = None,
+        *,
+        generic: bool | None = None,
     ) -> QueryDraft:
         """Draft a bounded Gremlin query from *resolved* task context.
 
@@ -503,7 +505,7 @@ class GremlinQueryBuilder:
         has_join = resolved.has_join or resolved.join_key == "attack-technique-id"
         neighbor_rels = _resolve_neighbor_rels(resolved)
 
-        if _generic_only():
+        if (_generic_only() if generic is None else generic):
             # Schema-driven primitives only — no CAPEC question-shapes. Everything
             # here is parameterised by a card-declared relationship, by the
             # declared canonical join key, or by nothing at all.

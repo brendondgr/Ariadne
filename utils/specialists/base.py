@@ -15,7 +15,9 @@ deterministic builder) drafts; deterministic code grades.
 
 from __future__ import annotations
 
+import json
 import logging
+import os
 import re
 import time
 from dataclasses import dataclass, field
@@ -39,8 +41,52 @@ class QueryBuilder(Protocol):
     """Drafts a bounded query from a resolved task (the 'query prompt' swap)."""
 
     def build(
-        self, resolved: ResolvedTask, feedback: list[str] | None = None
+        self, resolved: ResolvedTask, feedback: list[str] | None = None,
+        *, generic: bool | None = None,
     ) -> QueryDraft: ...
+
+
+
+def _engine_merge() -> bool:
+    """Should BOTH query engines run, with their rows unioned? Default **off**.
+
+    `EXP-2026-09-020` A-1 measured this at production's plan source. Each engine
+    costs 0.095 s per answer, so running both costs about a tenth of a second in
+    parallel, and the union of what they retrieve scores **0.5862** against
+    0.4536 for the template cascade alone and 0.4797 for the primitives alone --
+    +0.1064 over the better single engine. Answers that retrieve nothing fall
+    from 55 and 85 to 34.
+
+    The union EQUALS oracle pick-best to four decimals, which is why this is a
+    merge and not a router: the two evidence sets are complementary, so taking
+    both loses nothing against choosing perfectly, and there is nothing to
+    predict.
+
+    Off by default because it changes what every shipped answer is composed
+    from, and a retrieval change that has not been through the recorded-answer
+    regression is a regression until proven otherwise. What it does NOT carry
+    evidence for is fidelity: more records reaching the composer could raise
+    wrong-entity or catalogue-dump rates, and the T6 instrument has not been run
+    on a merged configuration.
+    """
+    return os.environ.get("SPECIALIST_ENGINE_MERGE", "0").strip().lower() in {"1", "true", "yes", "on"}
+
+
+def _row_key(row: dict[str, Any]) -> str:
+    """A stable identity for de-duplicating rows across the two engines.
+
+    Prefers a declared identifier; falls back to the whole row rendered
+    deterministically, so a row without one is kept rather than silently
+    collapsed onto an unrelated row.
+    """
+    for key in ("id", "ID", "identifier", "capec_id", "attack_id"):
+        value = row.get(key)
+        if isinstance(value, (str, int)) and str(value).strip():
+            return f"{key}={value}"
+    try:
+        return json.dumps(row, sort_keys=True, default=str)
+    except Exception:  # noqa: BLE001 - an unserialisable row is still a distinct row
+        return repr(sorted(row.items(), key=lambda kv: kv[0]))
 
 
 class Connector(Protocol):
@@ -314,6 +360,46 @@ class QuerySpecialist:
                         detail={"row_count": len(rows), "timing_ms": elapsed_ms},
                     )
                 )
+
+                # Both engines, unioned. The primary draft has already run;
+                # this drafts and runs the OTHER one and folds in the rows it
+                # found. Best-effort by construction: any failure on the second
+                # engine leaves the primary result exactly as it was, so this
+                # can only add evidence, never remove or replace it.
+                if _engine_merge():
+                    merge_started = time.perf_counter()
+                    added = 0
+                    second_error: str | None = None
+                    try:
+                        primary_generic = bool(getattr(draft, "template", "").startswith("generic")) \
+                            or getattr(draft, "template", "") in {"describe", "describe_by_name"}
+                        other = self.builder.build(resolved, None, generic=not primary_generic)
+                        other_result = self.validator.validate(other, self.card, limits)
+                        if other_result.ok:
+                            seen = {_row_key(r) for r in rows}
+                            for row in self.connector.run(
+                                other_result.query, other_result.params, limits
+                            ):
+                                if _row_key(row) not in seen:
+                                    seen.add(_row_key(row))
+                                    rows.append(row)
+                                    added += 1
+                        else:
+                            second_error = "; ".join(other_result.reasons) or "gate refused"
+                    except Exception as exc:  # noqa: BLE001 - the primary result stands
+                        second_error = f"{type(exc).__name__}: {exc}"
+                    traces.append(
+                        EvaluatorTrace(
+                            "engine-merge",
+                            ok=second_error is None,
+                            reasons=[second_error] if second_error else [],
+                            detail={
+                                "primary_template": getattr(draft, "template", None),
+                                "rows_added": added,
+                                "timing_ms": round((time.perf_counter() - merge_started) * 1000, 3),
+                            },
+                        )
+                    )
 
                 assess_started = time.perf_counter()
                 assessment = assess_rows(rows, resolved)

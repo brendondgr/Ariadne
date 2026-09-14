@@ -364,10 +364,18 @@ class CypherQueryBuilder:
     """
 
     def build(
-        self, resolved: ResolvedTask, feedback: list[str] | None = None
+        self, resolved: ResolvedTask, feedback: list[str] | None = None,
+        *, generic: bool | None = None,
     ) -> QueryDraft:
-        """Return a ``QueryDraft`` whose query string is valid Cypher."""
-        if _generic_only():
+        """Return a ``QueryDraft`` whose query string is valid Cypher.
+
+        ``generic`` overrides ``SPECIALIST_GENERIC_ONLY`` for this call only. It
+        is a parameter rather than an environment read because the evaluation
+        harness runs questions on a ThreadPoolExecutor: toggling the variable
+        around a second ``build`` would race every other worker in the process.
+        ``None`` keeps the environment's answer, which is the shipped behaviour.
+        """
+        if _generic_only() if generic is None else generic:
             return self._build_generic(resolved)
 
         # Resolve a named entity **before** the template ladder, not after it.
