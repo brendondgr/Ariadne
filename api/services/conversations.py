@@ -153,11 +153,16 @@ def stream_conversation_events(
     # composed narrative. `graph.py` already documents that pair as the
     # deterministic path. `setdefault` so an explicitly injected client (tests)
     # still wins.
+    # Authoritative in BOTH directions. Declining to disable is not the same as
+    # enabling: with CONVERSATION_LLM_ENABLED=false in the environment, a
+    # `verify: on` that merely left the agent to the config left it off, and the
+    # control silently did nothing (measured: 0.08 s for a turn that should have
+    # cost ~30 s). The toggle on screen is the authority, which is the whole
+    # point of making `with_llm_enabled` two-way.
+    _on = ConversationLLM(replace(config.llm, enabled=True))
     _off = ConversationLLM(replace(config.llm, enabled=False))
-    if not verify:
-        build_kwargs.setdefault("validation_client", _off)
-    if not narrate:
-        build_kwargs.setdefault("answer_client", _off)
+    build_kwargs.setdefault("validation_client", _on if verify else _off)
+    build_kwargs.setdefault("answer_client", _on if narrate else _off)
 
     try:
         question = (question or "").strip()

@@ -466,3 +466,64 @@ end-to-end answer quality is the **0.4536–0.5156** coverage band, not the 0.90
 the sealed set reports at an authored plan. Step 6 of the plan — a judged pass on
 a sealed bank at the shipped configuration — has **not** been run, and until it
 has, no figure in this repository describes what an analyst gets from the UI.
+
+## Amendment A-8 — where a chat turn's time actually goes, and what the controls now cost (2026-09-14)
+
+A deterministic turn through the workbench took **43.27 s**. Timed per SSE event
+against the running stack, the graph answered at **1.09 s**; everything else was
+the conversation wrapper.
+
+| Stage | LLM | Before |
+|---|---|---:|
+| `router` | yes | ~1.0 s |
+| **the pipeline** | **no** | **1.09 s** |
+| `validation` (sufficiency) | yes | **~28.6 s** |
+| `answer` (writes the reply) | yes | **~10.7 s** |
+| thread auto-title | yes | ~2.9 s, at the very end |
+
+No control on screen could stop any of it. `ConversationConfig` resolves
+`enabled` from the shared LLM group, so `ARIADNE_LLM_ENABLED=true` switched the
+layer on implicitly, and `with_llm_enabled()` was **one-way** — it could turn the
+layer on and never off. The composer read "Drafter: deterministic" while four
+model calls ran at a 4,096-token thinking budget.
+
+### After: the four control corners, measured end to end
+
+`ORCH_MAX_HOPS=5`, `:9090`, same question, per-event timings.
+
+| Corner | Verify | Prose | Total |
+|---|---|---|---:|
+| **A — the default** | off | off | **0.25 s** |
+| B | **on** | off | 28.56 s |
+| C | off | **on** | 32.20 s |
+| D | **on** | **on** | 78.87 s |
+
+**The default path is 0.25 s against 43.27 s — 170× faster**, and the thread is
+titled at **0.02 s** rather than at the end. D runs long because validation
+judged the evidence insufficient and drove a retry, which is the loop working.
+
+### Two defects the measurement caught rather than confirmed
+
+**Titling ran last and was a dependency of nothing.** `title_for` reads the
+question and nothing else, so its position at the end of `_persist_turn` was
+incidental: it cost ~2.9 s at the tail and left the sidebar reading "New
+conversation" until after the answer was on screen. Moved to turn-open on a
+worker. Writing the test for that then caught a second fault — when the titler
+raises anything but `LLMUnavailable`, the fallback calls the **same failing
+client**, and the exception propagated: the stream ended in `error` rather than
+`done`, **losing an answer that had already been composed and verified over a
+thread's name.**
+
+**Declining to disable is not the same as enabling.** The first run of these four
+corners had `verify: on` finishing in **0.08 s** — the control silently did
+nothing, because the environment had the conversation LLM off and `verify` merely
+left the agent to the config. The toggle on screen is now authoritative in both
+directions. Had the corners not been measured, this would have shipped as a
+control that looked wired and was not.
+
+### What is unchanged
+
+`router` and `orchestration` still run in every mode — routing and reference
+resolution are what make a thread conversational, and the router costs ~1 s. The
+**deterministic claim verifier is untouched and unconditional**: `Verify` governs
+the LLM sufficiency agent, which is a second opinion, not the guarantee.

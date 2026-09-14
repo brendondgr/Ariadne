@@ -39,21 +39,28 @@ def _run(monkeypatch, temp_store, **kw):
 def test_verify_off_disables_only_the_validation_agent(monkeypatch, temp_store):
     seen = _run(monkeypatch, temp_store, verify=False, narrate=True)
     assert seen["validation_client"].enabled is False
+    assert seen["answer_client"].enabled is True
     # router and orchestration are untouched -- they are what make a thread
     # conversational, and they are cheap.
     assert "router_client" not in seen
     assert "orchestration_client" not in seen
 
 
-def test_verify_on_leaves_the_validation_agent_to_the_config(monkeypatch, temp_store):
+def test_verify_on_enables_the_agent_even_when_the_env_disables_it(monkeypatch, temp_store):
+    """Declining to disable is not the same as enabling.
+
+    With CONVERSATION_LLM_ENABLED=false, a `verify: on` that merely left the
+    agent to the config left it OFF: a turn that should have cost ~30 s measured
+    0.08 s and the control silently did nothing.
+    """
     seen = _run(monkeypatch, temp_store, verify=True)
-    assert "validation_client" not in seen
+    assert seen["validation_client"].enabled is True
 
 
 def test_prose_off_disables_only_the_answer_agent(monkeypatch, temp_store):
     seen = _run(monkeypatch, temp_store, narrate=False, verify=True)
     assert seen["answer_client"].enabled is False
-    assert "validation_client" not in seen
+    assert seen["validation_client"].enabled is True
 
 
 def test_thinking_budget_reaches_the_conversation_config(monkeypatch, temp_store):
