@@ -1,5 +1,5 @@
 <!doctype html>
-<html><head><meta charset="utf-8"><title>Ariadne — Retiring the Template Engine</title>
+<html><head><meta charset="utf-8"><title>Templates, Primitives and the Planner</title>
 <style>
 @page { size: A4; margin: 11mm 13mm 10mm 13mm; }
 * { box-sizing: border-box; }
@@ -9,13 +9,13 @@ h2 { font-size: 11pt; page-break-after:avoid; margin: 3.6mm 0 1.2mm; padding-bot
 h3 { font-size: 9.7pt; margin: 2.6mm 0 .8mm; color:#2c3140; }
 p { margin: 0 0 1.6mm; }
 .sub { color:#5b6170; font-size:8.5pt; margin:0 0 2.8mm; }
-table { border-collapse: collapse; width:100%; margin: 1.4mm 0 2.6mm; font-size:8.8pt; }
+table { border-collapse: collapse; width:100%; page-break-inside: avoid; margin: 1.4mm 0 2.6mm; font-size:8.8pt; }
 th { text-align:left; border-bottom:1.2px solid #16181d; padding:1.35mm 1.9mm; font-weight:600; }
 td { padding:1.25mm 1.9mm; border-bottom:.5px solid #d8dbe2; }
 td.n, th.n { text-align:right; font-variant-numeric: tabular-nums; }
 tr.hl td { background:#eef4ff; font-weight:600; }
 b, strong { color:#0b1020; }
-.box { border-left:3px solid #2f5fd0; background:#f5f8ff; padding:1.9mm 2.4mm; margin:1.8mm 0 2.4mm; }
+.box { page-break-inside: avoid; border-left:3px solid #2f5fd0; background:#f5f8ff; padding:1.9mm 2.4mm; margin:1.8mm 0 2.4mm; }
 .box.warn { border-left-color:#b8580f; background:#fff8f1; }
 .box.good { border-left-color:#1d7a44; background:#f2fbf5; }
 .box p:last-child { margin-bottom:0; }
@@ -27,8 +27,8 @@ ul { margin:0 0 1.8mm; padding-left:4mm; } li { margin-bottom:.8mm; }
 .two { display:flex; gap:5mm; } .two > * { flex:1; }
 </style></head><body>
 
-<h1>Retiring the template engine</h1>
-<p class="sub">Ariadne — knowledge-graph question answering over ATT&amp;CK and CAPEC &nbsp;·&nbsp; results brief, 14 September 2026<br>
+<h1>Templates, primitives, and the planner</h1>
+<p class="sub">Ariadne — knowledge-graph question answering over ATT&amp;CK and CAPEC &nbsp;·&nbsp; results brief, 14 September 2026 · rev. 2<br>
 Every figure below is recomputed from judgment files, not quoted from prose. Sources named in the footer.</p>
 
 <div class="box">
@@ -39,7 +39,7 @@ Every figure below is recomputed from judgment files, not quoted from prose. Sou
 
 <h2>Headline</h2>
 
-<p><b>Both answers are yes, with one honest caveat that reframes the programme.</b> The open-ended engine beats the template engine by <b>+0.348</b> on questions nothing had ever seen, with zero fabricated mappings, and it is not meaningfully slower. The 2B model rewrites prose without touching facts — provably, across 284 answers. The caveat is that both headline arms replay a human-authored retrieval plan, and letting the system plan for itself costs <b>−0.381</b>.</p>
+<p><b>Both answers are yes, with one caveat that decides how the result may be used.</b> The open-ended engine beats the template engine by <b>+0.348</b> on questions nothing had ever seen, with zero fabricated mappings, and it is not meaningfully slower. The 2B model rewrites prose without touching facts — provably, across 284 answers. The caveat is that both headline arms replay a <b>human-authored retrieval plan</b>. Letting the system plan for itself costs <b>−0.381</b> — and at that plan source, which is what the deployed workbench runs, <b>the engine advantage shrinks to +0.026 and is no longer distinguishable from zero.</b> The primitive engine is what makes the system open-ended; it is not yet a drop-in replacement.</p>
 
 <table>
 <tr><th>Arm</th><th>What it is</th><th class="n">Correctness</th><th class="n">Fabricated<br>mappings</th><th class="n">s / answer</th></tr>
@@ -143,6 +143,21 @@ Every figure below is recomputed from judgment files, not quoted from prose. Sou
 
 <p>On <b>77 of 284 questions the planner retrieved nothing where the authored plan retrieved records. The reverse never happened once.</b> The loss is worst on chained and cross-catalogue questions (−0.50 and −0.55), which are exactly the questions with the most plan structure to get wrong.</p>
 
+<h3>And the engine advantage does not survive that planner</h3>
+<p>Crossing both factors — which engine, which plan source — on the same 284 questions answers the question the deployment decision actually turns on. The workbench runs the real planner, so the right-hand column is where it stands.</p>
+
+<table>
+<tr><th>Gold coverage</th><th class="n">authored plan</th><th class="n">real planner <i>(the workbench)</i></th></tr>
+<tr><td><b>hand-written templates</b></td><td class="n">0.6428</td><td class="n"><b>0.4536</b></td></tr>
+<tr><td><b>schema-derived primitives</b></td><td class="n"><b>0.8611</b></td><td class="n">0.4797</td></tr>
+<tr class="hl"><td><b>primitives − templates</b></td><td class="n">+0.2184 <i>separable</i></td><td class="n">+0.0261 <b><i>not separable</i></b></td></tr>
+</table>
+<p class="cap">Interaction −0.1923. Unlike the model seam, these two factors interact strongly — so the corner cells mislead on their own.</p>
+
+<p><b>A bad plan costs the primitive engine roughly twice what it costs the templates</b> (−0.3814 against −0.1892), and under the real planner it returns nothing on 85 of 284 questions against the templates' 55. A template constrains the shape of the query, so a poor decomposition still lands somewhere defensible; a primitive follows the plan literally, so a poor decomposition becomes a poor traversal. <b>The generality that lets primitives answer anything is the same property that makes them faithful to a bad instruction.</b></p>
+
+<p>The effect also <b>changes sign by question type</b>: templates win easy (−0.1586) and adversarial (−0.1389), primitives win hard (+0.0659) and medium (+0.1127). The +0.0261 aggregate is a cancellation, not an agreement.</p>
+
 <div class="box warn"><p><b>What this means, stated precisely.</b> 0.90 is a measured ceiling for <b>retrieval and composition given a correct plan</b>. It is a real ceiling — it is what the engine achieves on questions nobody wrote a template for — but it is not yet an end-to-end figure for a system answering arbitrary questions unaided. The open-endedness claim is proven for the <i>engine</i> and not yet for the <i>planner</i>.</p>
 <p>One limit on the −0.381 itself: the self-planning arm also inherits tighter per-plan bounds, so "chose a worse decomposition" is not yet separated from "chose tighter limits". That separation needs a third arm and is recorded as an open issue rather than assumed away.</p></div>
 
@@ -150,14 +165,18 @@ Every figure below is recomputed from judgment files, not quoted from prose. Sou
 
 <table>
 <tr><th>Decision</th><th>Supported?</th><th>Evidence</th></tr>
-<tr><td>Retire the deterministic template engine</td><td><b>Yes</b></td><td>−0.348 coverage, still fabricates, 0.01 s slower to replace</td></tr>
+<tr><td>Retire the template engine <i>outright</i></td><td><b>No</b></td><td>at the workbench's own plan source the gap is +0.0261 and not separable, with 85 empty answers against 55</td></tr>
+<tr><td>Keep the primitive engine as the open-ended path</td><td><b>Yes</b></td><td>+0.2184 given a good plan; and templates cannot accept an unanticipated question at all</td></tr>
+<tr><td>Route between them rather than replace</td><td><b>Yes</b></td><td>the effect changes sign by question type — templates win easy and adversarial, primitives win hard and medium</td></tr>
 <tr><td>Ship the answer path with no model in it</td><td><b>Yes</b></td><td><span class="k">generic_composed</span> 0.9005 with every LLM seam off</td></tr>
 <tr><td>Use the 2B model for human-facing prose</td><td><b>Yes, on demand</b></td><td>284/284 facts preserved; 1,340× latency forbids it as default</td></tr>
 <tr><td>Use the 2B model to draft queries</td><td><b>No</b></td><td>0 working drafts of 17; budget increase does not help</td></tr>
 <tr><td>Claim end-to-end open-ended QA at 0.90</td><td><b>Not yet</b></td><td>planner costs −0.381; that gap is the next experiment</td></tr>
 </table>
 
-<p><b>Recommended shape.</b> One engine, not two: primitives compose every answer, deterministically, with no model in the fact path. The 2B narrator becomes a presentation layer the reader opts into per answer. The remaining engineering question is no longer "can this generalise" — it is "can the planner reach the ceiling the engine already demonstrates".</p>
+<p><b>Recommended shape.</b> Two engines with a router, not one engine — and no model in the fact path either way. The primitive path is what makes the system open-ended and is the only path that can take an unanticipated question at all; the template path stays because at the planner the workbench actually runs it is measurably better on routine and adversarial questions. The 2B narrator becomes a presentation layer the reader opts into per answer.</p>
+
+<p><b>The real target is the planner.</b> It costs −0.1892 to templates and −0.3814 to primitives, and it is the largest term in every cell of that table. Fixing it lifts both engines and is what would make a straight swap worth making: the +0.2184 is what becomes available if the planner reaches the quality an authored plan has. The engineering question is no longer "can this generalise" — it is "can the planner reach the ceiling the engine already demonstrates".</p>
 
 <h2>How much to trust these numbers</h2>
 <ul>
@@ -168,6 +187,6 @@ Every figure below is recomputed from judgment files, not quoted from prose. Sou
 <li><b>Grading:</b> capability figures average two counterbalanced positions. Single-tier differences below ~0.06 are indistinguishable from grader noise and are not claimed.</li>
 </ul>
 
-<p class="foot">Sources — <span class="k">EXP-2026-09-018</span> (repair, paired control, sealed set, regression, latency, T6) and <span class="k">EXP-2026-09-019</span> (endpoint, planner cost, 2B narrator and specialist seams, 2×2). All values recomputed from judgment sidecars via each experiment's <span class="k">data/*.json</span>; none transcribed from prose. Grading by a single model family on one endpoint — a threat to validity recorded in both protocols.</p>
+<p class="foot">Sources — <span class="k">EXP-2026-09-018</span> (repair, paired control, sealed set, regression, latency, T6) and <span class="k">EXP-2026-09-019</span> (endpoint, planner cost, 2B narrator and specialist seams, model×plan 2×2) and <span class="k">EXP-2026-09-020</span> (engine×plan-source 2×2, the deployment question). All values recomputed from judgment sidecars via each experiment's <span class="k">data/*.json</span>; none transcribed from prose. Grading by a single model family on one endpoint — a threat to validity recorded in both protocols.</p>
 
 </body></html>
