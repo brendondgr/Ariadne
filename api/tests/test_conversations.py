@@ -158,11 +158,20 @@ def test_stream_persists_turns_and_autotitles(temp_store):
         )
     )
     names = [e for e, _ in events]
-    assert names[0] == "status"  # orchestrating
-    assert "route" in names and "final" in names
+    # The title now leads rather than trails. `title_for` reads the question and
+    # nothing else, so it is started on a worker when the turn opens and emitted
+    # the moment it resolves -- which, with a stub client, is before the first
+    # forwarded frame. This assertion used to require "status" first, back when
+    # titling happened last and the sidebar read "New conversation" until after
+    # the answer was on screen.
+    assert "title" in names
+    assert names.index("title") < names.index("final")
+    assert "status" in names and "route" in names and "final" in names
     assert names[-1] == "done"
 
-    # Auto-title assigned on the first turn, surfaced in the conversation event.
+    # Auto-title assigned on the first turn, surfaced early AND on the
+    # conversation event so a client that missed the early frame still gets it.
+    assert dict(events)["title"]["title"] == "Phishing Mappings"
     convo_event = dict(events)["conversation"]
     assert convo_event["title"] == "Phishing Mappings"
 

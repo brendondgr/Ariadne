@@ -195,3 +195,46 @@ Step 1's two-way `with_llm_enabled` is still required and still correct — it i
 what lets a caller express "off" at all — but it is no longer the mechanism the
 `Verify` control uses. Steps 2 and 4 wire `verify` to the validation client and
 `prose` to the answer agent instead of to the whole layer.
+
+---
+
+## 6. Amendment, 2026-09-14 (second) — title the thread first, and in parallel
+
+Operator correction: thread auto-titling should be the **first** step of a new
+thread rather than the last, and should run **in parallel** with the rest of the
+turn.
+
+Both follow from what the titler actually needs. `naming.title_for(question, …)`
+reads the **question and nothing else** — not the plan, not the evidence, not the
+answer — so its position at the end of `_persist_turn` is incidental rather than
+a dependency. Today that costs ~2.9 s at the very end of a first turn, and the
+sidebar reads "New conversation" for the whole turn before snapping to a title
+once the answer is already on screen.
+
+### The change
+
+Start `title_for` on a worker the moment the turn begins, alongside the router,
+and emit the title as its own SSE event as soon as it resolves. `_persist_turn`
+then consumes the resolved value instead of computing one.
+
+- **Latency**: the titling call leaves the critical path entirely. A first turn
+  stops paying ~2.9 s at the end.
+- **Interface**: the thread is named within a second or two of asking, while the
+  pipeline is still running, which is what a sidebar should do.
+- **Failure**: the titler already falls back to `deterministic_title(question)`
+  when the LLM is off or unavailable, so a slow or failed call degrades to the
+  same title it would have produced synchronously. The future is joined with a
+  bounded wait at persist time and falls back rather than blocking the turn.
+
+### Step (inserted before the composer work)
+
+#### Step 2a: Title a new thread first, and off the critical path
+
+- **Locations**: `api/services/conversations.py` (`stream_conversation_events`,
+  `_persist_turn`), `utils/conversation/naming.py` (`title_for`, unchanged).
+- **Rationale**: the titler depends only on the question, so running it last is
+  pure latency and a worse interface. Running it first and concurrently costs
+  nothing and removes ~2.9 s from a first turn's tail.
+- **Action**: Undergo the verification/tests/validation process for this phase.
+  Once validated, push changes to GitHub stating: Workbench Controls (2a/5)
+  Complete: a new thread is titled at the start of its first turn, in parallel.

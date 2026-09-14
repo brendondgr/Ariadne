@@ -13,12 +13,13 @@ from __future__ import annotations
 
 import json
 import logging
+from concurrent.futures import ThreadPoolExecutor
 from typing import Any, Iterator
 
 from utils.conversation.config import ConversationConfig, conversation_db_path
 from utils.conversation.llm import ConversationLLM
 from utils.conversation.main import iter_conversation
-from utils.conversation.naming import title_for
+from utils.conversation.naming import deterministic_title, title_for
 from utils.conversation.persistence import (
     conversation_anchor,
     dossier_payload,
@@ -145,6 +146,28 @@ def stream_conversation_events(
             return
 
         is_first_turn = convo.turn_count == 0
+        # Title a new thread FIRST, and off the critical path.
+        #
+        # `title_for` reads the question and nothing else -- not the plan, not
+        # the evidence, not the answer -- so its old position at the end of
+        # `_persist_turn` was incidental rather than a dependency. There it cost
+        # ~2.9s at the tail of a first turn and left the sidebar reading "New
+        # conversation" until after the answer was already on screen.
+        #
+        # Started here it runs alongside the router and the pipeline, so it
+        # costs nothing, and the title is emitted as soon as it resolves. The
+        # titler already falls back to `deterministic_title(question)` when the
+        # LLM is off or unavailable, so a slow or failed call degrades to the
+        # same title it would have produced synchronously.
+        title_pool: ThreadPoolExecutor | None = None
+        title_future = None
+        if is_first_turn:
+            title_pool = ThreadPoolExecutor(max_workers=1, thread_name_prefix="title")
+            title_future = title_pool.submit(
+                title_for, question, config, naming_client
+            )
+        title_sent = False
+
         turns = store.list_turns(conversation_id)
         history = history_from_turns(turns, limit=config.history_turns)
         # Deterministic (LLM-free) focus entities from the thread so an entity-free
@@ -205,6 +228,18 @@ def stream_conversation_events(
             if event == "evidence" and isinstance(payload, dict):
                 acc["evidence"] = payload.get("evidence")
 
+            # Emit the title the moment it is ready, without waiting on it.
+            if title_future is not None and not title_sent and title_future.done():
+                title_sent = True
+                try:
+                    early_title = title_future.result()
+                except Exception:  # noqa: BLE001 - a failed title never sinks a turn
+                    early_title = None
+                if early_title:
+                    store.rename_conversation(conversation_id, early_title)
+                    yield _sse("title", {"conversation_id": conversation_id,
+                                         "title": early_title})
+
             name, data = _present(event, payload, run)
 
             # Track conversation-native fields for the stored turn.
@@ -223,9 +258,18 @@ def stream_conversation_events(
 
             if event == "conversation":
                 # Persist the turn, auto-title a new thread, and enrich the event.
+                resolved_title = None
+                if title_future is not None:
+                    try:
+                        # Bounded: the turn is already answered, and the titler
+                        # falls back on its own, so a hung call must not hold the
+                        # stream open.
+                        resolved_title = title_future.result(timeout=5.0)
+                    except Exception:  # noqa: BLE001 - fall back below
+                        resolved_title = None
                 title = _persist_turn(
                     store, conversation_id, question, mode, drafter, acc,
-                    config, is_first_turn, naming_client,
+                    config, is_first_turn, naming_client, title=resolved_title,
                 )
                 yield _sse("conversation", {**data, "title": title})
                 continue
@@ -237,6 +281,14 @@ def stream_conversation_events(
     except Exception as exc:  # noqa: BLE001 - any failure becomes a clean error event
         logger.exception("conversation pipeline failed")
         yield _sse("error", {"message": f"{type(exc).__name__}: {exc}"})
+    finally:
+        # The titling worker outlives the generator if the client disconnects
+        # mid-stream, so it is shut down on every exit path including that one.
+        # `cancel_futures` drops a call that has not started; one already in
+        # flight is left to finish rather than abandoned mid-request.
+        pool = locals().get("title_pool")
+        if pool is not None:
+            pool.shutdown(wait=False, cancel_futures=True)
 
 
 def _present(
@@ -266,6 +318,7 @@ def _persist_turn(
     config: ConversationConfig,
     is_first_turn: bool,
     naming_client: ConversationLLM | None,
+    title: str | None = None,
 ) -> str:
     """Record the user + assistant turns and return the (possibly new) thread title."""
     facts = facts_from_synthesized(acc.get("synthesized"))
@@ -308,7 +361,20 @@ def _persist_turn(
     )
 
     if is_first_turn:
-        title = title_for(question, config, naming_client)
+        # Normally already resolved by the worker started at turn open; computed
+        # here only when that future failed or was never started.
+        #
+        # Guarded, because the fallback calls the SAME client that just failed.
+        # `title_for` catches LLMUnavailable but not an arbitrary transport
+        # error, so an unguarded retry turned a failed title into a failed TURN
+        # -- the stream ended in `error` instead of `done`, losing an answer that
+        # had already been composed and verified over a thread's name.
+        if not title:
+            try:
+                title = title_for(question, config, naming_client)
+            except Exception:  # noqa: BLE001 - a thread's name is not the answer
+                logger.info("auto-title failed; using the deterministic name")
+                title = deterministic_title(question)
         store.rename_conversation(conversation_id, title)
         return title
     convo = store.get_conversation(conversation_id)
