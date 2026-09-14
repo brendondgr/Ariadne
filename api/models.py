@@ -279,6 +279,14 @@ class QueryRequest(BaseModel):
     question: str = Field(min_length=1)
     mode: Literal["plan", "query"] = "query"
     drafter: Literal["deterministic", "llm"] = "deterministic"
+    #: Run the LLM sufficiency check over the gathered evidence. Off by default:
+    #: it is a second opinion, not the guarantee -- the deterministic claim
+    #: verifier runs unconditionally on every path either way -- and it is the
+    #: single most expensive stage in a turn (~28.6 s, ``EXP-2026-09-020`` A-8).
+    verify: bool = False
+    #: Reasoning tokens for whichever model seams run. ``None`` leaves the
+    #: environment's value alone, so an untouched deployment is unchanged.
+    thinking_budget: int | None = Field(default=None, ge=0, le=65536)
     #: Rewrite the narrative prose with a model, over claims already composed
     #: and verified. Separate from ``drafter`` because ``drafter="llm"`` also
     #: hands QUERY construction to a model, which measures far worse than the
@@ -336,8 +344,11 @@ class ConversationQueryRequest(BaseModel):
     conversation_id: str = Field(min_length=1)
     mode: Literal["plan", "query"] = "query"
     drafter: Literal["deterministic", "llm"] = "deterministic"
-    #: Same narrator-only seam as ``QueryRequest.narrate``.
+    #: The same three controls as ``QueryRequest``. The workbench streams THIS
+    #: surface, so a field added only to the other one is a dead control.
+    verify: bool = False
     narrate: bool = False
+    thinking_budget: int | None = Field(default=None, ge=0, le=65536)
 
 
 # ---------------------------------------------------------------------------

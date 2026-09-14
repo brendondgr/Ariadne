@@ -14,6 +14,7 @@ from __future__ import annotations
 import json
 import logging
 from concurrent.futures import ThreadPoolExecutor
+from dataclasses import replace
 from typing import Any, Iterator
 
 from utils.conversation.config import ConversationConfig, conversation_db_path
@@ -119,7 +120,9 @@ def stream_conversation_events(
     *,
     mode: str = "query",
     use_llm: bool = False,
+    verify: bool = False,
     narrate: bool = False,
+    thinking_budget: int | None = None,
     store: ConversationStore | None = None,
     config: ConversationConfig | None = None,
     naming_client: ConversationLLM | None = None,
@@ -132,7 +135,29 @@ def stream_conversation_events(
     """
     store = store or get_store()
     config = (config or ConversationConfig.from_env()).with_llm_enabled(use_llm)
+    if thinking_budget is not None:
+        config = replace(
+            config, llm=replace(config.llm, thinking_budget=int(thinking_budget))
+        )
     drafter = "llm" if use_llm else "deterministic"
+
+    # Gate the two expensive agents individually rather than the whole layer.
+    # `router` and `orchestration` stay on in every mode -- routing and reference
+    # resolution are what make a thread conversational. `validation` and `answer`
+    # are the costly ones: ~28.6 s and ~10.7 s of a 43 s turn whose pipeline
+    # answered at 1.09 s (`EXP-2026-09-020` A-8).
+    #
+    # Injecting a disabled client is the existing mechanism rather than a new
+    # branch: `evaluate_sufficiency` short-circuits to VERDICT_PASS when its
+    # client is disabled, and the answer agent falls back to the pipeline's
+    # composed narrative. `graph.py` already documents that pair as the
+    # deterministic path. `setdefault` so an explicitly injected client (tests)
+    # still wins.
+    _off = ConversationLLM(replace(config.llm, enabled=False))
+    if not verify:
+        build_kwargs.setdefault("validation_client", _off)
+    if not narrate:
+        build_kwargs.setdefault("answer_client", _off)
 
     try:
         question = (question or "").strip()

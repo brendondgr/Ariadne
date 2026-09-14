@@ -156,6 +156,7 @@ def post_query(request: QueryRequest) -> StreamingResponse:
         mode=request.mode,
         use_llm=request.drafter == "llm",
         narrate=request.narrate,
+        thinking_budget=request.thinking_budget,
     )
     return StreamingResponse(
         stream,
@@ -215,7 +216,9 @@ def post_conversation_query(request: ConversationQueryRequest) -> StreamingRespo
         request.conversation_id,
         mode=request.mode,
         use_llm=request.drafter == "llm",
+        verify=request.verify,
         narrate=request.narrate,
+        thinking_budget=request.thinking_budget,
     )
     return StreamingResponse(
         stream,
