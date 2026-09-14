@@ -1,0 +1,26 @@
+{
+ "case_id": "D4-mitigates-uses-M1046-b1c76e::indirect",
+ "verdict": "CORRECT",
+ "correctness": 0.95,
+ "faithfulness": 0.85,
+ "groundedness": 0.85,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "Reported 43 related items but enumerated only 42 across the listed categories"
+ ],
+ "rationale": "The answer addresses both parts of the question by listing M1046's mitigated techniques and identifying C0063 as the campaign linked through T1495. It also states that no campaigns are listed for the other mitigated techniques, which matches the expected campaign-via-technique pattern. Minor deductions are for the 43-versus-42 enumeration mismatch and for some claims being tied to the M1046 record rather than fully visible in the truncated evidence.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 8192,
+  "escalated": false,
+  "position": 2
+ }
+}

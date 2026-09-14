@@ -834,9 +834,19 @@ changes 2 answers of 852 and the control is otherwise complete.
 
 | arm | correctness | `fabricated_mapping` |
 |---|---|---|
-| `deterministic` | 0.5508 ± 0.0198 | 0 |
-| `generic_composed` | **0.9037 ± 0.0097** | 0 |
-| `generic` | **0.9043 ± 0.0097** | 0 |
+| `deterministic` | 0.5525 ± 0.0197 | 0 |
+| `generic_composed` | **0.9005 ± 0.0102** | 0 |
+| `generic` | **0.8991 ± 0.0103** | 0 |
+
+**These are the figures after the straggler sweep, and the sweep mattered.**
+Before it, eight cases were unjudged and the arms read 0.9037 and 0.9043.
+Closing them moved `generic` *down* to 0.8991 and `generic_composed` to 0.9005 —
+those eight were the slowest and hardest answers, and their absence had
+flattered the LLM arm by 0.005. The two real arms are now separated by 0.0014
+against a standard error of 0.010, which is to say they are indistinguishable;
+reading either as ahead would be over-reading. It is a concrete reminder that a
+judged mean computed over "whatever graded successfully" is biased toward the
+easy cases, which is the same lesson `EXP-2026-08-021` recorded.
 
 282 questions, both grading positions, graded once. Against the development
 half's 0.9247 this is a drop of 0.020 — about two standard errors — so the
