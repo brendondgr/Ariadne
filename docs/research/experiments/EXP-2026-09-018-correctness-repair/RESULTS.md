@@ -609,3 +609,48 @@ All 26 ungraded `generic` cases sat **exactly at the 26,248-character prompt
 cap** (~8,749 tokens) against a graded median of 13,416. They were slow, not
 stuck, and they closed once the timeout was raised. Reporting 262 of 288 would
 have repeated the Step 7 bias at four times the size.
+
+## What the narrator seam costs (complete, 2026-09-14)
+
+Single-user latency, one worker, the first 20 `bank-dev` questions, at the
+budget the arm ships with and at the old 120 s default. `data/latency.json`.
+
+| budget | s / answer | fallbacks |
+|---|---:|---:|
+| 120 s | 66.82 | 3 |
+| 600 s | 67.95 | **0** |
+
+Raising the budget costs **1.13 s per answer and removes every fallback**. The
+timeout binds only on answers that were already slow, so the mean barely moves.
+All three that fell back at 120 s are D6 cross-catalogue questions — the largest
+answers in the bank. A budget never loses a random sample; it loses the biggest
+answers, which is the same size-correlated failure that cost Step 7 its eight
+gaps and the regression its twenty-six.
+
+**Against the model-free arm, measured the same way: 0.05 s per answer.** The
+narrator seam therefore costs roughly **1,340x in single-user wall time** for a
+fresh-set difference of **-0.0014**, which is inside the grader's noise.
+
+A withdrawal belongs here. `data/latency.json` previously recorded this ratio as
+"roughly 90x". That divided generic's *per-answer* 66.82 s by generic_composed's
+*total* for 20 questions — a unit mismatch that understated the cost about
+fifteen-fold. The comparator has been re-measured rather than re-derived (1.0 s
+for 20 questions at one worker) and corroborated by `EXP-2026-09-019`'s
+independent 1-worker reading of the same configuration, 0.07 s mean. The old
+string is kept in `comparison_withdrawn`. It never reached prose.
+
+## T6 — entity fidelity under rewording (complete, 2026-09-13)
+
+A different instrument from the judged bank: it asks whether an answer is about
+the entity that was asked for at all, which a correctness score can hide behind
+partial credit. `data/t6_rates.json`, n = 579 on the shipped tree.
+
+| | shipped | best of 7 reference arms | worst |
+|---|---:|---:|---:|
+| `wrong_entity` | **0.0950** | 0.0930 | 0.1416 |
+| `catalogue_dump` | **0.0915** | 0.0715 | 0.1760 |
+
+Passes the plan's bar of "not above the reference": `wrong_entity` is the lowest
+of the seven arm captures and `catalogue_dump` is below four of them. **Not a
+paired comparison** — the variant captures differ in n — so it is a bound, not a
+measured gain.

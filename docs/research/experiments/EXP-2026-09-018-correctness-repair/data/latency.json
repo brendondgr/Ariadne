@@ -26,5 +26,16 @@
     }
   },
   "finding": "Raising the synthesis budget from 120s to 600s costs 1.13s per answer and removes all three fallbacks. The timeout binds only on answers that were already slow, so the mean barely moves. All three that fell back at 120s are D6 cross-catalogue questions \u2014 the largest answers in the bank \u2014 which is the same size-correlated failure EXP-2026-08-021 recorded: a budget never loses a random sample, it loses the biggest answers.",
-  "comparison": "generic_composed answers the same questions in 0.75s, so the model costs roughly 90x in single-user wall time for a fresh-set difference of -0.0014 (0.8991 against 0.9005)."
+  "comparison_withdrawn": "generic_composed answers the same questions in 0.75s, so the model costs roughly 90x in single-user wall time for a fresh-set difference of -0.0014 (0.8991 against 0.9005).",
+  "comparison_withdrawn_note": "WITHDRAWN 2026-09-14. It read 'generic_composed answers the same questions in 0.75s, so the model costs roughly 90x'. That divided generic's PER-ANSWER 66.82s by generic_composed's TOTAL for 20 questions \u2014 a unit mismatch that understated the ratio by about fifteen-fold. Replaced by 'comparison', re-measured rather than re-derived.",
+  "model_free_comparator": {
+    "arm": "generic_composed",
+    "bank": "bank-dev.json first 20, identical to the generic sample",
+    "workers": 1,
+    "questions": 20,
+    "wall_s": 1.0,
+    "seconds_per_answer": 0.05,
+    "corroboration": "EXP-2026-09-019's independent 1-worker measurement of the same configuration on a tier-balanced 9-question slice gives 0.07s mean / 0.01s median \u2014 same order."
+  },
+  "comparison": "Single-user, one worker, the same 20 dev questions: generic 66.82s per answer against generic_composed 0.05s per answer. The narrator seam costs roughly 1,340x in wall time for a fresh-set difference of -0.0014 (0.8991 against 0.9005) \u2014 a difference inside the grader's noise."
 }
