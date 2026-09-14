@@ -124,11 +124,25 @@ def test_max_tokens_defaults_to_1024_when_nothing_set(monkeypatch):
     assert ConversationLLMConfig.from_env().max_tokens == 1024
 
 
-def test_with_llm_enabled_turns_on_when_drafter_is_llm():
-    cfg = ConversationConfig(llm=ConversationLLMConfig(enabled=False))
-    assert cfg.with_llm_enabled(True).llm.enabled is True
-    # Deterministic turns stay deterministic.
-    assert cfg.with_llm_enabled(False).llm.enabled is False
-    # Explicitly-enabled config is unchanged (and returns as-is).
+def test_with_llm_enabled_is_two_way():
+    """The caller decides, in both directions.
+
+    This used to assert the opposite for an already-enabled config -- that
+    `with_llm_enabled(False)` left it on, so an explicit
+    CONVERSATION_LLM_ENABLED could not be overridden per turn. But `enabled` is
+    resolved from the shared LLM group, so ARIADNE_LLM_ENABLED=true enabled the
+    layer implicitly and nothing could switch it back: a turn the workbench
+    labelled deterministic still made four model calls, 1.09s of pipeline inside
+    a 43.27s turn (EXP-2026-09-020 A-8). The assertion was pinning the defect.
+    """
+    off = ConversationConfig(llm=ConversationLLMConfig(enabled=False))
+    assert off.with_llm_enabled(True).llm.enabled is True
+    assert off.with_llm_enabled(False).llm.enabled is False
+
     on = ConversationConfig(llm=ConversationLLMConfig(enabled=True))
-    assert on.with_llm_enabled(False).llm.enabled is True
+    assert on.with_llm_enabled(True).llm.enabled is True
+    assert on.with_llm_enabled(False).llm.enabled is False
+
+    # A no-op call still returns the same object rather than a copy.
+    assert on.with_llm_enabled(True) is on
+    assert off.with_llm_enabled(False) is off

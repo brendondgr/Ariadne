@@ -177,14 +177,27 @@ class ConversationConfig:
         )
 
     def with_llm_enabled(self, enabled: bool) -> "ConversationConfig":
-        """Return a copy with the conversation LLM turned on when ``enabled``.
+        """Return a copy with the conversation LLM set to ``enabled``. Two-way.
 
-        The workbench's drafter toggle (``drafter == "llm"``) drives the whole
-        agentic flow: when a turn uses the LLM, the orchestration (reference
-        resolution), router (quick-vs-graph), and answer agents use it too —
-        reusing the inherited endpoint. An explicit ``CONVERSATION_LLM_ENABLED``
-        stays on regardless. Deterministic turns keep the reproducible path.
+        The conversation layer runs four model calls around the pipeline —
+        ``router`` (quick-vs-graph), ``orchestration`` (reference resolution),
+        ``validation`` (sufficiency) and ``answer`` (the reply). This decides
+        whether any of them run.
+
+        **It used to be one-way**, turning the layer on and never off, on the
+        reasoning that an explicit ``CONVERSATION_LLM_ENABLED`` should stay on
+        regardless. But ``enabled`` is resolved from the shared LLM group, so
+        ``ARIADNE_LLM_ENABLED=true`` switched the layer on implicitly and nothing
+        could switch it back. A turn the workbench labelled deterministic still
+        made four model calls: timed per SSE event, the graph answered at 1.09 s
+        and the turn finished at 43.27 s, with ``validation`` at 29.68 s and
+        ``answer`` at 40.39 s (`EXP-2026-09-020` A-8). The UI could not express
+        "no model here", only "no model unless the environment disagrees".
+
+        Symmetric now, so the caller decides. An operator who wants the layer on
+        for every turn sets the workbench control, not an environment variable
+        the control cannot override.
         """
-        if enabled and not self.llm.enabled:
-            return replace(self, llm=replace(self.llm, enabled=True))
-        return self
+        if bool(enabled) == bool(self.llm.enabled):
+            return self
+        return replace(self, llm=replace(self.llm, enabled=bool(enabled)))
