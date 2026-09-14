@@ -416,3 +416,53 @@ Ranked, bounded composition plus facet chasing, with every LLM seam off and
 planner — the two largest coverage wins measured today, +0.0548 and +0.1799 — are
 both implemented, both off, and both refused for stated reasons rather than
 forgotten.
+
+## Amendment A-7 — what the workbench ships, verified end to end (2026-09-14)
+
+The plan in `docs/plans/2026-09-14-frontend-prototype-configuration.md` was
+implemented. What ships, and what the gate refused:
+
+| Change | Status | Evidence |
+|---|---|---|
+| `ORCH_MAX_HOPS` 1 → 5 | **ships** | every recorded figure used 5; at 1 the loop is inert |
+| Ranked, bounded enumeration | **ships** | `T6` unchanged: 0.0950 / 0.0915 |
+| Facet chasing | **ships** | +0.0358 coverage, `T6` unchanged |
+| Narrator as a per-question toggle | **ships** | 284/284 claims byte-identical (`EXP-2026-09-019` Step 3) |
+| Engine merge | **refused** | `T6` 0.1088 / 0.1140, `A-5`/`A-6` |
+| LLM planner | **refused** | +0.1799 coverage, but needs a live endpoint at ~12 s/question |
+
+### The defect the frontend work actually found
+
+The composer defaulted to `drafter: "llm"`, with a source comment explaining that
+this is what "produces the natural-language final answer". It does — and
+`drafter: "llm"` sets the planner, the **specialist** and the synthesis seams
+together. So every analyst who wanted a readable answer was silently given query
+construction by a model: the baseline that scores **0.5000** where the template
+cascade scores **0.9467** on the same unseen questions (`EXP-2026-09-007`).
+
+Nothing in the evaluation record would have caught this. Every arm sets its seams
+explicitly, so no arm was ever the configuration the UI shipped. It was found by
+reading the component that builds the request.
+
+The two are now separate flags, wired through both `/api/query` and
+`/api/conversation-query` — the workbench uses the latter, so a flag added only to
+the former would have been a no-op toggle on screen.
+
+### Verified against `:9090` through the running stack
+
+| | `composer` | `narrative_source` | `synthesis_ms` | claims |
+|---|---|---|---:|---|
+| `narrate: false` | deterministic | deterministic | **12** | 3/3 supported |
+| `narrate: true` | deterministic | **llm** | **19,659** | 3/3 supported |
+
+Claim texts identical across both. Full stack preflight green — `attack` 4,369
+nodes, `capec` 6,374, super-graph compiled, full smoke query answered — and a
+question run through the browser returns `VERIFIED ANSWERS 3/3`.
+
+### What is still open
+
+`Q57` is unchanged by any of this: the workbench runs the real planner, so its
+end-to-end answer quality is the **0.4536–0.5156** coverage band, not the 0.9005
+the sealed set reports at an authored plan. Step 6 of the plan — a judged pass on
+a sealed bank at the shipped configuration — has **not** been run, and until it
+has, no figure in this repository describes what an analyst gets from the UI.
