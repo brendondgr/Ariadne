@@ -167,3 +167,65 @@ cheaper thing to ship first.
   0.8611 ceiling, and the planner remains the dominant term.
 - The 34 questions where **both** engines retrieve nothing are a planner
   diagnostic set, not an engine one.
+
+## Amendment A-2 — two planners are complementary; one planner is not better (2026-09-14)
+
+`A-1` found the two query engines complementary. The same question for the
+*planner*, which `A-1` established is the dominant term: `generic_planned_llm` is
+`generic_planned` with an LLM drafter and every other seam still off, run against
+`gemma-4-26B-it` on the local relay. All 284 questions.
+
+| | Gold coverage | Empty answers |
+|---|---:|---:|
+| deterministic planner | 0.4797 | 85 |
+| LLM planner | 0.4858 | 114 |
+| **both planners, evidence unioned** | **0.6596** | **46** |
+| oracle pick-best | 0.6596 | — |
+| authored plan (ceiling) | 0.8611 | 9 |
+
+**Union − deterministic = +0.1799** (SE 0.0208, n=284, separable by a factor of
+nine). It is by a wide margin the largest single improvement measured on this
+programme's planning stage.
+
+**The LLM planner is not better.** Alone it is worth **+0.0061**, which is noise.
+Every reading that treats "use a model to plan" as the finding here is wrong. The
+value is entirely in *complementarity* — and the evidence for that is the same
+signature `A-1` found: **union equals oracle pick-best to four decimals**. The two
+planners select different correct relations, neither dominates, and taking both
+loses nothing against choosing perfectly.
+
+### The complementarity is visible in the tiers
+
+| Tier | n | LLM − deterministic |
+|---|---:|---:|
+| adversarial | 36 | **−0.3056** |
+| easy | 35 | −0.1000 |
+| hard | 129 | **+0.0535** |
+| medium | 84 | **+0.1108** |
+
+The aggregate +0.0061 is a cancellation of two large opposite effects, which is
+exactly the shape `A-1` reported for the engines. A programme that had only read
+the aggregate would have discarded the LLM planner as worthless.
+
+### A caution recorded against myself
+
+The first read of this arm, at 73 of 284 answers, reported the LLM planner at
+**−0.1637 and separable** — the opposite conclusion. The bank is ordered by tier
+and `--limit` takes the first N by name, so that slice was entirely `D6`
+cross-catalogue questions, the tier the LLM planner loses worst. The interim
+figure was quoted before the run finished. **Partial results from this bank are
+not a random sample of it**, and nothing from a `--limit` slice should be read as
+an estimate of the whole.
+
+### What this does not establish
+
+- Retrieval, not judged correctness, and the merged configurations have never
+  been through the `T6` entity-fidelity instrument. Three unions now stack
+  (engines, facets, planners) and every one of them puts more records in front of
+  the composer. `EXP-2026-09-018` records `catalogue_dump` at 0.0915 on the
+  shipped tree; that is the number a merged configuration has to be held to.
+- The LLM planner costs about 12 s per question against the deterministic
+  planner's 0.095 s — a live model on the critical path, where every other union
+  measured today is free.
+- 0.6596 against a 0.8611 ceiling. The union closes 47% of the planner gap and
+  leaves the rest.

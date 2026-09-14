@@ -128,6 +128,44 @@ def main() -> int:
                  "classifier is needed."),
     }
 
+    # -- A-2: the two PLANNERS, and whether they are complementary too.
+    llm = load("generic_planned_llm")
+    if llm:
+        gp = arms["primitives_planner"]
+        pids = sorted(set(llm) & set(gp))
+        union, oracle = [], []
+        for i in pids:
+            gold = gp[i][3] or llm[i][3]
+            still = gp[i][4] & llm[i][4]
+            union.append((gold - len(still)) / gold if gold else 0.0)
+            oracle.append(max(gp[i][0], llm[i][0]))
+        diffs = [union[k] - gp[pids[k]][0] for k in range(len(pids))]
+        tiers2 = collections.defaultdict(list)
+        for i in pids:
+            tiers2[gp[i][2]].append(llm[i][0] - gp[i][0])
+        out["two_planners"] = {
+            "deterministic_planner": round(statistics.fmean([gp[i][0] for i in pids]), 4),
+            "llm_planner": round(statistics.fmean([llm[i][0] for i in pids]), 4),
+            "llm_minus_deterministic": round(
+                statistics.fmean([llm[i][0] - gp[i][0] for i in pids]), 4),
+            "union": round(statistics.fmean(union), 4),
+            "oracle_pick_best": round(statistics.fmean(oracle), 4),
+            "union_minus_deterministic": round(statistics.fmean(diffs), 4),
+            "standard_error": round(statistics.stdev(diffs) / len(diffs) ** 0.5, 4),
+            "n": len(pids),
+            "empty_deterministic": sum(1 for i in pids if gp[i][1] == 0),
+            "empty_llm": sum(1 for i in pids if llm[i][1] == 0),
+            "empty_both": sum(1 for i in pids if gp[i][1] == 0 and llm[i][1] == 0),
+            "llm_minus_deterministic_by_tier": {
+                t: {"n": len(v), "difference": round(statistics.fmean(v), 4)}
+                for t, v in sorted(tiers2.items())
+            },
+            "llm_endpoint": "localhost:4000 alias 'local' -> gemma-4-26B-it",
+            "note": ("The LLM planner ALONE is worth +0.0061, which is noise. The value is entirely "
+                     "in complementarity: union equals oracle pick-best to four decimals, so the two "
+                     "planners find different correct relations and neither dominates."),
+        }
+
     (HERE / "metrics.json").write_text(json.dumps(out, indent=2) + "\n")
     print(json.dumps(out["cells"], indent=2))
     print("engine @ real planner:", out["engine_effect_primitives_minus_templates"]["at_real_planner"]["difference"],

@@ -108,5 +108,38 @@
       "generic_planned": 0.095
     },
     "note": "merged == oracle_pick_best, so the two engines' evidence sets are complementary: merging loses nothing against perfect selection, which is why no router or tier classifier is needed."
+  },
+  "two_planners": {
+    "deterministic_planner": 0.4797,
+    "llm_planner": 0.4858,
+    "llm_minus_deterministic": 0.006,
+    "union": 0.6596,
+    "oracle_pick_best": 0.6596,
+    "union_minus_deterministic": 0.1799,
+    "standard_error": 0.0208,
+    "n": 284,
+    "empty_deterministic": 85,
+    "empty_llm": 114,
+    "empty_both": 46,
+    "llm_minus_deterministic_by_tier": {
+      "adversarial": {
+        "n": 36,
+        "difference": -0.3056
+      },
+      "easy": {
+        "n": 35,
+        "difference": -0.1
+      },
+      "hard": {
+        "n": 129,
+        "difference": 0.0535
+      },
+      "medium": {
+        "n": 84,
+        "difference": 0.1108
+      }
+    },
+    "llm_endpoint": "localhost:4000 alias 'local' -> gemma-4-26B-it",
+    "note": "The LLM planner ALONE is worth +0.0061, which is noise. The value is entirely in complementarity: union equals oracle pick-best to four decimals, so the two planners find different correct relations and neither dominates."
   }
 }
