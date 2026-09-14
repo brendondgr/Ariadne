@@ -1,0 +1,94 @@
+# Filled by scripts/new_experiment.py. Every field below is required unless
+# marked optional. Do not delete a field you do not know — record it as null or
+# "unknown" and explain in ISSUES.md. Inventing a value is worse than admitting
+# a gap.
+id: EXP-2026-09-020
+slug: plan-source-crossed
+title: "Plan source crossed with query engine: does the primitive path still win where production stands?"
+status: complete           # planned | running | complete | failed | superseded
+date_started: 2026-09-14
+date_completed: 2026-09-14 # null until status is complete/failed
+authors:
+- Claude Opus 5
+- brendondgr
+
+purpose: >
+  EXP-2026-09-018 measured hand-written templates against schema-derived
+  primitives and the primitives won by 0.3480 judged on a sealed set. That
+  comparison, like every headline this programme has published, replayed a
+  human-authored plan. app.py does not: api/services/query.py calls
+  iter_pipeline, so the planner runs. No arm on record was production's
+  configuration, because every deterministic-family arm drives
+  run_deterministic. This crosses the two variables -- query engine x plan
+  source -- so the engine question can be answered where the shipped workbench
+  actually stands. It bounds the scope of C-023's margin rather than refuting
+  it.
+
+hypothesis: >
+  Stated before the run: the primitive engine's advantage would narrow under a
+  real planner but remain positive and separable, since the engine comparison
+  holds the plan source constant on both sides. The narrowing was predicted; the
+  loss of separability was not, and neither was the sign flip on the easy and
+  adversarial tiers.
+
+# --- Reproducibility block (all fields mandatory) ---
+code:
+  commit: 2001d2a05491f06225ed69c80dfad9cc3c1891cc          # 40-char sha, or "unknown" for a back-filled experiment
+  branch: main
+  entrypoint: "uv run python -m utils.evaluation.experiment_untruncated --arm {deterministic,generic_composed,deterministic_planned,generic_planned} --bank docs/evaluation/composition/bank/bank-dev.json --root docs/evaluation/experiments/plan-source-2026-09-14 --workers 8, with ORCH_MAX_HOPS=5"
+  dirty: true             # uncommitted changes at run time? if true, explain in ISSUES.md
+config:
+  path: null               # repo-relative path, or null if the run takes no config file
+  hash: null               # sha256:... of that file
+data:
+  name: composition bank - development half
+  version: bank-dev.json, the 2026-09-05 split
+  split: dev (all four cells, same 284 questions, one tree)
+  n_examples: 284
+  dvc_path: null           # this repository does not use DVC; leave null
+  hash: sha256:a4ca6702029cae7784574b0307b9f76d4718a039f3254f2c0ff708a2fa1a4119
+seeds: []                  # [] means seeds were not recorded — say so in ISSUES.md
+n_runs: 1                  # SYSTEM runs over the question set — grading passes are not runs
+environment:
+  python: "3.13"
+  lockfile: env/requirements.lock
+  container: null
+compute:
+  hardware: "CPU only — no GPU and no model endpoint; every cell is model-free"
+  wall_clock_hours: 0.02
+  estimated_cost_usd: 0.0
+
+# --- Results block ---
+metrics:
+  primary: engine_effect_at_real_planner
+  values:
+    templates_authored_coverage: {mean: 0.6428, std: 0.0, n: 284}
+    primitives_authored_coverage: {mean: 0.8611, std: 0.0, n: 284}
+    templates_planner_coverage: {mean: 0.4536, std: 0.0, n: 284}
+    primitives_planner_coverage: {mean: 0.4797, std: 0.0, n: 284}
+    engine_effect_at_authored_plan: {mean: 0.2184, std: 0.3919, n: 284}
+    engine_effect_at_real_planner: {mean: 0.0261, std: 0.4295, n: 284}
+    plan_effect_for_templates: {mean: -0.1892, std: 0.4056, n: 284}
+    plan_effect_for_primitives: {mean: -0.3814, std: 0.4413, n: 284}
+    interaction: {mean: -0.1923, std: 0.0, n: 284}
+  withdrawn: {}            # values later retracted by amendment: {metric: {mean, std, n, withdrawn_on, reason, replaced_by}}
+baselines_compared:
+- deterministic
+- generic_composed
+- deterministic_planned
+- generic_planned
+statistical_test: >
+  Paired per question on deterministic gold coverage; separability by
+  |difference| > 2*SE. Both arms of every comparison are model-free and
+  byte-reproducible, so a difference cannot be grading noise or run variance.
+  Retrieval, not judged correctness -- see RESULTS.md "What this does not say".
+
+# --- Linkage ---
+supports_claims:
+- C-023        # every ID here must exist in ../../CLAIMS.md
+figures: []                # every name here must have a file in figures/ and vice versa
+supersedes: null           # set in BOTH manifests or in neither; the validator checks symmetry
+superseded_by: null
+related:
+- EXP-2026-09-018
+- EXP-2026-09-019

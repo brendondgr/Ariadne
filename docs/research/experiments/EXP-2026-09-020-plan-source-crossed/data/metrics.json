@@ -1,0 +1,95 @@
+{
+  "note": "Built by build_metrics.py from the run artifacts. Do not hand-edit.",
+  "metric": "deterministic gold coverage (deterministic_scores.coverage) \u2014 retrieval, not judged",
+  "bank": "bank-dev.json, 284 questions",
+  "n_paired": 284,
+  "cells": {
+    "templates_authored": {
+      "arm": "deterministic",
+      "mean": 0.6428,
+      "zero_record": 22
+    },
+    "primitives_authored": {
+      "arm": "generic_composed",
+      "mean": 0.8611,
+      "zero_record": 9
+    },
+    "templates_planner": {
+      "arm": "deterministic_planned",
+      "mean": 0.4536,
+      "zero_record": 55
+    },
+    "primitives_planner": {
+      "arm": "generic_planned",
+      "mean": 0.4797,
+      "zero_record": 85
+    }
+  },
+  "engine_effect_primitives_minus_templates": {
+    "at_authored_plan": {
+      "treatment": "generic_composed",
+      "control": "deterministic",
+      "difference": 0.2184,
+      "sd": 0.3919,
+      "standard_error": 0.0233,
+      "n": 284,
+      "separable": true,
+      "control_retrieved_treatment_empty": 7,
+      "treatment_retrieved_control_empty": 20
+    },
+    "at_real_planner": {
+      "treatment": "generic_planned",
+      "control": "deterministic_planned",
+      "difference": 0.0261,
+      "sd": 0.4295,
+      "standard_error": 0.0255,
+      "n": 284,
+      "separable": false,
+      "control_retrieved_treatment_empty": 51,
+      "treatment_retrieved_control_empty": 21
+    }
+  },
+  "plan_effect_planner_minus_authored": {
+    "for_templates": {
+      "treatment": "deterministic_planned",
+      "control": "deterministic",
+      "difference": -0.1892,
+      "sd": 0.4056,
+      "standard_error": 0.0241,
+      "n": 284,
+      "separable": true,
+      "control_retrieved_treatment_empty": 45,
+      "treatment_retrieved_control_empty": 12
+    },
+    "for_primitives": {
+      "treatment": "generic_planned",
+      "control": "generic_composed",
+      "difference": -0.3814,
+      "sd": 0.4413,
+      "standard_error": 0.0262,
+      "n": 284,
+      "separable": true,
+      "control_retrieved_treatment_empty": 77,
+      "treatment_retrieved_control_empty": 1
+    }
+  },
+  "interaction": -0.1923,
+  "engine_effect_at_real_planner_by_tier": {
+    "adversarial": {
+      "n": 36,
+      "difference": -0.1389
+    },
+    "easy": {
+      "n": 35,
+      "difference": -0.1586
+    },
+    "hard": {
+      "n": 129,
+      "difference": 0.0659
+    },
+    "medium": {
+      "n": 84,
+      "difference": 0.1127
+    }
+  }
+}

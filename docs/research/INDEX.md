@@ -56,6 +56,7 @@ that a dead end is walked into once rather than twice.
 | `EXP-2026-09-017` | 2026-09-11 | Where is the headroom beyond the current judged correctness? | complete | D4_generic_headroom 0.1116 (n=55) | — | [correctness-improvement-diagnostic](experiments/EXP-2026-09-017-correctness-improvement-diagnostic/) |
 | `EXP-2026-09-018` | 2026-09-14 | Correctness repair: six located defects, measured against a concurrent control | complete | fresh_generic_composed_correctness 0.9005 ± 0.1713 (n=282) | C-017, C-023 | [correctness-repair](experiments/EXP-2026-09-018-correctness-repair/) |
 | `EXP-2026-09-019` | 2026-09-13 | Does the Generic tier need a big model, and does it need a planner? | complete | paired_gold_coverage_difference -0.3814 ± 0.4413 (n=284) | — | [small-model-generic](experiments/EXP-2026-09-019-small-model-generic/) |
+| `EXP-2026-09-020` | 2026-09-14 | Plan source crossed with query engine: does the primitive path still win where production stands? | complete | engine_effect_at_real_planner 0.0261 ± 0.4295 (n=284) | C-023 | [plan-source-crossed](experiments/EXP-2026-09-020-plan-source-crossed/) |
 | `EXP-2026-07-007` | 2026-07-26 | Arm G — generic primitives only, every hand-written template disabled | superseded → EXP-2026-08-001 | correctness 0.6388 (n=1) | C-003 | [arm-g-templates-disabled](experiments/EXP-2026-07-007-arm-g-templates-disabled/) |
 | `EXP-2026-07-010` | 2026-07-20 | First independent cross-model grading pass (the pre-fix committed baseline) | superseded → EXP-2026-07-001 | correctness 0.8946 (n=1) | C-009 | [independent-eval-baseline](experiments/EXP-2026-07-010-independent-eval-baseline/) |
 | `EXP-2026-07-011` | 2026-07-26 | Portability audit — what survives a dataset that is not MITRE | superseded → EXP-2026-08-011 | — | C-010 | [portability-audit](experiments/EXP-2026-07-011-portability-audit/) |
@@ -63,4 +64,4 @@ that a dead end is walked into once rather than twice.
 | `EXP-2026-08-005` | 2026-08-18 | Is the blind holdout's directional loss a property of these templates, or of a missing schema-driven check? | superseded → EXP-2026-08-006 | blind_gold_in_evidence 0.8952 (n=1) | C-001, C-003, C-010, C-014 | [binding-direction-portability](experiments/EXP-2026-08-005-binding-direction-portability/) |
 | `EXP-2026-09-002` | 2026-09-03 | On a bank covering every shape the sources support, do hand-written templates still hold? | superseded → EXP-2026-09-005 | judged_gap_generic_minus_deterministic 0.1642 ± 0.0000 (n=284) | C-023, C-012 | [expansion-bank-judged](experiments/EXP-2026-09-002-expansion-bank-judged/) |
 
-**52 experiment(s) on record.**
+**53 experiment(s) on record.**
