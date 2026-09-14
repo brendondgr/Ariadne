@@ -1,0 +1,24 @@
+{
+ "case_id": "D4-mitigates-uses-M1047-6d1e75::analyst",
+ "verdict": "CORRECT",
+ "correctness": 1.0,
+ "faithfulness": 0.95,
+ "groundedness": 0.95,
+ "completeness": 1.0,
+ "gold_expected": 147,
+ "gold_present": 147,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer directly addresses the query by enumerating all 147 expected threat groups, including G0001, G1004, and G1055, as groups associated with M1047 through mitigated techniques such as T1021.001, T1566.001, and T1036. The stated group set matches the gold expected set exactly, so completeness is full. It does not assert an unsupported cross-source CAPEC mapping, and the only minor deduction is for extra retrieval-summary details such as the 2146 related-items count.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 16384,
+  "escalated": true,
+  "position": 1
+ }
+}

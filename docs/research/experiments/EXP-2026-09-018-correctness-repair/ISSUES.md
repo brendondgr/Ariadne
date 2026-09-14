@@ -877,3 +877,48 @@ when it actually runs is the subject of
 **Grading gaps.** A handful of cases timed out and are recorded rather than
 hidden: `generic_composed` scored on 280 of 282, `generic` on 278. A sweep is
 re-attempting them; the scorer averages whichever positions a case actually has.
+
+## I-21 — The loader's staleness check fires on a timestamp, not on the data (2026-09-14)
+
+**Found by smoke-testing a stage before it ran unattended, which is the only
+reason it did not fail at 01:00 with nobody watching.**
+
+`scripts/variant_harness.py capture` refused to start:
+
+> PREFLIGHT FAILED for attack: Stale runtime manifest for neo4j: canonical hash
+> mismatch. Reload it before measuring.
+
+That message means "the graph in the database is not the graph the canonical
+files describe", which if true would invalidate every figure produced tonight.
+It was not true.
+
+**What the check compares.** `utils/graph_loader/verify.py` compares the
+`canonical_manifest_hash` recorded at load time against a fresh hash of
+`canonical/manifest.json`. That file embeds a `build_timestamp`, so rebuilding
+the canonical artifacts from unchanged sources produces a different file hash
+and trips the check even though not one node or edge has moved.
+
+**Evidence the data is unchanged**, in increasing order of strength:
+
+* node, edge and per-label counts are identical on both stores — attack
+  4,369 / 27,669 and capec 6,374 / 8,582, with **zero** differing labels;
+* counts cannot detect a changed property value, so: **all 284** development
+  answers produced tonight by the `e09c2571` reference arm reproduce their
+  2026-09-11 Step 0 digests **byte for byte**. Those digests hash the answer
+  including retrieved properties and neighbour sets, so this is a content check.
+  A graph whose contents had shifted could not produce 284 of 284.
+
+**Repair.** The recorded hash in each `runtime/<backend>/load-manifest.json` was
+re-stamped to the current canonical manifest hash, and each load manifest now
+carries a `revalidations` entry naming the old hash, the new one, and the
+evidence above. Reloading the stores instead would have been the wrong move
+mid-run: it would have changed the data underneath a paired comparison that is
+only meaningful if every arm sees the same graph.
+
+**The underlying defect is not fixed and should be.** A staleness check that
+hashes a file containing a timestamp reports staleness on every rebuild,
+regardless of the data — so it cries wolf, and a check that cries wolf gets
+bypassed. It should hash the `hashes` block of the canonical manifest (the data
+digests) rather than the manifest file. Filed here rather than changed tonight,
+because altering the loader's safety check unattended is a worse idea than
+recording it.
