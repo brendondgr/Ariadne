@@ -1,0 +1,24 @@
+{
+ "case_id": "D4-kill_chain_phase-uses-TA0002-5b5051::indirect",
+ "verdict": "PARTIAL",
+ "correctness": 0.2,
+ "faithfulness": 0.8,
+ "groundedness": 0.9,
+ "completeness": 0.01,
+ "gold_expected": 147,
+ "gold_present": 1,
+ "abstained": true,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer abstains after the attack specialist failed and mentions TA0002, but it does not state any of the expected group identifiers such as G0001, G0004, or G1055. It is largely faithful to the zero-record evidence, but incomplete because the gold set includes TA0002 plus 146 group IDs. The abstention does not display the executed Cypher query in the answer, so it is partial rather than a fully rewarded honest abstention.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 16384,
+  "escalated": true,
+  "position": 1
+ }
+}

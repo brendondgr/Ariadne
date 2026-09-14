@@ -1,0 +1,24 @@
+{
+ "case_id": "D4-ChildOf-HAS_CONSEQUENCE-CAPEC-628-fc295f::analyst",
+ "verdict": "CORRECT",
+ "correctness": 0.9,
+ "faithfulness": 0.85,
+ "groundedness": 0.9,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer identifies CAPEC-628 and its related parent pattern CAPEC-627, and reports the consequence as \u201cModify Data Integrity,\u201d which matches the evidence\u2019s Modify Data impact and Integrity scope for capec:attack-pattern:627:consequence:1. The main weakness is that the expected phrase \u201cIntegrity Modify Data\u201d is reversed and the consequence is attributed to CAPEC-628 rather than explicitly to CAPEC-627.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 8192,
+  "escalated": false,
+  "position": 1
+ }
+}

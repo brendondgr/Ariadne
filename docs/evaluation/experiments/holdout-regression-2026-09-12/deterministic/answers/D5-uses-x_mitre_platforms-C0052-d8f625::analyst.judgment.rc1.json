@@ -1,0 +1,26 @@
+{
+ "case_id": "D5-uses-x_mitre_platforms-C0052-d8f625::analyst",
+ "verdict": "PARTIAL",
+ "correctness": 0.4,
+ "faithfulness": 0.7,
+ "groundedness": 0.6,
+ "completeness": 0.5,
+ "gold_expected": 2,
+ "gold_present": 1,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "T1190 has no USES relationships in this catalogue"
+ ],
+ "rationale": "The answer identifies T1190, one of the expected techniques for campaign C0052, but omits T1090.003 and does not explicitly state C0052 or Network Devices applicability. The absence claim that T1190 has no USES relationships is not directly supported by the single returned record. Therefore the answer is partial rather than fully correct.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 8192,
+  "escalated": false,
+  "position": 1
+ }
+}

@@ -1,0 +1,24 @@
+{
+ "case_id": "D2-HAS_EXAMPLE-CAPEC-654-990b0e::indirect",
+ "verdict": "INCORRECT",
+ "correctness": 0.1,
+ "faithfulness": 1.0,
+ "groundedness": 0.9,
+ "completeness": 0.0,
+ "gold_expected": 2,
+ "gold_present": 0,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer correctly identifies CAPEC-654 and states supported attributes, but the question asks for the example instances illustrating it. It omits both gold examples: the Microsoft Outlook encrypted-email credential prompt and the random background-process credential prompt. Because it only describes the anchor and never states any HAS_EXAMPLE content, it is not correct despite being faithful.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 8192,
+  "escalated": false,
+  "position": 1
+ }
+}

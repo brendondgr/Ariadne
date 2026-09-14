@@ -1,0 +1,27 @@
+{
+ "case_id": "D6-CanFollow-MAPS_TO[ATTACK]-CAPEC-98-af2c64::analyst",
+ "verdict": "PARTIAL",
+ "correctness": 0.7,
+ "faithfulness": 0.7,
+ "groundedness": 0.8,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "CAPEC-98 has 2 CanFollow predecessors: CAPEC-701, CAPEC-186",
+  "The capec source doesn't establish this \u2014 the executed query ran cleanly and returned CAPEC-98 with no linked records"
+ ],
+ "rationale": "The answer does state the required anchor CAPEC-98 and the expected cross-source identifier T1195.002, and it ties T1195.002 to CAPEC-186. However, it calls CAPEC-701 and CAPEC-186 'CanFollow predecessors' rather than clearly identifying them as patterns that can follow CAPEC-98, and it includes a contradictory abstention saying the query returned no linked records even though the CAPEC-98 record has CAPEC-701 and CAPEC-186 as CAN_FOLLOW related records. It also adds CAPEC-98's own mappings T1566 and T1598, which are not the requested following-pattern mappings.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 8192,
+  "escalated": false,
+  "position": 1
+ }
+}

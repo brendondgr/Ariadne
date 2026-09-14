@@ -1,0 +1,24 @@
+{
+ "case_id": "D4-ChildOf-HAS_EXAMPLE-CAPEC-22-4b913a::indirect",
+ "verdict": "PARTIAL",
+ "correctness": 0.8,
+ "faithfulness": 0.85,
+ "groundedness": 0.65,
+ "completeness": 1.0,
+ "gold_expected": 6,
+ "gold_present": 6,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer identifies CAPEC-22 and its child patterns CAPEC-202, CAPEC-207, CAPEC-77, and CAPEC-39, and it states all six expected example texts, including the Archangel/CVE-2006-0944, PHP, Java-binary, Servlet, ECB-cookie, and price-watching examples. It is partial rather than fully correct because the narrative does not explicitly map each example to the corresponding child pattern, although the claim entity_ids imply that mapping. Groundedness is reduced because the claims cite only CAPEC-22 rather than the individual child and example records.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 16384,
+  "escalated": true,
+  "position": 1
+ }
+}

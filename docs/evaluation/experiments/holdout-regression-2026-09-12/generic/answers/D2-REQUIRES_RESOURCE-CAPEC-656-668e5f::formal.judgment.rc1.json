@@ -1,0 +1,26 @@
+{
+ "case_id": "D2-REQUIRES_RESOURCE-CAPEC-656-668e5f::formal",
+ "verdict": "CORRECT",
+ "correctness": 1.0,
+ "faithfulness": 0.9,
+ "groundedness": 1.0,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "The resource is described as 'named only as text', although the evidence also provides the identifier capec:attack-pattern:656:resource:1"
+ ],
+ "rationale": "The answer directly states CAPEC-656 and the expected required resource text, 'Legitimate-looking telephone number(s) to initiate calls with victims', satisfying the single gold expectation. The core mapping is grounded in the CAPEC-656 record and its REQUIRES_RESOURCE relation to capec:attack-pattern:656:resource:1. The only minor unsupported nuance is the phrase 'named only as text', since the evidence also includes a resource identifier.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 8192,
+  "escalated": false,
+  "position": 1
+ }
+}

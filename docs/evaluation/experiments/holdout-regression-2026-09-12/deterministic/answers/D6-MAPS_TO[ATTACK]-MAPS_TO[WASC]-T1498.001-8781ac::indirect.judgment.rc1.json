@@ -1,0 +1,29 @@
+{
+ "case_id": "D6-MAPS_TO[ATTACK]-MAPS_TO[WASC]-T1498.001-8781ac::indirect",
+ "verdict": "PARTIAL",
+ "correctness": 0.5,
+ "faithfulness": 0.8,
+ "groundedness": 0.85,
+ "completeness": 0.0,
+ "gold_expected": 1,
+ "gold_present": 0,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "CAPEC-125 (Flooding) has 1 ATT&CK mapping: T1498.001",
+  "CAPEC-482 (TCP Flood) has 1 ATT&CK mapping: T1498.001",
+  "CAPEC-528 (XML Flood) has 1 ATT&CK mapping: T1498.001",
+  "CAPEC-666 (BlueSmacking) has 1 ATT&CK mapping: T1498.001"
+ ],
+ "rationale": "The answer correctly identifies CAPEC-125, CAPEC-482, CAPEC-528, and CAPEC-666 as corresponding to T1498.001, but it never states the required WASC:10 mapping, so it only partially answers the two-part question. Its CAPEC property and ATT&CK mapping claims are mostly grounded in the cited CAPEC records, though the early 'has 1 ATT&CK mapping' statements are contradicted by later evidence showing additional T1499, T1499.001, and T1499.002 mappings. No unsupported WASC cross-source mapping is asserted, so the main failure is omission rather than fabrication.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 16384,
+  "escalated": true,
+  "position": 1
+ }
+}

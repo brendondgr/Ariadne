@@ -1,0 +1,26 @@
+{
+ "case_id": "D5-uses-x_mitre_platforms-G0004-abe39f::formal",
+ "verdict": "PARTIAL",
+ "correctness": 0.8,
+ "faithfulness": 0.65,
+ "groundedness": 0.8,
+ "completeness": 1.0,
+ "gold_expected": 6,
+ "gold_present": 6,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "G0004 has no USES relationships in this catalogue."
+ ],
+ "rationale": "The answer states all six expected related software identifiers, S0002, S0039, S0227, S0280, S0439, and S0691, so completeness is full. It also lists the additional related software items returned by the evidence, which is supported. The main weakness is the unsupported claim that G0004 has no USES relationships, which conflicts with the executed USES query returning 11 related software rows.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 8192,
+  "escalated": false,
+  "position": 1
+ }
+}

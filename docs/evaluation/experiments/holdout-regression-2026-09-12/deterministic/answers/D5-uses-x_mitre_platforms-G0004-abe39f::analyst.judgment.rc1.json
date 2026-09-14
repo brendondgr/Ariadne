@@ -1,0 +1,26 @@
+{
+ "case_id": "D5-uses-x_mitre_platforms-G0004-abe39f::analyst",
+ "verdict": "PARTIAL",
+ "correctness": 0.7,
+ "faithfulness": 0.6,
+ "groundedness": 0.7,
+ "completeness": 1.0,
+ "gold_expected": 6,
+ "gold_present": 6,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "G0004 has no USES relationships in this catalogue"
+ ],
+ "rationale": "The answer includes all six expected related software identifiers, S0002, S0039, S0227, S0280, S0439, and S0691, so completeness is full. However, it does not explicitly state which of the listed items apply to Windows, and it asserts that G0004 has no USES relationships despite the executed USES query returning 11 rows. This makes the answer partially correct and somewhat unfaithful.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 8192,
+  "escalated": false,
+  "position": 1
+ }
+}

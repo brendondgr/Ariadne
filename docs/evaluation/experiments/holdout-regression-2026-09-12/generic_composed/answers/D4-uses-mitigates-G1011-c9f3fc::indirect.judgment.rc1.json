@@ -1,0 +1,24 @@
+{
+ "case_id": "D4-uses-mitigates-G1011-c9f3fc::indirect",
+ "verdict": "CORRECT",
+ "correctness": 1.0,
+ "faithfulness": 0.9,
+ "groundedness": 0.9,
+ "completeness": 1.0,
+ "gold_expected": 13,
+ "gold_present": 13,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer names G1011 and all 13 expected mitigations (M1017, M1018, M1021, M1031, M1038, M1040, M1047, M1048, M1049, M1050, M1051, M1054, M1056) and lists the used techniques with via mappings such as M1047 via T1566.003 and M1038 via T1204.002. It is grounded in the G1011 record and the executed query, though the visible evidence is truncated so the via mappings are only indirectly shown. No cross-source mapping is asserted.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 8192,
+  "escalated": false,
+  "position": 1
+ }
+}

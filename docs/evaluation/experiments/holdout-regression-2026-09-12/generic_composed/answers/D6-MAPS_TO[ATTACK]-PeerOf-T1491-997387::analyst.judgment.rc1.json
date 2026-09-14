@@ -1,0 +1,26 @@
+{
+ "case_id": "D6-MAPS_TO[ATTACK]-PeerOf-T1491-997387::analyst",
+ "verdict": "CORRECT",
+ "correctness": 1.0,
+ "faithfulness": 0.85,
+ "groundedness": 0.9,
+ "completeness": 1.0,
+ "gold_expected": 2,
+ "gold_present": 2,
+ "abstained": false,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "The abstention claims the capec query returned CAPEC-148 with no linked peer records, but the evidence shows a PEER_OF related record CAPEC-665."
+ ],
+ "rationale": "The answer identifies CAPEC-148 as the CAPEC pattern mapped to T1491 and CAPEC-665 as the PEER_OF peer, satisfying the requested two-hop query. It includes the required identifiers T1491 and CAPEC-665, and the mapping/peer claims are supported by the cited CAPEC records. The main issue is a contradictory abstention statement saying no peer records were linked, despite CAPEC-665 appearing in the evidence.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 16384,
+  "escalated": true,
+  "position": 1
+ }
+}

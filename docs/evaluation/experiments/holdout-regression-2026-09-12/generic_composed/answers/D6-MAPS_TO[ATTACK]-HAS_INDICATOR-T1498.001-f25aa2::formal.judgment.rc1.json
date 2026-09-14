@@ -1,0 +1,26 @@
+{
+ "case_id": "D6-MAPS_TO[ATTACK]-HAS_INDICATOR-T1498.001-f25aa2::formal",
+ "verdict": "CORRECT",
+ "correctness": 0.9,
+ "faithfulness": 0.9,
+ "groundedness": 0.95,
+ "completeness": 1.0,
+ "gold_expected": 2,
+ "gold_present": 2,
+ "abstained": false,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "The capec source doesn't establish this \u2014 the executed query ran cleanly and returned CAPEC-666, CAPEC-528 with no linked records for indicators"
+ ],
+ "rationale": "The answer states the required CAPEC patterns CAPEC-125, CAPEC-482, CAPEC-528, and CAPEC-666 as mapped to T1498.001, and it includes both gold indicator texts for CAPEC-528 and CAPEC-666. These claims are grounded in the cited CAPEC records and the MAPS_TO/HAS_INDICATOR evidence. The main weakness is a contradictory abstention saying no linked indicator records, even though the evidence shows indicators for CAPEC-528 and CAPEC-666.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 16384,
+  "escalated": true,
+  "position": 1
+ }
+}

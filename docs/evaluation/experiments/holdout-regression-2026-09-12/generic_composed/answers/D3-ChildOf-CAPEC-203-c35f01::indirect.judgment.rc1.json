@@ -1,0 +1,26 @@
+{
+ "case_id": "D3-ChildOf-CAPEC-203-c35f01::indirect",
+ "verdict": "PARTIAL",
+ "correctness": 0.7,
+ "faithfulness": 0.8,
+ "groundedness": 0.9,
+ "completeness": 1.0,
+ "gold_expected": 3,
+ "gold_present": 3,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "CAPEC-203 has 4 ChildOf parents, which asserts a parent direction not explicitly specified in the evidence"
+ ],
+ "rationale": "The answer includes all expected related identifiers CAPEC-270, CAPEC-478, and CAPEC-51, so completeness is full. However, it frames them as \"ChildOf parents\" and also includes CAPEC-176, which is not in the expected more-specific set, making the response only partially responsive. The claims are grounded in the CAPEC-203 record and its related entries, with no cross-source fabrication.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 8192,
+  "escalated": false,
+  "position": 1
+ }
+}

@@ -1,0 +1,26 @@
+{
+ "case_id": "D5-uses-x_mitre_platforms-C0029-395557::formal",
+ "verdict": "PARTIAL",
+ "correctness": 0.6,
+ "faithfulness": 0.8,
+ "groundedness": 0.8,
+ "completeness": 0.75,
+ "gold_expected": 12,
+ "gold_present": 9,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "T1105 has no USES relationships in this catalogue"
+ ],
+ "rationale": "The answer lists 13 ATT&CK techniques and includes nine of the expected C0029-related techniques: T1005, T1059, T1070, T1082, T1095, T1105, T1190, T1205, and T1685. It omits T1056.001, T1071.004, and T1505.003 while adding T1554, T1572, T1055, and T1594, and it does not explicitly state that the listed techniques apply to Network Devices. The unsupported absence claim about T1105 reduces faithfulness, but the enumerated techniques are grounded in the returned records.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 8192,
+  "escalated": false,
+  "position": 1
+ }
+}

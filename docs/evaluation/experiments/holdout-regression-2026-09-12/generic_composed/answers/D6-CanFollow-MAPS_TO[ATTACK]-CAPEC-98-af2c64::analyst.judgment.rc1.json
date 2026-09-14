@@ -1,0 +1,27 @@
+{
+ "case_id": "D6-CanFollow-MAPS_TO[ATTACK]-CAPEC-98-af2c64::analyst",
+ "verdict": "PARTIAL",
+ "correctness": 0.7,
+ "faithfulness": 0.75,
+ "groundedness": 0.85,
+ "completeness": 1.0,
+ "gold_expected": 2,
+ "gold_present": 2,
+ "abstained": false,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "CAPEC-98 has 2 CanFollow predecessors (the evidence lists CAN_FOLLOW related records but does not establish predecessor direction)",
+  "The abstention claims CAPEC-98 was returned with no linked records, although the evidence lists CAPEC-701 and CAPEC-186 as CAN_FOLLOW related records"
+ ],
+ "rationale": "The answer states the required anchor CAPEC-98 and the required ATT&CK mapping T1195.002, and it also names the two CAN_FOLLOW neighbors CAPEC-701 and CAPEC-186. It is partial because it calls them predecessors rather than clearly answering which patterns can follow CAPEC-98, and it does not explicitly state that CAPEC-701 has no ATT&CK mapping. The abstention\u2019s \u201cno linked records\u201d claim also conflicts with the evidence.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 8192,
+  "escalated": false,
+  "position": 1
+ }
+}

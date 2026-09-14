@@ -1,0 +1,30 @@
+{
+ "case_id": "D6-MAPS_TO[ATTACK]-PeerOf-T1195.001-02f0b2::formal",
+ "verdict": "PARTIAL",
+ "correctness": 0.4,
+ "faithfulness": 0.7,
+ "groundedness": 0.8,
+ "completeness": 0.5,
+ "gold_expected": 2,
+ "gold_present": 1,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": true,
+ "hallucinations": [
+  "T1127",
+  "T1195.002",
+  "CAPEC-670 maps to T1127",
+  "CAPEC-691 maps to T1195.002",
+  "CAPEC-442 maps to T1195.002"
+ ],
+ "rationale": "The answer states T1195.001 and several CAPEC patterns mapped to it, but it does not state the expected peer CAPEC-630, so the second hop is missing. It also asserts additional cross-source mappings to T1127 and T1195.002 for CAPEC-670, CAPEC-691, and CAPEC-442 that are not present in the shown evidence. This makes it partial rather than correct, with moderate faithfulness and groundedness but only half of the expected gold identifiers present.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 16384,
+  "escalated": true,
+  "position": 1
+ }
+}

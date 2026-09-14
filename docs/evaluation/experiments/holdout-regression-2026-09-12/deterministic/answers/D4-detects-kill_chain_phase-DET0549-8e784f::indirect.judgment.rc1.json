@@ -1,0 +1,24 @@
+{
+ "case_id": "D4-detects-kill_chain_phase-DET0549-8e784f::indirect",
+ "verdict": "PARTIAL",
+ "correctness": 0.5,
+ "faithfulness": 0.9,
+ "groundedness": 0.6,
+ "completeness": 0.0,
+ "gold_expected": 1,
+ "gold_present": 0,
+ "abstained": true,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer abstains by saying no records were returned for DET0549, but it does not state the expected tactic TA0006 or any techniques. Its note shows the attack specialist failed due to a binding mismatch, yet it does not present the executed query as an explicit abstention proof. This makes it a grounded partial abstention rather than a complete answer.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 8192,
+  "escalated": false,
+  "position": 1
+ }
+}

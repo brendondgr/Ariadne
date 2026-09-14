@@ -1,0 +1,26 @@
+{
+ "case_id": "D3-log_source-DC0087-34aed5::indirect",
+ "verdict": "CORRECT",
+ "correctness": 0.9,
+ "faithfulness": 0.8,
+ "groundedness": 0.85,
+ "completeness": 1.0,
+ "gold_expected": 4,
+ "gold_present": 4,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "DC0087 has no MONITORS relationships in this catalogue"
+ ],
+ "rationale": "The answer states all four expected analytics for DC0087: AN0103, AN0104, AN0770, and AN1470, so it fully answers the question. The main weakness is the unsupported claim that DC0087 has no MONITORS relationships, which is contradicted by the executed query returning four Analytic-to-DataComponent MONITORS rows. Because the required identifiers are present and tied to the DC0087 record, the answer is correct but slightly unfaithful.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 8192,
+  "escalated": false,
+  "position": 1
+ }
+}

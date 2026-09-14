@@ -1,0 +1,27 @@
+{
+ "case_id": "D6-ChildOf-MAPS_TO[ATTACK]-CAPEC-534-b72d8d::indirect",
+ "verdict": "PARTIAL",
+ "correctness": 0.5,
+ "faithfulness": 0.7,
+ "groundedness": 0.75,
+ "completeness": 1.0,
+ "gold_expected": 2,
+ "gold_present": 2,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "CAPEC-534 has 5 ChildOf parents: CAPEC-531, CAPEC-677, CAPEC-530, CAPEC-535, CAPEC-440",
+  "T1195.003 (Compromise Hardware Supply Chain) has 1 technique: T1195"
+ ],
+ "rationale": "The answer states the required anchor CAPEC-534 and the required related ATT&CK identifier T1195.003, so the gold identifiers are present. However, it only partially answers the question because it labels the related CAPEC patterns as \"ChildOf parents\" rather than clearly identifying more specific cases, and it gives ATT&CK mappings only for CAPEC-677, CAPEC-440, and CAPEC-531. The abstention is query-backed, but it is somewhat inconsistent with the asserted related CAPEC records.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 16384,
+  "escalated": true,
+  "position": 1
+ }
+}

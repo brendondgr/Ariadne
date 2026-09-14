@@ -1,0 +1,26 @@
+{
+ "case_id": "D5-uses-x_mitre_platforms-S0038-ab3c32::analyst",
+ "verdict": "PARTIAL",
+ "correctness": 0.6,
+ "faithfulness": 0.7,
+ "groundedness": 0.7,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "S0038 has no USES relationships in this catalogue"
+ ],
+ "rationale": "The answer includes the expected gold technique T1078 among the related ATT&CK items for S0038, so the required identifier is present. However, it does not explicitly state that T1078 applies to Identity Provider and instead lists 21 related techniques. It also asserts that S0038 has no USES relationships, which is contradicted by the executed USES query returning 21 rows.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 8192,
+  "escalated": false,
+  "position": 1
+ }
+}

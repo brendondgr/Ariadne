@@ -1,0 +1,26 @@
+{
+ "case_id": "D6-HAS_MEMBER-MAPS_TO[ATTACK]-CAPEC-512-752dc3::formal",
+ "verdict": "CORRECT",
+ "correctness": 0.95,
+ "faithfulness": 0.85,
+ "groundedness": 0.9,
+ "completeness": 1.0,
+ "gold_expected": 8,
+ "gold_present": 8,
+ "abstained": false,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "The capec source doesn't establish this \u2014 the executed query ran cleanly and returned CAPEC-512 with no linked records for: For CAPEC-512: the CAPEC attack patterns it contains."
+ ],
+ "rationale": "The answer states the anchor CAPEC-512 and all eight expected ATT&CK techniques: T1217, T1491, T1498.001, T1499, T1499.003, T1557, T1592, and T1595. It is well grounded in the CAPEC-512 membership evidence and the CAPEC-to-ATT&CK mapping claims, and the abstention includes the executed query. The main weakness is the contradictory abstention saying CAPEC-512 had no linked attack patterns even though the evidence shows 17 member patterns.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 16384,
+  "escalated": true,
+  "position": 1
+ }
+}

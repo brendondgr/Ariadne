@@ -1,0 +1,24 @@
+{
+ "case_id": "D5-HAS_MEMBER-Status-CAPEC-513-99bf58::analyst",
+ "verdict": "PARTIAL",
+ "correctness": 0.7,
+ "faithfulness": 1.0,
+ "groundedness": 1.0,
+ "completeness": 1.0,
+ "gold_expected": 24,
+ "gold_present": 24,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer correctly identifies CAPEC-513 and includes all 24 expected Draft-status related patterns, including CAPEC-112, CAPEC-123, CAPEC-272, and CAPEC-607. However, it lists all 52 related attack patterns rather than explicitly filtering to the Draft-status subset, so it is overinclusive. It is therefore partial: complete on the expected identifiers but imprecise in answering the status-filtered question.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 8192,
+  "escalated": false,
+  "position": 1
+ }
+}

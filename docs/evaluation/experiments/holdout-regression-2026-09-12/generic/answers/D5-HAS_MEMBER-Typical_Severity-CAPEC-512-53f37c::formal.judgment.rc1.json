@@ -1,0 +1,24 @@
+{
+ "case_id": "D5-HAS_MEMBER-Typical_Severity-CAPEC-512-53f37c::formal",
+ "verdict": "PARTIAL",
+ "correctness": 0.6,
+ "faithfulness": 1.0,
+ "groundedness": 1.0,
+ "completeness": 1.0,
+ "gold_expected": 4,
+ "gold_present": 4,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer correctly identifies CAPEC-512 and lists all 17 related attack patterns, including the four expected High-severity patterns CAPEC-161, CAPEC-22, CAPEC-240, and CAPEC-624. However, it does not explicitly filter or state that only those four have Typical_Severity High, instead presenting all 17 contained patterns. This makes it grounded and complete on the gold identifiers, but only partially responsive to the severity constraint.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 8192,
+  "escalated": false,
+  "position": 1
+ }
+}

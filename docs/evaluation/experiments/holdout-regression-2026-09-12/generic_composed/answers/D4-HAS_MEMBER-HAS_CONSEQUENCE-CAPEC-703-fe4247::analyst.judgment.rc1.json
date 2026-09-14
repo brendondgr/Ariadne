@@ -1,0 +1,26 @@
+{
+ "case_id": "D4-HAS_MEMBER-HAS_CONSEQUENCE-CAPEC-703-fe4247::analyst",
+ "verdict": "PARTIAL",
+ "correctness": 0.65,
+ "faithfulness": 0.65,
+ "groundedness": 0.7,
+ "completeness": 0.6,
+ "gold_expected": 30,
+ "gold_present": 18,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "the 57 consequence names/IDs (e.g., 'Gain Privileges Accountability Authentication Authorization Non-Repudiation', capec:attack-pattern:309:consequence:1) are not shown in the provided evidence"
+ ],
+ "rationale": "The answer correctly identifies CAPEC-703 and lists its 46 member attack patterns, and it enumerates consequence texts that match many expected items such as 'Confidentiality Read Data' and 'Integrity Modify Data' in reversed form. It omits or shortens 12 expected consequence strings, including 'Authorization Execute Unauthorized Commands Run Arbitrary Code' and the long 'Availability Unreliable Execution Resource Consumption' descriptions, so completeness is about 18/30. The specific consequence names and IDs are not fully visible in the shown evidence, which reduces faithfulness and groundedness.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 16384,
+  "escalated": true,
+  "position": 1
+ }
+}

@@ -1,0 +1,26 @@
+{
+ "case_id": "D6-CanPrecede-MAPS_TO[ATTACK]-CAPEC-561-d3764c::formal",
+ "verdict": "PARTIAL",
+ "correctness": 0.8,
+ "faithfulness": 0.8,
+ "groundedness": 0.9,
+ "completeness": 1.0,
+ "gold_expected": 6,
+ "gold_present": 6,
+ "abstained": false,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "The capec source doesn't establish this \u2014 the executed query ran cleanly and returned CAPEC-561 with no linked records for: For CAPEC-561: the CAPEC attack patterns that can precede it."
+ ],
+ "rationale": "The answer states all six expected ATT&CK techniques: T1056.001, T1078.001, T1110.001, T1110.002, T1110.003, and T1135, tied to CAPEC-568, CAPEC-70, CAPEC-49, CAPEC-55, CAPEC-565, and CAPEC-643. It is partial rather than fully correct because it also includes non-asked mappings such as CAPEC-561 to T1021.002 and CAPEC-270 to T1547.001/T1547.014, and its abstention contradicts the q1 result showing 13 linked CAPEC records. Grounding is strong because the mapping claims cite specific CAPEC records and the MAPS_TO query.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 16384,
+  "escalated": true,
+  "position": 1
+ }
+}

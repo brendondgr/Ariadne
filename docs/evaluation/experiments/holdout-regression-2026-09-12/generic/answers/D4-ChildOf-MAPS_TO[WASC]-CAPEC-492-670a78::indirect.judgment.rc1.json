@@ -1,0 +1,24 @@
+{
+ "case_id": "D4-ChildOf-MAPS_TO[WASC]-CAPEC-492-670a78::indirect",
+ "verdict": "PARTIAL",
+ "correctness": 0.8,
+ "faithfulness": 0.85,
+ "groundedness": 0.9,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer identifies CAPEC-492, CAPEC-130, and WASC:10, which covers the expected WASC:10 identifier and the likely parent pattern CAPEC-130. It is partial because it does not explicitly state that CAPEC-130 is the parent pattern or that CAPEC-130 corresponds to WASC:10; it only lists them as relations of CAPEC-492. The claims are grounded in the CAPEC-492 record and its related entries.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 8192,
+  "escalated": false,
+  "position": 1
+ }
+}

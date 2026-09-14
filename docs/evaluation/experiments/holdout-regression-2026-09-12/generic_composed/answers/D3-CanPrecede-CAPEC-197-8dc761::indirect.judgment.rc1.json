@@ -1,0 +1,26 @@
+{
+ "case_id": "D3-CanPrecede-CAPEC-197-8dc761::indirect",
+ "verdict": "PARTIAL",
+ "correctness": 0.5,
+ "faithfulness": 0.8,
+ "groundedness": 0.9,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "CAPEC-197 has 2 CanPrecede successors: CAPEC-228, CAPEC-279"
+ ],
+ "rationale": "The answer states CAPEC-228, which is the expected related pattern, but it also includes CAPEC-279 and labels both as CanPrecede successors of CAPEC-197. The evidence supports CAPEC-197 and its two CAN_PRECEDE-related neighbors, but it does not clearly support the successor direction needed to answer which patterns come before CAPEC-197. This makes the response partially correct rather than fully correct.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 8192,
+  "escalated": false,
+  "position": 1
+ }
+}

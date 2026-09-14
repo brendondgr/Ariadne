@@ -1,0 +1,26 @@
+{
+ "case_id": "D4-uses-uses-G0045-12642a::indirect",
+ "verdict": "PARTIAL",
+ "correctness": 0.2,
+ "faithfulness": 0.75,
+ "groundedness": 0.7,
+ "completeness": 0.07,
+ "gold_expected": 153,
+ "gold_present": 10,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "T1047 has no USES relationships in this catalogue"
+ ],
+ "rationale": "The answer lists 18 technique IDs and includes 10 gold techniques such as T1005, T1016, T1047, T1046, T1083, T1105, T1106, T1140, T1018, and T1049. It omits G0045 and never names the malware or tool entities, so it only partially addresses the requested software-to-technique mapping. The absence claim about T1047 is weakly supported by the empty related field but not by an explicit USES check.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 16384,
+  "escalated": true,
+  "position": 1
+ }
+}

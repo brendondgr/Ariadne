@@ -1,0 +1,26 @@
+{
+ "case_id": "D6-CanAlsoBe-MAPS_TO[ATTACK]-CAPEC-23-91cfc9::analyst",
+ "verdict": "PARTIAL",
+ "correctness": 0.8,
+ "faithfulness": 0.75,
+ "groundedness": 0.85,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": false,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "The capec source doesn't establish this \u2014 the executed query ran cleanly and returned CAPEC-23 with no linked records for: For CAPEC-23: the CAPEC attack patterns it can also be carried out as."
+ ],
+ "rationale": "The answer correctly states the requested chain: CAPEC-23 can also be CAPEC-165, and CAPEC-165 maps to T1036.003. It also includes the required anchor CAPEC-23 and the expected ATT&CK identifier T1036.003. However, the added abstention claims the CAPEC query returned no linked records, which contradicts the evidence showing CAPEC-23 related to CAPEC-165.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 8192,
+  "escalated": false,
+  "position": 1
+ }
+}

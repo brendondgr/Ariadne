@@ -1,0 +1,26 @@
+{
+ "case_id": "D0-Campaign-kill_chain_phase-C0062-0b2ed7::formal",
+ "verdict": "CORRECT",
+ "correctness": 0.95,
+ "faithfulness": 0.85,
+ "groundedness": 0.9,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "TA0005 is labeled Stealth, but the standard ATT&CK name for TA0005 is Defense Evasion and the evidence does not show that name."
+ ],
+ "rationale": "The answer directly addresses C0062 by listing ten tactic IDs, including TA0001, TA0003, TA0004, TA0005, TA0006, TA0007, TA0009, TA0010, TA0042, and TA0043. It satisfies the required C0062 identifier and the tactic question, though it adds technique enumerations. The main unsupported assertion is the name 'Stealth' for TA0005, so faithfulness is slightly reduced.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 16384,
+  "escalated": true,
+  "position": 1
+ }
+}

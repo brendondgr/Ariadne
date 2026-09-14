@@ -1,0 +1,27 @@
+{
+ "case_id": "D5-uses-x_mitre_platforms-G0016-a2e652::indirect",
+ "verdict": "PARTIAL",
+ "correctness": 0.4,
+ "faithfulness": 0.55,
+ "groundedness": 0.6,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "PowerDuke (S0139) is explicitly tied to an office suite",
+  "PowerDuke (S0139) has primarily been delivered through Microsoft Word or Excel attachments containing malicious macros"
+ ],
+ "rationale": "The answer correctly anchors on G0016 and includes the gold-related identifier S0677 in its software enumeration, so the expected identifier is present. However, it answers the office-suite question by selecting PowerDuke (S0139) rather than S0677, and the Word/Excel delivery claim for S0139 is not visible in the provided evidence. Therefore it is partial: it states the gold entity but does not clearly identify it as the office-suite target.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 8192,
+  "escalated": false,
+  "position": 1
+ }
+}

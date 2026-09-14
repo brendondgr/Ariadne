@@ -1,0 +1,26 @@
+{
+ "case_id": "D4-uses-uses-G0023-084ef4::formal",
+ "verdict": "CORRECT",
+ "correctness": 0.9,
+ "faithfulness": 0.85,
+ "groundedness": 0.85,
+ "completeness": 1.0,
+ "gold_expected": 3,
+ "gold_present": 3,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "T1584.004 is used via S0064"
+ ],
+ "rationale": "The answer states the expected technique identifiers T1057, T1071.001, and T1083 along with anchor G0023, so it fully covers the gold set. It also includes S0064 and T1584.004, which appear in the G0023 related records, but the evidence only marks T1071.001, T1057, and T1083 with via S0064, not T1584.004. Therefore the answer is correct but slightly over-asserts the via relationship for T1584.004.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 8192,
+  "escalated": false,
+  "position": 1
+ }
+}

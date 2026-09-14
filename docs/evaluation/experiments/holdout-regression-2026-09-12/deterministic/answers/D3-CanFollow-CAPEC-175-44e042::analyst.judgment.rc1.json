@@ -1,0 +1,24 @@
+{
+ "case_id": "D3-CanFollow-CAPEC-175-44e042::analyst",
+ "verdict": "PARTIAL",
+ "correctness": 0.3,
+ "faithfulness": 1.0,
+ "groundedness": 1.0,
+ "completeness": 0.5,
+ "gold_expected": 2,
+ "gold_present": 1,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The question asks for CAPEC patterns that can follow CAPEC-175, and the expected related identifier is CAPEC-234. The answer names and describes CAPEC-175, satisfying the anchor requirement, but never states CAPEC-234 or any CanFollow neighbor. Its claims are supported by the CAPEC-175 record, but the incoming CAN_FOLLOW facet in the evidence is not turned into an answer.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 8192,
+  "escalated": false,
+  "position": 1
+ }
+}

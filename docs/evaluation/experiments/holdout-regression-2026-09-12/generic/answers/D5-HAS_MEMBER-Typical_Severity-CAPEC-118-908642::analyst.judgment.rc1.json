@@ -1,0 +1,24 @@
+{
+ "case_id": "D5-HAS_MEMBER-Typical_Severity-CAPEC-118-908642::analyst",
+ "verdict": "PARTIAL",
+ "correctness": 0.6,
+ "faithfulness": 1.0,
+ "groundedness": 1.0,
+ "completeness": 1.0,
+ "gold_expected": 3,
+ "gold_present": 3,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer states the expected Low Typical_Severity patterns CAPEC-188, CAPEC-192, and CAPEC-410, but it does so by listing all seven CAPEC-118 attack patterns rather than explicitly filtering to Low severity. It also includes non-gold patterns CAPEC-116, CAPEC-117, CAPEC-169, and CAPEC-224, which makes the answer only partially responsive to the severity-specific question. All listed identifiers are supported by the CAPEC-118 related records.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 8192,
+  "escalated": false,
+  "position": 1
+ }
+}

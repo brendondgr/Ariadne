@@ -1,0 +1,26 @@
+{
+ "case_id": "D6-HAS_MEMBER-MAPS_TO[ATTACK]-CAPEC-512-752dc3::formal",
+ "verdict": "CORRECT",
+ "correctness": 1.0,
+ "faithfulness": 0.9,
+ "groundedness": 0.95,
+ "completeness": 1.0,
+ "gold_expected": 8,
+ "gold_present": 8,
+ "abstained": false,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "The capec query returned CAPEC-512 with no linked attack patterns"
+ ],
+ "rationale": "The answer correctly identifies CAPEC-512 and all eight expected ATT&CK identifiers: T1217, T1491, T1498.001, T1499, T1499.003, T1557, T1592, and T1595. It ties those mappings to cited CAPEC records such as CAPEC-125, CAPEC-130, CAPEC-148, CAPEC-169, and CAPEC-94. The main unsupported statement is the abstention claiming CAPEC-512 had no linked records, despite the query returning 17 related patterns.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": true,
+  "position": 1
+ }
+}

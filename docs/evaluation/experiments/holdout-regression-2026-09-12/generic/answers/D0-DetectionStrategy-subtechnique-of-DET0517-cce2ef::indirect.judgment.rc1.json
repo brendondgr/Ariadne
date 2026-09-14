@@ -1,0 +1,24 @@
+{
+ "case_id": "D0-DetectionStrategy-subtechnique-of-DET0517-cce2ef::indirect",
+ "verdict": "PARTIAL",
+ "correctness": 0.6,
+ "faithfulness": 0.85,
+ "groundedness": 0.85,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer includes the required anchor DET0517 and the only evidenced related identifier, T1574.014. However, it frames T1574.014 as a detected technique rather than directly answering which technique DET0517 is a sub-technique of, and it says DET0517 has no subtechniques, which is the inverse relation. This makes it partially correct: grounded in the record, but not a clean answer to the asked sub-technique-of question.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 8192,
+  "escalated": false,
+  "position": 1
+ }
+}

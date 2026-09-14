@@ -1,0 +1,26 @@
+{
+ "case_id": "D3-detects-T1036.003-430d87::analyst",
+ "verdict": "PARTIAL",
+ "correctness": 0.5,
+ "faithfulness": 0.6,
+ "groundedness": 0.8,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "T1036.003 has no DETECTS relationships in this catalogue"
+ ],
+ "rationale": "The answer states the expected detection strategy DET0005 and the anchor T1036.003, so the gold identifier is present. However, it also claims T1036.003 has no DETECTS relationships, which is inconsistent with the DETECTS query returning DET0005 and related analytics. It therefore partially answers the question by listing DET0005 as related rather than explicitly as a detecting strategy.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 8192,
+  "escalated": false,
+  "position": 1
+ }
+}

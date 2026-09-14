@@ -1,0 +1,26 @@
+{
+ "case_id": "D6-MAPS_TO[ATTACK]-HAS_MEMBER-T1036.003-5e04a3::indirect",
+ "verdict": "CORRECT",
+ "correctness": 1.0,
+ "faithfulness": 0.8,
+ "groundedness": 0.9,
+ "completeness": 1.0,
+ "gold_expected": 3,
+ "gold_present": 3,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "The capec source doesn't establish this \u2014 the executed query ran cleanly and returned CAPEC-165 with no linked records for the CAPEC categories, despite the q2 result showing CAPEC-262 and CAPEC-513 as related categories."
+ ],
+ "rationale": "The answer correctly identifies CAPEC-165 as the CAPEC attack pattern corresponding to T1036.003 and states that CAPEC-165 sits under CAPEC-262 and CAPEC-513. This fully answers the requested two-hop question and matches the evidence. The main issue is the unsupported abstention claiming no linked category records, which contradicts the q2 related records for CAPEC-262 and CAPEC-513.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 16384,
+  "escalated": true,
+  "position": 1
+ }
+}

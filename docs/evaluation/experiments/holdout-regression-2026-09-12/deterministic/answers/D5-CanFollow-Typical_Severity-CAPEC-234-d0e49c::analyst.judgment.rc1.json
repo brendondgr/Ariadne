@@ -1,0 +1,24 @@
+{
+ "case_id": "D5-CanFollow-Typical_Severity-CAPEC-234-d0e49c::analyst",
+ "verdict": "INCORRECT",
+ "correctness": 0.1,
+ "faithfulness": 1.0,
+ "groundedness": 1.0,
+ "completeness": 0.0,
+ "gold_expected": 2,
+ "gold_present": 0,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer only retrieves and describes CAPEC-234, noting its Typical_Severity is Medium, but it does not state the expected Very High predecessors CAPEC-100 and CAPEC-175. Its statements are faithful and grounded in the single CAPEC-234 record, but it does not answer the asked CanFollow/Very High question. No abstention or fabricated cross-source mapping is present.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 8192,
+  "escalated": false,
+  "position": 1
+ }
+}

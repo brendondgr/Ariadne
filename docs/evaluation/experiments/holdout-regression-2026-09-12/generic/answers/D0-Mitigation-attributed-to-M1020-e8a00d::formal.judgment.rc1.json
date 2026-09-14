@@ -1,0 +1,26 @@
+{
+ "case_id": "D0-Mitigation-attributed-to-M1020-e8a00d::formal",
+ "verdict": "CORRECT",
+ "correctness": 0.9,
+ "faithfulness": 0.8,
+ "groundedness": 0.85,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "M1020 has no ATTRIBUTED_TO relationships in this catalogue"
+ ],
+ "rationale": "The answer addresses the question by stating that M1020 has no ATTRIBUTED_TO relationships, which matches the empty expected group set, and it explicitly names M1020. It also lists related groups such as G0016, but phrases them as 'has' rather than 'attributed to,' so the core answer remains consistent. The absence claim is only weakly supported because the shown query and record do not explicitly test ATTRIBUTED_TO, so faithfulness is slightly reduced.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 16384,
+  "escalated": true,
+  "position": 1
+ }
+}

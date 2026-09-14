@@ -1,0 +1,26 @@
+{
+ "case_id": "D3-uses-T1202-cbba64::analyst",
+ "verdict": "PARTIAL",
+ "correctness": 0.85,
+ "faithfulness": 0.7,
+ "groundedness": 0.8,
+ "completeness": 1.0,
+ "gold_expected": 2,
+ "gold_present": 2,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "S0193 has no USES relationships in this catalogue"
+ ],
+ "rationale": "The answer correctly states the expected software identifiers S0193 (Forfiles) and S0379 (Revenge RAT) as related to T1202, so completeness is full. However, it also asserts that S0193 has no USES relationships, which is contradicted by the query result showing S0193 connected to T1202. This unsupported absence claim reduces faithfulness, but the core requested answer is present.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 8192,
+  "escalated": false,
+  "position": 1
+ }
+}

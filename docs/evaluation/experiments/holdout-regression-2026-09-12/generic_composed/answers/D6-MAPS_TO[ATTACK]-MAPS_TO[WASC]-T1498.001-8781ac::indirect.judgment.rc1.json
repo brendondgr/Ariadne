@@ -1,0 +1,29 @@
+{
+ "case_id": "D6-MAPS_TO[ATTACK]-MAPS_TO[WASC]-T1498.001-8781ac::indirect",
+ "verdict": "PARTIAL",
+ "correctness": 0.8,
+ "faithfulness": 0.8,
+ "groundedness": 0.9,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "CAPEC-125 has 1 ATT&CK mapping, but the later evidence also shows T1499",
+  "CAPEC-482 has 1 ATT&CK mapping, but the later evidence also shows T1499.001 and T1499.002",
+  "CAPEC-528 has 1 ATT&CK mapping, but the later evidence also shows T1499.002",
+  "CAPEC-666 has 1 ATT&CK mapping, but the later evidence also shows T1499.001"
+ ],
+ "rationale": "The answer identifies CAPEC-125, CAPEC-482, CAPEC-528, and CAPEC-666 as corresponding to T1498.001, and it states the expected WASC entry WASC:10 for CAPEC-125. It is partial because it does not explicitly state that the other CAPEC patterns have no WASC entries, and it includes early unsupported claims that each has only one ATT&CK mapping despite later evidence showing additional ATT&CK mappings. The key WASC:10 mapping is grounded in the CAPEC-125 related records.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 16384,
+  "escalated": true,
+  "position": 1
+ }
+}

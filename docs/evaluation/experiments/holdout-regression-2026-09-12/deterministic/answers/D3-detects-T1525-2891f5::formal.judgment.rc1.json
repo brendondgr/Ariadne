@@ -1,0 +1,26 @@
+{
+ "case_id": "D3-detects-T1525-2891f5::formal",
+ "verdict": "PARTIAL",
+ "correctness": 0.6,
+ "faithfulness": 0.6,
+ "groundedness": 0.7,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "T1525 has no DETECTS relationships in this catalogue"
+ ],
+ "rationale": "The answer includes the expected detection strategy DET0334 for T1525, so the core gold identifier is present. However, it also claims that T1525 has no DETECTS relationships, which is contradicted by the query result linking DET0334 to T1525. It additionally lists AN0946 and AN0947 as related items, which are supported but not the requested detection strategies.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 8192,
+  "escalated": false,
+  "position": 1
+ }
+}

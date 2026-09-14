@@ -1,0 +1,26 @@
+{
+ "case_id": "D6-MAPS_TO[ATTACK]-HAS_ALTERNATE_TERM-T1498.001-031369::indirect",
+ "verdict": "CORRECT",
+ "correctness": 0.9,
+ "faithfulness": 0.85,
+ "groundedness": 0.95,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "The capec source doesn't establish alternate names for each pattern / returned CAPEC-528 with no linked records, despite CAPEC-528 having an AlternateTerm."
+ ],
+ "rationale": "The answer identifies CAPEC-125, CAPEC-482, CAPEC-528, and CAPEC-666 as corresponding to T1498.001 and states the expected alternate name for CAPEC-528, XML Denial of Service (XML DoS). It also includes the executed query for the alternate-name subquestion, making the partial abstention acceptable. The main weakness is the abstention wording, which says CAPEC-528 had no linked records even though the evidence includes its AlternateTerm.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 8192,
+  "escalated": false,
+  "position": 1
+ }
+}

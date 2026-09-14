@@ -1,0 +1,26 @@
+{
+ "case_id": "D6-MAPS_TO[ATTACK]-HAS_MEMBER-T1036.004-b0eec0::analyst",
+ "verdict": "PARTIAL",
+ "correctness": 0.8,
+ "faithfulness": 0.75,
+ "groundedness": 0.9,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "The capec source doesn't establish this \u2014 the executed query ran cleanly and returned CAPEC-504 with no linked records for CAPEC views"
+ ],
+ "rationale": "The answer correctly identifies CAPEC-504 as the CAPEC attack pattern mapped to T1036.004 and states that CAPEC-504 is contained in CAPEC-703, which satisfies the expected gold identifier. However, it also includes an unsupported abstention claiming that the CAPEC source returned no linked view records, which conflicts with the evidence showing CAPEC-703 as a related View. This self-contradiction makes the answer partial rather than fully correct.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 8192,
+  "escalated": false,
+  "position": 1
+ }
+}

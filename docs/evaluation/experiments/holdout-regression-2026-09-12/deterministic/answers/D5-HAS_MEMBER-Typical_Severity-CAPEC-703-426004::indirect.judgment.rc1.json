@@ -1,0 +1,24 @@
+{
+ "case_id": "D5-HAS_MEMBER-Typical_Severity-CAPEC-703-426004::indirect",
+ "verdict": "PARTIAL",
+ "correctness": 0.5,
+ "faithfulness": 1.0,
+ "groundedness": 0.9,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer retrieves CAPEC-703 and lists its 46 IN_VIEW attack patterns, including the expected CAPEC-169. However, it does not explicitly state that CAPEC-169 is the pattern with Typical_Severity Very Low, so it only partially answers the severity-filtered question. The stated identifiers are supported by the CAPEC-703 members and related records.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 8192,
+  "escalated": false,
+  "position": 1
+ }
+}

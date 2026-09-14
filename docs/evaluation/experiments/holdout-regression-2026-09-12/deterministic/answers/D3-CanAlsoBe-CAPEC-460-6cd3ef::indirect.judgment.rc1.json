@@ -1,0 +1,24 @@
+{
+ "case_id": "D3-CanAlsoBe-CAPEC-460-6cd3ef::indirect",
+ "verdict": "PARTIAL",
+ "correctness": 0.5,
+ "faithfulness": 1.0,
+ "groundedness": 1.0,
+ "completeness": 0.5,
+ "gold_expected": 2,
+ "gold_present": 1,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer correctly identifies and describes CAPEC-460, but it does not state the expected related attack pattern CAPEC-174, which is the key answer to the question. The evidence only shows a CAN_ALSO_BE in-degree count of 1 without exposing the neighbor ID, so the answer is faithful but incomplete. It is partial because it states the anchor CAPEC-460 but omits CAPEC-174.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 8192,
+  "escalated": false,
+  "position": 1
+ }
+}

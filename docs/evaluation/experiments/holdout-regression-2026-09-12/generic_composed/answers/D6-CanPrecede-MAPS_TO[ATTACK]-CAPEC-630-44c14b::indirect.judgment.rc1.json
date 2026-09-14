@@ -1,0 +1,26 @@
+{
+ "case_id": "D6-CanPrecede-MAPS_TO[ATTACK]-CAPEC-630-44c14b::indirect",
+ "verdict": "PARTIAL",
+ "correctness": 0.8,
+ "faithfulness": 0.75,
+ "groundedness": 0.85,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "The capec source returned CAPEC-630 with no linked records for follow-on attack patterns, contradicting the stated CAPEC-98, CAPEC-543, and CAPEC-89 successors."
+ ],
+ "rationale": "The answer correctly identifies CAPEC-630's CanPrecede successors CAPEC-98, CAPEC-543, and CAPEC-89, and it states the required mapping CAPEC-543 to T1036.005 as well as CAPEC-98 to T1566 and T1598. It is partial rather than fully correct because it does not explicitly state that CAPEC-89 has no ATT&CK mappings and includes an unsupported abstention claiming CAPEC-630 had no linked records.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 8192,
+  "escalated": false,
+  "position": 1
+ }
+}

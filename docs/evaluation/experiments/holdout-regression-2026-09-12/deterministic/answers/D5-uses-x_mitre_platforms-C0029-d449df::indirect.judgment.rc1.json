@@ -1,0 +1,26 @@
+{
+ "case_id": "D5-uses-x_mitre_platforms-C0029-d449df::indirect",
+ "verdict": "PARTIAL",
+ "correctness": 0.4,
+ "faithfulness": 0.6,
+ "groundedness": 0.7,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "C0029 has no USES relationships in this catalogue"
+ ],
+ "rationale": "The expected gold identifier S0357 is present in the answer's enumeration of C0029-related software, so completeness is high. However, the answer does not explicitly identify S0357 as the Linux-capable tool and instead lists all 11 related items. It also asserts that C0029 has no USES relationships, which is contradicted by the executed USES query returning 11 rows.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 8192,
+  "escalated": false,
+  "position": 1
+ }
+}

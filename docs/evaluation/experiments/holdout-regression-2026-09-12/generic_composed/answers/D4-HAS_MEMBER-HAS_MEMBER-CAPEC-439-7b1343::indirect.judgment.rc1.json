@@ -1,0 +1,26 @@
+{
+ "case_id": "D4-HAS_MEMBER-HAS_MEMBER-CAPEC-439-7b1343::indirect",
+ "verdict": "PARTIAL",
+ "correctness": 0.7,
+ "faithfulness": 0.7,
+ "groundedness": 0.9,
+ "completeness": 1.0,
+ "gold_expected": 3,
+ "gold_present": 3,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "CAPEC-439 has no MEMBER_OF relationships in this catalogue"
+ ],
+ "rationale": "The answer correctly identifies CAPEC-439's categories as CAPEC-262, CAPEC-437, CAPEC-515, and CAPEC-686, and it states all three expected views: CAPEC-1000, CAPEC-3000, and CAPEC-683. However, it does not explicitly map each category to the view that contains it, which is the second part of the question. It also asserts that CAPEC-439 has no MEMBER_OF relationships, which is contradicted by the retrieved category neighbors.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 8192,
+  "escalated": false,
+  "position": 1
+ }
+}

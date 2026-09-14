@@ -1,0 +1,24 @@
+{
+ "case_id": "D5-CanFollow-Typical_Severity-CAPEC-234-bde547::indirect",
+ "verdict": "PARTIAL",
+ "correctness": 0.6,
+ "faithfulness": 1.0,
+ "groundedness": 1.0,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer includes the expected CAPEC-242 and correctly cites CAPEC-234, but it also lists CAPEC-100 and CAPEC-175 without applying the High severity filter. In the evidence, CAPEC-100 and CAPEC-175 have Typical_Severity Very High, while CAPEC-242 has High, so the filtered answer should be only CAPEC-242. All stated facts are grounded in the CAPEC record, making the response partial rather than incorrect.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 8192,
+  "escalated": false,
+  "position": 1
+ }
+}

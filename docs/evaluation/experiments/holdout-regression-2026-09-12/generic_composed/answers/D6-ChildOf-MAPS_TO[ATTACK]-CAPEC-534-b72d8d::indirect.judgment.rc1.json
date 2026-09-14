@@ -1,0 +1,27 @@
+{
+ "case_id": "D6-ChildOf-MAPS_TO[ATTACK]-CAPEC-534-b72d8d::indirect",
+ "verdict": "PARTIAL",
+ "correctness": 0.6,
+ "faithfulness": 0.8,
+ "groundedness": 0.9,
+ "completeness": 1.0,
+ "gold_expected": 2,
+ "gold_present": 2,
+ "abstained": false,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "CAPEC-534 has 5 ChildOf parents",
+  "The capec source doesn't establish this \u2014 the executed query ran cleanly and returned CAPEC-534 with no linked records"
+ ],
+ "rationale": "The answer states the required anchor CAPEC-534 and the expected ATT&CK technique T1195.003, and it ties T1195.003 to CAPEC-677 and CAPEC-531. However, it does not clearly identify which CAPEC patterns are the more specific cases of CAPEC-534, instead calling CAPEC-531, CAPEC-677, CAPEC-530, CAPEC-535, and CAPEC-440 'ChildOf parents'. It also adds T1200 via CAPEC-440 and includes a contradictory abstention claiming no linked records despite the evidence showing related CAPEC records.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 8192,
+  "escalated": false,
+  "position": 1
+ }
+}

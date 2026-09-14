@@ -1,0 +1,27 @@
+{
+ "case_id": "D6-MAPS_TO[ATTACK]-CanPrecede-T1491-cb32c3::formal",
+ "verdict": "PARTIAL",
+ "correctness": 0.7,
+ "faithfulness": 0.7,
+ "groundedness": 0.85,
+ "completeness": 1.0,
+ "gold_expected": 6,
+ "gold_present": 6,
+ "abstained": false,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "The capec source doesn't establish this \u2014 the executed query ran cleanly and returned CAPEC-148 with no linked records for: For each of those: the CAPEC attack patterns that can precede each of those.",
+  "CAPEC-148 has 12 CanPrecede successors (direction not established by the shown CAN_PRECEDE records)"
+ ],
+ "rationale": "The answer correctly links T1491 to CAPEC-148 and states all six expected CAPEC identifiers: CAPEC-105, CAPEC-273, CAPEC-33, CAPEC-34, CAPEC-668, and CAPEC-701. However, it presents them as successors of CAPEC-148 rather than clearly as patterns that can precede CAPEC-148, and it includes six additional CAPEC IDs. Its abstention is also weakly supported because the shown CAPEC query returned 12 CAN_PRECEDE-related records rather than none.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 16384,
+  "escalated": true,
+  "position": 1
+ }
+}

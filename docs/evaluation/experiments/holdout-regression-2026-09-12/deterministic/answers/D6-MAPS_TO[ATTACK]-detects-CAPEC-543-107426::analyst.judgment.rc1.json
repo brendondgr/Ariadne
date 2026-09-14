@@ -1,0 +1,26 @@
+{
+ "case_id": "D6-MAPS_TO[ATTACK]-detects-CAPEC-543-107426::analyst",
+ "verdict": "PARTIAL",
+ "correctness": 0.6,
+ "faithfulness": 0.75,
+ "groundedness": 0.9,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "T1036.005 has no DETECTS relationships in this catalogue"
+ ],
+ "rationale": "The answer correctly states that CAPEC-543 maps to T1036.005 and lists DET0347, which is the expected detection-strategy identifier. However, it also claims that T1036.005 has no DETECTS relationships, which is inconsistent with the returned DET0347 detection-strategy record. This makes the answer partial rather than fully correct.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 16384,
+  "escalated": true,
+  "position": 1
+ }
+}

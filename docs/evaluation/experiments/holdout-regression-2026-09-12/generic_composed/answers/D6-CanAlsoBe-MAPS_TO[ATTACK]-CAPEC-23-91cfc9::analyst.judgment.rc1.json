@@ -1,0 +1,26 @@
+{
+ "case_id": "D6-CanAlsoBe-MAPS_TO[ATTACK]-CAPEC-23-91cfc9::analyst",
+ "verdict": "CORRECT",
+ "correctness": 0.9,
+ "faithfulness": 0.85,
+ "groundedness": 0.9,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": false,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "The capec source doesn't establish this \u2014 the executed query ran cleanly and returned CAPEC-23 with no linked records for: For CAPEC-23: the CAPEC attack patterns it can also be carried out as."
+ ],
+ "rationale": "The answer correctly identifies CAPEC-23's CAN_ALSO_BE neighbor CAPEC-165 and the corresponding ATT&CK technique T1036.003, which satisfies the requested two-hop mapping. It is slightly weakened by an abstention claiming no linked records, which conflicts with the q1 evidence showing CAPEC-165. The key identifiers CAPEC-23, CAPEC-165, and T1036.003 are present and grounded in the cited CAPEC records.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 8192,
+  "escalated": false,
+  "position": 1
+ }
+}

@@ -1,0 +1,26 @@
+{
+ "case_id": "D4-HAS_MEMBER-HAS_CONSEQUENCE-CAPEC-703-fe4247::analyst",
+ "verdict": "PARTIAL",
+ "correctness": 0.65,
+ "faithfulness": 0.75,
+ "groundedness": 0.75,
+ "completeness": 0.6,
+ "gold_expected": 30,
+ "gold_present": 18,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "The 57 specific consequence names (e.g., 'Read Data Confidentiality') are not individually shown in the provided evidence"
+ ],
+ "rationale": "The answer correctly identifies CAPEC-703 and lists its 46 member attack patterns from the members property. It also provides consequence texts, but many are reversed or abbreviated relative to the gold strings, so only about 18 of the 30 expected consequence identifiers are present. It does not map consequences to individual attack patterns, and the specific consequence names are not fully visible in the shown evidence.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 16384,
+  "escalated": true,
+  "position": 1
+ }
+}

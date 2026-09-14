@@ -1,0 +1,26 @@
+{
+ "case_id": "D6-MAPS_TO[ATTACK]-HAS_CONSEQUENCE-T1033-bd076a::indirect",
+ "verdict": "PARTIAL",
+ "correctness": 0.75,
+ "faithfulness": 0.7,
+ "groundedness": 0.85,
+ "completeness": 1.0,
+ "gold_expected": 2,
+ "gold_present": 2,
+ "abstained": false,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "The capec source doesn't establish consequences / returned CAPEC-577 with no linked records for consequences, despite the q2 result containing two HAS_CONSEQUENCE neighbours"
+ ],
+ "rationale": "The answer correctly identifies CAPEC-577 as the CAPEC attack pattern corresponding to T1033 and reports both consequence records, capec:attack-pattern:577:consequence:1 and capec:attack-pattern:577:consequence:2. It is partial because the consequence wording is reordered relative to the expected text and the abstention contradicts the evidence by saying no linked consequence records were returned. The T1033 cross-source correlation is supported, so no fabricated mapping is present.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 16384,
+  "escalated": true,
+  "position": 1
+ }
+}

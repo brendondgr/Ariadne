@@ -1,0 +1,26 @@
+{
+ "case_id": "D5-uses-x_mitre_platforms-C0043-a73d33::analyst",
+ "verdict": "PARTIAL",
+ "correctness": 0.6,
+ "faithfulness": 0.6,
+ "groundedness": 0.7,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "C0043 has no USES relationships in this catalogue"
+ ],
+ "rationale": "The answer includes the expected identifier S1144 and the anchor C0043, but it presents S1144 and S0596 as related items rather than explicitly identifying which run on Linux. It is partially correct because it states the gold software S1144, but the unsupported claim that C0043 has no USES relationships conflicts with the query evidence returning S1144 and S0596.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 8192,
+  "escalated": false,
+  "position": 1
+ }
+}

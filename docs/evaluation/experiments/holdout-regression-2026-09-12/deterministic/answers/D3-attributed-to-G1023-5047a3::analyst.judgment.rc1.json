@@ -1,0 +1,26 @@
+{
+ "case_id": "D3-attributed-to-G1023-5047a3::analyst",
+ "verdict": "PARTIAL",
+ "correctness": 0.7,
+ "faithfulness": 0.6,
+ "groundedness": 0.8,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "C0052 has no ATTRIBUTED_TO relationships in this catalogue"
+ ],
+ "rationale": "The answer identifies the expected campaign C0052 (SPACEHOP Activity) in relation to G1023, which is the core requested identifier. However, it also asserts that C0052 has no ATTRIBUTED_TO relationships, which is unsupported and contradicted by the executed query returning C0052 via ATTRIBUTED_TO to G1023. This makes the answer partially correct rather than fully faithful.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 8192,
+  "escalated": false,
+  "position": 1
+ }
+}

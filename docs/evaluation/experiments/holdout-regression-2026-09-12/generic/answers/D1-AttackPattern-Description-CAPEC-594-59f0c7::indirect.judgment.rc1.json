@@ -1,0 +1,26 @@
+{
+ "case_id": "D1-AttackPattern-Description-CAPEC-594-59f0c7::indirect",
+ "verdict": "CORRECT",
+ "correctness": 1.0,
+ "faithfulness": 0.85,
+ "groundedness": 0.9,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "CAPEC-594 has 2 ChildOf parents: CAPEC-595, CAPEC-596"
+ ],
+ "rationale": "The answer directly states CAPEC-594 and the exact expected description, so it fully answers the question. The extra claim that CAPEC-595 and CAPEC-596 are ChildOf parents is only weakly supported: the evidence shows they are related via CHILD_OF, but does not clearly establish both as parents. All core claims are tied to the CAPEC-594 record and related evidence.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 8192,
+  "escalated": false,
+  "position": 1
+ }
+}

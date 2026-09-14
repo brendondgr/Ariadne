@@ -1,0 +1,26 @@
+{
+ "case_id": "D5-uses-x_mitre_platforms-C0022-9c785b::indirect",
+ "verdict": "CORRECT",
+ "correctness": 0.95,
+ "faithfulness": 0.9,
+ "groundedness": 0.85,
+ "completeness": 1.0,
+ "gold_expected": 2,
+ "gold_present": 2,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "The exact split into 11 techniques and 27 subtechniques is not explicitly itemized in the visible related list."
+ ],
+ "rationale": "The answer identifies both expected Windows software neighbours of C0022, S0694 and S0678, and ties them to the C0022 record. It also includes extra technique identifiers, but the core question about malware/tools is answered. The query and related-count evidence support the Windows-restricted neighbours, though the technique split is only indirectly supported.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 8192,
+  "escalated": false,
+  "position": 1
+ }
+}

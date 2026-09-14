@@ -536,7 +536,76 @@ configuration, so Steps 6 and 7 are separate nights, and the `gemma4-31B`
 ordering pass is dropped for want of a second healthy endpoint. The final result
 will therefore rest on one grader family, which belongs in threats to validity.
 
-## Steps 6–8
+## Step 6 — the paired control (complete, 2026-09-13)
 
-Not started. `scripts/repair_control_run.py` is written and awaits the operator's
-confirmation of the ship rule; Step 7 awaits approval of the spend and a seed.
+Every question answered twice, once on the pre-repair reference tree and once on
+the shipped tree, in the same session, graded in both counterbalanced positions
+and averaged per question. `scripts/paired_control_score.py --verify` reproduces
+it. Read from `data/` and recomputed from the judgment sidecars.
+
+| arm | reference | repaired | paired gain |
+|---|---:|---:|---:|
+| `deterministic` | 0.5011 | 0.6098 | **+0.1087** |
+| `generic_composed` | 0.6563 | **0.9209** | **+0.2646** |
+| `generic` | 0.7195 | **0.9247** | **+0.2052** |
+
+Both halves ran on one tree per side and the reference half reproduces the
+recorded Step 0 capture, so the gain is the repair and not the tree moving
+underneath the comparison.
+
+## Step 7 — the sealed fresh set (complete, 2026-09-13)
+
+282 questions at seed 10140325, authored blind against briefs, sealed before use
+(`scripts/fresh_seal.py --self-test` refuses a spent bank, and did refuse the
+holdout on 3,456 judgments). Never asked, never graded. Both positions.
+
+| arm | correctness | SE | `fabricated_mapping` |
+|---|---:|---:|---:|
+| `deterministic` | 0.5525 | 0.0197 | **0** |
+| `generic_composed` | **0.9005** | 0.0102 | **0** |
+| `generic` | **0.8991** | 0.0103 | **0** |
+
+The two repaired arms are separated by **-0.0014**, which is inside the grader's
+noise. On questions nothing here had ever seen, the language model in the
+narrator seam buys nothing measurable over the model-free composition.
+
+**The gaps were the hard cases, and closing them cost the LLM arm.** Eight
+answers failed to grade on the first pass; all eight were among the largest in
+the bank. Recovering them moved `generic` from 0.9043 down to **0.8991** and
+`generic_composed` from 0.9037 to **0.9005**. A mean over the cases that
+graded is a mean over the easy ones, and it flatters the slower arm by about
+0.005. This is the third time tonight the same size-correlated loss appeared.
+
+## Step 8 — the holdout regression (complete, 2026-09-14)
+
+**Regression evidence only.** The holdout was spent by `holdout-spend-2026-09-05`
+at 1,152 judgments per arm. These questions have been seen; this is a check that
+the repair did not break the arms on a bank they were previously measured on,
+and it must never be quoted as a capability figure. Position 1, 288 questions,
+`data/holdout_regression.json`.
+
+| arm | correctness | SE | `fabricated_mapping` |
+|---|---:|---:|---:|
+| `deterministic` | 0.5443 | 0.0193 | 3 |
+| `generic_composed` | 0.8987 | 0.0104 | **0** |
+| `generic` | 0.9014 | 0.0100 | **0** |
+
+Paired: `generic` − `generic_composed` = **+0.0026** (SE 0.0044, not separable);
+`generic_composed` − `deterministic` = **+0.3545** (SE 0.0204).
+
+**The two banks agree.** The sealed fresh set and the spent holdout land within
+0.003 of each other on both repaired arms — disjoint question banks, graded on
+different nights. The repair generalises rather than fitting the fresh set.
+
+**One asymmetry belongs in the record.** `deterministic` still produces 3
+`fabricated_mapping` flags here where both generic arms produce none. The repair
+removed the fabrication mode from the arms it targeted and did not remove it from
+the template arm, which is consistent with the disclosure at the head of this
+file: this experiment repairs the generic arm.
+
+### What the judging cost, and what it nearly cost
+
+All 26 ungraded `generic` cases sat **exactly at the 26,248-character prompt
+cap** (~8,749 tokens) against a graded median of 13,416. They were slow, not
+stuck, and they closed once the timeout was raised. Reporting 262 of 288 would
+have repeated the Step 7 bias at four times the size.

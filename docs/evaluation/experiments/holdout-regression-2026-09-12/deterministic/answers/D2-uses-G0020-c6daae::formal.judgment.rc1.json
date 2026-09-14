@@ -1,0 +1,26 @@
+{
+ "case_id": "D2-uses-G0020-c6daae::formal",
+ "verdict": "PARTIAL",
+ "correctness": 0.2,
+ "faithfulness": 0.7,
+ "groundedness": 0.6,
+ "completeness": 0.2,
+ "gold_expected": 5,
+ "gold_present": 1,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "T1120 has no USES relationships in this catalogue"
+ ],
+ "rationale": "The answer identifies only T1120 as a technique associated with the G0020 query, omitting T1480.001, T1542.002, and T1564.005. It also does not explicitly state G0020 in the narrative or claims, even though the query was seeded with G0020. The absence claim about T1120 having no USES relationships is not directly supported by the single returned technique record.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 8192,
+  "escalated": false,
+  "position": 1
+ }
+}

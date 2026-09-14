@@ -1,0 +1,26 @@
+{
+ "case_id": "D1-AttackPattern-Abstraction-CAPEC-97-bae31f::analyst",
+ "verdict": "CORRECT",
+ "correctness": 1.0,
+ "faithfulness": 0.85,
+ "groundedness": 0.9,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "CAPEC-97 has 3 ChildOf parents"
+ ],
+ "rationale": "The answer directly states that CAPEC-97 has Abstraction: Standard, which is the expected gold value for how general or specific the pattern is. It also cites CAPEC-97 and lists supported related patterns such as CAPEC-20, CAPEC-668, CAPEC-148, CAPEC-463, CAPEC-608, and CAPEC-192. The main over-assertion is calling all three ChildOf neighbors parents, which the evidence does not directionally confirm.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 8192,
+  "escalated": false,
+  "position": 1
+ }
+}

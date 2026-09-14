@@ -1,0 +1,24 @@
+{
+ "case_id": "D0-Mitigation-subtechnique-of-M1020-803320::analyst",
+ "verdict": "PARTIAL",
+ "correctness": 0.5,
+ "faithfulness": 0.85,
+ "groundedness": 0.9,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer states the required anchor M1020 (SSL/TLS Inspection) and reports no subtechnique relation, but it phrases it as \u201cM1020 has no subtechniques\u201d rather than directly answering that M1020 is not a sub-technique of any ATT&CK technique. It also lists supported MITIGATES neighbours T1090.004, T1573.002, T1573, and T1090, which are related but not the requested parent techniques. Because the expected related set is empty and M1020 is present, completeness is high, but the direct answer is only partial.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 8192,
+  "escalated": false,
+  "position": 1
+ }
+}

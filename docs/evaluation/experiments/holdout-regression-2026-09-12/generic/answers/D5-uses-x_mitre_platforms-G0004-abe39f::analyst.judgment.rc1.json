@@ -1,0 +1,26 @@
+{
+ "case_id": "D5-uses-x_mitre_platforms-G0004-abe39f::analyst",
+ "verdict": "CORRECT",
+ "correctness": 1.0,
+ "faithfulness": 0.85,
+ "groundedness": 0.9,
+ "completeness": 1.0,
+ "gold_expected": 6,
+ "gold_present": 6,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "The answer characterizes the listed software as 'Windows-restricted' although the shown query only filters for Windows in x_mitre_platforms."
+ ],
+ "rationale": "The answer names G0004 and all six expected software neighbors S0002, S0039, S0227, S0280, S0439, and S0691, so it fully answers the question. It also lists additional technique IDs, which are not required but are tied to the same G0004 record and query. The minor unsupported nuance is the 'Windows-restricted' wording, since the evidence only shows a filter for Windows in x_mitre_platforms.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 8192,
+  "escalated": false,
+  "position": 1
+ }
+}

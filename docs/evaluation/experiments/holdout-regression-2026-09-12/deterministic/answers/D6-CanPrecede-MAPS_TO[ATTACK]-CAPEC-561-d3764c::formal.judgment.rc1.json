@@ -1,0 +1,26 @@
+{
+ "case_id": "D6-CanPrecede-MAPS_TO[ATTACK]-CAPEC-561-d3764c::formal",
+ "verdict": "PARTIAL",
+ "correctness": 0.2,
+ "faithfulness": 0.8,
+ "groundedness": 0.85,
+ "completeness": 0.0,
+ "gold_expected": 6,
+ "gold_present": 0,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "The capec source doesn't establish this \u2014 the executed query ran cleanly and returned CAPEC-561 with no linked records for: For CAPEC-561: the CAPEC attack patterns that can precede it."
+ ],
+ "rationale": "The answer retrieves CAPEC-561 and its outgoing CAN_PRECEDE neighbors CAPEC-151, CAPEC-165, CAPEC-545, and CAPEC-549, then lists T1005, T1021.002, T1036.003, and T1555.001. None of the expected techniques T1056.001, T1078.001, T1110.001, T1110.002, T1110.003, or T1135 are stated, so completeness is zero. The abstention is inconsistent because the shown query returned four outgoing CAN_PRECEDE records rather than no linked records for predecessors.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 16384,
+  "escalated": true,
+  "position": 1
+ }
+}

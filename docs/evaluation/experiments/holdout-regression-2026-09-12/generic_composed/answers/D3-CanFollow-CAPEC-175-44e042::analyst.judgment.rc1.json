@@ -1,0 +1,26 @@
+{
+ "case_id": "D3-CanFollow-CAPEC-175-44e042::analyst",
+ "verdict": "CORRECT",
+ "correctness": 0.9,
+ "faithfulness": 0.85,
+ "groundedness": 0.9,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "The directional term 'predecessor' for CAPEC-234 is not explicitly present in the evidence; only a CAN_FOLLOW related record is shown."
+ ],
+ "rationale": "The answer identifies CAPEC-234 as the related CAPEC pattern connected to CAPEC-175 via CAN_FOLLOW, satisfying the expected gold identifier. It also states the anchor CAPEC-175 and its supported properties. The only minor issue is the unsupported directional wording 'predecessor', so faithfulness is slightly reduced.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 8192,
+  "escalated": false,
+  "position": 1
+ }
+}

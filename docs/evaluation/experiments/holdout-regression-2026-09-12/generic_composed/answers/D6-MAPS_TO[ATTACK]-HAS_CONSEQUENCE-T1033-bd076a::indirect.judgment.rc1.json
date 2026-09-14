@@ -1,0 +1,26 @@
+{
+ "case_id": "D6-MAPS_TO[ATTACK]-HAS_CONSEQUENCE-T1033-bd076a::indirect",
+ "verdict": "PARTIAL",
+ "correctness": 0.8,
+ "faithfulness": 0.75,
+ "groundedness": 0.85,
+ "completeness": 1.0,
+ "gold_expected": 3,
+ "gold_present": 3,
+ "abstained": false,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "The capec source doesn't establish the consequences / returned CAPEC-577 with no linked records"
+ ],
+ "rationale": "The answer correctly identifies CAPEC-577 as the CAPEC attack pattern mapped to T1033 and states the two expected consequence sets involving Confidentiality/Other and Confidentiality/Access Control/Authorization/Bypass Protection Mechanism/Hide Activities. However, the included abstention claims the CAPEC source returned no linked consequence records, which conflicts with the evidence showing two HAS_CONSEQUENCE records for CAPEC-577. This makes the answer mostly correct but not fully faithful.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 8192,
+  "escalated": false,
+  "position": 1
+ }
+}

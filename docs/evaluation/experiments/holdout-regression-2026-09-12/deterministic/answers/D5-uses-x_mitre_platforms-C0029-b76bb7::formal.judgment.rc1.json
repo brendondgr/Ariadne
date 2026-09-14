@@ -1,0 +1,26 @@
+{
+ "case_id": "D5-uses-x_mitre_platforms-C0029-b76bb7::formal",
+ "verdict": "PARTIAL",
+ "correctness": 0.5,
+ "faithfulness": 0.6,
+ "groundedness": 0.7,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "T1105 has no USES relationships in this catalogue"
+ ],
+ "rationale": "The answer includes the expected gold technique T1059, but it does so by listing 13 techniques without explicitly naming campaign C0029 or the Identity Provider constraint. This over-enumeration of non-gold techniques such as T1105, T1095, and T1685 makes the answer partial rather than fully correct. The unsupported absence claim about T1105's USES relationships also reduces faithfulness.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 8192,
+  "escalated": false,
+  "position": 1
+ }
+}

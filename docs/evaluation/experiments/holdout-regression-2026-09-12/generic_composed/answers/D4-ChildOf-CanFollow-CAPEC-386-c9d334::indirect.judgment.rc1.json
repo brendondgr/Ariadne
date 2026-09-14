@@ -1,0 +1,24 @@
+{
+ "case_id": "D4-ChildOf-CanFollow-CAPEC-386-c9d334::indirect",
+ "verdict": "PARTIAL",
+ "correctness": 0.6,
+ "faithfulness": 0.9,
+ "groundedness": 0.9,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer includes the expected broader pattern CAPEC-271 and the anchor CAPEC-386, and the additional listed patterns CAPEC-94, CAPEC-387, and CAPEC-388 are present in the CAPEC evidence. However, it only says CAPEC-386 \"has 4 attack patterns\" rather than explicitly identifying CAPEC-271 as the broader pattern and stating which patterns can follow it. Therefore it partially answers the two-part question while remaining well grounded.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 8192,
+  "escalated": false,
+  "position": 1
+ }
+}

@@ -1,0 +1,26 @@
+{
+ "case_id": "D3-CanPrecede-CAPEC-662-6c1e23::analyst",
+ "verdict": "PARTIAL",
+ "correctness": 0.7,
+ "faithfulness": 0.85,
+ "groundedness": 0.9,
+ "completeness": 1.0,
+ "gold_expected": 2,
+ "gold_present": 2,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "CAPEC-662 has 4 CanPrecede successors"
+ ],
+ "rationale": "The answer correctly states the expected related patterns CAPEC-185 and CAPEC-542 for CAPEC-662, so the gold set is fully present. However, it also asserts four CanPrecede successors, including CAPEC-159 and CAPEC-475, while the evidence only shows four CAN_PRECEDE neighbors without confirming the requested predecessor direction. This overassertion makes the answer partial rather than fully correct.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 8192,
+  "escalated": false,
+  "position": 1
+ }
+}

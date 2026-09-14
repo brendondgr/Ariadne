@@ -1,0 +1,24 @@
+{
+ "case_id": "D4-CanPrecede-HAS_EXECUTION_STEP-CAPEC-9-0c01a6::analyst",
+ "verdict": "PARTIAL",
+ "correctness": 0.65,
+ "faithfulness": 0.8,
+ "groundedness": 0.8,
+ "completeness": 1.0,
+ "gold_expected": 3,
+ "gold_present": 3,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer identifies CAPEC-69 as the related attack pattern and lists the three execution-step identifiers capec:attack-pattern:69:step:1, capec:attack-pattern:69:step:2, and capec:attack-pattern:69:step:3. However, it does not explicitly state that CAPEC-69 can precede CAPEC-9, and it truncates the execution-step text by omitting the techniques included in the gold expected strings. The claims are mostly grounded in the CAPEC-9 record and its related entries, but the phrasing that CAPEC-9 itself has the execution steps is slightly imprecise.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 16384,
+  "escalated": true,
+  "position": 1
+ }
+}

@@ -1,0 +1,50 @@
+{
+  "measurement": "holdout regression \u2014 the spent holdout re-answered on the shipped tree",
+  "status": "REGRESSION EVIDENCE ONLY. The holdout was spent by holdout-spend-2026-09-05 (1,152 judgments per arm). These questions have been seen. This is a check that the repair did not break the arms on a bank they were previously measured on; it is NOT a capability figure and must never be quoted as one. The capability figure is fresh_set.json.",
+  "set": "holdout bank, 288 questions",
+  "grading_positions": 1,
+  "position": 1,
+  "arms": {
+    "deterministic": {
+      "n": 288,
+      "correctness": 0.5443,
+      "standard_error": 0.0193,
+      "fabricated_mapping": 3,
+      "abstained": 35,
+      "hallucination_statements": 89
+    },
+    "generic_composed": {
+      "n": 288,
+      "correctness": 0.8987,
+      "standard_error": 0.0104,
+      "fabricated_mapping": 0,
+      "abstained": 15,
+      "hallucination_statements": 93
+    },
+    "generic": {
+      "n": 288,
+      "correctness": 0.9014,
+      "standard_error": 0.01,
+      "fabricated_mapping": 0,
+      "abstained": 20,
+      "hallucination_statements": 130
+    }
+  },
+  "paired": {
+    "generic_minus_generic_composed": {
+      "difference": 0.0026,
+      "standard_error": 0.0044,
+      "n": 288
+    },
+    "generic_composed_minus_deterministic": {
+      "difference": 0.3545,
+      "standard_error": 0.0204,
+      "n": 288
+    }
+  },
+  "agreement_with_fresh_set": {
+    "fresh_generic_composed": 0.9005,
+    "fresh_generic": 0.8991,
+    "note": "The sealed fresh set and the spent holdout land within 0.003 of each other on both repaired arms, on disjoint question banks graded on different nights. The repair generalises; it is not fitted to the fresh set."
+  }
+}

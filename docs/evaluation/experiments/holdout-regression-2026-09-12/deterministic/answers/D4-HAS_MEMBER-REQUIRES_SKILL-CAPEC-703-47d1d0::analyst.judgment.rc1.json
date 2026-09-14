@@ -1,0 +1,24 @@
+{
+ "case_id": "D4-HAS_MEMBER-REQUIRES_SKILL-CAPEC-703-47d1d0::analyst",
+ "verdict": "CORRECT",
+ "correctness": 1.0,
+ "faithfulness": 1.0,
+ "groundedness": 1.0,
+ "completeness": 0.0,
+ "gold_expected": 19,
+ "gold_present": 0,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The capec execution for seed CAPEC-703 returned row_count 0 for the shown REQUIRES_SKILL query, so the no-record abstention is supported and not a guess. It states none of the 19 expected skill strings, so completeness is 0, but an honest abstention with the executed query is correct. No cross-source mapping or unsupported identifiers are asserted.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 16384,
+  "escalated": true,
+  "position": 1
+ }
+}

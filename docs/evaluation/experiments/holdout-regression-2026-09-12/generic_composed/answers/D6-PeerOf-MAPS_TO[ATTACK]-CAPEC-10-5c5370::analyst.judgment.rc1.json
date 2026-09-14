@@ -1,0 +1,26 @@
+{
+ "case_id": "D6-PeerOf-MAPS_TO[ATTACK]-CAPEC-10-5c5370::analyst",
+ "verdict": "CORRECT",
+ "correctness": 0.9,
+ "faithfulness": 0.8,
+ "groundedness": 0.9,
+ "completeness": 1.0,
+ "gold_expected": 2,
+ "gold_present": 2,
+ "abstained": false,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "The executed query returned CAPEC-10 with no linked records for peers"
+ ],
+ "rationale": "The answer identifies CAPEC-10's peers CAPEC-46 and CAPEC-13 and states the required ATT&CK techniques T1574.006 and T1574.007, with T1562.003 also supported for CAPEC-13. It therefore covers the expected gold identifiers. The main weakness is an unsupported abstention claiming no linked peer records, even though the evidence shows CAPEC-46 and CAPEC-13 as PEER_OF neighbors.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 8192,
+  "escalated": false,
+  "position": 1
+ }
+}

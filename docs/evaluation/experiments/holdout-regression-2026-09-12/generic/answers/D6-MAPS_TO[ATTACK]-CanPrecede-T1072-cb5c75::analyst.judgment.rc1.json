@@ -1,0 +1,27 @@
+{
+ "case_id": "D6-MAPS_TO[ATTACK]-CanPrecede-T1072-cb5c75::analyst",
+ "verdict": "PARTIAL",
+ "correctness": 0.5,
+ "faithfulness": 0.65,
+ "groundedness": 0.8,
+ "completeness": 1.0,
+ "gold_expected": 2,
+ "gold_present": 2,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "CAPEC-657 has 1 CanPrecede successor: CAPEC-194",
+  "the executed query returned CAPEC-657 with no linked records for the preceding-patterns subquestion"
+ ],
+ "rationale": "The answer states T1072, the corresponding CAPEC-187 and CAPEC-657, and the expected CAPEC-194, so identifier coverage is strong. However, it labels CAPEC-194 as a CanPrecede successor of CAPEC-657 and then abstains that no preceding patterns are established, which conflicts with the requested 'can precede' direction. The abstention includes the executed query, but the 'no linked records' claim is not fully supported by the CAPEC-657/CAPEC-194 relation in the evidence.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 16384,
+  "escalated": true,
+  "position": 1
+ }
+}

@@ -1,0 +1,26 @@
+{
+ "case_id": "D5-uses-x_mitre_platforms-C0022-9c785b::indirect",
+ "verdict": "PARTIAL",
+ "correctness": 0.5,
+ "faithfulness": 0.6,
+ "groundedness": 0.7,
+ "completeness": 1.0,
+ "gold_expected": 2,
+ "gold_present": 2,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "C0022 has no USES relationships in this catalogue"
+ ],
+ "rationale": "The answer names the expected Windows-related software S0678 and S0694, but also includes S0174 and frames them as related items rather than explicitly identifying which run on Windows. It is therefore partial: it retrieves the gold identifiers but does not cleanly answer the Windows filter. The claim that C0022 has no USES relationships is contradicted by the executed USES query returning three rows.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 8192,
+  "escalated": false,
+  "position": 1
+ }
+}

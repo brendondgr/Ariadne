@@ -1,0 +1,26 @@
+{
+ "case_id": "D5-uses-x_mitre_platforms-S0032-0d4ecb::indirect",
+ "verdict": "PARTIAL",
+ "correctness": 0.5,
+ "faithfulness": 0.7,
+ "groundedness": 0.8,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "S0032 has no USES relationships in this catalogue"
+ ],
+ "rationale": "The answer includes the expected gold technique T1059 among the 24 related items for S0032, so the required identifier is present. However, it does not explicitly identify which of those techniques apply to SaaS, and it asserts that S0032 has no USES relationships despite the executed USES query returning 24 rows. This makes the answer partially correct but not fully faithful.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 8192,
+  "escalated": false,
+  "position": 1
+ }
+}

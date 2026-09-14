@@ -1,0 +1,24 @@
+{
+ "case_id": "D2-REQUIRES_RESOURCE-CAPEC-653-f0591b::analyst",
+ "verdict": "CORRECT",
+ "correctness": 1.0,
+ "faithfulness": 1.0,
+ "groundedness": 1.0,
+ "completeness": 1.0,
+ "gold_expected": 2,
+ "gold_present": 2,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer directly answers the question by identifying CAPEC-653 and both required resources: capec:attack-pattern:653:resource:1, 'A list of known credentials for the targeted domain,' and capec:attack-pattern:653:resource:2, 'A custom script that leverages a credential list to launch an attack.' These match the REQUIRES_RESOURCE neighbors shown in the CAPEC evidence. No unsupported cross-source mapping or extra claims are made.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 8192,
+  "escalated": false,
+  "position": 1
+ }
+}

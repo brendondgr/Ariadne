@@ -1,0 +1,26 @@
+{
+ "case_id": "D4-HAS_MEMBER-HAS_INDICATOR-CAPEC-223-8f6184::analyst",
+ "verdict": "CORRECT",
+ "correctness": 0.9,
+ "faithfulness": 0.9,
+ "groundedness": 0.9,
+ "completeness": 1.0,
+ "gold_expected": 4,
+ "gold_present": 4,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "The indicators are described as 'named only as text', although the evidence shows indicator names as URIs and the quoted strings are descriptions."
+ ],
+ "rationale": "The answer identifies CAPEC-223 and its two attack patterns, CAPEC-28 and CAPEC-112, and states all four expected indicator texts. The structured claim entity_ids tie those texts to capec:attack-pattern:28:indicator:1 and capec:attack-pattern:112:indicator:1/2/3, so the requested mapping is present. Minor deductions are for the slightly unsupported 'named only as text' phrasing and for not making the per-pattern mapping fully explicit in the narrative.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 8192,
+  "escalated": false,
+  "position": 1
+ }
+}

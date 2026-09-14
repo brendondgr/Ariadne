@@ -1,0 +1,26 @@
+{
+ "case_id": "D4-HAS_MEMBER-HAS_MEMBER-CAPEC-683-84a396::analyst",
+ "verdict": "PARTIAL",
+ "correctness": 0.75,
+ "faithfulness": 0.85,
+ "groundedness": 0.9,
+ "completeness": 1.0,
+ "gold_expected": 8,
+ "gold_present": 8,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "CAPEC-683 has no MEMBER_OF relationships in this catalogue"
+ ],
+ "rationale": "The answer states all eight expected attack patterns, CAPEC-184, CAPEC-439, CAPEC-440, CAPEC-444, CAPEC-447, CAPEC-536, CAPEC-675, and CAPEC-690, and also lists the six categories CAPEC-684 through CAPEC-689. However, it gives a flat list of attack patterns under CAPEC-683 rather than mapping which attack patterns belong to each category, so it only partially answers the question as asked. The unsupported absence claim about MEMBER_OF relationships slightly reduces faithfulness.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 8192,
+  "escalated": false,
+  "position": 1
+ }
+}

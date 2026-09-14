@@ -1,0 +1,26 @@
+{
+ "case_id": "D3-CanPrecede-CAPEC-664-17cfd1::formal",
+ "verdict": "CORRECT",
+ "correctness": 0.9,
+ "faithfulness": 0.85,
+ "groundedness": 0.9,
+ "completeness": 1.0,
+ "gold_expected": 5,
+ "gold_present": 5,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "CAPEC-664 has 5 CanPrecede successors (directional wording not explicit in the evidence)"
+ ],
+ "rationale": "The answer states all expected related identifiers CAPEC-122, CAPEC-126, CAPEC-161, CAPEC-253, and CAPEC-309 in connection with CAPEC-664, satisfying the requested set. It is grounded in the CAPEC-664 record and its related CAN_PRECEDE entries, but the phrase \"CanPrecede successors\" is a directional claim not explicitly shown in the evidence. No cross-source mapping is asserted, and the anchor CAPEC-664 is included.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 8192,
+  "escalated": false,
+  "position": 1
+ }
+}

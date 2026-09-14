@@ -1,0 +1,26 @@
+{
+ "case_id": "D5-uses-x_mitre_platforms-G0016-436db4::analyst",
+ "verdict": "PARTIAL",
+ "correctness": 0.5,
+ "faithfulness": 0.6,
+ "groundedness": 0.7,
+ "completeness": 1.0,
+ "gold_expected": 2,
+ "gold_present": 2,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "G0016 has no USES relationships in this catalogue"
+ ],
+ "rationale": "The answer includes the expected related identifiers S0677 and S0684 for G0016, so completeness is full. However, it lists all 49 related software items rather than clearly identifying the Identity Provider-relevant subset, and it contradicts the evidence by saying G0016 has no USES relationships despite the USES query returning 49 rows.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 8192,
+  "escalated": false,
+  "position": 1
+ }
+}
