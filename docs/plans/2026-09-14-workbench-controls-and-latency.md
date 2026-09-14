@@ -147,3 +147,51 @@ guarantee.
 | Composer controls | Verify / Readable prose / Thinking, defaulting to the fast path. | `web/components/center/Composer.tsx` |
 | Control-plumbing tests | Assert `verify=False` disables the layer, that the budget reaches the config, and that a field added to the body survives `startStream`. | `utils/conversation/tests/test_controls.py`, `api/tests/test_query_controls.py` |
 | Latency amendment | Per-event timings for the four control corners. | `docs/research/experiments/EXP-2026-09-020-plan-source-crossed/RESULTS.md` |
+
+---
+
+## 5. Amendment, 2026-09-14 — finer granularity than Step 1 assumed
+
+The plan assumed `verify: off` would disable the whole conversation layer. The
+operator's correction — *"it makes sense we have the router and orchestration"* —
+is right, and the code already supports the finer split:
+`build_conversation_graph(validation_client=…)` takes the validation agent's
+client separately, and `evaluate_sufficiency` short-circuits to `VERDICT_PASS`
+when that client is disabled. So validation is gateable on its own.
+
+### What a first turn actually costs, measured per SSE event
+
+| Stage | LLM | Cost |
+|---|---|---:|
+| `router` (quick-vs-graph) | yes | ~1.0 s |
+| `orchestration` (reference resolution) | yes | skipped when the question is self-contained |
+| the pipeline itself | **no** | **1.09 s** |
+| `validation` (sufficiency) | yes | **~28.6 s** |
+| `answer` (writes the reply) | yes | **~10.7 s** |
+| thread auto-title (`_persist_turn`) | yes | ~2.9 s, first turn of a thread only |
+
+The `final → done` gap the operator asked about is the auto-title.
+
+### Revised control mapping
+
+Both controls map onto behaviour the graph already has, rather than new branches.
+`utils/conversation/graph.py` documents the deterministic path as
+`route=graph, validation=pass, answer=narrative`, so each control simply selects
+which of those an agent takes.
+
+| Control | Off | On |
+|---|---|---|
+| **Verify** | `validation` short-circuits to `pass` | LLM sufficiency check (~28.6 s) |
+| **Readable prose** | `answer` uses the pipeline's composed narrative | `answer` writes the reply (~10.7 s) |
+| **Thinking** | — | the budget both use, 128 doubling to 16384 |
+
+`router` and `orchestration` stay on in every mode, as asked. A first turn with
+both controls off is therefore roughly **5 s** (router + pipeline + auto-title)
+and a subsequent turn roughly **2 s**, against 43 s today.
+
+### Consequence for Step 1
+
+Step 1's two-way `with_llm_enabled` is still required and still correct — it is
+what lets a caller express "off" at all — but it is no longer the mechanism the
+`Verify` control uses. Steps 2 and 4 wire `verify` to the validation client and
+`prose` to the answer agent instead of to the whole layer.
