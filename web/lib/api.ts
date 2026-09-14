@@ -122,6 +122,8 @@ export interface QueryRequestBody {
   question: string;
   mode: "plan" | "query";
   drafter: "deterministic" | "llm";
+  verify?: boolean;
+  thinking_budget?: number | null;
   /** Rewrite the prose with a model, over claims already composed and verified.
    *  Deliberately separate from `drafter`: `drafter: "llm"` also hands QUERY
    *  construction to a model, which scores 0.5000 against the template
@@ -254,6 +256,16 @@ export interface ConversationQueryBody {
   conversation_id: string;
   mode: "plan" | "query";
   drafter: "deterministic" | "llm";
+  /** Run the LLM sufficiency check. Off by default: it is a second opinion, not
+   *  the guarantee — the deterministic claim verifier runs either way — and it
+   *  is the single most expensive stage in a turn (~28.6 s). */
+  verify?: boolean;
+  /** Let the answer agent write the reply instead of using the pipeline's
+   *  composed narrative (~10.7 s). */
+  narrate?: boolean;
+  /** Reasoning tokens for whichever seams run. Omit to leave the server's
+   *  configured value alone. */
+  thinking_budget?: number | null;
 }
 
 /**

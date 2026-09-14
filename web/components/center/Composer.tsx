@@ -8,13 +8,32 @@ import { useWorkbench } from "@/components/workbench/WorkbenchContext";
 type Mode = "plan" | "query";
 type Drafter = "deterministic" | "llm";
 
-/** The docked composer: question input, Plan/Full-answer mode toggle, the
- *  deterministic/LLM drafter toggle, and Send — wired to the run machine's
- *  `submit`, which streams the live `/api/query` pipeline. */
+/** Reasoning budgets, from 128 doubling up. 0 is not offered: a reasoning model
+ *  given none can truncate to empty content, which reaches a caller as a silent
+ *  "LLM unavailable" rather than an error, so 128 is the honest floor. */
+const THINKING_STEPS = [128, 256, 512, 1024, 2048, 4096, 8192, 16384] as const;
+
+/** The docked composer: question input, the three controls an analyst actually
+ *  trades between, and Send.
+ *
+ *  It used to carry Plan/Full-answer, a Drafter toggle and Plain prose. Those
+ *  named implementation seams rather than choices, and one of them was actively
+ *  harmful: `drafter: "llm"` turned on the planner, the specialist AND the
+ *  narrator together, so an analyst reaching for readable prose silently got
+ *  query construction from a model — the path that scores 0.5000 against the
+ *  template cascade's 0.9467.
+ *
+ *  Verify, Prose and Thinking name what is being traded: a second opinion on the
+ *  evidence (~30 s), a model-written reply (~10 s), and how long either may
+ *  reason. Both default off, which is the fast path; the deterministic claim
+ *  verifier runs on every path regardless. */
 export function Composer() {
   const { submit, replaying, registerComposerFill } = useWorkbench();
   const [question, setQuestion] = useState("");
-  const [mode, setMode] = useState<Mode>("query");
+  // Always a full answer. The Plan/Full-answer toggle is gone: a plan-only run
+  // is a debugging view, and the inspector already renders the plan on every
+  // turn, so it cost a control without adding a capability.
+  const mode: Mode = "query";
   // Deterministic by default. This used to default to "llm" so the answer read
   // as natural language — but `drafter: "llm"` turns on the planner, the
   // SPECIALIST and the narrator together, so wanting readable prose silently
@@ -22,8 +41,14 @@ export function Composer() {
   // template cascade scores 0.9467 on the same unseen questions
   // (EXP-2026-09-007). Prose is now its own toggle below, which reaches only
   // the narrator seam — the one measured not to change a fact.
-  const [drafter, setDrafter] = useState<Drafter>("deterministic");
+  const [drafter] = useState<Drafter>("deterministic");
+  // Both off by default: that is the fast path. `verify` is the LLM sufficiency
+  // check (~28.6 s) and `narrate` lets the answer agent write the reply
+  // (~10.7 s); with both off a turn is the pipeline plus the router, and the
+  // deterministic claim verifier still runs either way.
+  const [verify, setVerify] = useState(false);
   const [narrate, setNarrate] = useState(false);
+  const [thinking, setThinking] = useState<number>(4096);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
   // Grow the textarea with its content, capped at 6 lines — beyond that it
@@ -65,7 +90,14 @@ export function Composer() {
 
   const send = () => {
     if (!canSend) return;
-    submit({ question: question.trim(), mode, drafter, narrate });
+    submit({
+      question: question.trim(),
+      mode,
+      drafter,
+      verify,
+      narrate,
+      thinking_budget: verify || narrate ? thinking : null,
+    });
     // Clear the box immediately so the analyst can compose the next question
     // while this turn streams; refocus keeps the caret ready to type.
     setQuestion("");
@@ -98,69 +130,58 @@ export function Composer() {
           className="composer-input mb-3 w-full resize-none border-0 bg-transparent px-0.5 pt-0.5 text-sm text-text outline-none placeholder:text-text-faint"
         />
         <div className="flex items-center gap-2.5">
-          {/* mode toggle */}
-          <div
-            className="flex overflow-hidden rounded-lg"
-            style={{ boxShadow: SHADOW.border }}
-            role="group"
-            aria-label="Answer mode"
-          >
-            <button
-              type="button"
-              onClick={() => setMode("plan")}
-              aria-pressed={mode === "plan"}
-              title="--plan only"
-              className={`border-0 px-[11px] py-1.5 font-mono text-[11px] transition-colors ${
-                mode === "plan" ? "bg-[rgba(78,158,150,0.14)] text-primary" : "bg-transparent text-text-muted hover:text-text"
-              }`}
-            >
-              Plan
-            </button>
-            <button
-              type="button"
-              onClick={() => setMode("query")}
-              aria-pressed={mode === "query"}
-              title="--query: runs specialists"
-              className={`border-0 px-[11px] py-1.5 font-mono text-[11px] transition-colors ${
-                mode === "query" ? "bg-[rgba(78,158,150,0.14)] text-primary" : "bg-transparent text-text-muted hover:text-text"
-              }`}
-              style={{ boxShadow: "rgba(235,230,220,0.1) -1px 0 0 0" }}
-            >
-              Full answer
-            </button>
-          </div>
-
-          {/* drafter toggle */}
+          {/* verify — the LLM sufficiency check */}
           <button
             type="button"
-            onClick={() => setDrafter((d) => (d === "deterministic" ? "llm" : "deterministic"))}
+            onClick={() => setVerify((v) => !v)}
             className="flex items-center gap-[7px] rounded-lg px-[11px] py-1.5 font-mono text-[11px] text-text-muted"
             style={{ boxShadow: SHADOW.border }}
-            title="Who writes the QUERY. Deterministic uses the validated template cascade; LLM hands query construction to a model and measures worse (0.5000 vs 0.9467). Prose is the separate toggle."
+            title="Ask a model whether the gathered evidence is sufficient, and retry retrieval if not. A second opinion, not the guarantee — every claim is checked against its cited evidence either way. Adds roughly 30 seconds."
           >
             <span
               aria-hidden
               className="h-[9px] w-[9px] rounded-full"
-              style={{ background: drafter === "llm" ? "var(--color-primary)" : "var(--color-text-muted)" }}
+              style={{ background: verify ? "var(--color-primary)" : "var(--color-text-muted)" }}
             />
-            Drafter: <span className="text-[#c9c6bd]">{drafter}</span>
+            Verify: <span className="text-[#c9c6bd]">{verify ? "on" : "off"}</span>
           </button>
 
-          {/* narrator toggle — prose only, never the facts */}
+          {/* readable prose — the answer agent writes the reply */}
           <button
             type="button"
             onClick={() => setNarrate((n) => !n)}
             className="flex items-center gap-[7px] rounded-lg px-[11px] py-1.5 font-mono text-[11px] text-text-muted"
             style={{ boxShadow: SHADOW.border }}
-            title="Rewrite the answer as plain prose with a model, over claims already composed and verified. It cannot add, remove or alter a claim — 284/284 byte-identical across the evaluation set — and costs roughly a minute per answer."
+            title="Have a model write the reply over claims already composed and verified, instead of showing the composed narrative. It cannot add, remove or alter a claim. Adds roughly 10 seconds."
           >
             <span
               aria-hidden
               className="h-[9px] w-[9px] rounded-full"
               style={{ background: narrate ? "var(--color-primary)" : "var(--color-text-muted)" }}
             />
-            Plain prose: <span className="text-[#c9c6bd]">{narrate ? "on" : "off"}</span>
+            Prose: <span className="text-[#c9c6bd]">{narrate ? "on" : "off"}</span>
           </button>
+
+          {/* thinking budget — inert while no model seam is on */}
+          <label
+            className="flex items-center gap-[7px] rounded-lg px-[11px] py-1.5 font-mono text-[11px] text-text-muted"
+            style={{ boxShadow: SHADOW.border, opacity: verify || narrate ? 1 : 0.45 }}
+            title="Reasoning tokens for whichever model steps run. Most of the wait is here. Inert while Verify and Prose are both off."
+          >
+            Thinking:
+            <select
+              value={thinking}
+              disabled={!verify && !narrate}
+              onChange={(e) => setThinking(Number(e.target.value))}
+              className="cursor-pointer border-0 bg-transparent font-mono text-[11px] text-[#c9c6bd] outline-none disabled:cursor-not-allowed"
+            >
+              {THINKING_STEPS.map((n) => (
+                <option key={n} value={n} className="bg-[#1c1b19]">
+                  {n}
+                </option>
+              ))}
+            </select>
+          </label>
 
           <div className="flex-1" />
 

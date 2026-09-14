@@ -589,6 +589,12 @@ export function useRunMachine(): RunMachine {
           conversation_id: cid,
           mode: req.mode,
           drafter: req.drafter,
+          // Assembled field by field rather than spread, so anything added to
+          // QueryRequestBody and NOT added here is silently dropped and the
+          // control becomes a no-op on screen.
+          verify: req.verify,
+          narrate: req.narrate,
+          thinking_budget: req.thinking_budget,
         };
         await streamConversation(
           body,
