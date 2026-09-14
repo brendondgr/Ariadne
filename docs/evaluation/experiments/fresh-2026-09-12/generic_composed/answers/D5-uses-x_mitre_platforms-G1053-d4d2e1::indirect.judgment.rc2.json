@@ -1,0 +1,26 @@
+{
+ "case_id": "D5-uses-x_mitre_platforms-G1053-d4d2e1::indirect",
+ "verdict": "PARTIAL",
+ "correctness": 0.55,
+ "faithfulness": 0.95,
+ "groundedness": 0.9,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "The answer treats all eight G1053 software items as relevant to ESXi hosts, although the evidence only explicitly ties ESXi-host relevance to T1490 and not to S1247 or the other software records."
+ ],
+ "rationale": "The answer correctly identifies G1053 and includes the expected related software S1247, so the gold identifier is present. However, it does not explicitly answer the ESXi-hosts constraint; it lists all G1053 software and techniques rather than selecting the ESXi-relevant item. The ESXi-specific evidence appears in T1490, but the narrative does not connect S1247 or the other tools to ESXi hosts.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 8192,
+  "escalated": false,
+  "position": 2
+ }
+}

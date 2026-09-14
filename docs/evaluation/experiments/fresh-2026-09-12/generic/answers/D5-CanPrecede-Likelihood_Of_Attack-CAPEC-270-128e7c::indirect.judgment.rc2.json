@@ -1,0 +1,26 @@
+{
+ "case_id": "D5-CanPrecede-Likelihood_Of_Attack-CAPEC-270-128e7c::indirect",
+ "verdict": "PARTIAL",
+ "correctness": 0.5,
+ "faithfulness": 0.75,
+ "groundedness": 0.8,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "CAPEC-270 has 11 CanPrecede successors"
+ ],
+ "rationale": "The answer includes the required anchor CAPEC-270 and lists the expected related identifier CAPEC-646 among the CanPrecede neighbors. However, it does not explicitly identify CAPEC-646 as the low-likelihood attack that comes after CAPEC-270, which is the specific question asked. It also asserts a directed successor relationship that the evidence only shows as undirected CAN_PRECEDE related records.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 8192,
+  "escalated": false,
+  "position": 2
+ }
+}

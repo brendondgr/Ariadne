@@ -1,0 +1,26 @@
+{
+ "case_id": "D2-HAS_EXECUTION_STEP-CAPEC-591-0e63cc::indirect",
+ "verdict": "PARTIAL",
+ "correctness": 0.85,
+ "faithfulness": 0.9,
+ "groundedness": 0.9,
+ "completeness": 1.0,
+ "gold_expected": 4,
+ "gold_present": 4,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "CAPEC-591 execution steps are named only as text"
+ ],
+ "rationale": "The answer correctly anchors CAPEC-591 and enumerates all four expected execution steps, capec:attack-pattern:591:step:1 through capec:attack-pattern:591:step:4, with their phases and descriptions. It is partial rather than fully correct because the gold step texts also include technique sentences that the narrative omits, and the phrase 'named only as text' is not fully supported by the records. No cross-source mapping is asserted.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 8192,
+  "escalated": false,
+  "position": 2
+ }
+}

@@ -1,0 +1,27 @@
+{
+ "case_id": "D5-CanPrecede-Typical_Severity-CAPEC-630-960850::formal",
+ "verdict": "PARTIAL",
+ "correctness": 0.6,
+ "faithfulness": 0.7,
+ "groundedness": 0.8,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "CAPEC-630 has 2 CanPrecede successors",
+  "CAPEC-98 is a CanPrecede successor of CAPEC-630"
+ ],
+ "rationale": "The answer includes the expected related pattern CAPEC-89 and the anchor CAPEC-630, satisfying the gold expectation. It also asserts CAPEC-98 as a Very High CanPrecede successor, but the evidence only shows CAPEC-98 as a CAN_PRECEDE-related pattern and the gold expects only CAPEC-89. The successor direction and count are therefore over-asserted, making the answer partial.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 8192,
+  "escalated": false,
+  "position": 2
+ }
+}

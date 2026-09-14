@@ -1,0 +1,24 @@
+{
+ "case_id": "D0-Campaign-x_mitre_analytic_refs-C0033-51040b::indirect",
+ "verdict": "CORRECT",
+ "correctness": 0.95,
+ "faithfulness": 0.9,
+ "groundedness": 0.95,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer states the required anchor C0033 and directly addresses the monitoring-side question by asserting that C0033 has no analytics. It also correctly reports the only evidenced related item, S0491, as a Software/USES relation rather than an analytic. The absence claim is slightly broad because the evidence shows a normalized record with no analytic neighbours rather than an explicit empty-analytics record, so a minor faithfulness deduction is appropriate.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 8192,
+  "escalated": false,
+  "position": 2
+ }
+}

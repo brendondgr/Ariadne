@@ -1,0 +1,26 @@
+{
+ "case_id": "D1-Mitigation-description-M1049-0cfe08::indirect",
+ "verdict": "CORRECT",
+ "correctness": 1.0,
+ "faithfulness": 0.95,
+ "groundedness": 1.0,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "M1049 has revoked: False; stix_type: course-of-action; x_mitre_deprecated: False; x_mitre_version: 1.2; x_mitre_domains: enterprise-attack"
+ ],
+ "rationale": "The answer correctly identifies M1049 (Antivirus/Antimalware) and reproduces the full mitigation description expected by the gold text. It cites the single ATT&CK record for M1049, so the core answer is grounded. The only minor unsupported detail is the metadata line (revoked, stix_type, x_mitre_version, x_mitre_domains), which is tied to the same record but not fully visible in the truncated evidence.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 8192,
+  "escalated": false,
+  "position": 2
+ }
+}

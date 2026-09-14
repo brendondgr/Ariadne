@@ -41,7 +41,10 @@ from typing import Any
 BASE = "docs/evaluation/experiments/small-model-generic-2026-09-13"
 CELLS: dict[tuple[str, str], tuple[str, str]] = {
     ("authored", "none"): (f"{BASE}/twobytwo", "generic_narrator_off"),
-    ("authored", "2B"): (f"{BASE}/narrator-full", "generic_local_narrator"),
+    # Regenerated into `twobytwo` on 2026-09-13 at 23:48 so all four cells come
+    # from ONE tree. The `narrator-full` copy straddled commit 1f507002 and is
+    # kept only as the evidence for I-8.
+    ("authored", "2B"): (f"{BASE}/twobytwo", "generic_local_narrator"),
     ("planner", "none"): (f"{BASE}/twobytwo", "generic_planned"),
     ("planner", "2B"): (f"{BASE}/twobytwo", "generic_planned_local"),
 }

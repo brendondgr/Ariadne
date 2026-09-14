@@ -1,0 +1,28 @@
+{
+ "case_id": "D6-CanPrecede-MAPS_TO[ATTACK]-CAPEC-49-f98517::indirect",
+ "verdict": "PARTIAL",
+ "correctness": 0.8,
+ "faithfulness": 0.7,
+ "groundedness": 0.75,
+ "completeness": 1.0,
+ "gold_expected": 3,
+ "gold_present": 3,
+ "abstained": false,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "The aggregate line lists ATT&CK mappings T1005, T1021.002, T1036.003, T1078, and T1110.001 but omits T1110.004 and T1555.001, which are asserted later.",
+  "The abstention states that CAPEC-49 has no linked records, contradicting the listed CanPrecede successors.",
+  "CAPEC-600 is mapped to OWASP Attacks:Credential stuffing, which is not an ATT&CK technique and is not shown in the visible evidence."
+ ],
+ "rationale": "The answer identifies CAPEC-49 and its CanPrecede successors, and it states all expected techniques T1021.002, T1078, and T1110.004 via CAPEC-561, CAPEC-560, and CAPEC-600. It is over-inclusive by also reporting CAPEC-49's own T1110.001 and extra successor mappings such as T1005, T1036.003, and T1555.001. The contradictory abstention and partially unsupported mapping details prevent a fully correct score.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 16384,
+  "escalated": true,
+  "position": 2
+ }
+}

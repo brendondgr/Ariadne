@@ -1,0 +1,24 @@
+{
+ "case_id": "D4-ChildOf-PeerOf-CAPEC-184-7aa60d::indirect",
+ "verdict": "PARTIAL",
+ "correctness": 0.7,
+ "faithfulness": 0.95,
+ "groundedness": 1.0,
+ "completeness": 1.0,
+ "gold_expected": 3,
+ "gold_present": 3,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer correctly anchors CAPEC-184 and states the expected related patterns CAPEC-124, CAPEC-180, and CAPEC-212, all of which are present in the cited CAPEC record's related list. It also lists additional supported neighbors CAPEC-663, CAPEC-185, CAPEC-186, and CAPEC-669, but it flattens them into a single '7 attack patterns' list rather than distinguishing which patterns narrow down CAPEC-184 from what sits alongside each. Therefore it is grounded and complete on the gold identifiers, but only partially answers the two-part question.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 8192,
+  "escalated": false,
+  "position": 2
+ }
+}

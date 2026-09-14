@@ -1,0 +1,26 @@
+{
+ "case_id": "D6-rev-detects-DET0378-89e617::formal",
+ "verdict": "PARTIAL",
+ "correctness": 0.25,
+ "faithfulness": 0.7,
+ "groundedness": 0.8,
+ "completeness": 0.0,
+ "gold_expected": 2,
+ "gold_present": 0,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "The attack source returned no linked records for DET0378's detected techniques, despite a DETECTS Technique facet count of 1"
+ ],
+ "rationale": "The answer identifies DET0378 but omits the expected CAPEC-267 and CAPEC-542. It abstains on the CAPEC hop because q1 returned no join values and shows the executed attack query, but the evidence also shows a DETECTS Technique facet count of 1, making the 'no linked records' claim weak. No cross-source mapping is asserted, so there is no fabricated mapping.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 16384,
+  "escalated": true,
+  "position": 2
+ }
+}

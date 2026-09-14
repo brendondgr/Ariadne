@@ -1,0 +1,26 @@
+{
+ "case_id": "D5-uses-x_mitre_platforms-C0030-0a2d19::indirect",
+ "verdict": "CORRECT",
+ "correctness": 1.0,
+ "faithfulness": 0.95,
+ "groundedness": 0.95,
+ "completeness": 1.0,
+ "gold_expected": 2,
+ "gold_present": 2,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "The phrase 'restricted to ESXi' can imply exclusivity, while the evidence only shows ESXi is a matching platform via the query filter."
+ ],
+ "rationale": "The answer identifies C0030 and both expected techniques, T1573 and T1036.005, as ESXi-applicable. The evidence's query filtered on ESXi and returned those two neighbours, so the core answer is complete. The only minor unsupported nuance is the potentially exclusive wording 'restricted to ESXi'.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 8192,
+  "escalated": false,
+  "position": 2
+ }
+}

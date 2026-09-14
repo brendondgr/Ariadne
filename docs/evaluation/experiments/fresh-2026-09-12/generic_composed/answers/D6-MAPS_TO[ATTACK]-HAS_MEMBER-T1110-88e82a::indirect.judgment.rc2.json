@@ -1,0 +1,26 @@
+{
+ "case_id": "D6-MAPS_TO[ATTACK]-HAS_MEMBER-T1110-88e82a::indirect",
+ "verdict": "CORRECT",
+ "correctness": 0.95,
+ "faithfulness": 0.85,
+ "groundedness": 0.9,
+ "completeness": 1.0,
+ "gold_expected": 3,
+ "gold_present": 3,
+ "abstained": false,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "The capec source doesn't establish this \u2014 the executed query ran cleanly and returned CAPEC-112 with no linked records for: For each of those: the CAPEC categories that contain each of those."
+ ],
+ "rationale": "The answer correctly identifies CAPEC-112 as the CAPEC attack pattern mapped to T1110 and states the requested categories CAPEC-223 and CAPEC-513, all supported by the evidence. The main weakness is a residual abstention claiming no linked category records, which is contradicted by the MEMBER_OF results for CAPEC-223 and CAPEC-513. Overall, it answers the question with only a minor faithfulness issue.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 8192,
+  "escalated": false,
+  "position": 2
+ }
+}

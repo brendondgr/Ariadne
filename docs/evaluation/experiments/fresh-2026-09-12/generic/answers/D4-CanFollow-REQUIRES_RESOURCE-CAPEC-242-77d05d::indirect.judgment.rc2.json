@@ -1,0 +1,26 @@
+{
+ "case_id": "D4-CanFollow-REQUIRES_RESOURCE-CAPEC-242-77d05d::indirect",
+ "verdict": "CORRECT",
+ "correctness": 0.9,
+ "faithfulness": 0.9,
+ "groundedness": 0.95,
+ "completeness": 1.0,
+ "gold_expected": 2,
+ "gold_present": 2,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "The resource is described as 'named only as text' although the evidence gives its name as capec:attack-pattern:234:resource:1 and the quoted text as its description."
+ ],
+ "rationale": "The answer identifies CAPEC-242 and the expected resource text, and it also names the following pattern CAPEC-234. It is grounded in the CAPEC-242 record and its related CAPEC-234/resource entries. Minor imprecision in calling the resource 'named only as text' and not explicitly tying the resource to CAPEC-234 prevents a perfect score.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 8192,
+  "escalated": false,
+  "position": 2
+ }
+}

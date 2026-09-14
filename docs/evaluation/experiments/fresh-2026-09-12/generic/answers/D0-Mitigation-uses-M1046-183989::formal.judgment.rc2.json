@@ -1,0 +1,29 @@
+{
+ "case_id": "D0-Mitigation-uses-M1046-183989::formal",
+ "verdict": "PARTIAL",
+ "correctness": 0.7,
+ "faithfulness": 0.6,
+ "groundedness": 0.6,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "M1046 has 18 pieces of software: S1218, S0606, S0266, S0519, S9013, S0664, S0009, S0089, S1148, S1213, S0114, S0112, S0484, S0182, S0689, S0001, S0397, S0047",
+  "M1046 has 9 groups: G1048, G0010, G0087, G1003, G0049, G0034, G0032, G0007, G0096",
+  "M1046 has 1 campaign: C0063",
+  "M1046 mitigates T1195.003, T1542.005, T1542.003, and T1542.001"
+ ],
+ "rationale": "The answer states the required anchor M1046 and lists 18 software identifiers, which addresses the malware/tools request. However, the visible evidence only shows 10 MITIGATES-related technique records, while the answer also asserts 18 software, 9 groups, 1 campaign, and four additional subtechnique identifiers not shown in the visible related records. Because the only required gold identifier is present, completeness is full, but the extra unsupported enumerations make the answer partial rather than fully correct.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 16384,
+  "escalated": true,
+  "position": 2
+ }
+}

@@ -1,0 +1,24 @@
+{
+ "case_id": "D4-CanPrecede-REQUIRES_SKILL-CAPEC-184-4ecd2e::formal",
+ "verdict": "PARTIAL",
+ "correctness": 0.75,
+ "faithfulness": 0.95,
+ "groundedness": 0.9,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer identifies CAPEC-691 and the expected skill text, \u201cAbility to spoof a variety of software metadata to convince victims the source is trusted,\u201d which is the gold skill associated with capec:attack-pattern:691:skill:1. It is slightly imprecise because it says CAPEC-184 \u201chas\u201d CAPEC-691 and a skill rather than explicitly stating that CAPEC-691 can precede CAPEC-184 and requires that skill. The claims are grounded in the CAPEC-184 record and its related CAPEC-691 and skill entries.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 8192,
+  "escalated": false,
+  "position": 2
+ }
+}

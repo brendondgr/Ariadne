@@ -1,0 +1,29 @@
+{
+ "case_id": "D6-MAPS_TO[ATTACK]-MAPS_TO[WASC]-T1498.001-8781ac::analyst",
+ "verdict": "PARTIAL",
+ "correctness": 0.4,
+ "faithfulness": 0.75,
+ "groundedness": 0.8,
+ "completeness": 0.5,
+ "gold_expected": 2,
+ "gold_present": 1,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "CAPEC-125 (Flooding) has 1 ATT&CK mapping: T1498.001",
+  "CAPEC-482 (TCP Flood) has 1 ATT&CK mapping: T1498.001",
+  "CAPEC-528 (XML Flood) has 1 ATT&CK mapping: T1498.001",
+  "CAPEC-666 (BlueSmacking) has 1 ATT&CK mapping: T1498.001"
+ ],
+ "rationale": "The answer states the anchor T1498.001 and the CAPEC patterns CAPEC-125, CAPEC-482, CAPEC-528, and CAPEC-666, but it never states the expected WASC:10. It also gives inconsistent ATT&CK mapping counts, first claiming each CAPEC pattern has only T1498.001 and later listing additional mappings such as T1499, T1499.001, and T1499.002. This makes it partially correct and mostly grounded, with a faithfulness deduction for the contradictory count claims.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 8192,
+  "escalated": false,
+  "position": 2
+ }
+}

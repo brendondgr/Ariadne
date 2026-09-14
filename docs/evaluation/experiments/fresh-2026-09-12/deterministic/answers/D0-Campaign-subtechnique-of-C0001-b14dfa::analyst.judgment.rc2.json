@@ -1,0 +1,24 @@
+{
+ "case_id": "D0-Campaign-subtechnique-of-C0001-b14dfa::analyst",
+ "verdict": "INCORRECT",
+ "correctness": 0.2,
+ "faithfulness": 0.9,
+ "groundedness": 0.7,
+ "completeness": 0.0,
+ "gold_expected": 1,
+ "gold_present": 0,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer lists 13 technique IDs such as T1105, T1221, T1203, T1041, and T1057 as the results, but it never states the required anchor C0001. The evidence query is Campaign-[:USES]->Technique, not a sub-technique mapping, and the expected neighbor set is empty. Thus the answer is grounded in the retrieved technique records but incomplete and misaligned with the asked sub-technique relationship.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 16384,
+  "escalated": true,
+  "position": 2
+ }
+}

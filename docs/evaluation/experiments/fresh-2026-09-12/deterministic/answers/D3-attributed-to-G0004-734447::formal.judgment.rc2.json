@@ -1,0 +1,26 @@
+{
+ "case_id": "D3-attributed-to-G0004-734447::formal",
+ "verdict": "PARTIAL",
+ "correctness": 0.6,
+ "faithfulness": 0.5,
+ "groundedness": 0.8,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "C0052 has no ATTRIBUTED_TO relationships in this catalogue"
+ ],
+ "rationale": "The answer states the expected campaign C0052, SPACEHOP Activity, as related to group G0004, which satisfies the gold identifier. However, it also claims that C0052 has no ATTRIBUTED_TO relationships, which is contradicted by the query result showing C0052 attributed to G0004. This makes the answer partially correct: the key campaign is present, but the attribution is muddled and one claim is unsupported.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 8192,
+  "escalated": false,
+  "position": 2
+ }
+}

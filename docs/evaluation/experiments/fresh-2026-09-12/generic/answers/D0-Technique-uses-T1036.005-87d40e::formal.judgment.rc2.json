@@ -1,0 +1,28 @@
+{
+ "case_id": "D0-Technique-uses-T1036.005-87d40e::formal",
+ "verdict": "CORRECT",
+ "correctness": 0.9,
+ "faithfulness": 0.8,
+ "groundedness": 0.85,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "61 groups",
+  "140 pieces of software",
+  "15 campaigns"
+ ],
+ "rationale": "The answer identifies T1036.005 and lists software neighbors such as S0500 and S1063, which addresses the requested malware/tools. It also adds unasked group and campaign IDs such as G0004 and C0056, and the exact 61/140/15 breakdown is not fully visible in the truncated evidence, so faithfulness is reduced. No cross-source mapping is asserted.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 8192,
+  "escalated": false,
+  "position": 2
+ }
+}

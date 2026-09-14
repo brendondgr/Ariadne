@@ -1,0 +1,26 @@
+{
+ "case_id": "D3-uses-T1608.005-77b30b::analyst",
+ "verdict": "CORRECT",
+ "correctness": 0.9,
+ "faithfulness": 0.6,
+ "groundedness": 0.8,
+ "completeness": 1.0,
+ "gold_expected": 2,
+ "gold_present": 2,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "T1608.005 has no USES relationships in this catalogue"
+ ],
+ "rationale": "The answer names both expected campaigns, C0059 and C0060, as using T1608.005, which matches the query result and related records. It also asserts that T1608.005 has no USES relationships, an absence not supported by the evidence and inconsistent with the Campaign-USES->Technique rows found. Completeness is full, but faithfulness is reduced by that unsupported absence claim.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 8192,
+  "escalated": false,
+  "position": 2
+ }
+}

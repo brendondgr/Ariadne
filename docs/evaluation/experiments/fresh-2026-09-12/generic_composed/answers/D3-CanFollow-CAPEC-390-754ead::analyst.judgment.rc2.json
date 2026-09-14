@@ -1,0 +1,26 @@
+{
+ "case_id": "D3-CanFollow-CAPEC-390-754ead::analyst",
+ "verdict": "CORRECT",
+ "correctness": 0.9,
+ "faithfulness": 0.85,
+ "groundedness": 0.9,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "The directional claim that CAPEC-665 is a CanFollow predecessor of CAPEC-390 is not explicitly stated in the evidence, which only shows a CAN_FOLLOW relation."
+ ],
+ "rationale": "The answer states the expected gold identifier CAPEC-665 as a CanFollow-related pattern for CAPEC-390, satisfying the question's expected set. It also correctly reports CAPEC-390's name, description, Abstraction, and Status from the cited CAPEC record. The minor deduction is for the unsupported directional term 'predecessor,' since the evidence shows a CAN_FOLLOW relation but not the direction explicitly.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 8192,
+  "escalated": false,
+  "position": 2
+ }
+}

@@ -1,0 +1,26 @@
+{
+ "case_id": "D6-MAPS_TO[ATTACK]-HAS_MEMBER-T1552.001-85a91e::analyst",
+ "verdict": "PARTIAL",
+ "correctness": 0.85,
+ "faithfulness": 0.75,
+ "groundedness": 0.9,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "The capec source doesn't establish this \u2014 the executed query ran cleanly and returned CAPEC-191 with no linked records"
+ ],
+ "rationale": "The answer correctly identifies CAPEC-703 as the view containing CAPEC-191, and it correctly ties CAPEC-191 and CAPEC-639 to T1552.001. The main weakness is the contradictory abstention claiming no linked records, even though the evidence shows CAPEC-191 related to CAPEC-703.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 8192,
+  "escalated": false,
+  "position": 2
+ }
+}

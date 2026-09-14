@@ -1,0 +1,26 @@
+{
+ "case_id": "D2-REQUIRES_RESOURCE-CAPEC-15-57bda0::formal",
+ "verdict": "CORRECT",
+ "correctness": 1.0,
+ "faithfulness": 0.95,
+ "groundedness": 1.0,
+ "completeness": 1.0,
+ "gold_expected": 2,
+ "gold_present": 2,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "The resource is described as 'named only as text', although the evidence also provides an id/name for capec:attack-pattern:15:resource:1."
+ ],
+ "rationale": "The answer correctly identifies CAPEC-15 and its required resource, quoting the exact REQUIRES_RESOURCE description for capec:attack-pattern:15:resource:1. It is grounded in the cited CAPEC-15 record and its related resource. The only minor unsupported nuance is the phrase 'named only as text', since the resource record also has an id/name.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 8192,
+  "escalated": false,
+  "position": 2
+ }
+}

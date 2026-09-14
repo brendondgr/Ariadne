@@ -1,0 +1,26 @@
+{
+ "case_id": "D5-x_mitre_analytic_refs-x_mitre_platforms-DET0132-7dbeb7::formal",
+ "verdict": "PARTIAL",
+ "correctness": 0.7,
+ "faithfulness": 0.7,
+ "groundedness": 0.7,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "AN0373 applies to Mac systems"
+ ],
+ "rationale": "The answer includes the expected AN0374 and correctly states that DET0132 is related to AN0373, AN0374, and AN0372. However, it also asserts that AN0373 applies to Mac systems, which is not explicitly supported by the provided record and is not part of the expected gold set. This makes the answer partial rather than fully correct, while completeness remains full because the only expected analytic is present.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 8192,
+  "escalated": false,
+  "position": 2
+ }
+}

@@ -1,0 +1,26 @@
+{
+ "case_id": "D3-detects-T1010-5cc680::formal",
+ "verdict": "PARTIAL",
+ "correctness": 0.5,
+ "faithfulness": 0.6,
+ "groundedness": 0.8,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "T1010 has no DETECTS relationships in this catalogue"
+ ],
+ "rationale": "The answer includes the expected detection strategy DET0097 for T1010, so completeness is full. However, it also claims T1010 has no DETECTS relationships, which is inconsistent with the DETECTS query returning DET0097-related results. It further mixes in analytics AN0271, AN0272, and AN0273 rather than clearly identifying DET0097 as the detecting strategy.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 8192,
+  "escalated": false,
+  "position": 2
+ }
+}

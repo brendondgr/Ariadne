@@ -1,0 +1,26 @@
+{
+ "case_id": "D0-Technique-uses-T1036.005-87d40e::formal",
+ "verdict": "PARTIAL",
+ "correctness": 0.65,
+ "faithfulness": 0.75,
+ "groundedness": 0.85,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "S0500 has no USES relationships in this catalogue"
+ ],
+ "rationale": "The answer includes the required anchor T1036.005 and enumerates many software identifiers such as S0500, S1063, and S1050 as related to it, so it does address the query. However, it also asserts that S0500 has no USES relationships while listing it among records associated with T1036.005, and the gold expectation only requires T1036.005, making the large set of extra S IDs over-asserted. The claims are mostly tied to cited attack records, but the uncited no-USES statement reduces faithfulness.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 16384,
+  "escalated": true,
+  "position": 2
+ }
+}

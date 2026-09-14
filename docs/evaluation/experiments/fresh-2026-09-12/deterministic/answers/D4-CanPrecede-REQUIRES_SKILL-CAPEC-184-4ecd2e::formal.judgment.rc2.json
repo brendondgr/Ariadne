@@ -1,0 +1,26 @@
+{
+ "case_id": "D4-CanPrecede-REQUIRES_SKILL-CAPEC-184-4ecd2e::formal",
+ "verdict": "INCORRECT",
+ "correctness": 0.2,
+ "faithfulness": 0.9,
+ "groundedness": 0.9,
+ "completeness": 0.0,
+ "gold_expected": 1,
+ "gold_present": 0,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "The skill text is quoted as beginning with 'Medium', whereas the evidence has level 'Medium' and a description beginning with 'Manual...'"
+ ],
+ "rationale": "The answer centers on CAPEC-184 and its related skill capec:attack-pattern:184:skill:1, but the question asks for skills required by attack patterns that can precede CAPEC-184. It does not state the expected skill 'Ability to spoof a variety of software metadata to convince victims the source is trusted.' or any preceding attack pattern. The statements are mostly grounded in the CAPEC-184 record, but the final text misses the requested predecessor skills.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 8192,
+  "escalated": false,
+  "position": 2
+ }
+}

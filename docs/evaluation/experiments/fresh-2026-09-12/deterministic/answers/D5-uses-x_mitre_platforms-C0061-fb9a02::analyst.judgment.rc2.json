@@ -1,0 +1,26 @@
+{
+ "case_id": "D5-uses-x_mitre_platforms-C0061-fb9a02::analyst",
+ "verdict": "PARTIAL",
+ "correctness": 0.6,
+ "faithfulness": 0.6,
+ "groundedness": 0.7,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "C0061 has no USES relationships in this catalogue"
+ ],
+ "rationale": "The answer includes the expected related identifier S9028 and the anchor C0061, so it captures the gold entity. However, it also claims C0061 has no USES relationships, which is contradicted by the executed USES query returning four related software records. It lists S0097, S0002, S0225, and S9028 as related items rather than explicitly identifying which apply to the Network Devices platform, making it only partially correct.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 8192,
+  "escalated": false,
+  "position": 2
+ }
+}

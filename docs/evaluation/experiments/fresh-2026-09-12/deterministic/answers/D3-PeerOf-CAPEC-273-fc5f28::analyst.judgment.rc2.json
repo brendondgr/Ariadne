@@ -1,0 +1,24 @@
+{
+ "case_id": "D3-PeerOf-CAPEC-273-fc5f28::analyst",
+ "verdict": "INCORRECT",
+ "correctness": 0.2,
+ "faithfulness": 1.0,
+ "groundedness": 1.0,
+ "completeness": 0.0,
+ "gold_expected": 1,
+ "gold_present": 0,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer states only CAPEC-273 and its attributes, but the expected peer is CAPEC-33. It does not assert any PEER_OF target, so it describes the anchor rather than answering the peer question. No unsupported cross-source mapping is claimed.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 8192,
+  "escalated": false,
+  "position": 2
+ }
+}

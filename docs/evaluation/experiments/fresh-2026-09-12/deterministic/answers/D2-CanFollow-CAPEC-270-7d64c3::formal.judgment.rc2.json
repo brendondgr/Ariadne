@@ -1,0 +1,24 @@
+{
+ "case_id": "D2-CanFollow-CAPEC-270-7d64c3::formal",
+ "verdict": "PARTIAL",
+ "correctness": 0.3,
+ "faithfulness": 1.0,
+ "groundedness": 1.0,
+ "completeness": 0.5,
+ "gold_expected": 2,
+ "gold_present": 1,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer correctly identifies and describes CAPEC-270, but it never states the expected preceding pattern CAPEC-555. It therefore satisfies the anchor identifier requirement while missing the requested related identifier, making it partial rather than correct. All stated properties are directly supported by the CAPEC-270 record, so no hallucination or fabricated mapping is present.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 8192,
+  "escalated": false,
+  "position": 2
+ }
+}

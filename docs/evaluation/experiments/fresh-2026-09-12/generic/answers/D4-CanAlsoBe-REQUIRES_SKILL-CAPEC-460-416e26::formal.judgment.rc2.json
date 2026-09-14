@@ -1,0 +1,26 @@
+{
+ "case_id": "D4-CanAlsoBe-REQUIRES_SKILL-CAPEC-460-416e26::formal",
+ "verdict": "CORRECT",
+ "correctness": 0.9,
+ "faithfulness": 0.85,
+ "groundedness": 0.9,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "The skill is described as 'named only as text' and quoted with the level 'Medium' prepended to the description, although the evidence gives it identifier capec:attack-pattern:174:skill:1, level Medium, and the description separately."
+ ],
+ "rationale": "The answer identifies CAPEC-460 and the expected skill text associated with CAPEC-174, which satisfies the question. It is grounded in the CAPEC-460 record and the related capec:attack-pattern:174:skill:1 evidence. The main weakness is the slightly unsupported phrasing that the skill is 'named only as text' and the merging of the level into the quoted skill text.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 8192,
+  "escalated": false,
+  "position": 2
+ }
+}

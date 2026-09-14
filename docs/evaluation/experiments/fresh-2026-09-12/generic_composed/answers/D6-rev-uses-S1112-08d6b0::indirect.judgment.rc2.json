@@ -1,0 +1,28 @@
+{
+ "case_id": "D6-rev-uses-S1112-08d6b0::indirect",
+ "verdict": "PARTIAL",
+ "correctness": 0.2,
+ "faithfulness": 0.5,
+ "groundedness": 0.5,
+ "completeness": 0.0,
+ "gold_expected": 1,
+ "gold_present": 0,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "S1112 has 2 used techniques: T1105, T1140",
+  "S1112 has 3 used techniques: T1071.001, T1505.003, T1132.001",
+  "the executed query returned S1112 with no linked records"
+ ],
+ "rationale": "The answer identifies S1112 and its ATT&CK techniques, including T1105, T1140, T1071.001, T1505.003, and T1132.001, but it never states the expected CAPEC-650 mapping. It abstains from CAPEC and shows the q1 query, but its attack abstention falsely says the query returned no linked records despite five related technique records. This makes it partially responsive and grounded, but incomplete for the asked CAPEC attack patterns.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 8192,
+  "escalated": false,
+  "position": 2
+ }
+}

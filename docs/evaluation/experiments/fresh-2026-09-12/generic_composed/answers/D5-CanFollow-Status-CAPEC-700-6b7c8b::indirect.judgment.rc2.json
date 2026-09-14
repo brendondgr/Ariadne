@@ -1,0 +1,26 @@
+{
+ "case_id": "D5-CanFollow-Status-CAPEC-700-6b7c8b::indirect",
+ "verdict": "PARTIAL",
+ "correctness": 0.6,
+ "faithfulness": 0.8,
+ "groundedness": 0.9,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "CAPEC-700 has 2 CanFollow predecessors (the evidence lists CAN_FOLLOW neighbors but not their direction)"
+ ],
+ "rationale": "The answer states the expected stable predecessor CAPEC-560 and the anchor CAPEC-700, but it does not explicitly identify CAPEC-560 as the stable one. It also lists CAPEC-70, which the evidence marks Draft, as a CanFollow predecessor. The directional predecessor claim is not fully explicit in the related records, which only show CAN_FOLLOW neighbors.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 8192,
+  "escalated": false,
+  "position": 2
+ }
+}

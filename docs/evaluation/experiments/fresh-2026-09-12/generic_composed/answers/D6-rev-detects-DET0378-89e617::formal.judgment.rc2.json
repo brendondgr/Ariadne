@@ -1,0 +1,27 @@
+{
+ "case_id": "D6-rev-detects-DET0378-89e617::formal",
+ "verdict": "PARTIAL",
+ "correctness": 0.3,
+ "faithfulness": 0.5,
+ "groundedness": 0.6,
+ "completeness": 0.33,
+ "gold_expected": 3,
+ "gold_present": 1,
+ "abstained": true,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "The attack source returned DET0378 with no linked records",
+  "q1 produced no seed identifiers"
+ ],
+ "rationale": "The answer identifies DET0378 and its detected technique T1027, but it never states the expected CAPEC-267 or CAPEC-542 attack patterns. It abstains on CAPEC, yet the capec abstention has no executed query and the attack abstention contradicts the evidence by claiming no linked records. Therefore it is partial rather than correct.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 8192,
+  "escalated": false,
+  "position": 2
+ }
+}

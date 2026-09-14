@@ -1,0 +1,26 @@
+{
+ "case_id": "D0-Software-attributed-to-S1051-02643e::indirect",
+ "verdict": "PARTIAL",
+ "correctness": 0.7,
+ "faithfulness": 0.8,
+ "groundedness": 0.9,
+ "completeness": 1.0,
+ "gold_expected": 2,
+ "gold_present": 2,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "S1051 has no ATTRIBUTED_TO relationships in this catalogue"
+ ],
+ "rationale": "The answer identifies S1051 KEYPLUG and the related group G0096 APT41, and also mentions campaign C0017, all present in the S1051 record. It is partial because it says S1051 has no ATTRIBUTED_TO relationships, which is not explicitly established by the USES-only evidence and slightly undercuts the attribution question. The absence claim is the main unsupported assertion.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 16384,
+  "escalated": true,
+  "position": 2
+ }
+}

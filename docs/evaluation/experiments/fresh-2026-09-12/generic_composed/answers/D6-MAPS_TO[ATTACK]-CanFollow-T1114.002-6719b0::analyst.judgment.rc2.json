@@ -1,0 +1,27 @@
+{
+ "case_id": "D6-MAPS_TO[ATTACK]-CanFollow-T1114.002-6719b0::analyst",
+ "verdict": "PARTIAL",
+ "correctness": 0.6,
+ "faithfulness": 0.7,
+ "groundedness": 0.8,
+ "completeness": 1.0,
+ "gold_expected": 2,
+ "gold_present": 2,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "CAPEC-555 has 1 CanFollow predecessor: CAPEC-270",
+  "The capec source doesn't establish this and returned CAPEC-555 with no linked records for the CanFollow question"
+ ],
+ "rationale": "The answer correctly connects T1114.002 to CAPEC-555 and mentions the expected related pattern CAPEC-270. However, it labels CAPEC-270 as a CanFollow predecessor rather than clearly stating it as a pattern that can follow the T1114.002-corresponding pattern, and it includes a contradictory abstention saying no linked records were found. The core identifiers are grounded in the CAPEC evidence, but the direction and abstention claims are not fully supported.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 8192,
+  "escalated": false,
+  "position": 2
+ }
+}

@@ -1,0 +1,26 @@
+{
+ "case_id": "D6-CanFollow-MAPS_TO[ATTACK]-CAPEC-700-1e6d60::formal",
+ "verdict": "CORRECT",
+ "correctness": 0.9,
+ "faithfulness": 0.85,
+ "groundedness": 0.9,
+ "completeness": 1.0,
+ "gold_expected": 2,
+ "gold_present": 2,
+ "abstained": false,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "CAPEC-700 has no linked predecessor records"
+ ],
+ "rationale": "The answer identifies the expected predecessor patterns CAPEC-560 and CAPEC-70 for CAPEC-700 and states their ATT&CK mappings T1078 and T1078.001, which satisfies the gold set. It also includes the supported but unasked CAPEC-700 mapping T1599 and contains a contradictory abstention saying no predecessor records were found. These minor issues reduce faithfulness, but the core question is answered.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 8192,
+  "escalated": false,
+  "position": 2
+ }
+}

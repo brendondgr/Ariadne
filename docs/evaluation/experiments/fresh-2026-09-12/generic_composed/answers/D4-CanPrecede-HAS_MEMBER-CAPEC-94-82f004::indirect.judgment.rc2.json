@@ -1,0 +1,24 @@
+{
+ "case_id": "D4-CanPrecede-HAS_MEMBER-CAPEC-94-82f004::indirect",
+ "verdict": "PARTIAL",
+ "correctness": 0.5,
+ "faithfulness": 0.8,
+ "groundedness": 0.7,
+ "completeness": 1.0,
+ "gold_expected": 2,
+ "gold_present": 2,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer states the anchor CAPEC-94 and includes both expected categories CAPEC-210 and CAPEC-512. However, it presents the related attack patterns and categories as attributes of CAPEC-94 rather than explicitly identifying which patterns can precede CAPEC-94 and which categories contain each of those patterns. All listed identifiers are present in the CAPEC evidence, so it is grounded but only partially answers the two-hop question.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 8192,
+  "escalated": false,
+  "position": 2
+ }
+}

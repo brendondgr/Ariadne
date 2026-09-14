@@ -1,0 +1,24 @@
+{
+ "case_id": "D4-CanPrecede-HAS_MEMBER-CAPEC-94-82f004::indirect",
+ "verdict": "PARTIAL",
+ "correctness": 0.65,
+ "faithfulness": 0.85,
+ "groundedness": 0.85,
+ "completeness": 1.0,
+ "gold_expected": 2,
+ "gold_present": 2,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer correctly centers on CAPEC-94 and includes the expected related identifiers CAPEC-210 and CAPEC-512, as well as attack-pattern neighbors such as CAPEC-668, CAPEC-151, CAPEC-383, CAPEC-697, and CAPEC-216. However, it presents these as generic 'has' relations rather than explicitly stating which patterns can precede CAPEC-94 and which categories contain each of those patterns. It is therefore grounded and complete on the gold identifiers, but only partially answers the requested two-hop relationship.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 8192,
+  "escalated": false,
+  "position": 2
+ }
+}

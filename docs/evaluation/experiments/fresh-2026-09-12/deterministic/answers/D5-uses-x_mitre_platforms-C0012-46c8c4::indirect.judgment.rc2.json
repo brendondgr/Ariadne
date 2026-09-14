@@ -1,0 +1,26 @@
+{
+ "case_id": "D5-uses-x_mitre_platforms-C0012-46c8c4::indirect",
+ "verdict": "PARTIAL",
+ "correctness": 0.6,
+ "faithfulness": 0.7,
+ "groundedness": 0.8,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "C0012 has no USES relationships in this catalogue"
+ ],
+ "rationale": "The answer includes the expected related identifier S0105 and the anchor C0012, so completeness is full. However, it does not explicitly state that S0105 is the Windows-running tool, and it also lists S0096 without tying the result to the Windows constraint. The claim that C0012 has no USES relationships is not supported by the shown query, which returned two related software items.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 8192,
+  "escalated": false,
+  "position": 2
+ }
+}

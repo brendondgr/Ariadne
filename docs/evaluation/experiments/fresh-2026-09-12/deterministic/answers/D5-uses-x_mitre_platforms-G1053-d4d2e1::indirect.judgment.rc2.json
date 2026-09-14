@@ -1,0 +1,26 @@
+{
+ "case_id": "D5-uses-x_mitre_platforms-G1053-d4d2e1::indirect",
+ "verdict": "PARTIAL",
+ "correctness": 0.6,
+ "faithfulness": 0.7,
+ "groundedness": 0.8,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "G1053 has no USES relationships in this catalogue"
+ ],
+ "rationale": "The answer includes the expected related identifier S1247 (Embargo) among the software related to G1053, so the gold item is present. However, it does not explicitly identify S1247 as the ESXi-relevant item and instead lists all eight related software items, including Windows-oriented tools such as S0359, S0057, and S0039. It also asserts that G1053 has no USES relationships, which is inconsistent with the executed USES query returning eight rows.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 8192,
+  "escalated": false,
+  "position": 2
+ }
+}

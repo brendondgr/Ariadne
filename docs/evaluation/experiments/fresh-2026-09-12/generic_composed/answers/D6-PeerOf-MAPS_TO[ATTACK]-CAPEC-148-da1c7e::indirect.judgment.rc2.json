@@ -1,0 +1,26 @@
+{
+ "case_id": "D6-PeerOf-MAPS_TO[ATTACK]-CAPEC-148-da1c7e::indirect",
+ "verdict": "CORRECT",
+ "correctness": 0.95,
+ "faithfulness": 0.8,
+ "groundedness": 0.9,
+ "completeness": 1.0,
+ "gold_expected": 3,
+ "gold_present": 3,
+ "abstained": false,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "The capec source returned CAPEC-148 with no linked peer records"
+ ],
+ "rationale": "The answer identifies CAPEC-665 as the peer of CAPEC-148 and lists the peer's ATT&CK mappings T1211, T1542.002, and T1556, which are the expected gold techniques. It also correctly reports CAPEC-148's own mappings T1491, OWASP Attacks:Content Spoofing, and WASC:12. The main weakness is the abstention claiming no linked peer records, which conflicts with the CAPEC-665 PEER_OF evidence.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 8192,
+  "escalated": false,
+  "position": 2
+ }
+}

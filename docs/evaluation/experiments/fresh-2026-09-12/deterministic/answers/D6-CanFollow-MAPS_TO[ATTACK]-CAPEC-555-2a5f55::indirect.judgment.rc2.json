@@ -1,0 +1,24 @@
+{
+ "case_id": "D6-CanFollow-MAPS_TO[ATTACK]-CAPEC-555-2a5f55::indirect",
+ "verdict": "INCORRECT",
+ "correctness": 0.2,
+ "faithfulness": 1.0,
+ "groundedness": 0.8,
+ "completeness": 0.0,
+ "gold_expected": 2,
+ "gold_present": 0,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer reports CAPEC-555 and its direct ATT&CK mappings T1021, T1114.002, and T1133, but the question asks for techniques mapping to attack patterns that can follow CAPEC-555. It omits the expected follow-on techniques T1547.001 and T1547.014, so it does not answer the two-hop query. Its statements are supported by the CAPEC-555 record, but it is not an abstention and it fails to state the gold techniques.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 8192,
+  "escalated": false,
+  "position": 2
+ }
+}

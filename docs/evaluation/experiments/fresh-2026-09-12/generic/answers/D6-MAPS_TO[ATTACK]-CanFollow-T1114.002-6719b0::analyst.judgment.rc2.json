@@ -1,0 +1,27 @@
+{
+ "case_id": "D6-MAPS_TO[ATTACK]-CanFollow-T1114.002-6719b0::analyst",
+ "verdict": "PARTIAL",
+ "correctness": 0.7,
+ "faithfulness": 0.7,
+ "groundedness": 0.8,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": false,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "CAPEC-555 has 1 CanFollow predecessor: CAPEC-270 (the evidence shows a CAN_FOLLOW related record, but not that CAPEC-270 is specifically a predecessor)",
+  "The capec source doesn\u2019t establish this \u2014 the executed query ran cleanly and returned CAPEC-555 with no linked records (contradicted by the q2 record containing CAPEC-270 as a CAN_FOLLOW related item)"
+ ],
+ "rationale": "The answer correctly identifies T1114.002, maps it to CAPEC-555, and states the expected related identifier CAPEC-270, so completeness is full. However, it calls CAPEC-270 a 'CanFollow predecessor' and includes an inconsistent abstention saying no linked records were found, while the evidence contains CAPEC-270 as a CAN_FOLLOW related record. These issues make the answer partial rather than fully correct.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 8192,
+  "escalated": false,
+  "position": 2
+ }
+}

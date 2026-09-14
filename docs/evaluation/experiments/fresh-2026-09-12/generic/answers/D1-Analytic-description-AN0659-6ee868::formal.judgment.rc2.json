@@ -1,0 +1,26 @@
+{
+ "case_id": "D1-Analytic-description-AN0659-6ee868::formal",
+ "verdict": "CORRECT",
+ "correctness": 1.0,
+ "faithfulness": 0.85,
+ "groundedness": 0.95,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "No entity named 'DetectionStrategy' or 'AN0659' or 'ANALYTIC' was found in the attack source"
+ ],
+ "rationale": "The answer states the required identifier AN0659 and the exact expected description, so it fully answers the question. The main claims are grounded in the AN0659 record, including its description, stix_type, domains, and platforms. The only weakness is the abstention claiming no AN0659/DetectionStrategy entity was found, which is inconsistent with the retrieved AN0659 record and its DetectionStrategy facet, but it does not change the requested answer.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 8192,
+  "escalated": false,
+  "position": 2
+ }
+}

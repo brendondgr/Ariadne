@@ -1,0 +1,26 @@
+{
+ "case_id": "D1-AttackPattern-Typical_Severity-CAPEC-28-6d85e0::formal",
+ "verdict": "CORRECT",
+ "correctness": 1.0,
+ "faithfulness": 0.9,
+ "groundedness": 0.95,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "CAPEC-215 is asserted as a ChildOf parent of CAPEC-28, but the evidence only shows a CHILD_OF relation without confirming that direction."
+ ],
+ "rationale": "The answer directly states that CAPEC-28 (Fuzzing) has Typical_Severity Medium, which is the expected severity. It also includes supported CAPEC-28 properties and the related CAPEC-215 record, though the 'parent' direction is not explicitly established. No cross-source mapping is asserted, and the required CAPEC-28 and Medium identifiers are present.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 8192,
+  "escalated": false,
+  "position": 2
+ }
+}

@@ -1,0 +1,26 @@
+{
+ "case_id": "D6-HAS_MEMBER-MAPS_TO[ATTACK]-CAPEC-223-449b1c::indirect",
+ "verdict": "CORRECT",
+ "correctness": 0.9,
+ "faithfulness": 0.85,
+ "groundedness": 0.9,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "The abstention states that CAPEC-223 has no linked attack patterns, but the evidence shows CAPEC-28 and CAPEC-112 as MEMBER_OF related records."
+ ],
+ "rationale": "The answer correctly identifies CAPEC-223 and traces its grouped attack patterns CAPEC-28 and CAPEC-112. It states the expected ATT&CK technique T1110 as the mapping for CAPEC-112, satisfying the query. The main weakness is the contradictory abstention claiming no linked records for CAPEC-223, which is not supported by the returned MEMBER_OF evidence.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 8192,
+  "escalated": false,
+  "position": 2
+ }
+}

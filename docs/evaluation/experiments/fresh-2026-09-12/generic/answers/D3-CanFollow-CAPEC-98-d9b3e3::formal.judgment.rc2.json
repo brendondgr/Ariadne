@@ -1,0 +1,26 @@
+{
+ "case_id": "D3-CanFollow-CAPEC-98-d9b3e3::formal",
+ "verdict": "CORRECT",
+ "correctness": 0.9,
+ "faithfulness": 0.85,
+ "groundedness": 0.95,
+ "completeness": 1.0,
+ "gold_expected": 2,
+ "gold_present": 2,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "CAPEC-98 has 2 CanFollow predecessors: CAPEC-701, CAPEC-186"
+ ],
+ "rationale": "The answer directly identifies the two expected related patterns, CAPEC-701 and CAPEC-186, as patterns that can follow CAPEC-98. These identifiers are present in the CAPEC-98 evidence record as related CAN_FOLLOW entries. The main weakness is the unsupported directional wording 'CanFollow predecessors,' because the evidence shows related CAN_FOLLOW neighbors but does not explicitly establish predecessor direction.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 8192,
+  "escalated": false,
+  "position": 2
+ }
+}

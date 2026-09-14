@@ -1,0 +1,24 @@
+{
+ "case_id": "D4-uses-uses-G0131-c7f01d::indirect",
+ "verdict": "PARTIAL",
+ "correctness": 0.75,
+ "faithfulness": 0.9,
+ "groundedness": 0.85,
+ "completeness": 1.0,
+ "gold_expected": 72,
+ "gold_present": 72,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer identifies G0131 and all 71 expected technique identifiers, including T1003.001, T1555.004, and T1680, plus the six software IDs S0349, S0590, S0008, S0002, S0596, and S0268. It partially answers the 'what each does' part by mapping techniques to those software items via the cited G0131 record, but it does not state the software descriptions present in the evidence. No cross-source mapping is asserted, and the main deduction is for the indirect, enumeration-only treatment of the tooling functions.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 16384,
+  "escalated": true,
+  "position": 2
+ }
+}

@@ -1,0 +1,26 @@
+{
+ "case_id": "D5-uses-x_mitre_platforms-C0032-56aeb6::analyst",
+ "verdict": "PARTIAL",
+ "correctness": 0.5,
+ "faithfulness": 0.7,
+ "groundedness": 0.6,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "T1571 has no USES relationships in this catalogue"
+ ],
+ "rationale": "The answer includes the expected technique T1078, but it does not explicitly state that C0032 uses it or address the Office Suite platform constraint. It also lists additional techniques T1571, T1572, and T1133, which are present in the retrieved records but are not clearly tied to the asked platform applicability. The absence claim about T1571 is weakly supported because the query itself shows a USES edge involving T1571.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 8192,
+  "escalated": false,
+  "position": 2
+ }
+}

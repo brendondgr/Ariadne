@@ -1,0 +1,27 @@
+{
+ "case_id": "D5-ChildOf-Typical_Severity-CAPEC-407-33cd36::indirect",
+ "verdict": "PARTIAL",
+ "correctness": 0.6,
+ "faithfulness": 0.8,
+ "groundedness": 0.8,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "CAPEC-416 is included as a low-typical-severity broader pattern for CAPEC-407",
+  "CAPEC-412, CAPEC-413, CAPEC-414, CAPEC-415, and CAPEC-383 are asserted as broader ChildOf parents of CAPEC-407"
+ ],
+ "rationale": "The answer includes the expected gold identifier CAPEC-410 and the anchor CAPEC-407, so it is complete on the required entity. However, it over-includes CAPEC-416, which the evidence shows has Typical_Severity Medium, and lists several related patterns as broader parents without clearly filtering to low severity. This makes the answer partially correct rather than fully precise.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 8192,
+  "escalated": false,
+  "position": 2
+ }
+}

@@ -1,0 +1,26 @@
+{
+ "case_id": "D2-uses-C0014-ba9369::formal",
+ "verdict": "PARTIAL",
+ "correctness": 0.55,
+ "faithfulness": 0.8,
+ "groundedness": 0.85,
+ "completeness": 0.53,
+ "gold_expected": 64,
+ "gold_present": 34,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "T1124 has no USES relationships in this catalogue"
+ ],
+ "rationale": "The answer lists 34 technique identifiers, all of which are in the expected set, including T1124, T1680, T1105, T1518, and T1046. It omits 30 expected techniques such as T1003.001, T1059.001, and T1588.002, so it is only partially complete. It does not explicitly restate C0014, although the executed query seeded C0014. The absence claim about T1124 is only weakly supported because the query result itself shows T1124 as a USES target.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 8192,
+  "escalated": false,
+  "position": 2
+ }
+}

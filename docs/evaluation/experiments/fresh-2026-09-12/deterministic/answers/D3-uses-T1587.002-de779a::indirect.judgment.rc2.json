@@ -1,0 +1,26 @@
+{
+ "case_id": "D3-uses-T1587.002-de779a::indirect",
+ "verdict": "CORRECT",
+ "correctness": 0.95,
+ "faithfulness": 0.7,
+ "groundedness": 0.9,
+ "completeness": 1.0,
+ "gold_expected": 3,
+ "gold_present": 3,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "T1587.002 has no USES relationships in this catalogue"
+ ],
+ "rationale": "The answer states all expected threat groups G0040, G0056, and G1034 for T1587.002, directly answering the question. The main weakness is the unsupported absence claim that T1587.002 has no USES relationships, which is inconsistent with the executed query returning three Group-USES rows. The group enumeration is grounded in the T1587.002 record's related groups, and no cross-source mapping is asserted.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 8192,
+  "escalated": false,
+  "position": 2
+ }
+}

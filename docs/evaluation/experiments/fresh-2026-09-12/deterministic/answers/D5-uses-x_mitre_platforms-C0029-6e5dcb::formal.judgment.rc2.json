@@ -1,0 +1,26 @@
+{
+ "case_id": "D5-uses-x_mitre_platforms-C0029-6e5dcb::formal",
+ "verdict": "PARTIAL",
+ "correctness": 0.8,
+ "faithfulness": 0.7,
+ "groundedness": 0.8,
+ "completeness": 1.0,
+ "gold_expected": 9,
+ "gold_present": 9,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "C0029 has no USES relationships in this catalogue"
+ ],
+ "rationale": "The answer states all nine expected network-device-related software identifiers (S1114, S1115, S1116, S1117, S1118, S1119, S1120, S1121, S1123) along with C0029, so completeness is full. It also includes S0488 and S0357, making the answer overinclusive for the network-device subset. The claim that C0029 has no USES relationships is not supported by the executed USES query, which returned 11 related software rows.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 8192,
+  "escalated": false,
+  "position": 2
+ }
+}

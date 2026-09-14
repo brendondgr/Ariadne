@@ -1,0 +1,26 @@
+{
+ "case_id": "D2-uses-C0040-426e35::indirect",
+ "verdict": "PARTIAL",
+ "correctness": 0.8,
+ "faithfulness": 0.6,
+ "groundedness": 0.7,
+ "completeness": 1.0,
+ "gold_expected": 4,
+ "gold_present": 4,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "C0040 has no USES relationships in this catalogue"
+ ],
+ "rationale": "The answer lists all four expected software identifiers, S0154, S0160, S1158, and S1159, for campaign C0040, so it fully covers the expected gold set. However, it also claims that C0040 has no USES relationships, which is contradicted by the executed USES query returning four rows. This makes the answer substantively responsive but not fully faithful.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 8192,
+  "escalated": false,
+  "position": 2
+ }
+}

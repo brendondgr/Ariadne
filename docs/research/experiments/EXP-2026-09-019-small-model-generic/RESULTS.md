@@ -109,12 +109,12 @@ here and is recorded in `ISSUES.md` as I-2.
 | Measure | Value | Gate |
 | --- | ---: | --- |
 | Answers | 284 | — |
-| Fallback rate (over ANSWERS) | **0.0246** | <= 0.14 ✓ |
+| Fallback rate (over ANSWERS) | **0.0282** | <= 0.14 ✓ |
 | New unsupported verdicts | **0** | 0 ✓ |
-| Claims byte-identical to the control | 273/284 (284/284 from one tree — I-8) | ✓ |
-| Wall clock per answer, 4 workers | 93.527 s (median 49.633 s) | vs 0.047 s |
+| Claims byte-identical to the control | **284/284** | ✓ |
+| Wall clock per answer, 4 workers | 80.988 s (median 43.678 s) | vs 0.042 s |
 
-Every one of the 7 fallbacks was `LLM narrator unavailable` — a
+Every one of the 8 fallbacks was `LLM narrator unavailable` — a
 transport failure reaching the endpoint, not the model refusing. At four
 concurrent generations of this length some connections do not survive, which is
 a reliability signal at this concurrency rather than a property of the model.
@@ -123,14 +123,12 @@ a reliability signal at this concurrency rather than a property of the model.
 `entity_ids`, zero to `citations`, zero to `verdict`, and zero new unsupported
 verdicts.
 
-The 11 answers whose claim `text` differs are not the narrator either. A
-concurrent session committed `1f507002` at 17:30:38, adding `DETECTS` to the
-composer's `_REL_NOUNS`, and the two arms straddled it — the narrator arm's
-process started at 16:56 and held the pre-fix module for its whole run, while
-its control started at 18:47 and loaded the fixed one. All 11 affected cases are
-`DETECTS`-family edges. Re-running both arms over exactly those 11 on one code
-version gives **11 of 11 byte-identical**, so the figure would have been 284 of
-284 from one tree. Recorded as I-8.
+The first pass of this comparison read 273 of 284, and that was an artefact of
+the tree moving mid-run rather than anything the narrator did: a concurrent
+session committed `1f507002` at 17:30:38, adding `DETECTS` to the composer's
+`_REL_NOUNS`, and the two arms straddled it. Regenerating the narrator cell on
+one tree gives **284 of 284**. Recorded as I-8; the superseded figures are kept
+there as its evidence.
 
 What the seam costs is time: roughly three orders of magnitude, not a tax.
 

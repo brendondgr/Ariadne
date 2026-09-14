@@ -1,0 +1,27 @@
+{
+ "case_id": "D6-MAPS_TO[ATTACK]-HAS_MEMBER-T1552.001-85a91e::analyst",
+ "verdict": "CORRECT",
+ "correctness": 0.9,
+ "faithfulness": 0.8,
+ "groundedness": 0.9,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": false,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "The capec source doesn't establish this",
+  "the executed query ran cleanly and returned CAPEC-191 with no linked records"
+ ],
+ "rationale": "The answer states the required gold identifier CAPEC-703 as the view containing CAPEC-191, and it correctly notes that CAPEC-191 and CAPEC-639 map to T1552.001. It is therefore complete for the expected set. The main weakness is the inconsistent abstention claiming the capec source does not establish the view and that CAPEC-191 has no linked records, despite the evidence showing CAPEC-703 as a linked view.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 8192,
+  "escalated": false,
+  "position": 2
+ }
+}

@@ -94,10 +94,18 @@ used the new one. Every one of the 11 affected cases is a `DETECTS`-family edge
 `DET0285`, `DET0181` — and `AN0749` is the case named in that commit's own
 message.
 
-Confirmed by re-running both arms over exactly those 11 cases on one code
-version: **11 of 11 claims byte-identical**, 0 fallbacks, 0 new unsupported.
-The earlier one-worker checks agreed for the same reason — both sides were
-post-fix by then.
+Confirmed twice. First over exactly those 11 cases on one code version: 11 of
+11 byte-identical. Then over the **whole bank** — the authored-plan/2B cell was
+regenerated into the `twobytwo` root on the current tree before the judged pass,
+giving **284 of 284 claims byte-identical**, fallback rate 0.0282, 0 new
+unsupported. The earlier one-worker checks agreed for the same reason: both
+sides were post-fix by then.
+
+Every 2x2 figure reproduced exactly across that regeneration — coverage 0.8611
+and 0.4797, plan effect -0.3814 and -0.3787, model effect +0.0000 and +0.0026,
+interaction +0.0027 — so the straddle never touched a reported number. Only the
+wall clock moved, 93.527 s to 80.988 s an answer, which is contention and not
+the model.
 
 **What this means for Step 3's result.** It strengthens it. The narrator changed
 *nothing*: the claim-identity figure would have been 284 of 284 had both arms

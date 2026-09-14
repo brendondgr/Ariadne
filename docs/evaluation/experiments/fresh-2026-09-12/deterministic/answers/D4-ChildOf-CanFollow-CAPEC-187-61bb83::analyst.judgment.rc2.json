@@ -1,0 +1,24 @@
+{
+ "case_id": "D4-ChildOf-CanFollow-CAPEC-187-61bb83::analyst",
+ "verdict": "PARTIAL",
+ "correctness": 0.25,
+ "faithfulness": 1.0,
+ "groundedness": 1.0,
+ "completeness": 0.0,
+ "gold_expected": 1,
+ "gold_present": 0,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer correctly identifies CAPEC-187 and its ChildOf parent CAPEC-186, but the question asks for the CanFollow predecessors of that parent, whose expected identifier is CAPEC-98. It never states CAPEC-98, so it only partially addresses the query. All stated facts are supported by the CAPEC-187 record, so faithfulness and groundedness remain high.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 8192,
+  "escalated": false,
+  "position": 2
+ }
+}

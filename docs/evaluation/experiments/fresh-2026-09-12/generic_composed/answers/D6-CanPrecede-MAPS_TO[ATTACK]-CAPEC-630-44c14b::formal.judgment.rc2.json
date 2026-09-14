@@ -1,0 +1,26 @@
+{
+ "case_id": "D6-CanPrecede-MAPS_TO[ATTACK]-CAPEC-630-44c14b::formal",
+ "verdict": "CORRECT",
+ "correctness": 0.9,
+ "faithfulness": 0.85,
+ "groundedness": 0.9,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "The capec source doesn't establish this \u2014 the executed query ran cleanly and returned CAPEC-630 with no linked records for: For CAPEC-630: the CAPEC attack patterns that can follow it."
+ ],
+ "rationale": "The answer identifies CAPEC-630 and its CanPrecede successors CAPEC-98, CAPEC-543, and CAPEC-89, and it states the expected technique T1036.005 via CAPEC-543. It also lists T1566 and T1598 from CAPEC-98, which are supported by the evidence but go beyond the single expected gold identifier. The main weakness is the contradictory abstention claiming no linked follow-on records despite the evidence showing CAPEC-98, CAPEC-543, and CAPEC-89.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 8192,
+  "escalated": false,
+  "position": 2
+ }
+}

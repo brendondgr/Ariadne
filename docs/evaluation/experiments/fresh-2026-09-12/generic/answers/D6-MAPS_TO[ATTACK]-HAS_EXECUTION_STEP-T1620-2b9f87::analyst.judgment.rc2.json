@@ -1,0 +1,27 @@
+{
+ "case_id": "D6-MAPS_TO[ATTACK]-HAS_EXECUTION_STEP-T1620-2b9f87::analyst",
+ "verdict": "PARTIAL",
+ "correctness": 0.75,
+ "faithfulness": 0.7,
+ "groundedness": 0.85,
+ "completeness": 1.0,
+ "gold_expected": 3,
+ "gold_present": 3,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "The capec source returned CAPEC-640 with no linked execution-step records",
+  "The execution steps are named only as text"
+ ],
+ "rationale": "The answer correctly links T1620 to CAPEC-640 and states the three expected CAPEC execution steps, corresponding to capec:attack-pattern:640:step:1, capec:attack-pattern:640:step:2, and capec:attack-pattern:640:step:3. It is partial because it omits the Windows/Linux technique text for step 1 and includes an unsupported abstention claiming the capec query returned no linked execution-step records, even though the evidence shows three HAS_EXECUTION_STEP neighbours.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 8192,
+  "escalated": false,
+  "position": 2
+ }
+}

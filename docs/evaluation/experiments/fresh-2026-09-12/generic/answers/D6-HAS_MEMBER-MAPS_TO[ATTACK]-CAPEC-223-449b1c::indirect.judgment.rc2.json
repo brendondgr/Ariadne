@@ -1,0 +1,26 @@
+{
+ "case_id": "D6-HAS_MEMBER-MAPS_TO[ATTACK]-CAPEC-223-449b1c::indirect",
+ "verdict": "PARTIAL",
+ "correctness": 0.85,
+ "faithfulness": 0.7,
+ "groundedness": 0.85,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": false,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "The CAPEC query for CAPEC-223 returned no linked attack-pattern records"
+ ],
+ "rationale": "The answer correctly traces CAPEC-223 to CAPEC-112 and CAPEC-28 and identifies T1110 as the ATT&CK technique mapped from CAPEC-112, satisfying the expected gold identifier. However, its abstention falsely says the CAPEC query returned CAPEC-223 with no linked attack-pattern records, even though the evidence shows CAPEC-28 and CAPEC-112. The summary line also ambiguously associates T1110 with both CAPEC-112 and CAPEC-28, though only CAPEC-112 has that mapping.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 8192,
+  "escalated": false,
+  "position": 2
+ }
+}

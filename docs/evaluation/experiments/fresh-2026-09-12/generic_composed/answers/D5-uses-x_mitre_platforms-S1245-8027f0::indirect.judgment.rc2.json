@@ -1,0 +1,27 @@
+{
+ "case_id": "D5-uses-x_mitre_platforms-S1245-8027f0::indirect",
+ "verdict": "PARTIAL",
+ "correctness": 0.8,
+ "faithfulness": 0.85,
+ "groundedness": 0.9,
+ "completeness": 1.0,
+ "gold_expected": 33,
+ "gold_present": 33,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "T1547.013 and T1543.001 are included as part of the Windows-relevant answer",
+  "S1245 has exactly 15 used techniques and exactly 20 used techniques"
+ ],
+ "rationale": "The answer states S1245 and all 33 expected Windows-relevant technique identifiers, including T1005, T1048.003, and T1679, so completeness is full. However, it also includes T1547.013 and T1543.001, which the evidence describes as Linux/macOS-oriented persistence techniques, and it does not explicitly frame the list as the Windows-relevant subset. The split into 15 and 20 used techniques is also not directly supported by the single related-technique record.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 8192,
+  "escalated": false,
+  "position": 2
+ }
+}

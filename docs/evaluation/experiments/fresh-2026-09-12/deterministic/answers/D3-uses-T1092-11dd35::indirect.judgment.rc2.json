@@ -1,0 +1,26 @@
+{
+ "case_id": "D3-uses-T1092-11dd35::indirect",
+ "verdict": "CORRECT",
+ "correctness": 0.9,
+ "faithfulness": 0.7,
+ "groundedness": 0.8,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "T1092 has no USES relationships in this catalogue"
+ ],
+ "rationale": "The answer correctly identifies G0007 as the threat group using T1092, which is the expected gold identifier. This is grounded in the T1092 record showing related group G0007. The unsupported absence claim that T1092 has no USES relationships is not evidenced and slightly conflicts with the found group relationship.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 8192,
+  "escalated": false,
+  "position": 2
+ }
+}

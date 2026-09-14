@@ -1,0 +1,26 @@
+{
+ "case_id": "D2-CanPrecede-CAPEC-101-f1e06c::indirect",
+ "verdict": "CORRECT",
+ "correctness": 0.9,
+ "faithfulness": 0.85,
+ "groundedness": 0.95,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "CAPEC-101 has 3 CanPrecede successors (the evidence shows CAN_PRECEDE related records, but not explicit out-direction for each)"
+ ],
+ "rationale": "The answer directly addresses the follow-on attack patterns question and states the required gold identifier CAPEC-600. It also lists CAPEC-653 and CAPEC-151, which are present as CAN_PRECEDE related records for CAPEC-101 in the evidence. The minor weakness is that the evidence does not explicitly confirm the direction of each CAN_PRECEDE edge, so calling them successors is slightly overasserted.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 8192,
+  "escalated": false,
+  "position": 2
+ }
+}

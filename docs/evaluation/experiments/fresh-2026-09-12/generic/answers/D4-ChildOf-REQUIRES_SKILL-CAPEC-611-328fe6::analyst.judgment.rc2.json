@@ -1,0 +1,26 @@
+{
+ "case_id": "D4-ChildOf-REQUIRES_SKILL-CAPEC-611-328fe6::analyst",
+ "verdict": "CORRECT",
+ "correctness": 0.85,
+ "faithfulness": 0.8,
+ "groundedness": 0.9,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "The skill is described as 'named only as text' and prefixed with 'Low', although the evidence shows level Low and a separate description text."
+ ],
+ "rationale": "The answer identifies CAPEC-611 and includes the expected skill text, 'Adversaries can often purchase low-cost technology to implement rogue access points,' associated with CAPEC-616 and capec:attack-pattern:616:skill:1. It slightly overstates the relationship by saying CAPEC-611 'has' the skill and folds the level 'Low' into the skill name, but the required gold text is present and grounded in the CAPEC-611 related records.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 8192,
+  "escalated": false,
+  "position": 2
+ }
+}
