@@ -90,13 +90,26 @@ def make_extraction_node(
         run = state.get("run") or PipelineRun(question=question, mode=mode)
         attempt = int(state.get("validation_iterations", 0)) + 1
 
+        # An explicit synthesis config is what separates "narrate the answer"
+        # from "let a model write the query": `iter_pipeline` derives the
+        # synthesis seam from `use_llm` unless handed one.
+        extra = dict(pipeline_kwargs or {})
+        if bool(state.get("narrate", False)) and "synthesis_config" not in extra:
+            import dataclasses as _dc
+
+            from utils.synthesis.config import SynthesisConfig
+
+            extra["synthesis_config"] = _dc.replace(
+                SynthesisConfig.from_env(), llm_enabled=True
+            )
+
         result = runner(
             question,
             mode=mode,
             use_llm=bool(state.get("use_llm", False)),
             run=run,
             forward=_stream_forward(),
-            **(pipeline_kwargs or {}),
+            **extra,
         )
         return {
             "evidence": result.evidence,

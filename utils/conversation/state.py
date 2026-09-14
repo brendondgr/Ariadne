@@ -39,6 +39,12 @@ class ConversationState(TypedDict, total=False):
     conversation_id: str
     mode: str  # "query" | "plan"
     use_llm: bool
+    # Narrator seam ONLY, separate from use_llm on purpose. use_llm sets the
+    # planner, specialist and synthesis seams together, so asking for readable
+    # prose through it also hands query construction to a model -- the baseline
+    # that scores 0.5000 against the template cascade's 0.9467. The narrator is
+    # the seam measured not to change a fact (EXP-2026-09-019 Step 3).
+    narrate: bool
     deadline: float  # time.monotonic() deadline for the whole turn
     started_at: float  # time.monotonic() at turn start
     run: Any  # caller-owned PipelineRun reused by graph extraction

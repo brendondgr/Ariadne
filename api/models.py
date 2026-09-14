@@ -279,6 +279,14 @@ class QueryRequest(BaseModel):
     question: str = Field(min_length=1)
     mode: Literal["plan", "query"] = "query"
     drafter: Literal["deterministic", "llm"] = "deterministic"
+    #: Rewrite the narrative prose with a model, over claims already composed
+    #: and verified. Separate from ``drafter`` because ``drafter="llm"`` also
+    #: hands QUERY construction to a model, which measures far worse than the
+    #: template cascade. The narrator seam is the one measured not to change a
+    #: fact: 284/284 claims byte-identical, +0.0000 coverage
+    #: (``EXP-2026-09-019`` Step 3). Costs ~1,340x the deterministic composer,
+    #: so it is per-request rather than a default.
+    narrate: bool = False
 
 
 # ---------------------------------------------------------------------------
@@ -328,6 +336,8 @@ class ConversationQueryRequest(BaseModel):
     conversation_id: str = Field(min_length=1)
     mode: Literal["plan", "query"] = "query"
     drafter: Literal["deterministic", "llm"] = "deterministic"
+    #: Same narrator-only seam as ``QueryRequest.narrate``.
+    narrate: bool = False
 
 
 # ---------------------------------------------------------------------------

@@ -15,10 +15,15 @@ export function Composer() {
   const { submit, replaying, registerComposerFill } = useWorkbench();
   const [question, setQuestion] = useState("");
   const [mode, setMode] = useState<Mode>("query");
-  // Default to the LLM drafter: it produces the natural-language final answer
-  // (planner + specialists + synthesis narrator all use the LLM). Falls back to
-  // the deterministic pipeline automatically when the endpoint is unreachable.
-  const [drafter, setDrafter] = useState<Drafter>("llm");
+  // Deterministic by default. This used to default to "llm" so the answer read
+  // as natural language — but `drafter: "llm"` turns on the planner, the
+  // SPECIALIST and the narrator together, so wanting readable prose silently
+  // handed query construction to a model. That path scores 0.5000 where the
+  // template cascade scores 0.9467 on the same unseen questions
+  // (EXP-2026-09-007). Prose is now its own toggle below, which reaches only
+  // the narrator seam — the one measured not to change a fact.
+  const [drafter, setDrafter] = useState<Drafter>("deterministic");
+  const [narrate, setNarrate] = useState(false);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
   // Grow the textarea with its content, capped at 6 lines — beyond that it
@@ -60,7 +65,7 @@ export function Composer() {
 
   const send = () => {
     if (!canSend) return;
-    submit({ question: question.trim(), mode, drafter });
+    submit({ question: question.trim(), mode, drafter, narrate });
     // Clear the box immediately so the analyst can compose the next question
     // while this turn streams; refocus keeps the caret ready to type.
     setQuestion("");
@@ -131,7 +136,7 @@ export function Composer() {
             onClick={() => setDrafter((d) => (d === "deterministic" ? "llm" : "deterministic"))}
             className="flex items-center gap-[7px] rounded-lg px-[11px] py-1.5 font-mono text-[11px] text-text-muted"
             style={{ boxShadow: SHADOW.border }}
-            title="Toggle deterministic / LLM drafter (--plan-llm / --query-llm)"
+            title="Who writes the QUERY. Deterministic uses the validated template cascade; LLM hands query construction to a model and measures worse (0.5000 vs 0.9467). Prose is the separate toggle."
           >
             <span
               aria-hidden
@@ -139,6 +144,22 @@ export function Composer() {
               style={{ background: drafter === "llm" ? "var(--color-primary)" : "var(--color-text-muted)" }}
             />
             Drafter: <span className="text-[#c9c6bd]">{drafter}</span>
+          </button>
+
+          {/* narrator toggle — prose only, never the facts */}
+          <button
+            type="button"
+            onClick={() => setNarrate((n) => !n)}
+            className="flex items-center gap-[7px] rounded-lg px-[11px] py-1.5 font-mono text-[11px] text-text-muted"
+            style={{ boxShadow: SHADOW.border }}
+            title="Rewrite the answer as plain prose with a model, over claims already composed and verified. It cannot add, remove or alter a claim — 284/284 byte-identical across the evaluation set — and costs roughly a minute per answer."
+          >
+            <span
+              aria-hidden
+              className="h-[9px] w-[9px] rounded-full"
+              style={{ background: narrate ? "var(--color-primary)" : "var(--color-text-muted)" }}
+            />
+            Plain prose: <span className="text-[#c9c6bd]">{narrate ? "on" : "off"}</span>
           </button>
 
           <div className="flex-1" />

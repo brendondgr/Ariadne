@@ -122,6 +122,14 @@ export interface QueryRequestBody {
   question: string;
   mode: "plan" | "query";
   drafter: "deterministic" | "llm";
+  /** Rewrite the prose with a model, over claims already composed and verified.
+   *  Deliberately separate from `drafter`: `drafter: "llm"` also hands QUERY
+   *  construction to a model, which scores 0.5000 against the template
+   *  cascade's 0.9467 on the same unseen questions. The narrator seam is the one
+   *  measured not to change a fact — 284/284 claims byte-identical, +0.0000
+   *  coverage — and it costs ~1,340x the deterministic composer, so it is
+   *  opt-in per question. */
+  narrate?: boolean;
 }
 
 /** Parse one raw SSE frame (`event:`/`data:` lines) into `{ type, data }`. */

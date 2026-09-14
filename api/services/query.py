@@ -231,17 +231,47 @@ def stream_query_events(
     agent: PlanningAgent | None = None,
     specialists: dict[str, Any] | None = None,
     specialist_config: SpecialistConfig | None = None,
+    narrate: bool = False,
 ) -> Iterator[str]:
     """Yield SSE frames for one analyst question.
 
     ``agent``/``specialists``/``specialist_config`` are injectable for testing;
     in production they are built fresh per request so live config edits apply.
+
+    ``narrate`` turns on the **narrator seam only** — a model rewrites the prose
+    over claims that were already composed deterministically and already
+    verified. It is a separate flag from ``use_llm`` on purpose. ``use_llm`` sets
+    the planner, specialist AND synthesis seams together, so asking for readable
+    prose through it also hands query construction to a model: the
+    query-writing baseline scores **0.5000** where the template cascade scores
+    **0.9467** on the same unseen questions (`EXP-2026-09-007`).
+
+    The narrator is the one seam measured safe to expose. Across 284 answers it
+    changed no identifier, no citation and no verdict, its claims were
+    byte-identical to the model-free control 284/284, and it moved retrieval
+    coverage by +0.0000 (`EXP-2026-09-019` Step 3). What it costs is time —
+    roughly 1,340x the deterministic composer — which is why it is opt-in per
+    request rather than a default.
     """
     try:
         question = (question or "").strip()
         if not question:
             yield _sse("error", {"message": "Question must not be empty."})
             return
+
+        # Narrator-only posture. `iter_pipeline` derives its synthesis config
+        # from `use_llm` unless handed one explicitly, so passing one is what
+        # separates "write the prose with a model" from "write the QUERY with a
+        # model".
+        synthesis_config = None
+        if narrate:
+            import dataclasses as _dc
+
+            from utils.synthesis.config import SynthesisConfig
+
+            synthesis_config = _dc.replace(
+                SynthesisConfig.from_env(), llm_enabled=True
+            )
 
         run = PipelineRun(question=question, mode=mode)
         # Wrapped so the socket stays warm through the planner, specialist and
@@ -255,6 +285,7 @@ def stream_query_events(
                 agent=agent,
                 specialists=specialists,
                 specialist_config=specialist_config,
+                synthesis_config=synthesis_config,
                 run=run,
             )
         ):
