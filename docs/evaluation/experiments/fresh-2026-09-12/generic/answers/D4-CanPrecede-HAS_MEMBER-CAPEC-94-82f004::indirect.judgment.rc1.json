@@ -1,0 +1,26 @@
+{
+ "case_id": "D4-CanPrecede-HAS_MEMBER-CAPEC-94-82f004::indirect",
+ "verdict": "PARTIAL",
+ "correctness": 0.7,
+ "faithfulness": 0.8,
+ "groundedness": 0.9,
+ "completeness": 1.0,
+ "gold_expected": 2,
+ "gold_present": 2,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "CAPEC-94 has 6 Categories: CAPEC-156, CAPEC-403, CAPEC-512, CAPEC-513, CAPEC-515, CAPEC-210"
+ ],
+ "rationale": "The answer includes the required CAPEC-210 and CAPEC-512 and also lists related attack patterns such as CAPEC-668, CAPEC-151, CAPEC-383, CAPEC-697, and CAPEC-216. However, it presents the categories as belonging to CAPEC-94 rather than as categories containing the preceding patterns, and it does not map each pattern to its categories. All stated identifiers are present in the CAPEC-94 evidence record, so the main weakness is imprecise relationship framing rather than missing gold IDs.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 8192,
+  "escalated": false,
+  "position": 1
+ }
+}

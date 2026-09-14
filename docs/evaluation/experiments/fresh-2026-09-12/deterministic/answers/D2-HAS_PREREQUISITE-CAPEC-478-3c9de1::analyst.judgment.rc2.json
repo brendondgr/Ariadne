@@ -1,0 +1,24 @@
+{
+ "case_id": "D2-HAS_PREREQUISITE-CAPEC-478-3c9de1::analyst",
+ "verdict": "PARTIAL",
+ "correctness": 0.2,
+ "faithfulness": 1.0,
+ "groundedness": 0.8,
+ "completeness": 0.0,
+ "gold_expected": 1,
+ "gold_present": 0,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer correctly identifies CAPEC-478 and states supported details about that attack pattern, but it does not state the expected prerequisite text: \"The adversary must have the capability to write to the Windows Registry on the targeted system.\" The evidence shows a HAS_PREREQUISITE facet count of 1 for CAPEC-478, but the answer never surfaces the prerequisite itself. Therefore it is faithful and grounded, but incomplete for the question asked.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 8192,
+  "escalated": false,
+  "position": 2
+ }
+}

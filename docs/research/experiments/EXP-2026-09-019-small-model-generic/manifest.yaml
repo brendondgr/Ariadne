@@ -2,9 +2,9 @@
 id: EXP-2026-09-019
 slug: small-model-generic
 title: Does the Generic tier need a big model, and does it need a planner?
-status: running            # planned | running | complete | failed | superseded
+status: complete           # planned | running | complete | failed | superseded
 date_started: 2026-09-13
-date_completed: null
+date_completed: 2026-09-13
 authors: [brendondgr]
 
 purpose: >
@@ -25,7 +25,7 @@ hypothesis: >
 
 # --- Reproducibility block ---
 code:
-  commit: 9e181317aa1068130bd00ec7450678fbc5703a52
+  commit: 1b3c09d1ccfda87714dfd2c93a60c9de6b35c50d
   branch: main
   entrypoint: "uv run python scripts/local_endpoint_probe.py --base-url http://localhost:7070/v1 --alias minicpm-5-2B --expect minicpm; uv run python -m utils.evaluation.experiment_untruncated --arm {generic_composed,generic_planned} --bank docs/evaluation/composition/bank/bank-dev.json --root docs/evaluation/experiments/small-model-generic-2026-09-13/planner-cost --workers 8; uv run python scripts/planner_cost_score.py --root docs/evaluation/experiments/small-model-generic-2026-09-13/planner-cost"
   dirty: false
@@ -47,7 +47,7 @@ environment:
   container: null
 compute:
   hardware: "32-core x86_64 workstation; llama.cpp on local GPU"
-  wall_clock_hours: 0.05
+  wall_clock_hours: 4.2
   estimated_cost_usd: 0.0
 
 # --- LLM block ---
@@ -74,22 +74,48 @@ llm:
 metrics:
   primary: paired_gold_coverage_difference
   values:
-    gold_coverage_generic_composed: {mean: 0.8611, std: null, n: 284}
-    gold_coverage_generic_planned: {mean: 0.4797, std: null, n: 284}
+    # --- Step 5: the 2x2, gold coverage per cell (n=284 each) ---
+    cell_authored_plan_no_model: {mean: 0.8611, std: null, n: 284}
+    cell_authored_plan_2B: {mean: 0.8611, std: null, n: 284}
+    cell_real_planner_no_model: {mean: 0.4797, std: null, n: 284}
+    cell_real_planner_2B: {mean: 0.4824, std: null, n: 284}
+    # --- the two effects, paired per question ---
     paired_gold_coverage_difference: {mean: -0.3814, std: 0.4413, n: 284}
-    questions_planner_retrieved_nothing: {mean: 77, std: null, n: 284}
-    absence_contradictions_generic_planned: {mean: 0, std: null, n: 284}
+    plan_effect_with_2B_narrator: {mean: -0.3787, std: 0.4413, n: 284}
+    model_effect_authored_plan: {mean: 0.0, std: 0.0, n: 284}
+    model_effect_real_planner: {mean: 0.0026, std: 0.0445, n: 284}
+    plan_by_model_interaction: {mean: 0.0027, std: null, n: 284}
+    # --- Step 3: the narrator seam ---
+    narrator_fallback_rate: {mean: 0.0246, std: null, n: 284}
+    narrator_new_unsupported_verdicts: {mean: 0, std: null, n: 284}
+    narrator_claims_identical: {mean: 273, std: null, n: 284}
+    narrator_wall_s_per_answer_4_workers: {mean: 93.527, std: null, n: 284}
+    # --- Step 4: the specialist seam (9-question gate; full pass not run) ---
+    specialist_drafts_that_worked_4096: {mean: 0, std: null, n: 17}
+    specialist_drafts_that_worked_16384: {mean: 0, std: null, n: 16}
+    specialist_rejection_rate_4096: {mean: 0.6471, std: null, n: 17}
+    specialist_rejection_rate_16384: {mean: 0.5, std: null, n: 16}
+    specialist_zero_record_questions: {mean: 9, std: null, n: 9}
+    # --- single-user latency, 1 worker, 9-question tier-balanced slice ---
+    latency_1worker_authored_no_model_s: {mean: 0.07, std: null, n: 9}
+    latency_1worker_authored_2B_s: {mean: 20.802, std: null, n: 9}
+    latency_1worker_planner_no_model_s: {mean: 0.119, std: null, n: 9}
+    latency_1worker_planner_2B_s: {mean: 9.752, std: null, n: 9}
+    # --- Step 1: the endpoint ---
     endpoint_knee_concurrency_minicpm_5_2B: {mean: 4, std: null, n: 1}
-    endpoint_aggregate_tokens_per_s_minicpm_5_2B: {mean: 210.5, std: null, n: 1}
-    endpoint_single_stream_tokens_per_s_minicpm_5_2B: {mean: 73.0, std: null, n: 1}
+    endpoint_aggregate_tokens_per_s_minicpm_5_2B: {mean: 210.47, std: null, n: 1}
+    endpoint_single_stream_tokens_per_s_minicpm_5_2B: {mean: 73.05, std: null, n: 1}
   withdrawn: {}
-baselines_compared: [generic_composed]
+baselines_compared: [generic_narrator_off, generic_composed]
 statistical_test: >
-  Paired per question over the same 284-question bank; standard error 0.0262,
-  separable by the |difference| > 2*SE rule EXP-2026-09-018 used. Both arms are
-  deterministic, so the difference is not run variance. The metric is
-  deterministic gold coverage, not a graded score -- the plan gates a judged
-  pass on this exceeding 0.02, which it does by a wide margin.
+  Every comparison is paired per question over the same 284-question bank.
+  Standard errors: plan effect 0.0262 in both model columns; model effect 0.0
+  (authored plan) and 0.0026 (real planner). Separability by the
+  |difference| > 2*SE rule EXP-2026-09-018 used: the plan effect is separable in
+  both columns, the model effect in neither. Both model-free cells are
+  deterministic and were verified byte-reproducible across repeated runs at one
+  and four workers, so a difference between them is not run variance. The metric
+  is deterministic gold coverage, not a graded score; no judged pass was run.
 
 # --- Linkage ---
 supports_claims: []

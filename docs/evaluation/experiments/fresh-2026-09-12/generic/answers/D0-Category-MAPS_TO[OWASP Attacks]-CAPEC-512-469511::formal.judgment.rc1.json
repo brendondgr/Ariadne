@@ -1,0 +1,26 @@
+{
+ "case_id": "D0-Category-MAPS_TO[OWASP Attacks]-CAPEC-512-469511::formal",
+ "verdict": "CORRECT",
+ "correctness": 1.0,
+ "faithfulness": 0.85,
+ "groundedness": 0.9,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "CAPEC-512 has no MAPS_TO relationships in this catalogue"
+ ],
+ "rationale": "The answer correctly identifies CAPEC-512 and concludes that no OWASP TaxonomyEntry neighbors are present, matching the empty expected set. The 17 listed CAPEC attack patterns are supported by the related records. The only weak point is the stronger absence claim about all MAPS_TO relationships, since the evidence shows no TaxonomyEntry neighbors but does not explicitly separate MAPS_TO from MEMBER_OF edges.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 8192,
+  "escalated": false,
+  "position": 1
+ }
+}

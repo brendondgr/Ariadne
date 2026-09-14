@@ -1,0 +1,26 @@
+{
+ "case_id": "D5-uses-x_mitre_platforms-C0030-0a2d19::indirect",
+ "verdict": "CORRECT",
+ "correctness": 0.9,
+ "faithfulness": 0.8,
+ "groundedness": 0.8,
+ "completeness": 1.0,
+ "gold_expected": 2,
+ "gold_present": 2,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "T1573 and T1036.005 are restricted to ESXi"
+ ],
+ "rationale": "The answer correctly identifies the two expected ESXi-applicable techniques related to C0030: T1573 and T1036.005. It is grounded in the C0030 record and the ESXi-filtered USES query. The main weakness is the phrase \"restricted to ESXi,\" which is stronger than the evidence shown, since the query only confirms ESXi is among the applicable platforms.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 8192,
+  "escalated": false,
+  "position": 1
+ }
+}

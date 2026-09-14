@@ -1,0 +1,26 @@
+{
+ "case_id": "D6-MAPS_TO[ATTACK]-ChildOf-T1114.002-7ac459::indirect",
+ "verdict": "CORRECT",
+ "correctness": 0.9,
+ "faithfulness": 0.8,
+ "groundedness": 0.9,
+ "completeness": 1.0,
+ "gold_expected": 2,
+ "gold_present": 2,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "The capec source doesn't establish a broader pattern for CAPEC-555 / returned no linked records for the broader-pattern query"
+ ],
+ "rationale": "The answer identifies CAPEC-555 as the CAPEC pattern mapped to T1114.002 and CAPEC-560 as the broader parent, satisfying the two-hop question. It also states T1114.002 and T1114, both supported by the cited records. The main flaw is the contradictory abstention claiming no linked CAPEC records, despite the q2 evidence showing CAPEC-560.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 16384,
+  "escalated": true,
+  "position": 1
+ }
+}

@@ -1,0 +1,26 @@
+{
+ "case_id": "D4-subtechnique-of-kill_chain_phase-T1055-dc140d::formal",
+ "verdict": "CORRECT",
+ "correctness": 0.95,
+ "faithfulness": 0.8,
+ "groundedness": 0.8,
+ "completeness": 1.0,
+ "gold_expected": 2,
+ "gold_present": 2,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "TA0005 is labeled Stealth in the narrative, which is not supported by the shown evidence and is not the standard ATT&CK tactic name for TA0005."
+ ],
+ "rationale": "The answer states both expected tactic identifiers, TA0004 and TA0005, as associated with T1055 through sub-technique T1055.011, which satisfies the question. It also enumerates T1055 sub-techniques, but the narrative's unsupported label 'Stealth' for TA0005 slightly reduces faithfulness. Overall, the core requested identifiers are present and tied to the T1055 record.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 8192,
+  "escalated": false,
+  "position": 1
+ }
+}

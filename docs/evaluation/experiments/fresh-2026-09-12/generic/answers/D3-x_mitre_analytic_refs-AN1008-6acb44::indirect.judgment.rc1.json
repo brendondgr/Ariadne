@@ -1,0 +1,24 @@
+{
+ "case_id": "D3-x_mitre_analytic_refs-AN1008-6acb44::indirect",
+ "verdict": "CORRECT",
+ "correctness": 0.9,
+ "faithfulness": 1.0,
+ "groundedness": 0.9,
+ "completeness": 0.0,
+ "gold_expected": 1,
+ "gold_present": 0,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer abstains and shows the executed attack query that returned zero rows, so it does not assert a mapping from AN1008 to DET0355. It mentions AN1008 but omits the expected detection strategy DET0355, so completeness is zero. Because the evidence contains no records and the abstention carries the query, the abstention is honest rather than a fabricated correlation.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 8192,
+  "escalated": false,
+  "position": 1
+ }
+}

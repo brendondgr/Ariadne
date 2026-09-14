@@ -1,0 +1,27 @@
+{
+ "case_id": "D6-MAPS_TO[ATTACK]-CanFollow-T1114.002-6719b0::analyst",
+ "verdict": "CORRECT",
+ "correctness": 0.8,
+ "faithfulness": 0.6,
+ "groundedness": 0.8,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": false,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "The capec source has no linked records for CAPEC-555's CanFollow neighbours",
+  "CAPEC-270 is a CanFollow predecessor of CAPEC-555"
+ ],
+ "rationale": "The answer resolves T1114.002 to CAPEC-555 and states the expected CAPEC-270 CanFollow neighbour, so it fully covers the gold identifier. The cross-source mapping T1114.002 to CAPEC-555 and the CAPEC-270 relation are both present in the cited records, so no fabricated mapping is asserted. Faithfulness is reduced because the abstention says there were no linked records and the claim labels CAPEC-270 a 'predecessor,' a direction not explicitly established by the directionless CAN_FOLLOW evidence.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 16384,
+  "escalated": true,
+  "position": 1
+ }
+}

@@ -1,0 +1,26 @@
+{
+ "case_id": "D6-CanPrecede-MAPS_TO[ATTACK]-CAPEC-49-f98517::indirect",
+ "verdict": "PARTIAL",
+ "correctness": 0.8,
+ "faithfulness": 0.75,
+ "groundedness": 0.85,
+ "completeness": 1.0,
+ "gold_expected": 3,
+ "gold_present": 3,
+ "abstained": false,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "The capec source doesn't establish this \u2014 the executed query ran cleanly and returned CAPEC-49 with no linked records"
+ ],
+ "rationale": "The answer identifies CAPEC-49 and all three expected techniques: T1021.002 from CAPEC-561, T1078 from CAPEC-560, and T1110.004 from CAPEC-600. It is partial rather than fully correct because it also presents extra mappings such as T1110.001, T1005, T1036.003, and T1555.001, and includes a contradictory abstention claiming no linked records despite the q1 related records. Grounding is generally strong because the claims are tied to CAPEC records and the executed query, but the unsupported abstention reduces faithfulness.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 16384,
+  "escalated": true,
+  "position": 1
+ }
+}

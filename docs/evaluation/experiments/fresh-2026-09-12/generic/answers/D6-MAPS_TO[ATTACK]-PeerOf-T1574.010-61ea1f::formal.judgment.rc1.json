@@ -1,0 +1,27 @@
+{
+ "case_id": "D6-MAPS_TO[ATTACK]-PeerOf-T1574.010-61ea1f::formal",
+ "verdict": "PARTIAL",
+ "correctness": 0.8,
+ "faithfulness": 0.75,
+ "groundedness": 0.9,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": false,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "The capec source doesn't establish the peer relationship",
+  "The peer query returned CAPEC-180 with no linked records"
+ ],
+ "rationale": "The answer identifies CAPEC-663 as the PeerOf peer of CAPEC-180, and CAPEC-180 is one of the CAPEC patterns mapped to T1574.010, so the expected gold identifier is present. It also lists the corresponding CAPEC patterns CAPEC-1, CAPEC-17, and CAPEC-180. However, the added abstention claims the capec source does not establish the peer link and that no linked records were returned, which conflicts with the evidence showing CAPEC-180 related to CAPEC-663.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 8192,
+  "escalated": false,
+  "position": 1
+ }
+}

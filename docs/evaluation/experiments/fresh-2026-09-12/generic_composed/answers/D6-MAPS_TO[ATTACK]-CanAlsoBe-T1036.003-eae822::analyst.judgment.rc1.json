@@ -1,0 +1,26 @@
+{
+ "case_id": "D6-MAPS_TO[ATTACK]-CanAlsoBe-T1036.003-eae822::analyst",
+ "verdict": "PARTIAL",
+ "correctness": 0.8,
+ "faithfulness": 0.75,
+ "groundedness": 0.85,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "The capec source doesn't establish this / returned CAPEC-165 with no linked records for the CAN_ALSO_BE query, despite CAPEC-23 being present as a related record"
+ ],
+ "rationale": "The answer identifies the expected gold identifier CAPEC-23 as the CAN_ALSO_BE pattern for CAPEC-165, which is the CAPEC pattern mapped to T1036.003. However, the included abstention claims the capec source returned no linked records, which is contradicted by the CAPEC-165 record containing CAPEC-23. This unsupported negative makes the answer partial rather than fully correct.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 8192,
+  "escalated": false,
+  "position": 1
+ }
+}

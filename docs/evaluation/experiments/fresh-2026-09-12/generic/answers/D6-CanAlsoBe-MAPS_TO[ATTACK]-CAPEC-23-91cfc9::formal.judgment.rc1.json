@@ -1,0 +1,26 @@
+{
+ "case_id": "D6-CanAlsoBe-MAPS_TO[ATTACK]-CAPEC-23-91cfc9::formal",
+ "verdict": "PARTIAL",
+ "correctness": 0.8,
+ "faithfulness": 0.85,
+ "groundedness": 0.9,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "The capec source doesn't establish this / the executed query returned CAPEC-23 with no linked records, despite the evidence showing CAPEC-23 linked to CAPEC-165"
+ ],
+ "rationale": "The answer identifies the expected technique T1036.003 through the path CAPEC-23 -> CAPEC-165 -> T1036.003, so the gold identifier is present. It also ties T1036.003 to the ATT&CK record and its parent T1036, which is supported. However, the included abstention claims the CAPEC query returned no linked records, contradicting the evidence that CAPEC-23 is linked to CAPEC-165.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 8192,
+  "escalated": false,
+  "position": 1
+ }
+}

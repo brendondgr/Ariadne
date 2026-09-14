@@ -1,0 +1,26 @@
+{
+ "case_id": "D5-x_mitre_analytic_refs-x_mitre_platforms-DET0132-7dbeb7::formal",
+ "verdict": "PARTIAL",
+ "correctness": 0.7,
+ "faithfulness": 0.75,
+ "groundedness": 0.8,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "AN0373 applies to Mac systems"
+ ],
+ "rationale": "The answer correctly includes DET0132 and the expected Mac-relevant analytic AN0374, which is supported by the NSDistributedLock description. It also asserts that AN0373 applies to Mac systems, but the evidence only shows generic Unix-style locking APIs and does not explicitly tie AN0373 to Mac. Therefore the answer is partial: complete on the gold identifier but over-assertive on AN0373.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 8192,
+  "escalated": false,
+  "position": 1
+ }
+}

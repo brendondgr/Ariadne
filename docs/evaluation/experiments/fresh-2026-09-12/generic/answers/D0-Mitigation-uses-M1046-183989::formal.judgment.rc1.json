@@ -1,0 +1,29 @@
+{
+ "case_id": "D0-Mitigation-uses-M1046-183989::formal",
+ "verdict": "PARTIAL",
+ "correctness": 0.4,
+ "faithfulness": 0.45,
+ "groundedness": 0.5,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "T1195.003, T1542.005, T1542.003, and T1542.001 are asserted as mitigated by M1046 but are not shown in the evidence.",
+  "The 18 software identifiers S1218, S0606, S0266, S0519, S9013, S0664, S0009, S0089, S1148, S1213, S0114, S0112, S0484, S0182, S0689, S0001, S0397, and S0047 are asserted but not shown in the evidence.",
+  "The 9 group identifiers G1048, G0010, G0087, G1003, G0049, G0034, G0032, G0007, and G0096 are asserted but not shown in the evidence.",
+  "C0063 is asserted as a related campaign but is not shown in the evidence."
+ ],
+ "rationale": "The answer correctly states the anchor M1046 and includes some supported mitigated techniques such as T1495, T1505, T1601, T1542, and T1195. However, it asserts many software, group, and campaign identifiers that are not present in the shown evidence, including S1218, S0606, G1048, and C0063. Because the expected related set is empty, the non-empty software list over-answers the question, making the result partial rather than fully correct.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 16384,
+  "escalated": true,
+  "position": 1
+ }
+}

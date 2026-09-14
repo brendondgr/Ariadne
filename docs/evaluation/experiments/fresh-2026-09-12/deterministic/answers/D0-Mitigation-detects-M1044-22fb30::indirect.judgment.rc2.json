@@ -1,0 +1,24 @@
+{
+ "case_id": "D0-Mitigation-detects-M1044-22fb30::indirect",
+ "verdict": "CORRECT",
+ "correctness": 1.0,
+ "faithfulness": 1.0,
+ "groundedness": 1.0,
+ "completeness": 1.0,
+ "gold_expected": 0,
+ "gold_present": 0,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The executed query for M1044 returned only MITIGATES facets and no DETECTS neighbours, so the answer's claim that M1044 has no DETECTS relationships is supported. It states the anchor M1044 and directly answers that no ATT&CK techniques are detected. No cross-source mapping or unsupported identifiers are asserted.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 8192,
+  "escalated": false,
+  "position": 2
+ }
+}

@@ -1,0 +1,24 @@
+{
+ "case_id": "D2-HAS_CONSEQUENCE-CAPEC-38-3653bf::analyst",
+ "verdict": "PARTIAL",
+ "correctness": 0.7,
+ "faithfulness": 0.95,
+ "groundedness": 0.95,
+ "completeness": 0.5,
+ "gold_expected": 2,
+ "gold_present": 1,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer correctly anchors CAPEC-38 and reports both HAS_CONSEQUENCE neighbors, capec:attack-pattern:38:consequence:1 and capec:attack-pattern:38:consequence:2. It fully states the second consequence, 'Confidentiality Access Control Authorization Gain Privileges', but the first omits the gold term 'Run Arbitrary Code' from 'Confidentiality Integrity Availability Execute Unauthorized Commands Run Arbitrary Code'. Therefore it is partial rather than fully complete.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 8192,
+  "escalated": false,
+  "position": 1
+ }
+}

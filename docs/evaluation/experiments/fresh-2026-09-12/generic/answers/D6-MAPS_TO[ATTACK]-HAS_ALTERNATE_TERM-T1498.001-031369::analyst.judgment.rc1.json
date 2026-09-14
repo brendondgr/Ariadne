@@ -1,0 +1,26 @@
+{
+ "case_id": "D6-MAPS_TO[ATTACK]-HAS_ALTERNATE_TERM-T1498.001-031369::analyst",
+ "verdict": "CORRECT",
+ "correctness": 1.0,
+ "faithfulness": 0.85,
+ "groundedness": 0.9,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "The capec source doesn't establish this \u2014 the executed query ran cleanly and returned CAPEC-528 with no linked records for alternate names"
+ ],
+ "rationale": "The answer correctly identifies T1498.001 and the expected CAPEC alternate term \"XML Denial of Service (XML DoS)\" for CAPEC-528, satisfying the gold expectation. Most claims are grounded in the CAPEC-528 AlternateTerm record and the T1498.001 mapping records. The main weakness is a contradictory abstention claiming the CAPEC source did not establish alternate names, even though the evidence shows CAPEC-528 has the expected alternate term.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 8192,
+  "escalated": false,
+  "position": 1
+ }
+}

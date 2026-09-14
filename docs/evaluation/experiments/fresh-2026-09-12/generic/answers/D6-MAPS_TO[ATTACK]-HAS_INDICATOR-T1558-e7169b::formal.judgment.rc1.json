@@ -1,0 +1,26 @@
+{
+ "case_id": "D6-MAPS_TO[ATTACK]-HAS_INDICATOR-T1558-e7169b::formal",
+ "verdict": "CORRECT",
+ "correctness": 0.95,
+ "faithfulness": 0.8,
+ "groundedness": 0.85,
+ "completeness": 1.0,
+ "gold_expected": 5,
+ "gold_present": 5,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "The capec source doesn't establish this / returned CAPEC-652 with no linked records for indicators"
+ ],
+ "rationale": "The answer correctly connects T1558 to CAPEC-652 and states all five expected CAPEC indicator texts. It also adds T1558 sub-technique details, which are extra but largely supported by the ATT&CK record. The main weakness is the contradictory abstention claiming CAPEC returned no linked indicator records despite the five HAS_INDICATOR rows.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 8192,
+  "escalated": false,
+  "position": 1
+ }
+}

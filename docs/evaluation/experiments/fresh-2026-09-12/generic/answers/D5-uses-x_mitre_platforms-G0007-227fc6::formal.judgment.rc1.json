@@ -1,0 +1,27 @@
+{
+ "case_id": "D5-uses-x_mitre_platforms-G0007-227fc6::formal",
+ "verdict": "PARTIAL",
+ "correctness": 0.7,
+ "faithfulness": 0.85,
+ "groundedness": 0.85,
+ "completeness": 1.0,
+ "gold_expected": 56,
+ "gold_present": 56,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "G0007 has 56 used techniques",
+  "G0007 has 37 used techniques"
+ ],
+ "rationale": "The answer states G0007 and includes all 56 expected Mac-applicable technique IDs, including T1001.001, T1003, T1078, and T1684.001, so completeness is full. It is partial because it does not explicitly identify which listed techniques apply to Mac and adds non-gold IDs such as T1078.004, T1550.001, and T1221. The claims are tied to the G0007 record, but the 56/37 technique partition is not fully visible in the truncated evidence.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 16384,
+  "escalated": true,
+  "position": 1
+ }
+}

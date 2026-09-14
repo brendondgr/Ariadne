@@ -1,0 +1,24 @@
+{
+ "case_id": "D4-ChildOf-CanFollow-CAPEC-187-61bb83::analyst",
+ "verdict": "PARTIAL",
+ "correctness": 0.7,
+ "faithfulness": 0.9,
+ "groundedness": 0.9,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer includes the required anchor CAPEC-187 and the expected related identifier CAPEC-98, so it is complete on the gold set. However, it lists CAPEC-186 and CAPEC-98 as generic \"attack patterns\" rather than explicitly stating that CAPEC-98 can precede the pattern of which CAPEC-187 is a more specific case. This makes it partially correct: grounded and complete, but imprecise about the requested CanFollow relationship.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 8192,
+  "escalated": false,
+  "position": 1
+ }
+}

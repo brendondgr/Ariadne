@@ -1,0 +1,26 @@
+{
+ "case_id": "D6-MAPS_TO[ATTACK]-MAPS_TO[WASC]-T1498.001-8781ac::analyst",
+ "verdict": "CORRECT",
+ "correctness": 0.9,
+ "faithfulness": 0.85,
+ "groundedness": 0.9,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "CAPEC-125 has only 1 ATT&CK mapping, T1498.001, when the evidence also shows CAPEC-125 mapped to T1499"
+ ],
+ "rationale": "The answer states the required WASC:10 entry as a catalogue mapping for CAPEC-125, which is the only WASC identifier expected for CAPEC patterns mapped to T1498.001. It also correctly identifies T1498.001 and the relevant CAPEC records. The main weakness is a minor unsupported count claim that CAPEC-125 has only one ATT&CK mapping, since the evidence also includes T1499.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 16384,
+  "escalated": true,
+  "position": 1
+ }
+}

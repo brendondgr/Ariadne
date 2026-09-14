@@ -1,0 +1,30 @@
+{
+ "case_id": "D6-CanPrecede-MAPS_TO[ATTACK]-CAPEC-630-44c14b::formal",
+ "verdict": "CORRECT",
+ "correctness": 0.85,
+ "faithfulness": 0.65,
+ "groundedness": 0.8,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": false,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "CAPEC-630 has 3 CanPrecede successors: CAPEC-98, CAPEC-543, CAPEC-89",
+  "The capec source returned CAPEC-630 with no linked records for patterns that can follow it",
+  "T1036.005 has 1 technique: T1036",
+  "T1566 has sub-techniques T1566.001, T1566.002, T1566.003, T1566.004",
+  "T1598 has sub-techniques T1598.001, T1598.002, T1598.003, T1598.004"
+ ],
+ "rationale": "The answer states the required technique T1036.005 via CAPEC-543, satisfying the gold expectation for patterns following CAPEC-630. It also includes T1566 and T1598 from CAPEC-98, which are supported as CAPEC mappings but may overstate the set of followers because the evidence does not clearly establish direction. Unsupported ATT&CK hierarchy details and the contradictory no-linked-records abstention reduce faithfulness.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 16384,
+  "escalated": true,
+  "position": 1
+ }
+}

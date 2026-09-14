@@ -1,0 +1,26 @@
+{
+ "case_id": "D5-uses-x_mitre_platforms-S0576-d2b056::formal",
+ "verdict": "PARTIAL",
+ "correctness": 0.6,
+ "faithfulness": 0.8,
+ "groundedness": 0.7,
+ "completeness": 1.0,
+ "gold_expected": 4,
+ "gold_present": 4,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "S0576's used techniques are split into 6 and 10 groups"
+ ],
+ "rationale": "The answer retrieves S0576 and states all four expected related identifiers, T1083, T1490, T1561.001, and T1685, among its used techniques. However, its final network-device answer names only T1490 and T1083, so it does not clearly identify T1561.001 and T1685 as applying to network devices. The 6/10 split is not directly supported by the flat related list shown, so faithfulness is slightly reduced.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 8192,
+  "escalated": false,
+  "position": 1
+ }
+}

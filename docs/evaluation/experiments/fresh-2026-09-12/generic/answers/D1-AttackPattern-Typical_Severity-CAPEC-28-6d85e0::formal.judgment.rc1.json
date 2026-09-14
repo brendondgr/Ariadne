@@ -1,0 +1,26 @@
+{
+ "case_id": "D1-AttackPattern-Typical_Severity-CAPEC-28-6d85e0::formal",
+ "verdict": "CORRECT",
+ "correctness": 1.0,
+ "faithfulness": 0.9,
+ "groundedness": 0.9,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "CAPEC-28 has CAPEC-215 as a ChildOf parent, where the direction is not explicitly supported by the shown records"
+ ],
+ "rationale": "The answer directly states that CAPEC-28 has Typical_Severity Medium, which is the requested severity and the expected gold value. It also names the anchor CAPEC-28, so completeness is full. The minor unsupported detail is the direction of the CAPEC-215 ChildOf relationship, which slightly reduces faithfulness and groundedness.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 8192,
+  "escalated": false,
+  "position": 1
+ }
+}

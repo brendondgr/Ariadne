@@ -1,0 +1,26 @@
+{
+ "case_id": "D4-ChildOf-HAS_EXAMPLE-CAPEC-46-40997b::analyst",
+ "verdict": "CORRECT",
+ "correctness": 0.92,
+ "faithfulness": 0.88,
+ "groundedness": 0.92,
+ "completeness": 1.0,
+ "gold_expected": 2,
+ "gold_present": 2,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "CAPEC-46 is described as having 2 Examples, although the evidence shows the two examples are associated with CAPEC-100 via the ChildOf traversal."
+ ],
+ "rationale": "The answer identifies CAPEC-46 and the related parent pattern CAPEC-100, then states both expected example instances: capec:attack-pattern:100:example:1 and capec:attack-pattern:100:example:2. It is mostly grounded in the CAPEC record and related examples, but the narrative slightly misattributes the examples to CAPEC-46 rather than to CAPEC-100 and truncates the second example text.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 8192,
+  "escalated": false,
+  "position": 1
+ }
+}

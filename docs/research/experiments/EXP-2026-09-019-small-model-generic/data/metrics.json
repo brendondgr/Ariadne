@@ -1,0 +1,716 @@
+{
+  "cells": {
+    "authored/none": {
+      "arm": "generic_narrator_off",
+      "root": "docs/evaluation/experiments/small-model-generic-2026-09-13/twobytwo",
+      "n": 284,
+      "gold_coverage_mean": 0.8611,
+      "scored": 284,
+      "fallbacks": 0,
+      "fallback_rate": 0.0,
+      "wall_s_mean_at_4_workers": 0.042,
+      "wall_s_median_at_4_workers": 0.023
+    },
+    "authored/2B": {
+      "arm": "generic_local_narrator",
+      "root": "docs/evaluation/experiments/small-model-generic-2026-09-13/narrator-full",
+      "n": 284,
+      "gold_coverage_mean": 0.8611,
+      "scored": 284,
+      "fallbacks": 7,
+      "fallback_rate": 0.0246,
+      "wall_s_mean_at_4_workers": 93.527,
+      "wall_s_median_at_4_workers": 49.633
+    },
+    "planner/none": {
+      "arm": "generic_planned",
+      "root": "docs/evaluation/experiments/small-model-generic-2026-09-13/twobytwo",
+      "n": 284,
+      "gold_coverage_mean": 0.4797,
+      "scored": 284,
+      "fallbacks": 0,
+      "fallback_rate": 0.0,
+      "wall_s_mean_at_4_workers": 0.207,
+      "wall_s_median_at_4_workers": 0.183
+    },
+    "planner/2B": {
+      "arm": "generic_planned_local",
+      "root": "docs/evaluation/experiments/small-model-generic-2026-09-13/twobytwo",
+      "n": 284,
+      "gold_coverage_mean": 0.4824,
+      "scored": 284,
+      "fallbacks": 8,
+      "fallback_rate": 0.0282,
+      "wall_s_mean_at_4_workers": 64.007,
+      "wall_s_median_at_4_workers": 35.144
+    }
+  },
+  "plan_effect": {
+    "none": {
+      "n": 284,
+      "mean": -0.3814,
+      "sd": 0.4413,
+      "standard_error": 0.0262,
+      "separable": true,
+      "per_tier": {
+        "D0": {
+          "n": 36,
+          "mean": -0.3333
+        },
+        "D1": {
+          "n": 35,
+          "mean": -0.3157
+        },
+        "D2": {
+          "n": 40,
+          "mean": -0.3117
+        },
+        "D3": {
+          "n": 44,
+          "mean": -0.4055
+        },
+        "D4": {
+          "n": 55,
+          "mean": -0.2981
+        },
+        "D5": {
+          "n": 47,
+          "mean": -0.5025
+        },
+        "D6": {
+          "n": 27,
+          "mean": -0.5534
+        }
+      }
+    },
+    "2B": {
+      "n": 284,
+      "mean": -0.3787,
+      "sd": 0.4413,
+      "standard_error": 0.0262,
+      "separable": true,
+      "per_tier": {
+        "D0": {
+          "n": 36,
+          "mean": -0.3333
+        },
+        "D1": {
+          "n": 35,
+          "mean": -0.2943
+        },
+        "D2": {
+          "n": 40,
+          "mean": -0.3117
+        },
+        "D3": {
+          "n": 44,
+          "mean": -0.4055
+        },
+        "D4": {
+          "n": 55,
+          "mean": -0.2981
+        },
+        "D5": {
+          "n": 47,
+          "mean": -0.5025
+        },
+        "D6": {
+          "n": 27,
+          "mean": -0.5534
+        }
+      }
+    }
+  },
+  "model_effect": {
+    "authored": {
+      "n": 284,
+      "mean": 0.0,
+      "sd": 0.0,
+      "standard_error": 0.0,
+      "separable": false,
+      "per_tier": {
+        "D0": {
+          "n": 36,
+          "mean": 0.0
+        },
+        "D1": {
+          "n": 35,
+          "mean": 0.0
+        },
+        "D2": {
+          "n": 40,
+          "mean": 0.0
+        },
+        "D3": {
+          "n": 44,
+          "mean": 0.0
+        },
+        "D4": {
+          "n": 55,
+          "mean": 0.0
+        },
+        "D5": {
+          "n": 47,
+          "mean": 0.0
+        },
+        "D6": {
+          "n": 27,
+          "mean": 0.0
+        }
+      }
+    },
+    "planner": {
+      "n": 284,
+      "mean": 0.0026,
+      "sd": 0.0445,
+      "standard_error": 0.0026,
+      "separable": false,
+      "per_tier": {
+        "D0": {
+          "n": 36,
+          "mean": 0.0
+        },
+        "D1": {
+          "n": 35,
+          "mean": 0.0214
+        },
+        "D2": {
+          "n": 40,
+          "mean": 0.0
+        },
+        "D3": {
+          "n": 44,
+          "mean": 0.0
+        },
+        "D4": {
+          "n": 55,
+          "mean": 0.0
+        },
+        "D5": {
+          "n": 47,
+          "mean": 0.0
+        },
+        "D6": {
+          "n": 27,
+          "mean": 0.0
+        }
+      }
+    }
+  },
+  "interaction": {
+    "plan_effect_without_model": -0.3814,
+    "plan_effect_with_2B": -0.3787,
+    "difference": 0.0027
+  },
+  "seams": {
+    "narrator": {
+      "answers": 284,
+      "fallbacks": 7,
+      "fallback_rate": 0.0246,
+      "fallback_reasons": {
+        "LLM narrator unavailable": 7
+      },
+      "fallback_healthy": true,
+      "claims_compared": 284,
+      "claims_identical": 273,
+      "claims_changed_case_ids": [
+        "D0-Analytic-kill_chain_phase-AN0662-9c5459::formal",
+        "D0-Analytic-kill_chain_phase-AN1955-53c2dd::indirect",
+        "D0-Analytic-subtechnique-of-AN0749-d741a1::analyst",
+        "D0-Analytic-subtechnique-of-AN1112-b87d8e::formal",
+        "D0-DetectionStrategy-mitigates-DET0130-5df6ac::formal",
+        "D2-detects-DET0189-278d85::analyst",
+        "D2-detects-DET0891-39cda6::formal",
+        "D4-detects-subtechnique-of-DET0285-9c3f6d::analyst",
+        "D4-detects-subtechnique-of-DET0285-9c3f6d::formal",
+        "D4-detects-subtechnique-of-DET0285-9c3f6d::indirect",
+        "D4-detects-uses-DET0181-518063::formal"
+      ],
+      "new_unsupported_case_ids": [],
+      "wall_clock": {
+        "narrator": {
+          "n": 284,
+          "mean_s": 93.527,
+          "median_s": 49.633,
+          "max_s": 601.16
+        },
+        "control": {
+          "n": 284,
+          "mean_s": 0.047,
+          "median_s": 0.025,
+          "max_s": 1.124
+        }
+      },
+      "passes": false,
+      "narrator_path": "docs/evaluation/experiments/small-model-generic-2026-09-13/narrator-full/generic_local_narrator/answers",
+      "control_path": "docs/evaluation/experiments/small-model-generic-2026-09-13/narrator-full/generic_narrator_off/answers"
+    },
+    "specialist_4096": {
+      "cases": 9,
+      "drafts_submitted_to_the_gate": 17,
+      "queries_differing_from_control": 9,
+      "allowlist_rejections": 0,
+      "empty_drafts": 11,
+      "rejection_rate_over_drafts": 0.6471,
+      "executed": 6,
+      "executed_but_errored": 6,
+      "drafts_that_worked": 0,
+      "viable_at_this_model_size": false,
+      "zero_record_model": 9,
+      "zero_record_control": 0,
+      "retrieved_less_than_control": 9,
+      "retrieved_less_case_ids": [
+        "D0-Analytic-kill_chain_phase-AN0662-9c5459::formal",
+        "D1-Analytic-x_mitre_platforms-AN0307-86109b::indirect",
+        "D2-CanAlsoBe-CAPEC-174-23d875::formal",
+        "D3-CanFollow-CAPEC-390-754ead::indirect",
+        "D4-CanAlsoBe-HAS_CONSEQUENCE-CAPEC-248-02edba::analyst",
+        "D4-CanAlsoBe-HAS_CONSEQUENCE-CAPEC-248-02edba::formal",
+        "D5-CanFollow-Abstraction-CAPEC-234-b5b954::formal",
+        "D6-CanFollow-MAPS_TO[ATTACK]-CAPEC-701-6e185a::indirect",
+        "D6-CanPrecede-MAPS_TO[ATTACK]-CAPEC-662-205983::analyst"
+      ],
+      "top_reasons": {
+        "empty query": 11,
+        "{neo4j_code: Neo.ClientError.Statement.ParameterMissing} {message: Expected parameter(s): ": 2,
+        "499: The [eval] message supplies one or more invalid parameters key of [[id]] - these are ": 2,
+        "597: No such property: params for class: Script450": 1,
+        "producer q1: it failed (499: The [eval] message supplies one or more invalid parameters ke": 1,
+        "597: No such property: params for class: Script449": 1,
+        "producer q1: it failed (597: No such property: params for class: Script449)": 1
+      },
+      "model_path": "docs/evaluation/experiments/small-model-generic-2026-09-13/specialist-dry/generic_local_full/answers",
+      "control_path": "docs/evaluation/experiments/small-model-generic-2026-09-13/specialist-dry/generic_narrator_off/answers"
+    },
+    "specialist_16384": {
+      "cases": 9,
+      "drafts_submitted_to_the_gate": 16,
+      "queries_differing_from_control": 9,
+      "allowlist_rejections": 0,
+      "empty_drafts": 8,
+      "rejection_rate_over_drafts": 0.5,
+      "executed": 8,
+      "executed_but_errored": 8,
+      "drafts_that_worked": 0,
+      "viable_at_this_model_size": false,
+      "zero_record_model": 9,
+      "zero_record_control": 0,
+      "retrieved_less_than_control": 9,
+      "retrieved_less_case_ids": [
+        "D0-Analytic-kill_chain_phase-AN0662-9c5459::formal",
+        "D1-Analytic-x_mitre_platforms-AN0307-86109b::indirect",
+        "D2-CanAlsoBe-CAPEC-174-23d875::formal",
+        "D3-CanFollow-CAPEC-390-754ead::indirect",
+        "D4-CanAlsoBe-HAS_CONSEQUENCE-CAPEC-248-02edba::analyst",
+        "D4-CanAlsoBe-HAS_CONSEQUENCE-CAPEC-248-02edba::formal",
+        "D5-CanFollow-Abstraction-CAPEC-234-b5b954::formal",
+        "D6-CanFollow-MAPS_TO[ATTACK]-CAPEC-701-6e185a::indirect",
+        "D6-CanPrecede-MAPS_TO[ATTACK]-CAPEC-662-205983::analyst"
+      ],
+      "top_reasons": {
+        "empty query": 8,
+        "{neo4j_code: Neo.ClientError.Statement.ParameterMissing} {message: Expected parameter(s): ": 1,
+        "{neo4j_code: Neo.ClientError.Statement.SyntaxError} {message: Parameter maps cannot be use": 1,
+        "597: No such property: params for class: Script454": 1,
+        "597: No such property: params for class: Script452": 1,
+        "597: No such property: params for class: Script453": 1,
+        "597: No such property: params for class: Script456": 1,
+        "597: No such property: params for class: Script455": 1,
+        "producer q1: it failed (597: No such property: params for class: Script455)": 1,
+        "597: No such property: params for class: Script451": 1
+      },
+      "model_path": "docs/evaluation/experiments/small-model-generic-2026-09-13/specialist-bigbudget/generic_local_full/answers",
+      "control_path": "docs/evaluation/experiments/small-model-generic-2026-09-13/specialist-dry/generic_narrator_off/answers"
+    },
+    "endpoint": {
+      "probed_at": "2026-09-13T15:48:37-0400",
+      "base_url": "http://localhost:7070/v1",
+      "alias": "minicpm-5-2B",
+      "host": {
+        "cores": 32,
+        "loadavg_1m_at_start": 1.93
+      },
+      "identity": {
+        "expected_substring": "minicpm",
+        "served_model": "minicpm-5-2B",
+        "passed": true
+      },
+      "context_ceiling": {
+        "largest_accepted": 1048576,
+        "smallest_refused": null,
+        "refusal_body": null,
+        "note": "no ceiling below the probe cap of 1048576 tokens"
+      },
+      "ladder": [
+        {
+          "concurrency": 1,
+          "calls": 10,
+          "wall_s": 36.962,
+          "ok": 10,
+          "errors": 0,
+          "completion_tokens": 2700,
+          "tokens_per_s": 73.05,
+          "per_call_tokens_per_s": 73.05,
+          "p50_s": 3.694,
+          "p95_s": 3.724,
+          "min_s": 3.676,
+          "max_s": 3.724,
+          "loadavg_1m": 2.79,
+          "stop_reason": null,
+          "error_samples": []
+        },
+        {
+          "concurrency": 2,
+          "calls": 10,
+          "wall_s": 20.272,
+          "ok": 10,
+          "errors": 0,
+          "completion_tokens": 2701,
+          "tokens_per_s": 133.24,
+          "per_call_tokens_per_s": 66.81,
+          "p50_s": 3.956,
+          "p95_s": 4.43,
+          "min_s": 3.926,
+          "max_s": 4.43,
+          "loadavg_1m": 3.31,
+          "stop_reason": null,
+          "error_samples": []
+        },
+        {
+          "concurrency": 4,
+          "calls": 10,
+          "wall_s": 12.838,
+          "ok": 10,
+          "errors": 0,
+          "completion_tokens": 2702,
+          "tokens_per_s": 210.47,
+          "per_call_tokens_per_s": 62.26,
+          "p50_s": 4.444,
+          "p95_s": 4.494,
+          "min_s": 3.917,
+          "max_s": 4.494,
+          "loadavg_1m": 3.27,
+          "stop_reason": null,
+          "error_samples": []
+        },
+        {
+          "concurrency": 8,
+          "calls": 10,
+          "wall_s": 12.708,
+          "ok": 10,
+          "errors": 0,
+          "completion_tokens": 2703,
+          "tokens_per_s": 212.7,
+          "per_call_tokens_per_s": 43.41,
+          "p50_s": 8.293,
+          "p95_s": 8.789,
+          "min_s": 4.385,
+          "max_s": 8.789,
+          "loadavg_1m": 2.9,
+          "stop_reason": null,
+          "error_samples": []
+        },
+        {
+          "concurrency": 12,
+          "calls": 10,
+          "wall_s": 12.891,
+          "ok": 10,
+          "errors": 0,
+          "completion_tokens": 2706,
+          "tokens_per_s": 209.92,
+          "per_call_tokens_per_s": 40.38,
+          "p50_s": 8.879,
+          "p95_s": 12.886,
+          "min_s": 4.481,
+          "max_s": 12.886,
+          "loadavg_1m": 2.61,
+          "stop_reason": null,
+          "error_samples": []
+        },
+        {
+          "concurrency": 16,
+          "calls": 10,
+          "wall_s": 12.857,
+          "ok": 10,
+          "errors": 0,
+          "completion_tokens": 2703,
+          "tokens_per_s": 210.24,
+          "per_call_tokens_per_s": 40.45,
+          "p50_s": 8.856,
+          "p95_s": 12.852,
+          "min_s": 4.473,
+          "max_s": 12.852,
+          "loadavg_1m": 2.58,
+          "stop_reason": null,
+          "error_samples": []
+        }
+      ],
+      "chosen_concurrency": 4,
+      "ladder_stopped_at": null
+    },
+    "endpoint_gemma": {
+      "probed_at": "2026-09-13T15:38:48-0400",
+      "base_url": "http://localhost:4000/v1",
+      "alias": "local",
+      "host": {
+        "cores": 32,
+        "loadavg_1m_at_start": 1.66
+      },
+      "identity": {
+        "expected_substring": "minicpm",
+        "served_model": "gemma-4-26B-it",
+        "passed": false,
+        "overridden": true
+      },
+      "context_ceiling": {
+        "largest_accepted": 1048576,
+        "smallest_refused": null,
+        "refusal_body": null,
+        "note": "no ceiling below the probe cap of 1048576 tokens"
+      },
+      "ladder": [
+        {
+          "concurrency": 1,
+          "calls": 10,
+          "wall_s": 56.268,
+          "ok": 10,
+          "errors": 0,
+          "completion_tokens": 5120,
+          "tokens_per_s": 90.99,
+          "per_call_tokens_per_s": 91.0,
+          "p50_s": 5.625,
+          "p95_s": 5.672,
+          "min_s": 5.574,
+          "max_s": 5.672,
+          "loadavg_1m": 3.16,
+          "stop_reason": null,
+          "error_samples": []
+        },
+        {
+          "concurrency": 2,
+          "calls": 10,
+          "wall_s": 46.609,
+          "ok": 10,
+          "errors": 0,
+          "completion_tokens": 5120,
+          "tokens_per_s": 109.85,
+          "per_call_tokens_per_s": 55.0,
+          "p50_s": 9.3,
+          "p95_s": 9.457,
+          "min_s": 9.208,
+          "max_s": 9.457,
+          "loadavg_1m": 3.86,
+          "stop_reason": null,
+          "error_samples": []
+        },
+        {
+          "concurrency": 4,
+          "calls": 10,
+          "wall_s": 36.565,
+          "ok": 10,
+          "errors": 0,
+          "completion_tokens": 5120,
+          "tokens_per_s": 140.03,
+          "per_call_tokens_per_s": 41.08,
+          "p50_s": 13.539,
+          "p95_s": 13.671,
+          "min_s": 9.319,
+          "max_s": 13.671,
+          "loadavg_1m": 4.17,
+          "stop_reason": null,
+          "error_samples": []
+        },
+        {
+          "concurrency": 8,
+          "calls": 10,
+          "wall_s": 41.78,
+          "ok": 10,
+          "errors": 0,
+          "completion_tokens": 5120,
+          "tokens_per_s": 122.55,
+          "per_call_tokens_per_s": 23.24,
+          "p50_s": 25.877,
+          "p95_s": 32.075,
+          "min_s": 15.789,
+          "max_s": 32.075,
+          "loadavg_1m": 4.39,
+          "stop_reason": "p95 32.075s exceeds 4x rung-1 p50 (22.5s)",
+          "error_samples": []
+        }
+      ],
+      "chosen_concurrency": 4,
+      "ladder_stopped_at": 8
+    },
+    "planner_cost": {
+      "n_paired": 284,
+      "metric": "deterministic gold coverage (deterministic_scores.coverage)",
+      "control": {
+        "arm": "generic_composed",
+        "mean": 0.8611
+      },
+      "treatment": {
+        "arm": "generic_planned",
+        "mean": 0.4797
+      },
+      "paired_difference": {
+        "mean": -0.3814,
+        "sd": 0.4413,
+        "standard_error": 0.0262,
+        "separable": true
+      },
+      "per_tier": {
+        "D0": {
+          "n": 36,
+          "mean_difference": -0.3333
+        },
+        "D1": {
+          "n": 35,
+          "mean_difference": -0.3157
+        },
+        "D2": {
+          "n": 40,
+          "mean_difference": -0.3117
+        },
+        "D3": {
+          "n": 44,
+          "mean_difference": -0.4055
+        },
+        "D4": {
+          "n": 55,
+          "mean_difference": -0.2981
+        },
+        "D5": {
+          "n": 47,
+          "mean_difference": -0.5025
+        },
+        "D6": {
+          "n": 27,
+          "mean_difference": -0.5534
+        }
+      },
+      "retrieval": {
+        "treatment_empty_where_control_retrieved": 77,
+        "control_empty_where_treatment_retrieved": 1,
+        "both_empty": 8,
+        "lost_case_ids": [
+          "D0-Analytic-kill_chain_phase-AN0662-9c5459::formal",
+          "D0-Analytic-kill_chain_phase-AN1955-53c2dd::indirect",
+          "D0-Analytic-subtechnique-of-AN0749-d741a1::analyst",
+          "D0-Analytic-subtechnique-of-AN1112-b87d8e::formal",
+          "D0-Campaign-x_mitre_analytic_refs-C0034-a648a4::formal",
+          "D0-Category-HAS_PREREQUISITE-CAPEC-689-5018c8::analyst",
+          "D0-Category-REQUIRES_RESOURCE-CAPEC-685-bbd4d7::analyst",
+          "D0-DetectionStrategy-mitigates-DET0130-5df6ac::formal",
+          "D0-Group-kill_chain_phase-G0001-df09db::indirect",
+          "D0-Software-kill_chain_phase-S1182-2d6bd4::formal",
+          "D0-View-HAS_ALTERNATE_TERM-CAPEC-3000-fb5299::indirect",
+          "D0-View-HAS_INDICATOR-CAPEC-703-9098da::formal",
+          "D0-View-HAS_INDICATOR-CAPEC-703-9098da::indirect",
+          "D1-Analytic-x_mitre_platforms-AN0307-86109b::indirect",
+          "D1-Analytic-x_mitre_platforms-AN1195-bf0344::analyst",
+          "D1-Analytic-x_mitre_platforms-AN1549-acbfcf::formal",
+          "D1-Software-x_mitre_contributors-S0587-ecac5f::indirect",
+          "D1-Technique-x_mitre_contributors-T1530-347700::indirect",
+          "D1-View-Type-CAPEC-284-6e2529::indirect",
+          "D1-View-Type-CAPEC-333-69177c::analyst",
+          "D2-CanFollow-CAPEC-700-51669a::analyst",
+          "D2-HAS_EXECUTION_STEP-CAPEC-135-8e3d3e::analyst",
+          "D2-HAS_EXECUTION_STEP-CAPEC-568-afa84d::formal",
+          "D2-HAS_PREREQUISITE-CAPEC-68-7a82c1::analyst",
+          "D2-MAPS_TO[WASC]-CAPEC-126-d48ec7::indirect",
+          "D2-log_source-AN0280-dd36b8::formal",
+          "D2-mitigates-M1049-02c63a::formal",
+          "D2-uses-C0006-a570a2::indirect",
+          "D2-uses-C0060-ae540c::indirect",
+          "D2-uses-C0061-32ed5d::analyst",
+          "D2-uses-G1003-260507::formal",
+          "D2-x_mitre_analytic_refs-DET0321-6c25bb::formal",
+          "D3-CanFollow-CAPEC-390-754ead::indirect",
+          "D3-HAS_MEMBER-CAPEC-130-d7b062::analyst",
+          "D3-kill_chain_phase-TA0042-f967b1::analyst",
+          "D3-mitigates-T1535-8132d3::formal",
+          "D3-mitigates-T1561.001-c92867::formal",
+          "D3-tactic_refs-TA0042-88e159::analyst",
+          "D3-uses-T1552.004-88380d::formal",
+          "D3-uses-T1587.002-de779a::formal",
+          "D3-x_mitre_analytic_refs-AN0751-50875a::indirect",
+          "D4-CanPrecede-HAS_PREREQUISITE-CAPEC-68-72e517::formal",
+          "D4-ChildOf-HAS_ALTERNATE_TERM-CAPEC-384-69413a::formal",
+          "D4-ChildOf-HAS_EXECUTION_STEP-CAPEC-635-952560::indirect",
+          "D4-ChildOf-HAS_INDICATOR-CAPEC-108-f3d9eb::analyst",
+          "D4-ChildOf-REQUIRES_RESOURCE-CAPEC-473-28f5ac::indirect",
+          "D4-HAS_MEMBER-ChildOf-CAPEC-687-97e860::analyst",
+          "D4-HAS_MEMBER-HAS_ALTERNATE_TERM-CAPEC-703-349040::indirect",
+          "D4-HAS_MEMBER-HAS_EXAMPLE-CAPEC-703-cd4d65::formal",
+          "D4-HAS_MEMBER-HAS_EXECUTION_STEP-CAPEC-513-6a9ea2::indirect",
+          "D4-detects-x_mitre_analytic_refs-T1003.005-a591fa::indirect",
+          "D4-kill_chain_phase-uses-TA0008-a250eb::formal",
+          "D4-mitigates-uses-M1046-b1c76e::formal",
+          "D4-mitigates-uses-M1047-b63672::indirect",
+          "D4-uses-mitigates-C0021-8f9753::formal",
+          "D4-uses-uses-C0023-47ddc0::indirect",
+          "D5-CanFollow-Abstraction-CAPEC-234-b5b954::formal",
+          "D5-CanFollow-Likelihood_Of_Attack-CAPEC-234-6037d9::indirect",
+          "D5-CanPrecede-Abstraction-CAPEC-600-1a0fa9::formal",
+          "D5-ChildOf-Abstraction-CAPEC-41-3f821e::indirect",
+          "D5-HAS_MEMBER-Abstraction-CAPEC-703-59080d::indirect",
+          "D5-HAS_MEMBER-Abstraction-CAPEC-703-c62fab::analyst",
+          "D5-HAS_MEMBER-Likelihood_Of_Attack-CAPEC-223-3531a3::formal",
+          "D5-HAS_MEMBER-Likelihood_Of_Attack-CAPEC-703-0c5b15::indirect",
+          "D5-HAS_MEMBER-Status-CAPEC-515-93195c::indirect",
+          "D5-HAS_MEMBER-Typical_Severity-CAPEC-512-dd2e01::analyst",
+          "D5-uses-x_mitre_platforms-G0006-0eed87::formal",
+          "D5-uses-x_mitre_platforms-G1003-4c59d8::analyst",
+          "D5-uses-x_mitre_platforms-G1031-8c5276::formal",
+          "D5-uses-x_mitre_platforms-S0435-07fa38::formal",
+          "D5-x_mitre_analytic_refs-x_mitre_platforms-DET0338-3be277::analyst",
+          "D6-HAS_MEMBER-MAPS_TO[ATTACK]-CAPEC-513-f08e34::indirect",
+          "D6-MAPS_TO[ATTACK]-CanFollow-T1078.001-0085e9::formal",
+          "D6-MAPS_TO[ATTACK]-HAS_ALTERNATE_TERM-T1557-cb28e1::formal",
+          "D6-MAPS_TO[ATTACK]-HAS_MEMBER-T1036.001-095598::formal",
+          "D6-MAPS_TO[ATTACK]-HAS_MITIGATION-T1195.002-962add::formal",
+          "D6-MAPS_TO[ATTACK]-subtechnique-of-CAPEC-560-e943a6::indirect"
+        ],
+        "gained_case_ids": [
+          "D0-Category-ChildOf-CAPEC-210-c437b1::analyst"
+        ]
+      },
+      "source_root": "docs/evaluation/experiments/small-model-generic-2026-09-13/planner-cost",
+      "counts": {
+        "generic_composed": 284,
+        "generic_planned": 284
+      }
+    }
+  },
+  "single_user_latency_at_1_worker": {
+    "authored/none": {
+      "arm": "generic_narrator_off",
+      "n": 9,
+      "mean_s": 0.07,
+      "median_s": 0.01,
+      "max_s": 0.455
+    },
+    "authored/2B": {
+      "arm": "generic_local_narrator",
+      "n": 9,
+      "mean_s": 20.802,
+      "median_s": 17.744,
+      "max_s": 72.467
+    },
+    "planner/none": {
+      "arm": "generic_planned",
+      "n": 9,
+      "mean_s": 0.119,
+      "median_s": 0.06,
+      "max_s": 0.595
+    },
+    "planner/2B": {
+      "arm": "generic_planned_local",
+      "n": 9,
+      "mean_s": 9.752,
+      "median_s": 6.904,
+      "max_s": 38.298
+    },
+    "_root": "docs/evaluation/experiments/small-model-generic-2026-09-13/latency-1worker"
+  }
+}

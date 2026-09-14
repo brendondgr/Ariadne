@@ -1,0 +1,26 @@
+{
+ "case_id": "D0-Mitigation-detects-M1044-22fb30::indirect",
+ "verdict": "CORRECT",
+ "correctness": 1.0,
+ "faithfulness": 0.8,
+ "groundedness": 0.85,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "M1044 has no DETECTS relationships in this catalogue"
+ ],
+ "rationale": "The answer directly addresses the question by stating that M1044 detects no ATT&CK techniques, which matches the empty expected technique set. It also correctly lists the supported MITIGATES neighbors T1547.008, T1574, and T1574.001. The main weakness is the catalogue-wide absence claim for DETECTS, since the shown query only traversed MITIGATES.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 8192,
+  "escalated": false,
+  "position": 1
+ }
+}

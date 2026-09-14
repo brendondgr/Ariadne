@@ -1,0 +1,26 @@
+{
+ "case_id": "D5-uses-x_mitre_platforms-S1245-8027f0::indirect",
+ "verdict": "PARTIAL",
+ "correctness": 0.8,
+ "faithfulness": 0.7,
+ "groundedness": 0.8,
+ "completeness": 1.0,
+ "gold_expected": 34,
+ "gold_present": 34,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "All 35 related techniques, including T1547.013 and T1543.001, are presented as Windows-relevant"
+ ],
+ "rationale": "The answer states S1245 and all 33 expected Windows-relevant related techniques, including T1005, T1048.003, T1518, and T1679, so completeness is full. However, it treats all 35 related items as Windows-relevant, including T1547.013 and T1543.001, whose evidence descriptions point to Linux and macOS rather than Windows. This over-inclusion makes the answer partial rather than fully correct.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 8192,
+  "escalated": false,
+  "position": 1
+ }
+}

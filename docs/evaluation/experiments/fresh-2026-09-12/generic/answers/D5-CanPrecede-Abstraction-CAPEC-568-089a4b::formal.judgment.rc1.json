@@ -1,0 +1,27 @@
+{
+ "case_id": "D5-CanPrecede-Abstraction-CAPEC-568-089a4b::formal",
+ "verdict": "PARTIAL",
+ "correctness": 0.7,
+ "faithfulness": 0.75,
+ "groundedness": 0.9,
+ "completeness": 1.0,
+ "gold_expected": 2,
+ "gold_present": 2,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "CAPEC-165 is asserted as a CanPrecede successor of CAPEC-568, but the evidence only shows it as a CAN_PRECEDE-related neighbor without explicit direction",
+  "CAPEC-549 is asserted as a CanPrecede successor of CAPEC-568, but the evidence only shows it as a CAN_PRECEDE-related neighbor without explicit direction"
+ ],
+ "rationale": "The answer correctly includes the expected Meta-level followers CAPEC-151 and CAPEC-560 for CAPEC-568, so completeness is full. It also adds CAPEC-165 and CAPEC-549 as successors, which are present in the related evidence but not in the gold set and are not explicitly directionally supported. Therefore it is partial rather than fully correct.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 8192,
+  "escalated": false,
+  "position": 1
+ }
+}

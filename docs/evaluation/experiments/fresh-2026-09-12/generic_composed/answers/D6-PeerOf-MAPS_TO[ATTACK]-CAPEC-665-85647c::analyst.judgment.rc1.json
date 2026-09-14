@@ -1,0 +1,26 @@
+{
+ "case_id": "D6-PeerOf-MAPS_TO[ATTACK]-CAPEC-665-85647c::analyst",
+ "verdict": "CORRECT",
+ "correctness": 0.9,
+ "faithfulness": 0.8,
+ "groundedness": 0.9,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "The capec source returned CAPEC-665 with no linked peer records, as stated in the abstention, although the evidence shows PEER_OF links to CAPEC-148, CAPEC-151, and CAPEC-458"
+ ],
+ "rationale": "The answer identifies CAPEC-665's peers CAPEC-148, CAPEC-151, and CAPEC-458 and states that CAPEC-148 maps to T1491, which is the expected ATT&CK technique. It also lists CAPEC-665's own mappings T1211, T1542.002, and T1556, which are supported but not the target peer mappings. The abstention statement that the peer query returned no linked records is contradicted by the evidence, so faithfulness is reduced.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 8192,
+  "escalated": false,
+  "position": 1
+ }
+}
