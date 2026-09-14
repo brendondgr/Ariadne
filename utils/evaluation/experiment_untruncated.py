@@ -44,7 +44,7 @@ DEFAULT_ROOT = "docs/evaluation/experiments/untruncated"
 # un-truncation, A − C isolates the composer, and B − C isolates LLM planning.
 ARMS = ("deterministic", "llm", "gold_llm", "llm_loop", "gold_loop_llm", "generic",
         "llm_query", "merged", "generic_composed", "generic_planned",
-        "deterministic_planned",
+        "deterministic_planned", "generic_planned_llm",
         "generic_local_narrator", "generic_local_full", "generic_narrator_off",
         "generic_planned_local",
         "rewrite_off", "rewrite_det", "rewrite_model")
@@ -254,6 +254,34 @@ def untruncated_env(*, arm: str, llm_model: str, llm_max_tokens: int) -> dict[st
         env.update({
             "SPECIALIST_GENERIC_ONLY": "true",
             "PLANNER_LLM_ENABLED": "false",
+            "SPECIALIST_LLM_ENABLED": "false",
+            "SYNTHESIS_LLM_ENABLED": "false",
+            "CONVERSATION_LLM_ENABLED": "false",
+            "ARIADNE_REWRITE": "0",
+            "ARIADNE_REWRITE_MODEL": "0",
+        })
+    elif arm == "generic_planned_llm":
+        # The planner seam, on the one stage where the deterministic path is
+        # measurably weak. EXP-2026-09-020 localised the loss: the drafter
+        # ENUMERATES an anchor's schema neighbourhood instead of SELECTING a
+        # relation, so its sub-questions carry a bag of five or six labels where
+        # the authored plan carries one (label, predicate, label) triple. Three
+        # deterministic selectors were measured against the bank's gold legs and
+        # none clears 55% predicate accuracy: literal predicate name in the
+        # question 54.3%, source-card gloss match 40.2%, schema shortest-path
+        # first hop 40.5%.
+        #
+        # Choosing a relation from a natural-language phrase is what a model is
+        # for, and this seam is backstopped the way the narrator seam is: the
+        # gate validates every drafted sub-question against the source card, and
+        # the deterministic drafter remains the fallback, so a bad draft degrades
+        # to today's behaviour rather than to nothing.
+        #
+        # This is `generic_planned` with exactly one thing changed. Every other
+        # seam stays off, so a paired difference is the planner and nothing else.
+        env.update({
+            "SPECIALIST_GENERIC_ONLY": "true",
+            "PLANNER_LLM_ENABLED": "true",
             "SPECIALIST_LLM_ENABLED": "false",
             "SYNTHESIS_LLM_ENABLED": "false",
             "CONVERSATION_LLM_ENABLED": "false",
@@ -747,6 +775,11 @@ def _plan_dict(plan: Any) -> list[dict[str, Any]]:
             "sub_question_id": getattr(sub, "id", None),
             "source": getattr(sub, "source", None),
             "text": getattr(sub, "text", None),
+            # The planner's chosen (label, predicate, label) triple. Recorded
+            # because without it an observed plan cannot be compared against the
+            # authored one at all -- the 2026-09-14 planner diagnostic misread an
+            # absent field as an absent decision.
+            "entities": list(getattr(sub, "entities", ()) or ()),
             "seed_ids": list(getattr(sub, "seed_ids", ()) or ()),
             "depends_on": getattr(sub, "depends_on", None),
             "limits": (
@@ -897,7 +930,8 @@ def run_llm(entry: dict, kind: str, _pool: Any) -> tuple[Any, Any, dict]:
 
 
 def _run_real_pipeline(
-    entry: dict, kind: str, *, use_llm: bool, llm_synthesis: bool | None = None
+    entry: dict, kind: str, *, use_llm: bool, llm_synthesis: bool | None = None,
+    llm_specialist: bool | None = None,
 ) -> tuple[Any, Any, dict]:
     """Drive the REAL pipeline — planner included — at an explicit LLM posture.
 
@@ -941,9 +975,24 @@ def _run_real_pipeline(
         synthesis_config = _dc.replace(
             SynthesisConfig.from_env(), llm_enabled=llm_synthesis
         )
+    # Same trick, for the seam on the other side of the planner. `use_llm=True`
+    # is the only way to get a live PLANNER, and it drags the specialist seam
+    # live with it -- the query-writing baseline that scores 0.5000 against the
+    # template cascade's 0.9467. Passing an explicit specialist_config is what
+    # lets a cell run an LLM planner over deterministic query construction.
+    specialist_config = None
+    if llm_specialist is not None:
+        import dataclasses as _dc2
+
+        from utils.specialists.config import SpecialistConfig
+
+        specialist_config = _dc2.replace(
+            SpecialistConfig.from_env(), llm_enabled=llm_specialist
+        )
     for event, payload in iter_pipeline(
         entry["question"], mode="query", use_llm=use_llm, specialists=injected,
-        synthesis_config=synthesis_config, run=run,
+        synthesis_config=synthesis_config, specialist_config=specialist_config,
+        run=run,
     ):
         if event == "plan":
             plan = payload.get("plan")
@@ -967,6 +1016,7 @@ def _run_real_pipeline(
         ),
         "use_llm": use_llm,
         "llm_synthesis": use_llm if llm_synthesis is None else llm_synthesis,
+        "llm_specialist": use_llm if llm_specialist is None else llm_specialist,
         "rewrite": getattr(plan, "rewrite", None),
         "observed_plan": _plan_dict(plan),
         "exit_code": run.exit_code,
@@ -995,6 +1045,18 @@ def run_planned_local(entry: dict, kind: str, _pool: Any) -> tuple[Any, Any, dic
     change the facts.
     """
     return _run_real_pipeline(entry, kind, use_llm=False, llm_synthesis=True)
+
+
+def run_planned_llm(entry: dict, kind: str, _pool: Any) -> tuple[Any, Any, dict]:
+    """The real pipeline with an LLM PLANNER and nothing else live.
+
+    `use_llm=True` is the only switch that reaches the planner, and it turns on
+    the specialist and synthesis seams too. Both are pinned back off explicitly
+    so a paired difference against `generic_planned` is the planner alone.
+    """
+    return _run_real_pipeline(
+        entry, kind, use_llm=True, llm_synthesis=False, llm_specialist=False
+    )
 
 
 def run_planned(entry: dict, kind: str, _pool: Any) -> tuple[Any, Any, dict]:
@@ -1035,6 +1097,10 @@ RUNNERS = {
     # planner. `run_deterministic` would replay the authored plan and answer a
     # question that has already been answered.
     "deterministic_planned": run_planned,
+    # NOT run_planned: that pins use_llm=False, which is the whole point of it,
+    # and would have run this arm's deterministic planner while reporting an
+    # LLM one. Caught on the 8-question dry run by 0 recorded LLM calls.
+    "generic_planned_llm": run_planned_llm,
     # Deterministic planner, deterministic queries, 2B narrator — the one cell
     # of the 2x2 that had never been run.
     "generic_planned_local": run_planned_local,
