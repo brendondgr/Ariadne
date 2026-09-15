@@ -188,3 +188,78 @@ the workbench on the strength of rewording robustness; it is measurably worse at
 every tier in scope. Its case remains what it always was and is untouched by this:
 templates cannot accept a question nobody wrote a template for. Step 5's scoping
 is now the only remaining route to `T1`/`T2`.
+
+## Step 4 — H3 is falsified, and the mechanism is a trade (complete, 2026-09-15)
+
+`--rewrite model` against the relay at `:9090`, served weights asserted from the
+response envelope as **`qwen38-27B-v2`** — the same weights `EXP-2026-09-014` ran.
+579 variants, 8 workers, 57 min. `data/metrics_rewrite.json`,
+`data/metrics_paired_rewrite.json`.
+
+> **Pre-registered ship rule (plan §Step 4):** `T3` ≥ baseline + 0.10, **and** no
+> tier `T0`–`T2` below baseline − 0.02, **and** `wrong_entity` ≤ 0.0950, **and**
+> `catalogue_dump` ≤ 0.0915.
+
+| tier | n | baseline | rewrite | difference | fixed | broken |
+|---|---:|---:|---:|---:|---:|---:|
+| T1 | 120 | 0.3917 | 0.2750 | **−0.1167** | 3 | **17** |
+| T2 | 120 | 0.3667 | 0.3000 | **−0.0667** | 7 | **15** |
+| T3 | 101 | 0.1782 | **0.3168** | **+0.1386** | **21** | 7 |
+| T4 | 104 | 0.0000 | 0.0962 | +0.0962 | 10 | 0 |
+| T5 | 104 | 0.0000 | 0.1250 | +0.1250 | 13 | 0 |
+| T6 | 30 | 0.0667 | 0.0667 | 0.0000 | 0 | 0 |
+
+**Clause by clause: `T3` **passes** at +0.1386. `T1` fails at −0.1167 and `T2`
+fails at −0.0667, both far outside the −0.02 tolerance. The fidelity clauses pass
+in scope (`wrong_entity` 0.0750 / 0.0667 / 0.0891; `catalogue_dump` 0.0083 / 0.0000
+/ 0.0693). **The rule fails, so the stage does not ship, and `H3` is recorded as
+falsified.**
+
+### The finding is the sign split, not the verdict
+
+The tier means net two large opposite effects, and the paired counts separate
+them cleanly:
+
+- **Where the identifier survives (`T1`, `T2`), the rewrite destroys answers**:
+  32 broken against 10 fixed across 240 variants.
+- **Where the identifier is gone (`T3`, `T4`, `T5`), it only helps**: 44 fixed
+  against 7 broken, and at `T4`/`T5` it breaks **nothing**, because there was
+  nothing to break — both were 0.0000.
+
+That is a mechanism, not a wash. The stage canonicalises a question into the
+source card's own vocabulary; when the question already carries an identifier the
+template ladder was reading, canonicalising throws that information away and the
+ladder reaches a different template. **The stage is not wrong — it is applied
+unconditionally.**
+
+### What this implies, and what it does not
+
+The condition that separates the two populations — *did we resolve an identifier
+from the question* — is computable at run time from the question alone. It needs
+no gold and no foreknowledge, which is what distinguishes it from the oracle
+bounds in `EXP-2026-09-020` `A-1`/`A-2`.
+
+**Nothing is claimed for it here.** `A-3` reasoned a coverage number from
+structure without running it and was 0.27 too high; the projection that gating the
+rewrite on a missing identifier would hold `T1`/`T2` at baseline while taking
+`T3`'s +0.1386 is **a hypothesis for Step 5, not a result.** It has to be
+implemented and re-run, because the run-time condition is a proxy for the tier
+label and the two need not coincide case by case.
+
+### One cost outside the scope, recorded because the plan said to
+
+At `T4`/`T5` the stage roughly **doubles `wrong_entity`** — 0.1058 → 0.2404 and
+0.1058 → 0.2308 — while lifting `records_exact` off the floor. It converts
+"declines to answer" into "answers, sometimes about the wrong entity". Those tiers
+are not targets here, but any future decision to ship the stage for them owns
+that trade, and `EXP-2026-09-014` reported the same wrong-entity rise.
+
+### Cost
+
+57 minutes at 8-way concurrency for 579 variants, against 91 s for the model-free
+baseline — **a 38× wall-clock penalty** for the stage, on top of a live endpoint
+on the critical path. `EXP-2026-09-014`'s harness note is why the concurrency was
+held at 8: at 32-way the served model exceeded the old 240 s read timeout on about
+a third of calls, and a timed-out call **abstains**, which is indistinguishable
+downstream from a model with nothing to say. This run raised the timeout to 600 s,
+so the ceiling can be lifted for later model-backed arms.
