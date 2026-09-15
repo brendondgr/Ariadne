@@ -232,6 +232,7 @@ def stream_query_events(
     specialists: dict[str, Any] | None = None,
     specialist_config: SpecialistConfig | None = None,
     narrate: bool = False,
+    thinking_budget: int | None = None,
 ) -> Iterator[str]:
     """Yield SSE frames for one analyst question.
 
@@ -252,6 +253,10 @@ def stream_query_events(
     coverage by +0.0000 (`EXP-2026-09-019` Step 3). What it costs is time —
     roughly 1,340x the deterministic composer — which is why it is opt-in per
     request rather than a default.
+
+    ``thinking_budget`` caps the synthesis model's reasoning tokens for this one
+    request. ``None`` means "leave the configured budget alone"; an explicit 0
+    is transmitted as a real zero rather than omitted.
     """
     try:
         question = (question or "").strip()
@@ -264,14 +269,29 @@ def stream_query_events(
         # separates "write the prose with a model" from "write the QUERY with a
         # model".
         synthesis_config = None
-        if narrate:
+        if narrate or thinking_budget is not None:
             import dataclasses as _dc
 
             from utils.synthesis.config import SynthesisConfig
 
+            # `llm_enabled` is set here in BOTH directions: passing a config at
+            # all takes over from `iter_pipeline`'s `llm_enabled=use_llm`
+            # derivation, so a budget-only request must not let
+            # SYNTHESIS_LLM_ENABLED in the environment quietly switch the
+            # narrator on for a request that asked for the deterministic path.
             synthesis_config = _dc.replace(
-                SynthesisConfig.from_env(), llm_enabled=True
+                SynthesisConfig.from_env(), llm_enabled=narrate or use_llm
             )
+            if thinking_budget is not None:
+                # `_explicit` is what makes a requested 0 mean "no reasoning"
+                # rather than "nobody configured a cap". Both are the integer 0,
+                # and a falsy budget is otherwise omitted -- right for the second
+                # and exactly wrong for the first.
+                synthesis_config = _dc.replace(
+                    synthesis_config,
+                    llm_thinking_budget=int(thinking_budget),
+                    llm_thinking_budget_explicit=True,
+                )
 
         run = PipelineRun(question=question, mode=mode)
         # Wrapped so the socket stays warm through the planner, specialist and

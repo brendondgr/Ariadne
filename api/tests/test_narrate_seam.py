@@ -51,3 +51,46 @@ def test_the_two_flags_are_independent(monkeypatch):
     list(query_service.stream_query_events("q", mode="query", use_llm=True))
     assert seen.get("use_llm") is True
     assert seen.get("synthesis_config") is None
+
+
+def test_thinking_budget_reaches_the_synthesis_config(monkeypatch):
+    """The dropdown's cap must arrive as an explicit, transmitted value.
+
+    `/api/query` sent `thinking_budget=` to a service that had no such
+    parameter, so every workbench query 500'd with a TypeError before the
+    pipeline started.
+    """
+    seen = _capture(monkeypatch)
+    list(query_service.stream_query_events("q", mode="query", narrate=True,
+                                           thinking_budget=512))
+    config = seen["synthesis_config"]
+    assert config.llm_enabled is True
+    assert config.llm_thinking_budget == 512
+    assert config.llm_thinking_budget_explicit is True
+
+
+def test_an_explicit_zero_budget_is_marked_explicit(monkeypatch):
+    """0 means "no reasoning", not "nobody configured a cap"."""
+    seen = _capture(monkeypatch)
+    list(query_service.stream_query_events("q", mode="query", narrate=True,
+                                           thinking_budget=0))
+    config = seen["synthesis_config"]
+    assert config.llm_thinking_budget == 0
+    assert config.llm_thinking_budget_explicit is True
+
+
+def test_a_budget_alone_does_not_turn_the_narrator_on(monkeypatch):
+    """Passing a config takes over from `llm_enabled=use_llm`; posture is pinned here."""
+    monkeypatch.setenv("SYNTHESIS_LLM_ENABLED", "true")
+    seen = _capture(monkeypatch)
+    list(query_service.stream_query_events("q", mode="query", thinking_budget=256))
+    config = seen["synthesis_config"]
+    assert config.llm_enabled is False, "a deterministic request stays deterministic"
+    assert config.llm_thinking_budget == 256
+
+
+def test_a_budget_with_the_llm_drafter_keeps_synthesis_on(monkeypatch):
+    seen = _capture(monkeypatch)
+    list(query_service.stream_query_events("q", mode="query", use_llm=True,
+                                           thinking_budget=256))
+    assert seen["synthesis_config"].llm_enabled is True

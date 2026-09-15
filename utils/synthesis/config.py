@@ -48,6 +48,12 @@ class SynthesisConfig:
     # (the "raise max_tokens?" fallback). Capping thinking reserves the rest for
     # the actual answer. 0 means "derive as half of llm_max_tokens".
     llm_thinking_budget: int = 0
+    # Whether that 0 was *chosen*. Both "no reasoning" and "nobody configured a
+    # cap" are the integer 0, and they are not the same request: omitting the
+    # key cost 11.27 s and 313 completion tokens where an explicit 0 cost 1.28 s
+    # and 31. Only a caller that means it sets this; `from_env` never does, so
+    # every recorded arm keeps sending what it sent.
+    llm_thinking_budget_explicit: bool = False
     # How many record citations a single claim may carry (mirrors the API's
     # inline-citation cap so answers stay readable).
     max_citations: int = 8

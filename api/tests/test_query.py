@@ -364,3 +364,14 @@ def test_keepalives_are_dropped_by_the_browser_parser() -> None:
     """
     frame = ": keepalive\n\n"
     assert not any(line.startswith("data:") for line in frame.split("\n"))
+
+
+def test_endpoint_accepts_a_thinking_budget(monkeypatch) -> None:
+    """Regression: `/api/query` passed a kwarg the service did not accept (500)."""
+    monkeypatch.setattr(query_service, "iter_pipeline", lambda *a, **k: iter(()))
+    resp = client.post(
+        "/api/query",
+        json={"question": "hello", "mode": "query", "narrate": True,
+              "thinking_budget": 512},
+    )
+    assert resp.status_code == 200

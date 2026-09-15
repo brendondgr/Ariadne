@@ -145,7 +145,9 @@ def compose_narrative(
     sampling = sampling_params(
         max_tokens=settings.max_tokens, thinking_budget=settings.thinking_budget
     )
-    if settings.thinking_budget:
+    # Same rule as the claims composer: an explicitly requested 0 is sent, an
+    # unset 0 is omitted so the model keeps its own default.
+    if settings.thinking_budget or settings.thinking_budget_explicit:
         sampling["thinking_token_budget"] = settings.thinking_budget
     try:
         result = llm_chat(
