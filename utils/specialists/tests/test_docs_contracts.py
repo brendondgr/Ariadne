@@ -288,8 +288,8 @@ def test_interfaces_doc_matches_synthesis_wire_shapes() -> None:
     answer = SynthesizedAnswer(request="x")
     assert set(answer.to_dict()) == {
         "request", "headline", "narrative", "claims", "rendered_claims",
-        "abstentions", "notes", "composer", "fallback_reason",
-        "verification", "edges",
+        "abstentions", "notes", "composer", "narrative_source",
+        "fallback_reason", "verification", "edges",
     }
 
     # Omit-when-empty rules the interfaces doc documents as frozen.

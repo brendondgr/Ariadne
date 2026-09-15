@@ -89,9 +89,26 @@ class ConversationLLM:
 
         settings = self._config.llm_settings()
         budget = max_tokens or settings.max_tokens
+        # Send the reasoning cap, which this client did not.
+        #
+        # `chat()` has always taken a `sampling` block and this caller never
+        # passed one, so `thinking_token_budget` never reached the wire for ANY
+        # conversation agent -- router, orchestration, validation, answer or the
+        # thread titler. The workbench's Thinking control therefore governed only
+        # the synthesis narrator while appearing to govern the two stages that
+        # actually cost the time: validation ~28.6 s and answer ~10.7 s of a
+        # 43 s turn (`EXP-2026-09-020` A-8, A-9).
+        #
+        # Only the budget is set here, not the full greedy block: this client
+        # takes an explicit `temperature` per call (the titler asks for 0.3), and
+        # `sampling_params` would overwrite it with 0.
+        sampling: dict[str, object] | None = None
+        if settings.thinking_budget or settings.thinking_budget_explicit:
+            sampling = {"thinking_token_budget": settings.thinking_budget}
         try:
             completion = llm_chat(
-                settings, messages, max_tokens=budget, temperature=temperature
+                settings, messages, max_tokens=budget, temperature=temperature,
+                sampling=sampling,
             )
         except TransportUnavailable as exc:
             # Re-raised as this module's own LLMUnavailable so every caller's

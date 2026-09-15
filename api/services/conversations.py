@@ -136,8 +136,18 @@ def stream_conversation_events(
     store = store or get_store()
     config = (config or ConversationConfig.from_env()).with_llm_enabled(use_llm)
     if thinking_budget is not None:
+        # `thinking_budget_explicit` is what makes a requested 0 mean "no
+        # reasoning" rather than "nobody configured a cap". Both are the integer
+        # 0, and the sender omits a falsy budget -- which is right for the second
+        # and exactly wrong for the first: omitting cost 11.27 s and 313
+        # completion tokens where an explicit 0 cost 1.28 s and 31.
         config = replace(
-            config, llm=replace(config.llm, thinking_budget=int(thinking_budget))
+            config,
+            llm=replace(
+                config.llm,
+                thinking_budget=int(thinking_budget),
+                thinking_budget_explicit=True,
+            ),
         )
     drafter = "llm" if use_llm else "deterministic"
 

@@ -223,6 +223,19 @@ class LLMSettings:
     timeout_s: float = DEFAULT_TIMEOUT_S
     max_tokens: int = DEFAULT_MAX_TOKENS
     thinking_budget: int = DEFAULT_THINKING_BUDGET
+    #: Send ``thinking_token_budget`` even when it is 0.
+    #:
+    #: ``DEFAULT_THINKING_BUDGET`` is 0, so "nobody configured a cap" and "cap
+    #: reasoning at zero" are the same integer with opposite meanings. The sender
+    #: omits a falsy budget, which is right for the first and exactly wrong for
+    #: the second: measured on one call against ``:9090``, omitting the key cost
+    #: 11.27 s and 313 completion tokens where an explicit ``0`` cost 1.28 s and
+    #: 31 (`EXP-2026-09-020` A-9).
+    #:
+    #: This flag separates them without changing what an unconfigured caller
+    #: sends. It is set by a caller that genuinely means "no reasoning" -- the
+    #: workbench's ``Thinking: None`` -- and by nothing else.
+    thinking_budget_explicit: bool = False
     connect_timeout_s: float = DEFAULT_CONNECT_TIMEOUT_S
     #: Which stage this resolved for; ``None`` for the primary group itself.
     stage: str | None = None
@@ -504,6 +517,11 @@ def settings_from_legacy(config: object, stage: str) -> LLMSettings:
         timeout_s=float(getattr(config, "llm_timeout_s", resolved.timeout_s)),
         max_tokens=max_tokens,
         thinking_budget=budget,
+        # Carried through so a legacy config that means "no reasoning" is not
+        # flattened back into "nobody configured a cap" on the way to the wire.
+        thinking_budget_explicit=bool(
+            getattr(config, "llm_thinking_budget_explicit", False)
+        ),
         connect_timeout_s=resolved.connect_timeout_s,
         stage=stage,
         inherited=resolved.inherited,

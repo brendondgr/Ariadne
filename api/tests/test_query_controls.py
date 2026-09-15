@@ -82,3 +82,25 @@ def test_an_injected_client_still_wins(monkeypatch, temp_store):
     sentinel = object()
     seen = _run(monkeypatch, temp_store, verify=False, validation_client=sentinel)
     assert seen["validation_client"] is sentinel
+
+
+def test_a_thinking_budget_of_zero_is_sent_rather_than_omitted(monkeypatch, temp_store):
+    """"None" must mean no reasoning, not "let the model decide".
+
+    DEFAULT_THINKING_BUDGET is also 0 and the sender omits a falsy budget, so
+    without the explicit flag a requested "None" sends nothing and the model
+    falls back to its own default -- measured at 11.27 s and 313 completion
+    tokens against 1.28 s and 31 for an explicit 0 (EXP-2026-09-020 A-9).
+    """
+    seen = _run(monkeypatch, temp_store, thinking_budget=0)
+    llm = seen["config"].llm
+    assert llm.thinking_budget == 0
+    assert llm.thinking_budget_explicit is True
+    # …and it survives the hop to transport settings, which is what the sender reads.
+    assert llm.llm_settings().thinking_budget_explicit is True
+
+
+def test_an_unset_budget_is_still_omitted(monkeypatch, temp_store):
+    """An untouched deployment must keep sending nothing."""
+    seen = _run(monkeypatch, temp_store, thinking_budget=None)
+    assert seen["config"].llm.thinking_budget_explicit is False

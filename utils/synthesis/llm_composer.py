@@ -353,7 +353,7 @@ class OpenAICompatibleComposer:
         # alongside the two channels sampling_params emits: which one a served
         # model honours depends on its chat template, and a server that
         # understands none of them ignores all three rather than failing.
-        if settings.thinking_budget:
+        if settings.thinking_budget or settings.thinking_budget_explicit:
             sampling["thinking_token_budget"] = settings.thinking_budget
         try:
             result = llm_chat(

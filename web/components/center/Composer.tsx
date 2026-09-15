@@ -9,22 +9,20 @@ import { useWorkbench } from "@/components/workbench/WorkbenchContext";
 type Mode = "plan" | "query";
 type Drafter = "deterministic" | "llm";
 
-/** Named reasoning levels, measured against `:9090` on a single sufficiency call.
+/** Named reasoning levels. The value is the server's `thinking_token_budget`.
  *
- *  `None` sends **1**, not 0, and that is deliberate. The sender omits the key
- *  entirely when the budget is falsy (`llm_composer.py`), so a literal 0 would
- *  send nothing and the model would fall back to its own default — measured at
- *  11.27 s and 313 completion tokens, the SLOWEST option rather than the
- *  fastest. A budget of 1 is sent, and behaves identically to an explicit 0:
- *  1.34 s and 31 tokens against 1.28 s and 31. Changing the sender's guard
- *  instead would silently switch every caller whose budget is unset — the
- *  judge, the narrator, every recorded arm — from full reasoning to none.
+ *  Measured against `:9090` on one sufficiency call: `0` → 1.28 s and 31
+ *  completion tokens, `256` → 9.74 s and 283, `512` → 9.13 s and 313. The cap
+ *  binds — at 256 the model was clipped to 283 total tokens where it would
+ *  otherwise spend 313 — and simply stops binding once it exceeds what the model
+ *  wants for a given prompt, which is why 512 and 1024 look alike on an easy one.
  *
- *  Low / Medium / High are close together on this model (256 → 9.74 s, 512 →
- *  9.13 s, 1024 → 9.77 s): it does not honour the cap tightly, spending ~300
- *  tokens whatever it is given above zero. The real choice here is None vs not. */
+ *  `None` sends a real 0. That needs `thinking_budget_explicit` on the way down,
+ *  because `DEFAULT_THINKING_BUDGET` is also 0 and the sender omits a falsy
+ *  budget: without the flag a requested "None" would send nothing and get the
+ *  model's own default, 11.27 s — the slowest option under the fastest label. */
 const THINKING_LEVELS = [
-  { value: 1, label: "None", hint: "no reasoning · ~1.3 s" },
+  { value: 0, label: "None", hint: "no reasoning · ~1.3 s" },
   { value: 256, label: "Low", hint: "256 tokens" },
   { value: 512, label: "Medium", hint: "512 tokens" },
   { value: 1024, label: "High", hint: "1024 tokens" },
@@ -113,6 +111,9 @@ export function Composer() {
       drafter,
       verify,
       narrate,
+      // `?? null` rather than `||`: a budget of 0 is a real choice ("None"),
+      // and `||` would collapse it to null, which means "leave the server's
+      // value alone" -- the opposite instruction.
       thinking_budget: verify || narrate ? thinking : null,
     });
     // Clear the box immediately so the analyst can compose the next question

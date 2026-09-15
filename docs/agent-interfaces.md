@@ -360,7 +360,8 @@ API seam and golden suites only ever render verified answers.
 | `claims` | `list[Claim]` | No (default `[]`) | |
 | `abstentions` | `list[Abstention]` | No (default `[]`) | |
 | `notes` | `list[str]` | No (default `[]`) | |
-| `composer` | `str` | No (default `"deterministic"`) | `"deterministic"` \| `"llm"` |
+| `composer` | `str` | No (default `"deterministic"`) | `"deterministic"` \| `"llm"` — who wrote the **claims**, which is the trust surface |
+| `narrative_source` | `str` | No (default `"deterministic"`) | `"deterministic"` \| `"llm"` — who wrote the **prose** a reader sees first. Independent of `composer`: the deterministic composer plus the narrator seam is `composer="deterministic"` with `narrative_source="llm"`. Stamped only after the narrator returns, so a failed narrator does not claim authorship |
 | `fallback_reason` | `str \| None` | No (default `None`) | Set when the LLM path fell back |
 | `verification` | `VerificationReport \| None` | No (default `None`) | `None` on an unverified draft |
 | `edges` | `list[SynthesisEdge]` | No (default `[]`) | Provenance-exact relationships for the network plot, derived during verification; empty on an unverified draft |
@@ -373,7 +374,7 @@ The serialized JSON is **not** a 1:1 mirror of the dataclass fields above —
 
 | Wire key | Derivation |
 |----------|------------|
-| `request`, `headline`, `narrative`, `abstentions`, `notes`, `composer`, `fallback_reason`, `edges` | Direct field serialization, as above |
+| `request`, `headline`, `narrative`, `abstentions`, `notes`, `composer`, `narrative_source`, `fallback_reason`, `edges` | Direct field serialization, as above |
 | `claims` | Each entry is `claim.to_dict()` **plus a `"verdict"` key**: `verdict.to_dict()` if a verdict exists at that claim's index, else `null` |
 | `rendered_claims` | **Not a dataclass field.** The subset of `claims` that are verified *and* supported, each `claim.to_dict()` plus a `"contested"` key when the verdict's `contested` tuple is non-empty (omitted otherwise) |
 | `verification` | `verification.to_dict()` or `null` |

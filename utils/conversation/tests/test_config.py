@@ -146,3 +146,57 @@ def test_with_llm_enabled_is_two_way():
     # A no-op call still returns the same object rather than a copy.
     assert on.with_llm_enabled(True) is on
     assert off.with_llm_enabled(False) is off
+
+
+def test_the_reasoning_cap_reaches_the_wire():
+    """The conversation client sends `thinking_token_budget`, and it did not.
+
+    `chat()` has always taken a `sampling` block and this client never passed
+    one, so no conversation agent -- router, orchestration, validation, answer
+    or the thread titler -- ever sent a reasoning cap. The workbench's Thinking
+    control governed only the synthesis narrator while appearing to govern the
+    two stages that cost the time.
+    """
+    from utils.conversation.llm import ConversationLLM
+
+    seen: dict = {}
+
+    def _fake_chat(settings, messages, **kw):
+        seen.update(kw)
+        class _R:
+            content = "ok"
+            finish_reason = "stop"
+
+            class usage:  # noqa: N801
+                reported = False
+                prompt_tokens = completion_tokens = total_tokens = 0
+
+        return _R()
+
+    import utils.conversation.llm as mod
+
+    original = mod.llm_chat
+    mod.llm_chat = _fake_chat
+    try:
+        # An explicit "no reasoning" must be SENT, not omitted.
+        ConversationLLM(
+            ConversationLLMConfig(enabled=True, thinking_budget=0,
+                                  thinking_budget_explicit=True)
+        ).complete([{"role": "user", "content": "q"}])
+        assert seen["sampling"] == {"thinking_token_budget": 0}
+
+        seen.clear()
+        ConversationLLM(
+            ConversationLLMConfig(enabled=True, thinking_budget=512)
+        ).complete([{"role": "user", "content": "q"}])
+        assert seen["sampling"] == {"thinking_token_budget": 512}
+
+        # An unconfigured budget still sends nothing, so an untouched
+        # deployment is unchanged.
+        seen.clear()
+        ConversationLLM(
+            ConversationLLMConfig(enabled=True)
+        ).complete([{"role": "user", "content": "q"}])
+        assert seen["sampling"] is None
+    finally:
+        mod.llm_chat = original

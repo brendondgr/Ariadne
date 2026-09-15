@@ -575,3 +575,61 @@ turn costs one, two or three rounds depending on a verdict that varies run to
 run. The isolated single-call figures above describe the control; the turn-level
 ones describe the retry loop, and are recorded only so they are not later
 mistaken for it.
+
+## Amendment A-10 — A-9 was wrong twice, and the control was dead (2026-09-15)
+
+`A-9` concluded that the model "does not honour the cap tightly" and that `None`
+had to send `1` rather than `0`. Both were wrong, and the operator was right to
+push back on the numeric cap. Two separate faults sat underneath.
+
+### The cap does bind; the probe prompt was too easy
+
+Re-reading `A-9`'s own numbers: at a budget of **256** the model produced **283**
+completion tokens; at 512 and above, **313**. The cap *was* applied — it clipped
+roughly thirty tokens — and it stops binding above ~512 only because the model
+does not want more than that for a trivial sufficiency question. "Does not honour
+the cap" was a conclusion drawn from a prompt that never reached the ceiling.
+
+### The conversation client never sent the budget at all
+
+`ConversationLLM.complete()` called `llm_chat(settings, messages,
+max_tokens=…, temperature=…)`. `chat()` has always accepted a `sampling` block
+and this caller never passed one, so **`thinking_token_budget` never reached the
+wire for any conversation agent** — router, orchestration, validation, answer, or
+the thread titler. The workbench's Thinking control governed only the synthesis
+narrator while appearing to govern the two stages that cost the time.
+
+This also explains `A-9`'s unusable turn-level timings (67.1 / 85.6 / 30.7 /
+240.1 s). They were not retry noise obscuring a budget effect; **there was no
+budget effect to obscure.**
+
+### `None` now sends a real `0`
+
+`DEFAULT_THINKING_BUDGET` is 0, so "nobody configured a cap" and "cap reasoning
+at zero" are the same integer with opposite meanings, and the sender omits a
+falsy budget. `LLMSettings.thinking_budget_explicit` separates them. It is
+additive and defaults false, so a caller that never sets a budget sends exactly
+what it sent before — the judge, the narrator and every recorded arm are
+untouched.
+
+### Measured after both fixes
+
+A `verify: on` turn, same question, same endpoint:
+
+| Thinking | Turn |
+|---|---:|
+| **None** (explicit `0`) | **5.27 s** |
+| Medium (`512`) | 25.25 s |
+
+**4.8×**, where before the fix the setting changed nothing on this path.
+
+### What this says about the earlier amendment
+
+`A-9`'s table of single-call figures stands — those were measured directly
+against the endpoint and are reproducible. Its *interpretation* does not: the
+claim that the levels are barely distinguishable was an artifact of the probe,
+and the `None → 1` workaround was solving a problem that only existed because a
+second fault was hiding the first. Recorded rather than edited away, because the
+sequence is the point: a control can measure as inert either because the model
+ignores it or because nothing ever sent it, and only reading the client tells
+them apart.

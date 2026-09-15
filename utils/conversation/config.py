@@ -67,6 +67,8 @@ class ConversationLLMConfig:
     #: below ``max_tokens`` or the model spends its whole allowance thinking and
     #: returns empty content.
     thinking_budget: int = 0
+    #: Send a 0 budget rather than omitting the key. See LLMSettings.
+    thinking_budget_explicit: bool = False
 
     # The bridge in utils.llm.config reads the ``llm_*`` spelling every other
     # stage's config uses. This group predates that convention and names its
@@ -94,6 +96,10 @@ class ConversationLLMConfig:
     @property
     def llm_thinking_budget(self) -> int:
         return self.thinking_budget
+
+    @property
+    def llm_thinking_budget_explicit(self) -> bool:
+        return self.thinking_budget_explicit
 
     @property
     def endpoint(self) -> str:
