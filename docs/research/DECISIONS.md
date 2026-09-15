@@ -998,3 +998,65 @@ otherwise. Arm G (`EXP-2026-07-007`) is now recorded as having run with the
 injected gold plan, which makes its contrast with Arm F cleaner than the July
 write-up described and its role in refuted C-003 smaller. Pre-cleanup tree:
 tag `pre-cleanup-2026-09-09`.
+
+---
+
+## D-034 — The rewrite stage ships, gated on the question citing no identifier, under a rule changed after the fact (2026-09-15)
+
+**Decision.** `ARIADNE_REWRITE`, `ARIADNE_REWRITE_MODEL` and the new
+`ARIADNE_REWRITE_ONLY_WITHOUT_ID` all ship **on**. This reverses `D-032` for the
+gated configuration only. Operator decision, taken 2026-09-15 after seeing the
+`EXP-2026-09-021` Step 5 numbers.
+
+**What changed since `D-032`, and what did not.** `D-032` judged the stage
+*ungated*, on a `T4`/`T5` ship rule. `EXP-2026-09-021` re-judged it on `T0`–`T3`,
+found it breaking 32 answers where an identifier survives and fixing 44 where
+none does, and gated it on that run-time condition. Gated: `T3` 0.1782 → **0.3267**,
+`T1` and `T2` **exactly at baseline** (0.3917, 0.3667; outcome-identical on 239 of
+240 variants). That is new evidence, and `D-032` said explicitly that "the next
+experiment can change it on evidence".
+
+**The threshold was relaxed after the value that failed it was known, and that
+must be stated plainly.** The pre-registered rule capped `catalogue_dump` at
+0.0915 per tier. The gated arm is **0.1089 at `T3`** and fails. The operator
+elected to judge it instead against "not worse than the shipped baseline", which
+it passes — baseline `T3` dumping is **0.1683**, so the change cuts dumping by a
+third while raising `records_exact` by 0.1485.
+
+`D-032` rejected exactly this move: *"Relax the threshold to fit the result.
+Rejected… If 0.25 was the wrong bar, that is an argument to make before the next
+run, not after this one."* That reasoning is not withdrawn and it still applies.
+What overrides it here is not a better argument but an explicit operator call on
+a product question — how much catalogue dumping an analyst tool may do — which is
+theirs to make and not the experiment's. **The original verdict is preserved
+unaltered** in `EXP-2026-09-021` `RESULTS.md` and in
+`data/metrics_gate_verdict.json`: FAIL, 8 of 9 clauses. Nothing in the record is
+re-scored to match the decision.
+
+**The cost the operator has not ruled on, recorded so it cannot be said it was
+buried.** At `T4`/`T5` — paraphrased name, description only; out of scope as
+targets but real questions an analyst will ask — the stage roughly **triples
+`wrong_entity`**: 0.1058 → **0.3077** at `T4` and → **0.2981** at `T5`, worse than
+the ungated arm's 0.2404/0.2308. It buys that by converting abstentions into
+answers (`records_exact` 0.0000 → 0.0962 / 0.1250). This is the same failure
+`D-032` point 2 refused to ship, and `EXP-2026-09-021`'s own protocol said "a
+lever that helps `T0`–`T3` by breaking the others is not a lever we would ship".
+It ships anyway, by decision, and a question without a recognisable entity name is
+now materially more likely to be answered about the wrong entity.
+
+**Alternatives rejected.**
+- *Hold the 0.0915 cap.* This is what the experiment recommended and what
+  `D-032`'s reasoning implies. Rejected by the operator: `T3` is the tier the use
+  case needs, the change improves dumping against what actually ships, and a cap
+  taken from a whole-bank aggregate was being applied per tier.
+- *Ship the gate flag alone.* A no-op: the gate is inert unless the stage runs.
+- *Gate `T4`/`T5` separately before shipping.* Not attempted; it is the obvious
+  follow-up and is filed as such rather than folded in post-hoc.
+
+**Reversible, and verified.** Three flags in `.env`. An unreachable endpoint
+degrades to the `abstain` rung and forwards the analyst's own words — tested
+against a dead endpoint. The flag-off path is byte-identical across all 579
+variants. Live through `iter_pipeline`: an identifier-bearing question records
+`rung: skipped_identifier` and is untouched; "Which countermeasures apply to
+Windows Management Instrumentation?" now renders a canonical question and returns
+5 identifiers where it returned fewer before.

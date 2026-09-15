@@ -59,6 +59,21 @@ def main() -> int:
                 "baseline": round(_v(base, tier, metric), 4),
             })
 
+    # The operator's rule, adopted 2026-09-15 AFTER the pre-registered cap was
+    # seen to fail (D-034). Reported ALONGSIDE the original verdict, never in
+    # place of it: the pre-registered result stands as recorded.
+    operator_clauses = []
+    for c in clauses:
+        if c["clause"].endswith(f"catalogue_dump <= {MAX_CATALOGUE_DUMP}"):
+            tier = c["clause"].split()[0]
+            passes = c["value"] <= c["baseline"]
+            operator_clauses.append({
+                "clause": f"{tier} catalogue_dump not worse than the shipped baseline",
+                "value": c["value"], "threshold": c["baseline"], "passes": passes,
+            })
+        else:
+            operator_clauses.append(c)
+
     payload = {
         "rule_source": "docs/plans/2026-09-15-paraphrase-robustness-t0-t3.md Step 4, "
                        "pre-registered before Step 4 ran",
@@ -67,6 +82,13 @@ def main() -> int:
         "clauses_passed": sum(1 for c in clauses if c["passes"]),
         "clauses_total": len(clauses),
         "verdict": "PASS" if all(c["passes"] for c in clauses) else "FAIL",
+        "operator_rule": {
+            "source": "D-034, adopted 2026-09-15 after the pre-registered cap failed",
+            "difference": "catalogue_dump is judged against the shipped baseline "
+                          "rather than the 0.0915 whole-bank reference",
+            "clauses": operator_clauses,
+            "verdict": "PASS" if all(c["passes"] for c in operator_clauses) else "FAIL",
+        },
     }
     (HERE / "metrics_gate_verdict.json").write_text(
         json.dumps(payload, indent=2, sort_keys=True) + "\n"
@@ -75,8 +97,17 @@ def main() -> int:
         mark = "PASS" if c["passes"] else "FAIL"
         extra = f"  (baseline {c['baseline']})" if "baseline" in c else ""
         print(f"  [{mark}] {c['clause']:<42} = {c['value']}{extra}")
-    print(f"\n  VERDICT: {payload['verdict']} "
+    print(f"\n  PRE-REGISTERED VERDICT: {payload['verdict']} "
           f"({payload['clauses_passed']}/{payload['clauses_total']} clauses)")
+    op = payload["operator_rule"]
+    print(f"\n  Under D-034, only the dump clauses change:")
+    original = {c["clause"] for c in clauses}
+    for c in op["clauses"]:
+        if c["clause"] in original:
+            continue
+        print(f"  [{'PASS' if c['passes'] else 'FAIL'}] {c['clause']} "
+              f"= {c['value']} (baseline {c['threshold']})")
+    print(f"  OPERATOR-RULE VERDICT (D-034): {op['verdict']}")
     return 0
 
 

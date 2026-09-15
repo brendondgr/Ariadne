@@ -10,7 +10,6 @@ that a dead end is walked into once rather than twice.
 
 | ID | Date | Title | Status | Primary metric | Claims | Link |
 |---|---|---|---|---|---|---|
-| `EXP-2026-09-021` | 2026-09-15 | What the shipped tree extracts under rewording at T0-T3, and whether two built levers close the gap | running | records_exact_T1_baseline (not recorded) | — | [paraphrase-robustness-t0t3](experiments/EXP-2026-09-021-paraphrase-robustness-t0t3/) |
 | `EXP-2026-07-001` | 2026-07-26 | Arm A — fully deterministic pipeline (planning, extraction, synthesis) | complete | correctness 0.9972 (n=1) | C-001, C-004 | [arm-a-deterministic](experiments/EXP-2026-07-001-arm-a-deterministic/) |
 | `EXP-2026-07-002` | 2026-07-26 | Arm B — LLM planning with deterministic extraction and an LLM writer | complete | correctness 0.8505 (n=1) | C-002, C-003, C-016 | [arm-b-llm-planned](experiments/EXP-2026-07-002-arm-b-llm-planned/) |
 | `EXP-2026-07-003` | 2026-07-26 | Arm C — authored plan with an LLM writer reading raw evidence | complete | correctness 0.9690 (n=1) | C-002, C-005 | [arm-c-llm-writer-evidence](experiments/EXP-2026-07-003-arm-c-llm-writer-evidence/) |
@@ -58,6 +57,7 @@ that a dead end is walked into once rather than twice.
 | `EXP-2026-09-018` | 2026-09-14 | Correctness repair: six located defects, measured against a concurrent control | complete | fresh_generic_composed_correctness 0.9005 ± 0.1713 (n=282) | C-017, C-023 | [correctness-repair](experiments/EXP-2026-09-018-correctness-repair/) |
 | `EXP-2026-09-019` | 2026-09-13 | Does the Generic tier need a big model, and does it need a planner? | complete | judged_plan_effect_no_model -0.3294 ± 0.3324 (n=284) | — | [small-model-generic](experiments/EXP-2026-09-019-small-model-generic/) |
 | `EXP-2026-09-020` | 2026-09-14 | Plan source crossed with query engine: does the primitive path still win where production stands? | complete | engine_effect_at_real_planner 0.0261 ± 0.4295 (n=284) | C-023 | [plan-source-crossed](experiments/EXP-2026-09-020-plan-source-crossed/) |
+| `EXP-2026-09-021` | 2026-09-15 | What the shipped tree extracts under rewording at T0-T3, and whether two built levers close the gap | complete | records_exact_T3_gated 0.3267 ± 0.0000 (n=101) | — | [paraphrase-robustness-t0t3](experiments/EXP-2026-09-021-paraphrase-robustness-t0t3/) |
 | `EXP-2026-07-007` | 2026-07-26 | Arm G — generic primitives only, every hand-written template disabled | superseded → EXP-2026-08-001 | correctness 0.6388 (n=1) | C-003 | [arm-g-templates-disabled](experiments/EXP-2026-07-007-arm-g-templates-disabled/) |
 | `EXP-2026-07-010` | 2026-07-20 | First independent cross-model grading pass (the pre-fix committed baseline) | superseded → EXP-2026-07-001 | correctness 0.8946 (n=1) | C-009 | [independent-eval-baseline](experiments/EXP-2026-07-010-independent-eval-baseline/) |
 | `EXP-2026-07-011` | 2026-07-26 | Portability audit — what survives a dataset that is not MITRE | superseded → EXP-2026-08-011 | — | C-010 | [portability-audit](experiments/EXP-2026-07-011-portability-audit/) |

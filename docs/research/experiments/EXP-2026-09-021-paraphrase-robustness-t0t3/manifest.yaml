@@ -5,9 +5,9 @@
 id: EXP-2026-09-021
 slug: paraphrase-robustness-t0t3
 title: "What the shipped tree extracts under rewording at T0-T3, and whether two built levers close the gap"
-status: running            # planned | running | complete | failed | superseded
+status: complete            # planned | running | complete | failed | superseded
 date_started: 2026-09-15
-date_completed: null       # null until status is complete/failed
+date_completed: 2026-09-15
 authors: ["brendondgr", "Claude Opus 5"]
 
 purpose: >
@@ -51,12 +51,12 @@ environment:
   container: null
 compute:
   hardware: "32-core x86_64 host, 121 GB RAM; Neo4j + Gremlin local"
-  wall_clock_hours: 0.0
+  wall_clock_hours: 2.1
   estimated_cost_usd: 0.0
 
 # --- LLM / agentic block (delete entirely if no model was in the loop) ---
 llm:
-  model: "<provider>/<model>@<version-or-date>"
+  model: "relay/qwen38-27B-v2@2026-09-15"
   temperature: 0.0
   top_p: 1.0
   max_tokens: 2048
@@ -71,10 +71,29 @@ llm:
 
 # --- Results block ---
 metrics:
-  primary: records_exact_T1_baseline
-  values: {}               # {metric: {mean: 0.0, std: 0.0, n: 1}} — must be non-empty when status: complete
+  primary: records_exact_T3_gated
+  values:
+    T0_reference_reproducibility: {mean: 1.0, std: 0.0, n: 120}
+    catalogue_dump_T3_baseline: {mean: 0.1683, std: 0.0, n: 101}
+    catalogue_dump_T3_gated: {mean: 0.1089, std: 0.0, n: 101}
+    records_exact_T1_baseline: {mean: 0.3917, std: 0.0, n: 120}
+    records_exact_T1_gated: {mean: 0.3917, std: 0.0, n: 120}
+    records_exact_T1_primitives: {mean: 0.2167, std: 0.0, n: 120}
+    records_exact_T1_rewrite_ungated: {mean: 0.275, std: 0.0, n: 120}
+    records_exact_T2_baseline: {mean: 0.3667, std: 0.0, n: 120}
+    records_exact_T2_gated: {mean: 0.3667, std: 0.0, n: 120}
+    records_exact_T2_primitives: {mean: 0.25, std: 0.0, n: 120}
+    records_exact_T2_rewrite_ungated: {mean: 0.3, std: 0.0, n: 120}
+    records_exact_T3_baseline: {mean: 0.1782, std: 0.0, n: 101}
+    records_exact_T3_gated: {mean: 0.3267, std: 0.0, n: 101}
+    records_exact_T3_primitives: {mean: 0.1089, std: 0.0, n: 101}
+    records_exact_T3_rewrite_ungated: {mean: 0.3168, std: 0.0, n: 101}
+    wrong_entity_T4_baseline: {mean: 0.1058, std: 0.0, n: 104}
+    wrong_entity_T4_gated: {mean: 0.3077, std: 0.0, n: 104}
+    wrong_entity_T5_baseline: {mean: 0.1058, std: 0.0, n: 104}
+    wrong_entity_T5_gated: {mean: 0.2981, std: 0.0, n: 104}
   withdrawn: {}            # values later retracted by amendment: {metric: {mean, std, n, withdrawn_on, reason, replaced_by}}
-baselines_compared: []
+baselines_compared: ["EXP-2026-08-020", "EXP-2026-09-014"]
 statistical_test: null
 
 # --- Linkage ---
@@ -82,4 +101,4 @@ supports_claims: []        # every ID here must exist in ../../CLAIMS.md
 figures: []                # every name here must have a file in figures/ and vice versa
 supersedes: null           # set in BOTH manifests or in neither; the validator checks symmetry
 superseded_by: null
-related: []
+related: ["EXP-2026-08-020", "EXP-2026-09-014", "EXP-2026-09-015", "EXP-2026-09-018", "EXP-2026-09-020"]

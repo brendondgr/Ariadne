@@ -105,5 +105,6 @@ this file says which number is *current*.
 | [`EXP-2026-09-018`](experiments/EXP-2026-09-018-correctness-repair/) | 2026-09-14 | `fresh_generic_composed_correctness` | 0.9005 ± 0.1713 (n=282) | C-017, C-023 | — |
 | [`EXP-2026-09-019`](experiments/EXP-2026-09-019-small-model-generic/) | 2026-09-13 | `judged_plan_effect_no_model` | -0.3294 ± 0.3324 (n=284) | — | — |
 | [`EXP-2026-09-020`](experiments/EXP-2026-09-020-plan-source-crossed/) | 2026-09-14 | `engine_effect_at_real_planner` | 0.0261 ± 0.4295 (n=284) | C-023 | — |
+| [`EXP-2026-09-021`](experiments/EXP-2026-09-021-paraphrase-robustness-t0t3/) | 2026-09-15 | `records_exact_T3_gated` | 0.3267 ± 0.0000 (n=101) | — | — |
 
-**24 withdrawn figure(s), 6 superseded experiment(s), 47 current headline(s).**
+**24 withdrawn figure(s), 6 superseded experiment(s), 48 current headline(s).**

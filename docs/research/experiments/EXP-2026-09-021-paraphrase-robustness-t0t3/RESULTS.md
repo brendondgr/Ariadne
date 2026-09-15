@@ -1,8 +1,15 @@
 # RESULTS — EXP-2026-09-021 Paraphrase robustness at T0–T3
 
-**Status: running.** `PROTOCOL.md` was pre-registered on 2026-09-15 with three
-hypotheses and their falsifiers before any arm ran. This file is filled in as the
-steps complete, and nothing is written here that `data/` does not carry.
+**Status: complete.** `PROTOCOL.md` was pre-registered on 2026-09-15 with three
+hypotheses and their falsifiers before any arm ran. **All three were falsified.**
+Nothing is written here that `data/` does not carry.
+
+**The one-line result:** the shipped tree's rewording cliff is real and mostly
+unmoved — `T1` 0.3917 and `T2` 0.3667 against a 0.9 bar, untouched by every lever
+tried. `T3` alone improved, 0.1782 → **0.3267**, by gating the rewrite stage on
+the question citing no identifier; that gate is built, tested and **shipped**
+under a fidelity rule the operator changed after the pre-registered one failed
+(`D-034`), and the original FAIL verdict is preserved here and in `data/`.
 
 Plan: [`docs/plans/2026-09-15-paraphrase-robustness-t0-t3.md`](../../../plans/2026-09-15-paraphrase-robustness-t0-t3.md).
 
@@ -366,3 +373,88 @@ worse.
 32-way concurrency at a 600 s read timeout: the gated arm ran in under the 57
 minutes the ungated arm took at 8-way, and roughly half its variants never call
 the model at all.
+
+## Step 6 — close-out: shipped under a changed rule, with the original verdict intact (complete, 2026-09-15)
+
+**The operator elected the "not worse than the shipped baseline" reading of the
+fidelity clause and shipped the gate.** Recorded as `D-034`, which reverses
+`D-032` for the gated configuration only.
+
+| | pre-registered rule | operator rule (`D-034`) |
+|---|---|---|
+| `T3` `catalogue_dump` | ≤ 0.0915 → **FAIL** at 0.1089 | ≤ baseline 0.1683 → **PASS** at 0.1089 |
+| every other clause | PASS | PASS |
+| **verdict** | **FAIL, 8/9** | **PASS, 9/9** |
+
+`data/gate_verdict.py` computes **both**, and `data/metrics_gate_verdict.json`
+carries both. The pre-registered verdict is not re-scored, softened or removed:
+it stands as FAIL. `D-032` rejected relaxing a threshold after seeing the value
+that failed it, and that reasoning is not withdrawn — what overrides it is an
+explicit operator call on a product question (how much catalogue dumping an
+analyst tool may do), which was never the experiment's to make.
+
+### What shipped
+
+`ARIADNE_REWRITE=1`, `ARIADNE_REWRITE_MODEL=1`, `ARIADNE_REWRITE_ONLY_WITHOUT_ID=1`
+in `.env` and `.env.example`, documented in the README's "What Actually Runs".
+
+**Verified live through `iter_pipeline`, the path `app.py` serves:**
+
+| question | rung | result |
+|---|---|---|
+| "How do I defend against T1047?" | **`skipped_identifier`** | untouched, 1 id — `T1` behaviour preserved |
+| "Which countermeasures apply to Windows Management Instrumentation?" | **`model`** | canonicalised to "In ATT&CK, give the mitigations that mitigates technique T1047." → **5 ids** |
+
+**Failure mode tested, not assumed.** Pointed at a dead endpoint, the stage
+records `rung: abstain` with `model unavailable: …`, leaves the form unbound and
+forwards the analyst's own words. No exception escapes the planner.
+
+### The two costs, stated where they cannot be missed
+
+1. **`T3` dumping is above the pre-registered cap** — 0.1089 against 0.0915 —
+   and below the 0.1683 it replaces. Shipped on the second reading.
+2. **`T4`/`T5` `wrong_entity` roughly triples**: 0.1058 → **0.3077** and
+   **0.2981**, worse than the ungated arm. The stage converts abstentions into
+   answers there, and about a third of the converted silence names the wrong
+   entity. This experiment's own protocol said "a lever that helps `T0`–`T3` by
+   breaking the others is not a lever we would ship", and `D-032` point 2 refused
+   an earlier version of the stage for the same reason. It ships regardless, by
+   decision. **Gating `T4`/`T5` separately is the obvious follow-up and has not
+   been attempted.**
+
+### Where the bar stands at close
+
+| tier | at Step 1 | shipped | bar | gap |
+|---|---:|---:|---:|---:|
+| T0 | 1.0000 | 1.0000 | — | control |
+| T1 | 0.3917 | 0.3917 | 0.9 | **−0.5083** |
+| T2 | 0.3667 | 0.3667 | 0.9 | **−0.5333** |
+| T3 | 0.1782 | **0.3267** | 0.85 | −0.5233 |
+
+**One tier moved.** `T3` gained 0.1485, an 83% relative improvement, and it is
+the tier where the analyst names a thing without knowing its identifier — the
+shape of an open-ended question, which is the use case that motivated the work.
+
+**`T1` and `T2` did not move at all**, across three levers and four measured
+arms. Every intervention on record either leaves them untouched or makes them
+worse: the primitive engine −0.1750, the ungated rewrite −0.1167, the gated
+rewrite 0.0000. Their loss is **interpretation, not execution** — `queries_exact`
+0.3750 against `records_exact` 0.3917 means the system almost always retrieves
+correctly once it has understood, and understands the reworded question barely
+more than a third of the time.
+
+**What that leaves.** The unattempted lever is the one `EXP-2026-09-020` `A-3`
+pointed at and this experiment scoped but did not build: rank the question against
+the relations the **resolved anchor actually declares**, instead of matching a verb
+to a template. The candidate set is small — 26 distinct predicates across the
+bank, a median of 5 declared relations per anchor. `A-4`'s caution binds it: rank,
+keep the `describe` fallback, never union. That is new engineering, it is the
+only remaining route to `T1`/`T2`, and nothing in this experiment estimates what
+it would be worth.
+
+**The metric caveat that outlives this experiment.** Every figure here is
+`records_exact` — exact record-set identity — which is strict and is not what an
+analyst experiences. `records_recall` runs 0.15–0.32 higher at every tier in
+scope, and judged correctness would read higher still. Whether the 0.9 bar belongs
+on this metric is open (`PROTOCOL.md` §Metrics), and settling it needs a judged
+pass that has not been run.
