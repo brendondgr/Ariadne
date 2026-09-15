@@ -633,3 +633,42 @@ second fault was hiding the first. Recorded rather than edited away, because the
 sequence is the point: a control can measure as inert either because the model
 ignores it or because nothing ever sent it, and only reading the client tells
 them apart.
+
+### A-10 correction (2026-09-15) — the Medium figure was one contended sample
+
+`A-10` reported a `verify: on` turn at **5.27 s** (None) against **25.25 s**
+(Medium). The second number is not representative. It was a single sample taken
+while the endpoint was serving a series of long hard-prompt probes and a
+concurrent session, and it was reported without repetition.
+
+Repeated three times each on a quiet endpoint:
+
+| Thinking | run 1 | run 2 | run 3 |
+|---|---:|---:|---:|
+| **None** (`0`) | 1.353 s | 1.322 s | 1.321 s |
+| **Medium** (`512`) | 5.829 s | 5.852 s | 5.814 s |
+
+**Medium costs about +4.5 s, not +20 s**, and both levels are tight to within
+40 ms across runs. 512 reasoning tokens at roughly 115 tok/s is ~4.5 s, which is
+what the arithmetic predicts and the earlier figure did not.
+
+The per-event breakdown of a Medium turn shows where it goes and confirms the
+structure is sound:
+
+```
+  0.02s  title            (started at turn open, off the critical path)
+  0.07s  answer           (the pipeline: deterministic, no model)
+  5.75s  validation       (one LLM call)
+  5.84s  validation       (retry cap reached; short-circuits)
+  5.85s  done
+```
+
+Validation judges the evidence insufficient, retries retrieval — which is
+deterministic and costs 0.07 s — and the second validation short-circuits on
+`max_validation_iters`. So the retry is nearly free; the cost is the one model
+call.
+
+**The lesson is the one this experiment keeps relearning.** A latency figure from
+a single run on a shared endpoint is a sample of the endpoint's load, not of the
+thing being measured. Every other timing in `A-8` through `A-10` should be read
+with that caveat; these six runs are the only ones here with a spread reported.
