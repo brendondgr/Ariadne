@@ -458,3 +458,80 @@ analyst experiences. `records_recall` runs 0.15–0.32 higher at every tier in
 scope, and judged correctness would read higher still. Whether the 0.9 bar belongs
 on this metric is open (`PROTOCOL.md` §Metrics), and settling it needs a judged
 pass that has not been run.
+
+---
+
+## AMENDMENT A-1 — the anchor gate: the model may never choose the entity (2026-09-15)
+
+`D-034` shipped the identifier gate and accepted one cost explicitly: at `T4`/`T5`
+the stage roughly **tripled `wrong_entity`**, 0.1058 → 0.3077 and 0.2981. The
+operator asked for those tiers to be gated separately. This amendment does that,
+and it is a new run rather than a re-reading: `data/metrics_noid_anchored.json`.
+
+### The mechanism, found in the Step 5 artifacts before anything was built
+
+`deterministic_fill` binds an anchor from an identifier or a complete-name match
+and **never guesses** — `EXP-2026-08-020` measured the ranked name index's accept
+decision at 68% precision, so a slot it would have filled is deliberately left
+unbound. The model rung then fills it from a candidate list. Reading the anchor
+provenance per tier out of `scored_noid.json`:
+
+| tier | anchor is an `exact-name` bind | **the model chose the anchor** |
+|---|---:|---:|
+| T3 | **64** | 24 |
+| T4 | 7 | **82** |
+| T5 | 7 | **88** |
+
+That is the whole story. `T3` supplies the name, so the anchor is a *lookup*.
+`T4`/`T5` do not, so the anchor is a *similarity guess* — and an answer built on a
+guessed entity is an answer about the wrong entity.
+
+### What was built
+
+`ARIADNE_REWRITE_REQUIRE_RESOLVED_ANCHOR` / `rewrite_require_resolved_anchor`,
+and a rung `RUNG_SKIPPED_ANCHOR`. When the anchor's provenance is not `exact-id`
+or `exact-name`, the stage stands down. The model may still fill relation,
+direction, mode and target labels — schema facts recoverable from the label pair
+— but **never who the question is about**. Four new tests; 342 pass.
+
+### Results
+
+| tier | metric | baseline | shipped (`D-034`) | **anchored** |
+|---|---|---:|---:|---:|
+| T1 / T2 | everything | — | = baseline | **= baseline** |
+| T3 | `records_exact` | 0.1782 | **0.3267** | **0.3267** |
+| T3 | `wrong_entity` | 0.0990 | 0.0891 | **0.0693** |
+| T3 | `catalogue_dump` | 0.1683 | 0.1089 | 0.1287 |
+| T4 | `wrong_entity` | 0.1058 | **0.3077** | **0.1442** |
+| T5 | `wrong_entity` | 0.1058 | **0.2981** | **0.1346** |
+| T4 / T5 | `records_exact` | 0.0000 | 0.0962 / 0.1250 | 0.0000 |
+
+**`T3`'s gain is retained in full** — 0.3267, identical to the shipped arm to four
+decimals — while `T4`'s excess `wrong_entity` falls from +0.2019 over baseline to
+**+0.0384**, and `T5`'s from +0.1923 to **+0.0288**. About **81%** of the cost
+`D-034` accepted is removed, and `T3`'s own `wrong_entity` ends up *below*
+baseline at 0.0693.
+
+**What is given back**: `T4`/`T5` `records_exact` returns to 0.0000. Those were
+never targets, and the measurement says plainly what they were — answers bought by
+letting a model pick the entity, about a third of them about the wrong one.
+
+### It does not reach baseline, and that is the residual
+
+`T4`/`T5` `wrong_entity` remains **0.0384 and 0.0288 above** baseline. Under
+`D-034`'s own "not worse than the shipped baseline" rule those two clauses still
+fail. Every other fidelity measure at every tier is at or below baseline —
+`catalogue_dump` is below it at `T3`, `T4` and `T5`, and `T1`/`T2` are untouched.
+
+The residual has a visible source: 7 `T4` and 7 `T5` variants *do* carry an exact
+complete-name bind and legitimately reach the stage, and the deterministic rung
+still fires on questions the model never touches. Closing the last 0.03 means
+refusing those too, which would also refuse the `T3` cases that produce the gain.
+**It is not attempted here** — it is a further trade, and inventing a third gate
+after seeing this number is the post-hoc move this experiment has twice declined.
+
+### Verdict
+
+Strictly better than what `D-034` shipped on every measure in scope and on five of
+seven out of scope, at the cost of two `T4`/`T5` `records_exact` gains that were
+never asked for. Shipped as `D-035`.

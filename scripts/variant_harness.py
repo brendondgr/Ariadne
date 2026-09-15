@@ -81,27 +81,39 @@ BASE_ENV: dict[str, str] = {
 REWRITE_ENV: dict[str, dict[str, str]] = {
     "off": {"ARIADNE_REWRITE": "0", "ARIADNE_REWRITE_MODEL": "0",
             "ARIADNE_REWRITE_DERIVE_RELATION": "1",
-            "ARIADNE_REWRITE_ONLY_WITHOUT_ID": "0"},
+            "ARIADNE_REWRITE_ONLY_WITHOUT_ID": "0",
+            "ARIADNE_REWRITE_REQUIRE_RESOLVED_ANCHOR": "0"},
     "det": {"ARIADNE_REWRITE": "1", "ARIADNE_REWRITE_MODEL": "0",
             "ARIADNE_REWRITE_DERIVE_RELATION": "1",
-            "ARIADNE_REWRITE_ONLY_WITHOUT_ID": "0"},
+            "ARIADNE_REWRITE_ONLY_WITHOUT_ID": "0",
+            "ARIADNE_REWRITE_REQUIRE_RESOLVED_ANCHOR": "0"},
     "model": {"ARIADNE_REWRITE": "1", "ARIADNE_REWRITE_MODEL": "1",
               "ARIADNE_REWRITE_DERIVE_RELATION": "1",
-              "ARIADNE_REWRITE_ONLY_WITHOUT_ID": "0"},
+              "ARIADNE_REWRITE_ONLY_WITHOUT_ID": "0",
+            "ARIADNE_REWRITE_REQUIRE_RESOLVED_ANCHOR": "0"},
     # EXP-2026-09-015's control: the model rung exactly as EXP-2026-09-014 ran
     # it, with the relation asked for rather than derived from the label pair.
     # Every value is written explicitly so an ambient variable cannot decide
     # which arm ran.
     "model_ask": {"ARIADNE_REWRITE": "1", "ARIADNE_REWRITE_MODEL": "1",
                   "ARIADNE_REWRITE_DERIVE_RELATION": "0",
-                  "ARIADNE_REWRITE_ONLY_WITHOUT_ID": "0"},
+                  "ARIADNE_REWRITE_ONLY_WITHOUT_ID": "0",
+            "ARIADNE_REWRITE_REQUIRE_RESOLVED_ANCHOR": "0"},
     # EXP-2026-09-021 Step 5: the model rung, run only on questions that cite no
     # identifier. Step 4 measured the stage breaking 32 answers and fixing 10
     # where an identifier survives, and fixing 44 and breaking 7 where none
     # does; this arm is that split applied as a run-time gate.
     "model_noid": {"ARIADNE_REWRITE": "1", "ARIADNE_REWRITE_MODEL": "1",
                    "ARIADNE_REWRITE_DERIVE_RELATION": "1",
-                   "ARIADNE_REWRITE_ONLY_WITHOUT_ID": "1"},
+                   "ARIADNE_REWRITE_ONLY_WITHOUT_ID": "1",
+                   "ARIADNE_REWRITE_REQUIRE_RESOLVED_ANCHOR": "0"},
+    # EXP-2026-09-021 AMENDMENT A-1: the shipped gate PLUS a refusal to let the
+    # model choose the anchor. Targets the T4/T5 wrong_entity tripling D-034
+    # accepted, without giving back T3's exact-name binds.
+    "model_noid_anchored": {"ARIADNE_REWRITE": "1", "ARIADNE_REWRITE_MODEL": "1",
+                            "ARIADNE_REWRITE_DERIVE_RELATION": "1",
+                            "ARIADNE_REWRITE_ONLY_WITHOUT_ID": "1",
+                            "ARIADNE_REWRITE_REQUIRE_RESOLVED_ANCHOR": "1"},
 }
 
 #: Where the understanding-gold lives, relative to ``--out``.

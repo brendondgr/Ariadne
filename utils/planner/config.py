@@ -88,6 +88,17 @@ class PlannerConfig:
     #: second opinion about what an identifier is. Off by default: with it off
     #: the stage behaves exactly as EXP-2026-09-014 measured it.
     rewrite_only_without_identifier: bool = False
+    #: Refuse the stage when the anchor was not bound by an exact lookup.
+    #: EXP-2026-09-021 AMENDMENT A-1: `deterministic_fill` binds an anchor from
+    #: an identifier or a complete-name match and never guesses, but the model
+    #: rung then picks one out of a ranked candidate list -- and that is where
+    #: wrong answers about the wrong entity come from. At T3 (exact name) the
+    #: anchor is an `exact-name` bind 64 times of 101; at T4/T5 (paraphrased
+    #: name, description only) the MODEL chooses it 82 and 88 times of 104, and
+    #: `wrong_entity` roughly triples. With this set the model may still fill
+    #: relation, direction, mode and target labels -- it may never choose who
+    #: the question is about. Off by default.
+    rewrite_require_resolved_anchor: bool = False
     #: Where the model's picks are cached, keyed by prompt version, served model
     #: and question. Unset means the process default (see rewrite_cache.py).
     rewrite_cache_dir: str | None = None
@@ -137,6 +148,10 @@ class PlannerConfig:
         rewrite_only_without_identifier = (
             os.environ.get("ARIADNE_REWRITE_ONLY_WITHOUT_ID", "").strip().lower() in _truthy
         )
+        rewrite_require_resolved_anchor = (
+            os.environ.get("ARIADNE_REWRITE_REQUIRE_RESOLVED_ANCHOR", "").strip().lower()
+            in _truthy
+        )
         # The LLM group resolves through utils.llm: PLANNER_LLM_* still wins when
         # set, but falls back to ARIADNE_LLM_* so one endpoint configures every
         # stage. With neither set this is exactly the previous default.
@@ -162,6 +177,7 @@ class PlannerConfig:
             rewrite_enabled=rewrite_enabled,
             rewrite_model_enabled=rewrite_model_enabled,
             rewrite_only_without_identifier=rewrite_only_without_identifier,
+            rewrite_require_resolved_anchor=rewrite_require_resolved_anchor,
             rewrite_derive_relation=rewrite_derive_relation,
             rewrite_cache_dir=env_str("ARIADNE_REWRITE_CACHE_DIR", "") or None,
             llm_base_url=llm.base_url,

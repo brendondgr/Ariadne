@@ -1060,3 +1060,52 @@ variants. Live through `iter_pipeline`: an identifier-bearing question records
 `rung: skipped_identifier` and is untouched; "Which countermeasures apply to
 Windows Management Instrumentation?" now renders a canonical question and returns
 5 identifiers where it returned fewer before.
+
+---
+
+## D-035 — The model may fill any slot except the anchor (2026-09-15)
+
+**Decision.** `ARIADNE_REWRITE_REQUIRE_RESOLVED_ANCHOR` ships **on**, alongside
+the three flags `D-034` enabled. The rewrite stage now runs only when the
+question cites no identifier **and** the anchor was bound by an exact lookup —
+an identifier or a complete name. Operator decision, 2026-09-15, in response to
+the `T4`/`T5` cost `D-034` recorded as accepted-but-unruled.
+
+**Why this is the right cut.** `deterministic_fill` already refuses to guess an
+anchor: `EXP-2026-08-020` measured the ranked name index's accept decision at 68%
+precision, so it leaves the slot unbound rather than fill it. The model rung then
+filled it anyway, from a candidate list. `EXP-2026-09-021` `A-1` counted where
+that happens — the model chooses the anchor on **82 of 104** `T4` variants and
+**88 of 104** `T5` variants, against **24 of 101** at `T3` — and `wrong_entity`
+tracks it exactly. The principle is one the composer already follows elsewhere:
+a model may propose *how* to traverse, never *what the question is about*.
+
+**Result.** `T3` keeps its full gain (0.3267, unchanged to four decimals) while
+`T4`/`T5` `wrong_entity` falls 0.3077 → **0.1442** and 0.2981 → **0.1346**,
+removing about 81% of the cost `D-034` accepted. `T3`'s own `wrong_entity` drops
+below baseline to 0.0693. `T1`/`T2` remain byte-equal to baseline.
+
+**What it gives back.** `T4`/`T5` `records_exact` returns to 0.0000 from
+0.0962/0.1250. Those were never targets, and the measurement says what they were:
+answers bought by letting a model pick the entity, roughly a third of them about
+the wrong one. Trading them for the wrong-entity reduction is the whole point of
+the decision.
+
+**The residual, not resolved.** `T4`/`T5` `wrong_entity` is still **+0.0384 and
++0.0288 above baseline**, so under `D-034`'s own rule those two clauses fail. The
+source is visible — 7 `T4` and 7 `T5` variants carry a genuine complete-name bind
+and legitimately reach the stage, and the deterministic rung fires on questions no
+model touches. Closing it means refusing those too, which would also refuse the
+`T3` cases that produce the gain. Recorded as a known residual rather than gated
+away by a third rule invented after seeing the number.
+
+**Alternatives rejected.**
+- *Revert `D-034` entirely.* Rejected: it would give back `T3` 0.3267 → 0.1782,
+  the only tier this programme has moved.
+- *Keep `D-034` as shipped.* Rejected by the operator: a tripled wrong-entity rate
+  on questions with no recognisable entity name is the failure mode the project
+  exists to avoid, and `D-032` point 2 refused an earlier stage for it.
+- *Add a third gate to close the last 0.03.* Not attempted. Post-hoc.
+
+**Reversible.** One flag. The flag-off path is the `D-034` configuration, itself
+one flag from the pre-2026-09-15 behaviour.

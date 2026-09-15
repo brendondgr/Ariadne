@@ -113,3 +113,89 @@ def test_config_reads_the_environment_flag(monkeypatch) -> None:
     assert PlannerConfig.from_env().rewrite_only_without_identifier is False
     monkeypatch.setenv("ARIADNE_REWRITE_ONLY_WITHOUT_ID", "1")
     assert PlannerConfig.from_env().rewrite_only_without_identifier is True
+
+
+# -- the anchor gate: the model may never choose the entity ------------------
+
+
+def test_stands_down_when_the_anchor_is_not_an_exact_bind() -> None:
+    """T5's shape: a description with no name the resolver can look up."""
+    from utils.orchestration.agents.planner.nodes import RUNG_SKIPPED_ANCHOR
+
+    out = _canonicalize(
+        "Which countermeasures stop an adversary abusing a scripting interpreter?",
+        rewrite_enabled=True,
+        rewrite_model_enabled=True,
+        rewrite_only_without_identifier=True,
+        rewrite_require_resolved_anchor=True,
+    )
+    assert out["rewrite_trace"]["rung"] == RUNG_SKIPPED_ANCHOR
+    assert "request" not in out  # the analyst's own words go forward
+
+
+def test_an_exact_bind_still_reaches_the_stage(monkeypatch) -> None:
+    """T3's shape: the complete name is in the text, so the anchor is a lookup.
+
+    The provenance is what the gate reads, so the provenance is what this test
+    supplies. Exercising the real `exact_name_matches` here would test the
+    fixture cards' name index rather than the decision, and the fixtures carry
+    no index -- which is exactly why the first version of this test failed.
+    """
+    import utils.planner.canonical as canonical
+    from utils.orchestration.agents.planner.nodes import RUNG_SKIPPED_ANCHOR
+    from utils.planner.canonical import IntentForm, MODE_ENUMERATE, SLOT_ANCHORS
+
+    bound = IntentForm(
+        anchors=("T1047",), anchor_labels=("Technique",), target_labels=("Mitigation",),
+        relation="MITIGATES", direction="in", mode=MODE_ENUMERATE, datasets=("attack",),
+        sources={SLOT_ANCHORS: "exact-name"},
+    )
+    monkeypatch.setattr(canonical, "deterministic_fill", lambda *a, **k: bound)
+    out = _canonicalize(
+        "What mitigations are listed for Windows Management Instrumentation?",
+        rewrite_enabled=True,
+        rewrite_model_enabled=True,
+        rewrite_only_without_identifier=True,
+        rewrite_require_resolved_anchor=True,
+    )
+    assert out["rewrite_trace"]["rung"] != RUNG_SKIPPED_ANCHOR
+
+
+def test_a_model_chosen_anchor_is_refused(monkeypatch) -> None:
+    """The case the amendment exists for: the model picked who it is about."""
+    import utils.planner.canonical as canonical
+    from utils.orchestration.agents.planner.nodes import RUNG_SKIPPED_ANCHOR
+    from utils.planner.canonical import IntentForm, MODE_ENUMERATE, SLOT_ANCHORS
+
+    guessed = IntentForm(
+        anchors=("T1059",), anchor_labels=("Technique",), mode=MODE_ENUMERATE,
+        datasets=("attack",), sources={SLOT_ANCHORS: "ambiguous: 2 complete names in the text"},
+    )
+    monkeypatch.setattr(canonical, "deterministic_fill", lambda *a, **k: guessed)
+    out = _canonicalize(
+        "What stops an adversary abusing a scripting interpreter?",
+        rewrite_enabled=True,
+        rewrite_model_enabled=True,
+        rewrite_only_without_identifier=True,
+        rewrite_require_resolved_anchor=True,
+    )
+    assert out["rewrite_trace"]["rung"] == RUNG_SKIPPED_ANCHOR
+
+
+def test_anchor_gate_defaults_off() -> None:
+    from utils.orchestration.agents.planner.nodes import RUNG_SKIPPED_ANCHOR
+
+    out = _canonicalize(
+        "Which countermeasures stop an adversary abusing a scripting interpreter?",
+        rewrite_enabled=True,
+        rewrite_model_enabled=False,
+        rewrite_only_without_identifier=True,
+    )
+    assert out["rewrite_trace"]["rung"] != RUNG_SKIPPED_ANCHOR
+
+
+def test_anchor_gate_reads_its_environment_flag(monkeypatch) -> None:
+    monkeypatch.delenv("ARIADNE_REWRITE_REQUIRE_RESOLVED_ANCHOR", raising=False)
+    assert PlannerConfig.from_env().rewrite_require_resolved_anchor is False
+    monkeypatch.setenv("ARIADNE_REWRITE_REQUIRE_RESOLVED_ANCHOR", "1")
+    assert PlannerConfig.from_env().rewrite_require_resolved_anchor is True

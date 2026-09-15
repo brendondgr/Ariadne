@@ -54,6 +54,7 @@ below.)
 | Q56 | The arm runner's default model was one the configured endpoint does not serve, so an LLM arm ran model-free and finished | EXP-2026-09-018 Step 5 preflight | answered and fixed; archived runners still carry the old default *(partly)* |
 | Q57 | Every headline figure replays an authored retrieval plan; the system's own planner costs −0.3814 gold coverage | EXP-2026-09-019 Steps 2, 5 | **the meaning of every 0.90 this project reports** — a ceiling given a correct plan, not an end-to-end result *(open)* |
 | Q58 | The planner arm's loss is not separated from the tighter per-plan bounds it inherits | EXP-2026-09-019 I-2 | how much of Q57 is a worse decomposition; what a fix should target *(open)* |
+| Q59 | An entity name is never looked up unless the router first picks a dataset, so a question naming a thing in ordinary words binds nothing | EXP-2026-09-021 A-1 | the largest deterministic lever left at T1–T3: 37 of 101 T3 variants reach no exact anchor *(open)* |
 
 ---
 
@@ -1126,3 +1127,47 @@ completion buys the difference between a loud stop and a plausible wrong number.
 `:4000`/`skynet`. They are the recorded entrypoints of finished experiments, so
 they are left alone rather than rewritten; anything re-run through them needs
 its endpoint passed explicitly. **From:** `EXP-2026-09-018` Step 5 preflight.
+
+
+### Q59 — An entity name is never looked up unless the router first picks a dataset
+
+**Established 2026-09-15** by `EXP-2026-09-021` `AMENDMENT A-1`, while probing why
+the anchor gate refuses 37 of 101 `T3` variants.
+
+`deterministic_fill` selects datasets first, and returns early with **every slot
+unbound** when the router cannot pick one:
+
+```
+Which countermeasures apply to Windows Management Instrumentation?
+  -> datasets unbound -> anchors ()          sources[anchors] None
+What mitigations does ATT&CK list for Windows Management Instrumentation?
+  -> datasets bound   -> anchors ('T1047',)  sources[anchors] 'exact-name'
+```
+
+The same complete name, present in both, is looked up in one and never looked up
+in the other. The router matches question words against the schema labels and
+relationship types in each source card — so `mitigations` routes and
+`countermeasures` does not — and the anchor lookup sits **behind** that gate.
+
+**Why it matters more than it looks.** An entity name *implies* its dataset: if
+"Windows Management Instrumentation" resolves in ATT&CK, the dataset question is
+already answered. Ordering the two the other way round — look up the name, let the
+match choose the source — would bind an anchor on exactly the questions that name
+a thing in ordinary words, which is the shape of an open-ended analyst question
+and the shape of `T3`.
+
+It also explains a measurement that looked like model capability. `T3`'s model
+rung fired on 50 of 101 variants and chose the anchor on 24, and after `D-035`
+refuses model-chosen anchors, **37 `T3` variants reach no exact anchor at all**.
+Most of that is not a hard naming problem — it is a lookup that never ran.
+
+**What resolves it.** Attempt the complete-name lookup across every live source
+before dataset selection, let a unique hit pick the dataset, keep the ambiguity
+surface for two or more hits, and re-run the variant bank. Deterministic, no
+model. The risk to check is precision: `EXP-2026-08-020` measured the *ranked*
+name index at 68% precision, which is why `deterministic_fill` refuses it —
+this proposes widening the **exact** path only, and the two must not be confused.
+
+**Not attempted here.** It is new engineering outside `EXP-2026-09-021`'s scope
+and outside `D-035`'s decision, and proposing it after seeing the numbers makes it
+a hypothesis rather than a result.

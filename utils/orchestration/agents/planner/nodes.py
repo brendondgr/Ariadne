@@ -37,6 +37,15 @@ RUNG_ABSTAIN = "abstain"
 #: is set, so the stage stood down. Distinct from ``RUNG_OFF`` on purpose: off
 #: means the flag is not set, this means the flag is set and the gate declined.
 RUNG_SKIPPED_ID = "skipped_identifier"
+#: The anchor was not bound by an exact lookup, and
+#: ``rewrite_require_resolved_anchor`` is set, so the stage stood down rather
+#: than let a model choose which entity the question is about.
+RUNG_SKIPPED_ANCHOR = "skipped_unresolved_anchor"
+
+#: Anchor provenances that count as "we know who this question is about".
+#: `deterministic_fill` writes these into the form's `sources`; anything else --
+#: a model pick, an ambiguity, or nothing at all -- is a guess.
+_EXACT_ANCHOR_SOURCES = frozenset({"exact-id", "exact-name"})
 
 
 def build_nodes(
@@ -103,7 +112,9 @@ def build_nodes(
         # Imported here rather than at module scope: the canonical module pulls
         # in the name index and the schema registry, and the flag is off by
         # default, so a run that never rewrites should never pay for them.
-        from utils.planner.canonical import FormError, deterministic_fill, render
+        from utils.planner.canonical import (
+            SLOT_ANCHORS, FormError, deterministic_fill, render,
+        )
 
         form = deterministic_fill(original, cards, state.get("intent"))
         trace: dict[str, Any] = {
@@ -113,6 +124,33 @@ def build_nodes(
             "unbound": list(form.unbound),
             "sources": dict(form.sources),
         }
+
+        # Never let the model choose the entity.
+        #
+        # `deterministic_fill` binds an anchor from an identifier or a complete
+        # name and refuses to guess: EXP-2026-08-020 measured the ranked name
+        # index's accept decision at 68% precision, so a slot it would have
+        # filled is left unbound on purpose. The model rung then fills it from a
+        # candidate list -- and AMENDMENT A-1 measured what that costs. At T3,
+        # where the exact name is present, the anchor is an `exact-name` bind 64
+        # times of 101. At T4/T5, where it is not, the model picks 82 and 88
+        # times of 104 and `wrong_entity` roughly triples against baseline.
+        #
+        # So the rung is allowed to fill relation, direction, mode and target
+        # labels -- schema facts, recoverable from the label pair -- and never
+        # the anchor. Without a resolved anchor there is no question to
+        # canonicalise, only a guess to dress up, and the analyst's own words
+        # are the safer thing to forward.
+        if config.rewrite_require_resolved_anchor and (
+            trace["sources"].get(SLOT_ANCHORS) not in _EXACT_ANCHOR_SOURCES
+        ):
+            trace["rung"] = RUNG_SKIPPED_ANCHOR
+            trace.setdefault("rejected", []).append(
+                "anchor not bound by an exact lookup: "
+                f"{trace['sources'].get(SLOT_ANCHORS)!r}"
+            )
+            return {"rewrite_trace": trace, "original_request": original,
+                    "intent_form": form.to_dict()}
 
         if not form.is_bound and config.rewrite_model_enabled:
             from utils.planner import rewrite_llm
