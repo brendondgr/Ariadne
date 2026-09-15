@@ -1,0 +1,53 @@
+id: EXP-2026-09-022
+slug: portable-candidate-discovery
+title: Can card-driven multi-view discovery recover unnamed anchors?
+status: planned
+date_started: 2026-09-15
+date_completed: null
+authors:
+- Codex
+purpose: Measure candidate discovery separately from answer correctness and design
+  portable open-question answering.
+hypothesis: "Exploratory \u2014 no prior quantitative hypothesis; compare frozen lexical\
+  \ and graph-context mechanisms without tuning."
+code:
+  commit: 8ca36eee1043bd2b96b44e68bba37aa593139fb0
+  branch: main
+  entrypoint: uv run python scripts/prototype_candidate_discovery.py
+  dirty: true
+config:
+  path: null
+  hash: null
+data:
+  name: Existing tier variants and slot gold; ATT&CK and CAPEC canonical exports
+  version: variants-2026-08-29
+  split: previously exposed diagnostic bank
+  n_examples: 579
+  dvc_path: null
+  hash: sha256:428a23467ecf8aed1f266186504d6f68d0a9d88173cc090149558d078bdea63c
+seeds:
+- 0
+n_runs: 1
+environment:
+  python: '3.13'
+  lockfile: uv.lock
+  container: null
+compute:
+  hardware: CPU, local workspace
+  wall_clock_hours: 0.0
+  estimated_cost_usd: 0.0
+metrics:
+  primary: fields_T5_anchor_recall_at_10
+  values: {}
+  withdrawn: {}
+baselines_compared:
+- pooled lexical over the same eligible corpus
+statistical_test: One deterministic diagnostic run per arm; no significance or generalization
+  claim.
+supports_claims: []
+figures: []
+supersedes: null
+superseded_by: null
+related:
+- EXP-2026-09-021
+- EXP-2026-08-020
