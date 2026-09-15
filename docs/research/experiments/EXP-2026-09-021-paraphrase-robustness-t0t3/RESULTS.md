@@ -263,3 +263,106 @@ held at 8: at 32-way the served model exceeded the old 240 s read timeout on abo
 a third of calls, and a timed-out call **abstains**, which is indistinguishable
 downstream from a model with nothing to say. This run raised the timeout to 600 s,
 so the ceiling can be lifted for later model-backed arms.
+
+## Step 5 — the identifier gate: built, measured, and 8 of 9 clauses (complete, 2026-09-15)
+
+Step 4's sign split said the rewrite stage is not wrong but *unconditional*. The
+condition is computable at run time, so it was implemented rather than projected.
+
+**What was built.** `PlannerConfig.rewrite_only_without_identifier`
+(`ARIADNE_REWRITE_ONLY_WITHOUT_ID`, **default off**) and a new rung
+`RUNG_SKIPPED_ID` in the `canonicalize` node. When set, the node asks whether the
+question cites an identifier and stands down if it does. The predicate delegates
+to the resolver's own `_native_ids` through `canonical._ids_in` — the module's own
+note says a second opinion about what an identifier is, is the one thing this
+design exists not to have.
+
+**The flag-off path is byte-identical.** The whole bank was re-run at
+`--rewrite off` after the change and compared to the Step 2 artifact: **579 of
+579 rows identical**, timing excluded per the harness's own rule. 337 tests pass
+across `utils/orchestration` and `utils/planner`, six of them new
+(`utils/orchestration/tests/test_rewrite_identifier_gate.py`).
+
+### The gate fires where it was designed to
+
+| tier | `skipped_identifier` | model rung | other |
+|---|---:|---:|---:|
+| T1 | **118 / 120** | 1 | 1 abstain |
+| T2 | **118 / 120** | 0 | 2 abstain |
+| T3 | **0 / 101** | 50 | 30 det, 21 abstain |
+| T4 | 0 / 104 | 51 | 50 abstain, 3 det |
+
+Two `T1` variants and two `T2` variants carry no identifier the resolver
+recognises, so they reach the stage. That is the gate being a *run-time
+predicate* rather than a tier label, which is exactly why it had to be run.
+
+### Results
+
+| tier | baseline | rewrite (ungated) | **rewrite, gated** |
+|---|---:|---:|---:|
+| T1 | 0.3917 | 0.2750 | **0.3917** |
+| T2 | 0.3667 | 0.3000 | **0.3667** |
+| T3 | 0.1782 | 0.3168 | **0.3267** |
+| T4 | 0.0000 | 0.0962 | 0.0962 |
+| T5 | 0.0000 | 0.1250 | 0.1250 |
+
+**`T1` and `T2` are restored to baseline exactly** — to four decimals on every
+column, and outcome-identical on **239 of 240** variants; the one difference is a
+`T1` variant that cites no identifier and legitimately reached the stage.
+
+**`T3` is 0.3267, above the ungated 0.3168.** The gate is not merely neutral
+there: it recovers one case the ungated arm lost, because the run-time predicate
+and the tier label do not coincide case by case. This is why the Step 4 write-up
+refused to claim the projection — the measured value is **better** than the
+projection would have stated, and either direction was possible.
+
+### The verdict: FAIL, 8 of 9 clauses, and the rule is not being moved
+
+`data/gate_verdict.py` applies the rule written in the plan before Step 4 ran:
+
+| clause | value | verdict |
+|---|---:|---|
+| T3 ≥ baseline + 0.10 | +0.1485 | PASS |
+| T1 not below baseline − 0.02 | 0.0000 | PASS |
+| T2 not below baseline − 0.02 | 0.0000 | PASS |
+| T1/T2/T3 `wrong_entity` ≤ 0.0950 | 0.0833 / 0.0833 / 0.0891 | PASS |
+| T1/T2 `catalogue_dump` ≤ 0.0915 | 0.0000 / 0.0000 | PASS |
+| **T3 `catalogue_dump` ≤ 0.0915** | **0.1089** | **FAIL** |
+
+**`T3` dumping exceeds the cap by 0.0174.** The mechanism is visible: the gate
+answers more `T3` questions than the ungated arm (abstention 0.3465 → 0.2772) and
+some of those answers dump.
+
+**The honest tension, stated rather than resolved by fiat.** The gated arm's
+`T3` dumping is **below the shipped baseline it would replace** — 0.1089 against
+0.1683 — so on a "not worse than what ships" reading it improves. But the rule as
+written caps it at 0.0915, the `EXP-2026-09-018` whole-bank reference, and that
+number was pre-registered as a per-tier cap. Relaxing a threshold after seeing the
+value it failed is the precise thing pre-registration exists to prevent, so the
+threshold stands and the verdict is FAIL.
+
+**Consequence: `ARIADNE_REWRITE_ONLY_WITHOUT_ID` ships off**, alongside
+`ARIADNE_REWRITE` which is also off. The implementation is committed, tested and
+flag-gated rather than reverted, because unlike `EXP-2026-09-020` `A-4` this is
+not a measured-negative switch — it is a measured-positive one that misses a
+fidelity cap by 0.0174, and the operator's decision on that cap is a product call
+this experiment does not get to make on its own.
+
+### The gap to the bar has not moved
+
+| tier | best measured | bar | gap |
+|---|---:|---:|---:|
+| T1 | 0.3917 | 0.9 | **−0.5083** |
+| T2 | 0.3667 | 0.9 | **−0.5333** |
+| T3 | 0.3267 | 0.85 | −0.5233 |
+
+`T3` closed 0.1485 of its gap. **`T1` and `T2` have not moved at all** across
+three levers — the baseline, the engine swap, and the rewrite stage in both
+forms. Every intervention on record now either does nothing to them or makes them
+worse.
+
+### Cost
+
+32-way concurrency at a 600 s read timeout: the gated arm ran in under the 57
+minutes the ungated arm took at 8-way, and roughly half its variants never call
+the model at all.

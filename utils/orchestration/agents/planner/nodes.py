@@ -33,6 +33,10 @@ RUNG_OFF = "off"
 RUNG_DETERMINISTIC = "deterministic"
 RUNG_MODEL = "model"
 RUNG_ABSTAIN = "abstain"
+#: The question already cites an identifier, and ``rewrite_only_without_identifier``
+#: is set, so the stage stood down. Distinct from ``RUNG_OFF`` on purpose: off
+#: means the flag is not set, this means the flag is set and the gate declined.
+RUNG_SKIPPED_ID = "skipped_identifier"
 
 
 def build_nodes(
@@ -70,6 +74,31 @@ def build_nodes(
         original = state.get("original_request") or state["request"]
         if config is None or not config.rewrite_enabled:
             return {"rewrite_trace": {"rung": RUNG_OFF}, "original_request": original}
+
+        # Stand down when the analyst already named an identifier.
+        #
+        # EXP-2026-09-021 Step 4 split the stage's effect by this exact
+        # condition: with an identifier present it broke 32 answers and fixed
+        # 10; with none it fixed 44 and broke 7. Canonicalising rewrites the
+        # question into the source card's vocabulary, which is what the stage is
+        # for -- but an identifier is the strongest routing signal the template
+        # ladder has, and rendering it away costs more than the canonical form
+        # returns. The predicate delegates to the resolver's own `_native_ids`
+        # rather than matching identifiers here, for the reason `_ids_in`
+        # records: a second opinion about what an identifier is, is the one
+        # thing this design exists not to have.
+        if config.rewrite_only_without_identifier:
+            from utils.planner.canonical import _ids_in
+
+            cited = sorted(
+                {i for dataset in cards for i in _ids_in(original, dataset)}
+            )
+            if cited:
+                logger.info("rewrite stood down: question cites %s", cited)
+                return {
+                    "rewrite_trace": {"rung": RUNG_SKIPPED_ID, "identifiers": cited},
+                    "original_request": original,
+                }
 
         # Imported here rather than at module scope: the canonical module pulls
         # in the name index and the schema registry, and the flag is off by

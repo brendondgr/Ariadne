@@ -1,0 +1,84 @@
+#!/usr/bin/env python3
+"""Score the identifier-gated rewrite arm against the pre-registered ship rule.
+
+    uv run python docs/research/experiments/EXP-2026-09-021-.../data/gate_verdict.py
+
+The rule was written in the plan before Step 4 ran and is quoted in
+`PROTOCOL.md`. It is applied here clause by clause, from the metrics files, so
+the verdict cannot drift from the numbers and cannot be softened after the fact.
+"""
+
+from __future__ import annotations
+
+import json
+from pathlib import Path
+
+HERE = Path(__file__).resolve().parent
+REPO = HERE.parents[4]
+
+# Pre-registered in docs/plans/2026-09-15-paraphrase-robustness-t0-t3.md Step 4,
+# before any arm in Steps 4-5 was run. Values are not editable after the fact.
+T3_MIN_GAIN = 0.10
+TIER_TOLERANCE = -0.02
+MAX_WRONG_ENTITY = 0.0950
+MAX_CATALOGUE_DUMP = 0.0915
+IN_SCOPE = ("T1", "T2", "T3")
+
+
+def _tiers(name: str) -> dict:
+    return json.loads((HERE / name).read_text())["tiers"]
+
+
+def _v(tiers: dict, tier: str, metric: str) -> float:
+    cell = tiers[tier][metric]
+    return float(cell["mean"] if isinstance(cell, dict) else cell)
+
+
+def main() -> int:
+    base, arm = _tiers("metrics_baseline.json"), _tiers("metrics_noid.json")
+    clauses = []
+
+    gain = _v(arm, "T3", "records_exact") - _v(base, "T3", "records_exact")
+    clauses.append({
+        "clause": "T3 records_exact >= baseline + 0.10",
+        "value": round(gain, 4), "threshold": T3_MIN_GAIN, "passes": gain >= T3_MIN_GAIN,
+    })
+    for tier in ("T1", "T2"):
+        d = _v(arm, tier, "records_exact") - _v(base, tier, "records_exact")
+        clauses.append({
+            "clause": f"{tier} records_exact not below baseline - 0.02",
+            "value": round(d, 4), "threshold": TIER_TOLERANCE, "passes": d >= TIER_TOLERANCE,
+        })
+    for tier in IN_SCOPE:
+        for metric, cap in (("wrong_entity", MAX_WRONG_ENTITY),
+                            ("catalogue_dump", MAX_CATALOGUE_DUMP)):
+            v = _v(arm, tier, metric)
+            clauses.append({
+                "clause": f"{tier} {metric} <= {cap}",
+                "value": round(v, 4), "threshold": cap, "passes": v <= cap,
+                "baseline": round(_v(base, tier, metric), 4),
+            })
+
+    payload = {
+        "rule_source": "docs/plans/2026-09-15-paraphrase-robustness-t0-t3.md Step 4, "
+                       "pre-registered before Step 4 ran",
+        "arm": "model_noid (rewrite gated on: the question cites no identifier)",
+        "clauses": clauses,
+        "clauses_passed": sum(1 for c in clauses if c["passes"]),
+        "clauses_total": len(clauses),
+        "verdict": "PASS" if all(c["passes"] for c in clauses) else "FAIL",
+    }
+    (HERE / "metrics_gate_verdict.json").write_text(
+        json.dumps(payload, indent=2, sort_keys=True) + "\n"
+    )
+    for c in clauses:
+        mark = "PASS" if c["passes"] else "FAIL"
+        extra = f"  (baseline {c['baseline']})" if "baseline" in c else ""
+        print(f"  [{mark}] {c['clause']:<42} = {c['value']}{extra}")
+    print(f"\n  VERDICT: {payload['verdict']} "
+          f"({payload['clauses_passed']}/{payload['clauses_total']} clauses)")
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())

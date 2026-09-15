@@ -78,6 +78,16 @@ class PlannerConfig:
     #: restore the ask, which is how EXP-2026-09-015 ablates it against the
     #: same cached picks. Inert unless ``rewrite_model_enabled``.
     rewrite_derive_relation: bool = True
+    #: Run the rewrite stage **only when the question cites no identifier**.
+    #: EXP-2026-09-021 Step 4 measured the stage's effect separately on the two
+    #: populations: where an identifier survives it broke 32 answers and fixed
+    #: 10, and where none does it fixed 44 and broke 7. The stage canonicalises
+    #: a question into the source card's vocabulary, so when the question
+    #: already carries the identifier the template ladder reads, canonicalising
+    #: discards it. The predicate is the resolver's own ``_native_ids``, not a
+    #: second opinion about what an identifier is. Off by default: with it off
+    #: the stage behaves exactly as EXP-2026-09-014 measured it.
+    rewrite_only_without_identifier: bool = False
     #: Where the model's picks are cached, keyed by prompt version, served model
     #: and question. Unset means the process default (see rewrite_cache.py).
     rewrite_cache_dir: str | None = None
@@ -124,6 +134,9 @@ class PlannerConfig:
         )
         _derive = os.environ.get("ARIADNE_REWRITE_DERIVE_RELATION", "").strip().lower()
         rewrite_derive_relation = _derive not in {"0", "false", "no", "off"}
+        rewrite_only_without_identifier = (
+            os.environ.get("ARIADNE_REWRITE_ONLY_WITHOUT_ID", "").strip().lower() in _truthy
+        )
         # The LLM group resolves through utils.llm: PLANNER_LLM_* still wins when
         # set, but falls back to ARIADNE_LLM_* so one endpoint configures every
         # stage. With neither set this is exactly the previous default.
@@ -148,6 +161,7 @@ class PlannerConfig:
             intent_llm_enabled=intent_llm_enabled,
             rewrite_enabled=rewrite_enabled,
             rewrite_model_enabled=rewrite_model_enabled,
+            rewrite_only_without_identifier=rewrite_only_without_identifier,
             rewrite_derive_relation=rewrite_derive_relation,
             rewrite_cache_dir=env_str("ARIADNE_REWRITE_CACHE_DIR", "") or None,
             llm_base_url=llm.base_url,
