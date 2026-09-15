@@ -527,3 +527,51 @@ control that looked wired and was not.
 resolution are what make a thread conversational, and the router costs ~1 s. The
 **deterministic claim verifier is untouched and unconditional**: `Verify` governs
 the LLM sufficiency agent, which is a second opinion, not the guarantee.
+
+## Amendment A-9 — named thinking levels, and what a budget of 0 really does (2026-09-14)
+
+The numeric budget control was replaced with named levels at the operator's
+request: **None / Low / Medium / High**. Measuring them first changed what they
+had to be.
+
+### `0` does not mean "none"
+
+`utils/synthesis/llm_composer.py` sends the cap only when it is truthy, so a
+budget of **0 omits the key** and the model falls back to its own default.
+Measured against `:9090` on one sufficiency call, same prompt, varying only this:
+
+| Sent | Wall | Completion tokens |
+|---|---:|---:|
+| **omitted** (what a literal 0 sends) | **11.27 s** | 313 |
+| explicit `0` | **1.28 s** | **31** |
+| `1` | 1.34 s | 31 |
+| `256` | 9.74 s | 283 |
+| `512` | 9.13 s | 313 |
+| `1024` | 9.77 s | 313 |
+
+A control labelled "None: 0" would therefore have selected the **slowest**
+option, not the fastest — an eightfold error in the direction the label promised.
+
+**`None` sends `1`, not `0`.** It is the smallest value the sender actually
+transmits, and it is indistinguishable from an explicit zero: 1.34 s / 31 tokens
+against 1.28 s / 31. The alternative — changing the guard so a falsy budget is
+sent as `0` — would silently switch every caller whose budget is unset, the judge
+and the narrator and every recorded arm, from full reasoning to none. A one-line
+workaround is preferred to a repository-wide behaviour change made for a label.
+
+### The levels are not evenly spaced in effect
+
+Low, Medium and High land within 0.6 s of each other (9.74 / 9.13 / 9.77) and
+spend ~300 completion tokens whatever they are given above zero — this model does
+not honour the cap tightly. **The real choice the control offers is None versus
+not**, and the dropdown's hint lines say so.
+
+### A caution about turn-level timings
+
+Timed end to end instead, the same four levels gave 67.1 / 85.6 / 30.7 / 240.1 s
+— non-monotonic and swamped. That is not the budget: `validation` may judge the
+evidence insufficient and drive a retry (`max_validation_iters`, default 2), so a
+turn costs one, two or three rounds depending on a verdict that varies run to
+run. The isolated single-call figures above describe the control; the turn-level
+ones describe the retry loop, and are recorded only so they are not later
+mistaken for it.

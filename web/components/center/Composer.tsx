@@ -3,15 +3,32 @@
 import { useEffect, useRef, useState, type KeyboardEvent } from "react";
 import { SHADOW } from "@/lib/ui";
 import { SendArrow } from "@/components/ui/icons";
+import { Dropdown } from "@/components/ui/Dropdown";
 import { useWorkbench } from "@/components/workbench/WorkbenchContext";
 
 type Mode = "plan" | "query";
 type Drafter = "deterministic" | "llm";
 
-/** Reasoning budgets, from 128 doubling up. 0 is not offered: a reasoning model
- *  given none can truncate to empty content, which reaches a caller as a silent
- *  "LLM unavailable" rather than an error, so 128 is the honest floor. */
-const THINKING_STEPS = [128, 256, 512, 1024, 2048, 4096, 8192, 16384] as const;
+/** Named reasoning levels, measured against `:9090` on a single sufficiency call.
+ *
+ *  `None` sends **1**, not 0, and that is deliberate. The sender omits the key
+ *  entirely when the budget is falsy (`llm_composer.py`), so a literal 0 would
+ *  send nothing and the model would fall back to its own default — measured at
+ *  11.27 s and 313 completion tokens, the SLOWEST option rather than the
+ *  fastest. A budget of 1 is sent, and behaves identically to an explicit 0:
+ *  1.34 s and 31 tokens against 1.28 s and 31. Changing the sender's guard
+ *  instead would silently switch every caller whose budget is unset — the
+ *  judge, the narrator, every recorded arm — from full reasoning to none.
+ *
+ *  Low / Medium / High are close together on this model (256 → 9.74 s, 512 →
+ *  9.13 s, 1024 → 9.77 s): it does not honour the cap tightly, spending ~300
+ *  tokens whatever it is given above zero. The real choice here is None vs not. */
+const THINKING_LEVELS = [
+  { value: 1, label: "None", hint: "no reasoning · ~1.3 s" },
+  { value: 256, label: "Low", hint: "256 tokens" },
+  { value: 512, label: "Medium", hint: "512 tokens" },
+  { value: 1024, label: "High", hint: "1024 tokens" },
+] as const;
 
 /** The docked composer: question input, the three controls an analyst actually
  *  trades between, and Send.
@@ -48,7 +65,7 @@ export function Composer() {
   // deterministic claim verifier still runs either way.
   const [verify, setVerify] = useState(false);
   const [narrate, setNarrate] = useState(false);
-  const [thinking, setThinking] = useState<number>(4096);
+  const [thinking, setThinking] = useState<number>(512);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
   // Grow the textarea with its content, capped at 6 lines — beyond that it
@@ -162,26 +179,15 @@ export function Composer() {
             Prose: <span className="text-[#c9c6bd]">{narrate ? "on" : "off"}</span>
           </button>
 
-          {/* thinking budget — inert while no model seam is on */}
-          <label
-            className="flex items-center gap-[7px] rounded-lg px-[11px] py-1.5 font-mono text-[11px] text-text-muted"
-            style={{ boxShadow: SHADOW.border, opacity: verify || narrate ? 1 : 0.45 }}
-            title="Reasoning tokens for whichever model steps run. Most of the wait is here. Inert while Verify and Prose are both off."
-          >
-            Thinking:
-            <select
-              value={thinking}
-              disabled={!verify && !narrate}
-              onChange={(e) => setThinking(Number(e.target.value))}
-              className="cursor-pointer border-0 bg-transparent font-mono text-[11px] text-[#c9c6bd] outline-none disabled:cursor-not-allowed"
-            >
-              {THINKING_STEPS.map((n) => (
-                <option key={n} value={n} className="bg-[#1c1b19]">
-                  {n}
-                </option>
-              ))}
-            </select>
-          </label>
+          {/* thinking level — inert while no model seam is on */}
+          <Dropdown
+            label="Thinking:"
+            value={thinking}
+            options={THINKING_LEVELS}
+            onChange={setThinking}
+            disabled={!verify && !narrate}
+            title="How long the model steps may reason. None is a real 7x saving; Low, Medium and High are close together on this model. Inert while Verify and Prose are both off."
+          />
 
           <div className="flex-1" />
 
