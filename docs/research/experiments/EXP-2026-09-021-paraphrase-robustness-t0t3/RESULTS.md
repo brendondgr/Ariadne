@@ -126,3 +126,65 @@ Against the bar in `PROTOCOL.md` — `T1`/`T2` ≥ 0.9, `T3` ≥ 0.85:
 the system nearly always reaches the right records by reaching the right
 *interpretation*, so the loss is interpretation, not execution. That is the
 mechanism Steps 3 and 4 test.
+
+## Step 3 — H2 is falsified, and the direction is the opposite (complete, 2026-09-15)
+
+No model, no judge. `SPECIALIST_GENERIC_ONLY=true`, same bank, same reference,
+57 s. `data/metrics_primitives.json`, `data/metrics_paired_engines.json`.
+
+> **H2**: the primitives beat the templates by ≥ 0.10 at `T1` and `T2`, because
+> they select on labels and declared relations and never read a verb.
+> **Falsifier**: within ±0.05.
+
+| tier | n | templates | primitives | difference |
+|---|---:|---:|---:|---:|
+| T1 | 120 | 0.3917 | 0.2167 | **−0.1750** |
+| T2 | 120 | 0.3667 | 0.2500 | **−0.1167** |
+| T3 | 101 | 0.1782 | 0.1089 | −0.0693 |
+| T4 / T5 | 104 | 0.0000 | 0.0000 | 0.0000 |
+| T6 | 30 | 0.0667 | 0.1000 | +0.0333 |
+
+**Falsified past its own falsifier.** The prediction was +0.10 and the measurement
+is −0.175 at `T1`: not "no effect", but a large effect with the sign reversed. The
+reasoning behind `H2` — that an engine which never reads a verb cannot be hurt by
+a changed verb — was wrong, and the paired table says why.
+
+### There is no complementarity here, so no routing rule can rescue it
+
+| tier | both | templates only | **primitives only** | oracle "either" |
+|---|---:|---:|---:|---:|
+| T1 | 26 | 21 | **0** | 0.3917 |
+| T2 | 29 | 15 | **1** | 0.3750 |
+| T3 | 11 | 7 | **0** | 0.1782 |
+
+**Primitives solve a near-strict subset of what templates solve.** Across 341
+variants at the three tiers in scope, primitives succeed on exactly **one**
+variant that templates miss. The oracle upper bound on per-question selection —
+what a chooser with perfect foreknowledge would score — is 0.3917 at `T1`,
+**identical to templates alone**, and +0.0083 at `T2`, which is that one variant.
+
+This is worth recording because it contradicts the shape `EXP-2026-09-020` found
+twice on the development bank at the real planner, where union equalled oracle
+pick-best for both engines (`A-1`) and both planners (`A-2`). **Complementarity is
+not a property of the two engines; it is a property of that bank and that plan
+source.** On anchored questions with a replayed plan the primitive path adds
+coverage the templates lack; on reworded questions it adds nothing at all. Both
+readings are now measured, and neither generalises to the other.
+
+### Why the reasoning failed
+
+`queries_exact` at `T3` is **0.0000** for primitives against 0.1089 for
+templates, and abstention runs 0.3833 against 0.1917 at `T1`/`T2`. The primitive
+path does not read the verb — and that is exactly the problem. Removing the
+template ladder removes the only component that converts "defend against" into an
+*intent*; the primitives are left selecting a relation from an anchor with less
+information than the templates had, and they decline rather than guess. Their
+fidelity is genuinely better for it (`catalogue_dump` at `T3` 0.1683 → 0.0594,
+`wrong_entity` 0.0833 → 0.0667 at `T1`), which is the honest failure — but
+abstaining twice as often is not the bar.
+
+**Consequence for the plan.** `SPECIALIST_GENERIC_ONLY` must not be turned on for
+the workbench on the strength of rewording robustness; it is measurably worse at
+every tier in scope. Its case remains what it always was and is untouched by this:
+templates cannot accept a question nobody wrote a template for. Step 5's scoping
+is now the only remaining route to `T1`/`T2`.
