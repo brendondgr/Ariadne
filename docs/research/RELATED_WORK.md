@@ -509,3 +509,17 @@ Riedewald & Weikum, **WWW 2017** (not 2016), DOI 10.1145/3038912.3052583 — and
 paper is *Knowledge Graph Question Answering using Graph-Pattern Isomorphism*,
 **SEMANTiCS 2021**, DOI 10.3233/SSW210038 — **not** the ESWC 2021 demo abstract
 whose title we had been using.
+
+## Mechanism references — portable open-question design, 2026-09-15
+
+Read at the abstract/method-summary level for EXP-2026-09-022's design; no
+published performance figure or novelty comparison is asserted here.
+
+| Work | Mechanism relevant to the proposed experiment | Distinction from this prototype |
+|---|---|---|
+| [Think-on-Graph, Sun et al.](https://arxiv.org/abs/2307.07697) | Interactive graph exploration using beam search over entities and relations | Motivates future evidence-based candidate/path exploration; this prototype only ranks lexical candidates |
+| [From Local to Global, Edge et al.](https://arxiv.org/abs/2404.16130) | Separates global question-focused synthesis from local retrieval; uses graph communities and summaries | Motivates a separate global-question evaluation; Ariadne already has curated graphs and need not rebuild them from documents |
+
+For a possible live search adapter, [Neo4j's full-text index documentation](https://neo4j.com/docs/cypher-manual/25/indexes/semantic-indexes/full-text-indexes/)
+describes ranked search across multiple string properties. This is a capability
+reference, not an evaluated Ariadne integration.

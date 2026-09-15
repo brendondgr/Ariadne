@@ -55,6 +55,7 @@ below.)
 | Q57 | Every headline figure replays an authored retrieval plan; the system's own planner costs −0.3814 gold coverage | EXP-2026-09-019 Steps 2, 5 | **the meaning of every 0.90 this project reports** — a ceiling given a correct plan, not an end-to-end result *(open)* |
 | Q58 | The planner arm's loss is not separated from the tighter per-plan bounds it inherits | EXP-2026-09-019 I-2 | how much of Q57 is a worse decomposition; what a fix should target *(open)* |
 | Q59 | An entity name is never looked up unless the router first picks a dataset, so a question naming a thing in ordinary words binds nothing | EXP-2026-09-021 A-1 | the largest deterministic lever left at T1–T3: 37 of 101 T3 variants reach no exact anchor *(open)* |
+| Q60 | Can portable candidate discovery become accurate open-question answers through role-aware selection, reranking, and evidence completion? | EXP-2026-09-022 | T4/T5 answer improvements and transfer beyond the exposed tier bank *(open)* |
 
 ---
 
@@ -1171,3 +1172,20 @@ this proposes widening the **exact** path only, and the two must not be confused
 **Not attempted here.** It is new engineering outside `EXP-2026-09-021`'s scope
 and outside `D-035`'s decision, and proposing it after seeing the numbers makes it
 a hypothesis rather than a result.
+
+### Q60 — Can portable candidate discovery become accurate open-question answers?
+
+**Established 2026-09-15** by `EXP-2026-09-022`. The offline diagnostic separates
+candidate coverage from accepted identity and answer correctness. At the fixed
+ten-candidate budget, separate-field fusion and propagated graph text do not improve
+on its pooled lexical control. The full tables and limitations are in the
+experiment's `RESULTS.md`; its `DESIGN.md` records proposed integration points.
+
+Open experiments: independently authored description questions with retrieval
+plus evidence-grounded reranking; role-aware exact mentions and declared public
+ID mappings; immutable anchors with independent intent interpretation; targeted
+paths versus graph-text propagation at matched budgets; evidence obligations and
+pagination; clarification and compound questions; an unrelated source added
+without changing core retrieval. Measure end-to-end precision, recall, wrong
+entities, accepted coverage, and cost. Candidate recall cannot close this question
+or Q59. The non-cyber fixture checks interface portability only.
