@@ -68,6 +68,13 @@ class OrchestrationConfig:
     # describe on a hub node exposes many facets; fetching them all would trade
     # the old silent truncation for an explosion.
     max_facet_expansions: int = 4
+    # EXP-2026-09-024 (plan Step 5): when the anchor bound but no facet is
+    # question-relevant — "how do I defend against T1047" names no relation the
+    # card knows — expand the anchor's *smallest* non-zero facets on the first
+    # re-plan instead of answering with one record. Only on a non-definitional
+    # request, only once, only facets of at most ``expand_unbound_max_members``.
+    expand_unbound: bool = False
+    expand_unbound_max_members: int = 50
 
     @classmethod
     def from_env(cls) -> "OrchestrationConfig":
@@ -78,6 +85,8 @@ class OrchestrationConfig:
             assess_mode=_resolve_assess_mode(env_str("ORCH_ASSESS_MODE", DEFAULT_ASSESS_MODE)),
             chase_facets=_env_flag("ORCH_CHASE_FACETS"),
             max_facet_expansions=env_int("ORCH_MAX_FACET_EXPANSIONS", 4),
+            expand_unbound=_env_flag("ORCH_EXPAND_UNBOUND"),
+            expand_unbound_max_members=env_int("ORCH_EXPAND_UNBOUND_MAX_MEMBERS", 50),
         )
 
 

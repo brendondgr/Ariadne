@@ -76,11 +76,25 @@ def relevant_facets(
     plan: Plan,
     already_expanded: set[tuple[str, str, str]] | None = None,
     limit: int = 4,
+    counts: dict[FacetEntry, int] | None = None,
+    fallback: bool = False,
+    fallback_max_members: int = 50,
 ) -> list[FacetEntry]:
     """The question-relevant facets worth an expansion hop, best first.
 
     A facet already expanded on an earlier hop is dropped, so the loop cannot
     re-fetch the same neighbourhood and spin.
+
+    **Fallback (EXP-2026-09-024, plan Step 5).** When *no* facet scores — the
+    request names a relation in words the card does not carry ("how do I
+    defend against T1047", "what does G0016 rely on") — the anchor is right
+    and the traversal is unknown, and answering with the anchor's one record
+    is the measured T1/T2 failure (54 of 172 misses). With ``fallback`` on and
+    the request not definitional, the anchor's smallest non-zero facets are
+    expanded instead, up to ``limit`` of them and none larger than
+    ``fallback_max_members``: the specific relations first, the hub-sized ones
+    left as counts the analyst can ask about. Reads only the registry's facet
+    block, so it carries to any card.
     """
     plan_entities: set[str] = set()
     for sq in plan.sub_questions:
@@ -111,7 +125,25 @@ def relevant_facets(
             scored.append((score, entry))
     # Deterministic order: score desc, then the tuple itself.
     scored.sort(key=lambda pair: (-pair[0], pair[1]))
-    return [entry for _score, entry in scored[:max(0, limit)]]
+    if scored or not fallback:
+        return [entry for _score, entry in scored[:max(0, limit)]]
+
+    from utils.planner.intent import is_definitional_request
+
+    if is_definitional_request(request) or not counts:
+        return []
+    small: list[tuple[int, FacetEntry]] = []
+    for entry in frontier:
+        anchor, rel, direction, _label, _source = entry
+        if (anchor, rel, direction) in seen:
+            continue
+        if any(rel.upper() in rels and anchor.upper() in text for text, rels in requested):
+            continue
+        count = counts.get(entry, 0)
+        if 0 < count <= fallback_max_members:
+            small.append((count, entry))
+    small.sort(key=lambda pair: (pair[0], pair[1]))
+    return [entry for _count, entry in small[:max(0, limit)]]
 
 
 def card_relationship_name(card, edge_label: str) -> str | None:

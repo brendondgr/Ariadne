@@ -116,10 +116,16 @@ def expandable_facets(
 
 
 def _unfetched_facet_gaps(
-    evidence: FederatedEvidence, plan: Plan, limit: int
+    evidence: FederatedEvidence,
+    plan: Plan,
+    limit: int,
+    *,
+    fallback: bool = False,
+    fallback_max_members: int = 50,
 ) -> list[str]:
     """Question-relevant facets whose members were counted but never fetched."""
     from utils.orchestration.agents.assess.facets import relevant_facets
+    from utils.orchestration.agents.assess.frontier import facet_counts
 
     entries = relevant_facets(
         extract_facet_frontier(evidence.results),
@@ -127,6 +133,9 @@ def _unfetched_facet_gaps(
         plan=plan,
         already_expanded=_expanded_neighbourhoods(evidence),
         limit=limit,
+        counts=facet_counts(evidence.results) if fallback else None,
+        fallback=fallback,
+        fallback_max_members=fallback_max_members,
     )
     return [
         f"{anchor} has un-fetched {rel} members (facet counted, never expanded)"
@@ -163,6 +172,8 @@ def deterministic_assessment(
     hop: int,
     chase_facets: bool = False,
     max_facet_expansions: int = 4,
+    expand_unbound: bool = False,
+    expand_unbound_max_members: int = 50,
 ) -> Assessment:
     """The reproducible sufficiency verdict (no hop-cap applied).
 
@@ -177,8 +188,14 @@ def deterministic_assessment(
     # Facet gaps are chaseable whether or not a cross-source join exists — that is
     # the whole point: a single-source question has no join, so without this it is
     # "sufficient by construction" after one pass no matter what it left unfetched.
+    # The unbound-relation fallback fires on the first assessment only: one
+    # bounded neighbourhood, never a second ring of it.
     facet_gaps = (
-        _unfetched_facet_gaps(evidence, plan, max_facet_expansions)
+        _unfetched_facet_gaps(
+            evidence, plan, max_facet_expansions,
+            fallback=bool(expand_unbound and hop <= 1),
+            fallback_max_members=expand_unbound_max_members,
+        )
         if chase_facets else []
     )
 
@@ -239,6 +256,8 @@ def assess(
     critic: LLMCritic | None = None,
     chase_facets: bool = False,
     max_facet_expansions: int = 4,
+    expand_unbound: bool = False,
+    expand_unbound_max_members: int = 50,
 ) -> Assessment:
     """Judge sufficiency, applying the hop-cap short-circuit last.
 
@@ -254,6 +273,8 @@ def assess(
         hop=hop,
         chase_facets=chase_facets,
         max_facet_expansions=max_facet_expansions,
+        expand_unbound=expand_unbound,
+        expand_unbound_max_members=expand_unbound_max_members,
     )
 
     if assess_mode == "llm":

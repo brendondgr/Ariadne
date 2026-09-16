@@ -53,6 +53,8 @@ def build_assess_node(
             critic=critic,
             chase_facets=orch.chase_facets,
             max_facet_expansions=orch.max_facet_expansions,
+            expand_unbound=getattr(orch, "expand_unbound", False),
+            expand_unbound_max_members=getattr(orch, "expand_unbound_max_members", 50),
         )
 
         # Surface the verdict for inspectability, but only when the loop is

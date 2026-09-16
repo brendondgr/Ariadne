@@ -1,0 +1,84 @@
+# Filled by scripts/new_experiment.py. Every field below is required unless
+# marked optional. Do not delete a field you do not know — record it as null or
+# "unknown" and explain in ISSUES.md. Inventing a value is worse than admitting
+# a gap.
+id: EXP-2026-09-024
+slug: expand-on-unbound-relation
+title: "Expanding the anchor's smallest facets when the question names no relation the card carries (plan Step 5)"
+status: running            # planned | running | complete | failed | superseded
+date_started: 2026-09-15
+date_completed: null       # null until status is complete/failed
+authors: ["brendondgr", "Claude Opus 5"]
+
+purpose: >
+  54 of the 172 T1/T2 misses on the exposed bank bind the right anchor and no
+  relation, because "defend against" and "rely on" are not words the card
+  carries, and the shipped tree answers them with the anchor's one record.
+  This tests a deterministic fallback: on the first re-plan, when no facet is
+  question-relevant and the request is not definitional, expand the anchor's
+  smallest non-zero facets (at most 4, none over 50 members). Bears on the
+  plan's recall target and on whether catalogue dumps can be kept flat.
+
+hypothesis: >
+  Exposed bank, treatment (expand_unbound) vs control (anchor_first): T1 and
+  T2 records_recall >= 0.75 (from 0.5060 / 0.4838); T1/T2 records_exact within
+  +-0.02; catalogue_dump on every tier <= baseline + 0.02; wrong_entity
+  unchanged. Sealed bank: T3 recall up, no tier's dump rate up by more than
+  0.02. Falsifiers in PROTOCOL.md.
+
+# --- Reproducibility block (all fields mandatory) ---
+code:
+  commit: 043a5e8b38c8e696adc99e61c05cb1cfdf595dc5          # 40-char sha, or "unknown" for a back-filled experiment
+  branch: main
+  entrypoint: "uv run python scripts/variant_harness.py compare --rewrite expand_unbound --workers 32 --llm-timeout-s 600 --pipeline-timeout-s 600"
+  dirty: true             # run from the working tree, committed without change (ISSUES.md)
+config:
+  path: null               # repo-relative path, or null if the run takes no config file
+  hash: null               # sha256:... of that file
+data:
+  name: exposed bank variants-2026-08-29 (579) + sealed bank variants-holdout-2026-09 (160)
+  version: as EXP-2026-09-023
+  split: exposed = development; sealed = confirmation
+  n_examples: 739
+  dvc_path: null           # this repository does not use DVC; leave null
+  hash: sha256:f50ddaa628f892ee2498c19662a4a42bf1c4589dad6361d4003233011ab578ce   # sealed variants.json
+seeds: []                  # [] means seeds were not recorded — say so in ISSUES.md
+n_runs: 1                  # SYSTEM runs over the question set — grading passes are not runs
+environment:
+  python: "3.13"
+  lockfile: env/requirements.lock
+  container: null
+compute:
+  hardware: "32-core x86_64 host, 121 GB RAM; Neo4j + Gremlin local; local model on :9090 for the unchanged rewrite rung"
+  wall_clock_hours: 0.0
+  estimated_cost_usd: 0.0
+
+# --- LLM / agentic block (delete entirely if no model was in the loop) ---
+llm:
+  model: "relay/qwen38-27B-v2@2026-09-15"
+  temperature: 0.0
+  top_p: 1.0
+  max_tokens: 2048
+  prompt_files: []
+  prompt_hash: null
+  tool_schema_hash: null
+  total_input_tokens: null
+  total_output_tokens: null
+  nondeterminism_note: >
+    Provider-side nondeterminism remains even at temperature 0; results
+    are reported as mean ± std over n_runs.
+
+# --- Results block ---
+metrics:
+  primary: records_recall_T1_expand_unbound_exposed
+  values: {}               # {metric: {mean: 0.0, std: 0.0, n: 1}} — must be non-empty when status: complete
+  withdrawn: {}            # values later retracted by amendment: {metric: {mean, std, n, withdrawn_on, reason, replaced_by}}
+baselines_compared: ["EXP-2026-09-023 anchor_first arm, both banks"]
+statistical_test: null
+
+# --- Linkage ---
+supports_claims: []        # every ID here must exist in ../../CLAIMS.md
+figures: []                # every name here must have a file in figures/ and vice versa
+supersedes: null           # set in BOTH manifests or in neither; the validator checks symmetry
+superseded_by: null
+related: ["EXP-2026-09-023", "EXP-2026-09-021"]

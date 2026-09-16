@@ -240,16 +240,25 @@ def build_pipeline_graph(
                 facet_sub_questions,
                 relevant_facets,
             )
-            from utils.orchestration.agents.assess.frontier import extract_facet_frontier
+            from utils.orchestration.agents.assess.frontier import (
+                extract_facet_frontier,
+                facet_counts,
+            )
             from utils.orchestration.agents.assess.policy import _expanded_neighbourhoods
 
             evidence = state["evidence"]
+            # The same fallback the assess node judged with, so a gap it
+            # reported is a hop this node adds (first re-plan only).
+            fallback = bool(getattr(orch, "expand_unbound", False)) and int(state.get("hop") or 1) <= 1
             picks = relevant_facets(
                 extract_facet_frontier(evidence.results),
                 request=state["question"],
                 plan=state["plan"],
                 already_expanded=_expanded_neighbourhoods(evidence),
                 limit=orch.max_facet_expansions,
+                counts=facet_counts(evidence.results) if fallback else None,
+                fallback=fallback,
+                fallback_max_members=getattr(orch, "expand_unbound_max_members", 50),
             )
             expansion.sub_questions.extend(
                 facet_sub_questions(

@@ -97,6 +97,33 @@ def extract_facet_frontier(
     return frontier
 
 
+def facet_counts(
+    results: Iterable[SpecialistResult],
+) -> dict[tuple[str, str, str, str, str], int]:
+    """Member count per frontier entry, read off the same facet blocks.
+
+    ``extract_facet_frontier`` deliberately drops the count so an entry is an
+    identity; the fallback expansion needs it back to prefer the *smallest*
+    facets — the specific relations — over a hub's hundred-member ones.
+    """
+    counts: dict[tuple[str, str, str, str, str], int] = {}
+    for result in results:
+        source = result.task.source
+        for record in result.records:
+            anchor = record.primary_id
+            if not anchor:
+                continue
+            for facet in record.facets or []:
+                count = int(facet.get("count") or 0)
+                rel = str(facet.get("rel") or "")
+                direction = str(facet.get("direction") or "")
+                label = str(facet.get("label") or "")
+                if count and rel and direction:
+                    key = (anchor, rel, direction, label, source)
+                    counts[key] = max(counts.get(key, 0), count)
+    return counts
+
+
 def update_visited(
     visited: set[tuple[str, str]], results: Iterable[SpecialistResult]
 ) -> set[tuple[str, str]]:
