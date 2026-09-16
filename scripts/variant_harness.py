@@ -82,15 +82,21 @@ REWRITE_ENV: dict[str, dict[str, str]] = {
     "off": {"ARIADNE_REWRITE": "0", "ARIADNE_REWRITE_MODEL": "0",
             "ARIADNE_REWRITE_DERIVE_RELATION": "1",
             "ARIADNE_REWRITE_ONLY_WITHOUT_ID": "0",
-            "ARIADNE_REWRITE_REQUIRE_RESOLVED_ANCHOR": "0"},
+            "ARIADNE_REWRITE_REQUIRE_RESOLVED_ANCHOR": "0",
+            "ARIADNE_EXACT_NAME_DISTINCT": "0", "ARIADNE_ANCHOR_BEFORE_ROUTING": "0",
+            "ARIADNE_UNANCHORED_RELATION_ABSTAINS": "0"},
     "det": {"ARIADNE_REWRITE": "1", "ARIADNE_REWRITE_MODEL": "0",
             "ARIADNE_REWRITE_DERIVE_RELATION": "1",
             "ARIADNE_REWRITE_ONLY_WITHOUT_ID": "0",
-            "ARIADNE_REWRITE_REQUIRE_RESOLVED_ANCHOR": "0"},
+            "ARIADNE_REWRITE_REQUIRE_RESOLVED_ANCHOR": "0",
+            "ARIADNE_EXACT_NAME_DISTINCT": "0", "ARIADNE_ANCHOR_BEFORE_ROUTING": "0",
+            "ARIADNE_UNANCHORED_RELATION_ABSTAINS": "0"},
     "model": {"ARIADNE_REWRITE": "1", "ARIADNE_REWRITE_MODEL": "1",
               "ARIADNE_REWRITE_DERIVE_RELATION": "1",
               "ARIADNE_REWRITE_ONLY_WITHOUT_ID": "0",
-            "ARIADNE_REWRITE_REQUIRE_RESOLVED_ANCHOR": "0"},
+            "ARIADNE_REWRITE_REQUIRE_RESOLVED_ANCHOR": "0",
+            "ARIADNE_EXACT_NAME_DISTINCT": "0", "ARIADNE_ANCHOR_BEFORE_ROUTING": "0",
+            "ARIADNE_UNANCHORED_RELATION_ABSTAINS": "0"},
     # EXP-2026-09-015's control: the model rung exactly as EXP-2026-09-014 ran
     # it, with the relation asked for rather than derived from the label pair.
     # Every value is written explicitly so an ambient variable cannot decide
@@ -98,7 +104,9 @@ REWRITE_ENV: dict[str, dict[str, str]] = {
     "model_ask": {"ARIADNE_REWRITE": "1", "ARIADNE_REWRITE_MODEL": "1",
                   "ARIADNE_REWRITE_DERIVE_RELATION": "0",
                   "ARIADNE_REWRITE_ONLY_WITHOUT_ID": "0",
-            "ARIADNE_REWRITE_REQUIRE_RESOLVED_ANCHOR": "0"},
+            "ARIADNE_REWRITE_REQUIRE_RESOLVED_ANCHOR": "0",
+            "ARIADNE_EXACT_NAME_DISTINCT": "0", "ARIADNE_ANCHOR_BEFORE_ROUTING": "0",
+            "ARIADNE_UNANCHORED_RELATION_ABSTAINS": "0"},
     # EXP-2026-09-021 Step 5: the model rung, run only on questions that cite no
     # identifier. Step 4 measured the stage breaking 32 answers and fixing 10
     # where an identifier survives, and fixing 44 and breaking 7 where none
@@ -106,14 +114,38 @@ REWRITE_ENV: dict[str, dict[str, str]] = {
     "model_noid": {"ARIADNE_REWRITE": "1", "ARIADNE_REWRITE_MODEL": "1",
                    "ARIADNE_REWRITE_DERIVE_RELATION": "1",
                    "ARIADNE_REWRITE_ONLY_WITHOUT_ID": "1",
-                   "ARIADNE_REWRITE_REQUIRE_RESOLVED_ANCHOR": "0"},
+                   "ARIADNE_REWRITE_REQUIRE_RESOLVED_ANCHOR": "0",
+            "ARIADNE_EXACT_NAME_DISTINCT": "0", "ARIADNE_ANCHOR_BEFORE_ROUTING": "0",
+            "ARIADNE_UNANCHORED_RELATION_ABSTAINS": "0"},
     # EXP-2026-09-021 AMENDMENT A-1: the shipped gate PLUS a refusal to let the
     # model choose the anchor. Targets the T4/T5 wrong_entity tripling D-034
     # accepted, without giving back T3's exact-name binds.
     "model_noid_anchored": {"ARIADNE_REWRITE": "1", "ARIADNE_REWRITE_MODEL": "1",
                             "ARIADNE_REWRITE_DERIVE_RELATION": "1",
                             "ARIADNE_REWRITE_ONLY_WITHOUT_ID": "1",
-                            "ARIADNE_REWRITE_REQUIRE_RESOLVED_ANCHOR": "1"},
+                            "ARIADNE_REWRITE_REQUIRE_RESOLVED_ANCHOR": "1",
+                            "ARIADNE_EXACT_NAME_DISTINCT": "0",
+                            "ARIADNE_ANCHOR_BEFORE_ROUTING": "0",
+                            "ARIADNE_UNANCHORED_RELATION_ABSTAINS": "0"},
+    # EXP-2026-09-023 Step 3: the shipped arm plus AMENDMENT A-1's exact-name
+    # hygiene (a one-word name binds only when written as a standalone proper
+    # noun) and the unanchored-relation dump guard. Same model rung as above.
+    "hygiene": {"ARIADNE_REWRITE": "1", "ARIADNE_REWRITE_MODEL": "1",
+                "ARIADNE_REWRITE_DERIVE_RELATION": "1",
+                "ARIADNE_REWRITE_ONLY_WITHOUT_ID": "1",
+                "ARIADNE_REWRITE_REQUIRE_RESOLVED_ANCHOR": "1",
+                "ARIADNE_EXACT_NAME_DISTINCT": "1",
+                "ARIADNE_ANCHOR_BEFORE_ROUTING": "0",
+                "ARIADNE_UNANCHORED_RELATION_ABSTAINS": "1"},
+    # EXP-2026-09-023 Step 4 (H2, Q59): hygiene plus name lookup before dataset
+    # routing, with the router as the tie-break on cross-source collisions.
+    "anchor_first": {"ARIADNE_REWRITE": "1", "ARIADNE_REWRITE_MODEL": "1",
+                     "ARIADNE_REWRITE_DERIVE_RELATION": "1",
+                     "ARIADNE_REWRITE_ONLY_WITHOUT_ID": "1",
+                     "ARIADNE_REWRITE_REQUIRE_RESOLVED_ANCHOR": "1",
+                     "ARIADNE_EXACT_NAME_DISTINCT": "1",
+                     "ARIADNE_ANCHOR_BEFORE_ROUTING": "1",
+                     "ARIADNE_UNANCHORED_RELATION_ABSTAINS": "1"},
 }
 
 #: Where the understanding-gold lives, relative to ``--out``.

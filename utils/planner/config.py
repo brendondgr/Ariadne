@@ -99,6 +99,10 @@ class PlannerConfig:
     #: relation, direction, mode and target labels -- it may never choose who
     #: the question is about. Off by default.
     rewrite_require_resolved_anchor: bool = False
+    #: EXP-2026-09-023 H2 (Q59): look an exact name up across every live source
+    #: *before* choosing a dataset, and let the name's owner lead when the
+    #: router picked nothing or picked a source that does not hold it.
+    anchor_before_routing: bool = False
     #: Where the model's picks are cached, keyed by prompt version, served model
     #: and question. Unset means the process default (see rewrite_cache.py).
     rewrite_cache_dir: str | None = None
@@ -152,6 +156,9 @@ class PlannerConfig:
             os.environ.get("ARIADNE_REWRITE_REQUIRE_RESOLVED_ANCHOR", "").strip().lower()
             in _truthy
         )
+        anchor_before_routing = (
+            os.environ.get("ARIADNE_ANCHOR_BEFORE_ROUTING", "").strip().lower() in _truthy
+        )
         # The LLM group resolves through utils.llm: PLANNER_LLM_* still wins when
         # set, but falls back to ARIADNE_LLM_* so one endpoint configures every
         # stage. With neither set this is exactly the previous default.
@@ -178,6 +185,7 @@ class PlannerConfig:
             rewrite_model_enabled=rewrite_model_enabled,
             rewrite_only_without_identifier=rewrite_only_without_identifier,
             rewrite_require_resolved_anchor=rewrite_require_resolved_anchor,
+            anchor_before_routing=anchor_before_routing,
             rewrite_derive_relation=rewrite_derive_relation,
             rewrite_cache_dir=env_str("ARIADNE_REWRITE_CACHE_DIR", "") or None,
             llm_base_url=llm.base_url,

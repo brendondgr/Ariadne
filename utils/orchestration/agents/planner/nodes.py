@@ -116,7 +116,10 @@ def build_nodes(
             SLOT_ANCHORS, FormError, deterministic_fill, render,
         )
 
-        form = deterministic_fill(original, cards, state.get("intent"))
+        form = deterministic_fill(
+            original, cards, state.get("intent"),
+            anchor_first=bool(getattr(config, "anchor_before_routing", False)),
+        )
         trace: dict[str, Any] = {
             "rung": RUNG_DETERMINISTIC,
             "cache_hit": False,

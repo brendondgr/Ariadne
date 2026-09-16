@@ -627,12 +627,69 @@ def _card_entities(
     return labels, relations
 
 
+def _anchor_first_on() -> bool:
+    """``ARIADNE_ANCHOR_BEFORE_ROUTING``, read at call time. Default off."""
+    import os
+
+    return os.environ.get("ARIADNE_ANCHOR_BEFORE_ROUTING", "").strip().lower() in {
+        "1", "true", "yes", "on"
+    }
+
+
+def _anchor_owners(
+    question: str, cards: dict[str, SourceCardView]
+) -> tuple[tuple[str, ...], str | None]:
+    """Which sources own an anchor the question names — before any routing.
+
+    EXP-2026-09-023 H2 (Q59). ``deterministic_fill`` used to choose the
+    datasets from the question's *other* words and only then look the entity
+    name up, in those datasets alone. "Which countermeasures apply to Windows
+    Management Instrumentation?" routes nowhere — "countermeasures" is not a
+    card word — so the name was never looked up, while "What mitigations …"
+    bound T1047 at once. An entity name implies its dataset; this asks every
+    live source for identifiers and complete names first and returns the
+    owners in the order the caller should try them.
+
+    Returns ``(owners, ambiguity)``. ``ambiguity`` is a reason string when the
+    *same* complete name exists in more than one source and nothing else in the
+    question decides between them — CAPEC's "Phishing" and ATT&CK's "Phishing"
+    — in which case the caller must surface the ambiguity rather than let
+    dataset order pick a catalogue. Identifiers are never ambiguous: a scheme
+    belongs to one source.
+    """
+    from utils.specialists.resolve import _schema_word_set
+    from utils.specialists.schema.namesearch import exact_name_matches_all
+
+    by_id = tuple(ds for ds in cards if _ids_in(question, ds))
+    if by_id:
+        return by_id, None
+    exclude = {ds: _schema_word_set(card) for ds, card in cards.items()}
+    hits = exact_name_matches_all(tuple(cards), question, exclude=exclude)
+    if not hits:
+        return (), None
+    owners: list[str] = []
+    for ds, _cand in hits:
+        if ds not in owners:
+            owners.append(ds)
+    by_name: dict[str, set[str]] = {}
+    for ds, cand in hits:
+        by_name.setdefault(cand.name.strip().lower(), set()).add(ds)
+    collided = sorted(n for n, dss in by_name.items() if len(dss) > 1)
+    ambiguity = (
+        f"ambiguous: {collided[0]!r} is a complete name in {len(by_name[collided[0]])} sources"
+        if collided
+        else None
+    )
+    return tuple(owners), ambiguity
+
+
 def deterministic_fill(
     question: str,
     cards: dict[str, SourceCardView],
     intent: Any = None,
     *,
     registry: Any = None,
+    anchor_first: bool | None = None,
 ) -> IntentForm:
     """Bind every slot the shipped machinery can, and report the rest.
 
@@ -656,13 +713,36 @@ def deterministic_fill(
     datasets, scored = _selected_datasets(question, cards)
     mode = _mode_for(intent, question)
 
+    # -- Q59: the entity's own source, before the router's opinion.
+    #
+    # The router's selection stands whenever it already covers a source that
+    # owns the anchor — it is the tie-break when the same name lives in two
+    # catalogues. It is overridden only when it chose nothing, or chose a
+    # source that does not hold the entity the question names ("Which ATT&CK
+    # techniques does Probe System Files correspond to?" routes to ATT&CK on
+    # the word ATT&CK, and Probe System Files is a CAPEC pattern). A collision
+    # the router cannot break is reported, never resolved by dataset order.
+    dataset_source = "router"
+    anchor_ambiguity: str | None = None
+    if anchor_first is None:
+        anchor_first = _anchor_first_on()
+    if anchor_first:
+        owners, collision = _anchor_owners(question, cards)
+        if owners and not any(ds in datasets for ds in owners):
+            if collision and not datasets:
+                anchor_ambiguity = collision
+                datasets = tuple(owners)
+            else:
+                datasets = tuple(owners) + tuple(d for d in datasets if d not in owners)
+            dataset_source = "anchor-first"
+
     if not datasets:
         return IntentForm(mode=mode, sources={SLOT_MODE: "intent"}).with_unbound(
             SLOT_DATASETS, SLOT_ANCHORS, SLOT_ANCHOR_LABELS, SLOT_TARGET_LABELS,
             SLOT_RELATION, SLOT_DIRECTION,
         )
 
-    sources: dict[str, str] = {SLOT_MODE: "intent", SLOT_DATASETS: "router"}
+    sources: dict[str, str] = {SLOT_MODE: "intent", SLOT_DATASETS: dataset_source}
 
     # -- anchors: ids first (the resolver's highest-authority tier), then a
     #    complete name, then nothing.
@@ -703,6 +783,11 @@ def deterministic_fill(
 
         exact = []
         for candidate_ds in datasets:
+            if anchor_ambiguity:
+                # The same complete name in two sources and nothing to choose
+                # between them: not a bind. Reported on the form so the trace
+                # says why, and so the anchor gate stands the model down.
+                break
             schema_words = _schema_word_set(cards[candidate_ds])
             hits = [
                 c
@@ -712,7 +797,9 @@ def deterministic_fill(
             if hits:
                 exact, primary, card = hits, candidate_ds, cards[candidate_ds]
                 break
-        if len(exact) == 1:
+        if anchor_ambiguity:
+            sources[SLOT_ANCHORS] = anchor_ambiguity
+        elif len(exact) == 1:
             # Cite the **identifier**, keeping the name for provenance. This is
             # the whole point of rewriting into tier-0 form: the analyst gave a
             # name, the resolver's highest-authority tier wants an id, and the

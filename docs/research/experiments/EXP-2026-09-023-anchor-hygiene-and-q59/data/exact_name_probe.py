@@ -11,9 +11,12 @@ gets asked. Each variant is then one of:
 * ``1&notgold``    — exactly one, and it is not (the incidental-name trap);
 * ``>1``           — more than one (an ambiguity the form must surface).
 
-``--arm baseline`` measures the shipped matcher; ``--arm distinct`` sets
-``ARIADNE_EXACT_NAME_DISTINCT=1`` before anything is imported, so the rule under
-test is read the way the pipeline reads it. Writes ``data/metrics.json`` under
+``--arm baseline`` measures the shipped matcher; ``--arm df`` sets
+``ARIADNE_EXACT_NAME_DISTINCT=df`` (H1, the document-frequency rule) and
+``--arm struct`` sets it to ``1`` (AMENDMENT A-1, the standalone-proper-noun
+rule) before anything is imported, so the rule under test is read the way the
+pipeline reads it. Every arm asks the sources together through
+``exact_name_matches_all`` so cross-source nesting is handled the same way. Writes ``data/metrics.json`` under
 ``exact_name.<arm>`` and ``tables/exact_name_<arm>.md``.
 """
 
@@ -38,13 +41,13 @@ BANKS = {
 
 def main() -> int:
     ap = argparse.ArgumentParser(description=__doc__)
-    ap.add_argument("--arm", choices=("baseline", "distinct"), required=True)
+    ap.add_argument("--arm", choices=("baseline", "df", "struct"), required=True)
     args = ap.parse_args()
-    os.environ["ARIADNE_EXACT_NAME_DISTINCT"] = "1" if args.arm == "distinct" else "0"
+    os.environ["ARIADNE_EXACT_NAME_DISTINCT"] = {"baseline": "0", "df": "df", "struct": "1"}[args.arm]
 
     from utils.planner.cards import SourceCardView
     from utils.specialists.resolve import _schema_word_set
-    from utils.specialists.schema.namesearch import exact_name_matches
+    from utils.specialists.schema.namesearch import exact_name_matches_all
     from utils.synthesis.grounding import normalize_id
 
     cards = {}
@@ -54,13 +57,10 @@ def main() -> int:
     schema_words = {ds: _schema_word_set(card) for ds, card in cards.items()}
 
     def exact_all(text: str) -> dict[tuple[str, str], str]:
-        out: dict[tuple[str, str], str] = {}
-        for ds, card in cards.items():
-            for c in exact_name_matches(ds, text):
-                if c.name.strip().lower() in schema_words[ds]:
-                    continue
-                out[(ds, normalize_id(c.entity_id))] = c.name
-        return out
+        return {
+            (ds, normalize_id(c.entity_id)): c.name
+            for ds, c in exact_name_matches_all(tuple(cards), text, exclude=schema_words)
+        }
 
     result: dict[str, dict] = {}
     lines = ["| bank | tier | n | 0 | 1&gold | 1&notgold | >1 | single wrong names (top 5) |",
