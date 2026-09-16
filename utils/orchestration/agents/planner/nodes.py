@@ -187,7 +187,7 @@ def build_nodes(
             }
 
         logger.info("rewrote via %s: %s", trace["rung"], canonical)
-        return {
+        update: dict[str, Any] = {
             "request": canonical,
             "canonical_question": canonical,
             "original_request": original,
@@ -195,8 +195,34 @@ def build_nodes(
             "rewrite_trace": trace,
         }
 
+        # Execute the form, do not re-parse its rendering.
+        #
+        # EXP-2026-09-021 Step 4 measured the render round trip breaking 13 T1
+        # answers whose form held the right identifier and the schema-resolved
+        # relation; EXP-2026-09-023 measured three more on the sealed bank. A
+        # form already *is* a sub-question -- anchor, label, relation, target
+        # labels, source -- so under the flag the plan is built from it directly
+        # and the drafter is bypassed on the first iteration. The gate still
+        # judges it; a rejected form plan falls back to drafting the rendered
+        # sentence, exactly as before.
+        if getattr(config, "form_execute", False):
+            from utils.planner.form_plan import plan_from_form
+
+            form_plan = plan_from_form(form, cards, original)
+            if form_plan is not None:
+                trace["executed"] = "form"
+                update["form_plan"] = form_plan
+            else:
+                trace["executed"] = "render"
+        return update
+
     def draft(state: PlanningState) -> dict[str, Any]:
         iteration = int(state.get("iteration") or 0) + 1
+        form_plan = state.get("form_plan")
+        if form_plan is not None and iteration == 1:
+            # The bound form's own plan, on the first pass only: if the gate
+            # rejects it, the next iteration drafts from the rendered request.
+            return {"iteration": iteration, "last_plan": form_plan, "drafter_used": "form"}
         plan = drafter.draft(
             state["request"], cards, state["live_view"], state.get("feedback"),
             state.get("intent"),

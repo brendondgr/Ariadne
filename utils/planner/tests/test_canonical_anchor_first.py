@@ -135,3 +135,20 @@ def test_config_reads_the_environment_flag(monkeypatch):
     assert PlannerConfig.from_env().anchor_before_routing is False
     monkeypatch.setenv("ARIADNE_ANCHOR_BEFORE_ROUTING", "1")
     assert PlannerConfig.from_env().anchor_before_routing is True
+
+
+# -- mode: a bound relation is an enumerate, not a describe (EXP-2026-09-025) --
+
+def test_a_question_naming_a_relation_and_target_is_an_enumerate_even_when_classified_a_lookup(names):
+    form = canonical.deterministic_fill("What malware and tools does G0024 use?", CARDS, anchor_first=True)
+    assert form.anchors == ("G0024",)
+    assert "Software" in form.target_labels
+    assert form.mode == canonical.MODE_ENUMERATE
+    assert form.sources[canonical.SLOT_MODE] == "relation-in-question"
+    # the relation itself is left for the model rung when the card has no word for it
+    assert form.relation == "USES" or canonical.SLOT_RELATION in form.unbound
+
+
+def test_a_definitional_question_stays_a_describe(names):
+    form = canonical.deterministic_fill("What is G0024?", CARDS, anchor_first=True)
+    assert form.mode == canonical.MODE_DESCRIBE

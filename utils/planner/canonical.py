@@ -829,6 +829,25 @@ def deterministic_fill(
     elif len(relations) > 1:
         sources[SLOT_RELATION] = f"ambiguous: {len(relations)} relationship types matched"
 
+    # -- mode: a question that names a relation is not a describe.
+    #
+    # `_mode_for` projects the classified intent, and the classifier calls an
+    # identifier-bearing question a lookup unless a stronger cue fires — so
+    # "What malware and tools does G0024 use?" arrived here as a describe, the
+    # form bound with no relation required, the model rung was never consulted,
+    # and the answer was the group's own record (EXP-2026-09-023 sealed T3,
+    # EXP-2026-09-025 smoke). When the router matched a target label other than
+    # the anchor's in the question's own words, the analyst asked for related
+    # entities, not the anchor's record; the relation may still be unbound
+    # ("use" does not stem to USES) and is then the model rung's to fill. A
+    # definitional phrasing keeps the describe.
+    if mode == MODE_DESCRIBE and target_labels:
+        from .intent import is_definitional_request
+
+        if not is_definitional_request(question):
+            mode = MODE_ENUMERATE
+            sources[SLOT_MODE] = "relation-in-question"
+
     # -- direction: the declared endpoints, never the analyst's verb.
     direction = None
     if relation and anchor_labels:

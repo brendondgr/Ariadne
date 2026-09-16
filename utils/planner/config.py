@@ -103,6 +103,9 @@ class PlannerConfig:
     #: *before* choosing a dataset, and let the name's owner lead when the
     #: router picked nothing or picked a source that does not hold it.
     anchor_before_routing: bool = False
+    #: EXP-2026-09-025 (plan Step 6): execute a bound form as a plan instead of
+    #: rendering it to English for the drafter to parse again.
+    form_execute: bool = False
     #: Where the model's picks are cached, keyed by prompt version, served model
     #: and question. Unset means the process default (see rewrite_cache.py).
     rewrite_cache_dir: str | None = None
@@ -159,6 +162,7 @@ class PlannerConfig:
         anchor_before_routing = (
             os.environ.get("ARIADNE_ANCHOR_BEFORE_ROUTING", "").strip().lower() in _truthy
         )
+        form_execute = os.environ.get("ARIADNE_FORM_EXECUTE", "").strip().lower() in _truthy
         # The LLM group resolves through utils.llm: PLANNER_LLM_* still wins when
         # set, but falls back to ARIADNE_LLM_* so one endpoint configures every
         # stage. With neither set this is exactly the previous default.
@@ -186,6 +190,7 @@ class PlannerConfig:
             rewrite_only_without_identifier=rewrite_only_without_identifier,
             rewrite_require_resolved_anchor=rewrite_require_resolved_anchor,
             anchor_before_routing=anchor_before_routing,
+            form_execute=form_execute,
             rewrite_derive_relation=rewrite_derive_relation,
             rewrite_cache_dir=env_str("ARIADNE_REWRITE_CACHE_DIR", "") or None,
             llm_base_url=llm.base_url,

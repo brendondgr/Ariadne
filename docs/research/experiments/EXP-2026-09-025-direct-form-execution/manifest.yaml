@@ -1,0 +1,83 @@
+# Filled by scripts/new_experiment.py. Every field below is required unless
+# marked optional. Do not delete a field you do not know — record it as null or
+# "unknown" and explain in ISSUES.md. Inventing a value is worse than admitting
+# a gap.
+id: EXP-2026-09-025
+slug: direct-form-execution
+title: "Executing the bound form as a plan instead of re-parsing its rendering, and lifting the identifier skip on top (plan Step 6)"
+status: running            # planned | running | complete | failed | superseded
+date_started: 2026-09-15
+date_completed: null       # null until status is complete/failed
+authors: ["brendondgr", "Claude Opus 5"]
+
+purpose: >
+  The rewrite stage renders its bound form to English and the drafter parses
+  it again; the round trip broke 13 T1 answers in EXP-2026-09-021 and three
+  sealed T3 answers in EXP-2026-09-023. This executes the form directly (H1)
+  and, on top, lifts the D-034 identifier skip so id-bearing questions get
+  their relation filled with the anchor held fixed (H2). Bears on the plan's
+  T1/T2 exact target and on portability: a form is graph-agnostic.
+
+hypothesis: >
+  H1 exposed: T3 records_exact +>= 0.05 over anchor_first with wrong_entity
+  and catalogue_dump unchanged and T1/T2 byte-identical; sealed: the three
+  rendering-broken T3 answers recovered. H2 exposed: T1/T2 records_exact not
+  below control - 0.02 and records_recall +>= 0.05 with wrong_entity
+  unchanged. Falsifiers in PROTOCOL.md.
+
+# --- Reproducibility block (all fields mandatory) ---
+code:
+  commit: 019ef1324ef4a5f8ac03c35cbb2b2ee0a8e71f00          # 40-char sha, or "unknown" for a back-filled experiment
+  branch: main
+  entrypoint: "uv run python scripts/variant_harness.py compare --rewrite form_execute|form_execute_ids --workers 32 --llm-timeout-s 600 --pipeline-timeout-s 600"
+  dirty: true             # run from the working tree, committed without change (ISSUES.md)
+config:
+  path: null               # repo-relative path, or null if the run takes no config file
+  hash: null               # sha256:... of that file
+data:
+  name: exposed bank variants-2026-08-29 (579) + sealed bank variants-holdout-2026-09 (160)
+  version: as EXP-2026-09-023
+  split: exposed = development; sealed = confirmation
+  n_examples: 739
+  dvc_path: null           # this repository does not use DVC; leave null
+  hash: sha256:f50ddaa628f892ee2498c19662a4a42bf1c4589dad6361d4003233011ab578ce   # sealed variants.json
+seeds: []                  # [] means seeds were not recorded — say so in ISSUES.md
+n_runs: 1                  # SYSTEM runs over the question set — grading passes are not runs
+environment:
+  python: "3.13"
+  lockfile: env/requirements.lock
+  container: null
+compute:
+  hardware: "32-core x86_64 host, 121 GB RAM; Neo4j + Gremlin local; local model on :9090 for the rewrite rung"
+  wall_clock_hours: 0.0
+  estimated_cost_usd: 0.0
+
+# --- LLM / agentic block (delete entirely if no model was in the loop) ---
+llm:
+  model: "relay/qwen38-27B-v2@2026-09-15"
+  temperature: 0.0
+  top_p: 1.0
+  max_tokens: 2048
+  prompt_files: []
+  prompt_hash: null
+  tool_schema_hash: null
+  total_input_tokens: null
+  total_output_tokens: null
+  nondeterminism_note: >
+    Provider-side nondeterminism remains even at temperature 0; results
+    are reported as mean ± std over n_runs.
+
+# --- Results block ---
+metrics:
+  primary: records_exact_T3_form_execute_exposed
+  values: {}               # {metric: {mean: 0.0, std: 0.0, n: 1}} — must be non-empty when status: complete
+  withdrawn: {}            # values later retracted by amendment: {metric: {mean, std, n, withdrawn_on, reason, replaced_by}}
+baselines_compared: ["EXP-2026-09-023 anchor_first arm, both banks"]
+statistical_test: null
+
+# --- Linkage ---
+supports_claims: []        # every ID here must exist in ../../CLAIMS.md
+figures: []                # every name here must have a file in figures/ and vice versa
+supersedes: null           # set in BOTH manifests or in neither; the validator checks symmetry
+superseded_by: null
+related: ["EXP-2026-09-023", "EXP-2026-09-021"]

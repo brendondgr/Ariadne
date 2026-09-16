@@ -138,6 +138,10 @@ class PlanningState(TypedDict, total=False):
     canonical_question: str
     intent_form: Any
     rewrite_trace: dict[str, Any]
+    # EXP-2026-09-025: the plan the bound form denotes, when the stage executes
+    # the form directly instead of handing the drafter a rendered sentence.
+    # ``None`` (or absent) means the drafter drafts from ``request`` as before.
+    form_plan: Any
     plan: Plan  # the final (converged or degraded) plan
 
 
