@@ -65,6 +65,7 @@ that a dead end is walked into once rather than twice.
 | `EXP-2026-09-026` | 2026-09-15 | Generic-engine parity on the named defects: the cross-source bridge chosen by seed origin, not vocabulary (plan Step 7) | complete | records_exact_T1_gap_generic_minus_templates_exposed -0.0917 (n=120) | — | [generic-engine-parity](experiments/EXP-2026-09-026-generic-engine-parity/) |
 | `EXP-2026-09-027` | 2026-09-16 | A relation lexicon generated once from each card's glosses, read deterministically at query time (plan Step 8) | complete | records_exact_T1_paraphrases_exposed 0.3583 (n=120) | — | [relation-lexicon-from-glosses](experiments/EXP-2026-09-027-relation-lexicon-from-glosses/) |
 | `EXP-2026-09-028` | 2026-09-16 | A described entity resolved from a reranked closed choice, disclosed on the answer's first line (plan Step 9) | complete | records_exact_T4_disclosed_sealed 0.1250 (n=40) | — | [disclosed-anchor-acceptance](experiments/EXP-2026-09-028-disclosed-anchor-acceptance/) |
+| `EXP-2026-09-029` | 2026-09-16 | What the recorded judge says about the shipped arm's answers on the sealed bank (plan Step 10) | complete | completeness_T3 0.9187 (n=40) | — | [sealed-judged-pass](experiments/EXP-2026-09-029-sealed-judged-pass/) |
 | `EXP-2026-07-007` | 2026-07-26 | Arm G — generic primitives only, every hand-written template disabled | superseded → EXP-2026-08-001 | correctness 0.6388 (n=1) | C-003 | [arm-g-templates-disabled](experiments/EXP-2026-07-007-arm-g-templates-disabled/) |
 | `EXP-2026-07-010` | 2026-07-20 | First independent cross-model grading pass (the pre-fix committed baseline) | superseded → EXP-2026-07-001 | correctness 0.8946 (n=1) | C-009 | [independent-eval-baseline](experiments/EXP-2026-07-010-independent-eval-baseline/) |
 | `EXP-2026-07-011` | 2026-07-26 | Portability audit — what survives a dataset that is not MITRE | superseded → EXP-2026-08-011 | — | C-010 | [portability-audit](experiments/EXP-2026-07-011-portability-audit/) |
@@ -72,4 +73,4 @@ that a dead end is walked into once rather than twice.
 | `EXP-2026-08-005` | 2026-08-18 | Is the blind holdout's directional loss a property of these templates, or of a missing schema-driven check? | superseded → EXP-2026-08-006 | blind_gold_in_evidence 0.8952 (n=1) | C-001, C-003, C-010, C-014 | [binding-direction-portability](experiments/EXP-2026-08-005-binding-direction-portability/) |
 | `EXP-2026-09-002` | 2026-09-03 | On a bank covering every shape the sources support, do hand-written templates still hold? | superseded → EXP-2026-09-005 | judged_gap_generic_minus_deterministic 0.1642 ± 0.0000 (n=284) | C-023, C-012 | [expansion-bank-judged](experiments/EXP-2026-09-002-expansion-bank-judged/) |
 
-**61 experiment(s) on record.**
+**62 experiment(s) on record.**

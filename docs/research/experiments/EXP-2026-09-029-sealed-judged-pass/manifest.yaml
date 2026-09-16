@@ -1,0 +1,98 @@
+# Filled by scripts/new_experiment.py. Every field below is required unless
+# marked optional. Do not delete a field you do not know — record it as null or
+# "unknown" and explain in ISSUES.md. Inventing a value is worse than admitting
+# a gap.
+id: EXP-2026-09-029
+slug: sealed-judged-pass
+title: "What the recorded judge says about the shipped arm's answers on the sealed bank (plan Step 10)"
+status: complete           # planned | running | complete | failed | superseded
+date_started: 2026-09-16
+date_completed: 2026-09-16
+authors: ["brendondgr", "Claude Opus 5"]
+
+purpose: >
+  The first judged reading of any arm on the sealed entity-held-out bank:
+  the shipped configuration (D-037) graded by the recorded local judge, per
+  tier, so widened and disclosed answers can be compared on something other
+  than record identity in the next round.
+
+hypothesis: >
+  exploratory — no prior hypothesis; the run was started before this folder
+  existed and no judgment had been read when the protocol was written.
+
+# --- Reproducibility block (all fields mandatory) ---
+code:
+  commit: 285e47ea99a4eef17e5e0555253cc0a4f844c1bf          # 40-char sha, or "unknown" for a back-filled experiment
+  branch: main
+  entrypoint: "uv run python scripts/judge_variants.py --bank sealed --arm form_execute --tiers T3,T4,T5,T6 --workers 8"
+  dirty: true             # started before the Step 10 commit; see ISSUES.md
+config:
+  path: null               # repo-relative path, or null if the run takes no config file
+  hash: null               # sha256:... of that file
+data:
+  name: sealed bank variants-holdout-2026-09, scored_form_execute.json
+  version: SEAL.md 2026-09-15
+  split: T3-T6, all 160 rows
+  n_examples: 160
+  dvc_path: null           # this repository does not use DVC; leave null
+  hash: sha256:f50ddaa628f892ee2498c19662a4a42bf1c4589dad6361d4003233011ab578ce   # sealed variants.json
+seeds: []                  # [] means seeds were not recorded — say so in ISSUES.md
+n_runs: 1                  # SYSTEM runs over the question set — grading passes are not runs
+environment:
+  python: "3.13"
+  lockfile: env/requirements.lock
+  container: null
+compute:
+  hardware: "32-core x86_64 host; local judge model on :9090"
+  wall_clock_hours: 0.7
+  estimated_cost_usd: 0.0
+
+# --- LLM / agentic block (delete entirely if no model was in the loop) ---
+llm:
+  model: "relay/default-model (qwen38-27B-v2)@2026-09-16 as judge"
+  temperature: 0.0
+  top_p: 1.0
+  max_tokens: 8192
+  prompt_files: []
+  prompt_hash: null
+  tool_schema_hash: null
+  total_input_tokens: null
+  total_output_tokens: null
+  nondeterminism_note: >
+    Provider-side nondeterminism remains even at temperature 0; results
+    are reported as mean ± std over n_runs.
+
+# --- Results block ---
+metrics:
+  primary: completeness_T3
+  values:
+    faithfulness_T3: {mean: 0.6887, std: null, n: 40}
+    groundedness_T3: {mean: 0.6575, std: null, n: 40}
+    completeness_T3: {mean: 0.9187, std: null, n: 40}
+    abstained_T3: {mean: 0.1, std: null, n: 40}
+    fabricated_mapping_T3: {mean: 1, std: null, n: 40}
+    faithfulness_T4: {mean: 0.8863, std: null, n: 40}
+    groundedness_T4: {mean: 0.8162, std: null, n: 40}
+    completeness_T4: {mean: 0.195, std: null, n: 40}
+    abstained_T4: {mean: 0.475, std: null, n: 40}
+    fabricated_mapping_T4: {mean: 1, std: null, n: 40}
+    faithfulness_T5: {mean: 0.8863, std: null, n: 40}
+    groundedness_T5: {mean: 0.7325, std: null, n: 40}
+    completeness_T5: {mean: 0.175, std: null, n: 40}
+    abstained_T5: {mean: 0.55, std: null, n: 40}
+    fabricated_mapping_T5: {mean: 0, std: null, n: 40}
+    faithfulness_T6: {mean: 0.9338, std: null, n: 40}
+    groundedness_T6: {mean: 0.9025, std: null, n: 40}
+    completeness_T6: {mean: 0.7, std: null, n: 40}
+    abstained_T6: {mean: 1.0, std: null, n: 40}
+    fabricated_mapping_T6: {mean: 0, std: null, n: 40}
+  withdrawn: {}            # values later retracted by amendment: {metric: {mean, std, n, withdrawn_on, reason, replaced_by}}
+baselines_compared: ["none judged on this bank; harness columns in EXP-2026-09-025"]
+statistical_test: null
+
+# --- Linkage ---
+supports_claims: []        # every ID here must exist in ../../CLAIMS.md
+figures: []                # every name here must have a file in figures/ and vice versa
+supersedes: null           # set in BOTH manifests or in neither; the validator checks symmetry
+superseded_by: null
+related: ["EXP-2026-09-025", "EXP-2026-09-024", "EXP-2026-09-028"]
