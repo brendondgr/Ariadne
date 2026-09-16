@@ -84,19 +84,19 @@ REWRITE_ENV: dict[str, dict[str, str]] = {
             "ARIADNE_REWRITE_ONLY_WITHOUT_ID": "0",
             "ARIADNE_REWRITE_REQUIRE_RESOLVED_ANCHOR": "0",
             "ARIADNE_EXACT_NAME_DISTINCT": "0", "ARIADNE_ANCHOR_BEFORE_ROUTING": "0",
-            "ARIADNE_UNANCHORED_RELATION_ABSTAINS": "0", "ORCH_EXPAND_UNBOUND": "0", "ARIADNE_FORM_EXECUTE": "0"},
+            "ARIADNE_UNANCHORED_RELATION_ABSTAINS": "0", "ORCH_EXPAND_UNBOUND": "0", "ARIADNE_FORM_EXECUTE": "0", "SPECIALIST_GENERIC_ONLY": "false"},
     "det": {"ARIADNE_REWRITE": "1", "ARIADNE_REWRITE_MODEL": "0",
             "ARIADNE_REWRITE_DERIVE_RELATION": "1",
             "ARIADNE_REWRITE_ONLY_WITHOUT_ID": "0",
             "ARIADNE_REWRITE_REQUIRE_RESOLVED_ANCHOR": "0",
             "ARIADNE_EXACT_NAME_DISTINCT": "0", "ARIADNE_ANCHOR_BEFORE_ROUTING": "0",
-            "ARIADNE_UNANCHORED_RELATION_ABSTAINS": "0", "ORCH_EXPAND_UNBOUND": "0", "ARIADNE_FORM_EXECUTE": "0"},
+            "ARIADNE_UNANCHORED_RELATION_ABSTAINS": "0", "ORCH_EXPAND_UNBOUND": "0", "ARIADNE_FORM_EXECUTE": "0", "SPECIALIST_GENERIC_ONLY": "false"},
     "model": {"ARIADNE_REWRITE": "1", "ARIADNE_REWRITE_MODEL": "1",
               "ARIADNE_REWRITE_DERIVE_RELATION": "1",
               "ARIADNE_REWRITE_ONLY_WITHOUT_ID": "0",
             "ARIADNE_REWRITE_REQUIRE_RESOLVED_ANCHOR": "0",
             "ARIADNE_EXACT_NAME_DISTINCT": "0", "ARIADNE_ANCHOR_BEFORE_ROUTING": "0",
-            "ARIADNE_UNANCHORED_RELATION_ABSTAINS": "0", "ORCH_EXPAND_UNBOUND": "0", "ARIADNE_FORM_EXECUTE": "0"},
+            "ARIADNE_UNANCHORED_RELATION_ABSTAINS": "0", "ORCH_EXPAND_UNBOUND": "0", "ARIADNE_FORM_EXECUTE": "0", "SPECIALIST_GENERIC_ONLY": "false"},
     # EXP-2026-09-015's control: the model rung exactly as EXP-2026-09-014 ran
     # it, with the relation asked for rather than derived from the label pair.
     # Every value is written explicitly so an ambient variable cannot decide
@@ -106,7 +106,7 @@ REWRITE_ENV: dict[str, dict[str, str]] = {
                   "ARIADNE_REWRITE_ONLY_WITHOUT_ID": "0",
             "ARIADNE_REWRITE_REQUIRE_RESOLVED_ANCHOR": "0",
             "ARIADNE_EXACT_NAME_DISTINCT": "0", "ARIADNE_ANCHOR_BEFORE_ROUTING": "0",
-            "ARIADNE_UNANCHORED_RELATION_ABSTAINS": "0", "ORCH_EXPAND_UNBOUND": "0", "ARIADNE_FORM_EXECUTE": "0"},
+            "ARIADNE_UNANCHORED_RELATION_ABSTAINS": "0", "ORCH_EXPAND_UNBOUND": "0", "ARIADNE_FORM_EXECUTE": "0", "SPECIALIST_GENERIC_ONLY": "false"},
     # EXP-2026-09-021 Step 5: the model rung, run only on questions that cite no
     # identifier. Step 4 measured the stage breaking 32 answers and fixing 10
     # where an identifier survives, and fixing 44 and breaking 7 where none
@@ -116,7 +116,7 @@ REWRITE_ENV: dict[str, dict[str, str]] = {
                    "ARIADNE_REWRITE_ONLY_WITHOUT_ID": "1",
                    "ARIADNE_REWRITE_REQUIRE_RESOLVED_ANCHOR": "0",
             "ARIADNE_EXACT_NAME_DISTINCT": "0", "ARIADNE_ANCHOR_BEFORE_ROUTING": "0",
-            "ARIADNE_UNANCHORED_RELATION_ABSTAINS": "0", "ORCH_EXPAND_UNBOUND": "0", "ARIADNE_FORM_EXECUTE": "0"},
+            "ARIADNE_UNANCHORED_RELATION_ABSTAINS": "0", "ORCH_EXPAND_UNBOUND": "0", "ARIADNE_FORM_EXECUTE": "0", "SPECIALIST_GENERIC_ONLY": "false"},
     # EXP-2026-09-021 AMENDMENT A-1: the shipped gate PLUS a refusal to let the
     # model choose the anchor. Targets the T4/T5 wrong_entity tripling D-034
     # accepted, without giving back T3's exact-name binds.
@@ -126,7 +126,7 @@ REWRITE_ENV: dict[str, dict[str, str]] = {
                             "ARIADNE_REWRITE_REQUIRE_RESOLVED_ANCHOR": "1",
                             "ARIADNE_EXACT_NAME_DISTINCT": "0",
                             "ARIADNE_ANCHOR_BEFORE_ROUTING": "0",
-                            "ARIADNE_UNANCHORED_RELATION_ABSTAINS": "0", "ORCH_EXPAND_UNBOUND": "0", "ARIADNE_FORM_EXECUTE": "0"},
+                            "ARIADNE_UNANCHORED_RELATION_ABSTAINS": "0", "ORCH_EXPAND_UNBOUND": "0", "ARIADNE_FORM_EXECUTE": "0", "SPECIALIST_GENERIC_ONLY": "false"},
     # EXP-2026-09-023 Step 3: the shipped arm plus AMENDMENT A-1's exact-name
     # hygiene (a one-word name binds only when written as a standalone proper
     # noun) and the unanchored-relation dump guard. Same model rung as above.
@@ -136,7 +136,7 @@ REWRITE_ENV: dict[str, dict[str, str]] = {
                 "ARIADNE_REWRITE_REQUIRE_RESOLVED_ANCHOR": "1",
                 "ARIADNE_EXACT_NAME_DISTINCT": "1",
                 "ARIADNE_ANCHOR_BEFORE_ROUTING": "0",
-                "ARIADNE_UNANCHORED_RELATION_ABSTAINS": "1", "ORCH_EXPAND_UNBOUND": "0", "ARIADNE_FORM_EXECUTE": "0"},
+                "ARIADNE_UNANCHORED_RELATION_ABSTAINS": "1", "ORCH_EXPAND_UNBOUND": "0", "ARIADNE_FORM_EXECUTE": "0", "SPECIALIST_GENERIC_ONLY": "false"},
     # EXP-2026-09-023 Step 4 (H2, Q59): hygiene plus name lookup before dataset
     # routing, with the router as the tie-break on cross-source collisions.
     "anchor_first": {"ARIADNE_REWRITE": "1", "ARIADNE_REWRITE_MODEL": "1",
@@ -145,7 +145,7 @@ REWRITE_ENV: dict[str, dict[str, str]] = {
                      "ARIADNE_REWRITE_REQUIRE_RESOLVED_ANCHOR": "1",
                      "ARIADNE_EXACT_NAME_DISTINCT": "1",
                      "ARIADNE_ANCHOR_BEFORE_ROUTING": "1",
-                     "ARIADNE_UNANCHORED_RELATION_ABSTAINS": "1", "ORCH_EXPAND_UNBOUND": "0", "ARIADNE_FORM_EXECUTE": "0"},
+                     "ARIADNE_UNANCHORED_RELATION_ABSTAINS": "1", "ORCH_EXPAND_UNBOUND": "0", "ARIADNE_FORM_EXECUTE": "0", "SPECIALIST_GENERIC_ONLY": "false"},
     # EXP-2026-09-024 (plan Step 5): anchor_first plus the unbound-relation
     # fallback — an anchored, non-definitional question whose words match no
     # facet gets its anchor's smallest facets expanded instead of one record.
@@ -157,7 +157,7 @@ REWRITE_ENV: dict[str, dict[str, str]] = {
                        "ARIADNE_ANCHOR_BEFORE_ROUTING": "1",
                        "ARIADNE_UNANCHORED_RELATION_ABSTAINS": "1",
                        "ORCH_EXPAND_UNBOUND": "1", "ORCH_CHASE_FACETS": "true",
-                       "ARIADNE_FORM_EXECUTE": "0"},
+                       "ARIADNE_FORM_EXECUTE": "0", "SPECIALIST_GENERIC_ONLY": "false"},
     # EXP-2026-09-025 (plan Step 6): anchor_first plus direct execution of the
     # bound form (no render round trip). Identifier skip still on.
     "form_execute": {"ARIADNE_REWRITE": "1", "ARIADNE_REWRITE_MODEL": "1",
@@ -167,7 +167,8 @@ REWRITE_ENV: dict[str, dict[str, str]] = {
                      "ARIADNE_EXACT_NAME_DISTINCT": "1",
                      "ARIADNE_ANCHOR_BEFORE_ROUTING": "1",
                      "ARIADNE_UNANCHORED_RELATION_ABSTAINS": "1",
-                     "ORCH_EXPAND_UNBOUND": "0", "ARIADNE_FORM_EXECUTE": "1"},
+                     "ORCH_EXPAND_UNBOUND": "0", "ARIADNE_FORM_EXECUTE": "1",
+                     "SPECIALIST_GENERIC_ONLY": "false"},
     # ... and with the D-034 identifier skip lifted: the stage now runs on
     # id-bearing questions too, the anchor stays an exact-id bind (D-035), and
     # the model may fill the relation and target labels.
@@ -178,7 +179,19 @@ REWRITE_ENV: dict[str, dict[str, str]] = {
                          "ARIADNE_EXACT_NAME_DISTINCT": "1",
                          "ARIADNE_ANCHOR_BEFORE_ROUTING": "1",
                          "ARIADNE_UNANCHORED_RELATION_ABSTAINS": "1",
-                         "ORCH_EXPAND_UNBOUND": "0", "ARIADNE_FORM_EXECUTE": "1"},
+                         "ORCH_EXPAND_UNBOUND": "0", "ARIADNE_FORM_EXECUTE": "1",
+                         "SPECIALIST_GENERIC_ONLY": "false"},
+    # EXP-2026-09-026 (plan Step 7): anchor_first on the schema-derived
+    # primitives instead of the hand-written template cascade.
+    "generic": {"ARIADNE_REWRITE": "1", "ARIADNE_REWRITE_MODEL": "1",
+                "ARIADNE_REWRITE_DERIVE_RELATION": "1",
+                "ARIADNE_REWRITE_ONLY_WITHOUT_ID": "1",
+                "ARIADNE_REWRITE_REQUIRE_RESOLVED_ANCHOR": "1",
+                "ARIADNE_EXACT_NAME_DISTINCT": "1",
+                "ARIADNE_ANCHOR_BEFORE_ROUTING": "1",
+                "ARIADNE_UNANCHORED_RELATION_ABSTAINS": "1",
+                "ORCH_EXPAND_UNBOUND": "0", "ARIADNE_FORM_EXECUTE": "0",
+                "SPECIALIST_GENERIC_ONLY": "true"},
 }
 
 #: Where the understanding-gold lives, relative to ``--out``.

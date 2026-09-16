@@ -537,7 +537,25 @@ class GremlinQueryBuilder:
             # a different question with a confidently wrong answer. The
             # sub-question's own entities settle it — `_has_mapping_intent` is
             # the same test the CAPEC ladder below already uses.
-            if has_seeds and resolved.has_join and _has_mapping_intent(resolved):
+            # The bridge is chosen by what the seeds ARE, not by the verb.
+            #
+            # EXP-2026-09-026: this took the bridge only on mapping vocabulary,
+            # so "which CAPEC items line up with T1040" bound an ATT&CK id as a
+            # CAPEC id and was rejected by the validator, and "which techniques
+            # correspond to CAPEC-555" walked the native hierarchy and starved
+            # its consumer of seeds. Three signals, all read off the registry,
+            # the join declaration and the sub-question itself:
+            #   * the seeds belong to no label of this source -- they are the
+            #     partner's key values, and only the bridge's reverse shape can
+            #     start from them;
+            #   * the sub-question names mapping vocabulary (as before);
+            #   * the sub-question is joined and names no native relation -- the
+            #     only thing it can be asked for is the key its consumer needs.
+            if has_seeds and resolved.has_join and (
+                _has_mapping_intent(resolved)
+                or self._seeds_are_foreign(resolved)
+                or not neighbor_rels
+            ):
                 bridge = self._generic_bridge(resolved)
                 if bridge is not None:
                     return bridge
@@ -1031,6 +1049,22 @@ class GremlinQueryBuilder:
         if not route:
             return None
         return labels[0], tuple((rel, direction) for rel, direction, _ in route)
+
+    def _seeds_are_foreign(self, resolved: ResolvedTask) -> bool:
+        """True when no label of this source admits any of the seeds.
+
+        Read off the registry's learned identifier schemes, so it names no
+        catalogue: a seed that fits no ``label.id`` shape in this dataset is a
+        value from the other side of a declared join.
+        """
+        registry = self._generic_registry(resolved)
+        schema = registry.dataset(resolved.dataset) if registry is not None else None
+        if schema is None:
+            return False
+        seeds = [s for s in resolved.seed_ids if s]
+        if not seeds:
+            return False
+        return all(not schema.labels_for_id(_capec_gremlin_id(s)) and not schema.labels_for_id(s) for s in seeds)
 
     def _generic_registry(self, resolved: ResolvedTask) -> Any | None:
         """The derived schema registry, or ``None`` when it cannot be loaded."""

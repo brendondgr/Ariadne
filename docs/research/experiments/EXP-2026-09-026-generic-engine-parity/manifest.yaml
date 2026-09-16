@@ -1,0 +1,84 @@
+# Filled by scripts/new_experiment.py. Every field below is required unless
+# marked optional. Do not delete a field you do not know — record it as null or
+# "unknown" and explain in ISSUES.md. Inventing a value is worse than admitting
+# a gap.
+id: EXP-2026-09-026
+slug: generic-engine-parity
+title: "Generic-engine parity on the named defects: the cross-source bridge chosen by seed origin, not vocabulary (plan Step 7)"
+status: running            # planned | running | complete | failed | superseded
+date_started: 2026-09-15
+date_completed: null       # null until status is complete/failed
+authors: ["brendondgr", "Claude Opus 5"]
+
+purpose: >
+  The schema-derived engine loses to the template cascade by 0.175 at T1 on
+  the exposed bank (EXP-2026-09-021 Step 3). Tracing the paired losses found
+  one dispatch defect behind most categories: the generic Gremlin path takes
+  the cross-source bridge only on mapping vocabulary, so a reverse-mapped seed
+  is rejected and a paraphrased mapping question starves its consumer. This
+  fixes the dispatch and measures parity. Bears on retiring the templates,
+  which is what makes a new graph answerable on its card alone.
+
+hypothesis: >
+  H1: generic within -0.02 of templates on exposed T1/T2/T3 records_exact,
+  no category where templates win by more than two paired cases, wrong_entity
+  and catalogue_dump not above the cascade's; sealed T3 within -0.02. The
+  CWE chain (5 exposed cases) is not predicted to close. Falsifiers in
+  PROTOCOL.md.
+
+# --- Reproducibility block (all fields mandatory) ---
+code:
+  commit: 8b269edc1d7436d516d0afb0fcc28aa9743ab540          # 40-char sha, or "unknown" for a back-filled experiment
+  branch: main
+  entrypoint: "uv run python scripts/variant_harness.py compare --rewrite generic --workers 32 --llm-timeout-s 600 --pipeline-timeout-s 600"
+  dirty: true             # run from the working tree, committed without change (ISSUES.md)
+config:
+  path: null               # repo-relative path, or null if the run takes no config file
+  hash: null               # sha256:... of that file
+data:
+  name: exposed bank variants-2026-08-29 (579) + sealed bank variants-holdout-2026-09 (160)
+  version: as EXP-2026-09-023
+  split: exposed = development; sealed = confirmation
+  n_examples: 739
+  dvc_path: null           # this repository does not use DVC; leave null
+  hash: sha256:f50ddaa628f892ee2498c19662a4a42bf1c4589dad6361d4003233011ab578ce   # sealed variants.json
+seeds: []                  # [] means seeds were not recorded — say so in ISSUES.md
+n_runs: 1                  # SYSTEM runs over the question set — grading passes are not runs
+environment:
+  python: "3.13"
+  lockfile: env/requirements.lock
+  container: null
+compute:
+  hardware: "32-core x86_64 host, 121 GB RAM; Neo4j + Gremlin local; local model on :9090 for the rewrite rung"
+  wall_clock_hours: 0.0
+  estimated_cost_usd: 0.0
+
+# --- LLM / agentic block (delete entirely if no model was in the loop) ---
+llm:
+  model: "relay/qwen38-27B-v2@2026-09-15"
+  temperature: 0.0
+  top_p: 1.0
+  max_tokens: 2048
+  prompt_files: []
+  prompt_hash: null
+  tool_schema_hash: null
+  total_input_tokens: null
+  total_output_tokens: null
+  nondeterminism_note: >
+    Provider-side nondeterminism remains even at temperature 0; results
+    are reported as mean ± std over n_runs.
+
+# --- Results block ---
+metrics:
+  primary: records_exact_T1_gap_generic_minus_templates_exposed
+  values: {}               # {metric: {mean: 0.0, std: 0.0, n: 1}} — must be non-empty when status: complete
+  withdrawn: {}            # values later retracted by amendment: {metric: {mean, std, n, withdrawn_on, reason, replaced_by}}
+baselines_compared: ["EXP-2026-09-023 anchor_first arm (template cascade), both banks"]
+statistical_test: null
+
+# --- Linkage ---
+supports_claims: []        # every ID here must exist in ../../CLAIMS.md
+figures: []                # every name here must have a file in figures/ and vice versa
+supersedes: null           # set in BOTH manifests or in neither; the validator checks symmetry
+superseded_by: null
+related: ["EXP-2026-09-021", "EXP-2026-09-023", "EXP-2026-08-001"]
