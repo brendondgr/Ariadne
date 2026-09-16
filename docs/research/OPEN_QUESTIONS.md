@@ -54,7 +54,7 @@ below.)
 | Q56 | The arm runner's default model was one the configured endpoint does not serve, so an LLM arm ran model-free and finished | EXP-2026-09-018 Step 5 preflight | answered and fixed; archived runners still carry the old default *(partly)* |
 | Q57 | Every headline figure replays an authored retrieval plan; the system's own planner costs −0.3814 gold coverage | EXP-2026-09-019 Steps 2, 5 | **the meaning of every 0.90 this project reports** — a ceiling given a correct plan, not an end-to-end result *(open)* |
 | Q58 | The planner arm's loss is not separated from the tighter per-plan bounds it inherits | EXP-2026-09-019 I-2 | how much of Q57 is a worse decomposition; what a fix should target *(open)* |
-| Q59 | An entity name is never looked up unless the router first picks a dataset, so a question naming a thing in ordinary words binds nothing | EXP-2026-09-021 A-1 | the largest deterministic lever left at T1–T3: 37 of 101 T3 variants reach no exact anchor *(open)* |
+| Q59 | An entity name is never looked up unless the router first picks a dataset, so a question naming a thing in ordinary words binds nothing | EXP-2026-09-021 A-1; EXP-2026-09-023 H2 | lookup order fixed behind `ARIADNE_ANCHOR_BEFORE_ROUTING`: unresolved T3 anchors 37 → 4 of 101; the remaining T3 loss is the rung's rendering, not the bind *(amended)* |
 | Q60 | Can portable candidate discovery become accurate open-question answers through role-aware selection, reranking, and evidence completion? | EXP-2026-09-022 | T4/T5 answer improvements and transfer beyond the exposed tier bank *(open)* |
 
 ---
@@ -1161,6 +1161,21 @@ It also explains a measurement that looked like model capability. `T3`'s model
 rung fired on 50 of 101 variants and chose the anchor on 24, and after `D-035`
 refuses model-chosen anchors, **37 `T3` variants reach no exact anchor at all**.
 Most of that is not a hard naming problem — it is a lookup that never ran.
+
+**Amended 2026-09-15** by `EXP-2026-09-023` H2. `deterministic_fill` now asks
+every live source for an identifier or a complete name *before* dataset
+selection (`ARIADNE_ANCHOR_BEFORE_ROUTING`); the router's own selection breaks a
+cross-source collision (Phishing, Brute Force — 37 of the exposed bank's 41 T3
+ambiguities are of this kind), and a collision nothing breaks is reported as an
+ambiguity rather than resolved by dataset order. Result: unresolved T3 anchors
+37 → **4** of 101 on the exposed bank and 15 → 0 of 40 on the sealed bank, with
+T1/T2 byte-identical and T6 wrong-entity 0. What did **not** follow is the exact
+answer: T3 `records_exact` moved 0.3267 → 0.3465 (recall 0.6223 → 0.6736)
+against a predicted ≥ 0.45, because a resolved anchor still passes through the
+deterministic rung's render, which produces a describe or a card-vocabulary
+relation the question did not ask for. That gap — anchors resolved on 97 of 101,
+answers exact on 35 — is now the measured size of plan Steps 5–6's defect. The
+ship decision is plan Step 10's.
 
 **What resolves it.** Attempt the complete-name lookup across every live source
 before dataset selection, let a unique hit pick the dataset, keep the ambiguity

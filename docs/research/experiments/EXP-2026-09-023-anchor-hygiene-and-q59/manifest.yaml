@@ -5,9 +5,9 @@
 id: EXP-2026-09-023
 slug: anchor-hygiene-and-q59
 title: "Exact names that are lookups, and looking them up before choosing a dataset (plan Steps 2-4)"
-status: running            # planned | running | complete | failed | superseded
+status: complete           # planned | running | complete | failed | superseded
 date_started: 2026-09-15
-date_completed: null       # null until status is complete/failed
+date_completed: 2026-09-15
 authors: ["brendondgr", "Claude Opus 5"]
 
 purpose: >
@@ -31,10 +31,10 @@ hypothesis: >
 
 # --- Reproducibility block (all fields mandatory) ---
 code:
-  commit: 4c16d656078b97d05c906c5ab0a41a683942bd09          # Step 2 record; updated per arm in RESULTS.md
+  commit: a0888b33          # runs made from the working tree these commits captured verbatim (ISSUES.md)
   branch: main
   entrypoint: "uv run python scripts/variant_harness.py compare --rewrite model_noid_anchored --workers 32 (flags per arm; see PROTOCOL.md)"
-  dirty: false
+  dirty: true             # see ISSUES.md: run before commit, no code change between
 config:
   path: null               # repo-relative path, or null if the run takes no config file
   hash: null               # sha256:... of that file
@@ -53,7 +53,7 @@ environment:
   container: null
 compute:
   hardware: "32-core x86_64 host, 121 GB RAM; Neo4j + Gremlin local; local model on :9090 for the unchanged rewrite rung"
-  wall_clock_hours: 0.0
+  wall_clock_hours: 0.6
   estimated_cost_usd: 0.0
 
 # --- LLM / agentic block ---
@@ -75,7 +75,186 @@ llm:
 # --- Results block ---
 metrics:
   primary: records_exact_T3_anchor_first
-  values: {}               # filled from data/metrics.json as arms complete
+  values:
+    records_exact_T3_baseline_exposed: {mean: 0.3267, std: null, n: 101}
+    records_recall_T3_baseline_exposed: {mean: 0.6223, std: null, n: 101}
+    wrong_entity_T3_baseline_exposed: {mean: 0.0693, std: null, n: 101}
+    catalogue_dump_T3_baseline_exposed: {mean: 0.1287, std: null, n: 101}
+    abstained_T3_baseline_exposed: {mean: 0.3564, std: null, n: 101}
+    records_exact_T4_baseline_exposed: {mean: 0.0, std: null, n: 104}
+    records_recall_T4_baseline_exposed: {mean: 0.0569, std: null, n: 104}
+    wrong_entity_T4_baseline_exposed: {mean: 0.1442, std: null, n: 104}
+    catalogue_dump_T4_baseline_exposed: {mean: 0.1635, std: null, n: 104}
+    abstained_T4_baseline_exposed: {mean: 0.8077, std: null, n: 104}
+    records_exact_T5_baseline_exposed: {mean: 0.0, std: null, n: 104}
+    records_recall_T5_baseline_exposed: {mean: 0.0374, std: null, n: 104}
+    wrong_entity_T5_baseline_exposed: {mean: 0.1346, std: null, n: 104}
+    catalogue_dump_T5_baseline_exposed: {mean: 0.125, std: null, n: 104}
+    abstained_T5_baseline_exposed: {mean: 0.8173, std: null, n: 104}
+    records_exact_T6_baseline_exposed: {mean: 0.0667, std: null, n: 30}
+    records_recall_T6_baseline_exposed: {mean: 0.0098, std: null, n: 30}
+    wrong_entity_T6_baseline_exposed: {mean: 0.0667, std: null, n: 30}
+    catalogue_dump_T6_baseline_exposed: {mean: 0.0667, std: null, n: 30}
+    abstained_T6_baseline_exposed: {mean: 0.9333, std: null, n: 30}
+    records_exact_T3_hygiene_exposed: {mean: 0.3168, std: null, n: 101}
+    records_recall_T3_hygiene_exposed: {mean: 0.546, std: null, n: 101}
+    wrong_entity_T3_hygiene_exposed: {mean: 0.0396, std: null, n: 101}
+    catalogue_dump_T3_hygiene_exposed: {mean: 0.0, std: null, n: 101}
+    abstained_T3_hygiene_exposed: {mean: 0.4653, std: null, n: 101}
+    records_exact_T4_hygiene_exposed: {mean: 0.0, std: null, n: 104}
+    records_recall_T4_hygiene_exposed: {mean: 0.0108, std: null, n: 104}
+    wrong_entity_T4_hygiene_exposed: {mean: 0.1154, std: null, n: 104}
+    catalogue_dump_T4_hygiene_exposed: {mean: 0.0192, std: null, n: 104}
+    abstained_T4_hygiene_exposed: {mean: 0.8846, std: null, n: 104}
+    records_exact_T5_hygiene_exposed: {mean: 0.0, std: null, n: 104}
+    records_recall_T5_hygiene_exposed: {mean: 0.0032, std: null, n: 104}
+    wrong_entity_T5_hygiene_exposed: {mean: 0.0865, std: null, n: 104}
+    catalogue_dump_T5_hygiene_exposed: {mean: 0.0096, std: null, n: 104}
+    abstained_T5_hygiene_exposed: {mean: 0.9135, std: null, n: 104}
+    records_exact_T6_hygiene_exposed: {mean: 0.1, std: null, n: 30}
+    records_recall_T6_hygiene_exposed: {mean: 0.0, std: null, n: 30}
+    wrong_entity_T6_hygiene_exposed: {mean: 0.0, std: null, n: 30}
+    catalogue_dump_T6_hygiene_exposed: {mean: 0.0, std: null, n: 30}
+    abstained_T6_hygiene_exposed: {mean: 1.0, std: null, n: 30}
+    records_exact_T3_anchor_first_exposed: {mean: 0.3465, std: null, n: 101}
+    records_recall_T3_anchor_first_exposed: {mean: 0.6736, std: null, n: 101}
+    wrong_entity_T3_anchor_first_exposed: {mean: 0.0495, std: null, n: 101}
+    catalogue_dump_T3_anchor_first_exposed: {mean: 0.0, std: null, n: 101}
+    abstained_T3_anchor_first_exposed: {mean: 0.3564, std: null, n: 101}
+    records_exact_T4_anchor_first_exposed: {mean: 0.0, std: null, n: 104}
+    records_recall_T4_anchor_first_exposed: {mean: 0.0108, std: null, n: 104}
+    wrong_entity_T4_anchor_first_exposed: {mean: 0.1442, std: null, n: 104}
+    catalogue_dump_T4_anchor_first_exposed: {mean: 0.0192, std: null, n: 104}
+    abstained_T4_anchor_first_exposed: {mean: 0.8558, std: null, n: 104}
+    records_exact_T5_anchor_first_exposed: {mean: 0.0, std: null, n: 104}
+    records_recall_T5_anchor_first_exposed: {mean: 0.0046, std: null, n: 104}
+    wrong_entity_T5_anchor_first_exposed: {mean: 0.1154, std: null, n: 104}
+    catalogue_dump_T5_anchor_first_exposed: {mean: 0.0096, std: null, n: 104}
+    abstained_T5_anchor_first_exposed: {mean: 0.8654, std: null, n: 104}
+    records_exact_T6_anchor_first_exposed: {mean: 0.1, std: null, n: 30}
+    records_recall_T6_anchor_first_exposed: {mean: 0.0, std: null, n: 30}
+    wrong_entity_T6_anchor_first_exposed: {mean: 0.0, std: null, n: 30}
+    catalogue_dump_T6_anchor_first_exposed: {mean: 0.0, std: null, n: 30}
+    abstained_T6_anchor_first_exposed: {mean: 1.0, std: null, n: 30}
+    records_exact_T3_baseline_sealed: {mean: 0.65, std: null, n: 40}
+    records_recall_T3_baseline_sealed: {mean: 0.7812, std: null, n: 40}
+    wrong_entity_T3_baseline_sealed: {mean: 0.025, std: null, n: 40}
+    catalogue_dump_T3_baseline_sealed: {mean: 0.025, std: null, n: 40}
+    abstained_T3_baseline_sealed: {mean: 0.3, std: null, n: 40}
+    records_exact_T4_baseline_sealed: {mean: 0.0, std: null, n: 40}
+    records_recall_T4_baseline_sealed: {mean: 0.1152, std: null, n: 40}
+    wrong_entity_T4_baseline_sealed: {mean: 0.125, std: null, n: 40}
+    catalogue_dump_T4_baseline_sealed: {mean: 0.225, std: null, n: 40}
+    abstained_T4_baseline_sealed: {mean: 0.825, std: null, n: 40}
+    records_exact_T5_baseline_sealed: {mean: 0.0, std: null, n: 40}
+    records_recall_T5_baseline_sealed: {mean: 0.2375, std: null, n: 40}
+    wrong_entity_T5_baseline_sealed: {mean: 0.15, std: null, n: 40}
+    catalogue_dump_T5_baseline_sealed: {mean: 0.35, std: null, n: 40}
+    abstained_T5_baseline_sealed: {mean: 0.6, std: null, n: 40}
+    records_exact_T6_baseline_sealed: {mean: 0.0, std: null, n: 40}
+    records_recall_T6_baseline_sealed: {mean: 0.0, std: null, n: 40}
+    wrong_entity_T6_baseline_sealed: {mean: 0.0, std: null, n: 40}
+    catalogue_dump_T6_baseline_sealed: {mean: 0.0, std: null, n: 40}
+    abstained_T6_baseline_sealed: {mean: 1.0, std: null, n: 40}
+    records_exact_T3_hygiene_sealed: {mean: 0.6, std: null, n: 40}
+    records_recall_T3_hygiene_sealed: {mean: 0.7925, std: null, n: 40}
+    wrong_entity_T3_hygiene_sealed: {mean: 0.0, std: null, n: 40}
+    catalogue_dump_T3_hygiene_sealed: {mean: 0.0, std: null, n: 40}
+    abstained_T3_hygiene_sealed: {mean: 0.275, std: null, n: 40}
+    records_exact_T4_hygiene_sealed: {mean: 0.0, std: null, n: 40}
+    records_recall_T4_hygiene_sealed: {mean: 0.0, std: null, n: 40}
+    wrong_entity_T4_hygiene_sealed: {mean: 0.1, std: null, n: 40}
+    catalogue_dump_T4_hygiene_sealed: {mean: 0.05, std: null, n: 40}
+    abstained_T4_hygiene_sealed: {mean: 0.9, std: null, n: 40}
+    records_exact_T5_hygiene_sealed: {mean: 0.0, std: null, n: 40}
+    records_recall_T5_hygiene_sealed: {mean: 0.0, std: null, n: 40}
+    wrong_entity_T5_hygiene_sealed: {mean: 0.075, std: null, n: 40}
+    catalogue_dump_T5_hygiene_sealed: {mean: 0.025, std: null, n: 40}
+    abstained_T5_hygiene_sealed: {mean: 0.925, std: null, n: 40}
+    records_exact_T6_hygiene_sealed: {mean: 0.0, std: null, n: 40}
+    records_recall_T6_hygiene_sealed: {mean: 0.0, std: null, n: 40}
+    wrong_entity_T6_hygiene_sealed: {mean: 0.0, std: null, n: 40}
+    catalogue_dump_T6_hygiene_sealed: {mean: 0.0, std: null, n: 40}
+    abstained_T6_hygiene_sealed: {mean: 1.0, std: null, n: 40}
+    records_exact_T3_anchor_first_sealed: {mean: 0.675, std: null, n: 40}
+    records_recall_T3_anchor_first_sealed: {mean: 0.8925, std: null, n: 40}
+    wrong_entity_T3_anchor_first_sealed: {mean: 0.0, std: null, n: 40}
+    catalogue_dump_T3_anchor_first_sealed: {mean: 0.0, std: null, n: 40}
+    abstained_T3_anchor_first_sealed: {mean: 0.15, std: null, n: 40}
+    records_exact_T4_anchor_first_sealed: {mean: 0.0, std: null, n: 40}
+    records_recall_T4_anchor_first_sealed: {mean: 0.02, std: null, n: 40}
+    wrong_entity_T4_anchor_first_sealed: {mean: 0.1, std: null, n: 40}
+    catalogue_dump_T4_anchor_first_sealed: {mean: 0.05, std: null, n: 40}
+    abstained_T4_anchor_first_sealed: {mean: 0.875, std: null, n: 40}
+    records_exact_T5_anchor_first_sealed: {mean: 0.0, std: null, n: 40}
+    records_recall_T5_anchor_first_sealed: {mean: 0.0125, std: null, n: 40}
+    wrong_entity_T5_anchor_first_sealed: {mean: 0.1, std: null, n: 40}
+    catalogue_dump_T5_anchor_first_sealed: {mean: 0.025, std: null, n: 40}
+    abstained_T5_anchor_first_sealed: {mean: 0.875, std: null, n: 40}
+    records_exact_T6_anchor_first_sealed: {mean: 0.0, std: null, n: 40}
+    records_recall_T6_anchor_first_sealed: {mean: 0.0, std: null, n: 40}
+    wrong_entity_T6_anchor_first_sealed: {mean: 0.0, std: null, n: 40}
+    catalogue_dump_T6_anchor_first_sealed: {mean: 0.0, std: null, n: 40}
+    abstained_T6_anchor_first_sealed: {mean: 1.0, std: null, n: 40}
+    records_exact_T3_anchor_first: {mean: 0.3465, std: null, n: 101}
+    skipped_unresolved_anchor_T3_baseline_exposed: {mean: 37, std: null, n: 101}
+    skipped_unresolved_anchor_T3_anchor_first_exposed: {mean: 4, std: null, n: 101}
+    exact_name_single_gold_T3_baseline_exposed: {mean: 76, std: null, n: 101}
+    exact_name_single_wrong_T3_baseline_exposed: {mean: 0, std: null, n: 101}
+    exact_name_single_gold_T4_baseline_exposed: {mean: 0, std: null, n: 104}
+    exact_name_single_wrong_T4_baseline_exposed: {mean: 28, std: null, n: 104}
+    exact_name_single_gold_T5_baseline_exposed: {mean: 0, std: null, n: 104}
+    exact_name_single_wrong_T5_baseline_exposed: {mean: 26, std: null, n: 104}
+    exact_name_single_gold_T6_baseline_exposed: {mean: 0, std: null, n: 30}
+    exact_name_single_wrong_T6_baseline_exposed: {mean: 9, std: null, n: 30}
+    exact_name_single_gold_T3_df_exposed: {mean: 77, std: null, n: 101}
+    exact_name_single_wrong_T3_df_exposed: {mean: 0, std: null, n: 101}
+    exact_name_single_gold_T4_df_exposed: {mean: 0, std: null, n: 104}
+    exact_name_single_wrong_T4_df_exposed: {mean: 15, std: null, n: 104}
+    exact_name_single_gold_T5_df_exposed: {mean: 0, std: null, n: 104}
+    exact_name_single_wrong_T5_df_exposed: {mean: 17, std: null, n: 104}
+    exact_name_single_gold_T6_df_exposed: {mean: 0, std: null, n: 30}
+    exact_name_single_wrong_T6_df_exposed: {mean: 2, std: null, n: 30}
+    exact_name_single_gold_T3_struct_exposed: {mean: 78, std: null, n: 101}
+    exact_name_single_wrong_T3_struct_exposed: {mean: 0, std: null, n: 101}
+    exact_name_single_gold_T4_struct_exposed: {mean: 0, std: null, n: 104}
+    exact_name_single_wrong_T4_struct_exposed: {mean: 10, std: null, n: 104}
+    exact_name_single_gold_T5_struct_exposed: {mean: 0, std: null, n: 104}
+    exact_name_single_wrong_T5_struct_exposed: {mean: 6, std: null, n: 104}
+    exact_name_single_gold_T6_struct_exposed: {mean: 0, std: null, n: 30}
+    exact_name_single_wrong_T6_struct_exposed: {mean: 0, std: null, n: 30}
+    exact_name_single_gold_T3_baseline_sealed: {mean: 26, std: null, n: 40}
+    exact_name_single_wrong_T3_baseline_sealed: {mean: 0, std: null, n: 40}
+    exact_name_single_gold_T4_baseline_sealed: {mean: 0, std: null, n: 40}
+    exact_name_single_wrong_T4_baseline_sealed: {mean: 14, std: null, n: 40}
+    exact_name_single_gold_T5_baseline_sealed: {mean: 0, std: null, n: 40}
+    exact_name_single_wrong_T5_baseline_sealed: {mean: 14, std: null, n: 40}
+    exact_name_single_gold_T6_baseline_sealed: {mean: 0, std: null, n: 40}
+    exact_name_single_wrong_T6_baseline_sealed: {mean: 15, std: null, n: 40}
+    exact_name_single_gold_T3_df_sealed: {mean: 35, std: null, n: 40}
+    exact_name_single_wrong_T3_df_sealed: {mean: 0, std: null, n: 40}
+    exact_name_single_gold_T4_df_sealed: {mean: 0, std: null, n: 40}
+    exact_name_single_wrong_T4_df_sealed: {mean: 9, std: null, n: 40}
+    exact_name_single_gold_T5_df_sealed: {mean: 0, std: null, n: 40}
+    exact_name_single_wrong_T5_df_sealed: {mean: 8, std: null, n: 40}
+    exact_name_single_gold_T6_df_sealed: {mean: 0, std: null, n: 40}
+    exact_name_single_wrong_T6_df_sealed: {mean: 5, std: null, n: 40}
+    exact_name_single_gold_T3_struct_sealed: {mean: 39, std: null, n: 40}
+    exact_name_single_wrong_T3_struct_sealed: {mean: 0, std: null, n: 40}
+    exact_name_single_gold_T4_struct_sealed: {mean: 0, std: null, n: 40}
+    exact_name_single_wrong_T4_struct_sealed: {mean: 2, std: null, n: 40}
+    exact_name_single_gold_T5_struct_sealed: {mean: 0, std: null, n: 40}
+    exact_name_single_wrong_T5_struct_sealed: {mean: 3, std: null, n: 40}
+    exact_name_single_gold_T6_struct_sealed: {mean: 0, std: null, n: 40}
+    exact_name_single_wrong_T6_struct_sealed: {mean: 3, std: null, n: 40}
+    review_anchor_recall_at_1_T4_shipped: {mean: 0.3125, std: null, n: 104}
+    review_anchor_recall_at_10_T4_shipped: {mean: 0.6955, std: null, n: 104}
+    review_anchor_recall_at_1_T4_prototype: {mean: 0.1683, std: null, n: 104}
+    review_anchor_recall_at_10_T4_prototype: {mean: 0.5705, std: null, n: 104}
+    review_anchor_recall_at_1_T5_shipped: {mean: 0.5321, std: null, n: 104}
+    review_anchor_recall_at_10_T5_shipped: {mean: 0.8862, std: null, n: 104}
+    review_anchor_recall_at_1_T5_prototype: {mean: 0.3157, std: null, n: 104}
+    review_anchor_recall_at_10_T5_prototype: {mean: 0.7901, std: null, n: 104}
   withdrawn: {}
 baselines_compared: ["shipped tree, --rewrite model_noid_anchored, both flags off"]
 statistical_test: null

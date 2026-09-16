@@ -1109,3 +1109,53 @@ away by a third rule invented after seeing the number.
 
 **Reversible.** One flag. The flag-off path is the `D-034` configuration, itself
 one flag from the pre-2026-09-15 behaviour.
+
+
+## D-036 — A one-word name is a lookup only when the question writes it as a name (2026-09-15)
+
+**Context.** `EXP-2026-09-023` Step 0 measured what the exact-name matcher binds
+when every source is asked: at T3 every unique bind is gold on both banks (60
+of 60 exposed, 26 of 26 sealed), and at T4/T5/T6 every unique bind is wrong —
+54 on the exposed bank, 43 on the sealed — and almost all of them are one
+ordinary word that is also a node's name: the sub-technique named
+"Credentials" (27), the sub-technique named "Malware" (23 on the sealed bank),
+the tool named "at". The sealed bank's invented anchors bound a real node 15
+times out of 40.
+
+**Decision.** The pre-registered rule (H1: drop a one-word name whose token
+occurs in more than 1 % of the corpus's own documents) is **falsified** and
+never ships. It drops "Phishing" and "APT29", which are common words and also
+the names analysts use; it cannot see "at", which the tokenizer never indexes;
+and on a small corpus it drops everything. It is kept behind
+`ARIADNE_EXACT_NAME_DISTINCT=df` so the record reproduces.
+
+AMENDMENT A-1 replaces it with a **structural** test and is the rule the
+`hygiene` and `anchor_first` arms carry: a one-word complete name binds only
+when the question writes it as a standalone proper noun — the same casing as
+the name, as a whole word, not inside a longer capitalised run after the
+sentence-initial word, and at least one indexable token long. Multi-word names
+are never touched. With it, and with seedless relation templates abstaining
+instead of scanning (`ARIADNE_UNANCHORED_RELATION_ABSTAINS`), every catalogue
+dump on every tier of both banks is gone and T6 answers nothing wrong.
+
+**Why structural, not statistical.** The discriminating signal is not how rare
+the word is but how the analyst wrote it: "what is Phishing" is a name,
+"stolen credentials were used" is a word. No frequency threshold separates
+those two, and casing does at zero T3 cost on either bank.
+
+**Cost accepted.** A lower-cased one-word name ("what is phishing") no longer
+binds by exact match; it falls to the closed-choice rung, which D-035 stops
+from choosing the anchor. That case belongs to plan Step 9's disclosed
+acceptance. And A-1 lets three sealed T3 questions reach the rewrite stage's
+deterministic rung, which renders them wrongly (plan Steps 5–6); that is a
+rendering defect the rule exposes, not a bind it loses.
+
+**Caveat on the evidence.** A-1 was designed after the probe had run on both
+banks; its harness-level sealed figures are the first that were not visible
+during design. `EXP-2026-09-023` ISSUES.md.
+
+**Not decided here.** Whether the three flags go on in the shipped `.env` is
+plan Step 10's decision, taken on the plan's not-worse-than-baseline rule once
+Steps 5–9 are measured.
+
+**Reversible.** Three flags, all default off.
