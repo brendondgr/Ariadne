@@ -1,0 +1,26 @@
+{
+ "case_id": "H-D2-uses-G0089-5da300__T3__028",
+ "verdict": "PARTIAL",
+ "correctness": 0.7,
+ "faithfulness": 0.5,
+ "groundedness": 0.5,
+ "completeness": 1.0,
+ "gold_expected": 3,
+ "gold_present": 3,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "G0089 has no USES relationships in this catalogue"
+ ],
+ "rationale": "The answer states all expected identifiers, G0089, S0198, and S0379, so completeness is full. However, it also asserts that G0089 has no USES relationships, which is not supported by the shown evidence and conflicts with presenting S0198 and S0379 as the relevant malware/tools. The claims are tied to the G0089 anchor and MITRE ATT&CK, but the shown logic flow does not explicitly record the S0198/S0379 mappings.",
+ "judge": {
+  "model": "default-model",
+  "alias": "default-model",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 8192,
+  "escalated": false,
+  "position": null
+ }
+}

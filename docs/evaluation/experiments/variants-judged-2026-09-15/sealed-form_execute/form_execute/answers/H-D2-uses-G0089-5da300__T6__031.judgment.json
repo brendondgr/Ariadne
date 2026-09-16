@@ -1,0 +1,26 @@
+{
+ "case_id": "H-D2-uses-G0089-5da300__T6__031",
+ "verdict": "PARTIAL",
+ "correctness": 0.25,
+ "faithfulness": 0.85,
+ "groundedness": 0.6,
+ "completeness": 0.0,
+ "gold_expected": 3,
+ "gold_present": 0,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "the executed query ran cleanly"
+ ],
+ "rationale": "The answer abstains and shows the executed Cypher query, but it filters on G9989 and never states the expected G0089, S0198, or S0379. It is mostly faithful to the zero-record evidence and does not fabricate a cross-source mapping. Because it abstains with the query but misses all gold identifiers, it is partial rather than correct.",
+ "judge": {
+  "model": "default-model",
+  "alias": "default-model",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 8192,
+  "escalated": false,
+  "position": null
+ }
+}

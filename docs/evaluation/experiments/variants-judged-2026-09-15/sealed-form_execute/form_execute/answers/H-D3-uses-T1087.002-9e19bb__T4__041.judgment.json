@@ -1,0 +1,31 @@
+{
+ "case_id": "H-D3-uses-T1087.002-9e19bb__T4__041",
+ "verdict": "INCORRECT",
+ "correctness": 0.1,
+ "faithfulness": 0.4,
+ "groundedness": 0.3,
+ "completeness": 0.0,
+ "gold_expected": 1,
+ "gold_present": 0,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": true,
+ "hallucinations": [
+  "200 result(s) for this question",
+  "CAPEC-1",
+  "CAPEC-10",
+  "CAPEC-100",
+  "CAPEC-101",
+  "CAPEC-102"
+ ],
+ "rationale": "The expected identifier T1087.002 is absent, and the answer only lists CAPEC records such as CAPEC-1 and CAPEC-10. The 558 CAPEC count is supported by evidence_volume, but the 200-result claim and specific CAPEC list are not shown in the evidence. Mapping CAPEC records to the question without T1087.002 or threat-actor grounding is unsupported.",
+ "judge": {
+  "model": "default-model",
+  "alias": "default-model",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 8192,
+  "escalated": false,
+  "position": null
+ }
+}

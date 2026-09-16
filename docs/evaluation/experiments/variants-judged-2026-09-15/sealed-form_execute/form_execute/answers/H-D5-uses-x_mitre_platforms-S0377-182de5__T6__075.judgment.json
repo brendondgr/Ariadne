@@ -1,0 +1,26 @@
+{
+ "case_id": "H-D5-uses-x_mitre_platforms-S0377-182de5__T6__075",
+ "verdict": "PARTIAL",
+ "correctness": 0.3,
+ "faithfulness": 0.8,
+ "groundedness": 0.7,
+ "completeness": 0.0,
+ "gold_expected": 1,
+ "gold_present": 0,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "the executed query ran cleanly"
+ ],
+ "rationale": "The answer abstains for S9977 and shows the executed query, but it never states the expected identifier S0377. Because the gold expectation includes one identifier and the answer states none, completeness is zero. The abstention is grounded in the shown query, but the claim that the query ran cleanly is not independently supported by the evidence.",
+ "judge": {
+  "model": "default-model",
+  "alias": "default-model",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 8192,
+  "escalated": false,
+  "position": null
+ }
+}

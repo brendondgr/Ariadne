@@ -1,0 +1,27 @@
+{
+ "case_id": "H-D3-uses-S1125-25e800__T3__052",
+ "verdict": "PARTIAL",
+ "correctness": 0.55,
+ "faithfulness": 0.45,
+ "groundedness": 0.4,
+ "completeness": 1.0,
+ "gold_expected": 2,
+ "gold_present": 2,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "G0034 is titled Sandworm Team",
+  "G0034 has no USES relationships in this catalogue"
+ ],
+ "rationale": "The answer states both expected identifiers, G0034 and S1125, so completeness is full. However, it only says G0034 is related to S1125 and then asserts G0034 has no USES relationships, which weakens the answer to the asked USES query. The title Sandworm Team and the no-USES claim are not supported by the shown evidence.",
+ "judge": {
+  "model": "default-model",
+  "alias": "default-model",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 8192,
+  "escalated": false,
+  "position": null
+ }
+}

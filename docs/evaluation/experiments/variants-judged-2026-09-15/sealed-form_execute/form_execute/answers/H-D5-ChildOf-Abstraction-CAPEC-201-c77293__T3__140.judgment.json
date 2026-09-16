@@ -1,0 +1,24 @@
+{
+ "case_id": "H-D5-ChildOf-Abstraction-CAPEC-201-c77293__T3__140",
+ "verdict": "CORRECT",
+ "correctness": 0.8,
+ "faithfulness": 0.9,
+ "groundedness": 0.8,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer states the only gold identifier, CAPEC-201, and abstains rather than asserting a Meta-level parent. It shows an executed query that returned CAPEC-201 with no linked records, so the abstention is grounded and not a fabricated cross-source mapping. The query is for PeerOf/ExternalReference rather than an explicit MoreSpecificCaseOf relation, so the answer is not fully direct but still an honest abstention.",
+ "judge": {
+  "model": "default-model",
+  "alias": "default-model",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 16384,
+  "escalated": true,
+  "position": null
+ }
+}

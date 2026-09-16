@@ -1,0 +1,24 @@
+{
+ "case_id": "H-D5-ChildOf-Typical_Severity-CAPEC-407-33cd36__T5__154",
+ "verdict": "CORRECT",
+ "correctness": 1.0,
+ "faithfulness": 1.0,
+ "groundedness": 1.0,
+ "completeness": 1.0,
+ "gold_expected": 0,
+ "gold_present": 0,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The note identifies this as a T6 invented-anchor question, so the expected response is an abstention rather than asserting CAPEC-407 or capec:attack-pattern:407:skill:1. The answer abstains and shows the executed CAPEC query, g.V().hasLabel('AttackPattern').has('id', within(ids)).elementMap().limit(1000), returning no matching records. No cross-source mapping or unsupported identifier is asserted.",
+ "judge": {
+  "model": "default-model",
+  "alias": "default-model",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 8192,
+  "escalated": false,
+  "position": null
+ }
+}

@@ -1,0 +1,26 @@
+{
+ "case_id": "H-D2-subtechnique-of-T1574.012-6aaf34__T3__016",
+ "verdict": "PARTIAL",
+ "correctness": 0.8,
+ "faithfulness": 0.7,
+ "groundedness": 0.8,
+ "completeness": 1.0,
+ "gold_expected": 2,
+ "gold_present": 2,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "T1574 has no subtechniques in this catalogue"
+ ],
+ "rationale": "The answer includes both expected identifiers, T1574 and T1574.012, and identifies COR_PROFILER as T1574.012 with x_mitre_is_subtechnique True. It therefore answers the question by linking COR_PROFILER to T1574. The claim that T1574 has no subtechniques is inconsistent with the stated T1574.012 subtechnique relationship, so faithfulness is reduced.",
+ "judge": {
+  "model": "default-model",
+  "alias": "default-model",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 8192,
+  "escalated": false,
+  "position": null
+ }
+}

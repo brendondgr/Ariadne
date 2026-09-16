@@ -1,0 +1,24 @@
+{
+ "case_id": "H-D2-ChildOf-CAPEC-182-15f8e0__T5__098",
+ "verdict": "PARTIAL",
+ "correctness": 0.2,
+ "faithfulness": 0.8,
+ "groundedness": 0.7,
+ "completeness": 0.0,
+ "gold_expected": 2,
+ "gold_present": 0,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer identifies only the anchor CAPEC-178 and provides details about it, but it never states the expected broader CAPEC techniques CAPEC-137 and CAPEC-182. Its abstention is tied to a HAS_EXECUTION_STEP query rather than the broader-technique relation asked, so it is not a fully valid abstention to the original question. The CAPEC-178 claims appear grounded in the single retrieved record, but completeness is zero because neither gold identifier is present.",
+ "judge": {
+  "model": "default-model",
+  "alias": "default-model",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 8192,
+  "escalated": false,
+  "position": null
+ }
+}

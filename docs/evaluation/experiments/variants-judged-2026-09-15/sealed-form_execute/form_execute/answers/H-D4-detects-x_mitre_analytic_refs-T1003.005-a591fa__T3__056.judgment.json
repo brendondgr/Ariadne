@@ -1,0 +1,26 @@
+{
+ "case_id": "H-D4-detects-x_mitre_analytic_refs-T1003.005-a591fa__T3__056",
+ "verdict": "PARTIAL",
+ "correctness": 0.7,
+ "faithfulness": 0.5,
+ "groundedness": 0.6,
+ "completeness": 1.0,
+ "gold_expected": 4,
+ "gold_present": 4,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "T1003.005 has no DETECTS relationships in this catalogue"
+ ],
+ "rationale": "The answer states all four expected identifiers: T1003.005, DET0513, AN1417, and AN1418. However, it only labels them as related and does not explicitly say that DET0513 addresses T1003.005 or that AN1417 and AN1418 implement DET0513. The unsupported claim that T1003.005 has no DETECTS relationships weakens faithfulness and makes the requested mapping less clear.",
+ "judge": {
+  "model": "default-model",
+  "alias": "default-model",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 8192,
+  "escalated": false,
+  "position": null
+ }
+}

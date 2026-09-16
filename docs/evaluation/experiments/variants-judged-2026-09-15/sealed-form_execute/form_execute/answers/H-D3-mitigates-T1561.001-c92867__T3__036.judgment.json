@@ -1,0 +1,26 @@
+{
+ "case_id": "H-D3-mitigates-T1561.001-c92867__T3__036",
+ "verdict": "PARTIAL",
+ "correctness": 0.7,
+ "faithfulness": 0.5,
+ "groundedness": 0.6,
+ "completeness": 1.0,
+ "gold_expected": 2,
+ "gold_present": 2,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "T1561.001 has no MITIGATES relationships in this catalogue"
+ ],
+ "rationale": "The answer includes both expected identifiers, T1561.001 and M1053, so it is complete with respect to the gold set. It also identifies M1053 as the related item for T1561.001, which addresses the mitigation question. However, the claim that T1561.001 has no MITIGATES relationships conflicts with the executed MITIGATES query and the stated M1053 relation, reducing faithfulness and making the answer only partially correct.",
+ "judge": {
+  "model": "default-model",
+  "alias": "default-model",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 8192,
+  "escalated": false,
+  "position": null
+ }
+}
