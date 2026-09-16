@@ -110,5 +110,6 @@ this file says which number is *current*.
 | [`EXP-2026-09-023`](experiments/EXP-2026-09-023-anchor-hygiene-and-q59/) | 2026-09-15 | `records_exact_T3_anchor_first` | 0.3465 (n=101) | — | — |
 | [`EXP-2026-09-024`](experiments/EXP-2026-09-024-expand-on-unbound-relation/) | 2026-09-15 | `records_recall_T1_expand_unbound_exposed` | 0.5523 (n=120) | — | — |
 | [`EXP-2026-09-025`](experiments/EXP-2026-09-025-direct-form-execution/) | 2026-09-15 | `records_exact_T3_form_execute_exposed` | 0.3762 (n=101) | — | — |
+| [`EXP-2026-09-026`](experiments/EXP-2026-09-026-generic-engine-parity/) | 2026-09-15 | `records_exact_T1_gap_generic_minus_templates_exposed` | -0.0917 (n=120) | — | — |
 
-**24 withdrawn figure(s), 6 superseded experiment(s), 52 current headline(s).**
+**24 withdrawn figure(s), 6 superseded experiment(s), 53 current headline(s).**

@@ -20,8 +20,8 @@ sys.path.insert(0, str(REPO / "docs/research/experiments/EXP-2026-09-023-anchor-
 
 from arm_table import BANKS, TIERS, tier_means  # noqa: E402
 
-ARMS = ("anchor_first", "generic")
-PAIRS = (("anchor_first", "generic"),)
+ARMS = ("anchor_first", "generic", "form_execute", "generic_form")
+PAIRS = (("anchor_first", "generic"), ("form_execute", "generic_form"))
 
 
 def main() -> int:
@@ -76,7 +76,7 @@ def main() -> int:
     # per-category paired counts on the exposed bank (case id's middle token)
     cat_lines = ["| category | n | templates only | generic only | both | neither |", "|---|---:|---:|---:|---:|---:|"]
     ex = BANKS["exposed"]
-    a_path, g_path = ex / "scored_anchor_first.json", ex / "scored_generic.json"
+    a_path, g_path = ex / "scored_form_execute.json", ex / "scored_generic_form.json"
     if a_path.exists() and g_path.exists():
         a = {(r["case_id"], r["question"]): r for r in json.loads(a_path.read_text())}
         g = {(r["case_id"], r["question"]): r for r in json.loads(g_path.read_text())}
@@ -96,7 +96,14 @@ def main() -> int:
     (EXP / "tables/by_category.md").write_text("\n".join(cat_lines) + "\n")
     (EXP / "tables/arms.md").write_text("\n".join(a_lines) + "\n")
     (EXP / "tables/paired.md").write_text("\n".join(p_lines) + "\n")
-    (EXP / "data/metrics.json").write_text(json.dumps({"arms": arms, "paired": paired}, indent=2) + "\n")
+    gaps = {}
+    for bank in arms:
+        if "form_execute" in arms[bank] and "generic_form" in arms[bank]:
+            for tier in ("T1", "T2", "T3"):
+                if tier in arms[bank]["form_execute"] and tier in arms[bank]["generic_form"]:
+                    gaps[f"records_exact_{tier}_gap_generic_minus_templates_{bank}"] = round(
+                        arms[bank]["generic_form"][tier]["records_exact"] - arms[bank]["form_execute"][tier]["records_exact"], 4)
+    (EXP / "data/metrics.json").write_text(json.dumps({"arms": arms, "paired": paired, "gaps": gaps}, indent=2) + "\n")
     print("\n".join(a_lines)); print(); print("\n".join(p_lines))
     return 0
 
