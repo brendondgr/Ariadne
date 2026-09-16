@@ -408,7 +408,7 @@ from pathlib import Path  # noqa: E402
 import pytest as _pytest  # noqa: E402
 
 from utils.planner.canonical import deterministic_fill  # noqa: E402
-from utils.planner.cards import load_source_cards  # noqa: E402
+from utils.planner.cards import SourceCardView, load_source_cards  # noqa: E402
 
 _REPO = Path(__file__).resolve().parents[3]
 _HAS_SNAPSHOT = (_REPO / "data" / "graphs" / "attack" / "canonical" / "nodes.jsonl").exists()
@@ -776,3 +776,49 @@ def test_an_unreadable_question_binds_nothing() -> None:
     )
     assert slots.property is None and slots.filter is None
     assert not RequestedSlots().any_bound()
+
+
+def test_an_opaque_identifier_is_not_cited_the_name_is(monkeypatch) -> None:
+    """A card-backed graph whose ids the resolver cannot read keeps its name.
+
+    Synapse ids are ``node-<hash>``: no rung of the resolver's ladder matches
+    them, so a canonical form that cited one would send the specialist a
+    string it can only treat as a (non-matching) name. The exact-name lookup
+    still binds the anchor — as the title it matched on.
+    """
+    from utils.planner import canonical
+    from utils.specialists.schema import namesearch
+    from utils.specialists.schema.namesearch import Candidate
+
+    card = SourceCardView.from_card_dict({
+        "dataset": "mnp-cs-03000-r2",
+        "runtime_backend": "neo4j",
+        "node_labels": ["PolymerType", "MolecularMarker", "Condition"],
+        "relationship_types": ["affects_marker", "leads_to"],
+        "node_properties": {},
+        "safety": {"allowed_edge_patterns": {
+            "affects_marker": [["PolymerType", "MolecularMarker"]],
+            "leads_to": [["MolecularMarker", "Condition"]],
+        }},
+        "provenance": {"source_name": "Synapse graph mnp-cs-03000-r2", "id_scheme": "opaque"},
+        "entity_descriptions": {"nodes": {}, "relationships": {}},
+    })
+    cards = {"mnp-cs-03000-r2": card}
+    # deterministic_fill imports the lookup locally, so patch its home module.
+    monkeypatch.setattr(
+        namesearch, "exact_name_matches",
+        lambda dataset, question, **_: [
+            Candidate(entity_id="node-64deb8c7c15d77a4", label="PolymerType",
+                      name="Polystyrene", score=1.0)
+        ] if "polystyrene" in question.lower() else [],
+    )
+    form = deterministic_fill("What molecular markers does Polystyrene affect?", cards)
+    assert form.anchors == ()
+    assert form.anchor_titles == ("Polystyrene",)
+    assert form.anchor_labels == ("PolymerType",)
+    assert form.sources["anchors"] == "exact-name"
+    # The anchor slot is bound (by title); other slots depend on the schema
+    # registry, which has no canonical files for this graph in a unit test.
+    assert "anchors" not in form.unbound
+    rendered = canonical.render(form, cards)
+    assert "Polystyrene" in rendered and "node-64deb8c7c15d77a4" not in rendered

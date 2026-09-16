@@ -806,7 +806,20 @@ def deterministic_fill(
             # complete-name match is a lookup that supplies one. Leaving the
             # anchor as a title instead put the canonical question back on the
             # resolver's fuzzy rung for no reason.
-            anchors = (exact[0].entity_id,) if exact[0].entity_id else ()
+            #
+            # Only when the resolver can read that id back out of the text,
+            # though. Its ladder owns the MITRE families (T-ids, CAPEC-, CWE-)
+            # and nothing else; a Synapse graph's ``node-<hash>`` id is not
+            # in any of them, so citing it would strand the anchor on a string
+            # no rung matches (2026-09-16: "polymer type node-64deb8c7…" ran
+            # ``describe_by_name`` over the id and returned nothing). The name
+            # is then the anchor, at the exact-name rung the same lookup just
+            # proved will hit.
+            entity_id = exact[0].entity_id or ""
+            citable = bool(entity_id) and entity_id.upper() in {
+                found.upper() for found in _ids_in(entity_id, primary)
+            }
+            anchors = (entity_id,) if citable else ()
             anchor_titles = (exact[0].name,)
             anchor_labels = (exact[0].label,) if exact[0].label else ()
             sources[SLOT_ANCHORS] = "exact-name"

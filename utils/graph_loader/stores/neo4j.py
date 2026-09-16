@@ -140,7 +140,18 @@ def unpack_properties(properties_json: Any) -> dict[str, Any]:
 
 
 def relationship_merge_cypher(edge: dict[str, Any]) -> tuple[str, dict[str, Any]]:
-    """Build a parameterized MERGE statement for one canonical edge."""
+    """Build a parameterized MERGE statement for one canonical edge.
+
+    The merge is keyed on the canonical edge ``id``, not on the
+    ``(source, type, target)`` triple. Until 2026-09-16 it was the triple with
+    ``SET r.id`` afterwards, which is the same graph for ATT&CK and CAPEC —
+    neither has two edges of one type between one pair of nodes, and every
+    edge id is unique — but silently collapsed the 93 parallel edges of a
+    Synapse graph whose extractor records one edge per supporting passage
+    (2,039 relationships landed where the manifest expected 2,132). Keying on
+    the id keeps the load idempotent for every store loaded so far, since
+    each existing relationship already carries the ``id`` it was written with.
+    """
     rel_type = _sanitize_rel_type(edge["type"])
     params = {
         "id": edge["id"],
@@ -150,7 +161,7 @@ def relationship_merge_cypher(edge: dict[str, Any]) -> tuple[str, dict[str, Any]
     query = (
         "MATCH (a {id: $source_id}) "
         "MATCH (b {id: $target_id}) "
-        f"MERGE (a)-[r:{rel_type}]->(b) SET r.id = $id"
+        f"MERGE (a)-[r:{rel_type} {{id: $id}}]->(b)"
     )
     return query, params
 

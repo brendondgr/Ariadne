@@ -37,8 +37,21 @@ def test_relationship_merge_cypher() -> None:
         "target_id": "b",
     }
     query, params = relationship_merge_cypher(edge)
-    assert "MERGE (a)-[r:USES]->(b)" in query
-    assert params["source_id"] == "a"
+    assert "MERGE (a)-[r:USES {id: $id}]->(b)" in query
+    assert params == {"id": "e1", "source_id": "a", "target_id": "b"}
+
+
+def test_parallel_edges_of_one_type_merge_to_distinct_relationships() -> None:
+    """Two canonical edges of the same type between the same pair are two
+    relationships, distinguished by id — a Synapse graph records one edge per
+    supporting passage, and a merge keyed on the triple collapsed them."""
+    first = {"id": "e1", "type": "affects_marker", "source_id": "a", "target_id": "b"}
+    second = dict(first, id="e2")
+    q1, p1 = relationship_merge_cypher(first)
+    q2, p2 = relationship_merge_cypher(second)
+    assert q1 == q2  # same statement shape …
+    assert "{id: $id}" in q1  # … keyed on the id parameter …
+    assert p1["id"] != p2["id"]  # … which differs, so MERGE creates both
 
 
 def test_parse_constraints_cypher(tmp_path) -> None:
@@ -74,14 +87,14 @@ def test_capecs_own_relationship_names_are_accepted(rel_type: str) -> None:
     query, _ = relationship_merge_cypher(
         {"id": "e1", "type": rel_type, "source_id": "a", "target_id": "b"}
     )
-    assert f"MERGE (a)-[r:{rel_type}]->(b)" in query
+    assert f"MERGE (a)-[r:{rel_type} {{id: $id}}]->(b)" in query
 
 
 def test_this_repos_own_relationship_names_still_pass() -> None:
     query, _ = relationship_merge_cypher(
         {"id": "e1", "type": "EXPLOITS_WEAKNESS", "source_id": "a", "target_id": "b"}
     )
-    assert "MERGE (a)-[r:EXPLOITS_WEAKNESS]->(b)" in query
+    assert "MERGE (a)-[r:EXPLOITS_WEAKNESS {id: $id}]->(b)" in query
 
 
 @pytest.mark.parametrize(
