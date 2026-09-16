@@ -93,6 +93,42 @@ services:
       retries: 30
       start_period: 30s
 
+  # A store for an IMPORTED graph: one that arrived as a source card plus
+  # canonical artifacts rather than being built here — a Synapse
+  # `export-ariadne` directory, for one. Same reasoning as the two above: Neo4j
+  # Community serves one database per instance, and an imported graph shares
+  # no labels with ATT&CK, so loading it into `neo4j` would put foreign labels
+  # beside the ones every measured arm queries. Name it to the planner with
+  # `ARIADNE_ENDPOINT_<DATASET>=bolt://localhost:${NEO4J_EXTERNAL_BOLT_PORT}`
+  # (hyphens in the dataset name become underscores in the variable).
+  #
+  # One instance, so one imported graph at a time; a second needs a copy of
+  # this block on its own ports. Started only when asked for:
+  #   docker compose --profile external up -d neo4j-external
+  neo4j-external:
+    profiles:
+      - external
+    image: neo4j:${NEO4J_VERSION:-5.26}
+    container_name: ariadne-neo4j-external
+    restart: unless-stopped
+
+    ports:
+      - "${NEO4J_EXTERNAL_HTTP_PORT:-5462}:7474"   # Browser
+      - "${NEO4J_EXTERNAL_BOLT_PORT:-5461}:7687"   # Bolt
+
+    environment:
+      NEO4J_AUTH: ${NEO4J_AUTH:-neo4j/password}
+
+    volumes:
+      - ./neo4j-external/data:/data
+
+    healthcheck:
+      test: ["CMD-SHELL", "wget --no-verbose --tries=1 --spider http://localhost:7474 || exit 1"]
+      interval: 5s
+      timeout: 5s
+      retries: 30
+      start_period: 30s
+
   gremlin:
     image: tinkerpop/gremlin-server:${GREMLIN_VERSION:-3.8.0}
     container_name: ariadne-gremlin

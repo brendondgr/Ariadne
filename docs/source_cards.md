@@ -276,6 +276,57 @@ routing quality, and safety specificity. The full walkthrough for standing up
 the specialist behind such a card is
 [`migration-guide.md`](migration-guide.md).
 
+## Importing an external canonical graph
+
+A graph built elsewhere in the same canonical contract — Synapse's
+`export-ariadne` command writes one — becomes a source by being copied in.
+The card is the whole registration: the loader accepts any dataset that has a
+card (`utils/graph_loader/config.py` `is_supported_dataset`), the planner
+discovers it the way it discovers the built-ins, and the specialist is chosen
+by the card's `runtime_backend`, never by name (`utils/specialists/__init__.py`
+`build_specialist`). Load validation reads labels, relationship types and legal
+edge patterns from the shipped `schema.json` (`relationship_endpoints`), so an
+import fails on a real defect — unknown label, dangling edge — and not on its
+name.
+
+What the export directory must contain, with every path relative to the
+parent of Ariadne's data directory (they start with `data/`):
+
+```
+graphs/<dataset>/canonical/{nodes.jsonl,relationships.jsonl,schema.json,manifest.json}
+graphs/<dataset>/exports/neo4j/{nodes.csv,relationships.csv,schema.cypher,constraints.cypher}
+graphs/<dataset>/exports/gremlin/{nodes.jsonl,relationships.jsonl}
+source_cards/<dataset>.json
+```
+
+`schema.json` carries `dataset`, `node_labels`, `relationship_types`,
+`node_properties` (the per-label inventory this repository's own builds write)
+and `relationship_endpoints`. `manifest.json` carries `counts` (`nodes`,
+`relationships`, `nodes_by_label`, `relationships_by_type`), `canonical` and
+`exports` with files named by role (`nodes_csv`, `constraints_cypher`, ...).
+The card has the generated field set above with `endpoints` empty; `safety`,
+`provenance` and `entity_descriptions` may be authored or left for enrichment
+to fill from the backend defaults.
+
+The procedure, for a dataset named `<dataset>`:
+
+1. Copy the export's contents into `data/` (`graphs/<dataset>/` and
+   `source_cards/<dataset>.json`).
+2. Give it its own store: `docker compose --profile external up -d neo4j-external`
+   (bolt 5461 by default; see `.env.example`).
+3. Load and verify:
+   `NEO4J_URI=bolt://localhost:5461 uv run main.py --dataset <dataset> --graph neo4j`,
+   then `--graph verify`.
+4. Route the planner to that store, not ATT&CK's:
+   `ARIADNE_ENDPOINT_<DATASET>=bolt://localhost:5461` in `.env` (upper-case,
+   hyphens as underscores).
+5. Ask. The graph answers through the generic `describe`/`expand` path;
+   anchors resolve by name, since an imported graph has no MITRE identifier
+   scheme, and no cross-source join key is declared for it.
+
+Removing it is the reverse: delete the two copied paths, stop the container
+and remove `docker/neo4j-external/`.
+
 ## Key files
 
 | Concern | Location |

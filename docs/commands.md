@@ -50,6 +50,8 @@ cd web && npm install
 | `uv run main.py --dataset attack --graph verify` | Validate already-loaded data |
 | `uv run main.py --dataset attack --graph fixture-qa` | Reconcile raw == manifest == live, plus referential integrity |
 | `uv run main.py --graph-stop neo4j\|gremlin\|all` | Stop a backend container without removing it |
+| `docker compose -f docker/docker-compose.yml --profile external up -d neo4j-external` | Start the store for an imported graph (bolt 5461) |
+| `NEO4J_URI=bolt://localhost:5461 uv run main.py --dataset <dataset> --graph neo4j` | Load any dataset that has a source card under `data/source_cards/` — e.g. a Synapse `export-ariadne` directory copied into `data/` (see `docs/source_cards.md`) |
 | `uv run main.py --neo4j-login` | Write Neo4j credentials into `.env` (`--neo4j-uri/-user/-password` skip the prompts) |
 
 ## Everything at once
