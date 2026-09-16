@@ -68,7 +68,7 @@ def _dispatch(action: str, **kw: Any) -> dict[str, Any]:
         if not dataset or not graph:
             raise ValueError("graph-load requires both 'dataset' and 'graph'")
         if dataset == "all":
-            raise ValueError("dataset 'all' is not supported yet; use attack or capec")
+            raise ValueError("dataset 'all' is not supported yet; name one dataset")
         run_graph_command(dataset=dataset, graph=graph)
         return {}
     if action == "graph-verify":

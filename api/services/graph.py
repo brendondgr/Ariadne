@@ -13,11 +13,22 @@ from typing import Any
 
 from utils.graph_loader.config import LoaderConfig
 
-# Mapping from dataset name to the backend label surfaced in the API response.
+from utils.planner.cards import load_card_backends
+
+# Fallback backend labels for the built-ins when no card is on disk.
 _DATASET_BACKEND: dict[str, str] = {
     "attack": "neo4j",
     "capec": "gremlin",
 }
+
+
+def dataset_backend(dataset: str, config: LoaderConfig) -> str:
+    """The backend label for ``dataset``: its card's ``runtime_backend``, else
+    the built-in fallback, else ``"unknown"``."""
+    return (
+        load_card_backends(config.data_dir).get(dataset)
+        or _DATASET_BACKEND.get(dataset, "unknown")
+    )
 
 _DESC_PREVIEW_LEN = 280
 
@@ -121,7 +132,7 @@ def load_canonical_graph(
 
     return {
         "dataset": dataset,
-        "backend": _DATASET_BACKEND.get(dataset, "unknown"),
+        "backend": dataset_backend(dataset, config),
         "counts": counts,
         "nodes_by_label": nodes_by_label,
         "nodes": nodes,

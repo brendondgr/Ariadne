@@ -369,9 +369,14 @@ AdminAction = Literal[
 ]
 
 
+#: A dataset name: the built-ins, ``all``, or any dataset that has a source
+#: card (a Synapse ``export-ariadne`` directory, say). Lower-case, path-safe.
+DATASET_NAME_PATTERN = r"^[a-z0-9_-]+$"
+
+
 class AdminActionRequest(BaseModel):
     action: AdminAction
-    dataset: Literal["attack", "capec", "all"] | None = None
+    dataset: str | None = Field(default=None, pattern=DATASET_NAME_PATTERN)
     graph: Literal["neo4j", "gremlin", "all"] | None = None
     force: bool = False
     dry_run: bool = False
@@ -383,7 +388,9 @@ class AdminActionRequest(BaseModel):
 # Graph visualization — canonical file-based graph payload.
 # ---------------------------------------------------------------------------
 
-GraphDataset = Literal["attack", "capec"]
+#: Any card-backed dataset name (validated against DATASET_NAME_PATTERN at
+#: the route); the service answers 404 when its canonical files are absent.
+GraphDataset = str
 
 
 class GraphNodeModel(BaseModel):

@@ -971,6 +971,8 @@ export type QueryEvent =
       data: {
         sub_question: string;
         source: string;
+        /** The source card's runtime backend; the lane to file this run under. */
+        backend?: string | null;
         index: number;
         total: number;
         seed_count: number;
@@ -1023,7 +1025,8 @@ export type AdminAction =
 
 export interface AdminActionBody {
   action: AdminAction;
-  dataset?: "attack" | "capec" | "all";
+  /** A built-in name, "all", or any dataset with a source card. */
+  dataset?: string;
   graph?: "neo4j" | "gremlin" | "all";
   force?: boolean;
   dry_run?: boolean;

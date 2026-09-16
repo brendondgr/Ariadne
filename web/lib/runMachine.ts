@@ -137,10 +137,28 @@ export interface RunMachine {
   renameConversation: (id: string, title: string) => Promise<void>;
 }
 
-function backendOf(result: SpecialistResult): "neo4j" | "gremlin" {
+/** The lane a source runs in. The event's `backend` (from the source card) wins;
+ *  without it, the two built-ins keep their historical lanes and any other
+ *  source defaults to Neo4j. */
+function laneBackend(hint: string | null | undefined, source: string): "neo4j" | "gremlin" {
+  if (hint === "neo4j" || hint === "gremlin") return hint;
+  return source === "capec" ? "gremlin" : "neo4j";
+}
+
+function backendOf(
+  result: SpecialistResult,
+  laneMeta: ConversationAccumulator["laneMeta"],
+): "neo4j" | "gremlin" {
   const prov = result.records.find((r) => r.provenance)?.provenance;
   if (prov?.backend === "neo4j" || prov?.backend === "gremlin") return prov.backend;
-  return result.task.source === "capec" ? "gremlin" : "neo4j";
+  // No records to read it from: the lane its start event was filed under.
+  for (const [laneId, meta] of Object.entries(laneMeta)) {
+    if (meta.subQuestion === result.task.sub_question_id && meta.arrivedMs === null) {
+      const backend = laneId.replace(/^lane-/, "");
+      if (backend === "neo4j" || backend === "gremlin") return backend;
+    }
+  }
+  return laneBackend(null, result.task.source);
 }
 
 /** Evidence stand-in while specialists are still streaming (lanes appear live). */
@@ -281,7 +299,7 @@ export function applyConversationEvent(
       acc.route = event.data.decision;
       break;
     case "specialist-start": {
-      const backend = event.data.source === "capec" ? "gremlin" : "neo4j";
+      const backend = laneBackend(event.data.backend, event.data.source);
       acc.laneMeta[`lane-${backend}`] = {
         subQuestion: event.data.sub_question,
         startedMs: receivedMs,
@@ -297,7 +315,7 @@ export function applyConversationEvent(
     }
     case "specialist": {
       acc.results.push(event.data.result);
-      const backend = backendOf(event.data.result);
+      const backend = backendOf(event.data.result, acc.laneMeta);
       const laneId = `lane-${backend}`;
       const arrivalOrder = acc.results.length;
       const started = acc.laneMeta[laneId];

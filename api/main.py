@@ -10,7 +10,10 @@ from __future__ import annotations
 
 from datetime import datetime, timezone
 
+from typing import Annotated
+
 from fastapi import FastAPI, HTTPException
+from fastapi import Path as PathParam
 from fastapi.responses import StreamingResponse
 
 from utils.config import load_env
@@ -28,6 +31,7 @@ from .models import (
     DockerStateModel,
     EvalRunRequest,
     EvaluationReportResponse,
+    DATASET_NAME_PATTERN,
     GraphDataset,
     GraphPayloadResponse,
     HealthResponse,
@@ -247,7 +251,9 @@ def post_admin(request: AdminActionRequest) -> StreamingResponse:
 
 
 @app.get("/api/graph/{dataset}", response_model=GraphPayloadResponse)
-def get_graph(dataset: GraphDataset) -> GraphPayloadResponse:
+def get_graph(
+    dataset: Annotated[GraphDataset, PathParam(pattern=DATASET_NAME_PATTERN)],
+) -> GraphPayloadResponse:
     """Return nodes and edges from the canonical graph files for visualization."""
     try:
         payload = load_canonical_graph(dataset)

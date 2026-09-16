@@ -158,6 +158,33 @@ def assert_card_consistency(view: SourceCardView) -> None:
         )
 
 
+def load_card_backends(data_dir: str | Path = "data") -> dict[str, str]:
+    """``{dataset: runtime_backend}`` for every card under ``<data_dir>/source_cards``.
+
+    A plain JSON read with no enrichment or consistency check, for callers that
+    only need to label a source with its backend (the API's graph and query
+    services). A card that cannot be parsed is skipped, not raised — labelling
+    must never take the answer stream down.
+    """
+    cards_dir = Path(data_dir) / "source_cards"
+    backends: dict[str, str] = {}
+    if not cards_dir.is_dir():
+        return backends
+    for card_path in sorted(cards_dir.glob("*.json")):
+        if card_path.name.endswith(".overlay.json"):
+            continue
+        try:
+            with open(card_path, encoding="utf-8") as f:
+                raw = json.load(f)
+        except (OSError, ValueError):
+            continue
+        dataset = str(raw.get("dataset") or card_path.stem).lower()
+        backend = str(raw.get("runtime_backend") or "").lower()
+        if dataset and backend:
+            backends[dataset] = backend
+    return backends
+
+
 def load_source_cards(
     data_dir: str | Path = "data",
     *,

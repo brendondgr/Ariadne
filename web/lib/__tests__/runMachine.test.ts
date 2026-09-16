@@ -191,6 +191,38 @@ describe("applyConversationEvent: graph path", () => {
     expect(run.lanes.map((l) => l.id)).toEqual(["lane-neo4j"]);
   });
 
+  it("files a specialist-start under the lane its backend hint names, not its source name", () => {
+    const acc = emptyAccumulator("What does Polystyrene lead to?", "query", "deterministic");
+    const start = {
+      sub_question: "sq-9",
+      index: 1,
+      total: 1,
+      seed_count: 0,
+      producer: null,
+      skipped: null,
+    };
+    // A third, card-backed source declares gremlin: it must not land in the Neo4j lane.
+    applyConversationEvent(acc, {
+      type: "specialist-start",
+      data: { ...start, source: "mygraph", backend: "gremlin" },
+    } as QueryEvent, 10);
+    expect(acc.laneMeta["lane-gremlin"]?.subQuestion).toBe("sq-9");
+    expect(acc.laneMeta["lane-neo4j"]).toBeUndefined();
+
+    // Without a hint the built-ins keep their historical lanes.
+    const legacy = emptyAccumulator("q", "query", "deterministic");
+    applyConversationEvent(legacy, {
+      type: "specialist-start",
+      data: { ...start, source: "capec" },
+    } as QueryEvent, 10);
+    expect(legacy.laneMeta["lane-gremlin"]?.subQuestion).toBe("sq-9");
+    applyConversationEvent(legacy, {
+      type: "specialist-start",
+      data: { ...start, sub_question: "sq-10", source: "attack" },
+    } as QueryEvent, 11);
+    expect(legacy.laneMeta["lane-neo4j"]?.subQuestion).toBe("sq-10");
+  });
+
   it("folds the iterative-retrieval assess verdict and records the hop", () => {
     const acc = emptyAccumulator("Which techniques do these CAPEC patterns map to?", "query", "deterministic");
     expect(acc.hop).toBe(1);

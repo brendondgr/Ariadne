@@ -43,6 +43,14 @@ from utils.specialists.federation import (
 NodeFn = Callable[[PipelineState], dict[str, Any]]
 
 
+def _backend_of(source: str, cards: dict[str, Any]) -> str | None:
+    """The backend a source's card declares, so a UI can pick the lane without
+    guessing from the source name (a third source would otherwise be misfiled)."""
+    card = cards.get(source)
+    backend = getattr(card, "runtime_backend", None)
+    return str(backend) if backend else None
+
+
 def specialist_for(
     source: str,
     cards: dict[str, Any],
@@ -167,6 +175,7 @@ def build_nodes(
                     producer_id=producer_id, reason=reason,
                 )
                 writer(("specialist-start", {"sub_question": sq.id, "source": sq.source,
+                                             "backend": _backend_of(sq.source, cards),
                                              "index": index, "total": total,
                                              "seed_count": 0, "producer": producer_id,
                                              "skipped": reason}))
@@ -184,6 +193,7 @@ def build_nodes(
 
         # Announce the run the moment it is true — before the blocking call.
         writer(("specialist-start", {"sub_question": sq.id, "source": sq.source,
+                                     "backend": _backend_of(sq.source, cards),
                                      "index": index, "total": total,
                                      "seed_count": len(seed_ids),
                                      "producer": producer_id, "skipped": None}))

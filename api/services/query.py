@@ -34,8 +34,22 @@ from utils.specialists.federation import FederatedEvidence
 
 logger = logging.getLogger("ariadne.api.query")
 
-# Fallback source→backend map when a result carries no records to read it from.
+# Fallback source→backend map when a result carries no records to read it from
+# and no card is on disk for the source.
 _SOURCE_BACKENDS = {"attack": "neo4j", "capec": "gremlin"}
+
+
+def _backend_for_source(source: str) -> str:
+    """A source's backend label: its card's ``runtime_backend``, else the
+    built-in fallback, else the source name itself (never an exception)."""
+    try:
+        from utils.graph_loader.config import LoaderConfig
+        from utils.planner.cards import load_card_backends
+
+        backend = load_card_backends(LoaderConfig.from_data_dir().data_dir).get(source)
+    except Exception:  # labelling must never take the stream down
+        backend = None
+    return backend or _SOURCE_BACKENDS.get(source, source)
 
 # How many record ids to attach to an answer section as inline citations.
 _MAX_CITATIONS = 8
@@ -78,7 +92,7 @@ def _section_backend(result: SpecialistResult) -> str:
     for record in result.records:
         if record.provenance is not None:
             return record.provenance.backend
-    return _SOURCE_BACKENDS.get(result.task.source, result.task.source)
+    return _backend_for_source(result.task.source)
 
 
 def _answer_sections(results: list[SpecialistResult]) -> list[dict[str, Any]]:
@@ -131,7 +145,7 @@ def _plan_answer(plan: Any) -> dict[str, Any]:
     sections = [
         {
             "source": sq.source,
-            "backend": _SOURCE_BACKENDS.get(sq.source, sq.source),
+            "backend": _backend_for_source(sq.source),
             "ok": True,
             "partial": False,
             "summary": f"Routed to {sq.source}: {sq.text}",

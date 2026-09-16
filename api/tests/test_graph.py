@@ -2,7 +2,8 @@
 
 Tests cover:
 - Correct response shape when the service returns a fixture payload.
-- 422 for unknown dataset values (Literal type enforcement).
+- 404 for an unknown dataset name; 422 for a malformed one (pattern enforcement).
+- Any card-backed dataset name reaches the service (no Literal gate).
 - 404 when the service raises FileNotFoundError.
 - Optional integration test against real canonical files (skipped if absent).
 """
@@ -90,9 +91,31 @@ def test_graph_capec_backend_label(monkeypatch: pytest.MonkeyPatch) -> None:
 
 
 def test_graph_unknown_dataset_404_or_422() -> None:
-    """Unknown dataset identifiers are rejected at the route level (422)."""
+    """An unknown but well-formed name reaches the service and is a 404."""
     resp = client.get("/api/graph/bogus")
     assert resp.status_code in (404, 422)
+
+
+def test_graph_malformed_dataset_name_422() -> None:
+    """Names outside [a-z0-9_-] never reach the filesystem."""
+    resp = client.get("/api/graph/Bad%20Name")
+    assert resp.status_code == 422
+
+
+def test_graph_card_backed_dataset_reaches_service(monkeypatch: pytest.MonkeyPatch) -> None:
+    """A Synapse-exported dataset name is served like the built-ins."""
+    fixture = dict(_FIXTURE_PAYLOAD, dataset="mnp-cs-03000-r2", backend="neo4j")
+    seen: dict[str, str] = {}
+
+    def fake(dataset: str):
+        seen["dataset"] = dataset
+        return fixture
+
+    monkeypatch.setattr(main, "load_canonical_graph", fake)
+    resp = client.get("/api/graph/mnp-cs-03000-r2")
+    assert resp.status_code == 200
+    assert seen == {"dataset": "mnp-cs-03000-r2"}
+    assert resp.json()["backend"] == "neo4j"
 
 
 def test_graph_missing_files_404(monkeypatch: pytest.MonkeyPatch) -> None:

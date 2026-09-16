@@ -86,7 +86,7 @@ QUERY_MODE_GOLDEN = [
 PAYLOAD_KEYS = {
     "probe": {"live_view"},
     "plan": {"plan"},
-    "specialist-start": {"sub_question", "source", "index", "total",
+    "specialist-start": {"sub_question", "source", "backend", "index", "total",
                          "seed_count", "producer", "skipped"},
     "specialist": {"result", "index", "total"},
     "evidence": {"evidence"},
