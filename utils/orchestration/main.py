@@ -199,6 +199,10 @@ def build_pipeline_graph(
             }))
         t0 = time.monotonic()
         answer = synthesize(evidence, config)
+        # EXP-2026-09-028: a model-chosen anchor is announced on the first line.
+        from utils.synthesis.disclosure import apply_disclosure
+
+        answer = apply_disclosure(answer, getattr(plan, "rewrite", None))
         synthesis_ms = round((time.monotonic() - t0) * 1000, 3)
         run.timings["synthesis_ms"] = synthesis_ms
         run.answer = answer

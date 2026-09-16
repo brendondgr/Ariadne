@@ -1,0 +1,83 @@
+# Filled by scripts/new_experiment.py. Every field below is required unless
+# marked optional. Do not delete a field you do not know — record it as null or
+# "unknown" and explain in ISSUES.md. Inventing a value is worse than admitting
+# a gap.
+id: EXP-2026-09-027
+slug: relation-lexicon-from-glosses
+title: "A relation lexicon generated once from each card's glosses, read deterministically at query time (plan Step 8)"
+status: running            # planned | running | complete | failed | superseded
+date_started: 2026-09-15
+date_completed: null       # null until status is complete/failed
+authors: ["brendondgr", "Claude Opus 5"]
+
+purpose: >
+  54 of the exposed bank's 172 T1/T2 misses bind the anchor and no relation
+  because the card carries one gloss sentence per relationship and none of
+  the analyst's verbs. This generates, once and offline, the words an analyst
+  uses for each declared relationship from the card's own gloss and endpoints,
+  filters them against every routing token, commits them, and reads them
+  through the existing gloss index. Bears on the T1/T2 exact target and on
+  portability: any card with glosses gets the same treatment.
+
+hypothesis: >
+  H1 exposed: T1/T2 records_exact +>= 0.05 each over form_execute, relation-
+  unbound T1/T2 rows 54 -> <= 20, wrong_entity / catalogue_dump / T6
+  unchanged; sealed T3 within -0.02 with no guard rising. Falsifiers in
+  PROTOCOL.md.
+
+# --- Reproducibility block (all fields mandatory) ---
+code:
+  commit: 48acff3d6c7cdc3d9902023811acba460d819f05          # 40-char sha, or "unknown" for a back-filled experiment
+  branch: main
+  entrypoint: "uv run python scripts/generate_relation_lexicon.py --dataset attack --dataset capec; uv run python scripts/variant_harness.py compare --rewrite paraphrases --workers 32 --llm-timeout-s 600 --pipeline-timeout-s 600"
+  dirty: true             # run from the working tree, committed without change (ISSUES.md)
+config:
+  path: null               # repo-relative path, or null if the run takes no config file
+  hash: null               # sha256:... of that file
+data:
+  name: exposed bank variants-2026-08-29 (579) + sealed bank variants-holdout-2026-09 (160)
+  version: as EXP-2026-09-023
+  split: exposed = development; sealed = confirmation
+  n_examples: 739
+  dvc_path: null           # this repository does not use DVC; leave null
+  hash: sha256:f50ddaa628f892ee2498c19662a4a42bf1c4589dad6361d4003233011ab578ce   # sealed variants.json
+seeds: []                  # [] means seeds were not recorded — say so in ISSUES.md
+n_runs: 1                  # SYSTEM runs over the question set — grading passes are not runs
+environment:
+  python: "3.13"
+  lockfile: env/requirements.lock
+  container: null
+compute:
+  hardware: "32-core x86_64 host, 121 GB RAM; Neo4j + Gremlin local; local model on :9090 (30 generation calls + the rewrite rung)"
+  wall_clock_hours: 0.0
+  estimated_cost_usd: 0.0
+
+# --- LLM / agentic block (delete entirely if no model was in the loop) ---
+llm:
+  model: "relay/qwen38-27B-v2@2026-09-15"
+  temperature: 0.0
+  top_p: 1.0
+  max_tokens: 2048
+  prompt_files: ["scripts/generate_relation_lexicon.py"]
+  prompt_hash: null
+  tool_schema_hash: null
+  total_input_tokens: null
+  total_output_tokens: null
+  nondeterminism_note: >
+    Provider-side nondeterminism remains even at temperature 0; results
+    are reported as mean ± std over n_runs.
+
+# --- Results block ---
+metrics:
+  primary: records_exact_T1_paraphrases_exposed
+  values: {}               # {metric: {mean: 0.0, std: 0.0, n: 1}} — must be non-empty when status: complete
+  withdrawn: {}            # values later retracted by amendment: {metric: {mean, std, n, withdrawn_on, reason, replaced_by}}
+baselines_compared: ["EXP-2026-09-025 form_execute arm, both banks"]
+statistical_test: null
+
+# --- Linkage ---
+supports_claims: []        # every ID here must exist in ../../CLAIMS.md
+figures: []                # every name here must have a file in figures/ and vice versa
+supersedes: null           # set in BOTH manifests or in neither; the validator checks symmetry
+superseded_by: null
+related: ["EXP-2026-09-025", "EXP-2026-09-023"]

@@ -146,7 +146,56 @@ def _concept_indexes(card: SourceCardView) -> tuple[dict[str, set[str]], dict[st
                     # stores surface forms. Stemming both sides connects them.
                     for key in index_keys(tok):
                         add(gloss_index, key, entity)
+    # EXP-2026-09-027: the words an analyst uses for a relationship, generated
+    # once from the card's own gloss and committed beside it
+    # (`scripts/generate_relation_lexicon.py`). Indexed exactly like gloss
+    # words -- a weak hint that binds a relation, never a token that routes a
+    # question to a source -- and only under the flag, so the shipped router
+    # reproduces byte for byte with it off.
+    if _paraphrases_on():
+        for rel, words in _paraphrases_for(card).items():
+            if rel not in card.relationship_types:
+                continue
+            for phrase in words or ():
+                for tok in _tokens(str(phrase)):
+                    add(gloss_index, tok, rel)
+                    if lex:
+                        for key in index_keys(tok):
+                            add(gloss_index, key, rel)
     return id_index, gloss_index
+
+
+def _paraphrases_for(card: SourceCardView) -> dict[str, list[str]]:
+    """The generated relation lexicon for ``card``: the card's own block, else the sidecar.
+
+    `scripts/generate_relation_lexicon.py` writes
+    ``data/source_cards/overlays/<dataset>.relation_lexicon.json`` and the
+    overlay, never the built card, so a card a completed experiment pins by
+    hash stays byte-identical; a card rebuilt from the overlay carries the
+    block itself.
+    """
+    block = (card.entity_descriptions or {}).get("relationship_paraphrases")
+    if block:
+        return {str(k): list(v or ()) for k, v in block.items()}
+    from pathlib import Path
+
+    sidecar = (
+        Path(__file__).resolve().parents[2] / "data" / "source_cards" / "overlays"
+        / f"{card.dataset}.relation_lexicon.json"
+    )
+    if not sidecar.exists():
+        return {}
+    try:
+        import json
+
+        return {str(k): list(v or ()) for k, v in (json.loads(sidecar.read_text()).get("kept") or {}).items()}
+    except (OSError, ValueError):
+        return {}
+
+
+def _paraphrases_on() -> bool:
+    """``ARIADNE_RELATION_PARAPHRASES``: read the generated relation lexicon. Default off."""
+    return os.environ.get("ARIADNE_RELATION_PARAPHRASES", "").strip().lower() in {"1", "true", "yes", "on"}
 
 
 def _source_name_tokens(dataset: str, card: SourceCardView) -> set[str]:

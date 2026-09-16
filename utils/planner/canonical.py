@@ -1014,9 +1014,23 @@ def candidate_lists(
 
     anchors: tuple[Choice, ...] = ()
     if SLOT_ANCHORS in form.unbound or not (form.anchors or form.anchor_titles):
-        hits = search_in(
-            chosen, question, top_k=top_k, labels=_in_scope_labels(form, card) or None
-        )
+        from utils.specialists.schema import rerank as _rr
+
+        labels = _in_scope_labels(form, card) or None
+        if _rr.rerank_on():
+            # EXP-2026-09-028: re-order a wider pool by embedding similarity
+            # and hand the chooser the top of THAT. A re-ordering of what the
+            # index already found; never a new candidate. Stands down when the
+            # question carries an exact complete name (a lookup, which the
+            # reranker was measured to hurt).
+            from utils.specialists.schema.namesearch import exact_name_matches
+
+            pool = search_in(chosen, question, top_k=_rr.pool_size(), labels=labels)
+            if not exact_name_matches(chosen, question):
+                pool, _backend = _rr.rerank(question, pool, dataset=chosen)
+            hits = pool[:top_k]
+        else:
+            hits = search_in(chosen, question, top_k=top_k, labels=labels)
         anchors = tuple(
             Choice(
                 index=i,

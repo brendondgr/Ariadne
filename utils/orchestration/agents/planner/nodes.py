@@ -144,8 +144,10 @@ def build_nodes(
         # the anchor. Without a resolved anchor there is no question to
         # canonicalise, only a guess to dress up, and the analyst's own words
         # are the safer thing to forward.
-        if config.rewrite_require_resolved_anchor and (
-            trace["sources"].get(SLOT_ANCHORS) not in _EXACT_ANCHOR_SOURCES
+        if (
+            config.rewrite_require_resolved_anchor
+            and not getattr(config, "anchor_disclosed", False)
+            and trace["sources"].get(SLOT_ANCHORS) not in _EXACT_ANCHOR_SOURCES
         ):
             trace["rung"] = RUNG_SKIPPED_ANCHOR
             trace.setdefault("rejected", []).append(
@@ -174,6 +176,36 @@ def build_nodes(
             return {
                 "rewrite_trace": trace, "original_request": original,
                 "intent_form": form.to_dict(),
+            }
+
+        # A model-chosen anchor is allowed only when the answer will say so.
+        #
+        # EXP-2026-09-028: D-035 refuses the anchor the closed choice picks
+        # because a third of them were wrong (D-034). Under ARIADNE_ANCHOR_
+        # DISCLOSED the choice stands, from a reranked list, and the answer's
+        # first line names the entity it resolved to -- a visible, correctable
+        # resolution instead of a silent one. The trace carries id and name so
+        # the synthesis node can write that line.
+        anchor_source = str(form.sources.get(SLOT_ANCHORS) or "")
+        if anchor_source.startswith("model"):
+            if not getattr(config, "anchor_disclosed", False):
+                trace["rung"] = RUNG_SKIPPED_ANCHOR
+                trace.setdefault("rejected", []).append("model-chosen anchor without disclosure")
+                return {"rewrite_trace": trace, "original_request": original,
+                        "intent_form": form.to_dict()}
+            from utils.planner.canonical import candidate_lists_all
+
+            chosen = form.anchors[0] if form.anchors else ""
+            name = ""
+            for lists in candidate_lists_all(original, form.with_unbound(SLOT_ANCHORS), cards).values():
+                for choice in lists.anchors:
+                    if choice.value == chosen:
+                        name = choice.name
+                        break
+            trace["disclosed_anchor"] = {
+                "id": chosen, "name": name,
+                "label": form.anchor_labels[0] if form.anchor_labels else "",
+                "dataset": form.datasets[0] if form.datasets else "",
             }
 
         try:
