@@ -1,0 +1,88 @@
+# Filled by scripts/new_experiment.py. Every field below is required unless
+# marked optional. Do not delete a field you do not know — record it as null or
+# "unknown" and explain in ISSUES.md. Inventing a value is worse than admitting
+# a gap.
+id: EXP-2026-09-023
+slug: anchor-hygiene-and-q59
+title: "Exact names that are lookups, and looking them up before choosing a dataset (plan Steps 2-4)"
+status: running            # planned | running | complete | failed | superseded
+date_started: 2026-09-15
+date_completed: null       # null until status is complete/failed
+authors: ["brendondgr", "Claude Opus 5"]
+
+purpose: >
+  Two deterministic, card-driven changes to anchor binding. H1: a single-token
+  exact name whose token appears in more than 1% of the corpus's own documents
+  is an ordinary word, not a lookup; applied to exact_name_matches it should
+  remove the T4/T5/T6 wrong binds (27 of 54 are one node named "Credentials")
+  without losing T3's gold binds. H2 (Q59): looking an exact name up across every
+  live source before dataset selection, with the router as tie-break, should
+  recover the T3 questions that reach no anchor today. Step 0 enters the
+  2026-09-15 review probes (shipped index vs EXP-2026-09-022's prototype; the
+  exact-name distribution) into the record. Bears on C-023 and Q59.
+
+hypothesis: >
+  H1 on the sealed bank: T3 gold-bind loss <= 2%, T4/T5 single wrong binds
+  reduced >= 60%, T6 binds <= 2 of 40; the 1% threshold is fixed, not moved.
+  H2 on the exposed bank: T3 skipped_unresolved_anchor 37 -> <= 15, T3
+  records_exact 0.3267 -> >= 0.45, T1/T2 unchanged, T6 wrong_entity <= 0.0667,
+  T4/T5 wrong_entity at or below D-035; on the sealed bank T3 records_exact
+  >= +0.10 over the sealed baseline. Falsifiers in PROTOCOL.md.
+
+# --- Reproducibility block (all fields mandatory) ---
+code:
+  commit: 4c16d656078b97d05c906c5ab0a41a683942bd09          # Step 2 record; updated per arm in RESULTS.md
+  branch: main
+  entrypoint: "uv run python scripts/variant_harness.py compare --rewrite model_noid_anchored --workers 32 (flags per arm; see PROTOCOL.md)"
+  dirty: false
+config:
+  path: null               # repo-relative path, or null if the run takes no config file
+  hash: null               # sha256:... of that file
+data:
+  name: exposed bank variants-2026-08-29 (579) + sealed bank variants-holdout-2026-09 (160)
+  version: exposed unchanged since EXP-2026-08-020; sealed 2026-09-15 (SEAL.md)
+  split: exposed = development; sealed = confirmation only, opened once per hypothesis
+  n_examples: 739
+  dvc_path: null           # this repository does not use DVC; leave null
+  hash: sha256:f50ddaa628f892ee2498c19662a4a42bf1c4589dad6361d4003233011ab578ce   # sealed variants.json; exposed hash in POINTERS.md
+seeds: []                  # deterministic arms; the rewrite rung is temperature 0 and unchanged across arms
+n_runs: 1                  # SYSTEM runs over the question set — grading passes are not runs
+environment:
+  python: "3.13"
+  lockfile: env/requirements.lock
+  container: null
+compute:
+  hardware: "32-core x86_64 host, 121 GB RAM; Neo4j + Gremlin local; local model on :9090 for the unchanged rewrite rung"
+  wall_clock_hours: 0.0
+  estimated_cost_usd: 0.0
+
+# --- LLM / agentic block ---
+llm:
+  model: "relay/qwen38-27B-v2@2026-09-15"
+  temperature: 0.0
+  top_p: 1.0
+  max_tokens: 2048
+  prompt_files: []
+  prompt_hash: null
+  tool_schema_hash: null
+  total_input_tokens: null
+  total_output_tokens: null
+  nondeterminism_note: >
+    The rewrite rung is the only model call and is identical across arms; it is
+    a constant, not the treatment. Provider-side nondeterminism remains even at
+    temperature 0.
+
+# --- Results block ---
+metrics:
+  primary: records_exact_T3_anchor_first
+  values: {}               # filled from data/metrics.json as arms complete
+  withdrawn: {}
+baselines_compared: ["shipped tree, --rewrite model_noid_anchored, both flags off"]
+statistical_test: null
+
+# --- Linkage ---
+supports_claims: []        # every ID here must exist in ../../CLAIMS.md
+figures: []                # every name here must have a file in figures/ and vice versa
+supersedes: null           # set in BOTH manifests or in neither; the validator checks symmetry
+superseded_by: null
+related: ["EXP-2026-09-021", "EXP-2026-09-022", "EXP-2026-08-020"]
