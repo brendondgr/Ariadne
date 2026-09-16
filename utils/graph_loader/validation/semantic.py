@@ -58,26 +58,36 @@ def validate_semantic_graph(
             )
         )
         edge_patterns = ATTACK_EDGE_PATTERNS | CAPEC_EDGE_PATTERNS
-    elif dataset == "identity":
-        # EXP-2026-08-011. Unlike every branch above, this one has no hardcoded
-        # rule set to fall back on and does not want one: the legal edge
-        # patterns ARE the declared catalog, so they are read from the schema
-        # the build wrote rather than restated here. A rule set restated in code
-        # can drift from the catalog it describes; one derived from it cannot.
-        #
-        # This is also the only branch whose patterns include homogeneous
-        # triples (GROUP -OWNS-> GROUP and seven more), which the ATT&CK rule
-        # set has essentially none of.
-        allowed_labels = set(schema.get("node_labels", ()))
-        allowed_types = set(schema.get("relationship_types", ()))
-        edge_patterns = frozenset(
-            EdgePattern(entry["source"], entry["type"], entry["target"])
-            for entry in schema.get("relationship_endpoints", ())
-        )
-    else:
+    elif dataset == "attack":
         allowed_labels = set(schema.get("node_labels", ATTACK_NODE_LABELS))
         allowed_types = set(schema.get("relationship_types", ATTACK_RELATIONSHIP_TYPES))
         edge_patterns = ATTACK_EDGE_PATTERNS
+    else:
+        # Every dataset outside the three MITRE rule sets: ``identity``
+        # (EXP-2026-08-011) and any graph that arrived with a source card, such
+        # as a Synapse ``export-ariadne`` directory. Unlike the branches above
+        # this one has no hardcoded rule set to fall back on and does not want
+        # one: the legal edge patterns ARE the schema the build shipped, so
+        # they are read from it rather than restated here. A rule set restated
+        # in code can drift from the catalog it describes; one derived from it
+        # cannot.
+        #
+        # A schema that declares no ``relationship_endpoints`` at all gets no
+        # pattern check (``None``), because "nothing declared" and "nothing
+        # legal" are different claims and only the loader's other checks —
+        # unknown label, unknown type, dangling endpoint, duplicate id — can
+        # be made from the data alone.
+        allowed_labels = set(schema.get("node_labels", ()))
+        allowed_types = set(schema.get("relationship_types", ()))
+        declared_endpoints = schema.get("relationship_endpoints")
+        edge_patterns = (
+            frozenset(
+                EdgePattern(entry["source"], entry["type"], entry["target"])
+                for entry in declared_endpoints
+            )
+            if declared_endpoints
+            else None
+        )
 
     seen_ids: set[str] = set()
     semantic_keys: set[tuple[str, str, str, str]] = set()
@@ -132,7 +142,9 @@ def validate_semantic_graph(
 
         source_label = labels_by_id.get(edge["source_id"], "")
         target_label = labels_by_id.get(edge["target_id"], "")
-        if not any(pattern_matches(edge, labels_by_id, pattern) for pattern in edge_patterns):
+        if edge_patterns is not None and not any(
+            pattern_matches(edge, labels_by_id, pattern) for pattern in edge_patterns
+        ):
             errors.append(
                 f"Illegal edge pattern {source_label} -[{rel_type}]-> {target_label} "
                 f"on edge {edge['id']}"

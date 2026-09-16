@@ -7,7 +7,7 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
 
-from .config import LOAD_BACKENDS, SUPPORTED_DATASETS, LoaderConfig
+from .config import LOAD_BACKENDS, SUPPORTED_DATASETS, LoaderConfig, is_supported_dataset
 
 __all__ = [
     "SUPPORTED_DATASETS",   # re-exported: this module had its own copy until
@@ -112,8 +112,11 @@ def resolve_dataset(
     config = config or LoaderConfig.from_data_dir()
     dataset = dataset.lower().strip()
 
-    if dataset not in SUPPORTED_DATASETS:
-        raise LoaderResolutionError(f"Unsupported dataset: {dataset}")
+    if not is_supported_dataset(dataset, config):
+        raise LoaderResolutionError(
+            f"Unsupported dataset: {dataset} (not a built-in dataset and no source "
+            f"card at {config.source_cards_dir() / f'{dataset}.json'})"
+        )
 
     source_card_path = config.source_cards_dir() / f"{dataset}.json"
     _require_file(source_card_path, "source card")

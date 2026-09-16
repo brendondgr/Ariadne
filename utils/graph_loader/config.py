@@ -57,3 +57,29 @@ class LoaderConfig:
 
     def runtime_dir(self, dataset: str, backend: str) -> Path:
         return self.graphs_dir(dataset) / "runtime" / backend
+
+
+def discover_card_datasets(config: "LoaderConfig") -> frozenset[str]:
+    """Every dataset that has a source card under ``<data_dir>/source_cards``.
+
+    The four names in ``SUPPORTED_DATASETS`` are the ones this repository
+    builds itself. A graph produced elsewhere in the same canonical contract
+    (a Synapse ``export-ariadne`` directory, say) announces itself with a card,
+    and that card is the whole registration: the planner already discovers
+    sources this way (``utils.planner.cards.load_source_cards``), so the loader
+    accepting the same set is what lets one copied directory become a source.
+    """
+    cards_dir = config.source_cards_dir()
+    if not cards_dir.is_dir():
+        return frozenset()
+    return frozenset(
+        path.stem.lower()
+        for path in cards_dir.glob("*.json")
+        if path.is_file() and not path.name.endswith(".overlay.json")
+    )
+
+
+def is_supported_dataset(dataset: str, config: "LoaderConfig") -> bool:
+    """True for a built-in dataset or any dataset with a source card on disk."""
+    name = dataset.lower().strip()
+    return name in SUPPORTED_DATASETS or name in discover_card_datasets(config)

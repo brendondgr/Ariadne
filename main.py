@@ -266,8 +266,11 @@ VERSION OVERRIDES (--docker start only)
         # It is not part of `all` and never will be: it lives under a separate
         # data directory and is only reachable by naming it *and* pointing
         # ARIADNE_DATA_DIR at data-merged, so an ordinary run cannot touch it.
-        choices=["attack", "capec", "merged", "identity", "all"],
-        metavar="{attack,capec,merged,all}",
+        # No `choices`: any dataset with a source card under
+        # <data_dir>/source_cards resolves (a Synapse `export-ariadne` directory,
+        # for one); an unknown name fails in the loader with the card path it
+        # looked for. The built-ins are listed for the operator's benefit.
+        metavar="{attack,capec,merged,identity,all,<card-backed dataset>}",
         help="Which dataset to load or verify (required for --graph, except --graph health)",
     )
     graph.add_argument(
