@@ -217,8 +217,22 @@ def capture_one(question: str, config: SynthesisConfig) -> dict[str, Any]:
     return out
 
 
-def gold_questions() -> list[dict[str, Any]]:
-    """The 120 golden questions, flattened, with their bank and gold answers."""
+def gold_questions(gold_path: str | None = None) -> list[dict[str, Any]]:
+    """The 120 golden questions, flattened, with their bank and gold answers.
+
+    ``gold_path`` swaps in another gold file of the same shape (``case_id``,
+    ``bank``, ``question``, ``expected_template``, ``seed_ids``) — the sealed
+    entity-held-out bank of 2026-09 is the first. The reference is still the
+    system's own capture of each gold question, so nothing else changes.
+    """
+    if gold_path:
+        rows = json.loads((REPO / gold_path).read_text())
+        return [
+            {"case_id": r["case_id"], "bank": r["bank"], "question": r["question"],
+             "expected_template": r.get("expected_template", ""),
+             "seed_ids": list(r.get("seed_ids") or [])}
+            for r in rows
+        ]
     out: list[dict[str, Any]] = []
     for bank, path in BANKS:
         entries = load_bank(Path(path))
@@ -243,7 +257,7 @@ def gold_questions() -> list[dict[str, Any]]:
 
 def cmd_capture(args: argparse.Namespace) -> int:
     config = SynthesisConfig.from_env()
-    questions = gold_questions()
+    questions = gold_questions(getattr(args, "gold", None))
     if args.limit:
         questions = questions[: args.limit]
     print(f"== capturing {len(questions)} golden questions, {args.workers} workers")
@@ -665,6 +679,8 @@ def main() -> int:
     cap.add_argument("--name", default="reference.json")
     cap.add_argument("--workers", type=int, default=8)
     cap.add_argument("--limit", type=int, default=None)
+    cap.add_argument("--gold", default=None,
+                     help="repo-relative gold file to capture instead of the 120 golden questions")
     cap.set_defaults(func=cmd_capture)
 
     cmp_ = sub.add_parser("compare", help="score variants against the reference")

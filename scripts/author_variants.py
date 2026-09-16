@@ -140,7 +140,7 @@ def cmd_prepare(args: argparse.Namespace) -> int:
 
     rows: list[dict[str, Any]] = []
     missing = 0
-    for q in gold_questions():
+    for q in gold_questions(getattr(args, "gold", None)):
         anchors: list[dict[str, str]] = []
         q["seed_ids"] = seed_ids_for(q)
         for sid in q["seed_ids"]:
@@ -265,6 +265,7 @@ def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     sub = parser.add_subparsers(dest="cmd", required=True)
     p = sub.add_parser("prepare"); p.add_argument("--out", required=True)
+    p.add_argument("--gold", default=None, help="repo-relative gold file (default: the 120 golden questions)")
     p.add_argument("--batch", type=int, default=10); p.set_defaults(func=cmd_prepare)
     g = sub.add_parser("gate"); g.add_argument("--out", required=True)
     g.set_defaults(func=cmd_gate)

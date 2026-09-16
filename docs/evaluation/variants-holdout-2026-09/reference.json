@@ -1,0 +1,1559 @@
+[
+  {
+    "abstentions": [],
+    "bank": "attack",
+    "case_id": "H-D1-Campaign-first_seen-C0035-81aa1f",
+    "claims": [
+      "C0035 (KV Botnet Activity) attack id: C0035.",
+      "C0035 (KV Botnet Activity) has first_seen: 2022-10-01T04:00:00.000Z; last_seen: 2024-01-01T05:00:00.000Z; revoked: False; stix_type: campaign; x_mitre_deprecated: False; x_mitre_first_seen_citation: (Citation: Lumen KVBotnet 2023); x_mitre_last_seen_citation: (Citation: DOJ KVBotnet 2024); x_mitre_version: 1.0; aliases: KV Botnet Activity.",
+      "C0035 (KV Botnet Activity): KV Botnet Activity consisted of exploitation of primarily \u201cend-of-life\u201d small office-home office (SOHO) equipment from manufacturers such as Cisco, NETGEAR, and DrayTek. KV Botnet Activity was used by Volt Typhoon to obfuscate connectivity to victims in multiple critical infrastructure segments, including energy and telecommunication companies and entities based on the US territory of Guam.",
+      "Found 1 record in MITRE ATT&CK: KV Botnet Activity (C0035)."
+    ],
+    "entity_ids": [
+      "C0035"
+    ],
+    "entity_ids_by_source": {
+      "attack": [
+        "C0035"
+      ]
+    },
+    "expected_template": "",
+    "queries": [
+      "MATCH (n:Campaign) WHERE coalesce(n.attack_id, n.id) IN $ids OPTIONAL MATCH (n)-[r]-(m) WITH n, CASE WHEN m IS NULL THEN NULL ELSE type(r) END AS rel, CASE WHEN m IS NULL THEN NULL ELSE startNode(r) = n END AS outgoing, CASE WHEN m IS NULL THEN NULL ELSE head(labels(m)) END AS neighbour_label, count(m) AS cnt WITH n, collect(CASE WHEN rel IS NULL THEN NULL ELSE {rel: rel, outgoing: outgoing, label: neighbour_label, count: cnt} END) AS raw WITH n, [f IN raw WHERE f IS NOT NULL] AS facets RETURN coalesce(n.attack_id, n.id) AS id, n.name AS name, n.properties_json AS properties_json, facets AS facets LIMIT 1000"
+    ],
+    "question": "When was C0035 first seen?",
+    "record_count": 1,
+    "seed_ids": [
+      "C0035"
+    ],
+    "sources": [
+      "attack"
+    ],
+    "unsupported": 0
+  },
+  {
+    "abstentions": [],
+    "bank": "attack",
+    "case_id": "H-D1-Group-x_mitre_contributors-G0079-1944fe",
+    "claims": [
+      "Found 1 record in MITRE ATT&CK: DarkHydrus (G0079).",
+      "G0079 (DarkHydrus) has stix_type: intrusion-set; x_mitre_deprecated: False; x_mitre_version: 1.3; aliases: DarkHydrus; x_mitre_contributors: Oleg Skulkin, Group-IB; x_mitre_domains: enterprise-attack.",
+      "G0079 (DarkHydrus): DarkHydrus is a threat group that has targeted government agencies and educational institutions in the Middle East since at least 2016. The group heavily leverages open-source tools and custom payloads for carrying out attacks. (Citation: Unit 42 DarkHydrus July 2018) (Citation: Unit 42 Playbook Dec 2017)"
+    ],
+    "entity_ids": [
+      "G0079"
+    ],
+    "entity_ids_by_source": {
+      "attack": [
+        "G0079"
+      ]
+    },
+    "expected_template": "",
+    "queries": [
+      "MATCH (n:Group) WHERE coalesce(n.attack_id, n.id) IN $ids OPTIONAL MATCH (n)-[r]-(m) WITH n, CASE WHEN m IS NULL THEN NULL ELSE type(r) END AS rel, CASE WHEN m IS NULL THEN NULL ELSE startNode(r) = n END AS outgoing, CASE WHEN m IS NULL THEN NULL ELSE head(labels(m)) END AS neighbour_label, count(m) AS cnt WITH n, collect(CASE WHEN rel IS NULL THEN NULL ELSE {rel: rel, outgoing: outgoing, label: neighbour_label, count: cnt} END) AS raw WITH n, [f IN raw WHERE f IS NOT NULL] AS facets RETURN coalesce(n.attack_id, n.id) AS id, n.name AS name, n.properties_json AS properties_json, facets AS facets LIMIT 1000"
+    ],
+    "question": "Which contributors are credited for the threat group DarkHydrus G0079 in the ATT&CK catalogue?",
+    "record_count": 1,
+    "seed_ids": [
+      "G0079"
+    ],
+    "sources": [
+      "attack"
+    ],
+    "unsupported": 0
+  },
+  {
+    "abstentions": [],
+    "bank": "attack",
+    "case_id": "H-D1-Software-description-S1022-78e349",
+    "claims": [
+      "Found 1 record in MITRE ATT&CK: IceApple (S1022).",
+      "S1022 (IceApple) has is_family: True; revoked: False; stix_type: malware; x_mitre_deprecated: False; x_mitre_version: 1.1; x_mitre_aliases: IceApple; x_mitre_contributors: Rapha\u00ebl Lheureux; x_mitre_domains: enterprise-attack; x_mitre_platforms: Windows.",
+      "S1022 (IceApple): IceApple is a modular Internet Information Services (IIS) post-exploitation framework, that has been used since at least 2021 against the technology, academic, and government sectors.(Citation: CrowdStrike IceApple May 2022)"
+    ],
+    "entity_ids": [
+      "S1022"
+    ],
+    "entity_ids_by_source": {
+      "attack": [
+        "S1022"
+      ]
+    },
+    "expected_template": "",
+    "queries": [
+      "MATCH (n:Software) WHERE coalesce(n.attack_id, n.id) IN $ids OPTIONAL MATCH (n)-[r]-(m) WITH n, CASE WHEN m IS NULL THEN NULL ELSE type(r) END AS rel, CASE WHEN m IS NULL THEN NULL ELSE startNode(r) = n END AS outgoing, CASE WHEN m IS NULL THEN NULL ELSE head(labels(m)) END AS neighbour_label, count(m) AS cnt WITH n, collect(CASE WHEN rel IS NULL THEN NULL ELSE {rel: rel, outgoing: outgoing, label: neighbour_label, count: cnt} END) AS raw WITH n, [f IN raw WHERE f IS NOT NULL] AS facets RETURN coalesce(n.attack_id, n.id) AS id, n.name AS name, n.properties_json AS properties_json, facets AS facets LIMIT 1000"
+    ],
+    "question": "What does the piece of tooling IceApple S1022 describe in the ATT&CK catalogue?",
+    "record_count": 1,
+    "seed_ids": [
+      "S1022"
+    ],
+    "sources": [
+      "attack"
+    ],
+    "unsupported": 0
+  },
+  {
+    "abstentions": [],
+    "bank": "attack",
+    "case_id": "H-D1-Software-x_mitre_platforms-S1026-47239a",
+    "claims": [
+      "Found 1 record in MITRE ATT&CK: Mongall (S1026).",
+      "S1026 (Mongall) has is_family: True; revoked: False; stix_type: malware; x_mitre_deprecated: False; x_mitre_version: 1.1; x_mitre_aliases: Mongall; x_mitre_contributors: Hiroki Nagahama, NEC Corporation Pooja Natarajan, NEC Corporation India Manikantan Srinivasan, NEC Corporation India; x_mitre_domains: enterprise-attack; x_mitre_platforms: Windows.",
+      "S1026 (Mongall): Mongall is a backdoor that has been used since at least 2013, including by Aoqin Dragon.(Citation: SentinelOne Aoqin Dragon June 2022)"
+    ],
+    "entity_ids": [
+      "S1026"
+    ],
+    "entity_ids_by_source": {
+      "attack": [
+        "S1026"
+      ]
+    },
+    "expected_template": "",
+    "queries": [
+      "MATCH (n:Software) WHERE coalesce(n.attack_id, n.id) IN $ids OPTIONAL MATCH (n)-[r]-(m) WITH n, CASE WHEN m IS NULL THEN NULL ELSE type(r) END AS rel, CASE WHEN m IS NULL THEN NULL ELSE startNode(r) = n END AS outgoing, CASE WHEN m IS NULL THEN NULL ELSE head(labels(m)) END AS neighbour_label, count(m) AS cnt WITH n, collect(CASE WHEN rel IS NULL THEN NULL ELSE {rel: rel, outgoing: outgoing, label: neighbour_label, count: cnt} END) AS raw WITH n, [f IN raw WHERE f IS NOT NULL] AS facets RETURN coalesce(n.attack_id, n.id) AS id, n.name AS name, n.properties_json AS properties_json, facets AS facets LIMIT 1000"
+    ],
+    "question": "Which platforms does the malware Mongall S1026 apply to in the ATT&CK catalogue?",
+    "record_count": 1,
+    "seed_ids": [
+      "S1026"
+    ],
+    "sources": [
+      "attack"
+    ],
+    "unsupported": 0
+  },
+  {
+    "abstentions": [],
+    "bank": "attack",
+    "case_id": "H-D2-subtechnique-of-T1574.012-6aaf34",
+    "claims": [
+      "Found 1 item(s) related to T1574 (e.g. T1574.012) in MITRE ATT&CK.",
+      "Found 1 record in MITRE ATT&CK: COR_PROFILER (T1574.012).",
+      "T1574 (Hijack Execution Flow) has 1 related item(s): T1574.012.",
+      "T1574 has no subtechniques in this catalogue.",
+      "T1574.012 (COR_PROFILER) attack id: T1574.012.",
+      "T1574.012 (COR_PROFILER) has revoked: False; stix_type: attack-pattern; x_mitre_deprecated: False; x_mitre_is_subtechnique: True; x_mitre_remote_support: False; x_mitre_version: 2.0; x_mitre_contributors: Jesse Brown, Red Canary; x_mitre_domains: enterprise-attack; x_mitre_platforms: Windows.",
+      "T1574.012 (COR_PROFILER): Adversaries may leverage the COR_PROFILER environment variable to hijack the execution flow of programs that load the .NET CLR. The COR_PROFILER is a .NET Framework feature which allows developers to specify an unmanaged (or external of .NET) profiling DLL to be loaded into each .NET process that loads the Common Language Runtime (CLR). These profilers are designed to monitor, troubleshoot, and debug managed code executed by the .NET CLR.(Citation: Microsoft Profiling Mar 2017)(Citation: Microsoft COR_PROFILER Feb 2013)\n\nThe COR_PROFILER environment variable can be set at various scopes (system, user, or process) resulting in different levels of influence."
+    ],
+    "entity_ids": [
+      "T1574",
+      "T1574.012"
+    ],
+    "entity_ids_by_source": {
+      "attack": [
+        "T1574",
+        "T1574.012"
+      ]
+    },
+    "expected_template": "",
+    "queries": [
+      "MATCH (n:SubTechnique) WHERE coalesce(n.attack_id, n.id) IN $ids OPTIONAL MATCH (n)-[r]-(m) WITH n, CASE WHEN m IS NULL THEN NULL ELSE type(r) END AS rel, CASE WHEN m IS NULL THEN NULL ELSE startNode(r) = n END AS outgoing, CASE WHEN m IS NULL THEN NULL ELSE head(labels(m)) END AS neighbour_label, count(m) AS cnt WITH n, collect(CASE WHEN rel IS NULL THEN NULL ELSE {rel: rel, outgoing: outgoing, label: neighbour_label, count: cnt} END) AS raw WITH n, [f IN raw WHERE f IS NOT NULL] AS facets RETURN coalesce(n.attack_id, n.id) AS id, n.name AS name, n.properties_json AS properties_json, facets AS facets LIMIT 1000",
+      "MATCH (t:Technique)-[:HAS_SUBTECHNIQUE]->(st:SubTechnique) WHERE t.attack_id IN $ids OR st.attack_id IN $ids RETURN t.attack_id AS parent_id, t.name AS parent_name, st.attack_id AS subtechnique_id, st.name AS subtechnique_name LIMIT 1000"
+    ],
+    "question": "Which ATT&CK technique is T1574.012 a sub-technique of?",
+    "record_count": 2,
+    "seed_ids": [
+      "T1574.012"
+    ],
+    "sources": [
+      "attack"
+    ],
+    "unsupported": 0
+  },
+  {
+    "abstentions": [],
+    "bank": "attack",
+    "case_id": "H-D2-uses-C0040-426e35",
+    "claims": [
+      "C0040 (APT41 DUST) has 4 related item(s): S0160, S0154, S1158, S1159.",
+      "Found 4 item(s) related to C0040 (e.g. S0160, S0154, S1158) in MITRE ATT&CK."
+    ],
+    "entity_ids": [
+      "C0040",
+      "S0154",
+      "S0160",
+      "S1158",
+      "S1159"
+    ],
+    "entity_ids_by_source": {
+      "attack": [
+        "C0040",
+        "S0154",
+        "S0160",
+        "S1158",
+        "S1159"
+      ]
+    },
+    "expected_template": "",
+    "queries": [
+      "MATCH (c:Campaign)-[:USES]->(s:Software) WHERE c.attack_id IN $ids RETURN c.attack_id AS campaign_id, c.name AS campaign_name, s.attack_id AS software_id, s.name AS software_name LIMIT 1000"
+    ],
+    "question": "If I'm digging into campaign C0040, which malware and tools does it rely on?",
+    "record_count": 1,
+    "seed_ids": [
+      "C0040"
+    ],
+    "sources": [
+      "attack"
+    ],
+    "unsupported": 0
+  },
+  {
+    "abstentions": [],
+    "bank": "attack",
+    "case_id": "H-D2-uses-G0024-e4334c",
+    "claims": [
+      "Found 4 item(s) related to G0024 (e.g. S0068, S0065, S0067) in MITRE ATT&CK.",
+      "G0024 (Putter Panda) has 4 related item(s): S0068, S0065, S0067, S0066."
+    ],
+    "entity_ids": [
+      "G0024",
+      "S0065",
+      "S0066",
+      "S0067",
+      "S0068"
+    ],
+    "entity_ids_by_source": {
+      "attack": [
+        "G0024",
+        "S0065",
+        "S0066",
+        "S0067",
+        "S0068"
+      ]
+    },
+    "expected_template": "",
+    "queries": [
+      "MATCH (g:Group)-[:USES]->(s:Software) WHERE g.attack_id IN $ids RETURN g.attack_id AS group_id, g.name AS group_name, s.attack_id AS software_id, s.name AS software_name LIMIT 1000"
+    ],
+    "question": "What malware and tools does the Putter Panda threat group (G0024) use?",
+    "record_count": 1,
+    "seed_ids": [
+      "G0024"
+    ],
+    "sources": [
+      "attack"
+    ],
+    "unsupported": 0
+  },
+  {
+    "abstentions": [],
+    "bank": "attack",
+    "case_id": "H-D2-uses-G0089-5da300",
+    "claims": [
+      "Found 2 item(s) related to G0089 (e.g. S0379, S0198) in MITRE ATT&CK.",
+      "G0089 (The White Company) has 2 related item(s): S0379, S0198."
+    ],
+    "entity_ids": [
+      "G0089",
+      "S0198",
+      "S0379"
+    ],
+    "entity_ids_by_source": {
+      "attack": [
+        "G0089",
+        "S0198",
+        "S0379"
+      ]
+    },
+    "expected_template": "",
+    "queries": [
+      "MATCH (g:Group)-[:USES]->(s:Software) WHERE g.attack_id IN $ids RETURN g.attack_id AS group_id, g.name AS group_name, s.attack_id AS software_id, s.name AS software_name LIMIT 1000"
+    ],
+    "question": "Which malware and tools does the threat group The White Company G0089 use?",
+    "record_count": 1,
+    "seed_ids": [
+      "G0089"
+    ],
+    "sources": [
+      "attack"
+    ],
+    "unsupported": 0
+  },
+  {
+    "abstentions": [],
+    "bank": "attack",
+    "case_id": "H-D2-uses-S1065-c824f8",
+    "claims": [
+      "Found 1 record in MITRE ATT&CK: Woody RAT (S1065).",
+      "S1065 (Woody RAT) attack id: S1065.",
+      "S1065 (Woody RAT) has is_family: True; revoked: False; stix_type: malware; x_mitre_deprecated: False; x_mitre_version: 1.2; x_mitre_aliases: Woody RAT; x_mitre_domains: enterprise-attack; x_mitre_platforms: Windows.",
+      "S1065 (Woody RAT): Woody RAT is a remote access trojan (RAT) that has been used since at least August 2021 against Russian organizations.(Citation: MalwareBytes WoodyRAT Aug 2022)",
+      "S1065 has no techniques in this catalogue."
+    ],
+    "entity_ids": [
+      "S1065"
+    ],
+    "entity_ids_by_source": {
+      "attack": [
+        "S1065"
+      ]
+    },
+    "expected_template": "",
+    "queries": [
+      "MATCH (n:Software) WHERE coalesce(n.attack_id, n.id) IN $ids OPTIONAL MATCH (n)-[r]-(m) WITH n, CASE WHEN m IS NULL THEN NULL ELSE type(r) END AS rel, CASE WHEN m IS NULL THEN NULL ELSE startNode(r) = n END AS outgoing, CASE WHEN m IS NULL THEN NULL ELSE head(labels(m)) END AS neighbour_label, count(m) AS cnt WITH n, collect(CASE WHEN rel IS NULL THEN NULL ELSE {rel: rel, outgoing: outgoing, label: neighbour_label, count: cnt} END) AS raw WITH n, [f IN raw WHERE f IS NOT NULL] AS facets RETURN coalesce(n.attack_id, n.id) AS id, n.name AS name, n.properties_json AS properties_json, facets AS facets LIMIT 1000",
+      "MATCH (n:Software) WHERE coalesce(n.attack_id, n.id) IN $ids OPTIONAL MATCH (n)-[r]-(m) WITH n, CASE WHEN m IS NULL THEN NULL ELSE type(r) END AS rel, CASE WHEN m IS NULL THEN NULL ELSE startNode(r) = n END AS outgoing, CASE WHEN m IS NULL THEN NULL ELSE head(labels(m)) END AS neighbour_label, count(m) AS cnt WITH n, collect(CASE WHEN rel IS NULL THEN NULL ELSE {rel: rel, outgoing: outgoing, label: neighbour_label, count: cnt} END) AS raw WITH n, [f IN raw WHERE f IS NOT NULL] AS facets RETURN coalesce(n.attack_id, n.id) AS id, n.name AS name, n.properties_json AS properties_json, facets AS facets LIMIT 1000",
+      "MATCH (n:Software) WHERE coalesce(n.attack_id, n.id) IN $ids OPTIONAL MATCH (n)-[r]-(m) WITH n, CASE WHEN m IS NULL THEN NULL ELSE type(r) END AS rel, CASE WHEN m IS NULL THEN NULL ELSE startNode(r) = n END AS outgoing, CASE WHEN m IS NULL THEN NULL ELSE head(labels(m)) END AS neighbour_label, count(m) AS cnt WITH n, collect(CASE WHEN rel IS NULL THEN NULL ELSE {rel: rel, outgoing: outgoing, label: neighbour_label, count: cnt} END) AS raw WITH n, [f IN raw WHERE f IS NOT NULL] AS facets RETURN coalesce(n.attack_id, n.id) AS id, n.name AS name, n.properties_json AS properties_json, facets AS facets LIMIT 1000"
+    ],
+    "question": "If I'm looking at Woody RAT under S1065, which ATT&CK techniques does it use?",
+    "record_count": 3,
+    "seed_ids": [
+      "S1065"
+    ],
+    "sources": [
+      "attack"
+    ],
+    "unsupported": 0
+  },
+  {
+    "abstentions": [],
+    "bank": "attack",
+    "case_id": "H-D3-mitigates-T1561.001-c92867",
+    "claims": [
+      "Found 1 item(s) related to T1561.001 (e.g. M1053) in MITRE ATT&CK.",
+      "T1561.001 (Disk Content Wipe) has 1 related item(s): M1053."
+    ],
+    "entity_ids": [
+      "M1053",
+      "T1561.001"
+    ],
+    "entity_ids_by_source": {
+      "attack": [
+        "M1053",
+        "T1561.001"
+      ]
+    },
+    "expected_template": "",
+    "queries": [
+      "MATCH (t:SubTechnique) WHERE t.attack_id IN $ids OPTIONAL MATCH (t)<-[:MITIGATES]-(m:Mitigation) RETURN t.attack_id AS technique_id, t.name AS technique_name, m.attack_id AS mitigation_id, m.name AS mitigation_name LIMIT 1000"
+    ],
+    "question": "Which ATT&CK mitigations mitigate the technique Disk Content Wipe (T1561.001)?",
+    "record_count": 1,
+    "seed_ids": [
+      "T1561.001"
+    ],
+    "sources": [
+      "attack"
+    ],
+    "unsupported": 0
+  },
+  {
+    "abstentions": [],
+    "bank": "attack",
+    "case_id": "H-D3-uses-S1125-25e800",
+    "claims": [
+      "Found 1 item(s) related to G0034 (e.g. S1125) in MITRE ATT&CK.",
+      "G0034 (Sandworm Team) has 1 related item(s): S1125."
+    ],
+    "entity_ids": [
+      "G0034",
+      "S1125"
+    ],
+    "entity_ids_by_source": {
+      "attack": [
+        "G0034",
+        "S1125"
+      ]
+    },
+    "expected_template": "",
+    "queries": [
+      "MATCH (g:Group)-[:USES]->(s:Software) WHERE s.attack_id IN $ids RETURN g.attack_id AS group_id, g.name AS group_name, s.attack_id AS software_id, s.name AS software_name LIMIT 1000"
+    ],
+    "question": "Which threat groups use the malware AcidRain (S1125)?",
+    "record_count": 1,
+    "seed_ids": [
+      "S1125"
+    ],
+    "sources": [
+      "attack"
+    ],
+    "unsupported": 0
+  },
+  {
+    "abstentions": [],
+    "bank": "attack",
+    "case_id": "H-D3-uses-T1087.002-9e19bb",
+    "claims": [
+      "Found 1 record in MITRE ATT&CK: Domain Account (T1087.002).",
+      "T1087.002 (Domain Account) attack id: T1087.002.",
+      "T1087.002 (Domain Account) has revoked: False; stix_type: attack-pattern; x_mitre_deprecated: False; x_mitre_is_subtechnique: True; x_mitre_version: 1.2; x_mitre_contributors: ExtraHop Miriam Wiesner, @miriamxyra, Microsoft Security; x_mitre_domains: enterprise-attack; x_mitre_platforms: Linux macOS Windows.",
+      "T1087.002 (Domain Account): Adversaries may attempt to get a listing of domain accounts. This information can help adversaries determine which domain accounts exist to aid in follow-on behavior such as targeting specific accounts which possess particular privileges.\n\nCommands such as <code>net user /domain</code> and <code>net group /domain</code> of the Net utility, <code>dscacheutil -q group</code> on macOS, and <code>ldapsearch</code> on Linux can list domain users and groups. PowerShell cmdlets including <code>Get-ADUser</code> and <code>Get-ADGroupMember</code> may enumerate members of Active Directory groups.(Citation: CrowdStrike StellarParticle January 2022)"
+    ],
+    "entity_ids": [
+      "T1087.002"
+    ],
+    "entity_ids_by_source": {
+      "attack": [
+        "T1087.002"
+      ]
+    },
+    "expected_template": "",
+    "queries": [
+      "MATCH (n:SubTechnique) WHERE coalesce(n.attack_id, n.id) IN $ids OPTIONAL MATCH (n)-[r]-(m) WITH n, CASE WHEN m IS NULL THEN NULL ELSE type(r) END AS rel, CASE WHEN m IS NULL THEN NULL ELSE startNode(r) = n END AS outgoing, CASE WHEN m IS NULL THEN NULL ELSE head(labels(m)) END AS neighbour_label, count(m) AS cnt WITH n, collect(CASE WHEN rel IS NULL THEN NULL ELSE {rel: rel, outgoing: outgoing, label: neighbour_label, count: cnt} END) AS raw WITH n, [f IN raw WHERE f IS NOT NULL] AS facets RETURN coalesce(n.attack_id, n.id) AS id, n.name AS name, n.properties_json AS properties_json, facets AS facets LIMIT 1000",
+      "MATCH (n:SubTechnique) WHERE coalesce(n.attack_id, n.id) IN $ids OPTIONAL MATCH (n)-[r]-(m) WITH n, CASE WHEN m IS NULL THEN NULL ELSE type(r) END AS rel, CASE WHEN m IS NULL THEN NULL ELSE startNode(r) = n END AS outgoing, CASE WHEN m IS NULL THEN NULL ELSE head(labels(m)) END AS neighbour_label, count(m) AS cnt WITH n, collect(CASE WHEN rel IS NULL THEN NULL ELSE {rel: rel, outgoing: outgoing, label: neighbour_label, count: cnt} END) AS raw WITH n, [f IN raw WHERE f IS NOT NULL] AS facets RETURN coalesce(n.attack_id, n.id) AS id, n.name AS name, n.properties_json AS properties_json, facets AS facets LIMIT 1000"
+    ],
+    "question": "Which threat groups use Domain Account (T1087.002)?",
+    "record_count": 2,
+    "seed_ids": [
+      "T1087.002"
+    ],
+    "sources": [
+      "attack"
+    ],
+    "unsupported": 0
+  },
+  {
+    "abstentions": [],
+    "bank": "attack",
+    "case_id": "H-D3-uses-T1552.004-88380d",
+    "claims": [
+      "Found 1 record in MITRE ATT&CK: Private Keys (T1552.004).",
+      "T1552.004 (Private Keys) attack id: T1552.004.",
+      "T1552.004 (Private Keys) has revoked: False; stix_type: attack-pattern; x_mitre_deprecated: False; x_mitre_is_subtechnique: True; x_mitre_version: 1.3; x_mitre_contributors: Itzik Kotler, SafeBreach Austin Clark, @c2defense; x_mitre_domains: enterprise-attack; x_mitre_platforms: Linux macOS Network Devices Windows.",
+      "T1552.004 (Private Keys): Adversaries may search for private key certificate files on compromised systems for insecurely stored credentials. Private cryptographic keys and certificates are used for authentication, encryption/decryption, and digital signatures.(Citation: Wikipedia Public Key Crypto) Common key and certificate file extensions include: .key, .pgp, .gpg, .ppk., .p12, .pem, .pfx, .cer, .p7b, .asc. \n\nAdversaries may also look in common key directories, such as <code>~/.ssh</code> for SSH keys on * nix-based systems or <code>C:&#92;Users&#92;(username)&#92;.ssh&#92;</code> on Windows."
+    ],
+    "entity_ids": [
+      "T1552.004"
+    ],
+    "entity_ids_by_source": {
+      "attack": [
+        "T1552.004"
+      ]
+    },
+    "expected_template": "",
+    "queries": [
+      "MATCH (n:SubTechnique) WHERE coalesce(n.attack_id, n.id) IN $ids OPTIONAL MATCH (n)-[r]-(m) WITH n, CASE WHEN m IS NULL THEN NULL ELSE type(r) END AS rel, CASE WHEN m IS NULL THEN NULL ELSE startNode(r) = n END AS outgoing, CASE WHEN m IS NULL THEN NULL ELSE head(labels(m)) END AS neighbour_label, count(m) AS cnt WITH n, collect(CASE WHEN rel IS NULL THEN NULL ELSE {rel: rel, outgoing: outgoing, label: neighbour_label, count: cnt} END) AS raw WITH n, [f IN raw WHERE f IS NOT NULL] AS facets RETURN coalesce(n.attack_id, n.id) AS id, n.name AS name, n.properties_json AS properties_json, facets AS facets LIMIT 1000",
+      "MATCH (n:SubTechnique) WHERE coalesce(n.attack_id, n.id) IN $ids OPTIONAL MATCH (n)-[r]-(m) WITH n, CASE WHEN m IS NULL THEN NULL ELSE type(r) END AS rel, CASE WHEN m IS NULL THEN NULL ELSE startNode(r) = n END AS outgoing, CASE WHEN m IS NULL THEN NULL ELSE head(labels(m)) END AS neighbour_label, count(m) AS cnt WITH n, collect(CASE WHEN rel IS NULL THEN NULL ELSE {rel: rel, outgoing: outgoing, label: neighbour_label, count: cnt} END) AS raw WITH n, [f IN raw WHERE f IS NOT NULL] AS facets RETURN coalesce(n.attack_id, n.id) AS id, n.name AS name, n.properties_json AS properties_json, facets AS facets LIMIT 1000"
+    ],
+    "question": "Which malware and tools use T1552.004?",
+    "record_count": 2,
+    "seed_ids": [
+      "T1552.004"
+    ],
+    "sources": [
+      "attack"
+    ],
+    "unsupported": 0
+  },
+  {
+    "abstentions": [],
+    "bank": "attack",
+    "case_id": "H-D3-uses-T1587.002-de779a",
+    "claims": [
+      "Found 1 record in MITRE ATT&CK: Code Signing Certificates (T1587.002).",
+      "T1587.002 (Code Signing Certificates) attack id: T1587.002.",
+      "T1587.002 (Code Signing Certificates) has revoked: False; stix_type: attack-pattern; x_mitre_deprecated: False; x_mitre_is_subtechnique: True; x_mitre_version: 1.1; x_mitre_domains: enterprise-attack; x_mitre_platforms: PRE.",
+      "T1587.002 (Code Signing Certificates): Adversaries may create self-signed code signing certificates that can be used during targeting. Code signing is the process of digitally signing executables and scripts to confirm the software author and guarantee that the code has not been altered or corrupted. Code signing provides a level of authenticity for a program from the developer and a guarantee that the program has not been tampered with.(Citation: Wikipedia Code Signing) Users and/or security tools may trust a signed piece of code more than an unsigned piece of code even if they don't know who issued the certificate or who the author is."
+    ],
+    "entity_ids": [
+      "T1587.002"
+    ],
+    "entity_ids_by_source": {
+      "attack": [
+        "T1587.002"
+      ]
+    },
+    "expected_template": "",
+    "queries": [
+      "MATCH (n:SubTechnique) WHERE coalesce(n.attack_id, n.id) IN $ids OPTIONAL MATCH (n)-[r]-(m) WITH n, CASE WHEN m IS NULL THEN NULL ELSE type(r) END AS rel, CASE WHEN m IS NULL THEN NULL ELSE startNode(r) = n END AS outgoing, CASE WHEN m IS NULL THEN NULL ELSE head(labels(m)) END AS neighbour_label, count(m) AS cnt WITH n, collect(CASE WHEN rel IS NULL THEN NULL ELSE {rel: rel, outgoing: outgoing, label: neighbour_label, count: cnt} END) AS raw WITH n, [f IN raw WHERE f IS NOT NULL] AS facets RETURN coalesce(n.attack_id, n.id) AS id, n.name AS name, n.properties_json AS properties_json, facets AS facets LIMIT 1000",
+      "MATCH (n:SubTechnique) WHERE coalesce(n.attack_id, n.id) IN $ids OPTIONAL MATCH (n)-[r]-(m) WITH n, CASE WHEN m IS NULL THEN NULL ELSE type(r) END AS rel, CASE WHEN m IS NULL THEN NULL ELSE startNode(r) = n END AS outgoing, CASE WHEN m IS NULL THEN NULL ELSE head(labels(m)) END AS neighbour_label, count(m) AS cnt WITH n, collect(CASE WHEN rel IS NULL THEN NULL ELSE {rel: rel, outgoing: outgoing, label: neighbour_label, count: cnt} END) AS raw WITH n, [f IN raw WHERE f IS NOT NULL] AS facets RETURN coalesce(n.attack_id, n.id) AS id, n.name AS name, n.properties_json AS properties_json, facets AS facets LIMIT 1000"
+    ],
+    "question": "If I'm looking at code signing certificates in T1587.002, which threat groups use it?",
+    "record_count": 2,
+    "seed_ids": [
+      "T1587.002"
+    ],
+    "sources": [
+      "attack"
+    ],
+    "unsupported": 0
+  },
+  {
+    "abstentions": [],
+    "bank": "attack",
+    "case_id": "H-D4-detects-x_mitre_analytic_refs-T1003.005-a591fa",
+    "claims": [
+      "Found 3 item(s) related to T1003.005 (e.g. DET0513, AN1418, AN1417) in MITRE ATT&CK.",
+      "T1003.005 (Cached Domain Credentials) has 3 related item(s): DET0513, AN1418, AN1417.",
+      "T1003.005 has no analytics in this catalogue."
+    ],
+    "entity_ids": [
+      "AN1417",
+      "AN1418",
+      "DET0513",
+      "T1003.005"
+    ],
+    "entity_ids_by_source": {
+      "attack": [
+        "AN1417",
+        "AN1418",
+        "DET0513",
+        "T1003.005"
+      ]
+    },
+    "expected_template": "",
+    "queries": [
+      "MATCH (t:SubTechnique) WHERE t.attack_id IN $ids MATCH (t)<-[:DETECTS]-(d:DetectionStrategy) OPTIONAL MATCH (d)-[:HAS_ANALYTIC]->(a:Analytic) RETURN t.attack_id AS technique_id, t.name AS technique_name, d.attack_id AS detection_id, d.name AS detection_name, a.attack_id AS analytic_id, a.name AS analytic_name LIMIT 1000"
+    ],
+    "question": "If I want coverage for Cached Domain Credentials (T1003.005), which detection strategies address it, and what detection analytics implement each of those strategies?",
+    "record_count": 1,
+    "seed_ids": [
+      "T1003.005"
+    ],
+    "sources": [
+      "attack"
+    ],
+    "unsupported": 0
+  },
+  {
+    "abstentions": [],
+    "bank": "attack",
+    "case_id": "H-D4-detects-x_mitre_analytic_refs-T1684.002-b62c3f",
+    "claims": [
+      "Found 5 item(s) related to T1684.002 (e.g. DET0431, AN1205, AN1202) in MITRE ATT&CK.",
+      "T1684.002 (Email Spoofing) has 5 related item(s): DET0431, AN1205, AN1202, AN1203, AN1204."
+    ],
+    "entity_ids": [
+      "AN1202",
+      "AN1203",
+      "AN1204",
+      "AN1205",
+      "DET0431",
+      "T1684.002"
+    ],
+    "entity_ids_by_source": {
+      "attack": [
+        "AN1202",
+        "AN1203",
+        "AN1204",
+        "AN1205",
+        "DET0431",
+        "T1684.002"
+      ]
+    },
+    "expected_template": "",
+    "queries": [
+      "MATCH (t:SubTechnique) WHERE t.attack_id IN $ids MATCH (t)<-[:DETECTS]-(d:DetectionStrategy) OPTIONAL MATCH (d)-[:HAS_ANALYTIC]->(a:Analytic) RETURN t.attack_id AS technique_id, t.name AS technique_name, d.attack_id AS detection_id, d.name AS detection_name, a.attack_id AS analytic_id, a.name AS analytic_name LIMIT 1000"
+    ],
+    "question": "Which detection analytics implement each of the detection strategies that detect the technique T1684.002?",
+    "record_count": 1,
+    "seed_ids": [
+      "T1684.002"
+    ],
+    "sources": [
+      "attack"
+    ],
+    "unsupported": 0
+  },
+  {
+    "abstentions": [],
+    "bank": "attack",
+    "case_id": "H-D5-uses-x_mitre_platforms-G0131-8d6616",
+    "claims": [
+      "Found 1 record in MITRE ATT&CK: Tonto Team (G0131).",
+      "G0131 (Tonto Team) attack id: G0131.",
+      "G0131 (Tonto Team) has revoked: False; stix_type: intrusion-set; x_mitre_deprecated: False; x_mitre_version: 1.1; aliases: Tonto Team Earth Akhlut BRONZE HUNTLEY CactusPete Karma Panda; x_mitre_domains: enterprise-attack.",
+      "G0131 (Tonto Team): Tonto Team is a suspected Chinese state-sponsored cyber espionage threat group that has primarily targeted South Korea, Japan, Taiwan, and the United States since at least 2009; by 2020 they expanded operations to include other Asian as well as Eastern European countries.",
+      "G0131 has no ATTRIBUTED_TO relationships in this catalogue."
+    ],
+    "entity_ids": [
+      "G0131"
+    ],
+    "entity_ids_by_source": {
+      "attack": [
+        "G0131"
+      ]
+    },
+    "expected_template": "",
+    "queries": [
+      "MATCH (n:Group) WHERE coalesce(n.attack_id, n.id) IN $ids OPTIONAL MATCH (n)-[r]-(m) WITH n, CASE WHEN m IS NULL THEN NULL ELSE type(r) END AS rel, CASE WHEN m IS NULL THEN NULL ELSE startNode(r) = n END AS outgoing, CASE WHEN m IS NULL THEN NULL ELSE head(labels(m)) END AS neighbour_label, count(m) AS cnt WITH n, collect(CASE WHEN rel IS NULL THEN NULL ELSE {rel: rel, outgoing: outgoing, label: neighbour_label, count: cnt} END) AS raw WITH n, [f IN raw WHERE f IS NOT NULL] AS facets RETURN coalesce(n.attack_id, n.id) AS id, n.name AS name, n.properties_json AS properties_json, facets AS facets LIMIT 1000",
+      "MATCH (n:Group) WHERE coalesce(n.attack_id, n.id) IN $ids OPTIONAL MATCH (n)-[r]-(m) WITH n, CASE WHEN m IS NULL THEN NULL ELSE type(r) END AS rel, CASE WHEN m IS NULL THEN NULL ELSE startNode(r) = n END AS outgoing, CASE WHEN m IS NULL THEN NULL ELSE head(labels(m)) END AS neighbour_label, count(m) AS cnt WITH n, collect(CASE WHEN rel IS NULL THEN NULL ELSE {rel: rel, outgoing: outgoing, label: neighbour_label, count: cnt} END) AS raw WITH n, [f IN raw WHERE f IS NOT NULL] AS facets RETURN coalesce(n.attack_id, n.id) AS id, n.name AS name, n.properties_json AS properties_json, facets AS facets LIMIT 1000"
+    ],
+    "question": "On Linux hosts, which of the malware and tools attributed to G0131 would matter?",
+    "record_count": 2,
+    "seed_ids": [
+      "G0131"
+    ],
+    "sources": [
+      "attack"
+    ],
+    "unsupported": 0
+  },
+  {
+    "abstentions": [],
+    "bank": "attack",
+    "case_id": "H-D5-uses-x_mitre_platforms-G1053-d4d2e1",
+    "claims": [
+      "Found 1 record in MITRE ATT&CK: Storm-0501 (G1053).",
+      "G1053 (Storm-0501) attack id: G1053.",
+      "G1053 (Storm-0501) has revoked: False; stix_type: intrusion-set; x_mitre_deprecated: False; x_mitre_version: 1.0; aliases: Storm-0501; x_mitre_domains: enterprise-attack.",
+      "G1053 (Storm-0501): Storm-0501 is a financially motivated cyber criminal group that uses commodity and open-source tools to conduct ransomware operations. Storm-0501 has been active since 2021 and has previously been affiliated with Sabbath Ransomware and other Ransomware-as-a-Service (RaaS) variants such as Hive, BlackCat, Hunters International, LockBit 3.0, and Embargo ransomware.(Citation: Avertium Storm-0501 Sabbath Ransomware Arcane January 2022)(Citation: Microsoft Storm-501 Sabbath Ransomware Embargo September 2024)(Citation: Microsoft Storm-0501 Embargo Ransomware August 2025)(Citation: Google Mandiant Storm-0501 Sabbath Ransomware November 2021)",
+      "G1053 has no ATTRIBUTED_TO relationships in this catalogue."
+    ],
+    "entity_ids": [
+      "G1053"
+    ],
+    "entity_ids_by_source": {
+      "attack": [
+        "G1053"
+      ]
+    },
+    "expected_template": "",
+    "queries": [
+      "MATCH (n:Group) WHERE coalesce(n.attack_id, n.id) IN $ids OPTIONAL MATCH (n)-[r]-(m) WITH n, CASE WHEN m IS NULL THEN NULL ELSE type(r) END AS rel, CASE WHEN m IS NULL THEN NULL ELSE startNode(r) = n END AS outgoing, CASE WHEN m IS NULL THEN NULL ELSE head(labels(m)) END AS neighbour_label, count(m) AS cnt WITH n, collect(CASE WHEN rel IS NULL THEN NULL ELSE {rel: rel, outgoing: outgoing, label: neighbour_label, count: cnt} END) AS raw WITH n, [f IN raw WHERE f IS NOT NULL] AS facets RETURN coalesce(n.attack_id, n.id) AS id, n.name AS name, n.properties_json AS properties_json, facets AS facets LIMIT 1000",
+      "MATCH (n:Group) WHERE coalesce(n.attack_id, n.id) IN $ids OPTIONAL MATCH (n)-[r]-(m) WITH n, CASE WHEN m IS NULL THEN NULL ELSE type(r) END AS rel, CASE WHEN m IS NULL THEN NULL ELSE startNode(r) = n END AS outgoing, CASE WHEN m IS NULL THEN NULL ELSE head(labels(m)) END AS neighbour_label, count(m) AS cnt WITH n, collect(CASE WHEN rel IS NULL THEN NULL ELSE {rel: rel, outgoing: outgoing, label: neighbour_label, count: cnt} END) AS raw WITH n, [f IN raw WHERE f IS NOT NULL] AS facets RETURN coalesce(n.attack_id, n.id) AS id, n.name AS name, n.properties_json AS properties_json, facets AS facets LIMIT 1000"
+    ],
+    "question": "On ESXi hosts, which of the malware and tools attributed to G1053 would matter?",
+    "record_count": 2,
+    "seed_ids": [
+      "G1053"
+    ],
+    "sources": [
+      "attack"
+    ],
+    "unsupported": 0
+  },
+  {
+    "abstentions": [],
+    "bank": "attack",
+    "case_id": "H-D5-uses-x_mitre_platforms-S0377-182de5",
+    "claims": [
+      "Found 1 record in MITRE ATT&CK: Ebury (S0377).",
+      "S0377 (Ebury) attack id: S0377.",
+      "S0377 (Ebury) has is_family: True; revoked: False; stix_type: malware; x_mitre_deprecated: False; x_mitre_version: 2.0; x_mitre_aliases: Ebury; x_mitre_contributors: Marc-Etienne M.L\u00e9veill\u00e9, ESET; x_mitre_domains: enterprise-attack; x_mitre_platforms: Linux.",
+      "S0377 (Ebury): Ebury is an OpenSSH backdoor and credential stealer targeting Linux servers and container hosts developed by Windigo. Ebury is primarily installed through modifying shared libraries (`.so` files) executed by the legitimate OpenSSH program. First seen in 2009, Ebury has been used to maintain a botnet of servers, deploy additional malware, and steal cryptocurrency wallets, credentials, and credit card details.(Citation: ESET Ebury Feb 2014)(Citation: BleepingComputer Ebury March 2017)(Citation: ESET Ebury Oct 2017)(Citation: ESET Ebury May 2024)",
+      "S0377 has no techniques in this catalogue."
+    ],
+    "entity_ids": [
+      "S0377"
+    ],
+    "entity_ids_by_source": {
+      "attack": [
+        "S0377"
+      ]
+    },
+    "expected_template": "",
+    "queries": [
+      "MATCH (n:Software) WHERE coalesce(n.attack_id, n.id) IN $ids OPTIONAL MATCH (n)-[r]-(m) WITH n, CASE WHEN m IS NULL THEN NULL ELSE type(r) END AS rel, CASE WHEN m IS NULL THEN NULL ELSE startNode(r) = n END AS outgoing, CASE WHEN m IS NULL THEN NULL ELSE head(labels(m)) END AS neighbour_label, count(m) AS cnt WITH n, collect(CASE WHEN rel IS NULL THEN NULL ELSE {rel: rel, outgoing: outgoing, label: neighbour_label, count: cnt} END) AS raw WITH n, [f IN raw WHERE f IS NOT NULL] AS facets RETURN coalesce(n.attack_id, n.id) AS id, n.name AS name, n.properties_json AS properties_json, facets AS facets LIMIT 1000",
+      "MATCH (n:Software) WHERE coalesce(n.attack_id, n.id) IN $ids OPTIONAL MATCH (n)-[r]-(m) WITH n, CASE WHEN m IS NULL THEN NULL ELSE type(r) END AS rel, CASE WHEN m IS NULL THEN NULL ELSE startNode(r) = n END AS outgoing, CASE WHEN m IS NULL THEN NULL ELSE head(labels(m)) END AS neighbour_label, count(m) AS cnt WITH n, collect(CASE WHEN rel IS NULL THEN NULL ELSE {rel: rel, outgoing: outgoing, label: neighbour_label, count: cnt} END) AS raw WITH n, [f IN raw WHERE f IS NOT NULL] AS facets RETURN coalesce(n.attack_id, n.id) AS id, n.name AS name, n.properties_json AS properties_json, facets AS facets LIMIT 1000",
+      "MATCH (n:Software) WHERE coalesce(n.attack_id, n.id) IN $ids OPTIONAL MATCH (n)-[r]-(m) WITH n, CASE WHEN m IS NULL THEN NULL ELSE type(r) END AS rel, CASE WHEN m IS NULL THEN NULL ELSE startNode(r) = n END AS outgoing, CASE WHEN m IS NULL THEN NULL ELSE head(labels(m)) END AS neighbour_label, count(m) AS cnt WITH n, collect(CASE WHEN rel IS NULL THEN NULL ELSE {rel: rel, outgoing: outgoing, label: neighbour_label, count: cnt} END) AS raw WITH n, [f IN raw WHERE f IS NOT NULL] AS facets RETURN coalesce(n.attack_id, n.id) AS id, n.name AS name, n.properties_json AS properties_json, facets AS facets LIMIT 1000"
+    ],
+    "question": "Which ATT&CK techniques does S0377 use that apply to the Windows platform?",
+    "record_count": 3,
+    "seed_ids": [
+      "S0377"
+    ],
+    "sources": [
+      "attack"
+    ],
+    "unsupported": 0
+  },
+  {
+    "abstentions": [],
+    "bank": "attack",
+    "case_id": "H-D5-uses-x_mitre_platforms-S1245-8027f0",
+    "claims": [
+      "Found 35 item(s) related to S1245 (e.g. T1048.003, T1105, T1518) in MITRE ATT&CK.",
+      "S1245 (InvisibleFerret) has 35 related item(s): T1518, T1048.003, T1105, T1547.013, T1071.001, T1543.001, T1059.006, T1564.003, T1614, T1095, T1056, T1571, T1547.001, T1679, T1059.001, T1041, T1057, T1657, T1083, T1016, T1555.003, T1219, T1567, T1140, T1005, T1082, T1555.005, T1115, T1087.001, T1489, T1074.001, T1027.013, T1056.001, T1033, T1560.001.",
+      "S1245 has no techniques in this catalogue."
+    ],
+    "entity_ids": [
+      "S1245",
+      "T1005",
+      "T1016",
+      "T1027.013",
+      "T1033",
+      "T1041",
+      "T1048.003",
+      "T1056",
+      "T1056.001",
+      "T1057",
+      "T1059.001",
+      "T1059.006",
+      "T1071.001",
+      "T1074.001",
+      "T1082",
+      "T1083",
+      "T1087.001",
+      "T1095",
+      "T1105",
+      "T1115",
+      "T1140",
+      "T1219",
+      "T1489",
+      "T1518",
+      "T1543.001",
+      "T1547.001",
+      "T1547.013",
+      "T1555.003",
+      "T1555.005",
+      "T1560.001",
+      "T1564.003",
+      "T1567",
+      "T1571",
+      "T1614",
+      "T1657",
+      "T1679"
+    ],
+    "entity_ids_by_source": {
+      "attack": [
+        "S1245",
+        "T1005",
+        "T1016",
+        "T1027.013",
+        "T1033",
+        "T1041",
+        "T1048.003",
+        "T1056",
+        "T1056.001",
+        "T1057",
+        "T1059.001",
+        "T1059.006",
+        "T1071.001",
+        "T1074.001",
+        "T1082",
+        "T1083",
+        "T1087.001",
+        "T1095",
+        "T1105",
+        "T1115",
+        "T1140",
+        "T1219",
+        "T1489",
+        "T1518",
+        "T1543.001",
+        "T1547.001",
+        "T1547.013",
+        "T1555.003",
+        "T1555.005",
+        "T1560.001",
+        "T1564.003",
+        "T1567",
+        "T1571",
+        "T1614",
+        "T1657",
+        "T1679"
+      ]
+    },
+    "expected_template": "",
+    "queries": [
+      "MATCH (s:Software)-[:USES]->(t) WHERE (t:Technique OR t:SubTechnique) AND s.attack_id IN $ids RETURN s.attack_id AS software_id, s.name AS software_name, t.attack_id AS technique_id, t.name AS technique_name LIMIT 1000"
+    ],
+    "question": "Which ATT&CK techniques used by the malware InvisibleFerret (S1245) apply to the Windows platform?",
+    "record_count": 1,
+    "seed_ids": [
+      "S1245"
+    ],
+    "sources": [
+      "attack"
+    ],
+    "unsupported": 0
+  },
+  {
+    "abstentions": [
+      "Abstention(sub_question_id='q2', source='capec', statement=\"The capec source doesn't establish this \u2014 the executed query ran cleanly and returned no matching records for: In capec, list all AttackPattern reached from CAPEC-151 via ChildOf\", query='g.V().has(\"id\", within(ids)).as(\"ap\").out(\"CHILD_OF\").hasLabel(\"AttackPattern\").as(\"nbr\").select(\"ap\",\"nbr\").by(elementMap()).limit(1000)')",
+      "Abstention(sub_question_id='q4', source='capec', statement=\"The capec source doesn't establish this \u2014 the executed query ran cleanly and returned no matching records for: In capec, list all AttackPattern reached from CAPEC-151 via CanPrecede\", query='g.V().has(\"id\", within(ids)).as(\"ap\").out(\"CAN_PRECEDE\").hasLabel(\"AttackPattern\").as(\"nbr\").select(\"ap\",\"nbr\").by(elementMap()).limit(1000)')",
+      "Abstention(sub_question_id='q5', source='capec', statement=\"The capec source doesn't establish this \u2014 the executed query ran cleanly and returned no matching records for: In capec, list all Category reached from CAPEC-151 via MEMBER_OF\", query='g.V().has(\"id\", within(ids)).as(\"ap\").in(\"MEMBER_OF\").as(\"nbr\").select(\"ap\",\"nbr\").by(elementMap()).limit(1000)')"
+    ],
+    "bank": "capec",
+    "case_id": "H-D1-AttackPattern-Abstraction-CAPEC-151-e83170",
+    "claims": [
+      "CAPEC-151 (Identity Spoofing) Likelihood Of Attack: Medium.",
+      "CAPEC-151 (Identity Spoofing) has Abstraction: Meta; Likelihood_Of_Attack: Medium; Status: Stable; Typical_Severity: Medium.",
+      "CAPEC-151 (Identity Spoofing): Identity Spoofing refers to the action of assuming (i.e., taking on) the identity of some other entity (human or non-human) and then using that identity to accomplish a goal. An adversary may craft messages that appear to come from a different principle or use stolen / spoofed authentication credentials.",
+      "Found 1 CAPEC record(s): CAPEC-151."
+    ],
+    "entity_ids": [
+      "CAPEC-151"
+    ],
+    "entity_ids_by_source": {
+      "capec": [
+        "CAPEC-151"
+      ]
+    },
+    "expected_template": "",
+    "queries": [
+      "g.V().has(\"id\", within(ids)).as(\"ap\").in(\"MEMBER_OF\").as(\"nbr\").select(\"ap\",\"nbr\").by(elementMap()).limit(1000)",
+      "g.V().has(\"id\", within(ids)).as(\"ap\").out(\"CAN_PRECEDE\").hasLabel(\"AttackPattern\").as(\"nbr\").select(\"ap\",\"nbr\").by(elementMap()).limit(1000)",
+      "g.V().has(\"id\", within(ids)).as(\"ap\").out(\"CHILD_OF\").hasLabel(\"AttackPattern\").as(\"nbr\").select(\"ap\",\"nbr\").by(elementMap()).limit(1000)",
+      "g.V().has(\"id\", within(ids)).project(\"node\",\"out\",\"in\").by(elementMap()).by(outE().project(\"rel\",\"label\").by(label()).by(inV().label()).fold()).by(inE().project(\"rel\",\"label\").by(label()).by(outV().label()).fold()).limit(1000)",
+      "g.V().has(\"id\", within(ids)).project(\"node\",\"out\",\"in\").by(elementMap()).by(outE().project(\"rel\",\"label\").by(label()).by(inV().label()).fold()).by(inE().project(\"rel\",\"label\").by(label()).by(outV().label()).fold()).limit(1000)"
+    ],
+    "question": "What level of generality does the CAPEC attack pattern Identity Spoofing CAPEC-151 have?",
+    "record_count": 2,
+    "seed_ids": [
+      "CAPEC-151"
+    ],
+    "sources": [
+      "capec"
+    ],
+    "unsupported": 0
+  },
+  {
+    "abstentions": [
+      "Abstention(sub_question_id='q3', source='capec', statement=\"The capec source doesn't establish this \u2014 the executed query ran cleanly and returned no matching records for: In capec, list all View reached from CAPEC-57 via IN_VIEW\", query='g.V().has(\"id\", within(ids)).as(\"ap\").in(\"IN_VIEW\").as(\"nbr\").select(\"ap\",\"nbr\").by(elementMap()).limit(1000)')"
+    ],
+    "bank": "capec",
+    "case_id": "H-D1-AttackPattern-Likelihood_Of_Attack-CAPEC-57-24fde9",
+    "claims": [
+      "CAPEC-57 (Utilizing REST's Trust in the System Resource to Obtain Sensitive Data) Likelihood Of Attack: Medium.",
+      "CAPEC-57 (Utilizing REST's Trust in the System Resource to Obtain Sensitive Data) has 1 ChildOf parent: CAPEC-157.",
+      "CAPEC-57 (Utilizing REST's Trust in the System Resource to Obtain Sensitive Data) has Abstraction: Detailed; Likelihood_Of_Attack: Medium; Status: Draft; Typical_Severity: Very High.",
+      "CAPEC-57 (Utilizing REST's Trust in the System Resource to Obtain Sensitive Data): This attack utilizes a REST(REpresentational State Transfer)-style applications' trust in the system resources and environment to obtain sensitive data once SSL is terminated.",
+      "Found 1 CAPEC record(s): CAPEC-57."
+    ],
+    "entity_ids": [
+      "CAPEC-157",
+      "CAPEC-57"
+    ],
+    "entity_ids_by_source": {
+      "capec": [
+        "CAPEC-157",
+        "CAPEC-57"
+      ]
+    },
+    "expected_template": "",
+    "queries": [
+      "g.V().has(\"id\", within(ids)).as(\"ap\").in(\"IN_VIEW\").as(\"nbr\").select(\"ap\",\"nbr\").by(elementMap()).limit(1000)",
+      "g.V().has(\"id\", within(ids)).as(\"ap\").out(\"CHILD_OF\").hasLabel(\"AttackPattern\").as(\"nbr\").select(\"ap\",\"nbr\").by(elementMap()).limit(1000)",
+      "g.V().has(\"id\", within(ids)).project(\"node\",\"out\",\"in\").by(elementMap()).by(outE().project(\"rel\",\"label\").by(label()).by(inV().label()).fold()).by(inE().project(\"rel\",\"label\").by(label()).by(outV().label()).fold()).limit(1000)"
+    ],
+    "question": "What likelihood of attack does the CAPEC attack pattern CAPEC-57 have in CAPEC?",
+    "record_count": 2,
+    "seed_ids": [
+      "CAPEC-57"
+    ],
+    "sources": [
+      "capec"
+    ],
+    "unsupported": 0
+  },
+  {
+    "abstentions": [
+      "Abstention(sub_question_id='q2', source='capec', statement=\"The capec source doesn't establish this \u2014 the executed query ran cleanly and returned no matching records for: In capec, list all AttackPattern reached from CAPEC-28 via ChildOf\", query='g.V().has(\"id\", within(ids)).as(\"ap\").out(\"CHILD_OF\").hasLabel(\"AttackPattern\").as(\"nbr\").select(\"ap\",\"nbr\").by(elementMap()).limit(1000)')"
+    ],
+    "bank": "capec",
+    "case_id": "H-D1-AttackPattern-Typical_Severity-CAPEC-28-6d85e0",
+    "claims": [
+      "CAPEC-28 (Fuzzing) has Abstraction: Meta; Likelihood_Of_Attack: High; Status: Draft; Typical_Severity: Medium.",
+      "CAPEC-28 (Fuzzing): In this attack pattern, the adversary leverages fuzzing to try to identify weaknesses in the system. Fuzzing is a software security and functionality testing method that feeds randomly constructed input to the system and looks for an indication that a failure in response to that input has occurred. Fuzzing treats the system as a black box and is totally free from any preconceptions or assumptions about the system. Fuzzing can help an attacker discover certain assumptions made about user input in the system. Fuzzing gives an attacker a quick way of potentially uncovering some of these assumptions despite not necessarily knowing anything about the internals of the system.",
+      "CAPEC-28 has no alternate terms in this catalogue.",
+      "Found 1 CAPEC record(s): CAPEC-28."
+    ],
+    "entity_ids": [
+      "CAPEC-28"
+    ],
+    "entity_ids_by_source": {
+      "capec": [
+        "CAPEC-28"
+      ]
+    },
+    "expected_template": "",
+    "queries": [
+      "g.V().has(\"id\", within(ids)).as(\"ap\").out(\"CHILD_OF\").hasLabel(\"AttackPattern\").as(\"nbr\").select(\"ap\",\"nbr\").by(elementMap()).limit(1000)",
+      "g.V().has(\"id\", within(ids)).project(\"node\",\"out\",\"in\").by(elementMap()).by(outE().project(\"rel\",\"label\").by(label()).by(inV().label()).fold()).by(inE().project(\"rel\",\"label\").by(label()).by(outV().label()).fold()).limit(1000)"
+    ],
+    "question": "What severity is typically assigned to the CAPEC attack pattern known as Fuzzing (CAPEC-28)?",
+    "record_count": 1,
+    "seed_ids": [
+      "CAPEC-28"
+    ],
+    "sources": [
+      "capec"
+    ],
+    "unsupported": 0
+  },
+  {
+    "abstentions": [],
+    "bank": "capec",
+    "case_id": "H-D2-CanPrecede-CAPEC-101-f1e06c",
+    "claims": [
+      "CAPEC-101 (Server Side Include (SSI) Injection) Likelihood Of Attack: High.",
+      "CAPEC-101 (Server Side Include (SSI) Injection) has 1 CanPrecede successor: CAPEC-600.",
+      "CAPEC-101 (Server Side Include (SSI) Injection) has 1 ChildOf parent: CAPEC-253.",
+      "CAPEC-101 (Server Side Include (SSI) Injection) has Abstraction: Detailed; Likelihood_Of_Attack: High; Status: Draft; Typical_Severity: High.",
+      "CAPEC-101 (Server Side Include (SSI) Injection): An attacker can use Server Side Include (SSI) Injection to send code to a web application that then gets executed by the web server. Doing so enables the attacker to achieve similar results to Cross Site Scripting, viz., arbitrary code execution and information disclosure, albeit on a more limited scale, since the SSI directives are nowhere near as powerful as a full-fledged scripting language. Nonetheless, the attacker can conveniently gain access to sensitive files, such as password files, and execute shell commands.",
+      "CAPEC-101 has no CanFollow relationships in this catalogue.",
+      "Found 1 CAPEC record(s): CAPEC-101."
+    ],
+    "entity_ids": [
+      "CAPEC-101",
+      "CAPEC-253",
+      "CAPEC-600"
+    ],
+    "entity_ids_by_source": {
+      "capec": [
+        "CAPEC-101",
+        "CAPEC-253",
+        "CAPEC-600"
+      ]
+    },
+    "expected_template": "",
+    "queries": [
+      "g.V().has(\"id\", within(ids)).as(\"ap\").out(\"CAN_PRECEDE\").hasLabel(\"AttackPattern\").as(\"nbr\").select(\"ap\",\"nbr\").by(elementMap()).limit(1000)",
+      "g.V().has(\"id\", within(ids)).as(\"ap\").out(\"CHILD_OF\").hasLabel(\"AttackPattern\").as(\"nbr\").select(\"ap\",\"nbr\").by(elementMap()).limit(1000)",
+      "g.V().has(\"id\", within(ids)).project(\"node\",\"out\",\"in\").by(elementMap()).by(outE().project(\"rel\",\"label\").by(label()).by(inV().label()).fold()).by(inE().project(\"rel\",\"label\").by(label()).by(outV().label()).fold()).limit(1000)"
+    ],
+    "question": "Having pulled off CAPEC-101, which attack patterns can an adversary follow it with?",
+    "record_count": 3,
+    "seed_ids": [
+      "CAPEC-101"
+    ],
+    "sources": [
+      "capec"
+    ],
+    "unsupported": 0
+  },
+  {
+    "abstentions": [],
+    "bank": "capec",
+    "case_id": "H-D2-ChildOf-CAPEC-182-15f8e0",
+    "claims": [
+      "CAPEC-182 (Flash Injection) Likelihood Of Attack: High.",
+      "CAPEC-182 (Flash Injection) has 1 ChildOf parent: CAPEC-137.",
+      "CAPEC-182 (Flash Injection) has Abstraction: Standard; Likelihood_Of_Attack: High; Status: Draft; Typical_Severity: Medium.",
+      "CAPEC-182 (Flash Injection): An attacker tricks a victim to execute malicious flash content that executes commands or makes flash calls specified by the attacker. One example of this attack is cross-site flashing, an attacker controlled parameter to a reference call loads from content specified by the attacker.",
+      "Found 1 CAPEC record(s): CAPEC-182."
+    ],
+    "entity_ids": [
+      "CAPEC-137",
+      "CAPEC-182"
+    ],
+    "entity_ids_by_source": {
+      "capec": [
+        "CAPEC-137",
+        "CAPEC-182"
+      ]
+    },
+    "expected_template": "",
+    "queries": [
+      "g.V().has(\"id\", within(ids)).as(\"ap\").out(\"CHILD_OF\").hasLabel(\"AttackPattern\").as(\"nbr\").select(\"ap\",\"nbr\").by(elementMap()).limit(1000)",
+      "g.V().has(\"id\", within(ids)).project(\"node\",\"out\",\"in\").by(elementMap()).by(outE().project(\"rel\",\"label\").by(label()).by(inV().label()).fold()).by(inE().project(\"rel\",\"label\").by(label()).by(outV().label()).fold()).limit(1000)",
+      "g.V().has(\"id\", within(ids)).project(\"node\",\"out\",\"in\").by(elementMap()).by(outE().project(\"rel\",\"label\").by(label()).by(inV().label()).fold()).by(inE().project(\"rel\",\"label\").by(label()).by(outV().label()).fold()).limit(1000)"
+    ],
+    "question": "Which CAPEC attack patterns is Flash Injection (CAPEC-182) a more specific case of?",
+    "record_count": 3,
+    "seed_ids": [
+      "CAPEC-182"
+    ],
+    "sources": [
+      "capec"
+    ],
+    "unsupported": 0
+  },
+  {
+    "abstentions": [],
+    "bank": "capec",
+    "case_id": "H-D2-ChildOf-CAPEC-637-33e31b",
+    "claims": [
+      "CAPEC-637 (Collect Data from Clipboard) Likelihood Of Attack: Low.",
+      "CAPEC-637 (Collect Data from Clipboard) has 1 ATT&CK mapping: T1115.",
+      "CAPEC-637 (Collect Data from Clipboard) has Abstraction: Detailed; Likelihood_Of_Attack: Low; Status: Stable; Typical_Severity: Low.",
+      "CAPEC-637 (Collect Data from Clipboard): The adversary exploits an application that allows for the copying of sensitive data or information by collecting information copied to the clipboard. Data copied to the clipboard can be accessed by other applications, such as malware built to exfiltrate or log clipboard contents on a periodic basis. In this way, the adversary aims to garner information to which they are unauthorized.",
+      "Found 1 CAPEC record(s) for CAPEC-637; ATT&CK mappings: T1115.",
+      "Found 1 record in MITRE ATT&CK: Clipboard Data (T1115).",
+      "T1115 (Clipboard Data) attack id: T1115.",
+      "T1115 (Clipboard Data) has revoked: False; stix_type: attack-pattern; x_mitre_deprecated: False; x_mitre_is_subtechnique: False; x_mitre_version: 1.2; x_mitre_domains: enterprise-attack; x_mitre_platforms: Linux macOS Windows.",
+      "T1115 (Clipboard Data): Adversaries may collect data stored in the clipboard from users copying information within or between applications. \n\nFor example, on Windows adversaries can access clipboard data by using <code>clip.exe</code> or <code>Get-Clipboard</code>.(Citation: MSDN Clipboard)(Citation: clip_win_server)(Citation: CISA_AA21_200B) Additionally, adversaries may monitor then replace users\u2019 clipboard with their data (e.g., Transmitted Data Manipulation).(Citation: mining_ruby_reversinglabs)\n\nmacOS and Linux also have commands, such as <code>pbpaste</code>, to grab clipboard contents.(Citation: Operating with EmPyre)",
+      "The identifier T1115 is corroborated across attack and capec (3 record(s) share it)."
+    ],
+    "entity_ids": [
+      "CAPEC-637",
+      "T1115"
+    ],
+    "entity_ids_by_source": {
+      "attack": [
+        "T1115"
+      ],
+      "capec": [
+        "CAPEC-637",
+        "T1115"
+      ]
+    },
+    "expected_template": "",
+    "queries": [
+      "MATCH (n:Technique) WHERE coalesce(n.attack_id, n.id) IN $ids OPTIONAL MATCH (n)-[r]-(m) WITH n, CASE WHEN m IS NULL THEN NULL ELSE type(r) END AS rel, CASE WHEN m IS NULL THEN NULL ELSE startNode(r) = n END AS outgoing, CASE WHEN m IS NULL THEN NULL ELSE head(labels(m)) END AS neighbour_label, count(m) AS cnt WITH n, collect(CASE WHEN rel IS NULL THEN NULL ELSE {rel: rel, outgoing: outgoing, label: neighbour_label, count: cnt} END) AS raw WITH n, [f IN raw WHERE f IS NOT NULL] AS facets RETURN coalesce(n.attack_id, n.id) AS id, n.name AS name, n.properties_json AS properties_json, facets AS facets LIMIT 1000",
+      "MATCH (n:Technique) WHERE coalesce(n.attack_id, n.id) IN $ids OPTIONAL MATCH (n)-[r]-(m) WITH n, CASE WHEN m IS NULL THEN NULL ELSE type(r) END AS rel, CASE WHEN m IS NULL THEN NULL ELSE startNode(r) = n END AS outgoing, CASE WHEN m IS NULL THEN NULL ELSE head(labels(m)) END AS neighbour_label, count(m) AS cnt WITH n, collect(CASE WHEN rel IS NULL THEN NULL ELSE {rel: rel, outgoing: outgoing, label: neighbour_label, count: cnt} END) AS raw WITH n, [f IN raw WHERE f IS NOT NULL] AS facets RETURN coalesce(n.attack_id, n.id) AS id, n.name AS name, n.properties_json AS properties_json, facets AS facets LIMIT 1000",
+      "g.V().has(\"id\", within(ids)).project(\"ap\",\"tax\").by(elementMap()).by(__.out(\"MAPS_TO\").hasLabel(\"TaxonomyEntry\").has(\"taxonomy_name\",\"ATTACK\").elementMap().fold()).limit(1000)"
+    ],
+    "question": "Which CAPEC attack patterns is the attack pattern Collect Data from Clipboard CAPEC-637 a specific case of?",
+    "record_count": 3,
+    "seed_ids": [
+      "CAPEC-637"
+    ],
+    "sources": [
+      "attack",
+      "capec"
+    ],
+    "unsupported": 0
+  },
+  {
+    "abstentions": [
+      "Abstention(sub_question_id='q1', source='capec', statement=\"The capec source doesn't establish this \u2014 the executed query ran cleanly and returned CAPEC-153 with no linked records for: In capec, identify AlternateTerm, AttackPattern, EXPLOITS_WEAKNESS, HAS_ALTERNATE_TERM, Weakness relevant to: Which CWE weaknesses does the CAPEC attack pattern known as Input Data Manipulation (CAPEC-153) exploit?\", query='g.V().has(\"id\", within(ids)).as(\"ap\").out(\"EXPLOITS_WEAKNESS\").hasLabel(\"Weakness\").as(\"nbr\").select(\"ap\",\"nbr\").by(elementMap()).limit(1000)')",
+      "Abstention(sub_question_id='q2', source='attack', statement=\"The attack source doesn't establish this \u2014 the sub-question it depends on (q1) produced no seed identifiers, so no query was executed for: In attack, identify DataComponent, Software relevant to: Which CWE weaknesses does the CAPEC attack pattern known as Input Data Manipulation (CAPEC-153) exploit?\", query='')"
+    ],
+    "bank": "capec",
+    "case_id": "H-D2-EXPLOITS_WEAKNESS-CAPEC-153-dffa80",
+    "claims": [
+      "CAPEC-153 (Input Data Manipulation) has 1 exploited weakness: CWE-20.",
+      "CAPEC-153 (Input Data Manipulation) has Abstraction: Meta; Status: Draft; Typical_Severity: Medium.",
+      "CAPEC-153 (Input Data Manipulation): An attacker exploits a weakness in input validation by controlling the format, structure, and composition of data to an input-processing interface. By supplying input of a non-standard or unexpected form an attacker can adversely impact the security of the target.",
+      "Found 1 CAPEC record(s): CAPEC-153."
+    ],
+    "entity_ids": [
+      "CAPEC-153",
+      "CWE-20"
+    ],
+    "entity_ids_by_source": {
+      "attack": [],
+      "capec": [
+        "CAPEC-153",
+        "CWE-20"
+      ]
+    },
+    "expected_template": "",
+    "queries": [
+      "g.V().has(\"id\", within(ids)).as(\"ap\").out(\"EXPLOITS_WEAKNESS\").hasLabel(\"Weakness\").as(\"nbr\").select(\"ap\",\"nbr\").by(elementMap()).limit(1000)"
+    ],
+    "question": "Which CWE weaknesses does the CAPEC attack pattern known as Input Data Manipulation (CAPEC-153) exploit?",
+    "record_count": 1,
+    "seed_ids": [
+      "CAPEC-153"
+    ],
+    "sources": [
+      "capec"
+    ],
+    "unsupported": 0
+  },
+  {
+    "abstentions": [],
+    "bank": "capec",
+    "case_id": "H-D2-EXPLOITS_WEAKNESS-CAPEC-580-7ec59a",
+    "claims": [
+      "CAPEC-580 (System Footprinting) has 3 exploited weaknesses: CWE-204, CWE-205, CWE-208.",
+      "CAPEC-580 (System Footprinting) has Abstraction: Standard; Likelihood_Of_Attack: Low; Status: Stable; Typical_Severity: Low.",
+      "CAPEC-580 (System Footprinting): An adversary engages in active probing and exploration activities to determine security information about a remote target system. Often times adversaries will rely on remote applications that can be probed for system configurations.",
+      "Found 1 CAPEC record(s): CAPEC-580."
+    ],
+    "entity_ids": [
+      "CAPEC-580",
+      "CWE-204",
+      "CWE-205",
+      "CWE-208"
+    ],
+    "entity_ids_by_source": {
+      "capec": [
+        "CAPEC-580",
+        "CWE-204",
+        "CWE-205",
+        "CWE-208"
+      ]
+    },
+    "expected_template": "",
+    "queries": [
+      "g.V().has(\"id\", within(ids)).as(\"ap\").out(\"EXPLOITS_WEAKNESS\").hasLabel(\"Weakness\").as(\"nbr\").select(\"ap\",\"nbr\").by(elementMap()).limit(1000)"
+    ],
+    "question": "Which CWE weaknesses does System Footprinting (CAPEC-580) exploit?",
+    "record_count": 1,
+    "seed_ids": [
+      "CAPEC-580"
+    ],
+    "sources": [
+      "capec"
+    ],
+    "unsupported": 0
+  },
+  {
+    "abstentions": [],
+    "bank": "capec",
+    "case_id": "H-D2-HAS_MEMBER-CAPEC-515-5dba2c",
+    "claims": [
+      "CAPEC-515 (Hardware) has Status: Draft.",
+      "Found 1 CAPEC record(s): CAPEC-515."
+    ],
+    "entity_ids": [
+      "CAPEC-515"
+    ],
+    "entity_ids_by_source": {
+      "capec": [
+        "CAPEC-515"
+      ]
+    },
+    "expected_template": "",
+    "queries": [
+      "g.V().has(\"id\", within(ids)).project(\"node\",\"out\",\"in\").by(elementMap()).by(outE().project(\"rel\",\"label\").by(label()).by(inV().label()).fold()).by(inE().project(\"rel\",\"label\").by(label()).by(outV().label()).fold()).limit(1000)",
+      "g.V().has(\"id\", within(ids)).project(\"node\",\"out\",\"in\").by(elementMap()).by(outE().project(\"rel\",\"label\").by(label()).by(inV().label()).fold()).by(inE().project(\"rel\",\"label\").by(label()).by(outV().label()).fold()).limit(1000)"
+    ],
+    "question": "Browsing CAPEC-515 as a starting point, which attack patterns sit underneath the category?",
+    "record_count": 2,
+    "seed_ids": [
+      "CAPEC-515"
+    ],
+    "sources": [
+      "capec"
+    ],
+    "unsupported": 0
+  },
+  {
+    "abstentions": [],
+    "bank": "capec",
+    "case_id": "H-D2-MAPS_TO[ATTACK]-CAPEC-227-f83770",
+    "claims": [
+      "CAPEC-227 (Sustained Client Engagement) has 1 ATT&CK mapping: T1499.",
+      "CAPEC-227 (Sustained Client Engagement) has Abstraction: Meta; Status: Draft.",
+      "CAPEC-227 (Sustained Client Engagement): An adversary attempts to deny legitimate users access to a resource by continually engaging a specific resource in an attempt to keep the resource tied up as long as possible. The adversary's primary goal is not to crash or flood the target, which would alert defenders; rather it is to repeatedly perform actions or abuse algorithmic flaws such that a given resource is tied up and not available to a legitimate user. By carefully crafting a requests that keep the resource engaged through what is seemingly benign requests, legitimate users are limited or completely denied access to the resource.",
+      "Found 1 CAPEC record(s) for CAPEC-227; ATT&CK mappings: T1499.",
+      "Found 1 item(s) related to T1499 (e.g. TA0040) in MITRE ATT&CK.",
+      "Found 1 record in MITRE ATT&CK: Endpoint Denial of Service (T1499).",
+      "Found 4 item(s) related to T1499 (e.g. T1499.002, T1499.004, T1499.003) in MITRE ATT&CK.",
+      "T1499 (Endpoint Denial of Service) attack id: T1499.",
+      "T1499 (Endpoint Denial of Service) has 1 related item(s): TA0040.",
+      "T1499 (Endpoint Denial of Service) has 4 related item(s): T1499.002, T1499.004, T1499.003, T1499.001.",
+      "T1499 (Endpoint Denial of Service) has revoked: False; stix_type: attack-pattern; x_mitre_deprecated: False; x_mitre_is_subtechnique: False; x_mitre_version: 1.2; x_mitre_domains: enterprise-attack; x_mitre_impact_type: Availability; x_mitre_platforms: Windows Linux macOS Containers IaaS.",
+      "T1499 (Endpoint Denial of Service): Adversaries may perform Endpoint Denial of Service (DoS) attacks to degrade or block the availability of services to users. Endpoint DoS can be performed by exhausting the system resources those services are hosted on or exploiting the system to cause a persistent crash condition. Example services include websites, email services, DNS, and web-based applications.",
+      "T1499 has no subtechniques in this catalogue.",
+      "T1499 has no techniques in this catalogue.",
+      "The identifier T1499 is corroborated across attack and capec (4 record(s) share it)."
+    ],
+    "entity_ids": [
+      "CAPEC-227",
+      "T1499",
+      "T1499.001",
+      "T1499.002",
+      "T1499.003",
+      "T1499.004",
+      "TA0040"
+    ],
+    "entity_ids_by_source": {
+      "attack": [
+        "T1499",
+        "T1499.001",
+        "T1499.002",
+        "T1499.003",
+        "T1499.004",
+        "TA0040"
+      ],
+      "capec": [
+        "CAPEC-227",
+        "T1499"
+      ]
+    },
+    "expected_template": "",
+    "queries": [
+      "MATCH (n:Technique) WHERE coalesce(n.attack_id, n.id) IN $ids OPTIONAL MATCH (n)-[r]-(m) WITH n, CASE WHEN m IS NULL THEN NULL ELSE type(r) END AS rel, CASE WHEN m IS NULL THEN NULL ELSE startNode(r) = n END AS outgoing, CASE WHEN m IS NULL THEN NULL ELSE head(labels(m)) END AS neighbour_label, count(m) AS cnt WITH n, collect(CASE WHEN rel IS NULL THEN NULL ELSE {rel: rel, outgoing: outgoing, label: neighbour_label, count: cnt} END) AS raw WITH n, [f IN raw WHERE f IS NOT NULL] AS facets RETURN coalesce(n.attack_id, n.id) AS id, n.name AS name, n.properties_json AS properties_json, facets AS facets LIMIT 1000",
+      "MATCH (t:Technique)-[:HAS_SUBTECHNIQUE]->(st:SubTechnique) WHERE t.attack_id IN $ids OR st.attack_id IN $ids RETURN t.attack_id AS parent_id, t.name AS parent_name, st.attack_id AS subtechnique_id, st.name AS subtechnique_name LIMIT 1000",
+      "MATCH (ta:Tactic)-[:HAS_TECHNIQUE]->(t) WHERE (t:Technique OR t:SubTechnique) AND t.attack_id IN $ids RETURN t.attack_id AS technique_id, t.name AS technique_name, ta.attack_id AS in_tactic_id, ta.name AS in_tactic_name LIMIT 1000",
+      "g.V().has(\"id\", within(ids)).project(\"ap\",\"tax\").by(elementMap()).by(__.out(\"MAPS_TO\").hasLabel(\"TaxonomyEntry\").has(\"taxonomy_name\",\"ATTACK\").elementMap().fold()).limit(1000)"
+    ],
+    "question": "Which ATT&CK techniques does the Sustained Client Engagement pattern CAPEC-227 correspond to?",
+    "record_count": 4,
+    "seed_ids": [
+      "CAPEC-227"
+    ],
+    "sources": [
+      "attack",
+      "capec"
+    ],
+    "unsupported": 0
+  },
+  {
+    "abstentions": [],
+    "bank": "capec",
+    "case_id": "H-D2-MAPS_TO[ATTACK]-CAPEC-481-bf53c1",
+    "claims": [
+      "CAPEC-481 (Contradictory Destinations in Traffic Routing Schemes) Likelihood Of Attack: Medium.",
+      "CAPEC-481 (Contradictory Destinations in Traffic Routing Schemes) has 1 ATT&CK mapping: T1090.004.",
+      "CAPEC-481 (Contradictory Destinations in Traffic Routing Schemes) has Abstraction: Standard; Likelihood_Of_Attack: Medium; Status: Draft; Typical_Severity: High.",
+      "CAPEC-481 (Contradictory Destinations in Traffic Routing Schemes): Adversaries can provide contradictory destinations when sending messages. Traffic is routed in networks using the domain names in various headers available at different levels of the OSI model. In a Content Delivery Network (CDN) multiple domains might be available, and if there are contradictory domain names provided it is possible to route traffic to an inappropriate destination. The technique, called Domain Fronting, involves using different domain names in the SNI field of the TLS header and the Host field of the HTTP header. An alternative technique, called Domainless Fronting, is similar, but the SNI field is left blank.",
+      "Found 1 CAPEC record(s) for CAPEC-481; ATT&CK mappings: T1090.004.",
+      "Found 1 item(s) related to T1090 (e.g. T1090.004) in MITRE ATT&CK.",
+      "Found 1 item(s) related to T1090.004 (e.g. TA0011) in MITRE ATT&CK.",
+      "Found 1 record in MITRE ATT&CK: Domain Fronting (T1090.004).",
+      "T1090 (Proxy) has 1 related item(s): T1090.004.",
+      "T1090 has no subtechniques in this catalogue.",
+      "T1090.004 (Domain Fronting) attack id: T1090.004.",
+      "T1090.004 (Domain Fronting) has 1 related item(s): TA0011.",
+      "T1090.004 (Domain Fronting) has stix_type: attack-pattern; x_mitre_deprecated: False; x_mitre_is_subtechnique: True; x_mitre_version: 1.2; x_mitre_contributors: Matt Kelly, @breakersall; x_mitre_domains: enterprise-attack; x_mitre_platforms: Linux macOS Windows ESXi.",
+      "T1090.004 (Domain Fronting): Adversaries may take advantage of routing schemes in Content Delivery Networks (CDNs) and other services which host multiple domains to obfuscate the intended destination of HTTPS traffic or traffic tunneled through HTTPS. (Citation: Fifield Blocking Resistent Communication through domain fronting 2015) Domain fronting involves using different domain names in the SNI field of the TLS header and the Host field of the HTTP header. If both domains are served from the same CDN, then the CDN may route to the address specified in the HTTP header after unwrapping the TLS header.",
+      "T1090.004 has no techniques in this catalogue.",
+      "The identifier T1090.004 is corroborated across attack and capec (3 record(s) share it)."
+    ],
+    "entity_ids": [
+      "CAPEC-481",
+      "T1090",
+      "T1090.004",
+      "TA0011"
+    ],
+    "entity_ids_by_source": {
+      "attack": [
+        "T1090",
+        "T1090.004",
+        "TA0011"
+      ],
+      "capec": [
+        "CAPEC-481",
+        "T1090.004"
+      ]
+    },
+    "expected_template": "",
+    "queries": [
+      "MATCH (n:SubTechnique) WHERE coalesce(n.attack_id, n.id) IN $ids OPTIONAL MATCH (n)-[r]-(m) WITH n, CASE WHEN m IS NULL THEN NULL ELSE type(r) END AS rel, CASE WHEN m IS NULL THEN NULL ELSE startNode(r) = n END AS outgoing, CASE WHEN m IS NULL THEN NULL ELSE head(labels(m)) END AS neighbour_label, count(m) AS cnt WITH n, collect(CASE WHEN rel IS NULL THEN NULL ELSE {rel: rel, outgoing: outgoing, label: neighbour_label, count: cnt} END) AS raw WITH n, [f IN raw WHERE f IS NOT NULL] AS facets RETURN coalesce(n.attack_id, n.id) AS id, n.name AS name, n.properties_json AS properties_json, facets AS facets LIMIT 1000",
+      "MATCH (t:Technique)-[:HAS_SUBTECHNIQUE]->(st:SubTechnique) WHERE t.attack_id IN $ids OR st.attack_id IN $ids RETURN t.attack_id AS parent_id, t.name AS parent_name, st.attack_id AS subtechnique_id, st.name AS subtechnique_name LIMIT 1000",
+      "MATCH (ta:Tactic)-[:HAS_TECHNIQUE]->(t) WHERE (t:Technique OR t:SubTechnique) AND t.attack_id IN $ids RETURN t.attack_id AS technique_id, t.name AS technique_name, ta.attack_id AS in_tactic_id, ta.name AS in_tactic_name LIMIT 1000",
+      "g.V().has(\"id\", within(ids)).project(\"ap\",\"tax\").by(elementMap()).by(__.out(\"MAPS_TO\").hasLabel(\"TaxonomyEntry\").has(\"taxonomy_name\",\"ATTACK\").elementMap().fold()).limit(1000)"
+    ],
+    "question": "Which ATT&CK techniques does Contradictory Destinations in Traffic Routing Schemes (CAPEC-481) correspond to?",
+    "record_count": 4,
+    "seed_ids": [
+      "CAPEC-481"
+    ],
+    "sources": [
+      "attack",
+      "capec"
+    ],
+    "unsupported": 0
+  },
+  {
+    "abstentions": [],
+    "bank": "capec",
+    "case_id": "H-D4-PeerOf-ChildOf-CAPEC-34-ba5092",
+    "claims": [
+      "CAPEC-34 (HTTP Response Splitting) Likelihood Of Attack: Medium.",
+      "CAPEC-34 (HTTP Response Splitting) has 1 ChildOf parent: CAPEC-220.",
+      "CAPEC-34 (HTTP Response Splitting) has 6 CanPrecede successors: CAPEC-148, CAPEC-154, CAPEC-593, CAPEC-63, CAPEC-115, CAPEC-141.",
+      "CAPEC-34 (HTTP Response Splitting) has Abstraction: Detailed; Likelihood_Of_Attack: Medium; Status: Stable; Typical_Severity: High.",
+      "CAPEC-34 (HTTP Response Splitting): An adversary manipulates and injects malicious content, in the form of secret unauthorized HTTP responses, into a single HTTP response from a vulnerable or compromised back-end HTTP agent (e.g., web server) or into an already spoofed HTTP response from an adversary controlled domain/site. See CanPrecede relationships for possible consequences.",
+      "Found 1 CAPEC record(s): CAPEC-34."
+    ],
+    "entity_ids": [
+      "CAPEC-115",
+      "CAPEC-141",
+      "CAPEC-148",
+      "CAPEC-154",
+      "CAPEC-220",
+      "CAPEC-34",
+      "CAPEC-593",
+      "CAPEC-63"
+    ],
+    "entity_ids_by_source": {
+      "capec": [
+        "CAPEC-115",
+        "CAPEC-141",
+        "CAPEC-148",
+        "CAPEC-154",
+        "CAPEC-220",
+        "CAPEC-34",
+        "CAPEC-593",
+        "CAPEC-63"
+      ]
+    },
+    "expected_template": "",
+    "queries": [
+      "g.V().has(\"id\", within(ids)).as(\"ap\").out(\"CAN_PRECEDE\").hasLabel(\"AttackPattern\").as(\"nbr\").select(\"ap\",\"nbr\").by(elementMap()).limit(1000)",
+      "g.V().has(\"id\", within(ids)).as(\"ap\").out(\"CHILD_OF\").hasLabel(\"AttackPattern\").as(\"nbr\").select(\"ap\",\"nbr\").by(elementMap()).limit(1000)",
+      "g.V().has(\"id\", within(ids)).project(\"node\",\"out\",\"in\").by(elementMap()).by(outE().project(\"rel\",\"label\").by(label()).by(inV().label()).fold()).by(inE().project(\"rel\",\"label\").by(label()).by(outV().label()).fold()).limit(1000)",
+      "g.V().has(\"id\", within(ids)).project(\"node\",\"out\",\"in\").by(elementMap()).by(outE().project(\"rel\",\"label\").by(label()).by(inV().label()).fold()).by(inE().project(\"rel\",\"label\").by(label()).by(outV().label()).fold()).limit(1000)"
+    ],
+    "question": "Which attack patterns are the peers of CAPEC-34 each a more specific case of?",
+    "record_count": 4,
+    "seed_ids": [
+      "CAPEC-34"
+    ],
+    "sources": [
+      "capec"
+    ],
+    "unsupported": 0
+  },
+  {
+    "abstentions": [],
+    "bank": "capec",
+    "case_id": "H-D4-PeerOf-EXPLOITS_WEAKNESS-CAPEC-273-45482a",
+    "claims": [
+      "CAPEC-273 (HTTP Response Smuggling) Likelihood Of Attack: Medium.",
+      "CAPEC-273 (HTTP Response Smuggling) has 3 exploited weaknesses: CWE-436, CWE-444, CWE-74.",
+      "CAPEC-273 (HTTP Response Smuggling) has Abstraction: Detailed; Likelihood_Of_Attack: Medium; Status: Stable; Typical_Severity: High.",
+      "CAPEC-273 (HTTP Response Smuggling): An adversary manipulates and injects malicious content in the form of secret unauthorized HTTP responses, into a single HTTP response from a vulnerable or compromised back-end HTTP agent (e.g., server). See CanPrecede relationships for possible consequences.",
+      "Found 1 CAPEC record(s): CAPEC-273."
+    ],
+    "entity_ids": [
+      "CAPEC-273",
+      "CWE-436",
+      "CWE-444",
+      "CWE-74"
+    ],
+    "entity_ids_by_source": {
+      "capec": [
+        "CAPEC-273",
+        "CWE-436",
+        "CWE-444",
+        "CWE-74"
+      ]
+    },
+    "expected_template": "",
+    "queries": [
+      "g.V().has(\"id\", within(ids)).as(\"ap\").out(\"EXPLOITS_WEAKNESS\").hasLabel(\"Weakness\").as(\"nbr\").select(\"ap\",\"nbr\").by(elementMap()).limit(1000)"
+    ],
+    "question": "Which CWE weaknesses are exploited by each of the attack patterns that are peers of CAPEC-273?",
+    "record_count": 1,
+    "seed_ids": [
+      "CAPEC-273"
+    ],
+    "sources": [
+      "capec"
+    ],
+    "unsupported": 0
+  },
+  {
+    "abstentions": [],
+    "bank": "capec",
+    "case_id": "H-D5-CanPrecede-Likelihood_Of_Attack-CAPEC-270-128e7c",
+    "claims": [
+      "CAPEC-270 (Modification of Registry Run Keys) Likelihood Of Attack: Medium.",
+      "CAPEC-270 (Modification of Registry Run Keys) has 3 attack patterns: CAPEC-529, CAPEC-568, CAPEC-646.",
+      "CAPEC-270 (Modification of Registry Run Keys) has Abstraction: Detailed; Likelihood_Of_Attack: Medium; Status: Stable; Typical_Severity: Medium.",
+      "CAPEC-270 (Modification of Registry Run Keys): An adversary adds a new entry to the \"run keys\" in the Windows registry so that an application of their choosing is executed when a user logs in. In this way, the adversary can get their executable to operate and run on the target system with the authorized user's level of permissions. This attack is a good way for an adversary to run persistent spyware on a user's machine, such as a keylogger.",
+      "Found 1 CAPEC record(s): CAPEC-270."
+    ],
+    "entity_ids": [
+      "CAPEC-270",
+      "CAPEC-529",
+      "CAPEC-568",
+      "CAPEC-646"
+    ],
+    "entity_ids_by_source": {
+      "capec": [
+        "CAPEC-270",
+        "CAPEC-529",
+        "CAPEC-568",
+        "CAPEC-646"
+      ]
+    },
+    "expected_template": "",
+    "queries": [
+      "g.V().has(\"id\", within(ids)).as(\"ap\").union(out(\"CAN_PRECEDE\").hasLabel(\"AttackPattern\"), out(\"REQUIRES_SKILL\").hasLabel(\"Skill\")).as(\"nbr\").select(\"ap\",\"nbr\").by(elementMap()).limit(1000)"
+    ],
+    "question": "Which attacks rated low for likelihood tend to come after CAPEC-270 in the chain?",
+    "record_count": 1,
+    "seed_ids": [
+      "CAPEC-270"
+    ],
+    "sources": [
+      "capec"
+    ],
+    "unsupported": 0
+  },
+  {
+    "abstentions": [],
+    "bank": "capec",
+    "case_id": "H-D5-CanPrecede-Typical_Severity-CAPEC-630-960850",
+    "claims": [
+      "CAPEC-630 (TypoSquatting) has 1 Skill, named only as text: \u201cLow Adversaries must be able to register DNS hostnames/URL\u2019s.\u201d.",
+      "CAPEC-630 (TypoSquatting) has Abstraction: Detailed; Likelihood_Of_Attack: Low; Status: Draft; Typical_Severity: Medium.",
+      "CAPEC-630 (TypoSquatting): An adversary registers a domain name with at least one character different than a trusted domain. A TypoSquatting attack takes advantage of instances where a user mistypes a URL (e.g. www.goggle.com) or not does visually verify a URL before clicking on it (e.g. phishing attack). As a result, the user is directed to an adversary-controlled destination. TypoSquatting does not require an attack against the trusted domain or complicated reverse engineering.",
+      "Found 1 CAPEC record(s): CAPEC-630."
+    ],
+    "entity_ids": [
+      "CAPEC-630",
+      "capec:attack-pattern:630:skill:1"
+    ],
+    "entity_ids_by_source": {
+      "capec": [
+        "CAPEC-630",
+        "capec:attack-pattern:630:skill:1"
+      ]
+    },
+    "expected_template": "",
+    "queries": [
+      "g.V().has(\"id\", within(ids)).as(\"ap\").out(\"REQUIRES_SKILL\").hasLabel(\"Skill\").as(\"nbr\").select(\"ap\",\"nbr\").by(elementMap()).limit(1000)"
+    ],
+    "question": "Which CAPEC attack patterns with Very High typical severity can follow CAPEC-630?",
+    "record_count": 1,
+    "seed_ids": [
+      "CAPEC-630"
+    ],
+    "sources": [
+      "capec"
+    ],
+    "unsupported": 0
+  },
+  {
+    "abstentions": [
+      "Abstention(sub_question_id='q1', source='capec', statement=\"The capec source doesn't establish this \u2014 the executed query ran cleanly and returned CAPEC-201 with no linked records for: In capec, identify AttackPattern, ExternalReference, PeerOf relevant to: Which attack patterns at the Meta abstraction level is Serialized Data External Linking, CAPEC-201, a more specific case of?\", query='g.V().has(\"id\", within(ids)).project(\"ap\",\"tax\").by(elementMap()).by(__.out(\"MAPS_TO\").hasLabel(\"TaxonomyEntry\").has(\"taxonomy_name\",\"ATTACK\").elementMap().fold()).limit(1000)')",
+      "Abstention(sub_question_id='q2', source='attack', statement=\"The attack source doesn't establish this \u2014 the sub-question it depends on (q1) produced no seed identifiers, so no query was executed for: In attack, identify DataComponent, Software relevant to: Which attack patterns at the Meta abstraction level is Serialized Data External Linking, CAPEC-201, a more specific case of?\", query='')"
+    ],
+    "bank": "capec",
+    "case_id": "H-D5-ChildOf-Abstraction-CAPEC-201-c77293",
+    "claims": [
+      "CAPEC-201 (Serialized Data External Linking) has Abstraction: Detailed; Likelihood_Of_Attack: High; Status: Draft; Typical_Severity: High.",
+      "CAPEC-201 (Serialized Data External Linking): An adversary creates a serialized data file (e.g. XML, YAML, etc...) that contains an external data reference. Because serialized data parsers may not validate documents with external references, there may be no checks on the nature of the reference in the external data. This can allow an adversary to open arbitrary files or connections, which may further lead to the adversary gaining access to information on the system that they would normally be unable to obtain.",
+      "Found 1 CAPEC record(s): CAPEC-201."
+    ],
+    "entity_ids": [
+      "CAPEC-201"
+    ],
+    "entity_ids_by_source": {
+      "attack": [],
+      "capec": [
+        "CAPEC-201"
+      ]
+    },
+    "expected_template": "",
+    "queries": [
+      "g.V().has(\"id\", within(ids)).project(\"ap\",\"tax\").by(elementMap()).by(__.out(\"MAPS_TO\").hasLabel(\"TaxonomyEntry\").has(\"taxonomy_name\",\"ATTACK\").elementMap().fold()).limit(1000)"
+    ],
+    "question": "Which attack patterns at the Meta abstraction level is Serialized Data External Linking, CAPEC-201, a more specific case of?",
+    "record_count": 1,
+    "seed_ids": [
+      "CAPEC-201"
+    ],
+    "sources": [
+      "capec"
+    ],
+    "unsupported": 0
+  },
+  {
+    "abstentions": [],
+    "bank": "capec",
+    "case_id": "H-D5-ChildOf-Abstraction-CAPEC-41-9bdee1",
+    "claims": [
+      "CAPEC-41 (Using Meta-characters in E-mail Headers to Inject Malicious Payloads) Likelihood Of Attack: High.",
+      "CAPEC-41 (Using Meta-characters in E-mail Headers to Inject Malicious Payloads) has 2 ChildOf parents: CAPEC-134, CAPEC-242.",
+      "CAPEC-41 (Using Meta-characters in E-mail Headers to Inject Malicious Payloads) has Abstraction: Detailed; Likelihood_Of_Attack: High; Status: Draft; Typical_Severity: High.",
+      "CAPEC-41 (Using Meta-characters in E-mail Headers to Inject Malicious Payloads): This type of attack involves an attacker leveraging meta-characters in email headers to inject improper behavior into email programs. Email software has become increasingly sophisticated and feature-rich. In addition, email applications are ubiquitous and connected directly to the Web making them ideal targets to launch and propagate attacks. As the user demand for new functionality in email applications grows, they become more like browsers with complex rendering and plug in routines. As more email functionality is included and abstracted from the user, this creates opportunities for attackers.",
+      "Found 1 CAPEC record(s): CAPEC-41."
+    ],
+    "entity_ids": [
+      "CAPEC-134",
+      "CAPEC-242",
+      "CAPEC-41"
+    ],
+    "entity_ids_by_source": {
+      "capec": [
+        "CAPEC-134",
+        "CAPEC-242",
+        "CAPEC-41"
+      ]
+    },
+    "expected_template": "",
+    "queries": [
+      "g.V().has(\"id\", within(ids)).as(\"ap\").out(\"CHILD_OF\").hasLabel(\"AttackPattern\").as(\"nbr\").select(\"ap\",\"nbr\").by(elementMap()).limit(1000)",
+      "g.V().has(\"id\", within(ids)).project(\"node\",\"out\",\"in\").by(elementMap()).by(outE().project(\"rel\",\"label\").by(label()).by(inV().label()).fold()).by(inE().project(\"rel\",\"label\").by(label()).by(outV().label()).fold()).limit(1000)"
+    ],
+    "question": "Which patterns at the meta level does CAPEC-41 count as a narrower case of?",
+    "record_count": 2,
+    "seed_ids": [
+      "CAPEC-41"
+    ],
+    "sources": [
+      "capec"
+    ],
+    "unsupported": 0
+  },
+  {
+    "abstentions": [],
+    "bank": "capec",
+    "case_id": "H-D5-ChildOf-Status-CAPEC-501-d5f622",
+    "claims": [
+      "CAPEC-501 (Android Activity Hijack) has 2 ChildOf parents: CAPEC-173, CAPEC-499.",
+      "CAPEC-501 (Android Activity Hijack) has Abstraction: Detailed; Status: Draft; Typical_Severity: Medium.",
+      "CAPEC-501 (Android Activity Hijack): An adversary intercepts an implicit intent sent to launch a Android-based trusted activity and instead launches a counterfeit activity in its place. The malicious activity is then used to mimic the trusted activity's user interface and prompt the target to enter sensitive data as if they were interacting with the trusted activity.",
+      "Found 1 CAPEC record(s): CAPEC-501."
+    ],
+    "entity_ids": [
+      "CAPEC-173",
+      "CAPEC-499",
+      "CAPEC-501"
+    ],
+    "entity_ids_by_source": {
+      "capec": [
+        "CAPEC-173",
+        "CAPEC-499",
+        "CAPEC-501"
+      ]
+    },
+    "expected_template": "",
+    "queries": [
+      "g.V().has(\"id\", within(ids)).as(\"ap\").out(\"CHILD_OF\").hasLabel(\"AttackPattern\").as(\"nbr\").select(\"ap\",\"nbr\").by(elementMap()).limit(1000)",
+      "g.V().has(\"id\", within(ids)).project(\"node\",\"out\",\"in\").by(elementMap()).by(outE().project(\"rel\",\"label\").by(label()).by(inV().label()).fold()).by(inE().project(\"rel\",\"label\").by(label()).by(outV().label()).fold()).limit(1000)"
+    ],
+    "question": "Which broader CAPEC attack patterns with a status of Draft does CAPEC-501 fall under?",
+    "record_count": 2,
+    "seed_ids": [
+      "CAPEC-501"
+    ],
+    "sources": [
+      "capec"
+    ],
+    "unsupported": 0
+  },
+  {
+    "abstentions": [],
+    "bank": "capec",
+    "case_id": "H-D5-ChildOf-Typical_Severity-CAPEC-407-33cd36",
+    "claims": [
+      "CAPEC-407 (Pretexting) has 1 Skill, named only as text: \u201cLow The adversary requires strong inter-personal and communication skills.\u201d.",
+      "CAPEC-407 (Pretexting) has Abstraction: Standard; Likelihood_Of_Attack: Medium; Status: Draft; Typical_Severity: Low.",
+      "CAPEC-407 (Pretexting): An adversary engages in pretexting behavior to solicit information from target persons, or manipulate the target into performing some action that serves the adversary's interests. During a pretexting attack, the adversary creates an invented scenario, assuming an identity or role to persuade a targeted victim to release information or perform some action. It is more than just creating a lie; in some cases it can be creating a whole new identity and then using that identity to manipulate the receipt of information.",
+      "Found 1 CAPEC record(s): CAPEC-407."
+    ],
+    "entity_ids": [
+      "CAPEC-407",
+      "capec:attack-pattern:407:skill:1"
+    ],
+    "entity_ids_by_source": {
+      "capec": [
+        "CAPEC-407",
+        "capec:attack-pattern:407:skill:1"
+      ]
+    },
+    "expected_template": "",
+    "queries": [
+      "g.V().has(\"id\", within(ids)).as(\"ap\").out(\"REQUIRES_SKILL\").hasLabel(\"Skill\").as(\"nbr\").select(\"ap\",\"nbr\").by(elementMap()).limit(1000)"
+    ],
+    "question": "Which broader patterns with low typical severity does CAPEC-407 count as a case of?",
+    "record_count": 1,
+    "seed_ids": [
+      "CAPEC-407"
+    ],
+    "sources": [
+      "capec"
+    ],
+    "unsupported": 0
+  },
+  {
+    "abstentions": [],
+    "bank": "capec",
+    "case_id": "H-D5-ChildOf-Typical_Severity-CAPEC-634-446005",
+    "claims": [
+      "CAPEC-634 (Probe Audio and Video Peripherals) has 1 Skill, named only as text: \u201cHigh To deploy a hidden process or malware on the system to automatically collect audio and video data.\u201d.",
+      "CAPEC-634 (Probe Audio and Video Peripherals) has Abstraction: Detailed; Likelihood_Of_Attack: Low; Status: Stable; Typical_Severity: High.",
+      "CAPEC-634 (Probe Audio and Video Peripherals): The adversary exploits the target system's audio and video functionalities through malware or scheduled tasks. The goal is to capture sensitive information about the target for financial, personal, political, or other gains which is accomplished by collecting communication data between two parties via the use of peripheral devices (e.g. microphones and webcams) or applications with audio and video capabilities (e.g. Skype) on a system.",
+      "Found 1 CAPEC record(s): CAPEC-634."
+    ],
+    "entity_ids": [
+      "CAPEC-634",
+      "capec:attack-pattern:634:skill:1"
+    ],
+    "entity_ids_by_source": {
+      "capec": [
+        "CAPEC-634",
+        "capec:attack-pattern:634:skill:1"
+      ]
+    },
+    "expected_template": "",
+    "queries": [
+      "g.V().has(\"id\", within(ids)).as(\"ap\").out(\"REQUIRES_SKILL\").hasLabel(\"Skill\").as(\"nbr\").select(\"ap\",\"nbr\").by(elementMap()).limit(1000)"
+    ],
+    "question": "Which broader attack patterns is Probe Audio and Video Peripherals CAPEC-634 a more specific case of, counting only the ones with Medium typical severity?",
+    "record_count": 1,
+    "seed_ids": [
+      "CAPEC-634"
+    ],
+    "sources": [
+      "capec"
+    ],
+    "unsupported": 0
+  }
+]

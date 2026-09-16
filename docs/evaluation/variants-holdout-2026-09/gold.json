@@ -1,0 +1,646 @@
+[
+  {
+    "case_id": "H-D1-Campaign-first_seen-C0035-81aa1f",
+    "bank": "attack",
+    "question": "When was C0035 first seen?",
+    "expected_template": "",
+    "seed_ids": [
+      "C0035"
+    ],
+    "pool": "dev",
+    "spec_id": "D1-Campaign-first_seen-C0035-81aa1f",
+    "d_tier": "D1",
+    "register": "analyst",
+    "shapes": [
+      "Campaign.first_seen"
+    ]
+  },
+  {
+    "case_id": "H-D1-Group-x_mitre_contributors-G0079-1944fe",
+    "bank": "attack",
+    "question": "Which contributors are credited for the threat group DarkHydrus G0079 in the ATT&CK catalogue?",
+    "expected_template": "",
+    "seed_ids": [
+      "G0079"
+    ],
+    "pool": "fresh",
+    "spec_id": "D1-Group-x_mitre_contributors-G0079-1944fe",
+    "d_tier": "D1",
+    "register": "analyst",
+    "shapes": [
+      "Group.x_mitre_contributors"
+    ]
+  },
+  {
+    "case_id": "H-D1-Software-description-S1022-78e349",
+    "bank": "attack",
+    "question": "What does the piece of tooling IceApple S1022 describe in the ATT&CK catalogue?",
+    "expected_template": "",
+    "seed_ids": [
+      "S1022"
+    ],
+    "pool": "fresh",
+    "spec_id": "D1-Software-description-S1022-78e349",
+    "d_tier": "D1",
+    "register": "analyst",
+    "shapes": [
+      "Software.description"
+    ]
+  },
+  {
+    "case_id": "H-D1-Software-x_mitre_platforms-S1026-47239a",
+    "bank": "attack",
+    "question": "Which platforms does the malware Mongall S1026 apply to in the ATT&CK catalogue?",
+    "expected_template": "",
+    "seed_ids": [
+      "S1026"
+    ],
+    "pool": "fresh",
+    "spec_id": "D1-Software-x_mitre_platforms-S1026-47239a",
+    "d_tier": "D1",
+    "register": "analyst",
+    "shapes": [
+      "Software.x_mitre_platforms"
+    ]
+  },
+  {
+    "case_id": "H-D2-subtechnique-of-T1574.012-6aaf34",
+    "bank": "attack",
+    "question": "Which ATT&CK technique is T1574.012 a sub-technique of?",
+    "expected_template": "",
+    "seed_ids": [
+      "T1574.012"
+    ],
+    "pool": "dev",
+    "spec_id": "D2-subtechnique-of-T1574.012-6aaf34",
+    "d_tier": "D2",
+    "register": "analyst",
+    "shapes": [
+      "Technique -[subtechnique-of]-> Technique"
+    ]
+  },
+  {
+    "case_id": "H-D2-uses-C0040-426e35",
+    "bank": "attack",
+    "question": "If I'm digging into campaign C0040, which malware and tools does it rely on?",
+    "expected_template": "",
+    "seed_ids": [
+      "C0040"
+    ],
+    "pool": "fresh",
+    "spec_id": "D2-uses-C0040-426e35",
+    "d_tier": "D2",
+    "register": "indirect",
+    "shapes": [
+      "Campaign -[uses]-> Software"
+    ]
+  },
+  {
+    "case_id": "H-D2-uses-G0024-e4334c",
+    "bank": "attack",
+    "question": "What malware and tools does the Putter Panda threat group (G0024) use?",
+    "expected_template": "",
+    "seed_ids": [
+      "G0024"
+    ],
+    "pool": "dev",
+    "spec_id": "D2-uses-G0024-e4334c",
+    "d_tier": "D2",
+    "register": "analyst",
+    "shapes": [
+      "Group -[uses]-> Software"
+    ]
+  },
+  {
+    "case_id": "H-D2-uses-G0089-5da300",
+    "bank": "attack",
+    "question": "Which malware and tools does the threat group The White Company G0089 use?",
+    "expected_template": "",
+    "seed_ids": [
+      "G0089"
+    ],
+    "pool": "fresh",
+    "spec_id": "D2-uses-G0089-5da300",
+    "d_tier": "D2",
+    "register": "analyst",
+    "shapes": [
+      "Group -[uses]-> Software"
+    ]
+  },
+  {
+    "case_id": "H-D2-uses-S1065-c824f8",
+    "bank": "attack",
+    "question": "If I'm looking at Woody RAT under S1065, which ATT&CK techniques does it use?",
+    "expected_template": "",
+    "seed_ids": [
+      "S1065"
+    ],
+    "pool": "fresh",
+    "spec_id": "D2-uses-S1065-c824f8",
+    "d_tier": "D2",
+    "register": "indirect",
+    "shapes": [
+      "Software -[uses]-> Technique"
+    ]
+  },
+  {
+    "case_id": "H-D3-mitigates-T1561.001-c92867",
+    "bank": "attack",
+    "question": "Which ATT&CK mitigations mitigate the technique Disk Content Wipe (T1561.001)?",
+    "expected_template": "",
+    "seed_ids": [
+      "T1561.001"
+    ],
+    "pool": "dev",
+    "spec_id": "D3-mitigates-T1561.001-c92867",
+    "d_tier": "D3",
+    "register": "formal",
+    "shapes": [
+      "Mitigation -[mitigates]-> Technique"
+    ]
+  },
+  {
+    "case_id": "H-D3-uses-S1125-25e800",
+    "bank": "attack",
+    "question": "Which threat groups use the malware AcidRain (S1125)?",
+    "expected_template": "",
+    "seed_ids": [
+      "S1125"
+    ],
+    "pool": "dev",
+    "spec_id": "D3-uses-S1125-25e800",
+    "d_tier": "D3",
+    "register": "formal",
+    "shapes": [
+      "Group -[uses]-> Software"
+    ]
+  },
+  {
+    "case_id": "H-D3-uses-T1087.002-9e19bb",
+    "bank": "attack",
+    "question": "Which threat groups use Domain Account (T1087.002)?",
+    "expected_template": "",
+    "seed_ids": [
+      "T1087.002"
+    ],
+    "pool": "dev",
+    "spec_id": "D3-uses-T1087.002-9e19bb",
+    "d_tier": "D3",
+    "register": "analyst",
+    "shapes": [
+      "Group -[uses]-> Technique"
+    ]
+  },
+  {
+    "case_id": "H-D3-uses-T1552.004-88380d",
+    "bank": "attack",
+    "question": "Which malware and tools use T1552.004?",
+    "expected_template": "",
+    "seed_ids": [
+      "T1552.004"
+    ],
+    "pool": "dev",
+    "spec_id": "D3-uses-T1552.004-88380d",
+    "d_tier": "D3",
+    "register": "analyst",
+    "shapes": [
+      "Software -[uses]-> Technique"
+    ]
+  },
+  {
+    "case_id": "H-D3-uses-T1587.002-de779a",
+    "bank": "attack",
+    "question": "If I'm looking at code signing certificates in T1587.002, which threat groups use it?",
+    "expected_template": "",
+    "seed_ids": [
+      "T1587.002"
+    ],
+    "pool": "fresh",
+    "spec_id": "D3-uses-T1587.002-de779a",
+    "d_tier": "D3",
+    "register": "indirect",
+    "shapes": [
+      "Group -[uses]-> Technique"
+    ]
+  },
+  {
+    "case_id": "H-D4-detects-x_mitre_analytic_refs-T1003.005-a591fa",
+    "bank": "attack",
+    "question": "If I want coverage for Cached Domain Credentials (T1003.005), which detection strategies address it, and what detection analytics implement each of those strategies?",
+    "expected_template": "",
+    "seed_ids": [
+      "T1003.005"
+    ],
+    "pool": "dev",
+    "spec_id": "D4-detects-x_mitre_analytic_refs-T1003.005-a591fa",
+    "d_tier": "D4",
+    "register": "indirect",
+    "shapes": [
+      "DetectionStrategy -[detects]-> Technique",
+      "DetectionStrategy -[x_mitre_analytic_refs]-> Analytic"
+    ]
+  },
+  {
+    "case_id": "H-D4-detects-x_mitre_analytic_refs-T1684.002-b62c3f",
+    "bank": "attack",
+    "question": "Which detection analytics implement each of the detection strategies that detect the technique T1684.002?",
+    "expected_template": "",
+    "seed_ids": [
+      "T1684.002"
+    ],
+    "pool": "fresh",
+    "spec_id": "D4-detects-x_mitre_analytic_refs-T1684.002-b62c3f",
+    "d_tier": "D4",
+    "register": "formal",
+    "shapes": [
+      "DetectionStrategy -[detects]-> Technique",
+      "DetectionStrategy -[x_mitre_analytic_refs]-> Analytic"
+    ]
+  },
+  {
+    "case_id": "H-D5-uses-x_mitre_platforms-G0131-8d6616",
+    "bank": "attack",
+    "question": "On Linux hosts, which of the malware and tools attributed to G0131 would matter?",
+    "expected_template": "",
+    "seed_ids": [
+      "G0131"
+    ],
+    "pool": "fresh",
+    "spec_id": "D5-uses-x_mitre_platforms-G0131-8d6616",
+    "d_tier": "D5",
+    "register": "indirect",
+    "shapes": [
+      "Group -[uses]-> Software"
+    ]
+  },
+  {
+    "case_id": "H-D5-uses-x_mitre_platforms-G1053-d4d2e1",
+    "bank": "attack",
+    "question": "On ESXi hosts, which of the malware and tools attributed to G1053 would matter?",
+    "expected_template": "",
+    "seed_ids": [
+      "G1053"
+    ],
+    "pool": "fresh",
+    "spec_id": "D5-uses-x_mitre_platforms-G1053-d4d2e1",
+    "d_tier": "D5",
+    "register": "indirect",
+    "shapes": [
+      "Group -[uses]-> Software"
+    ]
+  },
+  {
+    "case_id": "H-D5-uses-x_mitre_platforms-S0377-182de5",
+    "bank": "attack",
+    "question": "Which ATT&CK techniques does S0377 use that apply to the Windows platform?",
+    "expected_template": "",
+    "seed_ids": [
+      "S0377"
+    ],
+    "pool": "fresh",
+    "spec_id": "D5-uses-x_mitre_platforms-S0377-182de5",
+    "d_tier": "D5",
+    "register": "analyst",
+    "shapes": [
+      "Software -[uses]-> Technique"
+    ]
+  },
+  {
+    "case_id": "H-D5-uses-x_mitre_platforms-S1245-8027f0",
+    "bank": "attack",
+    "question": "Which ATT&CK techniques used by the malware InvisibleFerret (S1245) apply to the Windows platform?",
+    "expected_template": "",
+    "seed_ids": [
+      "S1245"
+    ],
+    "pool": "dev",
+    "spec_id": "D5-uses-x_mitre_platforms-S1245-8027f0",
+    "d_tier": "D5",
+    "register": "formal",
+    "shapes": [
+      "Software -[uses]-> Technique"
+    ]
+  },
+  {
+    "case_id": "H-D1-AttackPattern-Abstraction-CAPEC-151-e83170",
+    "bank": "capec",
+    "question": "What level of generality does the CAPEC attack pattern Identity Spoofing CAPEC-151 have?",
+    "expected_template": "",
+    "seed_ids": [
+      "CAPEC-151"
+    ],
+    "pool": "fresh",
+    "spec_id": "D1-AttackPattern-Abstraction-CAPEC-151-e83170",
+    "d_tier": "D1",
+    "register": "analyst",
+    "shapes": [
+      "AttackPattern.Abstraction"
+    ]
+  },
+  {
+    "case_id": "H-D1-AttackPattern-Likelihood_Of_Attack-CAPEC-57-24fde9",
+    "bank": "capec",
+    "question": "What likelihood of attack does the CAPEC attack pattern CAPEC-57 have in CAPEC?",
+    "expected_template": "",
+    "seed_ids": [
+      "CAPEC-57"
+    ],
+    "pool": "fresh",
+    "spec_id": "D1-AttackPattern-Likelihood_Of_Attack-CAPEC-57-24fde9",
+    "d_tier": "D1",
+    "register": "analyst",
+    "shapes": [
+      "AttackPattern.Likelihood_Of_Attack"
+    ]
+  },
+  {
+    "case_id": "H-D1-AttackPattern-Typical_Severity-CAPEC-28-6d85e0",
+    "bank": "capec",
+    "question": "What severity is typically assigned to the CAPEC attack pattern known as Fuzzing (CAPEC-28)?",
+    "expected_template": "",
+    "seed_ids": [
+      "CAPEC-28"
+    ],
+    "pool": "fresh",
+    "spec_id": "D1-AttackPattern-Typical_Severity-CAPEC-28-6d85e0",
+    "d_tier": "D1",
+    "register": "formal",
+    "shapes": [
+      "AttackPattern.Typical_Severity"
+    ]
+  },
+  {
+    "case_id": "H-D2-CanPrecede-CAPEC-101-f1e06c",
+    "bank": "capec",
+    "question": "Having pulled off CAPEC-101, which attack patterns can an adversary follow it with?",
+    "expected_template": "",
+    "seed_ids": [
+      "CAPEC-101"
+    ],
+    "pool": "fresh",
+    "spec_id": "D2-CanPrecede-CAPEC-101-f1e06c",
+    "d_tier": "D2",
+    "register": "indirect",
+    "shapes": [
+      "AttackPattern -[CanPrecede]-> AttackPattern"
+    ]
+  },
+  {
+    "case_id": "H-D2-ChildOf-CAPEC-182-15f8e0",
+    "bank": "capec",
+    "question": "Which CAPEC attack patterns is Flash Injection (CAPEC-182) a more specific case of?",
+    "expected_template": "",
+    "seed_ids": [
+      "CAPEC-182"
+    ],
+    "pool": "dev",
+    "spec_id": "D2-ChildOf-CAPEC-182-15f8e0",
+    "d_tier": "D2",
+    "register": "formal",
+    "shapes": [
+      "AttackPattern -[ChildOf]-> AttackPattern"
+    ]
+  },
+  {
+    "case_id": "H-D2-ChildOf-CAPEC-637-33e31b",
+    "bank": "capec",
+    "question": "Which CAPEC attack patterns is the attack pattern Collect Data from Clipboard CAPEC-637 a specific case of?",
+    "expected_template": "",
+    "seed_ids": [
+      "CAPEC-637"
+    ],
+    "pool": "fresh",
+    "spec_id": "D2-ChildOf-CAPEC-637-33e31b",
+    "d_tier": "D2",
+    "register": "analyst",
+    "shapes": [
+      "AttackPattern -[ChildOf]-> AttackPattern"
+    ]
+  },
+  {
+    "case_id": "H-D2-EXPLOITS_WEAKNESS-CAPEC-153-dffa80",
+    "bank": "capec",
+    "question": "Which CWE weaknesses does the CAPEC attack pattern known as Input Data Manipulation (CAPEC-153) exploit?",
+    "expected_template": "",
+    "seed_ids": [
+      "CAPEC-153"
+    ],
+    "pool": "fresh",
+    "spec_id": "D2-EXPLOITS_WEAKNESS-CAPEC-153-dffa80",
+    "d_tier": "D2",
+    "register": "formal",
+    "shapes": [
+      "AttackPattern -[EXPLOITS_WEAKNESS]-> Weakness"
+    ]
+  },
+  {
+    "case_id": "H-D2-EXPLOITS_WEAKNESS-CAPEC-580-7ec59a",
+    "bank": "capec",
+    "question": "Which CWE weaknesses does System Footprinting (CAPEC-580) exploit?",
+    "expected_template": "",
+    "seed_ids": [
+      "CAPEC-580"
+    ],
+    "pool": "dev",
+    "spec_id": "D2-EXPLOITS_WEAKNESS-CAPEC-580-7ec59a",
+    "d_tier": "D2",
+    "register": "indirect",
+    "shapes": [
+      "AttackPattern -[EXPLOITS_WEAKNESS]-> Weakness"
+    ]
+  },
+  {
+    "case_id": "H-D2-HAS_MEMBER-CAPEC-515-5dba2c",
+    "bank": "capec",
+    "question": "Browsing CAPEC-515 as a starting point, which attack patterns sit underneath the category?",
+    "expected_template": "",
+    "seed_ids": [
+      "CAPEC-515"
+    ],
+    "pool": "fresh",
+    "spec_id": "D2-HAS_MEMBER-CAPEC-515-5dba2c",
+    "d_tier": "D2",
+    "register": "indirect",
+    "shapes": [
+      "Category -[HAS_MEMBER]-> AttackPattern"
+    ]
+  },
+  {
+    "case_id": "H-D2-MAPS_TO[ATTACK]-CAPEC-227-f83770",
+    "bank": "capec",
+    "question": "Which ATT&CK techniques does the Sustained Client Engagement pattern CAPEC-227 correspond to?",
+    "expected_template": "",
+    "seed_ids": [
+      "CAPEC-227"
+    ],
+    "pool": "fresh",
+    "spec_id": "D2-MAPS_TO[ATTACK]-CAPEC-227-f83770",
+    "d_tier": "D2",
+    "register": "analyst",
+    "shapes": [
+      "AttackPattern -[MAPS_TO[ATTACK]]-> Technique"
+    ]
+  },
+  {
+    "case_id": "H-D2-MAPS_TO[ATTACK]-CAPEC-481-bf53c1",
+    "bank": "capec",
+    "question": "Which ATT&CK techniques does Contradictory Destinations in Traffic Routing Schemes (CAPEC-481) correspond to?",
+    "expected_template": "",
+    "seed_ids": [
+      "CAPEC-481"
+    ],
+    "pool": "dev",
+    "spec_id": "D2-MAPS_TO[ATTACK]-CAPEC-481-bf53c1",
+    "d_tier": "D2",
+    "register": "indirect",
+    "shapes": [
+      "AttackPattern -[MAPS_TO[ATTACK]]-> Technique"
+    ]
+  },
+  {
+    "case_id": "H-D4-PeerOf-ChildOf-CAPEC-34-ba5092",
+    "bank": "capec",
+    "question": "Which attack patterns are the peers of CAPEC-34 each a more specific case of?",
+    "expected_template": "",
+    "seed_ids": [
+      "CAPEC-34"
+    ],
+    "pool": "fresh",
+    "spec_id": "D4-PeerOf-ChildOf-CAPEC-34-ba5092",
+    "d_tier": "D4",
+    "register": "analyst",
+    "shapes": [
+      "AttackPattern -[PeerOf]-> AttackPattern",
+      "AttackPattern -[ChildOf]-> AttackPattern"
+    ]
+  },
+  {
+    "case_id": "H-D4-PeerOf-EXPLOITS_WEAKNESS-CAPEC-273-45482a",
+    "bank": "capec",
+    "question": "Which CWE weaknesses are exploited by each of the attack patterns that are peers of CAPEC-273?",
+    "expected_template": "",
+    "seed_ids": [
+      "CAPEC-273"
+    ],
+    "pool": "fresh",
+    "spec_id": "D4-PeerOf-EXPLOITS_WEAKNESS-CAPEC-273-45482a",
+    "d_tier": "D4",
+    "register": "formal",
+    "shapes": [
+      "AttackPattern -[PeerOf]-> AttackPattern",
+      "AttackPattern -[EXPLOITS_WEAKNESS]-> Weakness"
+    ]
+  },
+  {
+    "case_id": "H-D5-CanPrecede-Likelihood_Of_Attack-CAPEC-270-128e7c",
+    "bank": "capec",
+    "question": "Which attacks rated low for likelihood tend to come after CAPEC-270 in the chain?",
+    "expected_template": "",
+    "seed_ids": [
+      "CAPEC-270"
+    ],
+    "pool": "fresh",
+    "spec_id": "D5-CanPrecede-Likelihood_Of_Attack-CAPEC-270-128e7c",
+    "d_tier": "D5",
+    "register": "indirect",
+    "shapes": [
+      "AttackPattern -[CanPrecede]-> AttackPattern"
+    ]
+  },
+  {
+    "case_id": "H-D5-CanPrecede-Typical_Severity-CAPEC-630-960850",
+    "bank": "capec",
+    "question": "Which CAPEC attack patterns with Very High typical severity can follow CAPEC-630?",
+    "expected_template": "",
+    "seed_ids": [
+      "CAPEC-630"
+    ],
+    "pool": "fresh",
+    "spec_id": "D5-CanPrecede-Typical_Severity-CAPEC-630-960850",
+    "d_tier": "D5",
+    "register": "formal",
+    "shapes": [
+      "AttackPattern -[CanPrecede]-> AttackPattern"
+    ]
+  },
+  {
+    "case_id": "H-D5-ChildOf-Abstraction-CAPEC-201-c77293",
+    "bank": "capec",
+    "question": "Which attack patterns at the Meta abstraction level is Serialized Data External Linking, CAPEC-201, a more specific case of?",
+    "expected_template": "",
+    "seed_ids": [
+      "CAPEC-201"
+    ],
+    "pool": "dev",
+    "spec_id": "D5-ChildOf-Abstraction-CAPEC-201-c77293",
+    "d_tier": "D5",
+    "register": "formal",
+    "shapes": [
+      "AttackPattern -[ChildOf]-> AttackPattern"
+    ]
+  },
+  {
+    "case_id": "H-D5-ChildOf-Abstraction-CAPEC-41-9bdee1",
+    "bank": "capec",
+    "question": "Which patterns at the meta level does CAPEC-41 count as a narrower case of?",
+    "expected_template": "",
+    "seed_ids": [
+      "CAPEC-41"
+    ],
+    "pool": "fresh",
+    "spec_id": "D5-ChildOf-Abstraction-CAPEC-41-9bdee1",
+    "d_tier": "D5",
+    "register": "indirect",
+    "shapes": [
+      "AttackPattern -[ChildOf]-> AttackPattern"
+    ]
+  },
+  {
+    "case_id": "H-D5-ChildOf-Status-CAPEC-501-d5f622",
+    "bank": "capec",
+    "question": "Which broader CAPEC attack patterns with a status of Draft does CAPEC-501 fall under?",
+    "expected_template": "",
+    "seed_ids": [
+      "CAPEC-501"
+    ],
+    "pool": "fresh",
+    "spec_id": "D5-ChildOf-Status-CAPEC-501-d5f622",
+    "d_tier": "D5",
+    "register": "formal",
+    "shapes": [
+      "AttackPattern -[ChildOf]-> AttackPattern"
+    ]
+  },
+  {
+    "case_id": "H-D5-ChildOf-Typical_Severity-CAPEC-407-33cd36",
+    "bank": "capec",
+    "question": "Which broader patterns with low typical severity does CAPEC-407 count as a case of?",
+    "expected_template": "",
+    "seed_ids": [
+      "CAPEC-407"
+    ],
+    "pool": "fresh",
+    "spec_id": "D5-ChildOf-Typical_Severity-CAPEC-407-33cd36",
+    "d_tier": "D5",
+    "register": "indirect",
+    "shapes": [
+      "AttackPattern -[ChildOf]-> AttackPattern"
+    ]
+  },
+  {
+    "case_id": "H-D5-ChildOf-Typical_Severity-CAPEC-634-446005",
+    "bank": "capec",
+    "question": "Which broader attack patterns is Probe Audio and Video Peripherals CAPEC-634 a more specific case of, counting only the ones with Medium typical severity?",
+    "expected_template": "",
+    "seed_ids": [
+      "CAPEC-634"
+    ],
+    "pool": "dev",
+    "spec_id": "D5-ChildOf-Typical_Severity-CAPEC-634-446005",
+    "d_tier": "D5",
+    "register": "analyst",
+    "shapes": [
+      "AttackPattern -[ChildOf]-> AttackPattern"
+    ]
+  }
+]
