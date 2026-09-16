@@ -10,7 +10,6 @@ that a dead end is walked into once rather than twice.
 
 | ID | Date | Title | Status | Primary metric | Claims | Link |
 |---|---|---|---|---|---|---|
-| `EXP-2026-09-024` | 2026-09-15 | Expanding the anchor's smallest facets when the question names no relation the card carries (plan Step 5) | running | records_recall_T1_expand_unbound_exposed (not recorded) | — | [expand-on-unbound-relation](experiments/EXP-2026-09-024-expand-on-unbound-relation/) |
 | `EXP-2026-07-001` | 2026-07-26 | Arm A — fully deterministic pipeline (planning, extraction, synthesis) | complete | correctness 0.9972 (n=1) | C-001, C-004 | [arm-a-deterministic](experiments/EXP-2026-07-001-arm-a-deterministic/) |
 | `EXP-2026-07-002` | 2026-07-26 | Arm B — LLM planning with deterministic extraction and an LLM writer | complete | correctness 0.8505 (n=1) | C-002, C-003, C-016 | [arm-b-llm-planned](experiments/EXP-2026-07-002-arm-b-llm-planned/) |
 | `EXP-2026-07-003` | 2026-07-26 | Arm C — authored plan with an LLM writer reading raw evidence | complete | correctness 0.9690 (n=1) | C-002, C-005 | [arm-c-llm-writer-evidence](experiments/EXP-2026-07-003-arm-c-llm-writer-evidence/) |
@@ -61,6 +60,7 @@ that a dead end is walked into once rather than twice.
 | `EXP-2026-09-021` | 2026-09-15 | What the shipped tree extracts under rewording at T0-T3, and whether two built levers close the gap | complete | records_exact_T3_gated 0.3267 ± 0.0000 (n=101) | — | [paraphrase-robustness-t0t3](experiments/EXP-2026-09-021-paraphrase-robustness-t0t3/) |
 | `EXP-2026-09-022` | 2026-09-15 | Can card-driven multi-view discovery recover unnamed anchors? | complete | fields_T5_anchor_recall_at_10 0.5641 (n=104) | — | [portable-candidate-discovery](experiments/EXP-2026-09-022-portable-candidate-discovery/) |
 | `EXP-2026-09-023` | 2026-09-15 | Exact names that are lookups, and looking them up before choosing a dataset (plan Steps 2-4) | complete | records_exact_T3_anchor_first 0.3465 (n=101) | — | [anchor-hygiene-and-q59](experiments/EXP-2026-09-023-anchor-hygiene-and-q59/) |
+| `EXP-2026-09-024` | 2026-09-15 | Expanding the anchor's smallest facets when the question names no relation the card carries (plan Step 5) | complete | records_recall_T1_expand_unbound_exposed 0.5523 (n=120) | — | [expand-on-unbound-relation](experiments/EXP-2026-09-024-expand-on-unbound-relation/) |
 | `EXP-2026-07-007` | 2026-07-26 | Arm G — generic primitives only, every hand-written template disabled | superseded → EXP-2026-08-001 | correctness 0.6388 (n=1) | C-003 | [arm-g-templates-disabled](experiments/EXP-2026-07-007-arm-g-templates-disabled/) |
 | `EXP-2026-07-010` | 2026-07-20 | First independent cross-model grading pass (the pre-fix committed baseline) | superseded → EXP-2026-07-001 | correctness 0.8946 (n=1) | C-009 | [independent-eval-baseline](experiments/EXP-2026-07-010-independent-eval-baseline/) |
 | `EXP-2026-07-011` | 2026-07-26 | Portability audit — what survives a dataset that is not MITRE | superseded → EXP-2026-08-011 | — | C-010 | [portability-audit](experiments/EXP-2026-07-011-portability-audit/) |
