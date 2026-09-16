@@ -55,7 +55,7 @@ below.)
 | Q57 | Every headline figure replays an authored retrieval plan; the system's own planner costs −0.3814 gold coverage | EXP-2026-09-019 Steps 2, 5 | **the meaning of every 0.90 this project reports** — a ceiling given a correct plan, not an end-to-end result *(open)* |
 | Q58 | The planner arm's loss is not separated from the tighter per-plan bounds it inherits | EXP-2026-09-019 I-2 | how much of Q57 is a worse decomposition; what a fix should target *(open)* |
 | Q59 | An entity name is never looked up unless the router first picks a dataset, so a question naming a thing in ordinary words binds nothing | EXP-2026-09-021 A-1; EXP-2026-09-023 H2 | lookup order fixed behind `ARIADNE_ANCHOR_BEFORE_ROUTING`: unresolved T3 anchors 37 → 4 of 101; the remaining T3 loss is the rung's rendering, not the bind *(amended)* |
-| Q60 | Can portable candidate discovery become accurate open-question answers through role-aware selection, reranking, and evidence completion? | EXP-2026-09-022 | T4/T5 answer improvements and transfer beyond the exposed tier bank *(open)* |
+| Q60 | Can portable candidate discovery become accurate open-question answers through role-aware selection, reranking, and evidence completion? | EXP-2026-09-022; EXP-2026-09-023 Step 0; EXP-2026-09-028 | the shipped index beats the prototype at every budget ≥ 5; a reranked, disclosed closed choice reaches 0.125/0.20 exact at wrong-entity 0.10/0.15 on the sealed bank and 0.35 wrong at T4 on the exposed bank — a clarification, not an answer *(amended)* |
 
 ---
 
@@ -1204,3 +1204,16 @@ pagination; clarification and compound questions; an unrelated source added
 without changing core retrieval. Measure end-to-end precision, recall, wrong
 entities, accepted coverage, and cost. Candidate recall cannot close this question
 or Q59. The non-cyber fixture checks interface portability only.
+
+**Amended 2026-09-16.** `EXP-2026-09-023` Step 0 measured the shipped name
+index against this experiment's prototype on identical gold groups: the
+shipped index leads at every candidate budget of five or more on T4/T5 (T4
+r@10 0.6955 vs 0.5705; T5 0.8862 vs 0.7901), so the plan built on it.
+`EXP-2026-09-028` then measured the closed choice over a reranked top five
+(bge-small, exact-name guard, "none of these" available) with the resolution
+disclosed on the answer's first line: sealed T4/T5 `records_exact` 0.125 /
+0.20 at `wrong_entity` 0.10 / 0.15 with T6 clean; exposed T4 0.0962 exact at
+`wrong_entity` 0.3462 (26 of 56 disclosed resolutions wrong). Reranking
+changed which wrong entity was chosen, not how often. What remains open is the
+clarification form — the candidates as a question, nothing asserted — which
+D-038 records as the build not done.

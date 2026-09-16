@@ -1159,3 +1159,58 @@ plan Step 10's decision, taken on the plan's not-worse-than-baseline rule once
 Steps 5–9 are measured.
 
 **Reversible.** Three flags, all default off.
+
+## D-037 — Four deterministic mechanisms ship around the rewrite stage, under the not-worse-than-baseline rule (2026-09-16)
+
+**Context.** Plan `docs/plans/2026-09-15-open-question-correctness.md`,
+Steps 3–6, each measured on the exposed bank and the sealed entity-held-out
+bank (`EXP-2026-09-023`, `EXP-2026-09-025`) against the 2026-09-15 tree
+(D-034 + D-035).
+
+**Decision.** `ARIADNE_EXACT_NAME_DISTINCT=1`, `ARIADNE_UNANCHORED_RELATION_ABSTAINS=1`,
+`ARIADNE_ANCHOR_BEFORE_ROUTING=1` and `ARIADNE_FORM_EXECUTE=1` go on in the
+shipped `.env`. The rule is the one D-034 was shipped under: not worse than
+baseline on `records_exact` on either bank at any tier, and better on the
+guards. The stack meets it: exposed T1/T2 byte-identical; T3 0.3267 → 0.3762
+exact and 0.6223 → 0.7042 recall; `wrong_entity` 0.0693 → 0.0495 at T3 and
+0.0667 → 0 at T6; `catalogue_dump` 0 on every tier from 0.1287 / 0.1635 /
+0.1250 at T3/T4/T5; sealed T3 0.6500 → 0.7000. T4/T5 `wrong_entity` moves by
+one case in each direction across the two banks and is called unchanged.
+
+**What each one is.** A-1 (D-036): a one-word name is a lookup only when the
+question writes it as a name. The dump guard: a relation template with no
+anchor abstains, the false anchor having been what kept those questions off
+the seedless branch. Q59: identifiers and complete names are looked up in
+every live source before the router picks a dataset; the router breaks
+cross-source collisions and an unbroken one is reported. Direct execution:
+the bound form becomes the plan (anchor id in the text, labels and relation
+in `entities`, a second source through the declared join key), and a form
+that names a target label is an enumerate even when the classifier called it
+a lookup.
+
+**Reversible.** Four flags, each default off in code; `ARIADNE_REWRITE=0`
+still restores the pre-2026-09-15 behaviour byte-for-byte.
+
+## D-038 — Four measured mechanisms stay off, and why (2026-09-16)
+
+- **Expand on an unbound relation** (`ORCH_EXPAND_UNBOUND`, `EXP-2026-09-024`):
+  T1/T2 recall + 0.05 with dumps and wrong-entity flat, and `records_exact`
+  − 0.09 / − 0.125 because a superset of a one-record gold is not exact. The
+  plan assumed a recall-primary rule from this step on; the operator has not
+  confirmed it, so the exact rule stands and the flag stays off. The judged
+  pass (below) is the instrument that can settle it.
+- **Generic-only engine** (`SPECIALIST_GENERIC_ONLY`, `EXP-2026-09-026`):
+  parity falsified — reverse mapping closed (16 → 2 template-only cases) but
+  wider neighbourhoods lose 11/6/14 exposed answers at T1/T2/T3 against 0/1/0.
+  The templates stay until the generic engine has declared shaping operations.
+- **Relation lexicon** (`ARIADNE_RELATION_PARAPHRASES`, `EXP-2026-09-027`):
+  T2/T3 + 0.03 each, T1 − 0.03 (nouns like "tool" bind USES too widely). Not
+  shipped as generated; a verbs-only lexicon is the next pre-registered arm.
+- **Disclosed anchor acceptance** (`ARIADNE_RERANK`, `ARIADNE_ANCHOR_DISCLOSED`,
+  `EXP-2026-09-028`): safe on the sealed bank (wrong-entity 0.10 / 0.15, T6
+  clean) but 0.35 wrong at T4 on the exposed bank. Per its own protocol it
+  becomes a clarification — the top candidates returned as a question, no
+  entity asserted — which is the remaining build from this plan and is not
+  done.
+
+**Reversible.** All are one flag; all are recorded with their falsifiers.

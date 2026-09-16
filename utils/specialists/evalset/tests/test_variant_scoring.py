@@ -266,11 +266,16 @@ def test_spread_of_nothing_is_none_not_zero() -> None:
 def test_every_rewrite_mode_states_both_flags() -> None:
     """An arm that inherits a flag from the operator's .env is not the arm its
     name claims — the same shape as the import-time load_env leak."""
-    for mode, env in REWRITE_ENV.items():
-        assert set(env) == {"ARIADNE_REWRITE", "ARIADNE_REWRITE_MODEL"}, mode
-    assert REWRITE_ENV["off"] == {"ARIADNE_REWRITE": "0", "ARIADNE_REWRITE_MODEL": "0"}
-    assert REWRITE_ENV["det"]["ARIADNE_REWRITE_MODEL"] == "0"
-    assert REWRITE_ENV["model"] == {"ARIADNE_REWRITE": "1", "ARIADNE_REWRITE_MODEL": "1"}
+    # The principle, not the 2026-09-08 key set: every arm pins EVERY variable
+    # any arm sets, so no arm can inherit one from the operator's environment.
+    # EXP-2026-09-021 and the 2026-09-15 plan added nine more flags; each is
+    # stated explicitly in every arm, as the two original ones were.
+    keys = {frozenset(env) for env in REWRITE_ENV.values()}
+    assert len(keys) == 1, "every arm must pin the same set of variables"
+    assert {"ARIADNE_REWRITE", "ARIADNE_REWRITE_MODEL"} <= next(iter(keys))
+    assert REWRITE_ENV["off"]["ARIADNE_REWRITE"] == "0" and REWRITE_ENV["off"]["ARIADNE_REWRITE_MODEL"] == "0"
+    assert REWRITE_ENV["det"]["ARIADNE_REWRITE"] == "1" and REWRITE_ENV["det"]["ARIADNE_REWRITE_MODEL"] == "0"
+    assert REWRITE_ENV["model"]["ARIADNE_REWRITE"] == "1" and REWRITE_ENV["model"]["ARIADNE_REWRITE_MODEL"] == "1"
 
 
 def test_repeat_runs_are_written_to_separate_files() -> None:
