@@ -451,6 +451,20 @@ def _namesearch_on_g() -> bool:
     return os.environ.get("ARIADNE_NAMESEARCH", "").strip().lower() in {"1", "true", "yes", "on"}
 
 
+def _unanchored_relation_abstains() -> bool:
+    """Does a *relation* template with no anchor abstain instead of scanning?
+
+    EXP-2026-09-023 Step 3. Off by default so the shipped baseline reproduces;
+    the ``hygiene`` harness arm turns it on with the exact-name rule, because
+    the false anchor that rule removes is what used to keep these questions
+    off the seedless branch. A concept-scoped bridge is not a scan and is
+    never touched.
+    """
+    return os.environ.get("ARIADNE_UNANCHORED_RELATION_ABSTAINS", "").strip().lower() in {
+        "1", "true", "yes", "on"
+    }
+
+
 def _unanchored_abstains() -> bool:
     """Does an unanchored question abstain instead of scanning the label?
 
@@ -577,6 +591,17 @@ class GremlinQueryBuilder:
                 return self._cwe_chain(resolved)
             if has_seeds and all(_ATTACK_ENTRY_RE.match(s) for s in resolved.seed_ids):
                 return self._capec_reverse_maps(resolved)
+            # Seedless, the bridge template returns every pattern's mapping —
+            # 558 rows for a question that named nothing the resolver could
+            # find. Same rule as the native ladder above: an unanchored task
+            # abstains unless a bulk scan was asked for (EXP-2026-09-023).
+            if (
+                not has_seeds
+                and not resolved.concept_terms
+                and _unanchored_relation_abstains()
+                and not asks_for_bulk_scan(resolved.task.text)
+            ):
+                return self._unanchored(resolved)
             return self._capec_maps_to(resolved)
         if has_seeds:
             # describe the anchor: full vertex + bounded facet block. Subsumed the

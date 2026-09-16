@@ -227,6 +227,17 @@ def _describe_label(resolved: ResolvedTask) -> str:
 
 
 
+def _unanchored_relation_abstains() -> bool:
+    """Does a *relation* template with no anchor abstain instead of scanning?
+
+    EXP-2026-09-023 Step 3; off by default so the shipped baseline reproduces.
+    See the Gremlin builder's twin for the reasoning.
+    """
+    return os.environ.get("ARIADNE_UNANCHORED_RELATION_ABSTAINS", "").strip().lower() in {
+        "1", "true", "yes", "on"
+    }
+
+
 def _unanchored_abstains() -> bool:
     """Does an unanchored question abstain instead of scanning? Default **on** since 9f02dc6.
 
@@ -443,11 +454,26 @@ class CypherQueryBuilder:
         if has_technique_seeds and has_mitigation:
             return self._technique_mitigations(technique_ids, resolved)
 
+        # A relation template without an anchor is a catalogue scan wearing a
+        # question's clothes: `_group_techniques` with no seeds returns every
+        # group's every technique. Until EXP-2026-09-023 an ordinary word that
+        # happened to be a node's name ("Malware", "Credentials") supplied a
+        # false anchor here; with that bind gone the same questions fell
+        # through to these branches and dumped 222 rows. So an unanchored task
+        # may take a relation branch only when a bulk scan is what was asked
+        # for (or the abstain-on-unanchored policy is off); otherwise it falls
+        # to branch 6/7 below — describe-by-name, or an honest empty result.
+        anchored_or_scan = (
+            bool(resolved.seed_ids)
+            or asks_for_bulk_scan(resolved.task.text)
+            or not _unanchored_relation_abstains()
+        )
+
         # 2. Campaign edges — must outrank the Group branch, which would
         # otherwise capture a Campaign+Group attribution task.
-        if has_campaign and has_group:
+        if has_campaign and has_group and anchored_or_scan:
             return self._campaign_attribution(resolved)
-        if has_campaign and has_technique_entity:
+        if has_campaign and has_technique_entity and anchored_or_scan:
             return self._campaign_techniques(resolved)
 
         # 2b. Actor → software. Both of these sit ahead of the branches that
@@ -457,9 +483,9 @@ class CypherQueryBuilder:
         # techniques. `not has_technique_entity` keeps the existing
         # actor→technique paths untouched, so a task naming all three labels
         # still routes exactly where it did.
-        if has_campaign and has_software_entity and not has_technique_entity:
+        if has_campaign and has_software_entity and not has_technique_entity and anchored_or_scan:
             return self._campaign_software(resolved)
-        if has_group and has_software_entity and not has_technique_entity:
+        if has_group and has_software_entity and not has_technique_entity and anchored_or_scan:
             return self._group_software(resolved)
 
         # 3. Group → techniques
@@ -474,7 +500,7 @@ class CypherQueryBuilder:
         # not here. An actor→technique task names a Technique, so the frozen
         # ``group_techniques`` case (``['Group', 'Technique']``) routes exactly
         # where it did.
-        if has_group and has_technique_entity:
+        if has_group and has_technique_entity and anchored_or_scan:
             return self._group_techniques(resolved)
 
         # 4a. subtechnique_parent — HAS_SUBTECHNIQUE relationship in scope + seeds
@@ -514,7 +540,7 @@ class CypherQueryBuilder:
         # tactic's 12 techniques. Branch 4d already claims the reverse rollup
         # (tactic scope + technique seeds), so this only ever sees the forward
         # direction.
-        if has_tactic and has_technique_entity:
+        if has_tactic and has_technique_entity and anchored_or_scan:
             return self._tactic_techniques(resolved)
 
         # 5. Seed ids present but no compound edge intent → describe the anchor:

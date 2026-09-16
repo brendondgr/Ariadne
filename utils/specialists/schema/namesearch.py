@@ -64,6 +64,65 @@ _NAME_WEIGHT = 3
 MIN_SCORE = 4.0
 MIN_MARGIN = 1.25
 
+#: Distinctiveness (EXP-2026-09-023). A complete name that is **one ordinary
+#: word** — the sub-technique named "Credentials", the tool named "at", the
+#: sub-technique named "Malware" — appears in questions that are not about it,
+#: and bound 54 wrong anchors on the exposed bank and 43 on the sealed one.
+#:
+#: Two rules were tried. H1, ``df``: drop a single-token name whose token occurs
+#: in more than ``DISTINCT_MAX_DF`` of the corpus's own documents. **Falsified**:
+#: it also drops "Phishing" and "APT29", which are common words *and* the names
+#: analysts actually use, and it cannot see "at", which the tokenizer never
+#: indexes. Kept so the record reproduces; never shipped.
+#:
+#: AMENDMENT A-1, ``struct`` (the value ``1`` selects it): a single-token name is
+#: a lookup only when the question writes it **as a standalone proper noun** —
+#: the same casing as the name, as a whole word, not inside a longer capitalised
+#: run (sentence-initial capitals ignored), and long enough to be a token the
+#: index can represent. No number to tune, nothing catalogue-specific: "what is
+#: Phishing" binds, "stolen credentials were used" does not, "Crimson Hollow"
+#: does not bind the software named "Crimson". Multi-word names are never touched.
+DISTINCT_MAX_DF = 0.01
+
+#: A capitalised run: two or more consecutive Title-Case / all-caps words.
+_CAP_RUN_RE = re.compile(r"(?:[A-Z][A-Za-z0-9'\-]*)(?:\s+[A-Z][A-Za-z0-9'\-]*)+")
+#: The tokenizer's minimum; a shorter name has no representable token.
+_MIN_TOKEN = 3
+
+
+def _distinct_mode() -> str:
+    """``""`` (off, the default), ``"struct"`` (A-1; also ``1``) or ``"df"`` (H1, falsified)."""
+    raw = os.environ.get("ARIADNE_EXACT_NAME_DISTINCT", "").strip().lower()
+    if raw in {"1", "true", "yes", "on", "struct"}:
+        return "struct"
+    if raw == "df":
+        return "df"
+    return ""
+
+
+def _standalone_proper_noun(name: str, text: str) -> bool:
+    """Does ``text`` write the one-word ``name`` as a name, not as a word?"""
+    if len(name) < _MIN_TOKEN:
+        return False
+    m = re.search(r"(?<![A-Za-z0-9])" + re.escape(name) + r"(?![A-Za-z0-9])", text or "")
+    if m is None:
+        return False
+    # Sentence-initial capitalisation is not a proper-noun signal: "Browsing
+    # Hardware as a starting point" must still bind the category "Hardware", so
+    # runs are looked for in the text *after* its first word.
+    lead = re.match(r"\s*[A-Za-z0-9'\-]+", text or "")
+    body_start = lead.end() if lead else 0
+    for run in _CAP_RUN_RE.finditer(text[body_start:]):
+        start, end = run.start() + body_start, run.end() + body_start
+        if start <= m.start() and m.end() <= end and (end - start) > (m.end() - m.start()):
+            return False
+    return True
+
+
+def _distinct_on() -> bool:
+    """Is any distinctiveness rule applied to exact-name matches? Default off."""
+    return bool(_distinct_mode())
+
 
 def _min_score() -> float:
     return float(os.environ.get("ARIADNE_NS_MIN_SCORE", MIN_SCORE))
@@ -127,6 +186,10 @@ class NameIndex:
             if words:
                 first.setdefault(words[0], []).append(i)
         self._name_first = first
+
+    def token_df(self, token: str) -> float:
+        """Fraction of this dataset's documents (name + description) containing ``token``."""
+        return len(self._postings.get(token, ())) / self._n
 
     def search(
         self, text: str, *, top_k: int = 5, labels: Iterable[str] | None = None
@@ -305,6 +368,7 @@ def exact_name_matches(
     """
     index = index_for(dataset)
     keep = {l for l in (labels or ()) if l}
+    distinct = _distinct_mode()
     words = _WORD_RE.findall((text or "").lower())
     low = " " + " ".join(words) + " "
     # Only names whose first word occurs in the question can possibly match, so
@@ -322,6 +386,14 @@ def exact_name_matches(
         if not name_toks:
             continue
         if f" {' '.join(name_toks)} " in low:
+            # **A one-word name that is an ordinary word is not a lookup** unless
+            # the question writes it as a name. See DISTINCT_MAX_DF for the two
+            # rules and why only the structural one ships.
+            if distinct and len(name_toks) == 1:
+                if distinct == "df" and index.token_df(name_toks[0]) > DISTINCT_MAX_DF:
+                    continue
+                if distinct == "struct" and not _standalone_proper_noun(name.strip(), text):
+                    continue
             out.append(Candidate(entity_id, label, name, float(len(name_toks))))
     out.sort(key=lambda c: (-c.score, c.entity_id))
 
@@ -341,6 +413,52 @@ def exact_name_matches(
                for k in kept):
             continue
         kept.append(cand)
+    return kept
+
+
+def exact_name_matches_all(
+    datasets: Iterable[str],
+    text: str,
+    *,
+    exclude: "dict[str, set[str]] | None" = None,
+) -> list[tuple[str, Candidate]]:
+    """``exact_name_matches`` over every dataset at once, nesting-aware across them.
+
+    The per-dataset filter drops "Software" inside "Software Extensions" only
+    when both names live in the same source. Asked source by source, ATT&CK's
+    "Remote Services" and "Credentials" both fire inside CAPEC's "Remote
+    Services with Stolen Credentials" — three readings of one phrase, two of
+    them false. So the nesting filter is applied again over the union: a name
+    contained in a longer matched name from *any* source is not a separate
+    mention.
+
+    ``exclude`` maps a dataset to the lower-cased names that are schema words
+    there — the caller's ``_schema_word_set`` — so "List ATT&CK software
+    entries" does not anchor on the Software node any more than it did before.
+    Returns ``(dataset, candidate)`` pairs, longest name first.
+    """
+    found: list[tuple[str, Candidate]] = []
+    for ds in datasets:
+        skip = (exclude or {}).get(ds) or set()
+        for cand in exact_name_matches(ds, text):
+            if cand.name.strip().lower() in skip:
+                continue
+            found.append((ds, cand))
+    found.sort(key=lambda dc: (-dc[1].score, dc[0], dc[1].entity_id))
+    kept: list[tuple[str, Candidate]] = []
+    for ds, cand in found:
+        name = " ".join(_WORD_RE.findall(cand.name.lower()))
+        # Strictly shorter only. The same name in two sources — CAPEC's
+        # "Phishing" and ATT&CK's "Phishing" — is a genuine cross-source
+        # ambiguity for the caller to break, not a nested mention to drop.
+        if any(
+            (lambda longer: len(name) < len(longer) and f" {name} " in f" {longer} ")(
+                " ".join(_WORD_RE.findall(k.name.lower()))
+            )
+            for _, k in kept
+        ):
+            continue
+        kept.append((ds, cand))
     return kept
 
 
