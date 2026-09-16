@@ -114,13 +114,27 @@ def env_bool(name: str, default: bool) -> bool:
 _ENDPOINT_PREFIX = "ARIADNE_ENDPOINT_"
 
 
+def endpoint_override_key(dataset: str) -> str:
+    """The lookup key for ``dataset`` in :func:`endpoint_overrides`.
+
+    A dataset name may carry hyphens (``mnp-cs-03000-r2``) and a shell
+    variable name may not, so both the variable suffix and the dataset name are
+    normalised to lower case with hyphens as underscores before they meet:
+    ``ARIADNE_ENDPOINT_MNP_CS_03000_R2`` addresses ``mnp-cs-03000-r2``.
+    """
+    return dataset.strip().lower().replace("-", "_")
+
+
 def endpoint_overrides() -> dict[str, str]:
-    """``{dataset: uri}`` read from ``ARIADNE_ENDPOINT_<DATASET>`` variables."""
+    """``{dataset key: uri}`` read from ``ARIADNE_ENDPOINT_<DATASET>`` variables.
+
+    Keys are :func:`endpoint_override_key` forms; look them up through it.
+    """
     found: dict[str, str] = {}
     for key, value in os.environ.items():
         if not key.startswith(_ENDPOINT_PREFIX):
             continue
-        dataset = key[len(_ENDPOINT_PREFIX) :].strip().lower()
+        dataset = endpoint_override_key(key[len(_ENDPOINT_PREFIX) :])
         uri = (value or "").strip()
         if dataset and uri:
             found[dataset] = uri

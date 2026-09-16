@@ -43,10 +43,23 @@ def test_the_merged_dataset_gets_a_cypher_specialist(tmp_path) -> None:
     assert type(specialist) is type(reference)
 
 
-def test_an_unknown_dataset_still_raises(tmp_path) -> None:
-    """The branch is an addition, not a loosening."""
-    with pytest.raises(ValueError, match="No specialist for dataset"):
-        build_specialist("sepses", _merged_card(), _config(tmp_path))
+def test_an_unknown_dataset_is_dispatched_on_its_card(tmp_path) -> None:
+    """Since the Synapse transfer (2026-09-16) the name alone does not gate.
+
+    A dataset this file has never heard of gets the specialist its card's
+    ``runtime_backend`` names; a card that declares none still raises, so the
+    loosening is bounded by what the card says rather than by a name list.
+    """
+    specialist = build_specialist("sepses", _merged_card(), _config(tmp_path))
+    reference = build_cypher_specialist(_merged_card(), _config(tmp_path))
+    assert type(specialist) is type(reference)
+
+    backendless = SourceCardView.from_card_dict({
+        "dataset": "sepses", "runtime_backend": "", "node_labels": ["X"],
+        "relationship_types": [], "node_properties": {},
+    })
+    with pytest.raises(ValueError, match="No specialist for dataset 'sepses'"):
+        build_specialist("sepses", backendless, _config(tmp_path))
 
 
 # -- the isolation that makes the comparison worth anything ------------------

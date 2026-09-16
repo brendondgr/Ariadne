@@ -12,7 +12,7 @@ import os
 from dataclasses import dataclass
 from pathlib import Path
 
-from utils.config import endpoint_overrides, env_int, env_str
+from utils.config import endpoint_override_key, endpoint_overrides, env_int, env_str
 from utils.llm.config import LLMSettings, settings_from_legacy
 from utils.llm.config import resolve as resolve_llm
 
@@ -130,7 +130,7 @@ class PlannerConfig:
         URI exactly as before, so every existing caller is unaffected.
         """
         if dataset:
-            override = endpoint_overrides().get(str(dataset).lower())
+            override = endpoint_overrides().get(endpoint_override_key(str(dataset)))
             if override:
                 return override
         """Return the configured endpoint URI for a runtime backend."""
