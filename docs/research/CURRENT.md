@@ -109,5 +109,6 @@ this file says which number is *current*.
 | [`EXP-2026-09-022`](experiments/EXP-2026-09-022-portable-candidate-discovery/) | 2026-09-15 | `fields_T5_anchor_recall_at_10` | 0.5641 (n=104) | — | — |
 | [`EXP-2026-09-023`](experiments/EXP-2026-09-023-anchor-hygiene-and-q59/) | 2026-09-15 | `records_exact_T3_anchor_first` | 0.3465 (n=101) | — | — |
 | [`EXP-2026-09-024`](experiments/EXP-2026-09-024-expand-on-unbound-relation/) | 2026-09-15 | `records_recall_T1_expand_unbound_exposed` | 0.5523 (n=120) | — | — |
+| [`EXP-2026-09-025`](experiments/EXP-2026-09-025-direct-form-execution/) | 2026-09-15 | `records_exact_T3_form_execute_exposed` | 0.3762 (n=101) | — | — |
 
-**24 withdrawn figure(s), 6 superseded experiment(s), 51 current headline(s).**
+**24 withdrawn figure(s), 6 superseded experiment(s), 52 current headline(s).**

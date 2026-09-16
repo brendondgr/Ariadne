@@ -1,0 +1,32 @@
+| bank | pair | tier | n | fixed | broken | recall ↑ (≥0.1) | recall ↓ (≥0.1) | none→dump | dump→none | mean Δrecall |
+|---|---|---|---:|---:|---:|---:|---:|---:|---:|---:|
+| exposed | anchor_first→form_execute | T1 | 120 | 0 | 0 | 0 | 0 | 0 | 0 | +0.0000 |
+| exposed | anchor_first→form_execute | T2 | 120 | 0 | 0 | 0 | 0 | 0 | 0 | +0.0000 |
+| exposed | anchor_first→form_execute | T3 | 101 | 4 | 1 | 6 | 2 | 0 | 0 | +0.0306 |
+| exposed | anchor_first→form_execute | T4 | 104 | 0 | 0 | 0 | 0 | 0 | 0 | +0.0000 |
+| exposed | anchor_first→form_execute | T5 | 104 | 0 | 0 | 1 | 0 | 0 | 0 | +0.0058 |
+| exposed | anchor_first→form_execute | T6 | 30 | 0 | 0 | 0 | 0 | 0 | 0 | +0.0000 |
+| exposed | form_execute→form_execute_ids | T1 | 120 | 4 | 15 | 7 | 1 | 1 | 0 | +0.0377 |
+| exposed | form_execute→form_execute_ids | T2 | 120 | 6 | 12 | 10 | 2 | 0 | 0 | +0.0569 |
+| exposed | form_execute→form_execute_ids | T3 | 101 | 0 | 0 | 0 | 0 | 0 | 0 | +0.0000 |
+| exposed | form_execute→form_execute_ids | T4 | 104 | 0 | 0 | 0 | 0 | 0 | 0 | +0.0000 |
+| exposed | form_execute→form_execute_ids | T5 | 104 | 0 | 0 | 0 | 0 | 0 | 0 | +0.0000 |
+| exposed | form_execute→form_execute_ids | T6 | 30 | 0 | 0 | 0 | 0 | 0 | 0 | +0.0000 |
+| exposed | anchor_first→form_execute_ids | T1 | 120 | 4 | 15 | 7 | 1 | 1 | 0 | +0.0377 |
+| exposed | anchor_first→form_execute_ids | T2 | 120 | 6 | 12 | 10 | 2 | 0 | 0 | +0.0569 |
+| exposed | anchor_first→form_execute_ids | T3 | 101 | 4 | 1 | 6 | 2 | 0 | 0 | +0.0306 |
+| exposed | anchor_first→form_execute_ids | T4 | 104 | 0 | 0 | 0 | 0 | 0 | 0 | +0.0000 |
+| exposed | anchor_first→form_execute_ids | T5 | 104 | 0 | 0 | 1 | 0 | 0 | 0 | +0.0058 |
+| exposed | anchor_first→form_execute_ids | T6 | 30 | 0 | 0 | 0 | 0 | 0 | 0 | +0.0000 |
+| sealed | anchor_first→form_execute | T3 | 40 | 2 | 1 | 2 | 1 | 0 | 0 | +0.0325 |
+| sealed | anchor_first→form_execute | T4 | 40 | 0 | 0 | 0 | 0 | 0 | 0 | +0.0000 |
+| sealed | anchor_first→form_execute | T5 | 40 | 0 | 0 | 0 | 1 | 0 | 0 | -0.0125 |
+| sealed | anchor_first→form_execute | T6 | 40 | 0 | 0 | 0 | 0 | 0 | 0 | +0.0000 |
+| sealed | form_execute→form_execute_ids | T3 | 40 | 0 | 0 | 0 | 0 | 0 | 0 | +0.0000 |
+| sealed | form_execute→form_execute_ids | T4 | 40 | 0 | 0 | 0 | 0 | 0 | 0 | +0.0000 |
+| sealed | form_execute→form_execute_ids | T5 | 40 | 0 | 0 | 0 | 0 | 0 | 0 | +0.0000 |
+| sealed | form_execute→form_execute_ids | T6 | 40 | 0 | 0 | 0 | 0 | 0 | 0 | +0.0000 |
+| sealed | anchor_first→form_execute_ids | T3 | 40 | 2 | 1 | 2 | 1 | 0 | 0 | +0.0325 |
+| sealed | anchor_first→form_execute_ids | T4 | 40 | 0 | 0 | 0 | 0 | 0 | 0 | +0.0000 |
+| sealed | anchor_first→form_execute_ids | T5 | 40 | 0 | 0 | 0 | 1 | 0 | 0 | -0.0125 |
+| sealed | anchor_first→form_execute_ids | T6 | 40 | 0 | 0 | 0 | 0 | 0 | 0 | +0.0000 |
