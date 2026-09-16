@@ -1377,9 +1377,16 @@ class GremlinQueryBuilder:
             if m
         ]
         if entry_ids and len(entry_ids) == len(resolved.seed_ids):
+            # Land on the label that OWNS the join edge, read off the registry,
+            # not on whatever entity the plan happened to name. "Which CAPEC
+            # items line up with T1040" planned `AlternateTerm`; anchoring the
+            # reverse walk on it matched zero vertices (EXP-2026-09-026).
+            _, owner_label = self._path_to_join_owner(
+                resolved, key_label, endpoint.via_edge, anchor_label
+            )
             query = (
                 f'g.V().hasLabel("{key_label}").has("{key_prop}", within(entryIds))'
-                f'.as("tax").in("{edge}").hasLabel("{anchor_label}").as("ap")'
+                f'.as("tax").in("{edge}").hasLabel("{owner_label}").as("ap")'
                 f'.select("ap","tax").by(elementMap()).limit({lim})'
             )
             return QueryDraft(

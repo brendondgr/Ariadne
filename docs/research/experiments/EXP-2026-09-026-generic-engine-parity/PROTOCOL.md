@@ -67,3 +67,23 @@ uv run python docs/research/experiments/EXP-2026-09-026-generic-engine-parity/da
   than two cases — then the named defects are not the whole gap and the
   templates are not retired; the surviving categories are listed.
 - `wrong_entity` or `catalogue_dump` above the cascade's on any tier.
+
+## Amendment A-1 (2026-09-15, after the `generic` arm was scored)
+
+The `generic` arm falsified H1 outright (exposed T1 − 0.14, T2 − 0.09, T3 −
+0.26; sealed T3 − 0.575) and the reverse-mapping category did not move. Tracing
+two cases found two further defects, both fixed before the arm below:
+
+1. the reverse bridge fired but anchored its landing on the plan's entity
+   (`AlternateTerm`) instead of the label that owns the mapping edge, so the
+   right query matched zero vertices — now read off the registry through
+   `_path_to_join_owner`;
+2. the generic Cypher chain, fed by the router's entities from the *rendered*
+   canonical sentence ("technique" reaches `HAS_TECHNIQUE` and `Matrix` too),
+   tries to bind every named label and exceeds the traversal budget; the
+   template cascade ignores the extras. The executed form (EXP-2026-09-025)
+   carries exact entities, so the fair comparison for the generic engine is
+   `generic_form` = `generic` + `ARIADNE_FORM_EXECUTE=1`.
+
+The same H1 lines apply to `generic_form` against `form_execute`. This is a
+second look at the same banks after seeing results and is labelled as such.

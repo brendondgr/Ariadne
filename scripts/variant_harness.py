@@ -192,6 +192,19 @@ REWRITE_ENV: dict[str, dict[str, str]] = {
                 "ARIADNE_UNANCHORED_RELATION_ABSTAINS": "1",
                 "ORCH_EXPAND_UNBOUND": "0", "ARIADNE_FORM_EXECUTE": "0",
                 "SPECIALIST_GENERIC_ONLY": "true"},
+    # EXP-2026-09-026 AMENDMENT: the generic engine fed by the executed form
+    # (exact entities) rather than by the rendered sentence the router
+    # over-matches ("technique" reaches HAS_TECHNIQUE and Matrix too, and the
+    # generic chain then exceeds the traversal budget).
+    "generic_form": {"ARIADNE_REWRITE": "1", "ARIADNE_REWRITE_MODEL": "1",
+                     "ARIADNE_REWRITE_DERIVE_RELATION": "1",
+                     "ARIADNE_REWRITE_ONLY_WITHOUT_ID": "1",
+                     "ARIADNE_REWRITE_REQUIRE_RESOLVED_ANCHOR": "1",
+                     "ARIADNE_EXACT_NAME_DISTINCT": "1",
+                     "ARIADNE_ANCHOR_BEFORE_ROUTING": "1",
+                     "ARIADNE_UNANCHORED_RELATION_ABSTAINS": "1",
+                     "ORCH_EXPAND_UNBOUND": "0", "ARIADNE_FORM_EXECUTE": "1",
+                     "SPECIALIST_GENERIC_ONLY": "true"},
 }
 
 #: Where the understanding-gold lives, relative to ``--out``.

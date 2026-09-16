@@ -41,6 +41,8 @@ def test_a_foreign_seed_takes_the_reverse_bridge():
     draft = GremlinQueryBuilder().build(resolve(task, fixture_card("capec")))
     assert draft.template == "generic_bridge"
     assert "entryIds" in draft.params and draft.params["entryIds"] == ["1040"]
+    # the reverse walk lands on the label that owns the mapping edge, not on the plan's entity
+    assert 'hasLabel("AttackPattern").as("ap")' in draft.query and "AlternateTerm" not in draft.query
 
 
 def test_a_paraphrased_mapping_with_no_native_relation_takes_the_bridge():
