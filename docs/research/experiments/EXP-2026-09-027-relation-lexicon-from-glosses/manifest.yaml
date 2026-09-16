@@ -5,9 +5,9 @@
 id: EXP-2026-09-027
 slug: relation-lexicon-from-glosses
 title: "A relation lexicon generated once from each card's glosses, read deterministically at query time (plan Step 8)"
-status: running            # planned | running | complete | failed | superseded
+status: complete           # planned | running | complete | failed | superseded
 date_started: 2026-09-15
-date_completed: null       # null until status is complete/failed
+date_completed: 2026-09-16
 authors: ["brendondgr", "Claude Opus 5"]
 
 purpose: >
@@ -49,7 +49,7 @@ environment:
   container: null
 compute:
   hardware: "32-core x86_64 host, 121 GB RAM; Neo4j + Gremlin local; local model on :9090 (30 generation calls + the rewrite rung)"
-  wall_clock_hours: 0.0
+  wall_clock_hours: 0.3
   estimated_cost_usd: 0.0
 
 # --- LLM / agentic block (delete entirely if no model was in the loop) ---
@@ -70,7 +70,108 @@ llm:
 # --- Results block ---
 metrics:
   primary: records_exact_T1_paraphrases_exposed
-  values: {}               # {metric: {mean: 0.0, std: 0.0, n: 1}} — must be non-empty when status: complete
+  values:
+    records_exact_T1_form_execute_exposed: {mean: 0.3917, std: null, n: 120}
+    records_recall_T1_form_execute_exposed: {mean: 0.506, std: null, n: 120}
+    abstained_T1_form_execute_exposed: {mean: 0.1917, std: null, n: 120}
+    wrong_entity_T1_form_execute_exposed: {mean: 0.0833, std: null, n: 120}
+    catalogue_dump_T1_form_execute_exposed: {mean: 0.0, std: null, n: 120}
+    records_exact_T2_form_execute_exposed: {mean: 0.3667, std: null, n: 120}
+    records_recall_T2_form_execute_exposed: {mean: 0.4838, std: null, n: 120}
+    abstained_T2_form_execute_exposed: {mean: 0.1917, std: null, n: 120}
+    wrong_entity_T2_form_execute_exposed: {mean: 0.0833, std: null, n: 120}
+    catalogue_dump_T2_form_execute_exposed: {mean: 0.0, std: null, n: 120}
+    records_exact_T3_form_execute_exposed: {mean: 0.3762, std: null, n: 101}
+    records_recall_T3_form_execute_exposed: {mean: 0.7042, std: null, n: 101}
+    abstained_T3_form_execute_exposed: {mean: 0.3465, std: null, n: 101}
+    wrong_entity_T3_form_execute_exposed: {mean: 0.0495, std: null, n: 101}
+    catalogue_dump_T3_form_execute_exposed: {mean: 0.0, std: null, n: 101}
+    records_exact_T4_form_execute_exposed: {mean: 0.0, std: null, n: 104}
+    records_recall_T4_form_execute_exposed: {mean: 0.0108, std: null, n: 104}
+    abstained_T4_form_execute_exposed: {mean: 0.8365, std: null, n: 104}
+    wrong_entity_T4_form_execute_exposed: {mean: 0.1538, std: null, n: 104}
+    catalogue_dump_T4_form_execute_exposed: {mean: 0.0192, std: null, n: 104}
+    records_exact_T5_form_execute_exposed: {mean: 0.0, std: null, n: 104}
+    records_recall_T5_form_execute_exposed: {mean: 0.0104, std: null, n: 104}
+    abstained_T5_form_execute_exposed: {mean: 0.8654, std: null, n: 104}
+    wrong_entity_T5_form_execute_exposed: {mean: 0.1058, std: null, n: 104}
+    catalogue_dump_T5_form_execute_exposed: {mean: 0.0096, std: null, n: 104}
+    records_exact_T6_form_execute_exposed: {mean: 0.1, std: null, n: 30}
+    records_recall_T6_form_execute_exposed: {mean: 0.0, std: null, n: 30}
+    abstained_T6_form_execute_exposed: {mean: 1.0, std: null, n: 30}
+    wrong_entity_T6_form_execute_exposed: {mean: 0.0, std: null, n: 30}
+    catalogue_dump_T6_form_execute_exposed: {mean: 0.0, std: null, n: 30}
+    records_exact_T1_paraphrases_exposed: {mean: 0.3583, std: null, n: 120}
+    records_recall_T1_paraphrases_exposed: {mean: 0.5427, std: null, n: 120}
+    abstained_T1_paraphrases_exposed: {mean: 0.2417, std: null, n: 120}
+    wrong_entity_T1_paraphrases_exposed: {mean: 0.0833, std: null, n: 120}
+    catalogue_dump_T1_paraphrases_exposed: {mean: 0.0, std: null, n: 120}
+    records_exact_T2_paraphrases_exposed: {mean: 0.4, std: null, n: 120}
+    records_recall_T2_paraphrases_exposed: {mean: 0.5303, std: null, n: 120}
+    abstained_T2_paraphrases_exposed: {mean: 0.1583, std: null, n: 120}
+    wrong_entity_T2_paraphrases_exposed: {mean: 0.0833, std: null, n: 120}
+    catalogue_dump_T2_paraphrases_exposed: {mean: 0.0, std: null, n: 120}
+    records_exact_T3_paraphrases_exposed: {mean: 0.4059, std: null, n: 101}
+    records_recall_T3_paraphrases_exposed: {mean: 0.7124, std: null, n: 101}
+    abstained_T3_paraphrases_exposed: {mean: 0.3366, std: null, n: 101}
+    wrong_entity_T3_paraphrases_exposed: {mean: 0.0396, std: null, n: 101}
+    catalogue_dump_T3_paraphrases_exposed: {mean: 0.0, std: null, n: 101}
+    records_exact_T4_paraphrases_exposed: {mean: 0.0, std: null, n: 104}
+    records_recall_T4_paraphrases_exposed: {mean: 0.0108, std: null, n: 104}
+    abstained_T4_paraphrases_exposed: {mean: 0.8365, std: null, n: 104}
+    wrong_entity_T4_paraphrases_exposed: {mean: 0.1538, std: null, n: 104}
+    catalogue_dump_T4_paraphrases_exposed: {mean: 0.0192, std: null, n: 104}
+    records_exact_T5_paraphrases_exposed: {mean: 0.0, std: null, n: 104}
+    records_recall_T5_paraphrases_exposed: {mean: 0.0088, std: null, n: 104}
+    abstained_T5_paraphrases_exposed: {mean: 0.8654, std: null, n: 104}
+    wrong_entity_T5_paraphrases_exposed: {mean: 0.1058, std: null, n: 104}
+    catalogue_dump_T5_paraphrases_exposed: {mean: 0.0096, std: null, n: 104}
+    records_exact_T6_paraphrases_exposed: {mean: 0.1, std: null, n: 30}
+    records_recall_T6_paraphrases_exposed: {mean: 0.0, std: null, n: 30}
+    abstained_T6_paraphrases_exposed: {mean: 1.0, std: null, n: 30}
+    wrong_entity_T6_paraphrases_exposed: {mean: 0.0, std: null, n: 30}
+    catalogue_dump_T6_paraphrases_exposed: {mean: 0.0, std: null, n: 30}
+    records_exact_T3_form_execute_sealed: {mean: 0.7, std: null, n: 40}
+    records_recall_T3_form_execute_sealed: {mean: 0.925, std: null, n: 40}
+    abstained_T3_form_execute_sealed: {mean: 0.15, std: null, n: 40}
+    wrong_entity_T3_form_execute_sealed: {mean: 0.0, std: null, n: 40}
+    catalogue_dump_T3_form_execute_sealed: {mean: 0.0, std: null, n: 40}
+    records_exact_T4_form_execute_sealed: {mean: 0.0, std: null, n: 40}
+    records_recall_T4_form_execute_sealed: {mean: 0.02, std: null, n: 40}
+    abstained_T4_form_execute_sealed: {mean: 0.85, std: null, n: 40}
+    wrong_entity_T4_form_execute_sealed: {mean: 0.125, std: null, n: 40}
+    catalogue_dump_T4_form_execute_sealed: {mean: 0.05, std: null, n: 40}
+    records_exact_T5_form_execute_sealed: {mean: 0.0, std: null, n: 40}
+    records_recall_T5_form_execute_sealed: {mean: 0.0, std: null, n: 40}
+    abstained_T5_form_execute_sealed: {mean: 0.9, std: null, n: 40}
+    wrong_entity_T5_form_execute_sealed: {mean: 0.125, std: null, n: 40}
+    catalogue_dump_T5_form_execute_sealed: {mean: 0.025, std: null, n: 40}
+    records_exact_T6_form_execute_sealed: {mean: 0.0, std: null, n: 40}
+    records_recall_T6_form_execute_sealed: {mean: 0.0, std: null, n: 40}
+    abstained_T6_form_execute_sealed: {mean: 1.0, std: null, n: 40}
+    wrong_entity_T6_form_execute_sealed: {mean: 0.0, std: null, n: 40}
+    catalogue_dump_T6_form_execute_sealed: {mean: 0.0, std: null, n: 40}
+    records_exact_T3_paraphrases_sealed: {mean: 0.675, std: null, n: 40}
+    records_recall_T3_paraphrases_sealed: {mean: 0.9, std: null, n: 40}
+    abstained_T3_paraphrases_sealed: {mean: 0.175, std: null, n: 40}
+    wrong_entity_T3_paraphrases_sealed: {mean: 0.0, std: null, n: 40}
+    catalogue_dump_T3_paraphrases_sealed: {mean: 0.0, std: null, n: 40}
+    records_exact_T4_paraphrases_sealed: {mean: 0.0, std: null, n: 40}
+    records_recall_T4_paraphrases_sealed: {mean: 0.02, std: null, n: 40}
+    abstained_T4_paraphrases_sealed: {mean: 0.85, std: null, n: 40}
+    wrong_entity_T4_paraphrases_sealed: {mean: 0.125, std: null, n: 40}
+    catalogue_dump_T4_paraphrases_sealed: {mean: 0.05, std: null, n: 40}
+    records_exact_T5_paraphrases_sealed: {mean: 0.0, std: null, n: 40}
+    records_recall_T5_paraphrases_sealed: {mean: 0.0, std: null, n: 40}
+    abstained_T5_paraphrases_sealed: {mean: 0.925, std: null, n: 40}
+    wrong_entity_T5_paraphrases_sealed: {mean: 0.1, std: null, n: 40}
+    catalogue_dump_T5_paraphrases_sealed: {mean: 0.025, std: null, n: 40}
+    records_exact_T6_paraphrases_sealed: {mean: 0.0, std: null, n: 40}
+    records_recall_T6_paraphrases_sealed: {mean: 0.0, std: null, n: 40}
+    abstained_T6_paraphrases_sealed: {mean: 1.0, std: null, n: 40}
+    wrong_entity_T6_paraphrases_sealed: {mean: 0.0, std: null, n: 40}
+    catalogue_dump_T6_paraphrases_sealed: {mean: 0.0, std: null, n: 40}
+    single_record_answers_T1T2_paraphrases_exposed: {mean: 69, std: null, n: 240}
   withdrawn: {}            # values later retracted by amendment: {metric: {mean, std, n, withdrawn_on, reason, replaced_by}}
 baselines_compared: ["EXP-2026-09-025 form_execute arm, both banks"]
 statistical_test: null
