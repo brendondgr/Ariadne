@@ -1,0 +1,73 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="900" viewBox="0 0 1600 900" role="img" aria-labelledby="title desc">
+  <title id="title">Relational database and knowledge graph: cybersecurity examples</title>
+  <desc id="desc">Structured authentication records on the left. On the right, an account logged into a device, the device connected to an IP address, and an alert detected on the device suggests credential access.</desc>
+  <defs>
+    <style>
+      text { font-family: Calibri, Carlito, Arial, sans-serif; fill: #ffffff; }
+      .heading { font-size: 49px; font-weight: 700; }
+      .subtitle { font-size: 30px; fill: #f3ede1; }
+      .label { font-size: 25px; }
+      .value { font-size: 25px; fill: #f3ede1; }
+      .edge { font-size: 18px; font-weight: 700; letter-spacing: .5px; }
+      .question { font-size: 30px; font-weight: 700; }
+      .grid { stroke: #ceb888; stroke-width: 1.5; }
+      .teal { fill: #ceb888; }
+      .gold { fill: #ceb888; }
+      .icon { fill: none; stroke: #ffffff; stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; }
+    </style>
+    <marker id="tealArrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0 0 10 5 0 10Z" fill="#ceb888"/></marker>
+    <marker id="goldArrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0 0 10 5 0 10Z" fill="#ceb888"/></marker>
+    <radialGradient id="nodeGold" cx="35%" cy="25%"><stop stop-color="#CEB888" stop-opacity=".4"/><stop offset="1" stop-color="#CEB888" stop-opacity=".12"/></radialGradient>
+  </defs>
+  <rect width="1600" height="900" fill="#2B0311"/>
+  <path d="M800 60V824" class="grid"/>
+  <text x="400" y="118" text-anchor="middle" class="heading">Relational Database</text>
+  <text x="1200" y="118" text-anchor="middle" class="heading">Knowledge Graph</text>
+  <text x="400" y="173" text-anchor="middle" class="subtitle">Structured records</text>
+  <text x="1200" y="173" text-anchor="middle" class="subtitle">Heterogeneous entities</text>
+
+  <!-- Structured records: every cell remains editable SVG text. -->
+  <rect x="75" y="268" width="650" height="358" rx="12" fill="#2B0311" stroke="#ceb888" stroke-width="1.5"/>
+  <text x="108" y="313" font-size="30" font-weight="700" class="teal">Authentication events</text>
+  <path d="M75 339H725 M75 396H725 M75 453H725 M75 510H725 M75 567H725 M215 339V626 M385 339V626 M555 339V626" class="grid"/>
+  <g text-anchor="middle" class="label">
+    <g fill="#ceb888"><text x="145" y="376" class="teal">Time</text><text x="300" y="376" class="teal">Account</text><text x="470" y="376" class="teal">Device</text><text x="640" y="376" class="teal">Result</text></g>
+    <text x="145" y="433">09:01</text><text x="300" y="433">alice</text><text x="470" y="433">WS-17</text><text x="640" y="433" class="gold">Failed</text>
+    <text x="145" y="490">09:02</text><text x="300" y="490">alice</text><text x="470" y="490">WS-17</text><text x="640" y="490" class="gold">Failed</text>
+    <text x="145" y="547">09:03</text><text x="300" y="547">bob</text><text x="470" y="547">WS-22</text><text x="640" y="547" class="gold">Failed</text>
+    <text x="145" y="604">09:04</text><text x="300" y="604">alice</text><text x="470" y="604">WS-17</text><text x="640" y="604" class="teal">Success</text>
+  </g>
+
+  <!-- Named relationships: arrowheads point toward the object of each statement. -->
+  <g fill="none" stroke-width="3">
+    <path d="M976.7 349.3L1133.9 429.4" stroke="#ceb888" marker-end="url(#tealArrow)"/>
+    <path d="M1245.2 429.9L1402.4 349.8" stroke="#ceb888" marker-end="url(#tealArrow)"/>
+    <path d="M976.4 569.2L1134.1 487.1" stroke="#ceb888" marker-end="url(#goldArrow)"/>
+    <path d="M983.0 596.0L1396.0 596.0" stroke="#ceb888" marker-end="url(#goldArrow)"/>
+  </g>
+  <text x="1055" y="367" text-anchor="middle" class="edge" transform="rotate(25 1055 367)">LOGGED INTO</text>
+  <text x="1324" y="368" text-anchor="middle" class="edge" transform="rotate(-25 1324 368)">CONNECTED TO</text>
+  <text x="1054" y="511" text-anchor="middle" class="edge" transform="rotate(-25 1054 511)">DETECTED ON</text>
+  <text x="1190" y="579" text-anchor="middle" class="edge">SUGGESTS</text>
+
+  <!-- Tinted nodes match figure 2, enlarged by approximately 16 percent. -->
+  <circle cx="925" cy="323" r="56" fill="#2B0311"/><circle cx="925" cy="323" r="56" fill="url(#nodeGold)" stroke="#CEB888" stroke-width="2.5"/>
+  <circle cx="1190" cy="458" r="60" fill="#2B0311"/><circle cx="1190" cy="458" r="60" fill="url(#nodeGold)" stroke="#CEB888" stroke-width="2.5"/>
+  <circle cx="1455" cy="323" r="56" fill="#2B0311"/><circle cx="1455" cy="323" r="56" fill="url(#nodeGold)" stroke="#CEB888" stroke-width="2.5"/>
+  <circle cx="925" cy="596" r="56" fill="#2B0311"/><circle cx="925" cy="596" r="56" fill="url(#nodeGold)" stroke="#CEB888" stroke-width="2.5"/>
+  <circle cx="1455" cy="596" r="56" fill="#2B0311"/><circle cx="1455" cy="596" r="56" fill="url(#nodeGold)" stroke="#CEB888" stroke-width="2.5"/>
+  <g transform="translate(925 323) scale(1.2)" fill="none" stroke="#CEB888" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cy="-10" r="9" fill="#CEB888" stroke="none"/><path d="M-18 19V12C-18-5 18-5 18 12V19Z" fill="#CEB888" stroke="none"/></g>
+  <g transform="translate(1190 458) scale(1.2)" fill="none" stroke="#CEB888" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="-22" y="-17" width="44" height="30" rx="2"/><path d="M0 13V22M-12 22H12"/></g>
+  <g transform="translate(1455 323) scale(1.2)" fill="none" stroke="#CEB888" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle r="23"/><ellipse rx="10" ry="23"/><path d="M-23 0H23M-19-12H19M-19 12H19"/></g>
+  <g transform="translate(925 596) scale(1.2)" fill="none" stroke="#CEB888" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M0-23L20-14V2Q18 18 0 26Q-18 18-20 2V-14Z"/><path d="M0-9V5M0 13V14"/></g>
+  <g transform="translate(1455 596) scale(1.2)" fill="none" stroke="#CEB888" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle r="23"/><circle r="12"/><path d="M0-30V-16M0 16V30M-30 0H-16M16 0H30"/></g>
+  <g text-anchor="middle">
+    <text x="925" y="229" class="label">Account</text><text x="925" y="259" class="value">alice</text>
+    <text x="1455" y="229" class="label">IP address</text><text x="1455" y="259" class="value">203.0.113.8</text>
+    <text x="1190" y="360" class="label">Device</text><text x="1190" y="390" class="value">WS-17</text>
+    <text x="925" y="672" class="label">Alert</text><text x="925" y="702" class="value">A-42</text>
+    <text x="1455" y="672" class="label">Tactic</text><text x="1455" y="702" class="value">Credential access</text>
+  </g>
+  <text x="400" y="787" text-anchor="middle" class="question">How many failed logins per account?</text>
+  <text x="1200" y="774" text-anchor="middle" class="question"><tspan x="1200">What activity connects this account</tspan><tspan x="1200" dy="38">to a threat?</tspan></text>
+</svg>
