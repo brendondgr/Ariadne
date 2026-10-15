@@ -39,7 +39,7 @@ from utils.specialists.evalset.identity_gold import (
 )
 
 REPO_ROOT = Path(__file__).resolve().parents[4]
-SPEC_PATH = REPO_ROOT / "data-identity/graphs/identity/canonical/spec.json"
+SPEC_PATH = REPO_ROOT / "data/identity/graphs/identity/canonical/spec.json"
 
 
 @pytest.fixture(scope="module")

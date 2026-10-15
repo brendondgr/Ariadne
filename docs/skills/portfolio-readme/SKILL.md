@@ -5,7 +5,7 @@ description: Use when writing, improving, or auditing GitHub portfolio material 
 
 # Portfolio README
 
-Canonical instructions. The `.claude/`, `.agents/`, and `.cursor/` copies are
+Canonical instructions. The `.claude/` and `.agents/` copies are
 pointers to this file.
 
 ## Step 0 — Track

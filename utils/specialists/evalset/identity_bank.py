@@ -458,7 +458,7 @@ def main(argv: list[str] | None = None) -> int:
     )
     parser.add_argument("--seed", type=int, default=IDENTITY_SEED)
     parser.add_argument(
-        "--spec", default="data-identity/graphs/identity/canonical/spec.json"
+        "--spec", default="data/identity/graphs/identity/canonical/spec.json"
     )
     parser.add_argument("--out", default="docs/evaluation/identity-2026-08-21")
     parser.add_argument("--base-url", default=os.environ.get("EVAL_LLM_BASE_URL", "http://localhost:4000/v1"))

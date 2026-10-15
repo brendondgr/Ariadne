@@ -128,7 +128,7 @@ obtainable without waiting on it.
 - **Locations**: new `utils/kg_builder/catalog/` — `reader.py` (parse
   `node_attributes.csv` / `relationship_attributes.csv`), `declared.py` (the
   normalized artifact + its dataclasses), `tests/test_reader.py`. Output written
-  under `data-identity/catalog/declared.json`.
+  under `data/identity/catalog/declared.json`.
 - **Rationale**: The two CSVs are the raw delivery; everything downstream should
   read one normalized artifact rather than re-parsing CSV in three places. The
   reader must record what it *cannot* see — the inner-join truncation — as an
@@ -175,7 +175,7 @@ obtainable without waiting on it.
 - **Locations**: new `utils/kg_builder/synthetic/` — `generator.py` (seeded
   emitter), `spec.py` (the blueprint written alongside), `paths.py` (planted
   attack chains), `tests/test_generator.py`. Output: canonical
-  `nodes.jsonl` / `relationships.jsonl` under `data-identity/graphs/identity/canonical/`
+  `nodes.jsonl` / `relationships.jsonl` under `data/identity/graphs/identity/canonical/`
   plus `spec.json`.
 - **Rationale**: Nothing runs without instances. The generator must emit *only*
   edges the declared catalog permits, so conformance is structural rather than
@@ -196,8 +196,8 @@ obtainable without waiting on it.
 
 ### Step 5: Source card, overlay, and isolated load
 
-- **Locations**: `data-identity/source_cards/identity.json` (derived parts) and
-  `data-identity/source_cards/overlays/identity.overlay.json` (hand-authored
+- **Locations**: `data/identity/source_cards/identity.json` (derived parts) and
+  `data/identity/source_cards/overlays/identity.overlay.json` (hand-authored
   connection / safety / provenance / `entity_descriptions`, following the
   existing `attack.overlay.json` shape); `utils/graph_loader/config.py` and
   `utils/specialists/__init__.py` gain an `identity` branch; a separation script
@@ -317,7 +317,7 @@ obtainable without waiting on it.
 | **Isolation tests** | Pin that `load_source_cards('data')` == `{attack, capec}` and `discover_datasets('data')` excludes `identity` | `utils/specialists/tests/test_identity_isolation.py` |
 | Synthetic tenant generator | Seeded, deterministic emitter of a catalog-conformant tenant with planted attack paths and mixed id shapes | `utils/kg_builder/synthetic/generator.py`, `spec.py`, `paths.py` |
 | **Generator tests** | Conformance (every edge matches a declared triple), determinism (same seed → byte-identical), count bands, planted-path presence | `utils/kg_builder/synthetic/tests/test_generator.py` |
-| Identity source card + overlay | Derived schema half plus hand-authored connection / safety / provenance / entity descriptions | `data-identity/source_cards/identity.json`, `overlays/identity.overlay.json` |
+| Identity source card + overlay | Derived schema half plus hand-authored connection / safety / provenance / entity descriptions | `data/identity/source_cards/identity.json`, `overlays/identity.overlay.json` |
 | Separation script | Proves the ATT&CK and CAPEC stores are untouched by the identity load | `scripts/identity_separation.py` |
 | Spec-derived gold bank | Gold computed from the generator blueprint, never by querying the loaded graph | `utils/specialists/evalset/identity_gold.py` |
 | **Gold cross-check tests** | Spec-derived gold agrees with a direct graph read on a sampled subset; disagreement fails loudly | `utils/specialists/evalset/tests/test_identity_gold.py` |

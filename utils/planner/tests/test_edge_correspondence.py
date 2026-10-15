@@ -34,7 +34,7 @@ from utils.planner.edge_correspondence import (
 )
 
 REPO = Path(__file__).resolve().parents[3]
-_IDENTITY_CARD = REPO / "data-identity" / "source_cards" / "identity.json"
+_IDENTITY_CARD = REPO / "data" / "identity" / "source_cards" / "identity.json"
 requires_identity_card = pytest.mark.skipif(
     not _IDENTITY_CARD.is_file(), reason="identity source card not built"
 )

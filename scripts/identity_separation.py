@@ -35,7 +35,7 @@ REPO_ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(REPO_ROOT))
 
 DEFAULT_DATA_DIR = "data"
-IDENTITY_DATA_DIR = "data-identity"
+IDENTITY_DATA_DIR = "data/identity"
 ATTACK_EXPECTED_NODES = 4369
 
 _results: list[tuple[bool, str]] = []
@@ -87,7 +87,7 @@ def main() -> int:
     #    a separation check that only ever says "absent" would also pass if the
     #    dataset had never been built.
     identity_datasets = set(discover_datasets(IDENTITY_DATA_DIR))
-    check("identity IS discoverable under data-identity/",
+    check("identity IS discoverable under data/identity/",
           "identity" in identity_datasets, f"got {sorted(identity_datasets)}")
 
     # 8. And its schema is declared, not observed.

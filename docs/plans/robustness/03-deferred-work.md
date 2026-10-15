@@ -117,7 +117,7 @@ looks right and is not.
 
 ### 3.1 Judge consolidation — the design half
 
-Plan 01 does **not** include this. Porting `scratchpad/judge_untruncated.mjs`
+Plan 01 does **not** include this. Porting `scripts/judging/judge_untruncated.mjs`
 into `utils/evaluation/independent_judge/` is mostly mechanical, but three parts
 are not:
 

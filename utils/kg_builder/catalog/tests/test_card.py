@@ -22,7 +22,7 @@ from utils.kg_builder.catalog.card import (
 )
 
 REPO_ROOT = Path(__file__).resolve().parents[4]
-OVERLAY = REPO_ROOT / "data-identity/source_cards/overlays/identity.overlay.json"
+OVERLAY = REPO_ROOT / "data/identity/source_cards/overlays/identity.overlay.json"
 
 NODE_CSV = """node_type,attribute_name,value_type
 USER,user.name,STRING
@@ -44,7 +44,7 @@ def catalog(tmp_path: Path):
 
 class TestCardAssembly:
     def test_generated_half_comes_from_the_catalog(self, catalog) -> None:
-        card = build_card(catalog, {}, out_dir="data-identity")
+        card = build_card(catalog, {}, out_dir="data/identity")
         assert "USER" in card["node_labels"]
         assert "DC_SYNC" in card["relationship_types"]
         assert card["dataset"] == "identity"
@@ -53,17 +53,17 @@ class TestCardAssembly:
         """The authored half must be able to correct the generated half, not be
         silently overridden by it."""
         card = build_card(
-            catalog, {"runtime_backend": "authored-wins"}, out_dir="data-identity"
+            catalog, {"runtime_backend": "authored-wins"}, out_dir="data/identity"
         )
         assert card["runtime_backend"] == "authored-wins"
 
     def test_underscore_keys_in_the_overlay_are_not_copied(self, catalog) -> None:
         """`_comment` documents the overlay; it is not card content."""
-        card = build_card(catalog, {"_comment": ["notes"]}, out_dir="data-identity")
+        card = build_card(catalog, {"_comment": ["notes"]}, out_dir="data/identity")
         assert "_comment" not in card
 
     def test_declared_endpoints_carry_origin_and_homogeneity(self, catalog) -> None:
-        card = build_card(catalog, {}, out_dir="data-identity")
+        card = build_card(catalog, {}, out_dir="data/identity")
         endpoints = card["identity"]["declared_endpoints"]
         origins = {e["origin"] for e in endpoints}
         assert origins == {"declared", "inferred"}
@@ -72,7 +72,7 @@ class TestCardAssembly:
     def test_labels_with_no_edges_are_marked_not_traversable(self, catalog) -> None:
         """A label that exists but cannot be walked must say so, or a planner
         will route a multi-hop question into a dead end."""
-        card = build_card(catalog, {}, out_dir="data-identity")
+        card = build_card(catalog, {}, out_dir="data/identity")
         assert "DOMAIN" not in card["identity"]["not_traversable"]
 
     def test_examples_come_from_real_instances(self, catalog) -> None:
@@ -83,19 +83,19 @@ class TestCardAssembly:
             {"label": "USER", "properties": {"user.name": "ignored-second"}},
         ]
         card = build_card(
-            catalog, {}, out_dir="data-identity", examples=examples_from_nodes(nodes)
+            catalog, {}, out_dir="data/identity", examples=examples_from_nodes(nodes)
         )
         assert card["node_properties"]["USER"]["user.name"]["example"] == "jsmith0"
 
     def test_the_card_records_that_the_catalog_was_truncated(self, catalog) -> None:
-        card = build_card(catalog, {}, out_dir="data-identity")
+        card = build_card(catalog, {}, out_dir="data/identity")
         assert card["catalog"]["truncated"] is True
         assert card["catalog"]["inferred_triples"] == 3
 
     def test_round_trip_through_disk(self, catalog, tmp_path: Path) -> None:
         import json
 
-        card = build_card(catalog, {}, out_dir="data-identity")
+        card = build_card(catalog, {}, out_dir="data/identity")
         path = write_card(card, tmp_path / "identity.json")
         assert json.loads(path.read_text(encoding="utf-8")) == card
 
@@ -112,7 +112,7 @@ class TestTheAuthoredOverlay:
     @pytest.fixture()
     def real_card(self):
         cat = apply_inferred(read_catalog(name="identity"))
-        return build_card(cat, load_overlay(OVERLAY), out_dir="data-identity")
+        return build_card(cat, load_overlay(OVERLAY), out_dir="data/identity")
 
     def test_every_label_has_a_gloss(self, real_card) -> None:
         missing = set(real_card["node_labels"]) - set(

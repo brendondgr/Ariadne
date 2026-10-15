@@ -44,7 +44,7 @@ from utils.config import load_env  # noqa: E402
 
 load_env()
 
-IDENTITY_DATA_DIR = "data-identity"
+IDENTITY_DATA_DIR = "data/identity"
 IDENTITY_NEO4J_URI = "bolt://localhost:5459"
 
 # The tri-source condition: the SAME bank and the SAME gold, run against a card

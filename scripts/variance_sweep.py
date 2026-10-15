@@ -74,7 +74,7 @@ POPULATIONS: dict[str, dict[str, Any]] = {
         # node count as its own.
         "env": {
             "ORCH_MAX_HOPS": "5",
-            "ARIADNE_DATA_DIR": "data-identity",
+            "ARIADNE_DATA_DIR": "data/identity",
             "NEO4J_URI": "bolt://localhost:5459",
             "ARIADNE_ENDPOINT_IDENTITY": "bolt://localhost:5459",
         },

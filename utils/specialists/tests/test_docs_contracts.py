@@ -201,12 +201,6 @@ def test_every_skill_has_a_pointer_in_every_agent_folder() -> None:
             f"missing={sorted(names - present)} extra={sorted(present - names)}"
         )
 
-    cursor = REPO_ROOT / ".cursor/rules"
-    present = {p.stem for p in cursor.glob("*.mdc")}
-    assert present == names, (
-        ".cursor/rules is out of sync with docs/skills/: "
-        f"missing={sorted(names - present)} extra={sorted(present - names)}"
-    )
 
 
 def test_agent_folders_contain_no_instructions() -> None:
@@ -216,9 +210,9 @@ def test_agent_folders_contain_no_instructions() -> None:
     duplicated instruction set that will drift away from docs/skills/.
     """
     offenders: list[str] = []
-    for folder in (*AGENT_POINTER_DIRS, ".cursor/rules"):
+    for folder in AGENT_POINTER_DIRS:
         for path in (REPO_ROOT / folder).rglob("*"):
-            if not path.is_file() or path.suffix not in {".md", ".mdc"}:
+            if not path.is_file() or path.suffix != ".md":
                 continue
             text = path.read_text(encoding="utf-8")
             rel = path.relative_to(REPO_ROOT)

@@ -51,7 +51,7 @@ OUT_DIR = REPO / "data-tri"
 SOURCES: dict[str, tuple[str, str]] = {
     "attack": ("data", "bolt://localhost:5456"),
     "capec": ("data", "ws://localhost:6455/gremlin"),
-    "identity": ("data-identity", "bolt://localhost:5459"),
+    "identity": ("data/identity", "bolt://localhost:5459"),
 }
 
 

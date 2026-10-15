@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Turn the delivered CSVs into ``declared.json``.
 
-    uv run python -m utils.kg_builder.catalog --out data-identity/catalog/declared.json
+    uv run python -m utils.kg_builder.catalog --out data/identity/catalog/declared.json
 
 Everything downstream reads that one artifact rather than re-parsing CSV, so the
 inferred-edge decision and the truncation finding are made once and travel with
@@ -26,7 +26,7 @@ def main(argv: list[str] | None = None) -> int:
     )
     parser.add_argument(
         "--out",
-        default="data-identity/catalog/declared.json",
+        default="data/identity/catalog/declared.json",
         help="where to write the declared-schema artifact",
     )
     parser.add_argument(
@@ -42,11 +42,11 @@ def main(argv: list[str] | None = None) -> int:
     )
     parser.add_argument(
         "--overlay",
-        default="data-identity/source_cards/overlays/identity.overlay.json",
+        default="data/identity/source_cards/overlays/identity.overlay.json",
     )
     parser.add_argument(
         "--nodes",
-        default="data-identity/graphs/identity/canonical/nodes.jsonl",
+        default="data/identity/graphs/identity/canonical/nodes.jsonl",
         help="generated nodes, read only to fill the card's property examples",
     )
     args = parser.parse_args(argv)

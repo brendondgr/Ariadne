@@ -205,7 +205,7 @@ the bank, and runs Arms A and F, but never writes question text.
 
 ### Step 7 — Judge and score
 
-- **Locations**: `scratchpad/judge_holdout.mjs` (new, derived from
+- **Locations**: `scripts/judging/judge_holdout.mjs` (new, derived from
   `judge_untruncated.mjs`); `docs/evaluation/experiments/holdout-v1/**/*.judgment.json`;
   `docs/evaluation/holdout-v1/results.json` (new).
 - **What**: one independent Sonnet 5 agent per case per arm (60 total), graded
@@ -255,7 +255,7 @@ the bank, and runs Arms A and F, but never writes question text.
 | Bank schema tests | Conformance with the three existing banks | `utils/specialists/tests/test_holdout_bank.py` |
 | Harness `--bank` | Run any bank through the arm runner | `utils/evaluation/experiment_untruncated.py` |
 | Raw run artifacts | Answers + evidence + judgments, both arms | `docs/evaluation/experiments/holdout-v1/` |
-| Judge harness | One Sonnet 5 agent per case | `scratchpad/judge_holdout.mjs` |
+| Judge harness | One Sonnet 5 agent per case | `scripts/judging/judge_holdout.mjs` |
 | Per-question results | Both arms, both federated strata | `docs/evaluation/holdout-v1/results.json` |
 | Write-up | Wilson intervals, per-category, strata, discards, limitation | `docs/evaluation/holdout-v1/README.md` |
 | Research record | Protocol, results, manifest, claim linkage | `docs/research/experiments/EXP-2026-08-NNN-blind-holdout-v1/` |

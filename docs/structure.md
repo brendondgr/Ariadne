@@ -30,15 +30,15 @@ in [`commands.md`](commands.md); what each number means is in
 | `langgraph.json` | LangGraph Studio entry (`langgraph dev` → `utils/orchestration/studio.py`) |
 | `pyproject.toml`, `uv.lock`, `.python-version` | Python 3.13 project, managed with `uv` |
 | `api/` | FastAPI service wrapping `utils/` for the web UI |
-| `data/` | Raw downloads, canonical artifacts, exports, source cards (mostly gitignored); `data-identity/`, `data-merged/`, `data-tri/` are experiment fixtures |
+| `data/` | Raw downloads, canonical artifacts, exports, source cards (mostly gitignored); `data/identity/` holds the identity-graph experiment (EXP-2026-08-011, which cites its pre-2026-10-15 path `data-identity/`); `data-merged/` and `data-tri/` are local, regenerable experiment fixtures |
 | `docker/` | Neo4j + Gremlin Compose stack, plus the `neo4j-merged` and `neo4j-identity` experiment profiles |
 | `docs/` | Documentation, research record, skills, plans, prompts, pitch material |
 | `images/` | Logos, the README banner, and the workbench screenshot |
 | `logs/` | Sequential job logs written by `main.py` (gitignored) |
-| `scripts/` | 83 one-off research scripts (`*.py`, `*.sh`): experiment drivers, overnight sweeps, report generators, `verify_paper_numbers.py`, `validate_research.py`, `new_experiment.py` |
+| `scripts/` | 83 one-off research scripts (`*.py`, `*.sh`): experiment drivers, overnight sweeps, report generators, `verify_paper_numbers.py`, `validate_research.py`, `new_experiment.py`; `scripts/judging/` holds the model-judge workflow scripts (formerly a top-level `scratchpad/`) |
 | `utils/` | All Python code, by domain (below) |
 | `web/` | Analyst workbench UI (Next.js App Router) |
-| `.claude/`, `.agents/`, `.cursor/` | Agent tool folders — **pointers only**; canonical instructions live under `docs/skills/` |
+| `.claude/`, `.agents/` | Agent tool folders — **pointers only**; canonical instructions live under `docs/skills/` |
 
 ## `docs/`
 

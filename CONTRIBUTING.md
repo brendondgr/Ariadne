@@ -71,8 +71,8 @@ The pre-commit hook fails on all of these, so it is cheaper to know them:
 3. **Web changes require `npm run build`** to verify compilation.
    Prose that quotes a number requires `make check-docs` (and
    `docs/research/CURRENT.md` read first).
-4. **Never duplicate agent instructions** outside `docs/skills/`. The `.claude/`,
-   `.agents/`, and `.cursor/` folders are pointers only.
+4. **Never duplicate agent instructions** outside `docs/skills/`. The `.claude/` and
+   `.agents/` folders are pointers only.
 5. Leave a branch merged and the tree clean when everything is functional.
 
 ## Tests

@@ -33,7 +33,7 @@ Ariadne is a **federated agentic graph-database access prototype** for cybersecu
 | Synthesis | `utils/synthesis/` | Claims-with-citations composer (always deterministic) + unconditional verifier; the LLM seam rewrites narrative prose only |
 | Evaluation | `utils/evaluation/`, `utils/specialists/evalset/` | Component + end-to-end scorers, the 120-question golden catalogue, the golden-eval harness |
 
-Supported agents: Claude Code (`.claude/skills/`), OpenAI Codex (`.agents/skills/`), Cursor (`.cursor/rules/`). Agent folders are pointers only — never duplicate instructions outside `docs/skills/`.
+Supported agents: Claude Code (`.claude/skills/`), OpenAI Codex (`.agents/skills/`). Agent folders are pointers only — never duplicate instructions outside `docs/skills/`.
 
 ## Operational Rules
 
@@ -133,7 +133,7 @@ One JSON object per line in `docs/changelog.jsonl`:
 
 Implementation plans go in `docs/plans/` when needed.
 
-Every skill listed above has exactly one pointer in each of `.claude/skills/`,
-`.agents/skills/`, and `.cursor/rules/`, and the pointers contain no
+Every skill listed above has exactly one pointer in each of `.claude/skills/`
+and `.agents/skills/`, and the pointers contain no
 instructions of their own. Parity is enforced by
 `utils/specialists/tests/test_docs_contracts.py`.

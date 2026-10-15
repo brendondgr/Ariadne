@@ -24,8 +24,8 @@
 >    (`INDEX.md`), nor to an in-progress experiment.
 > 3. **The agent instruction file** named in §6 is
 >    `docs/skills/global-project-rules/SKILL.md`. This repository has no root
->    `CLAUDE.md` or `AGENTS.md` by design — `.claude/`, `.agents/`, and
->    `.cursor/` are pointer folders and must never carry instructions of their
+>    `CLAUDE.md` or `AGENTS.md` by design — `.claude/` and `.agents/`
+>    are pointer folders and must never carry instructions of their
 >    own.
 
 **Audience:** an AI coding agent (Claude Code, Cursor, Codex, etc.) operating inside an existing research repository.

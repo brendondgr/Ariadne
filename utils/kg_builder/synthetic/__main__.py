@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Write the synthetic tenant and its blueprint as canonical artifacts.
 
-    uv run python -m utils.kg_builder.synthetic --seed 20260821 --out data-identity
+    uv run python -m utils.kg_builder.synthetic --seed 20260821 --out data/identity
 
 Produces the same shapes the ATT&CK and CAPEC builds produce -- ``nodes.jsonl``,
 ``relationships.jsonl``, ``schema.json``, ``manifest.json`` -- plus ``spec.json``,
@@ -82,7 +82,7 @@ def _schema_json(catalog: DeclaredCatalog, nodes: list[dict]) -> dict:
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     parser.add_argument("--seed", type=int, default=20260821)
-    parser.add_argument("--out", default="data-identity")
+    parser.add_argument("--out", default="data/identity")
     parser.add_argument("--catalog-dir", default=None)
     parser.add_argument("--dataset", default="identity")
     args = parser.parse_args(argv)

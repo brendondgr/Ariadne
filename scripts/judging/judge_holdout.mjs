@@ -4,7 +4,7 @@ export const meta = {
   phases: [{ title: 'Grade', detail: 'one Sonnet agent per case, graded vs gold + full evidence' }],
 }
 
-// Derived from scratchpad/judge_untruncated.mjs, which graded the 120-question
+// Derived from scripts/judging/judge_untruncated.mjs, which graded the 120-question
 // arms. Two differences, both required by plan 02 §2.4: the abstention-expected
 // federated cases are graded on ABSTENTION BEHAVIOUR rather than answer
 // correctness, and the two strata are kept apart in the roll-up so they are
