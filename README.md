@@ -55,5 +55,20 @@ Every command and flag is in [`docs/commands.md`](docs/commands.md).
 
 - How each stage works: [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md)
 - Research results and how to reproduce them: [`docs/RESULTS.md`](docs/RESULTS.md)
-- Code is licensed under [Apache 2.0](LICENSE). MITRE ATT&CK® and CAPEC™ data carry their own terms of use, given in [`NOTICE`](NOTICE); Ariadne is not affiliated with or endorsed by The MITRE Corporation.
-- Developed at Florida State University (PI: Olmo S. Zavala Romero) with funding from the ReliaQuest Innovation Challenge Fund.
+
+## Team & Funding
+
+Ariadne was developed at **Florida State University**, Department of Scientific Computing.
+
+| Role | Person |
+|------|--------|
+| Principal Investigator | Olmo S. Zavala Romero — Assistant Professor, FSU Department of Scientific Computing |
+| Graduate Research Assistant / technical lead | Brendon DGR — implementation, evaluation, documentation |
+
+**Funded by** the [ReliaQuest](https://www.reliaquest.com/) Innovation Challenge Fund — Challenge Three: Knowledge Graph Integration (award period June 8 – October 23, 2026).
+
+## License
+
+The source code is licensed under the **Apache License 2.0**: you may use, modify, and redistribute it, including commercially, provided you keep the copyright and licence notices (including [`NOTICE`](NOTICE)) and mark the files you change. It also grants a patent licence from contributors and comes with no warranty. The full text is in [`LICENSE`](LICENSE).
+
+The data Ariadne is built on is **not** covered by that licence. MITRE ATT&CK® and MITRE CAPEC™ are used under The MITRE Corporation's own terms of use; Ariadne downloads them at setup time and does not redistribute either dataset. The required attribution, the terms, and the exact dataset versions are in [`NOTICE`](NOTICE). Ariadne is not affiliated with or endorsed by The MITRE Corporation.
