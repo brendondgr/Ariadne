@@ -43,6 +43,7 @@ EXPERIMENTS = REPO / "docs/research/experiments"
 #: RESULTS.md legitimately carries the numbers it later withdrew.
 PROSE_DOCS = (
     "README.md",
+    "docs/RESULTS.md",
     "docs/research/CLAIMS.md",
     "docs/research/OPEN_QUESTIONS.md",
     # DECISIONS.md is a dated, append-only ADR log: an entry legitimately quotes

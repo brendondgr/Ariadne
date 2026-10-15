@@ -12,36 +12,30 @@ Ariadne answers a security analyst's question across live cybersecurity knowledg
 
 Adversary-technique, attack-pattern, and mitigation graphs sit on different engines with different schemas, so correlating them usually means manual lookups or an offline merge into one store. Ariadne instead reads each source's schema at query time and routes natively per engine — Cypher to Neo4j, Gremlin to a Neptune-style server — reconciling results on shared identifiers (ATT&CK technique IDs, CAPEC IDs) rather than on a shared index. There is **no vector index or embedding store** over the graph data. When a question falls outside a source's declared schema the system abstains and shows the query it ran. The name is the thread through the labyrinth.
 
-If you want to **use** it, start at [Quick Start](#quick-start). If you want to **reproduce the measurements**, start at [Reproducing the Results](#reproducing-the-results).
+<p align="center">
+  <img src="images/workbench.png" width="100%"
+       alt="The Ariadne analyst workbench in dark mode. A chat view shows the question 'Which ATT&CK techniques does CAPEC-593 (Session Hijacking) map to, and what mitigations apply to those techniques?' and a deterministic answer listing techniques T1185, T1550.001 and T1563 with their mitigations, each identifier linked. An inspector panel on the right traces the pipeline stages — probe live sources, draft plan, plan gate, emit plan — and the Gremlin specialist that queried CAPEC. Status chips show Neo4j and Gremlin live." />
+</p>
+<p align="center"><sub>The analyst workbench answering a question that spans both graphs: CAPEC from Gremlin, ATT&CK from Neo4j, joined on technique IDs. The inspector traces every stage. No language model was running — the answer is composed deterministically.</sub></p>
 
-**Contents** — [Research Record](#research-record) · [What Actually Runs](#what-actually-runs) · [Demo](#demo) · [Quick Start](#quick-start) · [Configuration](#configuration) · [Architecture](#architecture) · [Key Features](#key-features) · [Results](#results) · [Reproducing the Results](#reproducing-the-results) · [Data](#data) · [Challenges & Design Decisions](#challenges--design-decisions) · [Status](#status) · [Documentation](#documentation) · [Repository Layout](#repository-layout) · [Roadmap](#roadmap) · [Team & Funding](#team--funding) · [Contributing](#contributing) · [Citation](#citation) · [License](#license)
+**Contents** — [How It Works](#how-it-works) · [Quick Start](#quick-start) · [Configuration](#configuration) · [Key Features](#key-features) · [Tech Stack](#tech-stack) · [Repository Layout](#repository-layout) · [Design Decisions](#design-decisions) · [Documentation](#documentation) · [Research](#research) · [Data & License](#data)
 
-## Research Record
-
-This is a research repository. All experiments, results, figures, and findings
-live in [`docs/research/`](docs/research/). Nothing that will appear in a paper
-is recorded anywhere else. Before running an experiment, read
-[`docs/research/AGENT_INSTRUCTIONS.md`](docs/research/AGENT_INSTRUCTIONS.md).
+## How It Works
 
 <p align="center">
   <img src="docs/assets/architecture.svg" alt="Ariadne federated query flow: an analyst question is planned into source-assigned sub-questions and graded by a deterministic gate, retrieved by per-source Cypher and Gremlin specialists over Neo4j and TinkerPop in an assess-and-re-plan loop, joined on shared identifiers, then composed, verified, and narrated into an answer or an abstention" width="100%">
 </p>
 
-## What Actually Runs
+A question passes through four stages, each its own independently testable component:
 
-Ariadne is **deterministic by default, with LLM seams that are opt-in and individually backstopped**. This is a design decision the project's own evaluation supports (see [Results](#results)), and the table below names each seam and its default in the detail the diagram above only labels:
+1. **Plan.** The planner reads each source's *source card* — connection details, schema, provenance fields, safety limits — classifies the question against a closed intent taxonomy, and emits a machine-readable plan: which sources to ask, the sub-question for each, and the shared identifiers to join on. A deterministic gate rejects any plan that does not validate against the cards before a single query runs.
+2. **Query each engine in its own language.** A Cypher specialist queries Neo4j and a Gremlin specialist queries a Neptune-style TinkerPop server. Each builds a read-only, bounded query, checks it against the card's declared labels, row cap and traversal depth, and returns normalized records that carry their provenance. An assess step checks whether the evidence closes the plan's joins and re-plans when it does not.
+3. **Join on shared identifiers.** Results are reconciled on IDs the sources already share — ATT&CK technique IDs, CAPEC IDs — rather than through a merged store or an embedding index.
+4. **Compose and verify.** Claims are composed from the evidence and every one is checked by a verifier: anything uncited or unsupported is cut. When nothing survives, Ariadne abstains and shows the query it ran instead of guessing.
 
-| Stage | Default behavior | LLM seam |
-|---|---|---|
-| **Planning** | Deterministic drafter: intent classified by a closed regex taxonomy, sources and entities matched against schema labels from the source cards, plan checked by a deterministic self-eval gate ([`utils/planner/`](utils/planner/)) | `ARIADNE_LLM_ENABLED` (default `false`) swaps in an LLM drafter, always backstopped by the deterministic one; `--plan-llm` / `--query-llm` enable it per invocation |
-| **Question rewriting** | **A model may canonicalise the question before planning — but only when the question cites no identifier, and it may never choose the entity.** `ARIADNE_REWRITE` + `ARIADNE_REWRITE_MODEL` + `ARIADNE_REWRITE_ONLY_WITHOUT_ID` + `ARIADNE_REWRITE_REQUIRE_RESOLVED_ANCHOR`, shipped on 2026-09-15 ([`D-034`](docs/research/DECISIONS.md), [`D-035`](docs/research/DECISIONS.md)). The stage fills a fixed intent form; the model only ever picks an index out of a candidate list it cannot add to ([`utils/planner/canonical.py`](utils/planner/canonical.py), [`rewrite_llm.py`](utils/planner/rewrite_llm.py)). **Since 2026-09-16 four deterministic mechanisms sit around it** ([`D-037`](docs/research/DECISIONS.md), plan [`2026-09-15-open-question-correctness`](docs/plans/2026-09-15-open-question-correctness.md)): a one-word entity name binds only when the question writes it as a name, so "stolen credentials" no longer anchors on the sub-technique named *Credentials* (`ARIADNE_EXACT_NAME_DISTINCT`, [`EXP-2026-09-023`](docs/research/experiments/EXP-2026-09-023-anchor-hygiene-and-q59/)); a relation template with no anchor abstains instead of scanning the catalogue (`ARIADNE_UNANCHORED_RELATION_ABSTAINS`); an entity's name is looked up across every source **before** a dataset is chosen, with the router as the tie-break (`ARIADNE_ANCHOR_BEFORE_ROUTING`, Q59); and the bound form is executed as a plan rather than rendered to English and parsed again (`ARIADNE_FORM_EXECUTE`, [`EXP-2026-09-025`](docs/research/experiments/EXP-2026-09-025-direct-form-execution/)). Measured together against the 2026-09-15 tree on the exposed bank: questions that name an entity without its identifier go **0.3267 → 0.3762** `records_exact` and 0.6223 → 0.7042 recall, every catalogue dump on every tier is gone, wrong-entity falls at T3 and T6 answers nothing wrong; questions that keep the identifier are **byte-identical**. On the sealed, entity-held-out bank the same tier goes 0.6500 → 0.7000. Paraphrased and description-only questions still answer nothing by default: the reranked, disclosed acceptance that would answer them was measured at a wrong-entity rate of 0.35 on the exposed bank and is kept off ([`D-038`](docs/research/DECISIONS.md), [`EXP-2026-09-028`](docs/research/experiments/EXP-2026-09-028-disclosed-anchor-acceptance/)) | The model rung is the seam; `ARIADNE_REWRITE_MODEL=0` keeps the deterministic fill alone, and `ARIADNE_REWRITE=0` restores the pre-2026-09-15 behaviour byte-for-byte. Every 2026-09-16 mechanism is one flag, default off in code |
-| **Query construction** | **Deterministic on every shipped path.** An if-cascade over **29 distinct query-template identifiers** (20 in the Cypher builder, 14 in the Gremlin builder, 5 shared), of which **20 are exercised by the 120-question bank**; `ambiguous-name` and `unanchored` are refusal outcomes rather than queries. Derived on 2026-09-09 and recorded in [`EXP-2026-07-011`](docs/research/experiments/EXP-2026-07-011-portability-audit/) A-1. Each is validated against the source card before execution ([`utils/specialists/cypher/builder.py`](utils/specialists/cypher/builder.py), [`gremlin/builder.py`](utils/specialists/gremlin/builder.py)). Counts derived mechanically by [`docs/plans/robustness/_overnight/derive_templates.py`](docs/plans/robustness/_overnight/derive_templates.py), not read off prose | **Off by default, and it exists only as a baseline.** `SPECIALIST_LLM_QUERY_BUILDER` (default `false`) hands a model the schema and lets it write the Cypher or Gremlin itself ([`utils/specialists/llm_builder.py`](utils/specialists/llm_builder.py)). It was built to be measured against, not to be run: it scores **0.5000** where the template cascade scores **0.9467** on the same unseen questions |
-| **Retrieval loop** | `assess → re-plan → specialists`, capped at `ORCH_MAX_HOPS` — **code default 5, and the committed `.env` now ships `5` as well.** It pinned `1` until 2026-09-14, which made the loop inert on a default local run while every recorded figure was produced at `5` — so the committed default described no measured configuration ([`EXP-2026-09-020`](docs/research/experiments/EXP-2026-09-020-plan-source-crossed/)). Deterministic sufficiency judge over join closure ([`utils/orchestration/`](utils/orchestration/)) | `ORCH_ASSESS_MODE=llm` selects a "what's missing" critic, but nothing injects one today ([`utils/orchestration/main.py`](utils/orchestration/main.py) builds the assess node with no `critic=`), so the mode degrades to the deterministic judge and records the fallback; `ORCH_CHASE_FACETS` (default off) extends the frontier to un-fetched facets |
-| **Synthesis** | **Claims are composed deterministically on every shipped path** and every one is checked against the retrieved evidence by an unconditional verifier — uncited or ungrounded claims are cut, honest empties become abstentions carrying the executed query as proof ([`utils/synthesis/`](utils/synthesis/)) | `ARIADNE_LLM_ENABLED` (default `false`) lets an LLM rewrite the **narrative prose** over the already-verified claims; it cannot add a claim. In the workbench this is the **"Plain prose" toggle**, per question and off by default, and it is deliberately *separate* from the drafter toggle: `drafter: "llm"` sets the planner, specialist and synthesis seams together, so asking for readable prose through it also hands query construction to a model. The answer records `narrative_source` so a reader can see which wrote the sentence. This seam is the one measured not to change a fact — 284/284 claims byte-identical to the model-free control, zero changes to identifiers, citations or verdicts, +0.0000 retrieval coverage ([`EXP-2026-09-019`](docs/research/experiments/EXP-2026-09-019-small-model-generic/) Step 3) — at roughly 1,340× the deterministic composer's wall time. `SYNTHESIS_LLM_CLAIMS` (default `false`) lets a model *propose* claims — kept as an instrument, never as a default, because it is 67× slower and loses 0.1367 of grounding. It is the only configuration in which the verifier's gates have anything to cut |
+The whole flow is one LangGraph `StateGraph` ([`utils/orchestration/`](utils/orchestration/)), shared by the CLI and the web API. Stage-by-stage detail with the settings each stage reads is in [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md); the four component contracts are in [`docs/agent-interfaces.md`](docs/agent-interfaces.md).
 
-Every LLM-off path is byte-reproducible, which is what makes the committed evaluation reports citable.
-
-## Demo
+### What an answer looks like
 
 A federated question, the plan it produced, the query one specialist ran, and the answer. The
 question, plan, Gremlin query, headline, and narrative are quoted from a committed evaluation
@@ -71,10 +65,20 @@ answer  Gathered 4 record(s) from 2 source(s); 3 cross-source correlation(s) on 
         Policies (M1027), and Network Segmentation (M1030). [...]
 
 claims  5, each carrying its source and primary id
-```
 
-<!-- TODO: add a workbench screenshot (chat view and graph explorer) to images/ and
-     reference it here; no screenshot exists in the repo today. -->
+### Deterministic by default, models optional
+
+Every stage has a deterministic path, and a language model is never required. A model can be switched on at specific points, one flag each, and whichever path runs, the verifier still checks every claim against the retrieved evidence:
+
+| Stage | Without a model | With a model (opt-in) |
+|---|---|---|
+| **Planning** | Deterministic drafter over a closed intent taxonomy, checked by the plan gate ([`utils/planner/`](utils/planner/)) | `ARIADNE_LLM_ENABLED` or `--query-llm` swaps in an LLM drafter; the deterministic drafter stays as the backstop |
+| **Question rewriting** | The question is canonicalised into a fixed intent form | `ARIADNE_REWRITE_MODEL` lets a model pick an entity from a candidate list it cannot add to, only when the question cites no identifier. `.env.example` ships this one on |
+| **Query construction** | Read-only templates and schema-derived builders, validated against the source card ([`cypher/`](utils/specialists/cypher/), [`gremlin/`](utils/specialists/gremlin/)) | `SPECIALIST_LLM_QUERY_BUILDER` lets a model write the query; it exists as an evaluation baseline, not a mode to run |
+| **Retrieval loop** | Deterministic sufficiency check over join closure, up to `ORCH_MAX_HOPS` rounds | — |
+| **Synthesis** | Claims composed from the evidence and verified ([`utils/synthesis/`](utils/synthesis/)) | The workbench's **Plain prose** toggle lets a model rewrite the narrative over the already-verified claims; it cannot add one, and the answer records which wrote the sentence |
+
+Every model-free path is byte-reproducible. The full seam-by-seam account, with every flag, is in [`docs/RESULTS.md`](docs/RESULTS.md#what-actually-runs).
 
 ## Quick Start
 
@@ -103,7 +107,7 @@ It then prints the copy-paste commands below and launches the workbench at `http
 | [uv](https://docs.astral.sh/uv/) | latest | Python env + dependency manager (the wizard offers to install it) |
 | Docker | Engine + Compose v2 | Runs the pinned local Neo4j + Gremlin stack |
 | Node.js | 18.18+ | Builds and serves the analyst web workbench |
-| OpenAI-compatible LLM server | *optional* | e.g. vLLM / LM Studio / llama.cpp / Ollama at `http://localhost:9090/v1`. Without one, the pipeline runs fully deterministically — and, per the evaluation below, slightly more accurately. |
+| OpenAI-compatible LLM server | *optional* | e.g. vLLM / LM Studio / llama.cpp / Ollama at `http://localhost:9090/v1`. Without one, the pipeline runs fully deterministically. |
 
 ### Everyday commands
 
@@ -161,30 +165,23 @@ The keys that matter most:
 | `ARIADNE_DATA_DIR` | `data` | Root for raw downloads, processed pairs, and graph artifacts |
 | `ARIADNE_LLM_ENABLED` | `false` | Master switch for the optional LLM seams: the planner drafter and the narrator over verified claims |
 | `ARIADNE_LLM_BASE_URL` · `ARIADNE_LLM_MODEL` | `http://localhost:9090/v1` · `default-model` | The OpenAI-compatible endpoint and the model name it serves |
-| `ORCH_MAX_HOPS` | `1` in `.env.example`, **`5` in code** | Cap on `assess → re-plan → specialists` iterations. At `1` the loop is inert. Set it explicitly, so what you ran is recorded |
+| `ORCH_MAX_HOPS` | `5` | Cap on `assess → re-plan → specialists` rounds. At `1` the loop is a single pass |
 | `PIPELINE_TIMEOUT_S` | `120` | Wall-clock ceiling for one question |
 
-The other 28 keys — the model budgets, the two LLM baselines, the conversation layer, the
+The remaining keys — the model budgets, the two LLM baselines, the conversation layer, the
 merged-graph ports — are documented in [`.env.example`](.env.example) beside the code path that
 reads each one. Repository navigation map: [`docs/structure.md`](docs/structure.md).
 
-## Architecture
+## Key Features
 
-Four components, each independently testable:
+- **Plan-first routing** — the planner emits a structured, machine-checkable plan before any specialist runs a query, and a deterministic gate rejects plans that do not validate against the source cards.
+- **Bounded, validated queries** — every query is read-only and gated against the card's declared labels, relationship types, row cap, and traversal depth; a task naming an entity the card does not model returns an honest empty with a `boundary` trace rather than an answer to a different question.
+- **Verified answers, not generated ones** — claims are composed from the evidence and checked by an unconditional verifier; unsupported claims are cut and kept visible, and abstentions carry the executed query as proof.
+- **Analyst web workbench** — a chat view that streams the live plan → query → evidence → answer pipeline with persisted, memory-aware conversations; a graph explorer that renders either store's nodes and edges with search and type filters; and an evaluation view over the committed reports.
+- **Reproducible graph artifacts** — a canonical → export → runtime layering, sha256-pinned to the raw source, with a fixture-QA harness that reconciles raw == manifest == live before any agent queries it.
+- **A pipeline and launcher that check themselves** — `--yolo-all` classifies each failure as stale-state, transient, or needs-human and rebuilds or retries instead of dying on the first error; `uv run app.py` preflights the toolchain, ports, source cards, both graph backends and the LLM endpoint, then streams a smoke query over the same contract the UI uses.
 
-| # | Component | Role |
-|---|-----------|------|
-| 1 | **Data & schema layer** | Per-source cards (connection details, schema, provenance fields, safety limits) plus reproducible ATT&CK and CAPEC fixtures, sha256-pinned against the raw source snapshot. |
-| 2 | **Federated planning agent** | Reads the source cards, classifies analyst intent against a closed taxonomy, and emits a machine-readable plan (target sources, sub-questions, join keys, traversal limits) rather than routing by free-text guess. |
-| 3 | **Source-specific query specialists** | A Cypher specialist (Neo4j) and a Gremlin specialist (bounded traversals). Each compiles a read-only template, validates it against the source card, enforces the card's safety limits, and returns normalized, evidence-linked records. |
-| 4 | **Synthesis & reporting agent** | Reconciles partial evidence across sources by joining on shared IDs, flags conflicts, and assembles the answer as verified claims-with-citations — every claim checked against the evidence, unsupported claims cut, honest empties turned into abstentions with the executed query as proof. |
-
-**Example flow** — *"Which CAPEC patterns related to credential theft map to ATT&CK techniques, and what mitigations appear for those techniques?"*
-The planner emits a CAPEC sub-task and an ATT&CK sub-task → the **Gremlin** specialist finds CAPEC-560/565 mapping to T1555 → the **Cypher** specialist retrieves T1555's mitigations (M1026, M1027) → the synthesis agent joins on the ATT&CK ID and returns a provenance-linked answer.
-
-Full component contracts: [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) (every stage, with the env vars it reads) and [`docs/agent-interfaces.md`](docs/agent-interfaces.md) (the four frozen seams).
-
-### Tech Stack
+## Tech Stack
 
 | Layer | Technology |
 |-------|------------|
@@ -194,175 +191,6 @@ Full component contracts: [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) (every 
 | API | **FastAPI** — thin layer wrapping the Python packages for the web workbench. |
 | Frontend | **Next.js / React** (`react-force-graph-2d`) — analyst-facing graph explorer UI. |
 | Infrastructure | **Docker Compose** — pinned local Neo4j + Gremlin stack. |
-
-## Key Features
-
-- **Plan-first routing** — the planner emits a structured, machine-checkable plan before any specialist runs a query, and a deterministic gate rejects plans that do not validate against the source cards.
-- **Bounded, validated queries** — every query is a read-only template gated against the card's declared labels, relationship types, row cap, and traversal depth; a task naming an entity the card does not model returns an honest empty with a `boundary` trace rather than an answer to a different question.
-- **Verified answers, not generated ones** — claims are composed from the evidence and checked by an unconditional verifier, unsupported claims are cut and kept visible, and abstentions carry the executed query as proof.
-- **Reproducible graph artifacts** — a canonical → export → runtime layering, sha256-pinned to the raw source, with a fixture-QA harness that reconciles raw == manifest == live before any agent queries it.
-- **Self-healing pipeline runner** (`--yolo-all`) — classifies each failure as stale-state, transient, or needs-human, and rebuilds or retries instead of dying on the first error.
-- **Memory-inclusive chat threads** — persisted conversations in a date-grouped sidebar, cross-turn memory so a follow-up resolves against prior turns, and a router that answers from memory when it can and re-queries the graphs when it must, with the grounded Answer Card under every reply.
-- **Analyst web workbench** — three surfaces: a chat view streaming the live plan → query → evidence → answer pipeline, a graph explorer that renders either store's nodes and edges on canvas with search and type filters, and an evaluation view that renders the committed reports and can re-run the end-to-end evaluation.
-- **A launcher that proves the stack** — `uv run app.py` preflights the toolchain, ports, source cards, both graph backends, the LLM endpoint, and a compile of the LangGraph super-graph, then streams a smoke query over the same SSE contract the UI uses.
-
-## Results
-
-> **Quote from [`docs/research/CURRENT.md`](docs/research/CURRENT.md), not from this section.**
-> The record holds every experiment ([`INDEX.md`](docs/research/INDEX.md)), the
-> claims ledger with statuses ([`CLAIMS.md`](docs/research/CLAIMS.md)), and every
-> figure the record has withdrawn together with its replacement. This section is a
-> hand-written summary; `make check-docs` fails the commit if it quotes a figure
-> the record has retracted.
-
-**Three controlled comparisons, none of which a system that generates its queries with a language model could make cleanly.** All judged figures below name their grader; question sets are the 284-question development half and the 288-question sealed holdout of a bank built to cover every question shape the sources support.
-
-| Comparison | Current figure | Record |
-|---|---|---|
-| **Hand-written templates vs schema-derived construction** (the primary result) | The template-free path wins, and after the 2026-09 repair it wins by more: **0.9005 vs 0.5525** on 282 questions sealed before use and never graded before (gap **0.3480**, `qwen38-27B-v2`, both counterbalanced positions, zero fabricated mappings on either arm). A second 288-question bank reproduces it at 0.8987 vs 0.5443 — within 0.003 on disjoint sets. The earlier pre-repair reading of this comparison was 0.6569 vs 0.4946. The template path is only 0.01 s/answer faster. **This comparison holds the retrieval plan fixed**, and [`EXP-2026-09-020`](docs/research/experiments/EXP-2026-09-020-plan-source-crossed/) shows it does not transfer to the planner the workbench actually runs — see the row below | [`EXP-2026-09-018`](docs/research/experiments/EXP-2026-09-018-correctness-repair/), [`EXP-2026-09-005`](docs/research/experiments/EXP-2026-09-005-post-repair-arm-comparison/), [`EXP-2026-09-007`](docs/research/experiments/EXP-2026-09-007-holdout-spend/) |
-| **Templates vs a language model writing the queries** | Templates ahead: **+0.1147** [+0.0653, +0.1645] on the development half and **+0.0822** [+0.0362, +0.1308] on the holdout under one grader family; positive but not significant under the second (+0.0696 [−0.0024, +0.1450]; +0.0643 [−0.0080, +0.1333]). The model-written arm is stable across seeds (sd 0.0089) | [`EXP-2026-09-007`](docs/research/experiments/EXP-2026-09-007-holdout-spend/), [`EXP-2026-09-006`](docs/research/experiments/EXP-2026-09-006-cross-family-august-regrade/), [`EXP-2026-09-009`](docs/research/experiments/EXP-2026-09-009-llm-query-seeded-repeats/) |
-| **Federating two stores vs merging both catalogues into one** | No demonstrable accuracy difference: merged minus federated **−0.0587** and **−0.0520** over eight named grading passes, inside the ±0.06 sampling floor at n=30, and the same under a second grader family. The case for federation is structural: merging required rewriting **1,083 of 9,138 nodes**; federation rewrote none, and a third live source loaded unmodified beside both catalogues | [`EXP-2026-08-009`](docs/research/experiments/EXP-2026-08-009-merged-graph-counterfactual/), [`EXP-2026-08-017`](docs/research/experiments/EXP-2026-08-017-federation-isolation/), [`EXP-2026-08-013`](docs/research/experiments/EXP-2026-08-013-tri-source-federation/) |
-| **A model narrating the answer vs no model at all** | No measurable gain, and a large cost. On the sealed set **0.8991 with an LLM narrator against 0.9005 with every seam off** — inside grader noise. The narrator is measurably *faithful*: across 284 answers its claims are byte-identical to the model-free control 284/284, with zero changes to identifiers, citations or verdicts and **+0.0000** on retrieval coverage. What it costs is time — **66.82 s/answer against 0.05 s**, roughly 1,340× | [`EXP-2026-09-018`](docs/research/experiments/EXP-2026-09-018-correctness-repair/), [`EXP-2026-09-019`](docs/research/experiments/EXP-2026-09-019-small-model-generic/) |
-| **Which engine wins where the workbench actually stands** | The deployment question, and the one the row above bounds. Crossing engine × plan source on 284 questions: given an authored plan, primitives lead templates by **+0.2184** (separable); at the real planner that falls to **+0.0261 and is not separable**, with primitives returning nothing on 85 questions against templates' 55. **Interaction −0.1923** — unlike the model seam, these factors interact. The effect changes sign by tier (templates win easy −0.1586 and adversarial −0.1389; primitives win hard +0.0659 and medium +0.1127), so the evidence supports **routing between the two engines, not replacing one** | [`EXP-2026-09-020`](docs/research/experiments/EXP-2026-09-020-plan-source-crossed/) |
-| **An authored retrieval plan vs the system planning for itself** | The one comparison the headline figures do *not* win. Both 0.90 arms replay a human-authored plan; letting the planner produce the decomposition costs **−0.3814** gold coverage (paired, n=284, SE 0.0262). On **77 of 284 questions the planner retrieved nothing where the authored plan retrieved records, and the reverse never happened once.** Worst on chained and cross-catalogue questions (−0.50, −0.55) | [`EXP-2026-09-019`](docs/research/experiments/EXP-2026-09-019-small-model-generic/) |
-
-What the design costs is measured too, and recorded rather than summarized here: co-authorship
-bias between questions written with and without sight of the templates, the vocabulary cliff under
-paraphrase, 240/240 blocked on the safety gate after 15 live bypasses were found and closed, and
-which local graders can resolve a 0.03 difference at all. Against two published external
-benchmarks, scored against an oracle graph read rather than against 1.0, the cascade reaches
-recall 0.7633 against a ceiling of 0.9863.
-
-**The limit that matters most, stated plainly: every headline figure above replays a retrieval
-plan derived from the answer key.** A bank entry is generated from a `spec`, and that one object
-produces three things — the question text, the plan, and the expected answer
-([`spec_bank.py`](utils/specialists/evalset/spec_bank.py) transcribes each plan leg
-straight from `spec.steps`). So replaying it hands the system the traversal that *defines* the
-correct answer. 0.9005 therefore measures something real and separable — **given a correct
-traversal, does the engine execute it and state the results faithfully** — and it is what makes the
-arm comparisons valid, since every arm receives the same plan. It is **not** a figure for answering
-a question, and nothing here may present it as one. The figure for that is the system finding its
-own path: **0.4797**. Closing the gap is the project's critical path, not a footnote to it.
-
-Four further limits carry across all of it: every question is anchored, so open-ended asks are
-unmeasured; the development catalogue was co-authored with the system; no published external
-system has been run as a baseline; and the judge is a model, so every figure names its grader.
-[`CURRENT.md`](docs/research/CURRENT.md) holds each of these with its experiment.
-
-### Earlier measurements
-
-A seven-arm study over a 120-question catalogue was run in July and is kept as history in
-[`docs/evaluation/2026-07-26/`](docs/evaluation/2026-07-26/README.md). It was graded by a model
-that no longer serves the endpoint, on questions co-authored with the templates, and its headline
-finding has since been refuted by the comparisons above. Two of its findings still stand and drove
-the defaults: LLM planning is where the loss concentrates, and binding the narrator to the verified
-claims rather than to raw evidence makes readable prose nearly free.
-
-## Reproducing the Results
-
-The full artifact description — hardware, software, data pins, per-experiment commands, and the
-blockers — is [`docs/research/paper/ARTIFACT_APPENDIX.md`](docs/research/paper/ARTIFACT_APPENDIX.md).
-The short version is below. Every command was read from that appendix and the CLI parsers, and
-each experiment directory under [`docs/research/experiments/`](docs/research/experiments/) carries
-its own `manifest.yaml` with the figures and the artifacts they were computed from.
-
-**1. Prepare the data and both live stores.** Verify the fixtures are non-empty before going on:
-an empty CAPEC fixture returns "no records" rather than failing, which silently invalidates every
-CAPEC and federated result.
-
-```bash
-uv sync
-uv run main.py --docker start
-uv run main.py --download                 # checksum-verified; pins land in data/versions.json
-uv run main.py --build attack && uv run main.py --build capec
-uv run main.py --dataset attack --graph neo4j
-uv run main.py --dataset capec --graph gremlin
-```
-
-**2. Run what reproduces exactly.** These paths call no model and are byte-reproducible. Arm A
-completes in about 1.6 s on a commodity machine; the component and end-to-end deterministic
-metrics reproduce to the digit.
-
-```bash
-uv run main.py --component-eval           # EXP-2026-07-008
-uv run main.py --e2e-eval                 # EXP-2026-07-009, without a judge
-ORCH_MAX_HOPS=5 uv run python -m utils.evaluation.experiment_untruncated \
-  --arm deterministic --root docs/evaluation/experiments/untruncated-fixed --workers 4
-```
-
-Arms are selected with `--arm {deterministic,gold_llm,llm,llm_loop,gold_loop_llm,generic}`, and the
-per-arm environment overlays are in `untruncated_env()` in
-[`utils/evaluation/experiment_untruncated.py`](utils/evaluation/experiment_untruncated.py). Set
-`ORCH_MAX_HOPS` explicitly for any arm that measures the retrieval loop: the committed `.env` pins
-it to `1`, which makes the loop inert.
-
-**3. What cannot be reproduced from this repository.** Every judged correctness figure depends on
-independent grader agents — 120 per arm, 840 across the July study — so re-running the judging
-needs an equivalent judge and will not return identical numbers. The **judgments themselves are
-committed** under [`docs/evaluation/experiments/`](docs/evaluation/experiments/) and hashed in each
-experiment's `data/POINTERS.md`, so the aggregation is reproducible from the artifacts even where
-the grading is not. There is also **no archival DOI**: a clone of this repository is currently the
-only way to obtain the code.
-
-**4. Check the record itself.**
-
-```bash
-make check-record                         # validator, index freshness, and the stale-quote scan
-```
-
-## Data
-
-Ariadne is built on MITRE ATT&CK® and MITRE CAPEC™, used under their respective terms of use.
-`uv run main.py --download` fetches both and checksum-verifies them, writing the pins to
-`data/versions.json`; `--build` turns each into a canonical JSONL + schema + manifest triple that
-is sha256-pinned against the raw snapshot, and the fixture-QA harness reconciles raw == manifest ==
-live before any agent queries it. The snapshots in use are **ATT&CK 19.0** and **CAPEC 3.9**.
-Neither dataset is redistributed in this repository. The merged graph counterfactual required
-rewriting 1,083 of 9,138 nodes; the federated path rewrites none.
-
-Per-dataset provenance is in [`docs/research/datasets/DATASETS.md`](docs/research/datasets/DATASETS.md).
-The required attribution, the licence and disclaimer text, and the exact snapshots with their
-SHA256 pins are in [`NOTICE`](NOTICE). Ariadne is not affiliated with or endorsed by The MITRE
-Corporation.
-
-## Challenges & Design Decisions
-
-**One plan schema, two query languages.** Cypher and Gremlin don't share a traversal model, so the planner can't emit engine-specific queries itself without becoming two planners. It instead emits an engine-agnostic plan (sub-questions, entities, join keys, traversal limits) and pushes engine-specific query construction down into each specialist — keeping the planner swappable and the specialists independently testable. Adding a third query language is documented as four targeted changes in [`docs/migration-guide.md`](docs/migration-guide.md).
-
-**Templates over free generation.** The specialists compile hand-written, card-validated templates instead of letting a model write Cypher or Gremlin. Query validity and safety adherence hold by construction, and a model given the same schema scores 0.5000 against the cascade's 0.9467.
-
-⚠️ **But what the templates buy is not what this section used to claim.** A schema-derived generic path, with every hand-written template disabled, judges *level* with the cascade on ATT&CK and CAPEC and beats it by roughly 0.61 on a schema nobody wrote templates for. The templates hold **precision and provable abstention on the schema they were written for** — which of several schema-valid readings the analyst meant — and that advantage reverses off it. The claim that the templates hold the accuracy (`C-003`) is **refuted** in the project's own ledger and superseded by `C-023`.
-
-**Reproducibility against a live, external data source.** MITRE ATT&CK and CAPEC change over time, but behavior needs to be reproducible for evaluation. The build pipeline pins a sha256 snapshot of the raw source at download time and gates every rebuild on that pin, with a fixture-QA harness that checks raw == manifest == live before anything is loaded — catching schema drift before it reaches an agent instead of after.
-
-## Status
-
-The data layer, the federated planning agent, both query specialists, the verifying synthesis agent, and the end-to-end pipeline integration are complete: one LangGraph `StateGraph` orchestrator ([`utils/orchestration/`](utils/orchestration/), shared by the CLI and the API through `run_pipeline`/`iter_pipeline`) runs plan → dependency-sequenced specialists → assess → verified synthesis with per-stage latency. An analyst web workbench sits on top — chat, graph explorer, and evaluation dashboard.
-
-Component-level evaluation (`--component-eval`) and end-to-end evaluation (`--e2e-eval`) are complete and committed, as is the controlled seven-arm study that produced the July table above. The Wk 14–15 technical documentation set is delivered: source card format ([`docs/source_cards.md`](docs/source_cards.md)), agent interface contracts ([`docs/agent-interfaces.md`](docs/agent-interfaces.md)), the query safety model ([`docs/query-safety.md`](docs/query-safety.md)), and the openCypher/GQL migration guide ([`docs/migration-guide.md`](docs/migration-guide.md), proposal Deliverable #6).
-
-Since then the project has run **38 further experiments** (complete; the record holds 52 in all, six of them superseded) — blind holdouts, both baselines, external validation against two published benchmarks, a third live source with a declared cross-graph bridge, a 240-probe safety audit, and a 699-run paraphrase-robustness study. The record is [`docs/research/INDEX.md`](docs/research/INDEX.md); the current outside assessment is [`docs/research/audit-2026-08-31.md`](docs/research/audit-2026-08-31.md).
-
-The two most recent close in September 2026 and change what the project recommends. [`EXP-2026-09-018`](docs/research/experiments/EXP-2026-09-018-correctness-repair/) repaired five composer defects and measured the result against a concurrent control, a freshly sealed question set, and a regression bank: the schema-derived path reaches **0.9005** with no model anywhere in the answer path, against **0.5525** for hand-written templates, at 0.01 s/answer more. [`EXP-2026-09-019`](docs/research/experiments/EXP-2026-09-019-small-model-generic/) crossed two questions nobody had crossed: a 2B narrator preserves every fact (284/284 claims byte-identical, +0.0000 coverage) but costs ~1,340× in wall time and cannot draft queries at all (0 working drafts of 17), while **letting the planner produce its own decomposition costs −0.3814**. [`EXP-2026-09-020`](docs/research/experiments/EXP-2026-09-020-plan-source-crossed/) then crossed engine against plan source and found the decisive limit on all of it: **at the planner `app.py` actually runs, the engine advantage is +0.0261 and not separable from zero**, and the two factors interact at −0.1923. The primitive path remains what makes the system open-ended — templates cannot take an unanticipated question at all — but it is not a drop-in replacement, and the planner is the largest term in every cell. A four-page reader's summary of all three is [`docs/research/reports/2026-09-14-templates-primitives-and-the-planner.pdf`](docs/research/reports/2026-09-14-templates-primitives-and-the-planner.pdf).
-
-**Known open work**, in priority order, is [`docs/research/OPEN_QUESTIONS.md`](docs/research/OPEN_QUESTIONS.md). The item that now leads the list is the planner gap: every headline figure replays an authored plan, so closing the −0.3814 — or separating how much of it is a worse decomposition from how much is the tighter per-plan bounds the self-planning arm inherits — is what turns a ceiling into an end-to-end result. Behind it: explaining why this project's failure distribution runs opposite to the only comparable published one (Q24), re-grading the headline comparisons with a cross-model panel, deciding whether the question banks emit executable gold queries (Q26), and the contamination control that has never been run.
-
-## Documentation
-
-| Document | Description |
-|----------|--------------|
-| [`docs/commands.md`](docs/commands.md) | Every CLI command, verified against the parsers |
-| [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) | The pipeline stage by stage, with the configuration each stage reads |
-| [`docs/structure.md`](docs/structure.md) | Repository navigation map and output-artifact reference |
-| [`docs/source_cards.md`](docs/source_cards.md) | Source-card format specification and authoring checklist |
-| [`docs/query-safety.md`](docs/query-safety.md) | The safety model by enforcement point |
-| [`docs/migration-guide.md`](docs/migration-guide.md) | Adding a new query-language specialist |
-| [`docs/research/`](docs/research/README.md) | **The research record**, and its own index: every experiment, claim, decision, figure, and open question. Read [`CURRENT.md`](docs/research/CURRENT.md) before quoting any number |
-| [`docs/research/reports/`](docs/research/reports/INDEX.md) | Synthesis reports that read across many experiments. Most recent: [Templates, primitives, and the planner](docs/research/reports/2026-09-14-templates-primitives-and-the-planner.pdf) (2026-09-14, 4 pp.) |
-| [`NOTICE`](NOTICE) | MITRE ATT&CK® and CAPEC™ attribution, licence text, and the pinned dataset versions |
-
-Agent workflow rules, the interface contracts, the changelog format, and the evaluation-report
-index sit beside these in [`docs/`](docs/).
 
 ## Repository Layout
 
@@ -380,13 +208,43 @@ web/      Analyst-facing workbench (Next.js App Router)
 
 Agent pointer folders (`.claude/`, `.agents/`, `.cursor/`) route to canonical instructions under [`docs/skills/`](docs/skills/) and contain no instructions of their own.
 
-## Roadmap
+## Design Decisions
 
-Every task through Wk 14–15 of the funded plan is complete: setup, the data layer, all four agents,
-end-to-end integration, both evaluation tiers, and the technical documentation set. The one item
-still open is Wk 15–16, pitch preparation and the final demo. The week-by-week plan with its three
-milestone check-ins is in [`docs/goals.md`](docs/goals.md); change history is in
-[`docs/changelog.jsonl`](docs/changelog.jsonl).
+**One plan schema, two query languages.** Cypher and Gremlin don't share a traversal model, so the planner can't emit engine-specific queries itself without becoming two planners. It instead emits an engine-agnostic plan (sub-questions, entities, join keys, traversal limits) and pushes engine-specific query construction down into each specialist — keeping the planner swappable and the specialists independently testable. Adding a third query language is documented as four targeted changes in [`docs/migration-guide.md`](docs/migration-guide.md).
+
+**Validated queries instead of free-form generation.** The specialists build queries from read-only templates and schema-derived builders that are checked against the source card before they run, so query validity and the safety limits hold by construction rather than by prompt. How that choice compares with letting a model write the query is measured in [`docs/RESULTS.md`](docs/RESULTS.md).
+
+**Reproducibility against a live, external data source.** MITRE ATT&CK and CAPEC change over time, but behavior needs to be reproducible. The build pipeline pins a sha256 snapshot of the raw source at download time and gates every rebuild on that pin, with a fixture-QA harness that checks raw == manifest == live before anything is loaded — catching schema drift before it reaches an agent instead of after.
+
+## Documentation
+
+| Document | Description |
+|----------|--------------|
+| [`docs/commands.md`](docs/commands.md) | Every CLI command, verified against the parsers |
+| [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) | The pipeline stage by stage, with the configuration each stage reads |
+| [`docs/structure.md`](docs/structure.md) | Repository navigation map and output-artifact reference |
+| [`docs/source_cards.md`](docs/source_cards.md) | Source-card format specification and authoring checklist |
+| [`docs/query-safety.md`](docs/query-safety.md) | The safety model by enforcement point |
+| [`docs/migration-guide.md`](docs/migration-guide.md) | Adding a new query-language specialist |
+| [`docs/RESULTS.md`](docs/RESULTS.md) | What was measured, the limits, and how to reproduce it |
+| [`docs/research/`](docs/research/README.md) | The research record: every experiment, claim, decision, figure, and open question |
+
+## Research
+
+Ariadne is also a research prototype, and the repository carries its full experimental record. The experiments compare hand-written query templates with schema-derived query construction, templates with a language model writing the queries, federating the sources with merging them into one store, and a model narrating the answer with no model at all. The results, the limits that bound them, and the commands that reproduce them are in [`docs/RESULTS.md`](docs/RESULTS.md); every experiment, claim, and decision is in [`docs/research/`](docs/research/README.md). Quote figures from [`docs/research/CURRENT.md`](docs/research/CURRENT.md), which tracks what has been superseded.
+
+## Data
+
+Ariadne is built on MITRE ATT&CK® and MITRE CAPEC™, used under their respective terms of use.
+`uv run main.py --download` fetches both and checksum-verifies them, writing the pins to
+`data/versions.json`; `--build` turns each into a canonical JSONL + schema + manifest triple that
+is sha256-pinned against the raw snapshot. The snapshots in use are **ATT&CK 19.0** and
+**CAPEC 3.9**. Neither dataset is redistributed in this repository.
+
+Per-dataset provenance is in [`docs/research/datasets/DATASETS.md`](docs/research/datasets/DATASETS.md).
+The required attribution, the licence and disclaimer text, and the exact snapshots with their
+SHA256 pins are in [`NOTICE`](NOTICE). Ariadne is not affiliated with or endorsed by The MITRE
+Corporation.
 
 ## Team & Funding
 

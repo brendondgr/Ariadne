@@ -33,7 +33,7 @@ in [`commands.md`](commands.md); what each number means is in
 | `data/` | Raw downloads, canonical artifacts, exports, source cards (mostly gitignored); `data-identity/`, `data-merged/`, `data-tri/` are experiment fixtures |
 | `docker/` | Neo4j + Gremlin Compose stack, plus the `neo4j-merged` and `neo4j-identity` experiment profiles |
 | `docs/` | Documentation, research record, skills, plans, prompts, pitch material |
-| `images/` | Logos used by the README |
+| `images/` | Logos, the README banner, and the workbench screenshot |
 | `logs/` | Sequential job logs written by `main.py` (gitignored) |
 | `scripts/` | 83 one-off research scripts (`*.py`, `*.sh`): experiment drivers, overnight sweeps, report generators, `verify_paper_numbers.py`, `validate_research.py`, `new_experiment.py` |
 | `utils/` | All Python code, by domain (below) |
@@ -45,6 +45,7 @@ in [`commands.md`](commands.md); what each number means is in
 | Path | Contents |
 |---|---|
 | `ARCHITECTURE.md` | The pipeline stage by stage, with the env vars each stage actually reads |
+| `RESULTS.md` | What was measured, its limits, and how to reproduce it — the research detail moved out of the README |
 | `goals.md` | Roadmap, evaluation criteria, deliverables |
 | `commands.md` | Every command on `setup.py`, `app.py`, `main.py` and the Makefile |
 | `source_cards.md` | Source-card format: three-layer lifecycle, field reference, authoring checklist |

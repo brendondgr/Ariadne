@@ -35,6 +35,7 @@ REPO_ROOT = Path(__file__).resolve().parents[3]
 
 DOCS = (
     "README.md",
+    "docs/RESULTS.md",
     "docs/structure.md",
     "docs/ARCHITECTURE.md",
     "docs/goals.md",
