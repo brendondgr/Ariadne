@@ -19,7 +19,7 @@ is recorded anywhere else. Before running an experiment, read
 
 ## What Actually Runs
 
-Ariadne is **deterministic by default, with LLM seams that are opt-in and individually backstopped**. This is a design decision the project's own evaluation supports (see [Results](#results)), and the table below names each seam and its default in the detail the [README's diagram](../README.md#how-it-works) only labels:
+Ariadne is **deterministic by default, with LLM seams that are opt-in and individually backstopped**. This is a design decision the project's own evaluation supports (see [Results](#results)), and the table below names each seam and its default in the detail the [architecture diagram](assets/architecture.svg) only labels:
 
 | Stage | Default behavior | LLM seam |
 |---|---|---|

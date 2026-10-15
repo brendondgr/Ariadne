@@ -8,286 +8,52 @@
 <!-- The banner carries a tagline that says the same thing as the sentence below.
      If you change what Ariadne is, change both: the tagline lives in TAGLINE in
      scripts/make_header.py, which regenerates images/header.svg and its alt text. -->
-Ariadne answers a security analyst's question across live cybersecurity knowledge graphs that do not share a query language, and every claim it returns cites the record and the query behind it.
-
-Adversary-technique, attack-pattern, and mitigation graphs sit on different engines with different schemas, so correlating them usually means manual lookups or an offline merge into one store. Ariadne instead reads each source's schema at query time and routes natively per engine — Cypher to Neo4j, Gremlin to a Neptune-style server — reconciling results on shared identifiers (ATT&CK technique IDs, CAPEC IDs) rather than on a shared index. There is **no vector index or embedding store** over the graph data. When a question falls outside a source's declared schema the system abstains and shows the query it ran. The name is the thread through the labyrinth.
+Ariadne answers a security analyst's question across live cybersecurity knowledge graphs that do not share a query language, and every claim it returns cites the record and the query behind it. It queries each graph in its own language — Cypher for Neo4j, Gremlin for a TinkerPop server — and joins the results on identifiers the graphs already share, such as ATT&CK technique and CAPEC IDs, without merging them into one store.
 
 <p align="center">
   <img src="images/workbench.png" width="100%"
-       alt="The Ariadne analyst workbench in dark mode. A chat view shows the question 'Which ATT&CK techniques does CAPEC-593 (Session Hijacking) map to, and what mitigations apply to those techniques?' and a deterministic answer listing techniques T1185, T1550.001 and T1563 with their mitigations, each identifier linked. An inspector panel on the right traces the pipeline stages — probe live sources, draft plan, plan gate, emit plan — and the Gremlin specialist that queried CAPEC. Status chips show Neo4j and Gremlin live." />
+       alt="The Ariadne web workbench in dark mode. A chat view shows the question 'Which ATT&CK techniques does CAPEC-593 (Session Hijacking) map to, and what mitigations apply to those techniques?' and an answer listing techniques T1185, T1550.001 and T1563 with their mitigations, each identifier linked. An inspector panel on the right traces the pipeline stages and the Gremlin query that ran against CAPEC." />
 </p>
-<p align="center"><sub>The analyst workbench answering a question that spans both graphs: CAPEC from Gremlin, ATT&CK from Neo4j, joined on technique IDs. The inspector traces every stage. No language model was running — the answer is composed deterministically.</sub></p>
-
-**Contents** — [How It Works](#how-it-works) · [Quick Start](#quick-start) · [Configuration](#configuration) · [Key Features](#key-features) · [Tech Stack](#tech-stack) · [Repository Layout](#repository-layout) · [Design Decisions](#design-decisions) · [Documentation](#documentation) · [Research](#research) · [Data & License](#data)
 
 ## How It Works
 
-<p align="center">
-  <img src="docs/assets/architecture.svg" alt="Ariadne federated query flow: an analyst question is planned into source-assigned sub-questions and graded by a deterministic gate, retrieved by per-source Cypher and Gremlin specialists over Neo4j and TinkerPop in an assess-and-re-plan loop, joined on shared identifiers, then composed, verified, and narrated into an answer or an abstention" width="100%">
-</p>
+1. **Plan** — the question becomes a plan: which graphs to ask, what to ask each one, and which shared IDs join the answers.
+2. **Query** — each graph is queried in its own language with a read-only, bounded query checked against that graph's schema.
+3. **Join** — the results are combined on the IDs the graphs share.
+4. **Verify** — every claim in the answer is checked against the retrieved records and cites its source. If nothing holds up, Ariadne says so and shows the query it ran.
 
-A question passes through four stages, each its own independently testable component:
+## Prerequisites
 
-1. **Plan.** The planner reads each source's *source card* — connection details, schema, provenance fields, safety limits — classifies the question against a closed intent taxonomy, and emits a machine-readable plan: which sources to ask, the sub-question for each, and the shared identifiers to join on. A deterministic gate rejects any plan that does not validate against the cards before a single query runs.
-2. **Query each engine in its own language.** A Cypher specialist queries Neo4j and a Gremlin specialist queries a Neptune-style TinkerPop server. Each builds a read-only, bounded query, checks it against the card's declared labels, row cap and traversal depth, and returns normalized records that carry their provenance. An assess step checks whether the evidence closes the plan's joins and re-plans when it does not.
-3. **Join on shared identifiers.** Results are reconciled on IDs the sources already share — ATT&CK technique IDs, CAPEC IDs — rather than through a merged store or an embedding index.
-4. **Compose and verify.** Claims are composed from the evidence and every one is checked by a verifier: anything uncited or unsupported is cut. When nothing survives, Ariadne abstains and shows the query it ran instead of guessing.
+| Tool | Version | Used for |
+|------|---------|----------|
+| [uv](https://docs.astral.sh/uv/) | latest | Python environment and dependencies (setup offers to install it) |
+| [Docker](https://docs.docker.com/get-docker/) | Engine + Compose v2 | The local Neo4j and Gremlin databases |
+| [Node.js](https://nodejs.org/) | 18.18+ | The web workbench |
+| OpenAI-compatible LLM server | optional | Not required — everything runs without a model |
 
-The whole flow is one LangGraph `StateGraph` ([`utils/orchestration/`](utils/orchestration/)), shared by the CLI and the web API. Stage-by-stage detail with the settings each stage reads is in [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md); the four component contracts are in [`docs/agent-interfaces.md`](docs/agent-interfaces.md).
-
-### What an answer looks like
-
-A federated question, the plan it produced, the query one specialist ran, and the answer. The
-question, plan, Gremlin query, headline, and narrative are quoted from a committed evaluation
-artifact — [`docs/evaluation/answers/F-CTM-03.json`](docs/evaluation/answers/F-CTM-03.json),
-deterministic composer, no model in the path — and the layout is this README's.
+## Getting Started
 
 ```bash
-uv run main.py --query "Which ATT&CK techniques does CAPEC-593 (Session Hijacking) map to, and what mitigations apply to those techniques?"
+git clone https://github.com/brendondgr/Ariadne.git
+cd Ariadne
+python3 setup.py
 ```
 
-```text
-plan    q1  capec   Which ATT&CK techniques does CAPEC-593 map to?
-        q2  attack  What mitigations does ATT&CK list for those mapped techniques?  [seeded from q1]
+The setup wizard checks the prerequisites, creates `.env`, downloads MITRE ATT&CK and CAPEC, builds and loads both graphs into Docker, installs the web dependencies, and opens the workbench at `http://localhost:16500`. Add `--yes` to accept every default.
 
-query   capec · gremlin · template capec_maps_to · gate ok
-        g.V().hasLabel("AttackPattern").has("id", within(ids)).as("ap")
-         .out("MAPS_TO").hasLabel("TaxonomyEntry").has("taxonomy_name","ATTACK")
-         .as("tax").select("ap","tax").by(elementMap()).limit(300)
+After setup:
 
-answer  Gathered 4 record(s) from 2 source(s); 3 cross-source correlation(s) on shared identifiers.
+| To | Run |
+|----|-----|
+| Start the graph databases | `uv run main.py --docker start` |
+| Open the web workbench | `uv run app.py` → `http://localhost:16500` |
+| Ask a question from the terminal | `uv run main.py --query "Which ATT&CK techniques does CAPEC-593 map to, and what mitigations apply to them?"` |
 
-        CAPEC-593 (Session Hijacking) maps to ATT&CK techniques T1185 (Browser Session
-        Hijacking), T1550.001 (Application Access Token), and T1563 (Remote Service Session
-        Hijacking). Mitigations for T1185 include User Account Management (M1018) and User
-        Training (M1017). T1563 is mitigated by Disable or Remove Feature or Program (M1042),
-        Privileged Account Management (M1026), User Account Management (M1018), Password
-        Policies (M1027), and Network Segmentation (M1030). [...]
+Every command and flag is in [`docs/commands.md`](docs/commands.md).
 
-claims  5, each carrying its source and primary id
+## More
 
-### Deterministic by default, models optional
-
-Every stage has a deterministic path, and a language model is never required. A model can be switched on at specific points, one flag each, and whichever path runs, the verifier still checks every claim against the retrieved evidence:
-
-| Stage | Without a model | With a model (opt-in) |
-|---|---|---|
-| **Planning** | Deterministic drafter over a closed intent taxonomy, checked by the plan gate ([`utils/planner/`](utils/planner/)) | `ARIADNE_LLM_ENABLED` or `--query-llm` swaps in an LLM drafter; the deterministic drafter stays as the backstop |
-| **Question rewriting** | The question is canonicalised into a fixed intent form | `ARIADNE_REWRITE_MODEL` lets a model pick an entity from a candidate list it cannot add to, only when the question cites no identifier. `.env.example` ships this one on |
-| **Query construction** | Read-only templates and schema-derived builders, validated against the source card ([`cypher/`](utils/specialists/cypher/), [`gremlin/`](utils/specialists/gremlin/)) | `SPECIALIST_LLM_QUERY_BUILDER` lets a model write the query; it exists as an evaluation baseline, not a mode to run |
-| **Retrieval loop** | Deterministic sufficiency check over join closure, up to `ORCH_MAX_HOPS` rounds | — |
-| **Synthesis** | Claims composed from the evidence and verified ([`utils/synthesis/`](utils/synthesis/)) | The workbench's **Plain prose** toggle lets a model rewrite the narrative over the already-verified claims; it cannot add one, and the answer records which wrote the sentence |
-
-Every model-free path is byte-reproducible. The full seam-by-seam account, with every flag, is in [`docs/RESULTS.md`](docs/RESULTS.md#what-actually-runs).
-
-## Quick Start
-
-One command takes a fresh clone all the way to a running workbench:
-
-```bash
-python3 setup.py              # interactive — inspect and confirm each step
-python3 setup.py --yes        # non-interactive, accept every default
-python3 setup.py --no-launch  # set everything up, then just print the commands
-```
-
-The wizard walks five steps, showing what each will run and skipping work already done, so re-running is cheap:
-
-1. **Prerequisites** — checks for `uv`, Node.js, and Docker (CLI + Compose v2 + a running daemon).
-2. **`.env`** — creates it from `.env.example`; optionally customize ports and the Neo4j login.
-3. **Local inference server** — configures the OpenAI-compatible LLM endpoint (optional) and **probes it**, so you know it's reachable before you query.
-4. **Data pipeline** — download MITRE ATT&CK + CAPEC → build canonical graphs → start the Docker stack → load both graphs → verify (the self-healing `--yolo-all` runner).
-5. **Web dependencies** — `npm install` for the Next.js workbench.
-
-It then prints the copy-paste commands below and launches the workbench at `http://localhost:16500`.
-
-### Prerequisites
-
-| Tool | Version | Role |
-|------|---------|------|
-| [uv](https://docs.astral.sh/uv/) | latest | Python env + dependency manager (the wizard offers to install it) |
-| Docker | Engine + Compose v2 | Runs the pinned local Neo4j + Gremlin stack |
-| Node.js | 18.18+ | Builds and serves the analyst web workbench |
-| OpenAI-compatible LLM server | *optional* | e.g. vLLM / LM Studio / llama.cpp / Ollama at `http://localhost:9090/v1`. Without one, the pipeline runs fully deterministically. |
-
-### Everyday commands
-
-| Goal | Command |
-|------|---------|
-| One-shot setup | `python3 setup.py` &nbsp;(`--yes` non-interactive · `--no-launch` set up only) |
-| Start the graph databases (Docker) | `uv run main.py --docker start` |
-| Ask a federated question (CLI) | `uv run main.py --query "…"` &nbsp;(add `--query-llm` to plan through the LLM) |
-| Launch the analyst web workbench | `uv run app.py` &nbsp;→ web `:16500`, api `:16501` |
-| Run the whole data pipeline in one shot | `uv run main.py --yolo-all` |
-| Component / end-to-end evaluation | `uv run main.py --component-eval` · `--e2e-eval` |
-
-The complete, verified command reference — every flag on `setup.py`, `app.py`, and `main.py` — is [`docs/commands.md`](docs/commands.md).
-
-<details>
-<summary>Manual setup (step by step)</summary>
-
-```bash
-# Python setup & dataset download
-uv sync
-cp .env.example .env
-uv run main.py --download
-
-# Build canonical graph artifacts (ATT&CK + CAPEC)
-uv run main.py --build all
-
-# Local graph databases (Docker)
-uv run main.py --docker start
-
-# Load built artifacts into the live databases
-uv run main.py --dataset attack --graph all
-uv run main.py --dataset capec --graph gremlin
-
-# Ask a federated question
-uv run main.py --query "Which CAPEC patterns related to credential theft map to ATT&CK techniques, and what mitigations appear for those techniques?"
-
-# Web workbench (FastAPI + Next.js)
-cd web && npm install && npm run dev
-```
-
-</details>
-
-## Configuration
-
-Every setting lives in one git-ignored `.env` (`cp .env.example .env`). The committed example is
-annotated with what reads each key and where, and every value in it produces current behavior.
-The keys that matter most:
-
-| Variable | Default | Meaning |
-|---|---|---|
-| `NEO4J_HTTP_PORT` · `NEO4J_BOLT_PORT` · `GREMLIN_PORT` | `5455` · `5456` · `6455` | Host ports the stack publishes. Changing Bolt or Gremlin means changing the matching URI |
-| `NEO4J_URI` · `GREMLIN_URI` | `bolt://localhost:5456` · `ws://localhost:6455/gremlin` | Where the specialists connect |
-| `NEO4J_USER` · `NEO4J_PASSWORD` · `NEO4J_AUTH` | `neo4j` · `password` · `neo4j/password` | Local Neo4j credentials; all three must agree |
-| `ATTACK_VERSION` · `CAPEC_VERSION` | `19.0` · `3.9` | MITRE source versions downloaded and built; the sha256 pin is taken against these |
-| `ARIADNE_DATA_DIR` | `data` | Root for raw downloads, processed pairs, and graph artifacts |
-| `ARIADNE_LLM_ENABLED` | `false` | Master switch for the optional LLM seams: the planner drafter and the narrator over verified claims |
-| `ARIADNE_LLM_BASE_URL` · `ARIADNE_LLM_MODEL` | `http://localhost:9090/v1` · `default-model` | The OpenAI-compatible endpoint and the model name it serves |
-| `ORCH_MAX_HOPS` | `5` | Cap on `assess → re-plan → specialists` rounds. At `1` the loop is a single pass |
-| `PIPELINE_TIMEOUT_S` | `120` | Wall-clock ceiling for one question |
-
-The remaining keys — the model budgets, the two LLM baselines, the conversation layer, the
-merged-graph ports — are documented in [`.env.example`](.env.example) beside the code path that
-reads each one. Repository navigation map: [`docs/structure.md`](docs/structure.md).
-
-## Key Features
-
-- **Plan-first routing** — the planner emits a structured, machine-checkable plan before any specialist runs a query, and a deterministic gate rejects plans that do not validate against the source cards.
-- **Bounded, validated queries** — every query is read-only and gated against the card's declared labels, relationship types, row cap, and traversal depth; a task naming an entity the card does not model returns an honest empty with a `boundary` trace rather than an answer to a different question.
-- **Verified answers, not generated ones** — claims are composed from the evidence and checked by an unconditional verifier; unsupported claims are cut and kept visible, and abstentions carry the executed query as proof.
-- **Analyst web workbench** — a chat view that streams the live plan → query → evidence → answer pipeline with persisted, memory-aware conversations; a graph explorer that renders either store's nodes and edges with search and type filters; and an evaluation view over the committed reports.
-- **Reproducible graph artifacts** — a canonical → export → runtime layering, sha256-pinned to the raw source, with a fixture-QA harness that reconciles raw == manifest == live before any agent queries it.
-- **A pipeline and launcher that check themselves** — `--yolo-all` classifies each failure as stale-state, transient, or needs-human and rebuilds or retries instead of dying on the first error; `uv run app.py` preflights the toolchain, ports, source cards, both graph backends and the LLM endpoint, then streams a smoke query over the same contract the UI uses.
-
-## Tech Stack
-
-| Layer | Technology |
-|-------|------------|
-| Language / tooling | **Python 3.13**, `uv` for env + dependency management |
-| Pipeline | **LangGraph** — the Q/A flow is a compiled `StateGraph` ([`utils/orchestration/`](utils/orchestration/)): planner, specialists, and synthesis as subgraphs streaming the workbench's SSE events; `langgraph dev` opens the visual debugger via `langgraph.json`. A second graph ([`utils/conversation/`](utils/conversation/)) wraps that pipeline behind an orchestration → router → {memory-grounded answer \| extraction → validation → answer} flow. |
-| Graph backends | **Neo4j** (Cypher) + **Gremlin Server** (Neptune-style) — two engines with genuinely different query models, not two configs of one. |
-| API | **FastAPI** — thin layer wrapping the Python packages for the web workbench. |
-| Frontend | **Next.js / React** (`react-force-graph-2d`) — analyst-facing graph explorer UI. |
-| Infrastructure | **Docker Compose** — pinned local Neo4j + Gremlin stack. |
-
-## Repository Layout
-
-```text
-main.py   CLI: download, build, docker, load/verify, plan, query, evaluate
-app.py    Workbench launcher: preflight → FastAPI + Next.js → status board → smoke query
-setup.py  One-command setup wizard
-api/      FastAPI service wrapping utils/ for the web UI
-docker/   Neo4j and Gremlin Compose stack (pinned image versions)
-docs/     Architecture, goals, structure, commands, skills, evaluation, research, changelog
-utils/    download · kg_builder · graph_loader · infrastructure · planner ·
-          specialists · synthesis · orchestration · conversation · evaluation · launcher
-web/      Analyst-facing workbench (Next.js App Router)
-```
-
-Agent pointer folders (`.claude/`, `.agents/`, `.cursor/`) route to canonical instructions under [`docs/skills/`](docs/skills/) and contain no instructions of their own.
-
-## Design Decisions
-
-**One plan schema, two query languages.** Cypher and Gremlin don't share a traversal model, so the planner can't emit engine-specific queries itself without becoming two planners. It instead emits an engine-agnostic plan (sub-questions, entities, join keys, traversal limits) and pushes engine-specific query construction down into each specialist — keeping the planner swappable and the specialists independently testable. Adding a third query language is documented as four targeted changes in [`docs/migration-guide.md`](docs/migration-guide.md).
-
-**Validated queries instead of free-form generation.** The specialists build queries from read-only templates and schema-derived builders that are checked against the source card before they run, so query validity and the safety limits hold by construction rather than by prompt. How that choice compares with letting a model write the query is measured in [`docs/RESULTS.md`](docs/RESULTS.md).
-
-**Reproducibility against a live, external data source.** MITRE ATT&CK and CAPEC change over time, but behavior needs to be reproducible. The build pipeline pins a sha256 snapshot of the raw source at download time and gates every rebuild on that pin, with a fixture-QA harness that checks raw == manifest == live before anything is loaded — catching schema drift before it reaches an agent instead of after.
-
-## Documentation
-
-| Document | Description |
-|----------|--------------|
-| [`docs/commands.md`](docs/commands.md) | Every CLI command, verified against the parsers |
-| [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) | The pipeline stage by stage, with the configuration each stage reads |
-| [`docs/structure.md`](docs/structure.md) | Repository navigation map and output-artifact reference |
-| [`docs/source_cards.md`](docs/source_cards.md) | Source-card format specification and authoring checklist |
-| [`docs/query-safety.md`](docs/query-safety.md) | The safety model by enforcement point |
-| [`docs/migration-guide.md`](docs/migration-guide.md) | Adding a new query-language specialist |
-| [`docs/RESULTS.md`](docs/RESULTS.md) | What was measured, the limits, and how to reproduce it |
-| [`docs/research/`](docs/research/README.md) | The research record: every experiment, claim, decision, figure, and open question |
-
-## Research
-
-Ariadne is also a research prototype, and the repository carries its full experimental record. The experiments compare hand-written query templates with schema-derived query construction, templates with a language model writing the queries, federating the sources with merging them into one store, and a model narrating the answer with no model at all. The results, the limits that bound them, and the commands that reproduce them are in [`docs/RESULTS.md`](docs/RESULTS.md); every experiment, claim, and decision is in [`docs/research/`](docs/research/README.md). Quote figures from [`docs/research/CURRENT.md`](docs/research/CURRENT.md), which tracks what has been superseded.
-
-## Data
-
-Ariadne is built on MITRE ATT&CK® and MITRE CAPEC™, used under their respective terms of use.
-`uv run main.py --download` fetches both and checksum-verifies them, writing the pins to
-`data/versions.json`; `--build` turns each into a canonical JSONL + schema + manifest triple that
-is sha256-pinned against the raw snapshot. The snapshots in use are **ATT&CK 19.0** and
-**CAPEC 3.9**. Neither dataset is redistributed in this repository.
-
-Per-dataset provenance is in [`docs/research/datasets/DATASETS.md`](docs/research/datasets/DATASETS.md).
-The required attribution, the licence and disclaimer text, and the exact snapshots with their
-SHA256 pins are in [`NOTICE`](NOTICE). Ariadne is not affiliated with or endorsed by The MITRE
-Corporation.
-
-## Team & Funding
-
-| Role | Person |
-|------|--------|
-| Principal Investigator | Olmo S. Zavala Romero — Assistant Professor, FSU Department of Scientific Computing |
-| Graduate RA / technical lead | Brendon DGR — prototype implementation, evaluation, documentation |
-
-**Funded by** the ReliaQuest Innovation Challenge Fund — Challenge Three: Knowledge Graph
-Integration, award period June 8 – October 23, 2026.
-
-## Contributing
-
-This is a research repository with an open record, and the rules that keep the record trustworthy
-are not obvious from the code. Read [`CONTRIBUTING.md`](CONTRIBUTING.md) first — it covers how to
-run an experiment, where results are allowed to live, and the agent workflow rules in
-[`docs/skills/global-project-rules/SKILL.md`](docs/skills/global-project-rules/SKILL.md). Run
-`make check-record` before any commit that touches a figure.
-
-## Citation
-
-There is no published entry yet. The manuscript is in preparation
-([`docs/research/paper/tmlr/ariadne-tmlr.tex`](docs/research/paper/tmlr/ariadne-tmlr.tex); target
-venues in [`venue-targets.md`](docs/research/paper/venue-targets.md)) and is anonymized for review,
-and no archival DOI exists. Until one does, cite the repository:
-
-<!-- TODO: confirm the author line, and replace this block with the published entry once the
-     preprint is posted. A DOI also requires depositing an archival snapshot (Zenodo, Figshare, or
-     Dryad) — GitHub alone does not satisfy an artifact-available badge. Keep CITATION.cff in step. -->
-
-```bibtex
-@software{ariadne_2026,
-  title  = {Ariadne: federated question answering over live cybersecurity knowledge graphs},
-  author = {Zavala Romero, Olmo S. and Brendon DGR},
-  year   = {2026},
-  url    = {https://github.com/brendondgr/Ariadne},
-  note   = {ReliaQuest Innovation Challenge Fund, Challenge Three}
-}
-```
-
-## License
-
-The code is licensed under the Apache License 2.0 — see [`LICENSE`](LICENSE). The MITRE ATT&CK®
-and CAPEC™ data the project builds on is **not** covered by that licence and carries its own terms
-of use; those terms, the required attribution, and the pinned snapshot versions are in
-[`NOTICE`](NOTICE). No dataset is redistributed here.
+- How each stage works: [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md)
+- Research results and how to reproduce them: [`docs/RESULTS.md`](docs/RESULTS.md)
+- Code is licensed under [Apache 2.0](LICENSE). MITRE ATT&CK® and CAPEC™ data carry their own terms of use, given in [`NOTICE`](NOTICE); Ariadne is not affiliated with or endorsed by The MITRE Corporation.
+- Developed at Florida State University (PI: Olmo S. Zavala Romero) with funding from the ReliaQuest Innovation Challenge Fund.
