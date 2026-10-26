@@ -136,7 +136,7 @@ Challenge, and the commit that opened "the post-pitch expansion section".
 | From | To | Reason | Who cites the old path, and what is done |
 |---|---|---|---|
 | `docs/expansion/` | `docs/era-2-expansion/` | It is the era-2 section; the name now says so and sorts after era 1 | Only `changelog.jsonl` (append-only, left as is). Relative links inside keep working: same depth |
-| `docs/proposal/ara-fall-2026-one-pager.md`, `ara-deep-research-prompt.md` | `docs/era-2-expansion/proposals/` | Post-pitch proposal drafts belong to era 2 | Cited only by `changelog.jsonl` and the expansion README (updated). The one-pager's two links to `../research/` gain one `../` (path only) |
+| `docs/proposal/ara-fall-2026-one-pager.md`, `ara-deep-research-prompt.md` | `docs/era-2-expansion/proposals/` | Post-pitch proposal drafts belong to era 2 | Cited only by `changelog.jsonl` and the expansion README (updated). The one-pager's three relative links (two to the record, one to the year-one proposal, which moves to era 1) are re-pointed (path only) |
 | `docs/pitch/` | `docs/era-1-challenge/pitch/` | The pitch is the end point of era 1 | `scripts/verify_paper_numbers.py` scans the pitch plan for stale figures: its path is updated so `make check-docs` keeps scanning it. `goals.md` cites it in backticks (updated; the docs-contract test checks it). Six files under `docs/plans/` and `changelog.jsonl` keep the old path, by the 2026-10-15 precedent: dated records cite the tree as it was, and `structure.md` records the move. `numbers-audit-2026-09-10.md` has one relative link to `../research/CURRENT.md`, which gains one `../` (path only; no words change) |
 | `docs/showcase/` | `docs/era-1-challenge/showcase/` | Built for the challenge showcase | Cited by nothing |
 | `docs/proposal/proposal.md` | `docs/era-1-challenge/proposal.md` | The funded year-one proposal defines era 1's scope | Cited only by `audit-2026-08-03.md`, a dated snapshot excluded from link checks, which keeps the old path; `structure.md` records the move |
@@ -163,6 +163,7 @@ Challenge, and the commit that opened "the post-pitch expansion section".
 | `docs/structure.md` | The `docs/` table regrouped as timeless / era 1 / era 2 / shared record; "Start here" points at the eras; a "Moved paths" table lists every path this change moved |
 | `README.md` (root) | The "More" links name the eras: what we started with, where we're going. No other change; it stays lean |
 | `utils/specialists/tests/test_docs_contracts.py` | The three navigation READMEs join `DOCS`, so their links and cited paths are checked on every run |
+| `scripts/verify_paper_numbers.py` | *Added during execution:* `docs/era-2-expansion/README.md` joins the `make check-docs` scan, because it quotes era 2's starting figures from the record (it passed with 0 stale quotes before being added) |
 
 ## 6. What stays put, and why
 

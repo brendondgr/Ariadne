@@ -56,6 +56,8 @@ PROSE_DOCS = (
     "docs/goals.md",
     "docs/query-safety.md",
     "docs/pitch/october-pitch-plan.md",
+    # Era 2 quotes its starting figures from the record (added 2026-10-26).
+    "docs/era-2-expansion/README.md",
 )
 
 #: Numbers that are never experiment metrics.
