@@ -1,9 +1,11 @@
 # Documentation reorganization — two eras (2026-10-26)
 
-**Status: the reasoning, written before anything moved.** The commits that carry it out are
-listed in [`changelog.jsonl`](changelog.jsonl) under 2026-10-26; the resulting map is
-[`structure.md`](structure.md) and the front door is `docs/README.md`. Paths in sections 2
-and 3 are the paths as they were before the change.
+**Status: executed on 2026-10-26.** This reasoning was written and committed before anything
+moved; the four commits that carried it out are listed in
+[`changelog.jsonl`](changelog.jsonl) under 2026-10-26, each with the gates it ran. The
+resulting map is [`structure.md`](structure.md) and the front door is
+[`README.md`](README.md). Paths in sections 2 and 3 are the paths as they were before the
+change.
 
 ## 1. Why
 
@@ -49,7 +51,7 @@ it describes the system or how to run, extend or trust it, which both eras rely 
 
 | Document | Why timeless |
 |---|---|
-| `README.md` (root) | The project's front page: what Ariadne is and how to run it. Gains two era links (section 5). Its Team & Funding section names only the year-one award (section 8) |
+| `README.md` (root) | The project's front page: what Ariadne is and how to run it. Gains links to the two eras and to the docs front door (section 5). Its Team & Funding section names only the year-one award (section 8) |
 | `CONTRIBUTING.md`, `CITATION.cff`, `LICENSE`, `NOTICE`, `images/` | Workflow, citation, licences, README images |
 | `docs/ARCHITECTURE.md` | Describes the shipped pipeline, which is what era 2 starts from |
 | `docs/commands.md`, `docs/source_cards.md`, `docs/agent-interfaces.md`, `docs/query-safety.md`, `docs/migration-guide.md` | How to run, extend, integrate with and trust the system. Some mention when they were written ("frozen since Wk 10–11", "Proposal Deliverable #6"); the contracts they describe still hold |
@@ -161,7 +163,7 @@ Challenge, and the commit that opened "the post-pitch expansion section".
 | `docs/README.md` (new) | The front door of `docs/`: the two eras side by side, then the timeless reference and the research record |
 | `docs/era-1-challenge/README.md` (new) | What era 1 was, where every part lives (moved or in place), what carries into era 2 |
 | `docs/structure.md` | The `docs/` table regrouped as timeless / era 1 / era 2 / shared record; "Start here" points at the eras; a "Moved paths" table lists every path this change moved |
-| `README.md` (root) | The "More" links name the eras: what we started with, where we're going. No other change; it stays lean |
+| `README.md` (root) | The "More" links name the eras (what we started with, where we're going) and the docs front door. No other change; it stays lean |
 | `utils/specialists/tests/test_docs_contracts.py` | The three navigation READMEs join `DOCS`, so their links and cited paths are checked on every run |
 | `scripts/verify_paper_numbers.py` | *Added during execution:* `docs/era-2-expansion/README.md` joins the `make check-docs` scan, because it quotes era 2's starting figures from the record (it passed with 0 stale quotes before being added) |
 

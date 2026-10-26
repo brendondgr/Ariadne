@@ -54,7 +54,9 @@ Every command and flag is in [`docs/commands.md`](docs/commands.md).
 ## More
 
 - How each stage works: [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md)
-- Research results and how to reproduce them: [`docs/RESULTS.md`](docs/RESULTS.md)
+- What we started with — the Innovation Challenge, finished at the October 2026 pitch: [`docs/era-1-challenge/`](docs/era-1-challenge/README.md); its research results and how to reproduce them: [`docs/RESULTS.md`](docs/RESULTS.md)
+- Where we're going — Ariadne as a retrieval agent other systems call: [`docs/era-2-expansion/`](docs/era-2-expansion/README.md)
+- All documentation, by era: [`docs/README.md`](docs/README.md)
 
 ## Team & Funding
 
