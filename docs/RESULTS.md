@@ -1,5 +1,14 @@
 # Ariadne — Research Results
 
+> **Era 1 results.** This page summarises what the Innovation Challenge research programme
+> measured, from the July study to the September experiments that closed it
+> (`EXP-2026-07-001` to `EXP-2026-09-029`). Its [Status](#status) section was written in
+> mid-September: "the most recent" experiments, its experiment count and its "open work"
+> are that date's view, not today's. The full list is
+> [`research/INDEX.md`](research/INDEX.md). Where the work goes after the 2026-10-19 pitch
+> is [era 2](era-2-expansion/README.md); everything from era 1 is listed in
+> [`era-1-challenge/README.md`](era-1-challenge/README.md).
+
 This page holds the research detail that used to sit in the top-level
 [README](../README.md). The README covers what Ariadne is, how it works, and how to run it;
 this page covers what was measured, how to reproduce it, and where the work stands.

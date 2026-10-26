@@ -1,5 +1,12 @@
 # Goals
 
+> **Era 1, complete.** This is the year-one roadmap for the ReliaQuest Innovation Challenge
+> award (June 8 to October 23, 2026). Every row is done; the October pitch was delivered at
+> FSU Discovery Days on 2026-10-19. It is kept as the record of what year one set out to do
+> and is no longer a live plan. Era 2's goal and requirements are in
+> [`era-2-expansion/README.md`](era-2-expansion/README.md); everything from era 1 is listed in
+> [`era-1-challenge/README.md`](era-1-challenge/README.md).
+
 ## Primary Objective (by October 2026)
 
 Deliver a working demonstration that:

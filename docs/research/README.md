@@ -36,6 +36,29 @@ anything.
 | [`audit-2026-08-03.md`](audit-2026-08-03.md) | External research audit, 3 August 2026. A dated snapshot — never updated in place. |
 | [`audit-2026-08-31.md`](audit-2026-08-31.md) | External research audit, 31 August 2026. Re-audits the same repository and states, for every 3 August finding, whether it still holds. Also a dated snapshot. |
 
+## Two eras in one record
+
+The project's documents are split at the October pitch (2026-10-19) into two eras:
+[era 1](../era-1-challenge/README.md), what we started with, and
+[era 2](../era-2-expansion/README.md), where we're going. This record is shared by both and does not move, so this
+section says which part is which.
+
+| Era 1 — the Innovation Challenge, finished | Era 2 — the expansion, from 2026-10-20 |
+|---|---|
+| Experiments `EXP-2026-07-001` to `EXP-2026-09-029`: every folder in [`experiments/`](experiments/) today | Experiments numbered `EXP-2026-10-…` and later, when they exist |
+| Reports dated 2026-08-20 to 2026-09-14 ([`reports/INDEX.md`](reports/INDEX.md), first table) | [`reports/2026-10-26-agentic-loop/`](reports/2026-10-26-agentic-loop/POINTERS.md) (second table) |
+| [`paper/`](paper/OUTLINE.md), [`figures/`](figures/), [`tables/`](tables/), [`history/`](history/), both dated audits, and [`top-tier-programme-2026-09.md`](top-tier-programme-2026-09.md) | — |
+
+The living ledgers ([`CURRENT.md`](CURRENT.md), [`CLAIMS.md`](CLAIMS.md),
+[`DECISIONS.md`](DECISIONS.md), [`OPEN_QUESTIONS.md`](OPEN_QUESTIONS.md),
+[`RELATED_WORK.md`](RELATED_WORK.md)) span both eras. Every figure in them today was
+measured in era 1 and is still the latest of its kind; era 2 starts from those figures and
+adds to the same ledgers.
+
+**One name clash to know about:** `top-tier-programme-2026-09.md` is titled "Phase 2 — the
+top-tier programme". It is a September 2026 plan for the paper, inside era 1, and has
+nothing to do with era 2. `EXP-2026-08-013` also has its own "phase 1" and "phase 2".
+
 ## Adding an experiment
 
 ```bash

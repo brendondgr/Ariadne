@@ -9,6 +9,8 @@ The last column is the one that gets used. Someone scanning this file is asking
 "has anyone looked at X", and a one-line finding answers that where a title does
 not.
 
+## Era 1 — the Innovation Challenge (finished at the 2026-10-19 pitch)
+
 | Date | Report | Author | Status | One-line finding |
 |---|---|---|---|---|
 | 2026-08-20 | [Templates beat LLM-written graph queries two to one](2026-08-20-ariadne-project-briefing/report.pdf) | brendondgr | Draft | Templates win the query-writing comparison ~2:1 on two disjoint sets; the near-ceiling catalogue figure and the templates-hold-the-accuracy claim did not survive blind testing |
@@ -20,6 +22,11 @@ not.
 | 2026-09-07 | [Overnight — seeded generic repeats and the paper-number check](2026-09-07-overnight.md) ([pdf](2026-09-07-overnight.pdf); [state](2026-09-07-overnight.state.json), [paper numbers](2026-09-07-paper-numbers.json), [recompute audit](2026-09-07-recompute-audit.json)) | claude | Final | Three further seeds graded; the driver finished early and nothing ran between 04:00 and 09:57 |
 | 2026-09-14 | [Templates, primitives, and the planner](2026-09-14-templates-primitives-and-the-planner.pdf) ([html source](2026-09-14-templates-primitives-and-the-planner.html)) | claude | Final | Given an authored plan the schema-derived engine scores 0.9005 against templates' 0.5525 on 282 sealed questions with no model in the answer path — but at the planner the workbench actually runs, that advantage falls to +0.0261 and is not separable, so the evidence supports routing between the two engines rather than replacing one; the 2B narrator preserves 284/284 answers' facts exactly at ~1,340x the wall time, and the planner itself is the largest term in every cell (-0.1892 to templates, -0.3814 to primitives) |
 | 2026-08-26 | [Novelty audit — what this architecture can actually claim](2026-08-26-novelty-audit/novelty-audit-report.pdf) | external agent, brief in [PROMPT.md](2026-08-26-novelty-audit/PROMPT.md) | Final | One claim killed outright by a paper published four weeks earlier, two mechanisms scooped, five narrowed, one clear — and the citation the whole novelty argument rested on does not say what we thought it said |
+
+## Era 2 — the expansion (from 2026-10-20)
+
+| Date | Report | Author | Status | One-line finding |
+|---|---|---|---|---|
 | 2026-10-26 | [The agentic retrieval loop](2026-10-26-agentic-loop/SYNTHESIS.md) ([pointers](2026-10-26-agentic-loop/POINTERS.md)) | claude, from four external reports | Draft | All four reports put the typed plan first and say it can be tested without a loop; the local model takes 0.7 s per typed tool call with thinking off, not the 20–40 s per loop the reports assumed; the Cypher connector cuts results at 1,000 rows with no flag |
 
 **The September overnight reports** (2026-09-02 … 09-07) were written by

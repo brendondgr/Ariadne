@@ -1,5 +1,11 @@
 # Evaluation — Index
 
+> **Era 1 artifact store.** Every run in this directory belongs to the Innovation Challenge
+> research programme (era 1, finished at the 2026-10-19 pitch). The directories are
+> hash-pinned by the experiments that cite them, so nothing here moves. New work in
+> [era 2](../era-2-expansion/README.md) is recorded through new experiments in
+> [`../research/`](../research/README.md).
+
 Ariadne carries several evaluation reports written at different times against
 different configurations. This file says which is which, so no number gets
 quoted out of the run that produced it.
