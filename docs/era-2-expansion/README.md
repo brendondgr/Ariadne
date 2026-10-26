@@ -1,7 +1,8 @@
 # Era 2 — the expansion: where Ariadne goes next (from 2026-10-20)
 
-*Written 2026-10-26 as the post-pitch expansion section; renamed from `docs/expansion/` when the
-docs were split into two eras (reasoning: [`REORGANIZATION-2026-10.md`](../REORGANIZATION-2026-10.md)).*
+*Written 2026-10-26 as the post-pitch expansion section; renamed from docs/expansion/ when the
+docs were split into two eras (reasoning: [`REORGANIZATION-2026-10.md`](../REORGANIZATION-2026-10.md)).
+What we started with is [era 1](../era-1-challenge/README.md).*
 
 **Status: discussion.** Nothing on this page is scheduled. Tests are listed so they can be
 chosen later; none of them runs until the operator says so.

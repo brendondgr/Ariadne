@@ -10,7 +10,7 @@ Two weeks of experiments have landed since that pass: `EXP-2026-09-009`,
 stands today and applies the corrections below.
 
 Every figure quoted here is read from a committed manifest or `RESULTS.md`.
-Per [`../research/CURRENT.md`](../research/CURRENT.md), no withdrawn figure is
+Per [`../research/CURRENT.md`](../../research/CURRENT.md), no withdrawn figure is
 quoted without its replacement.
 
 ---

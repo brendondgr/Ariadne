@@ -68,7 +68,7 @@ the system efficient (RQ1, RQ2) and auditable (RQ4).
 
 ## AWS fit and open source
 
-- **Amazon Neptune** is the step the [ReliaQuest proposal](../../proposal/proposal.md) planned as its second stage. The current Gremlin fixture was built to approximate Neptune-style traversal.
+- **Amazon Neptune** is the step the [ReliaQuest proposal](../../era-1-challenge/proposal.md) planned as its second stage. The current Gremlin fixture was built to approximate Neptune-style traversal.
 - AWS credits would run Neptune and the scale experiments, and could run Bedrock-hosted models for the model-seam arms.
 - The code is open source (Apache 2.0). The benchmark from RQ5 would be released with it.
 
