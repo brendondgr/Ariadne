@@ -9,8 +9,8 @@ Awards average up to $80,000 unrestricted plus $40,000 in AWS credits. Olmo subm
 **Working title:** *An efficient, scalable and robust multi-agent system for answering security
 questions across heterogeneous knowledge graphs.*
 
-Every figure below is quoted from [`docs/research/CURRENT.md`](../research/CURRENT.md) and
-[`docs/research/CLAIMS.md`](../research/CLAIMS.md). Re-check both before submitting.
+Every figure below is quoted from [`docs/research/CURRENT.md`](../../research/CURRENT.md) and
+[`docs/research/CLAIMS.md`](../../research/CLAIMS.md). Re-check both before submitting.
 
 ## The problem
 
@@ -68,7 +68,7 @@ the system efficient (RQ1, RQ2) and auditable (RQ4).
 
 ## AWS fit and open source
 
-- **Amazon Neptune** is the step the [ReliaQuest proposal](proposal.md) planned as its second stage. The current Gremlin fixture was built to approximate Neptune-style traversal.
+- **Amazon Neptune** is the step the [ReliaQuest proposal](../../era-1-challenge/proposal.md) planned as its second stage. The current Gremlin fixture was built to approximate Neptune-style traversal.
 - AWS credits would run Neptune and the scale experiments, and could run Bedrock-hosted models for the model-seam arms.
 - The code is open source (Apache 2.0). The benchmark from RQ5 would be released with it.
 

@@ -1,17 +1,21 @@
-# Post-pitch expansion — where Ariadne goes next (from 2026-10-26)
+# Era 2 — the expansion: where Ariadne goes next (from 2026-10-20)
+
+*Written 2026-10-26 as the post-pitch expansion section; renamed from docs/expansion/ when the
+docs were split into two eras (reasoning: [`REORGANIZATION-2026-10.md`](../REORGANIZATION-2026-10.md)).
+What we started with is [era 1](../era-1-challenge/README.md).*
 
 **Status: discussion.** Nothing on this page is scheduled. Tests are listed so they can be
 chosen later; none of them runs until the operator says so.
 
 ## The line between the two halves of the project
 
-- **Before the pitch (July to mid-October 2026):** the research programme. That covered the
-  arm comparisons, the question banks, judging, the experiments `EXP-2026-07-001` through
-  `EXP-2026-09-029`, and the October pitch and showcase. Its record is
+- **Era 1, before the pitch (June 8 to October 19, 2026), finished:** the research
+  programme. That covered the arm comparisons, the question banks, judging, the experiments
+  `EXP-2026-07-001` through `EXP-2026-09-029`, and the October pitch and showcase. Its record is
   [`docs/research/`](../research/), and its figures are quoted only from
   [`CURRENT.md`](../research/CURRENT.md).
-- **After the pitch (from the ReliaQuest year-two award):** this section. It records the new
-  direction, why it was chosen, and what it starts from.
+- **Era 2, after the pitch (from 2026-10-20, the ReliaQuest year-two award onward):** this
+  section. It records the new direction, why it was chosen, and what it starts from.
 
 ## The goal, in the operator's words
 
@@ -75,7 +79,8 @@ synthesis: [`SYNTHESIS.md`](../research/reports/2026-10-26-agentic-loop/SYNTHESI
 | Per-call latency of the local model and d3-lite, measured 2026-10-26 | [`probe/RESULTS.md`](../research/reports/2026-10-26-agentic-loop/probe/RESULTS.md) |
 | Round 2 prompts (decision models, universal coverage, novelty audit), awaiting reports | prompts 5–7 in the same README |
 | Earlier post-pitch prompt: plug-and-play retrieval (2026-10-20) | [`docs/prompts/2026-10-20-plug-and-play-retrieval.md`](../prompts/2026-10-20-plug-and-play-retrieval.md) |
-| ARA Fall 2026 proposal drafts | [`docs/proposal/`](../proposal/) |
+| Decision-model test list (D1–D12) | [`decision-model-tests.md`](decision-model-tests.md) |
+| ARA Fall 2026 proposal drafts (2026-10-20) | [`proposals/`](proposals/ara-fall-2026-one-pager.md) |
 
 ## Open research candidates
 

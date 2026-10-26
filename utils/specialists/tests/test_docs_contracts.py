@@ -6,8 +6,9 @@ and describing wire shapes the code no longer emits. This suite pins both.
 
 ``DOCS`` is the contract set an external integrator reads (source cards, the
 four frozen seams, the safety model, the migration guide) plus the documents
-that orient a newcomer (README, structure, architecture, goals, commands, the
-changelog guide) and the evaluation indexes. ``MAINTAINED_DOCS`` adds every canonical skill.
+that orient a newcomer (README, the docs front door and the two era READMEs,
+structure, architecture, goals, commands, the changelog guide) and the
+evaluation indexes. ``MAINTAINED_DOCS`` adds every canonical skill.
 
 ``docs/plans/`` is deliberately excluded: it is a dated historical record, and a
 plan that cites the tree as it stood when the plan was written is correct, not
@@ -35,6 +36,9 @@ REPO_ROOT = Path(__file__).resolve().parents[3]
 
 DOCS = (
     "README.md",
+    "docs/README.md",
+    "docs/era-1-challenge/README.md",
+    "docs/era-2-expansion/README.md",
     "docs/RESULTS.md",
     "docs/structure.md",
     "docs/ARCHITECTURE.md",

@@ -1,5 +1,12 @@
 # Goals
 
+> **Era 1, complete.** This is the year-one roadmap for the ReliaQuest Innovation Challenge
+> award (June 8 to October 23, 2026). Every row is done; the October pitch was delivered at
+> FSU Discovery Days on 2026-10-19. It is kept as the record of what year one set out to do
+> and is no longer a live plan. Era 2's goal and requirements are in
+> [`era-2-expansion/README.md`](era-2-expansion/README.md); everything from era 1 is listed in
+> [`era-1-challenge/README.md`](era-1-challenge/README.md).
+
 ## Primary Objective (by October 2026)
 
 Deliver a working demonstration that:
@@ -44,7 +51,7 @@ Deliver a working demonstration that:
 | Status | Weeks | Phase | Task | Difficulty | Why it's needed |
 | :---: |-------|-------|------|------------|-----------------|
 | [x] | Wk 14–15 | Evaluation | Bug fixes, iteration, and documentation — address evaluation findings, harden edge cases, write technical docs covering source card format, agent interfaces, query safety constraints, and extending to a new query language (documentation set delivered: `source_cards.md`, `agent-interfaces.md`, `query-safety.md`, `migration-guide.md`, consolidated under `ARCHITECTURE.md` on 2026-09-09; the hardening half is the August–September experiment series recorded in `docs/research/`) | Low | Documentation makes the prototype extensible and demonstrates that replacing a query specialist requires only four targeted changes. |
-| [~] | Wk 15–16 | Pitch prep | Pitch preparation and final demo — build live demo script around credential-theft flow; prepare slides covering architecture, evaluation results, provenance output, and path to a ReliaQuest pilot; practice Q&A (**underway as of September 2026**: slide map, script and deck under `docs/pitch/`, per `docs/pitch/october-pitch-plan.md`) | Low | October ReliaQuest pitch is the primary deliverable. A polished end-to-end demo is the clearest proof the prototype meets the research goal. |
+| [x] | Wk 15–16 | Pitch prep | Pitch preparation and final demo — build live demo script around credential-theft flow; prepare slides covering architecture, evaluation results, provenance output, and path to a ReliaQuest pilot; practice Q&A (**underway as of September 2026; delivered at FSU Discovery Days on 2026-10-19**: slide map, script and deck under `docs/era-1-challenge/pitch/`, per `docs/era-1-challenge/pitch/october-pitch-plan.md`) | Low | October ReliaQuest pitch is the primary deliverable. A polished end-to-end demo is the clearest proof the prototype meets the research goal. |
 
 **October ReliaQuest pitch:** Live demo, evaluation results, and future development roadmap presented.
 
