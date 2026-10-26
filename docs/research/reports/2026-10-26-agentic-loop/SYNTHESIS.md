@@ -390,6 +390,10 @@ see what the loop is actually for.
 
 ## 7. Open research areas
 
+> **Superseded by round two** ([`ASSESSMENT.md`](../2026-10-26-agentic-loop-round-2/ASSESSMENT.md)).
+> The novelty audit found none of these clear. Item 2's "no modern Gremlin generation figure" was
+> wrong: `RELATED_WORK.md` already carried EICopilot (`[F-EICO]`). Item 3 was dropped by the operator.
+
 Each is a gap at least one report says no published work fills. The publishable ones are
 marked. All of them need the novelty audit in prompt 7 before anything is claimed.
 

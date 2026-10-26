@@ -193,14 +193,17 @@ Challenge, and the commit that opened "the post-pitch expansion section".
 
 ## 8. Decisions left to the owner
 
-1. **Where era-2 plans go.** `docs/skills/global-project-rules/SKILL.md` says plans go in
+1. **Where era-2 plans go.** *Decided 2026-10-26 by the operator: era-2 plans stay in
+   `docs/plans/`, next to the era-1 plans, so the agent rule needs no change.* `docs/skills/global-project-rules/SKILL.md` says plans go in
    `docs/plans/`. That folder is now closed as era 1. The proposal is
    `docs/era-2-expansion/plans/`; the rule is agent configuration and is left for the
    owner to change.
 2. **The year-two award in the root README.** Team & Funding names only the year-one award
    period. The repository holds no date or amount for the year-two award, so none was
    written.
-3. **Whether the paper programme continues.** `research/paper/` and
+3. **Whether the paper programme continues.** *Assessed 2026-10-26 in
+   [`plans/2026-10-26-era-2-roadmap.md`](plans/2026-10-26-era-2-roadmap.md): treat the TMLR draft as
+   era 1's publication, not an era-2 programme; submitting it is the operator's call.* `research/paper/` and
    `top-tier-programme-2026-09.md` are labelled era 1. If the TMLR draft is still meant to
    be submitted, say so, and it can be listed under era 2 as a carried item.
 4. **Experiment numbering for era 2.** New experiments will be `EXP-2026-10-…` and later,

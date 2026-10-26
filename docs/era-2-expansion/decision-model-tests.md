@@ -78,3 +78,22 @@ worse than the LLM pick is dropped.
   never mix. (The 2026-08-31 lesson: a threshold that scored 12-right-0-wrong on the tuning half
   scored 17-right-8-wrong on the frozen half.)
 - Which decision models to include besides d3-lite, once the vLLM server is up.
+
+## Round two changed the roles (2026-10-26)
+
+The decision-model report ([`5-decision-models.md`](../research/reports/2026-10-26-agentic-loop-round-2/5-decision-models.md))
+found that a small model scoring candidates one at a time is a poor *final* judge of the entity:
+a reranker's top pick scored 27 against 77–83 for an LLM choosing with reasoning (LELA, ZESHEL,
+normalized accuracy). Revised roles, from
+[`ASSESSMENT.md`](../research/reports/2026-10-26-agentic-loop-round-2/ASSESSMENT.md) §4.3:
+
+- **D2 entity grounding:** a second opinion, never the final judge.
+- **D3 "none":** combined with structural signals (no candidate has the required relation).
+- **D4 relation choice:** a strong candidate; on a near-tie, run both relations.
+- **D5 question shape, D8 plan check:** advisory only.
+- **D10 membership by meaning:** the best fit.
+
+The test order, the roster of model types and sizes, and the rule for assigning each step a role
+are in the [era-2 roadmap](../plans/2026-10-26-era-2-roadmap.md), Phase 1. Only off-the-shelf
+open-source models are tested; none is trained for Ariadne.
+

@@ -11,7 +11,7 @@ them or to the reference set that both rely on. Why it is split this way:
 | **What it is** | The ReliaQuest Innovation Challenge: a federated, provenance-checked query prototype over ATT&CK and CAPEC, and the research programme that measured it for the pitch | Ariadne as an embeddable, graph-universal, exact retrieval agent that other systems call |
 | **Start here** | [`era-1-challenge/README.md`](era-1-challenge/README.md) | [`era-2-expansion/README.md`](era-2-expansion/README.md) |
 | **In its folder** | The pitch, the showcase, the year-one proposal | The direction and requirements, the decision-model test list, the ARA Fall 2026 proposal drafts |
-| **Elsewhere, at paths other records cite** | [`goals.md`](goals.md), [`RESULTS.md`](RESULTS.md), [`plans/`](plans/README.md), [`evaluation/`](evaluation/README.md), experiments `EXP-2026-07-001` to `EXP-2026-09-029`, the reports to 2026-09-14, the paper draft | The agentic-loop reports in [`research/reports/`](research/reports/INDEX.md), the prompts from 2026-10-20 in [`prompts/`](prompts/README.md) |
+| **Elsewhere, at paths other records cite** | [`goals.md`](goals.md), [`RESULTS.md`](RESULTS.md), [`plans/`](plans/README.md), [`evaluation/`](evaluation/README.md), experiments `EXP-2026-07-001` to `EXP-2026-09-029`, the reports to 2026-09-14, the paper draft | The [era-2 roadmap](plans/2026-10-26-era-2-roadmap.md) and later plans in [`plans/`](plans/README.md), the agentic-loop reports in [`research/reports/`](research/reports/INDEX.md), the prompts from 2026-10-20 in [`prompts/`](prompts/README.md) |
 
 ## Reference for both eras
 

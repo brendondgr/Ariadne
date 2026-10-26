@@ -28,6 +28,7 @@ not.
 | Date | Report | Author | Status | One-line finding |
 |---|---|---|---|---|
 | 2026-10-26 | [The agentic retrieval loop](2026-10-26-agentic-loop/SYNTHESIS.md) ([pointers](2026-10-26-agentic-loop/POINTERS.md)) | claude, from four external reports | Draft | All four reports put the typed plan first and say it can be tested without a loop; the local model takes 0.7 s per typed tool call with thinking off, not the 20–40 s per loop the reports assumed; the Cypher connector cuts results at 1,000 rows with no flag |
+| 2026-10-26 | [The agentic retrieval loop, round two](2026-10-26-agentic-loop-round-2/ASSESSMENT.md) ([pointers](2026-10-26-agentic-loop-round-2/POINTERS.md)) | claude, from three external reports | Draft | No post-pitch claim is clear; each survives only as a measurement on property graphs, with typed requests against LLM-written Cypher and Gremlin as the spine; a small decision model is a poor final judge of the entity (27 against 77–83 for an LLM with reasoning); the typed algebra needs about thirteen operators |
 
 **The September overnight reports** (2026-09-02 … 09-07) were written by
 `scripts/morning_report.py`, `scripts/plain_report.py` and the

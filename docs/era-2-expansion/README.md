@@ -4,7 +4,7 @@
 docs were split into two eras (reasoning: [`REORGANIZATION-2026-10.md`](../REORGANIZATION-2026-10.md)).
 What we started with is [era 1](../era-1-challenge/README.md).*
 
-**Status: discussion.** Nothing on this page is scheduled. Tests are listed so they can be
+**Status: discussion.** The proposed order of work is the [era-2 roadmap](../plans/2026-10-26-era-2-roadmap.md). Nothing on this page is scheduled. Tests are listed so they can be
 chosen later; none of them runs until the operator says so.
 
 ## The line between the two halves of the project
@@ -77,16 +77,23 @@ synthesis: [`SYNTHESIS.md`](../research/reports/2026-10-26-agentic-loop/SYNTHESI
 | Round 1 reports, filed unchanged | [`docs/research/reports/2026-10-26-agentic-loop/`](../research/reports/2026-10-26-agentic-loop/POINTERS.md) |
 | Synthesis: revised design, proposed tests, open research areas | [`SYNTHESIS.md`](../research/reports/2026-10-26-agentic-loop/SYNTHESIS.md) |
 | Per-call latency of the local model and d3-lite, measured 2026-10-26 | [`probe/RESULTS.md`](../research/reports/2026-10-26-agentic-loop/probe/RESULTS.md) |
-| Round 2 prompts (decision models, universal coverage, novelty audit), awaiting reports | prompts 5–7 in the same README |
+| Round 2 prompts (decision models, universal coverage, novelty audit) | prompts 5–7 in the same README |
+| Round 2 reports and what they change | [`ASSESSMENT.md`](../research/reports/2026-10-26-agentic-loop-round-2/ASSESSMENT.md) |
+| The proposed order of work, tests and reasons | [`docs/plans/2026-10-26-era-2-roadmap.md`](../plans/2026-10-26-era-2-roadmap.md) |
 | Earlier post-pitch prompt: plug-and-play retrieval (2026-10-20) | [`docs/prompts/2026-10-20-plug-and-play-retrieval.md`](../prompts/2026-10-20-plug-and-play-retrieval.md) |
 | Decision-model test list (D1–D12) | [`decision-model-tests.md`](decision-model-tests.md) |
 | ARA Fall 2026 proposal drafts (2026-10-20) | [`proposals/`](proposals/ara-fall-2026-one-pager.md) |
 
 ## Open research candidates
 
-Three candidates, explained in the synthesis §7. None is claimed until the novelty audit
-(prompt 7) comes back.
+The round-two novelty audit found none of them clear. Each survives only as a *measurement*
+on property graphs ([`ASSESSMENT.md`](../research/reports/2026-10-26-agentic-loop-round-2/ASSESSMENT.md) §1, §4.1):
 
-1. Exact answers with a bounded controller.
-2. Typed requests against LLM-written queries on unseen property graphs, in Cypher and Gremlin.
-3. A grounding decision model trained once across many graphs.
+1. **Typed requests against LLM-written Cypher and Gremlin on the same unseen graphs** — the
+   recommended spine (roadmap Phase 5). The "no Gremlin measurement exists" half was killed by
+   EICopilot.
+2. **Exact answers with a bounded controller** — a section of the same study (roadmap Phase 4),
+   with Jeffries' truncation labels as the baseline to beat.
+3. **Federation across engines, with latency by hub degree** — a section of the same study.
+4. ~~A grounding decision model trained once across many graphs~~ — dropped by the operator on
+   2026-10-26. Era 2 uses off-the-shelf open-source decision models only.
