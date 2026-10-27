@@ -9,6 +9,7 @@ reports and paper files link to these prompts at this path; it is split here ins
 | Date | Prompt | What it asks |
 |---|---|---|
 | 2026-10-20 | [`2026-10-20-plug-and-play-retrieval.md`](2026-10-20-plug-and-play-retrieval.md) | Published methods for plug-and-play question understanding and adaptive retrieval over any graph |
+| 2026-10-27 | [`2026-10-27-paper-2-venue-selection.md`](2026-10-27-paper-2-venue-selection.md) | Where to publish era 2's planned study, A-level against B-level venues, for each likely outcome |
 | 2026-10-26 | [`2026-10-26-agentic-loop-README.md`](2026-10-26-agentic-loop-README.md) | Index of the agentic-loop round: prompts 1–4 (controller, observations, vocabulary, embedding), whose reports are filed in [`../research/reports/2026-10-26-agentic-loop/`](../research/reports/2026-10-26-agentic-loop/POINTERS.md), and prompts 5–7 (decision models, universal coverage, novelty audit) |
 
 The ARA Fall 2026 deep-research prompt sits with its proposal, in

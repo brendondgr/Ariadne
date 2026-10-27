@@ -17,6 +17,21 @@ question banks, model judging, and the experiments `EXP-2026-07-001` to `EXP-202
 It ended with the September showcase and the October pitch at FSU Discovery Days on
 **2026-10-19**.
 
+## The frozen copy, and where paper 1 is written
+
+Era 1 is also kept as its own repository, so the era-1 paper can be written without anything
+from era 2:
+
+| | |
+|---|---|
+| Frozen at | commit `7dc7aa5e`, tag `era-1-final` (2026-10-15), the last commit before any era-2 work |
+| Local copy | `~/Papers/Ariadne-Era1` |
+| GitHub | [`brendondgr/Ariadne-Era1`](https://github.com/brendondgr/Ariadne-Era1), private |
+| Rules | Its `FREEZE.md`: code, experiments and banks frozen; only the paper and its notes change |
+
+**Work on paper 1 happens there, not here.** The paper folder in this repository
+(`docs/research/paper/`) stays as the era-1 record and is not edited further.
+
 ## Where everything from era 1 lives
 
 Some of it moved into this folder. The rest stays at its old path because experiment

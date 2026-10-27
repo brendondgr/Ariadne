@@ -339,8 +339,11 @@ answers against the previous tree.
 ## Alongside the phases
 
 - **The era-1 paper.** `docs/research/paper/tmlr/ariadne-tmlr.tex` is a complete draft (last
-  edited 2026-09-09) that banks the pre-pitch findings. Submitting it is the operator's call; see
-  the note in the next section.
+  edited 2026-09-09) that banks the pre-pitch findings. Since 2026-10-27 it is written in a
+  frozen copy of era 1, `~/Papers/Ariadne-Era1` (GitHub `brendondgr/Ariadne-Era1`, tag
+  `era-1-final`), so that this roadmap's code changes never touch its figures. Era 2's results go
+  into a later paper; where to submit it is the question of
+  [`2026-10-27-paper-2-venue-selection.md`](../prompts/2026-10-27-paper-2-venue-selection.md).
 - **The ARA proposal (due 2026-11-04).** Phase 5's study on Neptune is the closest fit to the
   Amazon call. The one-pager's research questions should be re-read against it before submission.
 - **Competitor watch, monthly:**
