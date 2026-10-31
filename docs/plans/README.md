@@ -16,4 +16,3 @@ Everything from era 1 is listed in [`../era-1-challenge/README.md`](../era-1-cha
 | Plan | What it covers |
 |---|---|
 | [`2026-10-26-era-2-roadmap.md`](2026-10-26-era-2-roadmap.md) | The order of era-2 work, what each phase tests, how and why; the decision-model bake-off; the era-1 TMLR draft's status |
-| [`2026-10-31-phase-2-typed-boundary-and-algebra.md`](2026-10-31-phase-2-typed-boundary-and-algebra.md) | Roadmap Phase 2 as a step-by-step research plan: three research questions (does the typed boundary recover the planner's loss; which operators; do Cypher and Gremlin compile to identical answers), ten steps, three experiments |
