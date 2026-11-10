@@ -75,6 +75,9 @@ AGENT_POINTER_DIRS = (".claude/skills", ".agents/skills")
 #: ``CLAIMS-HISTORY.md`` are verbatim archives and are excluded likewise.
 RESEARCH_EXCLUDED = (
     "audit-2026-08-03.md",
+    # Excluded 2026-11-10 for the same reason as the 3 August audit: a dated
+    # snapshot that cites the paper folder, since moved out of the repository.
+    "audit-2026-08-31.md",
     "templates/",
     "AGENT_INSTRUCTIONS.md",
     "experiments/",

@@ -21,14 +21,12 @@ not.
 | 2026-09-06 | [Overnight — which graders can see near the ceiling](2026-09-06-overnight-report.md) ([pdf](2026-09-06-overnight-report.pdf)) | claude | Final | Of three local graders one resolves a 0.03 difference near 1.0; one emits a single value there and one inverts mid/low |
 | 2026-09-07 | [Overnight — seeded generic repeats and the paper-number check](2026-09-07-overnight.md) ([pdf](2026-09-07-overnight.pdf); [state](2026-09-07-overnight.state.json), [paper numbers](2026-09-07-paper-numbers.json), [recompute audit](2026-09-07-recompute-audit.json)) | claude | Final | Three further seeds graded; the driver finished early and nothing ran between 04:00 and 09:57 |
 | 2026-09-14 | [Templates, primitives, and the planner](2026-09-14-templates-primitives-and-the-planner.pdf) ([html source](2026-09-14-templates-primitives-and-the-planner.html)) | claude | Final | Given an authored plan the schema-derived engine scores 0.9005 against templates' 0.5525 on 282 sealed questions with no model in the answer path — but at the planner the workbench actually runs, that advantage falls to +0.0261 and is not separable, so the evidence supports routing between the two engines rather than replacing one; the 2B narrator preserves 284/284 answers' facts exactly at ~1,340x the wall time, and the planner itself is the largest term in every cell (-0.1892 to templates, -0.3814 to primitives) |
-| 2026-08-26 | [Novelty audit — what this architecture can actually claim](2026-08-26-novelty-audit/novelty-audit-report.pdf) | external agent, brief in [PROMPT.md](2026-08-26-novelty-audit/PROMPT.md) | Final | One claim killed outright by a paper published four weeks earlier, two mechanisms scooped, five narrowed, one clear — and the citation the whole novelty argument rested on does not say what we thought it said |
 
 ## Era 2 — the expansion (from 2026-10-20)
 
 | Date | Report | Author | Status | One-line finding |
 |---|---|---|---|---|
-| 2026-10-26 | [The agentic retrieval loop](2026-10-26-agentic-loop/SYNTHESIS.md) ([pointers](2026-10-26-agentic-loop/POINTERS.md)) | claude, from four external reports | Draft | All four reports put the typed plan first and say it can be tested without a loop; the local model takes 0.7 s per typed tool call with thinking off, not the 20–40 s per loop the reports assumed; the Cypher connector cuts results at 1,000 rows with no flag |
-| 2026-10-26 | [The agentic retrieval loop, round two](2026-10-26-agentic-loop-round-2/ASSESSMENT.md) ([pointers](2026-10-26-agentic-loop-round-2/POINTERS.md)) | claude, from three external reports | Draft | No post-pitch claim is clear; each survives only as a measurement on property graphs, with typed requests against LLM-written Cypher and Gremlin as the spine; a small decision model is a poor final judge of the entity (27 against 77–83 for an LLM with reasoning); the typed algebra needs about thirteen operators |
+| 2026-10-26 | [Latency probe — one controller step on the local stack](2026-10-26-latency-probe/RESULTS.md) | claude | Final | A typed tool call on the local model takes about 0.7 s with thinking off; a probe, not an experiment |
 
 **The September overnight reports** (2026-09-02 … 09-07) were written by
 `scripts/morning_report.py`, `scripts/plain_report.py` and the
@@ -36,12 +34,9 @@ not.
 on disk at render time; they moved here from a second, unindexed docs/reports/
 directory on 2026-09-09.
 
-**Not every report is built here.** The 2026-08-26 novelty audit is an external
-literature audit — no number in it comes from `data/collect.py` and it cites no
-experiment of ours. It is filed as a report because it reads across the whole
-project and says what the *literature* adds up to. Its
-[`POINTERS.md`](2026-08-26-novelty-audit/POINTERS.md) records what was
-independently re-verified and what was not.
+**Not kept here:** literature and positioning reports (the 2026-08-26 novelty
+audit and the 2026-10-26 agentic-loop research rounds) are kept privately; see
+[`../../../AGENTS.md`](../../../AGENTS.md).
 
 ## Building one
 

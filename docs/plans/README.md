@@ -11,9 +11,5 @@ eight experiment manifests. See [`robustness/README.md`](robustness/README.md) f
 parallel-brief set.
 
 Everything from era 1 is listed in [`../era-1-challenge/README.md`](../era-1-challenge/README.md).
-**Era-2 plans also live here** (operator's decision, 2026-10-26), dated from 2026-10-20:
-
-| Plan | What it covers |
-|---|---|
-| [`2026-10-26-era-2-roadmap.md`](2026-10-26-era-2-roadmap.md) | The order of era-2 work, what each phase tests, how and why; the decision-model bake-off; the era-1 TMLR draft's status |
-| [`2026-10-31-era-2-research-plan.md`](2026-10-31-era-2-research-plan.md) | **The plan to work from.** The roadmap laid out as fourteen steps toward paper 2: its four research questions, what each step establishes for the paper, where the work happens, how each step is checked, and the decisions left to the operator |
+**Era-2 plans are not kept in this repository.** The era-2 roadmap, the research plan and
+the era-1 publication plan are kept privately; see [`../../AGENTS.md`](../../AGENTS.md).

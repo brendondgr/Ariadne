@@ -1,11 +1,10 @@
 # Era 2 — the expansion: where Ariadne goes next (from 2026-10-20)
 
 *Written 2026-10-26 as the post-pitch expansion section; renamed from docs/expansion/ when the
-docs were split into two eras (reasoning: [`REORGANIZATION-2026-10.md`](../REORGANIZATION-2026-10.md)).
+docs were split into two eras.
 What we started with is [era 1](../era-1-challenge/README.md).*
 
-**Status: discussion.** The proposed order of work is the [era-2 roadmap](../plans/2026-10-26-era-2-roadmap.md). Nothing on this page is scheduled. Tests are listed so they can be
-chosen later; none of them runs until the operator says so.
+**Status: discussion.** Nothing on this page is scheduled.
 
 ## The line between the two halves of the project
 
@@ -39,13 +38,6 @@ graphs.
 | Wrong entity when an LLM picked from a reranked list | 35% | `EXP-2026-09-028` |
 | Deterministic path, median per question, single user | 0.006 s | `EXP-2026-09-016` |
 
-## The direction
-
-An LLM controller in one tool-calling loop, modelled on GAIFA's agent mod. It sends **typed,
-card-derived requests** to deterministic specialists, which never read natural language. The
-full design, the evidence behind it and a proposed test order are in the first-round
-synthesis: [`SYNTHESIS.md`](../research/reports/2026-10-26-agentic-loop/SYNTHESIS.md).
-
 ## Requirements the operator set on 2026-10-26
 
 1. **Exact results.** No shaping or truncation step may drop anything that belongs in the
@@ -64,36 +56,12 @@ synthesis: [`SYNTHESIS.md`](../research/reports/2026-10-26-agentic-loop/SYNTHESI
 4. **Decision models on their own server.** Decision models (small models that return a
    probability per answer to a yes/no, choice or score question, with no generated text) will
    run on a separate vLLM server, so their calls can run concurrently and in batches. Which
-   steps they can handle reliably is a question to test, step by step:
-   [`decision-model-tests.md`](decision-model-tests.md).
+   steps they can handle reliably is a question to test, step by step.
 5. **Errors that teach.** Every rejected request comes back with what to fix and the valid
    options, like GAIFA's `fix` field. An empty result comes back with a diagnosis.
 
-## Research trail
+## Plans, research trail and proposals
 
-| What | Where |
-|---|---|
-| Round 1 prompts (controller, observations, vocabulary, embedding) | [`docs/prompts/2026-10-26-agentic-loop-README.md`](../prompts/2026-10-26-agentic-loop-README.md) |
-| Round 1 reports, filed unchanged | [`docs/research/reports/2026-10-26-agentic-loop/`](../research/reports/2026-10-26-agentic-loop/POINTERS.md) |
-| Synthesis: revised design, proposed tests, open research areas | [`SYNTHESIS.md`](../research/reports/2026-10-26-agentic-loop/SYNTHESIS.md) |
-| Per-call latency of the local model and d3-lite, measured 2026-10-26 | [`probe/RESULTS.md`](../research/reports/2026-10-26-agentic-loop/probe/RESULTS.md) |
-| Round 2 prompts (decision models, universal coverage, novelty audit) | prompts 5–7 in the same README |
-| Round 2 reports and what they change | [`ASSESSMENT.md`](../research/reports/2026-10-26-agentic-loop-round-2/ASSESSMENT.md) |
-| The proposed order of work, tests and reasons | [`docs/plans/2026-10-26-era-2-roadmap.md`](../plans/2026-10-26-era-2-roadmap.md) |
-| Earlier post-pitch prompt: plug-and-play retrieval (2026-10-20) | [`docs/prompts/2026-10-20-plug-and-play-retrieval.md`](../prompts/2026-10-20-plug-and-play-retrieval.md) |
-| Decision-model test list (D1–D12) | [`decision-model-tests.md`](decision-model-tests.md) |
-| ARA Fall 2026 proposal drafts (2026-10-20) | [`proposals/`](proposals/ara-fall-2026-one-pager.md) |
-
-## Open research candidates
-
-The round-two novelty audit found none of them clear. Each survives only as a *measurement*
-on property graphs ([`ASSESSMENT.md`](../research/reports/2026-10-26-agentic-loop-round-2/ASSESSMENT.md) §1, §4.1):
-
-1. **Typed requests against LLM-written Cypher and Gremlin on the same unseen graphs** — the
-   recommended spine (roadmap Phase 5). The "no Gremlin measurement exists" half was killed by
-   EICopilot.
-2. **Exact answers with a bounded controller** — a section of the same study (roadmap Phase 4),
-   with Jeffries' truncation labels as the baseline to beat.
-3. **Federation across engines, with latency by hub degree** — a section of the same study.
-4. ~~A grounding decision model trained once across many graphs~~ — dropped by the operator on
-   2026-10-26. Era 2 uses off-the-shelf open-source decision models only.
+Era 2's roadmap, its step-by-step research plan, the decision-model test list, the research
+prompts and reports behind the design, and the proposal drafts are kept privately, outside
+this repository. See [`../../AGENTS.md`](../../AGENTS.md) for where.

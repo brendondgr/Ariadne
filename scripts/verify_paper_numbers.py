@@ -35,7 +35,9 @@ from pathlib import Path
 import yaml
 
 REPO = Path(__file__).resolve().parents[1]
-PAPER = REPO / "docs/research/paper/tmlr/ariadne-tmlr.tex"
+#: The paper is kept outside this public repository (see AGENTS.md). Pass
+#: ``--paper`` to check any other copy.
+PAPER = Path("/home/bdgr/Papers/Proposals/2026-ariadne/proposal/paper-1/tmlr/ariadne-tmlr.tex")
 EXPERIMENTS = REPO / "docs/research/experiments"
 
 #: Prose that quotes results and must therefore quote *current* results.
@@ -48,14 +50,10 @@ PROSE_DOCS = (
     "docs/research/OPEN_QUESTIONS.md",
     # DECISIONS.md is a dated, append-only ADR log: an entry legitimately quotes
     # the figure that was current on its date, so it is not scanned.
-    "docs/research/paper/OUTLINE.md",
-    "docs/research/paper/tmlr/ariadne-tmlr.tex",
-    "docs/research/paper/ARTIFACT_APPENDIX.md",
     "docs/evaluation/README.md",
     "docs/ARCHITECTURE.md",
     "docs/goals.md",
     "docs/query-safety.md",
-    "docs/era-1-challenge/pitch/october-pitch-plan.md",
     # Era 2 quotes its starting figures from the record (added 2026-10-26).
     "docs/era-2-expansion/README.md",
 )
@@ -222,7 +220,7 @@ def main() -> int:
     total_stale = 0
     for doc in docs:
         result = scan(doc, index)
-        shown = doc.relative_to(REPO)
+        shown = doc.relative_to(REPO) if doc.is_relative_to(REPO) else doc
         report[str(shown)] = result
         total_stale += len(result["stale"])
         if not args.quiet:

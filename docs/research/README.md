@@ -30,7 +30,6 @@ anything.
 | [`figures/`](figures/) | Publication-ready figures **only**, promoted from experiments, with their generators in `figures/sources/`. |
 | [`tables/`](tables/) | Publication-ready generated tables (`.md` / `.tex`). |
 | [`datasets/`](datasets/) | Provenance, licence, and version for every dataset, one card each. |
-| [`paper/`](paper/) | Outline, venue targets and deadlines, artifact appendix, venue checklists. |
 | [`templates/`](templates/) | Copied wholesale by the scaffolder. Do not fill these in place. |
 | [`history/`](history/) | Dated records of one-time work (the August retrofit's migration sections). Never edited. |
 | [`audit-2026-08-03.md`](audit-2026-08-03.md) | External research audit, 3 August 2026. A dated snapshot — never updated in place. |
@@ -46,8 +45,8 @@ section says which part is which.
 | Era 1 — the Innovation Challenge, finished | Era 2 — the expansion, from 2026-10-20 |
 |---|---|
 | Experiments `EXP-2026-07-001` to `EXP-2026-09-029`: every folder in [`experiments/`](experiments/) today | Experiments numbered `EXP-2026-10-…` and later, when they exist |
-| Reports dated 2026-08-20 to 2026-09-14 ([`reports/INDEX.md`](reports/INDEX.md), first table) | [`reports/2026-10-26-agentic-loop/`](reports/2026-10-26-agentic-loop/POINTERS.md) (second table) |
-| [`paper/`](paper/OUTLINE.md), [`figures/`](figures/), [`tables/`](tables/), [`history/`](history/), both dated audits, and [`top-tier-programme-2026-09.md`](top-tier-programme-2026-09.md) | — |
+| Reports dated 2026-08-20 to 2026-09-14 ([`reports/INDEX.md`](reports/INDEX.md), first table) | [`reports/2026-10-26-latency-probe/`](reports/2026-10-26-latency-probe/RESULTS.md) (second table) |
+| [`figures/`](figures/), [`tables/`](tables/), [`history/`](history/) and both dated audits | — |
 
 The living ledgers ([`CURRENT.md`](CURRENT.md), [`CLAIMS.md`](CLAIMS.md),
 [`DECISIONS.md`](DECISIONS.md), [`OPEN_QUESTIONS.md`](OPEN_QUESTIONS.md),
@@ -55,9 +54,9 @@ The living ledgers ([`CURRENT.md`](CURRENT.md), [`CLAIMS.md`](CLAIMS.md),
 measured in era 1 and is still the latest of its kind; era 2 starts from those figures and
 adds to the same ledgers.
 
-**One name clash to know about:** `top-tier-programme-2026-09.md` is titled "Phase 2 — the
-top-tier programme". It is a September 2026 plan for the paper, inside era 1, and has
-nothing to do with era 2. `EXP-2026-08-013` also has its own "phase 1" and "phase 2".
+**Not kept here:** the paper draft, venue analysis, publication plans and research prompts
+are kept privately; see [`../../AGENTS.md`](../../AGENTS.md). `EXP-2026-08-013` has its own
+"phase 1" and "phase 2", unrelated to the eras.
 
 ## Adding an experiment
 

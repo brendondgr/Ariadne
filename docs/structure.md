@@ -7,8 +7,7 @@ in [`commands.md`](commands.md); what each number means is in
 
 The documentation is split into two eras at the October 2026 pitch: **era 1**,
 the Innovation Challenge (June 8 to October 19, 2026, finished), and **era 2**,
-the expansion (from 2026-10-20). The front door is [`README.md`](README.md); the
-reasoning is [`REORGANIZATION-2026-10.md`](REORGANIZATION-2026-10.md).
+the expansion (from 2026-10-20). The front door is [`README.md`](README.md).
 
 ## Start here
 
@@ -63,7 +62,6 @@ The front door is [`README.md`](README.md). Every entry below is marked by era.
 | `migration-guide.md` | Adding a new query-language specialist (openCypher/GQL) |
 | `structure.md` | This file |
 | `CHANGELOG.md`, `changelog.jsonl` | How to read the log; the log itself (one JSON line per change, both eras) |
-| `REORGANIZATION-2026-10.md` | Why the docs are split into two eras, and every move it made |
 | `assets/` | `architecture.svg` |
 | `skills/` | Canonical agent instructions (global rules, planner, UI, design, accessibility) |
 
@@ -71,7 +69,7 @@ The front door is [`README.md`](README.md). Every entry below is marked by era.
 
 | Path | Contents |
 |---|---|
-| `era-1-challenge/` | Its README lists everything from era 1; holds `pitch/` (the October pitch plan, deck, script, preview and numbers audit), `showcase/` (the September showcase deck and technical brief) and `proposal.md` (the funded year-one proposal) |
+| `era-1-challenge/` | Its README lists everything from era 1 that is kept in this repository |
 | `goals.md` | The year-one roadmap, evaluation criteria and deliverables; every row done |
 | `RESULTS.md` | What was measured, its limits, and how to reproduce it — the research detail moved out of the README |
 | `plans/` | Dated implementation plans, 2026-08-05 to 2026-09-16, closed; `plans/robustness/` is the parallel-brief set. Stays here because experiments, scripts and code cite it |
@@ -81,14 +79,13 @@ The front door is [`README.md`](README.md). Every entry below is marked by era.
 
 | Path | Contents |
 |---|---|
-| `era-2-expansion/` | The direction, the operator's requirements and the research trail (`README.md`), the decision-model test list, and `proposals/` (the ARA Fall 2026 drafts) |
+| `era-2-expansion/` | The goal, the figures it starts from and the operator's requirements (`README.md`) |
 
 **Shared by both eras**
 
 | Path | Contents |
 |---|---|
-| `research/` | **The live research record**: `CURRENT.md`, `CLAIMS.md`, `DECISIONS.md`, `OPEN_QUESTIONS.md`, `RELATED_WORK.md`, `INDEX.md`, `experiments/EXP-*/` (manifest, protocol, results per experiment), `paper/`, `figures/`, `tables/`, `reports/`, dated audits. Its README says which parts are era 1 (experiments to `EXP-2026-09-029`, reports to 2026-09-14, the paper) and which era 2 (`reports/2026-10-26-agentic-loop/`) |
-| `prompts/` | Saved prompts sent to external research tools, dated by filename; its README splits them by era |
+| `research/` | **The live research record**: `CURRENT.md`, `CLAIMS.md`, `DECISIONS.md`, `OPEN_QUESTIONS.md`, `RELATED_WORK.md`, `INDEX.md`, `experiments/EXP-*/` (manifest, protocol, results per experiment), `figures/`, `tables/`, `reports/`, dated audits. Its README says which parts are era 1 (experiments to `EXP-2026-09-029`, reports to 2026-09-14) and which era 2 |
 
 ### Moved paths
 
@@ -97,10 +94,8 @@ when they were written. These are the moves since then:
 
 | Moved on | From | To |
 |---|---|---|
-| 2026-10-26 | docs/pitch/ | `docs/era-1-challenge/pitch/` |
-| 2026-10-26 | docs/showcase/ | `docs/era-1-challenge/showcase/` |
-| 2026-10-26 | docs/proposal/proposal.md | `docs/era-1-challenge/proposal.md` |
-| 2026-10-26 | docs/proposal/ara-fall-2026-one-pager.md, ara-deep-research-prompt.md | `docs/era-2-expansion/proposals/` |
+| 2026-11-10 | docs/era-1-challenge/pitch/, showcase/, proposal.md; docs/era-2-expansion/proposals/, decision-model-tests.md; docs/prompts/; docs/research/paper/; docs/research/top-tier-programme-2026-09.md; docs/REORGANIZATION-2026-10.md; the publication and era-2 plans; the novelty-audit and agentic-loop reports | Out of this repository, to private storage (see `AGENTS.md`) |
+| 2026-11-10 | docs/research/reports/2026-10-26-agentic-loop/probe/ | `docs/research/reports/2026-10-26-latency-probe/` |
 | 2026-10-26 | docs/expansion/ | `docs/era-2-expansion/` |
 | 2026-10-15 | scratchpad/ | `scripts/judging/` |
 | 2026-10-15 | data-identity/ | `data/identity/` |

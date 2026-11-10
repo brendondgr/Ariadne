@@ -12,7 +12,7 @@ Question numbers are never reused, so the gaps in the numbering are deliberate.
 
 **A question can now come from the literature, not just from a run.** Q23–Q26
 were filed on 2026-08-26 from an external adversarial novelty audit
-([`reports/2026-08-26-novelty-audit/`](reports/2026-08-26-novelty-audit/)). They
+(`reports/2026-08-26-novelty-audit/`, kept privately; see `AGENTS.md`). They
 behave differently from the rest of this file: **none of them is answered by
 measuring our own system.** Two are answered by reading somebody else's paper
 (Q23, Q25), one by writing a paragraph we have all the materials for (Q24), and
@@ -494,9 +494,9 @@ These are limitations to disclose, not questions to answer.
 
 ## AMENDMENT, 2026-09-06 — five record defects surfaced by the venue readiness scoring
 
-Filed from [`paper/venue-readiness-2026-09.md`](paper/venue-readiness-2026-09.md),
+Filed from `paper/venue-readiness-2026-09.md`,
 which scored the record against the tier checklists in
-[`paper/venue-report-2026-09.md`](paper/venue-report-2026-09.md). **None of these
+`paper/venue-report-2026-09.md` (both kept privately; see `AGENTS.md`). **None of these
 needs a run.** All five are record-integrity defects: the measurements exist and
 the record misstates them. They are filed here rather than fixed silently because
 three of them were quoted into an external brief before anyone noticed.

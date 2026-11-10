@@ -94,9 +94,7 @@ claims rather than to raw evidence makes readable prose nearly free.
 
 ## Reproducing the Results
 
-The full artifact description — hardware, software, data pins, per-experiment commands, and the
-blockers — is [`docs/research/paper/ARTIFACT_APPENDIX.md`](research/paper/ARTIFACT_APPENDIX.md).
-The short version is below. Every command was read from that appendix and the CLI parsers, and
+The commands below were read from the paper's artifact appendix and the CLI parsers, and
 each experiment directory under [`docs/research/experiments/`](research/experiments/) carries
 its own `manifest.yaml` with the figures and the artifacts they were computed from.
 

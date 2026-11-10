@@ -57,4 +57,4 @@ ATT&CK and CAPEC terms require. The blocker recorded here until 2026-08-31 —
 | 2 | **No archival identity.** GitHub alone does not satisfy an "Artifact Available" badge | Needs a DOI — Zenodo, Figshare or Dryad. Now unblocked by the licence and outstanding only as work |
 
 Tracked in [`../OPEN_QUESTIONS.md`](../OPEN_QUESTIONS.md) and
-[`../paper/venue-targets.md`](../paper/venue-targets.md).
+the paper's venue-targets file (kept privately; see `AGENTS.md`).

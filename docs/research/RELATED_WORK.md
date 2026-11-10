@@ -12,7 +12,7 @@ entries that bear directly on a claim in [`CLAIMS.md`](CLAIMS.md); it does not
 replace that bibliography.
 
 **A second bibliography was added on 2026-08-26** —
-[`reports/2026-08-26-novelty-audit/`](reports/2026-08-26-novelty-audit/) Part 7,
+`reports/2026-08-26-novelty-audit/` (kept privately; see `AGENTS.md`) Part 7,
 56 entries, 41 read in full, from an adversarial audit whose brief was to refute
 our claims rather than support them. **It corrected four of the eight entries
 this file inherited from the 2026-08-03 audit** (see the correction notice
@@ -33,7 +33,7 @@ there.
 ## 🛑 Correction notice — 2026-08-26
 
 **Read this before citing anything in this file.** An external adversarial
-novelty audit ([`reports/2026-08-26-novelty-audit/`](reports/2026-08-26-novelty-audit/))
+novelty audit (`reports/2026-08-26-novelty-audit/` (kept privately; see `AGENTS.md`))
 retrieved and read 41 papers, including four entries below that this file had
 described from abstracts. **Four of eight prior-art entries were wrong. Two of
 them mattered.** The corrections are folded in below; the errors are recorded
