@@ -8,8 +8,7 @@ Every correctness figure this project has ever published comes from a question
 bank that Ariadne co-authored. Two mechanisms produced them: hand-written
 templates (co-authorship bias measured at **0.147**), and an LLM given the
 schema (blind to the code, but still schema-aware). The record has flagged this
-in four separate places — Q1, Q16, `bank-2026-08-19/CARD.md`, and the external
-audit's "Moderate" resource-novelty rating.
+in four separate places, including Q1, Q16 and `bank-2026-08-19/CARD.md`.
 
 A web search for human-authored ATT&CK/CAPEC question sets returned nothing
 (2026-08-21). But that search conflated two needs. Q16 wants *human phrasing*

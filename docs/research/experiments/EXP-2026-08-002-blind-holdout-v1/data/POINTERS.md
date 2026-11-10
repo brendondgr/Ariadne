@@ -10,7 +10,7 @@ rows are the only integrity link to the raw run output.
 | Artifact | Path (repo-relative) | Bytes | SHA-256 | What it is |
 |---|---|---|---|---|
 | Results | `docs/evaluation/holdout-v1/results.json` | 106280 | sha256:3c3af75e38934949b534786648d3d6565fc2e4cd2d88dae59200f15dd846e08f | Every number in the manifest and RESULTS, produced by `utils/evaluation/holdout_report.py` from the judgment files; per-case verdicts for both arms |
-| Write-up | `docs/evaluation/holdout-v1/README.md` | 12781 | sha256:cdd2e92a58fc478fd65ac74e61338c74e89286359988c6cc9c37f7b746ccecf3 | Full write-up: per-category table, failure analysis, gate decision |
+| Write-up | `docs/evaluation/holdout-v1/README.md` | 12815 | sha256:5cf34675ddad599d92e21da33da9f23bcbcfc58f6ee04cf434e9c804a809d05d | Full write-up: per-category table, failure analysis, gate decision |
 | Anchor draw | `docs/evaluation/holdout-v1/anchors.json` | 10489 | sha256:8d448630e86579c39f715e4c36b97d0d25b0435c1f4f1f56229491bc22dc702c | The seeded (20260805) uniform anchor sample, committed before any question existed |
 | Authored questions | `docs/evaluation/holdout-v1/authored.json` | 4081 | sha256:f9b3b3c37414324f7de4658925e0dc16764c1d94446586f747a604668a499d4a | The Author's 30 questions as written, before gold was attached |
 | Author prompt | `docs/evaluation/holdout-v1/author-prompt.md` | 47162 | sha256:3812db1f5127ce33b5a74b1e967d89f2f93ddfd436fd25d6d54be55c4ee69d6e | The prompt the blind Author received (`llm.prompt_files[0]`) |

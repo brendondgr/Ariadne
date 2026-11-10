@@ -35,7 +35,6 @@ there; it is listed here so the whole era can be found from one page.
 | Raw evaluation artifacts | [`../evaluation/`](../evaluation/README.md) | In place; hash-pinned by the experiments |
 | The experiments, `EXP-2026-07-001` to `EXP-2026-09-029` | [`../research/INDEX.md`](../research/INDEX.md) | In place; the research record serves both eras |
 | Synthesis reports, 2026-08-20 to 2026-09-14 | [`../research/reports/INDEX.md`](../research/reports/INDEX.md) | In place; the era-1 table |
-| The external audits (3 and 31 August) | [`../research/audit-2026-08-31.md`](../research/audit-2026-08-31.md) | In place |
 
 ## Quoting its figures
 

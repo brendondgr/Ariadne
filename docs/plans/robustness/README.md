@@ -1,13 +1,12 @@
 # Robustness — parallel work plans (index)
 
-Five self-contained briefs, written so separate agents could run them without
+Four self-contained briefs, written so separate agents could run them without
 prior context. Each states its own scope, prohibitions and deliverables.
 
 | Brief | Scope |
 |---|---|
 | [01-overnight-safe-work.md](01-overnight-safe-work.md) | Mechanical, unattended-safe tasks; created the `freeze/holdout-v1` tag |
 | [02-holdout-question-generation.md](02-holdout-question-generation.md) | The blind holdout bank (normative), run against that tag |
-| [03-deferred-work.md](03-deferred-work.md) | A register of deliberately postponed items, not a task list |
 | [04-holdout-execution-brief.md](04-holdout-execution-brief.md) | Operator brief fixing 02's open execution details |
 | [05-holdout-execution-plan.md](05-holdout-execution-plan.md) | Implementation plan for executing 02 under 04's brief |
 

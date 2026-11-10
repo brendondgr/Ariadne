@@ -13,7 +13,6 @@ not.
 
 | Date | Report | Author | Status | One-line finding |
 |---|---|---|---|---|
-| 2026-08-20 | [Templates beat LLM-written graph queries two to one](2026-08-20-ariadne-project-briefing/report.pdf) | brendondgr | Draft | Templates win the query-writing comparison ~2:1 on two disjoint sets; the near-ceiling catalogue figure and the templates-hold-the-accuracy claim did not survive blind testing |
 | 2026-08-31 | [Overnight run — steps 1–6 of the honest-ambiguity plan](2026-08-31-overnight-run.md) | claude | Final | Three defects fixed and exact-name matching shipped (+3 right for +1 wrong); fuzzy matching held back because a threshold that scored 12-right-0-wrong on the tuning half scored 17-right-8-wrong on the frozen half |
 | 2026-09-02 | [Overnight — the expansion bank, judged](2026-09-02-overnight-report.md) ([pdf](2026-09-02-overnight-report.pdf)) | claude | Final | 572 questions covering every shape the sources support; the assembled path beats the hand-written library and the query-writing arm on the 284-question dev half |
 | 2026-09-04 | [Overnight — two tracks, two graders](2026-09-04-overnight-report.md) ([pdf](2026-09-04-overnight-report.pdf)) | claude | Final (stub) | Second grader family agrees on the arm ordering; the gemma pass on the query-writing arm did not run before the deadline |
@@ -34,8 +33,8 @@ not.
 on disk at render time; they moved here from a second, unindexed docs/reports/
 directory on 2026-09-09.
 
-**Not kept here:** literature and positioning reports (the 2026-08-26 novelty
-audit and the 2026-10-26 agentic-loop research rounds) are kept privately; see
+**Not kept here:** literature and positioning reports (the 2026-08-20 project
+briefing, the 2026-08-26 audit of the literature and the 2026-10-26 agentic-loop research rounds) are kept privately; see
 [`../../../AGENTS.md`](../../../AGENTS.md).
 
 ## Building one

@@ -17,9 +17,9 @@ things follow, and only the second is interesting:
    grader family's interval already includes zero, and if run-to-run spread is of
    the same order as the margin, one draw did not establish the sign.
 
-This experiment answers 2. It is the first kill gate of the Phase 2 programme
-(`docs/research/top-tier-programme-2026-09.md`, Step 0.1) and it is owed to the
-paper regardless of whether that programme is ever scheduled.
+This experiment answers 2. It is a kill gate of a September research programme
+(kept privately) and is owed to the record regardless of whether that programme
+is ever scheduled.
 
 ---
 

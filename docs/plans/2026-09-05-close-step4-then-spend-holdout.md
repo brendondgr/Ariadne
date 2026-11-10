@@ -1,8 +1,7 @@
 # Close Step 4, then spend the holdout
 
-*2026-09-05. Operator directive: the EACL demo track is abandoned — this is a
-full conference paper, so the 22 September date no longer constrains anything.
-Two pieces of measurement remain before the record is closed for writing:
+*2026-09-05. Operator directive [publication target redacted 2026-11-10; kept
+privately]. Two pieces of measurement remain before the record is closed for writing:
 finish the cross-model re-grade (Step 4), then spend the sealed holdout
 (Step 7). Nothing else is to be run.*
 

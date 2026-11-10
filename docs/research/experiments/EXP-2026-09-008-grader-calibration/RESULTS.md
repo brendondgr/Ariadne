@@ -149,11 +149,7 @@ trusting the metric.
 
 ## Where this goes in the paper
 
-It has no home in the outline yet and needs one. The draft
-(`docs/research/paper/tmlr/ariadne-tmlr.tex`) currently gives it §5, leading,
-on the grounds that TMLR's scope makes an evaluation-methodology result the part
-that fits and that it needs no external system to be interesting. That placement
-is still an open editorial decision.
+*Redacted 2026-11-10; kept privately with the paper.*
 
 ---
 

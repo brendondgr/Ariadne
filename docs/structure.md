@@ -85,7 +85,7 @@ The front door is [`README.md`](README.md). Every entry below is marked by era.
 
 | Path | Contents |
 |---|---|
-| `research/` | **The live research record**: `CURRENT.md`, `CLAIMS.md`, `DECISIONS.md`, `OPEN_QUESTIONS.md`, `RELATED_WORK.md`, `INDEX.md`, `experiments/EXP-*/` (manifest, protocol, results per experiment), `figures/`, `tables/`, `reports/`, dated audits. Its README says which parts are era 1 (experiments to `EXP-2026-09-029`, reports to 2026-09-14) and which era 2 |
+| `research/` | **The live research record**: `CURRENT.md`, `CLAIMS.md`, `DECISIONS.md`, `OPEN_QUESTIONS.md`, `INDEX.md`, `experiments/EXP-*/` (manifest, protocol, results per experiment), `figures/`, `tables/`, `reports/`, dated audits. Its README says which parts are era 1 (experiments to `EXP-2026-09-029`, reports to 2026-09-14) and which era 2 |
 
 ### Moved paths
 

@@ -235,7 +235,7 @@ friendlier branch:
   four bands. At n=30 this gate cannot be resolved sharply, and the plan's
   thresholds were set without that being obvious.
 - Arm F is 0.708, inside the 0.70 – 0.85 band, whose instruction is "drop
-  ARTMAN, re-scope Step 7 to the reduced form".
+  [a workshop target, redacted 2026-11-10], re-scope Step 7 to the reduced form".
 
 The gate's standing kill criteria are both satisfied: the seed, sampler and
 anchor list are committed, so the sample is auditable, and no material

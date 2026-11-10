@@ -24,5 +24,9 @@ repository on the maintainer's machine:
   maps each file's old path in this repository to its new one. Older documents here still
   cite some of those old paths.
 
-What stays here: the code, the experiment record (`docs/research/`), the evaluation banks and
-answers, and the engineering documentation.
+What stays here: the code, the experiment record (`docs/research/`: experiments, `CLAIMS.md`,
+`DECISIONS.md`, `OPEN_QUESTIONS.md`, `CURRENT.md`), the evaluation banks and answers, and the
+engineering documentation. The related-work ledger, both external research audits, the
+pre-2026-11-10 claims history and answered-questions archive, and the full text of every
+passage redacted here (marked "kept privately" or "[Redacted 2026-11-10]") are in
+`/home/bdgr/Papers/Proposals/2026-ariadne/references/research-ledgers/`.

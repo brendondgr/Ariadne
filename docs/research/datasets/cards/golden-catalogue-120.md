@@ -45,7 +45,7 @@ These are not minor caveats. They are the reason C-001 is `partial` and not
 6. **Its own gold has not been audited.** The computed-gold approach is a partial
    answer to the KGQA benchmark-integrity problem — where average factual
    correctness across 16 published datasets is 57% — but "computed" is not
-   "verified". See [`../../RELATED_WORK.md`](../../RELATED_WORK.md) `[G-KGQAGEN]`.
+   "verified". See the related-work ledger, entry `[G-KGQAGEN]` (kept privately).
 
 ## What would fix it
 

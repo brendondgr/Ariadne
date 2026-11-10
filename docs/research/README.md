@@ -21,19 +21,17 @@ anything.
 | [`CURRENT.md`](CURRENT.md) | **Read first.** Auto-generated: every withdrawn figure with its replacement, every superseded experiment with its successor, one current headline per experiment. `make index` regenerates it; the validator fails on a stale copy. |
 | [`INDEX.md`](INDEX.md) | Auto-generated table of every experiment. **Never hand-edit** — `make index` regenerates it and the validator fails on a stale copy. |
 | [`CLAIMS.md`](CLAIMS.md) | The paper's spine: one short row per claim — current figure, evidence, status. The highest-value file in this directory. |
-| [`CLAIMS-HISTORY.md`](CLAIMS-HISTORY.md) | Every earlier version of every claim row, verbatim, append-only. How each claim got to where it is. |
+| [`CLAIMS-HISTORY.md`](CLAIMS-HISTORY.md) | Every earlier version of every claim row, verbatim, append-only. Entries before 2026-11-10 are kept privately. |
 | [`DECISIONS.md`](DECISIONS.md) | Dated, append-only ADR log. Why recall@10 and not MRR, why this baseline, why that exclusion. |
 | [`OPEN_QUESTIONS.md`](OPEN_QUESTIONS.md) | Unresolved threads, known weaknesses, reviewer bait. Becomes future work. |
-| [`OPEN_QUESTIONS-ANSWERED.md`](OPEN_QUESTIONS-ANSWERED.md) | Questions that have been answered, moved here verbatim with the date and the experiment or decision that answered them. |
-| [`RELATED_WORK.md`](RELATED_WORK.md) | Running bibliography with a how-it-differs line each, plus the scoop watch. |
+| [`OPEN_QUESTIONS-ANSWERED.md`](OPEN_QUESTIONS-ANSWERED.md) | Answered questions, moved here verbatim. Entries before 2026-11-10 are kept privately. |
+| [`RELATED_WORK.md`](RELATED_WORK.md) | Pointer only: the related-work ledger is kept privately. |
 | [`experiments/`](experiments/) | One directory per experiment. Append-only once complete. |
 | [`figures/`](figures/) | Publication-ready figures **only**, promoted from experiments, with their generators in `figures/sources/`. |
 | [`tables/`](tables/) | Publication-ready generated tables (`.md` / `.tex`). |
 | [`datasets/`](datasets/) | Provenance, licence, and version for every dataset, one card each. |
 | [`templates/`](templates/) | Copied wholesale by the scaffolder. Do not fill these in place. |
 | [`history/`](history/) | Dated records of one-time work (the August retrofit's migration sections). Never edited. |
-| [`audit-2026-08-03.md`](audit-2026-08-03.md) | External research audit, 3 August 2026. A dated snapshot — never updated in place. |
-| [`audit-2026-08-31.md`](audit-2026-08-31.md) | External research audit, 31 August 2026. Re-audits the same repository and states, for every 3 August finding, whether it still holds. Also a dated snapshot. |
 
 ## Two eras in one record
 
@@ -46,7 +44,7 @@ section says which part is which.
 |---|---|
 | Experiments `EXP-2026-07-001` to `EXP-2026-09-029`: every folder in [`experiments/`](experiments/) today | Experiments numbered `EXP-2026-10-…` and later, when they exist |
 | Reports dated 2026-08-20 to 2026-09-14 ([`reports/INDEX.md`](reports/INDEX.md), first table) | [`reports/2026-10-26-latency-probe/`](reports/2026-10-26-latency-probe/RESULTS.md) (second table) |
-| [`figures/`](figures/), [`tables/`](tables/), [`history/`](history/) and both dated audits | — |
+| [`figures/`](figures/), [`tables/`](tables/), [`history/`](history/) | — |
 
 The living ledgers ([`CURRENT.md`](CURRENT.md), [`CLAIMS.md`](CLAIMS.md),
 [`DECISIONS.md`](DECISIONS.md), [`OPEN_QUESTIONS.md`](OPEN_QUESTIONS.md),

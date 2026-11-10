@@ -21,8 +21,8 @@ against something true. Then it removes the two capability inflations found by
 audit — dead templates counted as templates, and a claim whose plain reading its
 own data contradicts. Then it runs the four measurements that convert asserted
 properties into evidenced ones: the verifier ablation, bank-draw variance, probe
-expansion with tenant isolation, and the surviving federation argument. No venue
-deadline governs the sequence; the ordering is dependency, not calendar.
+expansion with tenant isolation, and the surviving federation argument. The
+ordering is dependency, not calendar.
 
 **Judging is deferred throughout.** Every step below reports deterministic or
 mechanical metrics only. Where a judged half exists it is declared in the
@@ -35,9 +35,8 @@ buy judging later does not require re-designing any experiment.
 
 ### Assumptions taken (simple gaps)
 
-- **Venue target.** Both near-term deadlines are dropped (ARTMAN 31 Aug, EACL
-  demo 22 Sept). *Assumption*: no venue target is set; the record is built for
-  correctness and venue selection is revisited after Step 8.
+- **Publication target.** *[Redacted 2026-11-10; kept privately.]* The record is
+  built for correctness.
 - **Judge instrument.** *Assumption*: when judging is bought it is Sonnet via the
   relay, not local `skynet` — the local judge is measured to overstate
   faithfulness by 0.43 (EXP-2026-07-010). Each protocol names it as the deferred
@@ -105,8 +104,6 @@ buy judging later does not require re-designing any experiment.
   - `docs/research/CLAIMS.md` — C-003's evidence column gains the precision and
     recall cells already measured in EXP-2026-08-010 (§ headline table) and
     EXP-2026-08-011 (A-10, the I-11 precision/recall trade).
-  - `docs/research/paper/venue-targets.md` — records that both near-term
-    deadlines are dropped and no target is currently set.
 - **Rationale**: every step below cites these files. Q3 currently tells a reader
   the paper's intended headline claim has no supporting experiment when
   EXP-2026-08-008 supports it decisively, and Q16 budgets a day for machinery

@@ -92,3 +92,10 @@ has held 60 additional grader sidecars (`*.judgment.local.json`,
 recomputation of its numbers; `utils.evaluation.retrieval_coverage` currently
 counts them as answer artifacts and reports n = 90 for that arm, which is a
 scorer hygiene defect rather than a record error. See RESULTS A-2.
+
+## 2026-11-10 — write-up re-hashed after a one-word redaction
+
+`docs/evaluation/holdout-v1/README.md` named a publication target in a quoted gate
+instruction. The name was replaced with `[a workshop target, redacted 2026-11-10]`
+before the repository was made public, and the `data/POINTERS.md` row was re-hashed.
+No number, table or finding changed.

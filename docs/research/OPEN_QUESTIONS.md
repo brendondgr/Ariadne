@@ -1,8 +1,6 @@
 # Open Questions
 
-Every follow-up from every `RESULTS.md`, plus the known weaknesses. This becomes
-the future-work section and pre-empts the reviewer objections that are coming
-either way.
+Every follow-up from every `RESULTS.md`, plus the known weaknesses.
 
 **Only what is still open lives here.** On 2026-09-09 every answered question was
 moved verbatim, with its amendments, to
@@ -10,18 +8,9 @@ moved verbatim, with its amendments, to
 *PARTLY ANSWERED* below carries one line saying which parts are closed and where.
 Question numbers are never reused, so the gaps in the numbering are deliberate.
 
-**A question can now come from the literature, not just from a run.** Q23–Q26
-were filed on 2026-08-26 from an external adversarial novelty audit
-(`reports/2026-08-26-novelty-audit/`, kept privately; see `AGENTS.md`). They
-behave differently from the rest of this file: **none of them is answered by
-measuring our own system.** Two are answered by reading somebody else's paper
-(Q23, Q25), one by writing a paragraph we have all the materials for (Q24), and
-one by a design decision with a circularity trap in it (Q26). They are here
-rather than in a separate file because they block publication exactly the way a
-missing experiment does — and because the audit's single most damaging finding
-was a citation *we* had never opened.
-(Q24 and Q25 have since been answered and are in the archive; Q23 and Q26 remain
-below.)
+**Some questions come from the literature, not from a run.** Q23, Q26 and Q27 are of that
+kind; their detail is kept privately with the rest of the positioning material (see
+[`../../AGENTS.md`](../../AGENTS.md)).
 
 ## Index — what is still open
 
@@ -29,13 +18,13 @@ below.)
 |---|---|---|---|
 | Q2 | What is the variance on any of these numbers? | Blocking | any p-value about the `llm` / `gold_llm` arms (D-010) *(partly)* |
 | Q4 | Where is the coverage cliff? | Blocking | C-014 — the open-ended, non-anchored regime is still unmeasured *(open)* |
-| Q23 | Does the paper that scooped C-008 actually contain the access-control layer? | Blocking | C-008's novelty status; the security section of any submission *(open)* |
+| Q23 | A question about a related paper (kept privately) | Blocking | *(open)* |
 | Q9 | Is the failure-terminus classifier general, or shaped by this one pipeline? | Methodological | C-016 *(open)* |
-| Q27 | Re-check RAGE-KG 2026 in November, before camera-ready | Methodological | whether C-025 can be claimed at all (dated: November 2026) *(open)* |
-| Q26 | Should the banks emit the executable gold query? | Methodological | C-025; whether D-027's alternative framing becomes primary *(open)* |
+| Q27 | A dated literature check (kept privately) | Methodological | *(open)* |
+| Q26 | Should the banks emit the executable gold query? (kept privately) | Methodological | *(open)* |
 | Q11 | What is the served context window of `skynet`? | Environment and provenance | the worker ceiling and the un-truncation profile for every judged run on `qwen38-27B-v2` (reopened 2026-08-31) *(open)* |
 | Q18 | Should the evidence reader accept column shapes the templates do not emit? | Environment and provenance | the free-form baseline's ceiling (C-012's phrasing itself is decided, D-025) *(partly)* |
-| Q30 | `EXP-2026-09-008` is `planned` and holds a finished result | 2026-09-06 amendment (record defects) | `OUTLINE.md` §12; journal-tier item J7 *(partly)* |
+| Q30 | `EXP-2026-09-008` is `planned` and holds a finished result | 2026-09-06 amendment (record defects) | the record's completeness; item J7 *(partly)* |
 | Q35 | The rewrite stage buys T4/T5 record identity by doubling confident-and-wrong at the same tiers | EXP-2026-09-014 follow-ups | any future attempt to ship the rewrite stage *(open)* |
 | Q36 | The five-slot intent form cannot express a federated question, and the understanding-gold does not specify one | EXP-2026-09-014 follow-ups | any federated figure from the rewrite stage; plausibly the ship decision *(open)* |
 | Q37 | A stage that adds latency inside a bounded pipeline cannot be measured without saying which budget it ran under | EXP-2026-09-014 follow-ups | shipping the rewrite stage; the honest reading of any future LLM-arm figure *(partly)* |
@@ -59,7 +48,7 @@ below.)
 
 ---
 
-## Blocking — these gate publication
+## Blocking
 
 ### Q2 — What is the variance on any of these numbers?
 
@@ -181,63 +170,9 @@ that reports the benefit of the design without its price will not survive review
 is expected to fail, reported as the design's cost rather than hidden.
 **Blocks:** C-014. **From:** EXP-2026-07-011 §7, the 2026-07-26 limitations.
 
-### Q23 — Does the paper that scooped C-008 actually contain the access-control layer?
+### Q23 — A question about a related paper
 
-**Why it matters:** it decides whether C-008 is **narrowed or cut**, and it is
-the cheapest open question in this file — one PDF download.
-
-Szlobodnyik, *Analytics* (MDPI) 5(3):25, DOI 10.3390/analytics5030025,
-**published 28 July 2026**, peer-reviewed, open access, CC-BY. The 2026-08-26
-novelty audit read it in full and reports that it contains, in one paper: a
-six-category text-to-Cypher prompt-injection dataset from sixteen parameterised
-templates; **Unsafe Operation Rate** and **Attack Success Rate**; a validator
-that intercepts unsafe Cypher and recovers a read-only schema-consistent query;
-a jury-of-models faithful/malicious/diverged classifier; five foundation models
-against six training-free defence baselines; **and an identity-provider-driven
-access-control layer limiting execution to the authorised portion of the graph
-schema, both role-based and attribute-based.**
-
-**Independently re-checked on 2026-08-26, and one row did not confirm.**
-
-| element | status |
-|---|---|
-| Citation, date, single author, venue, DOI, CC-BY | **confirmed** (DOI resolution, Semantic Scholar) |
-| Six injection categories | **confirmed verbatim** — instruction override, role confusion, output-format manipulation, misleading prompts, chained instructions, obfuscation |
-| Unsafe Operation Rate + Attack Success Rate | **confirmed** |
-| Validator flagging malicious/unsafe/divergent Cypher with corrective feedback | **confirmed** |
-| GPT-4o, DeepSeek R1, Claude 3.5 Sonnet, Qwen 2.5 Coder 32B | **confirmed** |
-| **Role/attribute-based access control over the schema** | **NOT CONFIRMED — mdpi.com and SSRN both 403 our fetcher** |
-
-The unconfirmed row is the one that matters. It is the mechanism that maps onto
-**our own schema-boundary refusal** — the part of the safety gate that rejects a
-query touching a label the source card does not declare. If it is in the paper,
-C-008's territory is occupied as thoroughly as the audit says and the claim
-drops to a paragraph. If it is not, we have a real surviving mechanism rather
-than four narrow slivers.
-
-**What resolves it:** download the PDF and search it.
-
-```bash
-curl -L -o /tmp/szlobodnyik-2026.pdf "https://www.mdpi.com/2813-2203/5/3/25/pdf"
-```
-
-Then grep for `access control`, `role-based`, `attribute-based`, `authorized`,
-`schema`. Answer three further things while it is open, all of which change the
-size of what survives: **what schema does it evaluate against** (the audit says
-the Neo4j text2cypher corpus with a movie-domain example — if so, no security
-taxonomy, and that delta holds); **is enforcement at the database privilege
-level or only prompt-and-validator level**; and **are the injection probes
-model-authored** (if so, our analyst-authored 240-probe suite is a real delta
-and it dovetails with C-021).
-
-**One more thing to settle:** an SSRN version exists
-(`papers.ssrn.com/sol3/papers.cfm?abstract_id=5669662`) whose **posting date is
-unknown**. If it predates 28 July 2026, the "four weeks before the audit"
-framing is wrong and this work was findable earlier — which matters, because it
-turns "unlucky timing" into "our literature watch was not running".
-
-**Cost:** under an hour. **Blocks:** C-008's novelty status, and the security
-section of any submission. **From:** 2026-08-26 novelty audit, Part 2 Q8.
+*Kept privately since 2026-11-10 (literature and positioning); see [`../../AGENTS.md`](../../AGENTS.md).*
 
 ---
 
@@ -252,107 +187,15 @@ class ladder mirrors that system's stage boundaries. **What resolves it:** apply
 it to a GraphRAG pipeline, a text-to-Cypher pipeline, and an agentic traversal
 system; report what fraction falls through to `other`. **Blocks:** C-016.
 
-### Q27 — Re-check RAGE-KG 2026 in November, before camera-ready
+### Q27 — A dated literature check
 
-**Why it matters:** this is the single dated, named, live risk to **C-025**, and
-the sweep found it rather than closed it.
-
-RAGE-KG 2026 runs **25-26 October 2026** at ISWC Bari. Notification was
-21 August 2026 and camera-ready 1 September 2026, so **the acceptance decisions
-already exist and the proceedings volume does not**. The accepted-paper list is
-not public. The Kurniawan/Kiesling/Ekelhart group has now written in **two
-consecutive papers** that comprehensive evaluation is future work — that is
-C-025's artifact, promised publicly, by an active group, with a plausible third
-instalment sitting in an invisible accepted set.
-
-⚠️ **A trap to avoid when re-checking.** The RAGE-KG 2026 site already shows a
-"Programme" for 25 Oct 2026 with 14 talks and `Paper` links — **every link points
-at `ceur-ws.org/Vol-4079/`, the 2025 proceedings**, and diffing against that ToC
-shows it is the 2025 paper set verbatim. **Stale carry-over. Do not read it as
-2026 content.**
-
-**What resolves it:** load the CEUR master index again once the volume appears
-(historical lag: 2024 workshop -> published Apr 2025; 2025 workshop -> published
-Oct 2025) and diff the ToC against Vol-4079.
-**Cost:** ten minutes. **Blocks:** whether C-025 can be claimed at all.
-**From:** 2026-09-06 positioning sweep, §2.
-
-**Cost:** a day for the CEUR sweep, half a day for the four papers.
-**Blocks:** the confidence level on C-022, C-024, C-025; possibly C-023's
-narrowness. **From:** 2026-08-26 novelty audit, Part 8.
+*Kept privately since 2026-11-10 (literature and positioning); see [`../../AGENTS.md`](../../AGENTS.md).*
 
 ---
 
 ### Q26 — Should the banks emit the executable gold query?
 
-**Why it matters:** it is the difference between C-025 being a gap we
-*documented* and a gap we *fill* — and D-027 keeps a benchmark-first framing
-live specifically pending this answer.
-
-The audit's recommended novelty sentence claims we contribute *"the first
-question set over MITRE ATT&CK and CAPEC that pairs natural-language questions
-with executable gold queries scored by execution-based correctness."* **We do
-not have gold queries.** A bank entry carries:
-
-```
-question, expected_template (a template NAME), task.seed_ids,
-assertions.must_include_related, ex_gold.expected   # computed ANSWERS
-```
-
-Gold **answers**, computed independently from raw STIX and CAPEC XML rather than
-through the ingest pipeline — which is a genuinely good property and the right
-answer to benchmark rot — but **no executable Cypher or Gremlin string
-anywhere**.
-
-**The gold query is constructible.** Template name plus seed identifiers
-determines the emitted query exactly; that is what makes the deterministic arms
-byte-reproducible in the first place. Emitting it is close to mechanical.
-
-**What resolves it:** decide, then do or don't.
-
-- **In favour:** it converts C-025 from `unsupported` to a fillable claim; it is
-  the cleanest gap the audit found; execution-based scoring against a live store
-  is what every text-to-Cypher benchmark has and no security question set does;
-  and it makes the resource usable by people who do not run our pipeline, which
-  is the difference between a benchmark and an artifact.
-- **Against, and this must be answered honestly rather than waved through:** a
-  gold query emitted *by the system under test* is co-authored gold in exactly
-  the sense C-021 measures. **Publishing our own queries as gold and then
-  scoring ourselves against them would be the most circular thing in the
-  project.** Any gold-query release needs the query validated against the
-  computed answer independently — the query is gold only if executing it
-  reproduces gold that was derived from the raw files, which we can check
-  mechanically and which is the whole defence.
-- **Also against:** it deepens the coupling C-023 says is conditional. A gold
-  query in *our* template's shape is not neutral between the template arm and
-  the schema-derived arm, and a benchmark that quietly favours one of our own
-  arms is worse than no benchmark.
-
-**Cost:** days for the emission; the real cost is the independent validation and
-the framing. **Blocks:** C-025, and whether D-027's alternative framing becomes
-primary. **From:** 2026-08-26 novelty audit Part 4, and
-`reports/2026-08-26-novelty-audit/POINTERS.md`.
-
-**Update 2026-09-01 (EXP-2026-09-001).** The schema census removes the "against"
-argument's sharpest edge and adds a new argument in favour.
-
-*Against, weakened.* The objection was that a gold query in **our template's
-shape** is not neutral between the template arm and the schema-derived arm. The
-census supplies an alternative shape that is neither: a
-`(subject, predicate, object)` triple derived from the raw sources, with no
-knowledge that Ariadne has templates at all. A query serialized from a census
-path and validated against gold computed independently from the raw files is
-co-authored by neither arm. The circularity trap is avoidable; it was not
-obvious before that it was.
-
-*In favour, strengthened.* The census shows the resource would cover **33 edge
-types where the current banks reach 12**, plus 12 unused facet properties. A
-released benchmark at 36% shape coverage would have been a thin contribution.
-
-*Still open, and unchanged:* whether we do it. **What the census does NOT
-settle** is whether Ariadne can answer the 21 never-asked shapes — coverage of
-the question space is not coverage of system capability, and conflating them is
-the single easiest mistake to make with this number.
+*Kept privately since 2026-11-10 (literature and positioning); see [`../../AGENTS.md`](../../AGENTS.md).*
 
 ---
 
@@ -455,7 +298,7 @@ ceiling, not about whether C-012 holds, and it is worth running — it is deferr
 because changing what the baseline *is* mid-study is worse than not knowing.
 
 
-## Known weaknesses to state in the paper, not resolve
+## Known weaknesses
 
 These are limitations to disclose, not questions to answer.
 
@@ -492,11 +335,9 @@ These are limitations to disclose, not questions to answer.
 
 ---
 
-## AMENDMENT, 2026-09-06 — five record defects surfaced by the venue readiness scoring
+## AMENDMENT, 2026-09-06 — five record defects surfaced by a readiness review
 
-Filed from `paper/venue-readiness-2026-09.md`,
-which scored the record against the tier checklists in
-`paper/venue-report-2026-09.md` (both kept privately; see `AGENTS.md`). **None of these
+Filed from a readiness review of the record (kept privately). **None of these
 needs a run.** All five are record-integrity defects: the measurements exist and
 the record misstates them. They are filed here rather than fixed silently because
 three of them were quoted into an external brief before anyone noticed.
@@ -509,7 +350,7 @@ followed by Q35–Q37, filed 2026-09-08 from EXP-2026-09-014 (see D-031, D-032).
 
 ### Q30 — `EXP-2026-09-008` is `planned` and holds a finished result
 
-**PARTLY ANSWERED (2026-09-06, commit 4eb9b91).** Closed: the title, `status: complete`, `metrics.values` and a written `RESULTS.md`. Still open: `data/POINTERS.md` has no hashed rows, `supports_claims` is empty, the primary metric name (`ceiling_band_fraction_at_1`) matches no recorded value so `INDEX.md` renders it "not recorded", the purpose / hypothesis / data / llm fields are still scaffold text, and `OUTLINE.md` §12 still says it has no home.
+**PARTLY ANSWERED (2026-09-06, commit 4eb9b91).** Closed: the title, `status: complete`, `metrics.values` and a written `RESULTS.md`. Still open: `data/POINTERS.md` has no hashed rows, `supports_claims` is empty, the primary metric name (`ceiling_band_fraction_at_1`) matches no recorded value so `INDEX.md` renders it "not recorded", the purpose / hypothesis / data / llm fields are still scaffold text.
 
 **Why it matters:** Its manifest still carries the scaffold title `<one line, the
 question this answers>`, `status: planned`, empty `metrics.values`,
@@ -518,14 +359,12 @@ placeholder row. Meanwhile `data/ceiling-resolution.json` carries the
 pre-registered verdict — `gemma4-31B-mtp` emits **one** distinct value on the
 ceiling band, `gemma-4-26B-it` emits **two** (`{0.5, 1.0}`) and additionally
 **inverts** the mid/low ordering (0.6435 low against 0.6239 mid), `qwen38-27B-v2`
-is the only usable one. `OUTLINE.md` §12 already depends on this and says it "has
-no home yet". The most transferable finding in the project is, to anyone reading
+is the only usable one. The most transferable finding in the project is, to anyone reading
 the record properly, invisible.
 
 **What resolves it:** Fill the manifest from `data/`, write `RESULTS.md`, hash the
 `data/POINTERS.md` rows, link `supports_claims`, regenerate `INDEX.md`.
-**Blocks:** `OUTLINE.md` §12; the journal-tier item J7. **From:** venue readiness
-scoring, journal tier. **Cost:** one day.
+**From:** the readiness review. **Cost:** one day.
 
 ### Q35 — The rewrite stage buys T4/T5 record identity by doubling confident-and-wrong at the same tiers
 

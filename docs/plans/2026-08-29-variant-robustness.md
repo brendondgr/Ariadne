@@ -141,7 +141,7 @@ new seam ships switched off with a measured before-and-after.
 - **Rationale:** this is the number every later step is judged against, and it
   must be taken before a line of routing code changes. It is also a publishable
   result on its own — the robustness cliff of a deterministic pipeline,
-  measured, which the 2026-08-26 novelty audit found nobody has reported.
+  measured.
   Reporting must be **per tier**; a pooled figure would average the vocabulary
   problem and the entity-resolution problem into one uninterpretable number.
 - **Action:** run every variant, score record identity (primary), query identity

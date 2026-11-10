@@ -9,8 +9,8 @@ correction, if one is needed, is appended as a dated amendment.
 Every correctness figure this project has published comes from a question bank
 Ariadne co-authored. Template banks carry a measured co-authorship bias of
 **0.147**. The LLM-generated banks control for that but are still schema-aware,
-and the record flags the gap in four places: Q1, Q16, `bank-2026-08-19/CARD.md`,
-and the external audit's "Moderate" resource-novelty rating.
+and the record flags the gap in four places, including Q1, Q16 and
+`bank-2026-08-19/CARD.md`.
 
 A web search on 2026-08-21 for human-authored ATT&CK or CAPEC question sets
 returned none. That search conflated two distinct needs:
