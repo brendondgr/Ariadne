@@ -77,3 +77,29 @@ uv run python -m utils.killtests.analysis t1
 **Kill rule,** for every model, on the 3-shot arms: the idea that typed requests have a gap to
 win is dead if `exact_records(gremlin-3shot) ≥ exact_records(cypher-3shot) − 0.05` **and**
 both are `≥ 0.80`. Free generation is then good enough in both languages.
+
+## Pre-run amendments (2026-11-13, after the smoke run, before the full run)
+
+1. **Graphs.** The test graphs are `flight_accident` and `nba`, the two smallest in CypherBench's
+   test split (189 and 270 questions; both full graphs are under 7 MB). `terrorist_attack`, a
+   training graph, is loaded beside them so that the 3-shot examples' Gremlin can be verified.
+   The three graphs share no node label and no relationship type, so one Neo4j instance and one
+   TinkerGraph hold all three.
+2. **Gold.** The reference Cypher executed on `killtests-neo4j` matches CypherBench's own
+   `answer_json` on 458 of 459 test questions. The one that disagrees (`c34ad241…`) is
+   excluded before sampling.
+3. **Mirror proof.**
+   - Labels and relationship counts are equal in both stores.
+   - 50 sampled nodes have equal properties.
+   - All 3 shot examples and all 30 hand-written Gremlin translations (15 per graph, one per
+     query shape) return the same normalised records as the reference Cypher. These are
+     `utils/killtests/t1/{shots,handwritten}.py`, tested in `tests/test_t1.py`.
+4. **Store facts in the prompt.** Each language's prompt states how its store represents
+   `date` values (Neo4j dates; ISO strings in TinkerGraph) and `list[str]` properties (lists;
+   multi-valued properties). The schema block is otherwise identical.
+5. **Token budget 8,192.** One smoke generation hit the 4,096-token limit while still
+   reasoning and returned no query.
+6. **Normalisation.** Each row is the sorted tuple of its canonicalised values; a result is the
+   multiset of its rows. Column order, column names and row order are ignored; duplicates
+   count. CypherBench's `WITH DISTINCT n` semantics therefore apply: deduplicating names
+   instead of nodes is a different result.

@@ -73,7 +73,7 @@ class KillTestConfig:
             relay_url=_env("KILLTESTS_RELAY_URL", "http://localhost:9090/v1"),
             relay_models=models,
             relay_concurrency=_env_int("KILLTESTS_CONCURRENCY", 32),
-            relay_max_tokens=max(2048, _env_int("KILLTESTS_MAX_TOKENS", 4096)),
+            relay_max_tokens=max(2048, _env_int("KILLTESTS_MAX_TOKENS", 8192)),
             decider_url=_env("KILLTESTS_DECIDER_URL", "http://localhost:7500"),
             neo4j_uri=_env("NEO4J_URI", "bolt://localhost:5456"),
             neo4j_user=_env("NEO4J_USER", "neo4j"),
