@@ -1,15 +1,26 @@
 # ISSUES — EXP-2026-11-001
 
-Bugs, anomalies, aborted runs, and gotchas. Also the honest record of anything
-the manifest could not capture: unrecorded seeds, an unknown commit, a dirty
-tree at run time. An empty file is fine; a missing one is not.
+## Two defects in the shipped `GremlinQueryBuilder.expand` (found 2026-11-13)
 
-<!-- Entry template — newest first:
+`utils/specialists/gremlin/builder.py`, `expand()`:
 
-## YYYY-MM-DD — <one-line summary>
-**Impact:** what this changes about the reported numbers (e.g. "seed 3 excluded; n=4 not 5 for this cell").
-**Cause:** the mechanism, if known.
-**Resolution:** what was done. "Not resolved" is a valid answer.
-**Paper implication:** what must be stated in the paper because of this.
+1. **Wrong relationship name.** It inlines the registry's relationship name (`ChildOf`) into
+   `.out("ChildOf")`. The CAPEC store's edges carry the loader's label (`CHILD_OF`,
+   `utils/graph_loader/stores/gremlin.gremlin_edge_label`). Every CAPEC relation facet whose
+   registry name differs from its stored label returns nothing: ChildOf, CanPrecede, CanFollow,
+   PeerOf and CanAlsoBe. Probe: `CAPEC-66 ChildOf out` returned 0 records; translated, it returns
+   `CAPEC-248`.
+2. **Attack-pattern-only anchor id.** It anchors with `_capec_gremlin_id`, whose own docstring
+   says it is wrong for about one CAPEC id in ten (views and categories). The rest of the
+   builder uses `_capec_candidate_ids`.
 
--->
+Not fixed in the shipped code during this experiment, because the tree is frozen at
+`killtests-start` for the comparison. The kill-test executor (`utils/killtests/graph.py`) works
+around both. Fixing them is a follow-up for the shipped primitive.
+
+## Slot gold
+
+Three issues, handled by the pre-run amendments in PROTOCOL.md:
+- the `HAS_TECHNIQUE` label on group, software and campaign technique questions (49 items);
+- two-label targets (47 items);
+- absent anchors (18 items).

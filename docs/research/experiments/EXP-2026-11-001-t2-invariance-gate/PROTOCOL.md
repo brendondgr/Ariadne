@@ -100,3 +100,28 @@ for T2-filtered: `ask_rate > 0.40` **or** `gold_pruned_rate >= 0.30`.
 
 If either holds, the gate is not a viable mechanism as specified. A narrower claim may survive
 on a subset of tiers, reported as exploratory.
+
+## Pre-run amendments (2026-11-13, after the smoke run, before the full run)
+
+Found while building on the smoke subset. No full-run number had been seen when these were
+written.
+
+1. **Gold relation by direction, as a union over target labels.** 47 slot-gold cases name two
+   target labels (for example Technique + SubTechnique). Their gold answer is the union over
+   those labels within one direction. A gate that keeps the two complementary interpretations
+   apart will ask on these; that is counted, not excused. The count is reported as
+   `n_multi_target`.
+2. **Negative anchors.** A gold anchor that is in no store (an invented or deprecated id such as
+   T1002 or CAPEC-106 in the exposed bank) makes the item a negative, scored like T6.
+3. **Slot-gold relation fallback.** 49 slot-gold cases label group, software and campaign
+   technique questions `HAS_TECHNIQUE`, a relation those labels do not have. Their gold
+   facet is the one whose record set best matches the recorded reference answer
+   (`reference.json` `entity_ids`), accepted only at Jaccard ≥ 0.5. `relation_by` tags every
+   item's gold source, and the summary reports the counts.
+4. **Gremlin execution.** The executor translates relationship names with `gremlin_edge_label`
+   and anchors CAPEC ids with `_capec_candidate_ids` (see ISSUES.md). This is needed for any
+   CAPEC relation facet to return records at all.
+5. **Shipped-pipeline comparison.** The Setup's "today's pipeline" comparison is the two guess
+   baselines (the same candidates and executor, a single interpretation). The tree's shipped
+   modules are verified unchanged since `killtests-start` (`git diff killtests-start --
+   utils/specialists utils/planner` is empty) rather than re-run.
