@@ -1,0 +1,37 @@
+# Kill test T1 (EXP-2026-11-003): CypherBench graphs in their own stores.
+#
+# Separate from every shipped store on purpose: the CypherBench labels must never
+# appear beside ATT&CK or CAPEC. The three graphs loaded here (flight_accident,
+# nba, terrorist_attack) share no node label and no relationship type, so one
+# instance of each engine holds all three without crosstalk for any
+# label-anchored query.
+#
+#   docker compose -f docker/killtests/compose.yml --env-file .env up -d
+#
+# TinkerGraph is in memory: a restart empties it. Reload with
+#   uv run python -m utils.killtests.t1.mirror
+services:
+  killtests-neo4j:
+    image: neo4j:${NEO4J_VERSION:-5.26}
+    container_name: killtests-neo4j
+    restart: unless-stopped
+    ports:
+      - "5471:7474"
+      - "5470:7687"
+    environment:
+      NEO4J_AUTH: ${NEO4J_AUTH:-neo4j/password}
+    volumes:
+      - ./neo4j/data:/data
+    healthcheck:
+      test: ["CMD-SHELL", "wget --no-verbose --tries=1 --spider http://localhost:7474 || exit 1"]
+      interval: 5s
+      timeout: 5s
+      retries: 30
+      start_period: 30s
+
+  killtests-gremlin:
+    image: tinkerpop/gremlin-server:${GREMLIN_VERSION:-3.8.0}
+    container_name: killtests-gremlin
+    restart: unless-stopped
+    ports:
+      - "6470:8182"

@@ -51,7 +51,7 @@ def stage_candidates(cfg: KillTestConfig, out: Path) -> dict:
 # -------------------------------------------------------------------------- decide
 
 
-def _decide_one(dec: DeciderClient, question: str, cands: list[dict], floor: float) -> dict:
+def _decide_one(dec: DeciderClient, question: str, cands: list[dict], floor: float, *, anchors_only: bool = False) -> dict:
     if not cands:
         return {"anchor_p": {}, "none_p": 1.0, "facet_p": {}}
     descs = [I.entity_option(c, (candidates.entity(c["entity_id"]) or candidates.Entity("", "", "", "", "")).description)
@@ -60,6 +60,8 @@ def _decide_one(dec: DeciderClient, question: str, cands: list[dict], floor: flo
     ch = dec.choose(f"Question: {question}", "Which entity is this question about?", options)
     anchor_p = {c["entity_id"]: ch.probabilities.get(k, 0.0) for c, k in zip(cands, keys)}
     none_p = ch.probabilities.get(NONE_KEY, 0.0)
+    if anchors_only:
+        return {"anchor_p": anchor_p, "none_p": none_p, "facet_p": {}, "temperature": ch.temperature}
     top = max(anchor_p, key=anchor_p.get)
     labels = {}
     for c in cands:

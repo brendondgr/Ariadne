@@ -98,3 +98,21 @@ either holds:
 - neither zero-label variant has `miscoverage ≤ α + 0.02 = 0.12`;
 - `|miscoverage(stratified) − α| ≥ |miscoverage(unweighted) − α|`, i.e. stratification is no
   better.
+
+## Pre-run amendments (2026-11-13, after the smoke run, before the full run)
+
+1. **"None of these" is a label.** In the first smoke run, about a fifth of synthetic questions
+   had no gold entity among the candidates. With their score fixed at `s = 1`, the α = 0.10
+   threshold became 1.0: every prediction set was every option, and miscoverage read 0
+   vacuously. The label space is therefore the candidates plus "none of these", which the
+   decider already scores:
+   - the gold label is the gold entity when it is a candidate, else `none`;
+   - `s = 1 − p(gold label)`;
+   - the system **answers** when the prediction set is a single entity, and **abstains** when it
+     is `{none}`;
+   - `selective_error` compares an answer with the gold entity.
+2. **Vacuity guard.** A calibrator whose threshold is ≥ 1 (the set is every option) is reported
+   as `vacuous` and does not count as holding the target. `full_set_rate` and
+   `gold_absent_rate` are reported with every miscoverage figure.
+3. **Real-question scores come from EXP-2026-11-001's decide stage.** It uses the same
+   candidates and the same anchor prompt, so the two experiments share one scorer.
