@@ -10,6 +10,9 @@ that a dead end is walked into once rather than twice.
 
 | ID | Date | Title | Status | Primary metric | Claims | Link |
 |---|---|---|---|---|---|---|
+| `EXP-2026-11-001` | 2026-11-13 | Answer-invariance gate: run every plausible interpretation, answer only when they agree (kill test T2) | planned | ask_rate (not recorded) | — | [t2-invariance-gate](experiments/EXP-2026-11-001-t2-invariance-gate/) |
+| `EXP-2026-11-002` | 2026-11-13 | Label-free calibration: conformal thresholds set on card-generated questions, applied to real ones (kill test T3) | planned | miscoverage (not recorded) | — | [t3-synthetic-calibration](experiments/EXP-2026-11-002-t3-synthetic-calibration/) |
+| `EXP-2026-11-003` | 2026-11-13 | Free query writing: model-written Cypher vs model-written Gremlin on CypherBench graphs (kill test T1) | planned | exact_records (not recorded) | — | [t1-free-query-gap](experiments/EXP-2026-11-003-t1-free-query-gap/) |
 | `EXP-2026-07-001` | 2026-07-26 | Arm A — fully deterministic pipeline (planning, extraction, synthesis) | complete | correctness 0.9972 (n=1) | C-001, C-004 | [arm-a-deterministic](experiments/EXP-2026-07-001-arm-a-deterministic/) |
 | `EXP-2026-07-002` | 2026-07-26 | Arm B — LLM planning with deterministic extraction and an LLM writer | complete | correctness 0.8505 (n=1) | C-002, C-003, C-016 | [arm-b-llm-planned](experiments/EXP-2026-07-002-arm-b-llm-planned/) |
 | `EXP-2026-07-003` | 2026-07-26 | Arm C — authored plan with an LLM writer reading raw evidence | complete | correctness 0.9690 (n=1) | C-002, C-005 | [arm-c-llm-writer-evidence](experiments/EXP-2026-07-003-arm-c-llm-writer-evidence/) |
@@ -73,4 +76,4 @@ that a dead end is walked into once rather than twice.
 | `EXP-2026-08-005` | 2026-08-18 | Is the blind holdout's directional loss a property of these templates, or of a missing schema-driven check? | superseded → EXP-2026-08-006 | blind_gold_in_evidence 0.8952 (n=1) | C-001, C-003, C-010, C-014 | [binding-direction-portability](experiments/EXP-2026-08-005-binding-direction-portability/) |
 | `EXP-2026-09-002` | 2026-09-03 | On a bank covering every shape the sources support, do hand-written templates still hold? | superseded → EXP-2026-09-005 | judged_gap_generic_minus_deterministic 0.1642 ± 0.0000 (n=284) | C-023, C-012 | [expansion-bank-judged](experiments/EXP-2026-09-002-expansion-bank-judged/) |
 
-**62 experiment(s) on record.**
+**65 experiment(s) on record.**
