@@ -92,6 +92,7 @@ class Stage:
     def __init__(self, out_dir: Path, name: str) -> None:
         self.out_dir = out_dir
         self.name = name
+        self.label = f"{out_dir.name}/{name}"
         self.output = out_dir / f"{name}.json"
         self.marker = out_dir / f"{name}.done"
         self.cache = ItemCache(out_dir / "cache" / f"{name}.jsonl")
@@ -126,7 +127,7 @@ class Stage:
         n_total = total if total is not None else len(pending) + len(self.cache)
         results: dict[str, Any] = {}
         done = len(self.cache)
-        heartbeat.beat(self.name, done, n_total, self.errors)
+        heartbeat.beat(self.label, done, n_total, self.errors)
 
         def _one(key: str, item: Any) -> tuple[str, Any, bool]:
             try:
@@ -146,7 +147,7 @@ class Stage:
                     done = self._record(k, v, ok, done, n_total, results)
         merged = self.cache.values()
         merged.update({k: v for k, v in results.items() if k not in merged})
-        heartbeat.beat(self.name, n_total, n_total, self.errors)
+        heartbeat.beat(self.label, n_total, n_total, self.errors)
         return merged
 
     def _record(self, key: str, value: Any, ok: bool, done: int, total: int, results: dict) -> int:
@@ -156,5 +157,5 @@ class Stage:
             self.errors += 1
             results[key] = value
         done += 1
-        heartbeat.beat(self.name, done, total, self.errors, throttle_s=5.0)
+        heartbeat.beat(self.label, done, total, self.errors, throttle_s=5.0)
         return done

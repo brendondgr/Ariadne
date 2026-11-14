@@ -4,7 +4,7 @@
 # build system. Application commands stay on `uv run main.py` / `app.py`; see
 # docs/commands.md for the full reference.
 
-.PHONY: help new-experiment validate-research index figures test-research verify-paper-numbers check-docs check-record
+.PHONY: help new-experiment validate-research index figures test-research verify-paper-numbers check-docs check-record killtests-start killtests-status killtests-stop killtests-test
 
 UV ?= uv
 
@@ -46,3 +46,17 @@ check-docs:  ## gate: README, ledgers, paper and docs quote no withdrawn or supe
 check-record: validate-research check-docs  ## the full gate: validator + index freshness + stale-quote scan
 	@$(UV) run python scripts/generate_index.py --check
 	@$(UV) run pytest utils/research_record/tests utils/specialists/tests/test_docs_contracts.py -q
+
+# Kill tests (EXP-2026-11-001..003): the supervised background chain and its
+# health call. KILLTESTS_SMOKE=1 targets the smoke run (logs/killtests-2026-11/smoke).
+killtests-start:  ## launch the supervised kill-test chain in the background
+	@$(UV) run python scripts/killtests_ctl.py start
+
+killtests-status:  ## GREEN / AMBER / RED / DONE health call
+	@$(UV) run python scripts/killtests_status.py
+
+killtests-stop:  ## stop the supervisor and the chain (finished work is kept)
+	@$(UV) run python scripts/killtests_ctl.py stop
+
+killtests-test:  ## kill-test unit tests
+	@$(UV) run pytest utils/killtests/tests -q

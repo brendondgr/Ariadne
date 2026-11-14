@@ -68,5 +68,6 @@ def test_killed_process_resumes(tmp_path):
 def test_heartbeat_written(tmp_path):
     heartbeat.configure(tmp_path, run="t")
     heartbeat.beat("s", 3, 10, 0)
+    heartbeat.beat("t", 1, 2, 0)
     hb = heartbeat.read(tmp_path)
-    assert hb["stage"] == "s" and hb["done"] == 3 and hb["run"] == "t"
+    assert hb["stages"]["s"]["done"] == 3 and hb["stages"]["t"]["total"] == 2 and hb["run"] == "t"
