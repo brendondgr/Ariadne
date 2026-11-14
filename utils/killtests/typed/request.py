@@ -53,13 +53,15 @@ or >= year).
 
 from __future__ import annotations
 
+import json
 from typing import Any
 
 from ..t1.load import schema
 
 ANSWERS = {"names", "names_with", "values", "list_items", "count", "count_values", "aggregate",
            "count_per", "top", "compare"}
-OPS = {"=", "<>", "<", ">", "<=", ">=", "contains", "not_contains"}
+OPS = {"=", "<>", "<", ">", "<=", ">=", "contains", "not_contains", "starts_with", "ends_with", "contains_text"}
+TEXT_OPS = {"starts_with", "ends_with", "contains_text"}
 AGG = {"max", "min", "avg", "sum"}
 TESTS = {"which_greater", "equal", "difference"}
 
@@ -69,16 +71,33 @@ class InvalidRequest(ValueError):
 
 
 class Card:
-    """A graph's schema as the request validator and the prompt see it."""
+    """A graph's schema as the request validator and the prompt see it.
+
+    Each label has a **key property**: the one a node's ``name`` in a request is
+    matched against and the one answers report. In order: the schema entity's
+    ``key`` if given; ``name`` for a CypherBench schema (every entity has it though
+    the schema omits it; also a raw schema with ``"cypherbench": true``); else
+    ``name``, ``title``, or the first string property.
+    """
 
     def __init__(self, graph: str, raw: dict | None = None) -> None:
         s = raw or schema(graph)
         self.graph = graph
         self.labels: dict[str, dict[str, str]] = {}
+        self.keys: dict[str, str] = {}
         for e in s["entities"]:
             props = dict(e.get("properties") or {})
-            props.setdefault("name", "str")
+            if e.get("key"):
+                key = e["key"]
+            elif raw is None or raw.get("cypherbench"):
+                key = "name"  # CypherBench: every entity has `name`, though the schema omits it
+            else:
+                key = next((k for k in ("name", "title") if k in props),
+                           next((k for k, t in props.items() if t == "str"), "name"))
+            if key == "name":
+                props.setdefault("name", "str")
             self.labels[e["label"]] = props
+            self.keys[e["label"]] = key
         self.rels: dict[str, list[tuple[str, str, dict[str, str]]]] = {}
         for r in s["relations"]:
             self.rels.setdefault(r["label"], []).append((r["subj_label"], r["obj_label"], dict(r.get("properties") or {})))
@@ -114,26 +133,60 @@ def _check_filter(f: dict, ptypes: dict[str, str], where: str, *, edge: bool) ->
     _need("value" in f, f"{where}: missing 'value'")
     if op in ("contains", "not_contains"):
         _need(t.startswith("list"), f"{where}: {op} needs a list property; {p} is {t}")
+    if op in TEXT_OPS:
+        _need(t == "str" and isinstance(f["value"], str), f"{where}: {op} needs a string property and a string value")
     if f.get("part") is not None:
         _need(f.get("part") == "year" and t == "date", f"{where}: part 'year' needs a date property")
         _need(isinstance(f["value"], int), f"{where}: a year comparison needs an integer value")
 
 
 def validate(req: Any, card: Card) -> dict:
-    """Return the request if it is valid for ``card``; raise :class:`InvalidRequest` otherwise."""
+    """Check ``req`` against ``card`` and return its normalised form; raise :class:`InvalidRequest`.
+
+    Normalisation (the compilers read only the normalised form):
+    - every node spec gains ``_key``, its label's key property;
+    - ``any_of`` entries that are strings name edges in ``edges`` by their ``var``;
+      those edges move out of the required pattern into that branch;
+    - ``names_with`` with ``prop`` becomes ``props: [prop]``.
+    """
     _need(isinstance(req, dict), "the request must be a JSON object")
+    req = json.loads(json.dumps(req))
     nodes = req.get("nodes")
     _need(isinstance(nodes, dict) and "n" in nodes, "nodes must be an object that includes 'n'")
     for v, spec in nodes.items():
         _need(isinstance(spec, dict) and spec.get("label") in card.labels,
               f"node {v}: label must be one of {sorted(card.labels)}")
         if spec.get("name") is not None:
-            _need(isinstance(spec["name"], str), f"node {v}: name must be a string")
-    edge_vars: set[str] = set()
+            _need(isinstance(spec["name"], (str, int, float)) and not isinstance(spec["name"], bool),
+                  f"node {v}: name must be a string")
+        spec["_key"] = card.keys[spec["label"]]
 
-    def check_edges(edges: Any, where: str) -> None:
-        _need(isinstance(edges, list), f"{where} must be a list")
-        for i, e in enumerate(edges):
+    edges = req.get("edges") or []
+    _need(isinstance(edges, list), "edges must be a list")
+    any_of = req.get("any_of") or []
+    _need(isinstance(any_of, list), "any_of must be a list of edge lists")
+    if any_of:
+        by_var = {e.get("var"): e for e in edges if isinstance(e, dict) and e.get("var")}
+        moved: set[str] = set()
+        branches = []
+        for i, br in enumerate(any_of):
+            br = br if isinstance(br, list) else [br]
+            out = []
+            for x in br:
+                if isinstance(x, str):
+                    _need(x in by_var, f"any_of[{i}]: {x!r} names no edge in 'edges' (give the edge a 'var')")
+                    out.append(by_var[x])
+                    moved.add(x)
+                else:
+                    out.append(x)
+            branches.append(out)
+        req["edges"] = edges = [e for e in edges if not (isinstance(e, dict) and e.get("var") in moved)]
+        req["any_of"] = any_of = branches
+    edge_vars: dict[str, dict] = {}
+
+    def check_edges(es: Any, where: str, scope: set[str]) -> None:
+        _need(isinstance(es, list), f"{where} must be a list")
+        for i, e in enumerate(es):
             w = f"{where}[{i}]"
             _need(isinstance(e, dict), f"{w}: an edge must be an object")
             a, b, t = e.get("from"), e.get("to"), e.get("type")
@@ -144,21 +197,21 @@ def validate(req: Any, card: Card) -> dict:
                   f"{w}: {t} does not go from {nodes[a]['label']} to {nodes[b]['label']}; it connects "
                   + ", ".join(f"{s}->{o}" for s, o, _ in card.rels[t]))
             if e.get("var") is not None:
-                _need(isinstance(e["var"], str) and e["var"] not in nodes and e["var"] not in edge_vars,
-                      f"{w}: var must be a fresh name")
-                edge_vars.add(e["var"])
+                _need(isinstance(e["var"], str) and e["var"] not in nodes and e["var"] not in scope,
+                      f"{w}: edge var {e.get('var')!r} must not repeat a node or another edge in the same pattern")
+                scope.add(e["var"])
+                edge_vars[e["var"]] = {"edge": e, "ptypes": ptypes}
             for j, f in enumerate(e.get("filters") or []):
                 _check_filter(f, ptypes, f"{w}.filters[{j}]", edge=True)
 
-    check_edges(req.get("edges") or [], "edges")
-    any_of = req.get("any_of") or []
-    _need(isinstance(any_of, list), "any_of must be a list of edge lists")
+    required: set[str] = set()
+    check_edges(edges, "edges", required)
     if any_of:
         _need(len(any_of) >= 2, "any_of needs at least two branches")
         for i, br in enumerate(any_of):
-            check_edges(br, f"any_of[{i}]")
+            check_edges(br, f"any_of[{i}]", set(required))
     opt = req.get("optional") or []
-    check_edges(opt, "optional")
+    check_edges(opt, "optional", set(required))
     _need(len(opt) <= 1, "at most one optional edge")
     if opt:
         _need("n" in (opt[0]["from"], opt[0]["to"]), "the optional edge must touch n")
@@ -170,14 +223,29 @@ def validate(req: Any, card: Card) -> dict:
     _need(isinstance(ans, dict) and ans.get("kind") in ANSWERS, f"answer.kind must be one of {sorted(ANSWERS)}")
     kind = ans["kind"]
     nprops = card.labels[nodes["n"]["label"]]
-    if kind in ("names_with", "values", "list_items", "count_values", "aggregate", "top", "compare"):
+    if kind == "names_with":
+        props = ans.get("props") if ans.get("props") is not None else [ans.get("prop")]
+        _need(isinstance(props, list) and props and all(p in nprops for p in props),
+              f"answer.props must be properties of {nodes['n']['label']}: {sorted(nprops)}")
+        ans["props"] = props
+        ans.pop("prop", None)
+    if kind in ("values", "list_items", "count_values", "top", "compare"):
         _need(ans.get("prop") in nprops, f"answer.prop must be a property of {nodes['n']['label']}: {sorted(nprops)}")
     if kind == "list_items":
         _need(nprops[ans["prop"]].startswith("list"), "list_items needs a list property")
     if kind == "aggregate":
         _need(ans.get("fn") in AGG, f"answer.fn must be one of {sorted(AGG)}")
+        var = ans.get("var") or "n"
+        _need(var == "n" or not any_of, "an aggregate over another variable cannot be combined with any_of")
+        if var in nodes:
+            ptypes = card.labels[nodes[var]["label"]]
+        else:
+            _need(var in edge_vars and edge_vars[var]["edge"] in edges,
+                  "answer.var must name a node or an edge var in 'edges' (not in any_of or optional)")
+            ptypes = edge_vars[var]["ptypes"]
+        _need(ans.get("prop") in ptypes, f"answer.prop must be a property of {var}: {sorted(ptypes)}")
         if ans.get("part") is not None:
-            _need(ans["part"] == "year" and nprops[ans["prop"]] == "date", "part 'year' needs a date property")
+            _need(ans["part"] == "year" and ptypes[ans["prop"]] == "date", "part 'year' needs a date property")
             _need(ans["fn"] in ("max", "min"), "part 'year' supports max and min")
     if kind == "top":
         _need(ans.get("order") in ("asc", "desc"), "answer.order must be asc or desc")
@@ -189,12 +257,13 @@ def validate(req: Any, card: Card) -> dict:
     if kind == "compare":
         o = ans.get("other")
         _need(o in nodes and o != "n", "answer.other must name a node other than n")
-        _need(nodes["n"].get("name") and nodes[o].get("name"), "compare needs both nodes named")
+        _need(nodes["n"].get("name") is not None and nodes[o].get("name") is not None,
+              "compare needs both nodes named")
         _need(ans.get("test") in TESTS, f"answer.test must be one of {sorted(TESTS)}")
         _need(ans["prop"] in card.labels[nodes[o]["label"]], f"{ans['prop']} is not a property of {nodes[o]['label']}")
-        _need(not (req.get("edges") or any_of or opt), "compare takes two named nodes and no edges")
+        _need(not (edges or any_of or opt), "compare takes two named nodes and no edges")
     used = {"n"}
-    for e in (req.get("edges") or []) + [x for br in any_of for x in br] + opt:
+    for e in edges + [x for br in any_of for x in br] + opt:
         used.update((e["from"], e["to"]))
     if kind == "compare":
         used.add(ans["other"])
@@ -203,6 +272,8 @@ def validate(req: Any, card: Card) -> dict:
     _need(set(nodes) <= used, f"nodes not connected to anything: {sorted(set(nodes) - used)}")
     if kind == "count_per":
         _need(ans["of"] in used, "answer.of is not in the pattern")
+    if kind == "aggregate" and (ans.get("var") or "n") in nodes:
+        _need((ans.get("var") or "n") in used, "answer.var is not in the pattern")
     return req
 
 

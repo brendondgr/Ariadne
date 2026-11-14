@@ -84,3 +84,45 @@ def test_prompt_and_extraction():
     assert "Worked examples" in m[1]["content"] and "Graph: nba" in m[1]["content"]
     assert extract_request('x\n```json\n{"nodes": {}}\n```') == {"nodes": {}}
     assert extract_request('sure: {"a": 1}') == {"a": 1}
+
+
+# ---- format v2 -------------------------------------------------------------------------------
+
+def test_v2_any_of_edge_references_move_edges_into_branches():
+    req = {"nodes": {"n": {"label": "TerroristAttack"}, "m0": {"label": "Country", "name": "A"},
+                     "m1": {"label": "Country", "name": "B"}},
+           "edges": [{"from": "n", "type": "occursIn", "to": "m0", "var": "r0"},
+                     {"from": "n", "type": "occursIn", "to": "m1", "var": "r1"}],
+           "any_of": [["r0"], ["r1"]], "answer": {"kind": "names"}}
+    v = validate(req, TA)
+    assert v.get("edges") == [] and [b[0]["var"] for b in v["any_of"]] == ["r0", "r1"]
+    assert "UNION" in compile_cypher(v, TA)
+
+
+def test_v2_edge_var_may_repeat_across_branches():
+    e = {"from": "n", "type": "occursIn", "to": "m0", "var": "r"}
+    req = {"nodes": {"n": {"label": "TerroristAttack"}, "m0": {"label": "Country", "name": "A"},
+                     "m1": {"label": "Weapon", "name": "B"}},
+           "any_of": [[e], [{"from": "n", "type": "employs", "to": "m1", "var": "r"}]], "answer": {"kind": "count"}}
+    validate(req, TA)
+
+
+def test_v2_key_property_and_multi_props():
+    c = fixture.card()
+    assert c.keys["Delta"] == "title" and c.keys["Alpha"] == "name"
+    req = validate({"nodes": {"n": {"label": "Delta", "name": "X"}},
+                    "answer": {"kind": "names_with", "props": ["year", "genre"]}}, c)
+    cy = compile_cypher(req, c)
+    assert "{`title`: 'X'}" in cy and "AS c2" in cy
+    assert ".has('title', 'X')" in compile_gremlin(req, c).script
+
+
+def test_v2_text_ops_and_aggregate_over_edge():
+    c = fixture.card()
+    req = validate({"nodes": {"n": {"label": "Delta"}, "m0": {"label": "Alpha", "name": "alpha 1"}},
+                    "edges": [{"from": "m0", "type": "rated", "to": "n", "var": "r"}],
+                    "where": [{"var": "n", "prop": "title", "op": "starts_with", "value": "The"}],
+                    "answer": {"kind": "aggregate", "fn": "avg", "prop": "stars", "var": "r"}}, c)
+    assert "STARTS WITH 'The'" in compile_cypher(req, c) and "WITH DISTINCT r RETURN avg(r.`stars`)" in compile_cypher(req, c)
+    g = compile_gremlin(req, c).script
+    assert "startingWith('The')" in g and ".as('r')" in g and "select('r').dedup().values('stars').mean()" in g

@@ -10,6 +10,7 @@ from __future__ import annotations
 from .request import Card, pattern_vars
 
 _OPS = {"=": "=", "<>": "<>", "<": "<", ">": ">", "<=": "<=", ">=": ">="}
+_TEXT = {"starts_with": "STARTS WITH", "ends_with": "ENDS WITH", "contains_text": "CONTAINS"}
 
 
 def lit(v, *, date: bool = False) -> str:
@@ -38,13 +39,16 @@ def _cond(ref_var: str, f: dict, ptype: str | None) -> str:
         return f"{lit(f['value'])} IN {ref}"
     if op == "not_contains":
         return f"{ref} IS NOT NULL AND NOT {lit(f['value'])} IN {ref}"
+    if op in _TEXT:
+        return f"{ref} {_TEXT[op]} {lit(f['value'])}"
     if f.get("part") == "year":
         return f"{ref}.year {_OPS[op]} {int(f['value'])}"
     return f"{ref} IS NOT NULL AND {ref} {_OPS[op]} {lit(f['value'], date=(ptype == 'date'))}"
 
 
 def _node(v: str, spec: dict) -> str:
-    name = f" {{name: {lit(spec['name'])}}}" if spec.get("name") is not None else ""
+    key = spec.get("_key", "name")
+    name = f" {{{_q(key)}: {lit(spec['name'])}}}" if spec.get("name") is not None else ""
     return f"({v}:{_q(spec['label'])}{name})"
 
 
@@ -75,12 +79,14 @@ def compile_cypher(req: dict, card: Card) -> str:
     nodes, ans = req["nodes"], req["answer"]
     kind = ans["kind"]
     p = _q(ans["prop"]) if ans.get("prop") else None
+    key = _q(nodes["n"].get("_key", "name"))
     if kind == "compare":
         o = ans["other"]
         head = f"MATCH {_node('n', nodes['n'])}, {_node(o, nodes[o])}"
         t = ans["test"]
         if t == "which_greater":
-            return f"{head} RETURN CASE WHEN n.{p} > {o}.{p} THEN n.name ELSE {o}.name END AS answer"
+            okey = _q(nodes[o].get("_key", "name"))
+            return f"{head} RETURN CASE WHEN n.{p} > {o}.{p} THEN n.{key} ELSE {o}.{okey} END AS answer"
         if t == "equal":
             return f"{head} RETURN n.{p} = {o}.{p} AS answer"
         return f"{head} RETURN n.{p} - {o}.{p} AS answer"
@@ -105,13 +111,18 @@ def compile_cypher(req: dict, card: Card) -> str:
             conds = [_cond(rv, f, None) for f in e.get("filters") or []]
             if conds:
                 body += " WHERE " + " AND ".join(f"({c})" for c in conds)
-        return f"{body} WITH n, count(DISTINCT {of}) AS num RETURN n.name, num"
+        return f"{body} WITH n, count(DISTINCT {of}) AS num RETURN n.{key}, num"
 
+    if kind == "aggregate" and (ans.get("var") or "n") != "n":
+        v = ans["var"]
+        ref = f"{v}.{p}.year" if ans.get("part") == "year" else f"{v}.{p}"
+        return f"{body} WITH DISTINCT {v} RETURN {ans['fn']}({ref})"
     body += " WITH DISTINCT n"
     if kind == "names":
-        return f"{body} RETURN n.name"
+        return f"{body} RETURN n.{key}"
     if kind == "names_with":
-        return f"{body} RETURN n.name, n.{p}"
+        cols = [f"n.{key} AS c0"] + [f"n.{_q(x)} AS c{i + 1}" for i, x in enumerate(ans["props"])]
+        return f"{body} RETURN " + ", ".join(cols)
     if kind == "values":
         return f"{body} RETURN {'DISTINCT ' if ans.get('distinct') else ''}n.{p}"
     if kind == "list_items":
@@ -126,6 +137,6 @@ def compile_cypher(req: dict, card: Card) -> str:
     if kind == "top":
         order = "DESC" if ans["order"] == "desc" else "ASC"
         if ans.get("limit"):
-            return f"{body} RETURN n.name ORDER BY n.{p} {order} LIMIT {int(ans['limit'])}"
-        return f"{body} RETURN n.name ORDER BY n.{p} {order}"
+            return f"{body} RETURN n.{key} ORDER BY n.{p} {order} LIMIT {int(ans['limit'])}"
+        return f"{body} RETURN n.{key} ORDER BY n.{p} {order}"
     raise ValueError(f"unknown answer kind {kind}")

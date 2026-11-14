@@ -24,11 +24,13 @@ from .request import Card
 
 SCHEMA = {
     "name": "fixture",
+    "cypherbench": True,
     "entities": [
         {"label": "Alpha", "properties": {"score": "int", "weight": "float", "born": "date", "tags": "list[str]",
                                           "kind": "str"}},
         {"label": "Beta", "properties": {"rank": "int", "opened": "date", "colors": "list[str]"}},
         {"label": "Gamma", "properties": {"size": "int"}},
+        {"label": "Delta", "key": "title", "properties": {"title": "str", "year": "int", "genre": "str"}},
     ],
     "relations": [
         {"label": "linkA", "subj_label": "Alpha", "obj_label": "Beta",
@@ -37,10 +39,11 @@ SCHEMA = {
         {"label": "toG", "subj_label": "Beta", "obj_label": "Gamma", "properties": {}},
         {"label": "fromG", "subj_label": "Gamma", "obj_label": "Alpha", "properties": {}},
         {"label": "peer", "subj_label": "Alpha", "obj_label": "Alpha", "properties": {}},
+        {"label": "rated", "subj_label": "Alpha", "obj_label": "Delta", "properties": {"stars": "int"}},
     ],
 }
 # Properties with no repeated values, so "top ... limit" has no ties to break.
-UNIQUE = {"score", "born", "rank", "opened"}
+UNIQUE = {"score", "born", "rank", "opened", "year"}
 TAGS = ["red", "green", "blue", "x", "y"]
 
 
@@ -65,7 +68,11 @@ def build(seed: int = 7) -> dict:
     for i in range(8):
         ents.append({"eid": f"Gamma#{i}", "label": "Gamma", "name": f"gamma {i}",
                      "properties": {"size": maybe(rng.randint(1, 5))}})
-    ids = {lab: [e["eid"] for e in ents if e["label"] == lab] for lab in ("Alpha", "Beta", "Gamma")}
+    for i in range(20):
+        ents.append({"eid": f"Delta#{i}", "label": "Delta", "name": f"delta {i}", "properties": {
+            "title": f"{rng.choice(['The', 'A', 'Our'])} {rng.choice(['Red', 'Long', 'Last'])} Story {i % 17}",
+            "year": maybe(1980 + i), "genre": maybe(rng.choice(["drama", "comedy", "noir"]))}})
+    ids = {lab: [e["eid"] for e in ents if e["label"] == lab] for lab in ("Alpha", "Beta", "Gamma", "Delta")}
     rid = 0
 
     def edge(lab, s, o, props=None):
@@ -85,6 +92,8 @@ def build(seed: int = 7) -> dict:
         edge("fromG", rng.choice(ids["Gamma"]), rng.choice(ids["Alpha"]))
     for _ in range(30):
         edge("peer", rng.choice(ids["Alpha"]), rng.choice(ids["Alpha"]))
+    for _ in range(50):
+        edge("rated", rng.choice(ids["Alpha"]), rng.choice(ids["Delta"]), {"stars": maybe(rng.randint(1, 5), 0.2)})
     return {"schema": SCHEMA, "entities": ents, "relations": rels}
 
 
@@ -96,7 +105,8 @@ class Generator:
     def __init__(self, kg: dict, seed: int = 11) -> None:
         self.c = card()
         self.rng = random.Random(seed)
-        self.names = {lab: sorted({e["name"] for e in kg["entities"] if e["label"] == lab}) for lab in self.c.labels}
+        self.names = {lab: sorted({(e["properties"].get(self.c.keys[lab]) if self.c.keys[lab] != "name" else e["name"])
+                                   for e in kg["entities"] if e["label"] == lab} - {None}) for lab in self.c.labels}
         self.values: dict[tuple, list] = {}
         for e in kg["entities"]:
             for k, v in e["properties"].items():
@@ -142,6 +152,11 @@ class Generator:
         v = self.rng.choice(vals)
         if t.startswith("list"):
             return {"var": "n", "prop": p, "op": self.rng.choice(["contains", "not_contains"]), "value": v}
+        if t == "str" and self.rng.random() < 0.5:
+            sv = str(v)
+            op = self.rng.choice(["starts_with", "ends_with", "contains_text"])
+            frag = sv[:3] if op == "starts_with" else sv[-3:] if op == "ends_with" else sv[1:4]
+            return {"var": "n", "prop": p, "op": op, "value": frag}
         if t == "date" and self.rng.random() < 0.5:
             return {"var": "n", "prop": p, "op": self.rng.choice(["=", "<", ">", "<=", ">=", "<>"]),
                     "value": int(str(v)[:4]), "part": "year"}
@@ -185,10 +200,17 @@ class Generator:
             edges.append(self._edge("n", "m0", "linkB", src, 1))
         if shape == "union":
             req["any_of"] = []
+            refs = r.random() < 0.5  # v2: branches may name edges listed in "edges"
             for i in range(2):
                 t, o, src = self._hop(lab)
                 nodes[f"m{i}"] = self._node(o, True)
-                req["any_of"].append([self._edge("n", f"m{i}", t, src, i)])
+                e = self._edge("n", f"m{i}", t, src, i)
+                if refs:
+                    e["var"] = f"u{i}"
+                    edges.append(e)
+                    req["any_of"].append([f"u{i}"])
+                else:
+                    req["any_of"].append([e])
         if shape == "optional":
             t, o, src = self._hop(lab)
             nodes["m1"] = self._node(o, False)
@@ -220,6 +242,19 @@ class Generator:
         if k == "list_items":
             return {"kind": k, "prop": r.choice([p for p, t in props.items() if t.startswith("list")])}
         if k == "aggregate":
+            if shape in ("hop", "hop_named") and r.random() < 0.4:  # v2: over another node or an edge
+                e = req["edges"][0]
+                other = "m0"
+                eprops = [p for p, t in (self.c.rel_props(e["type"], nodes[e["from"]]["label"],
+                                                          nodes[e["to"]]["label"]) or {}).items() if t in ("int", "float")]
+                if eprops and r.random() < 0.6:
+                    e["var"] = e.get("var") or "ev"
+                    return {"kind": k, "fn": r.choice(["max", "min", "avg", "sum"]), "prop": r.choice(eprops),
+                            "var": e["var"]}
+                oprops = [p for p, t in self.c.labels[nodes[other]["label"]].items() if t in ("int", "float")]
+                if oprops:
+                    return {"kind": k, "fn": r.choice(["max", "min", "avg", "sum"]), "prop": r.choice(oprops),
+                            "var": other}
             nums = [p for p, t in props.items() if t in ("int", "float", "date")]
             p = r.choice(nums)
             if props[p] == "date":
@@ -234,4 +269,6 @@ class Generator:
         p = r.choice(list(props))
         if k == "values":
             return {"kind": k, "prop": p, "distinct": r.random() < 0.5}
+        if k == "names_with" and r.random() < 0.5:  # v2: several properties
+            return {"kind": k, "props": r.sample(list(props), min(len(props), r.randint(1, 3)))}
         return {"kind": k, "prop": p}

@@ -19,6 +19,7 @@ from dataclasses import dataclass
 from .request import Card, pattern_vars
 
 _P = {"=": "eq", "<>": "neq", "<": "lt", ">": "gt", "<=": "lte", ">=": "gte"}
+_TEXT = {"starts_with": "startingWith", "ends_with": "endingWith", "contains_text": "containing"}
 
 
 @dataclass(frozen=True)
@@ -54,6 +55,8 @@ def _filter(f: dict) -> str:
         return f".has({p}, {lit(f['value'])})"
     if op == "not_contains":
         return f".has({p}).not(__.has({p}, {lit(f['value'])}))"
+    if op in _TEXT:
+        return f".has({p}, {_TEXT[op]}({lit(f['value'])}))"
     if f.get("part") == "year":
         return f".has({p}, {_year_range(op, int(f['value']))})"
     return f".has({p}, {_P[op]}({lit(f['value'])}))"
@@ -62,11 +65,11 @@ def _filter(f: dict) -> str:
 def _node_steps(spec: dict) -> str:
     s = f".hasLabel({lit(spec['label'])})"
     if spec.get("name") is not None:
-        s += f".has('name', {lit(spec['name'])})"
+        s += f".has({lit(spec.get('_key', 'name'))}, {lit(spec['name'])})"
     return s
 
 
-def _match(req: dict, edges: list[dict]) -> str:
+def _match(req: dict, edges: list[dict], keep: frozenset = frozenset()) -> str:
     """Steps after ``g.V()`` that walk the pattern; each traverser is one match.
 
     The walk starts at a named node if there is one (else ``n``) and takes each
@@ -112,7 +115,7 @@ def _match(req: dict, edges: list[dict]) -> str:
             out += f".select({lit(src)})"
         t = lit(e["type"])
         flt = "".join(_filter(f) for f in e.get("filters") or [])
-        if flt or by_type[e["type"]] > 1:
+        if flt or by_type[e["type"]] > 1 or e.get("var") in keep:
             rv = lit(e.get("var") or f"_e{i}")
             labelled.append((e["type"], rv))
             out += (f".outE({t}){flt}.as({rv}).inV()" if forward else f".inE({t}){flt}.as({rv}).outV()")
@@ -155,6 +158,7 @@ def compile_gremlin(req: dict, card: Card) -> Compiled:
     nodes, ans = req["nodes"], req["answer"]
     kind = ans["kind"]
     p = lit(ans["prop"]) if ans.get("prop") else None
+    key = lit(nodes["n"].get("_key", "name"))
 
     if kind == "compare":
         o = ans["other"]
@@ -162,7 +166,7 @@ def compile_gremlin(req: dict, card: Card) -> Compiled:
         t = ans["test"]
         if t == "which_greater":
             return Compiled(f"{head}.choose(__.where('n', gt({lit(o)})).by({p}), "
-                            f"__.select('n').values('name'), __.select({lit(o)}).values('name'))")
+                            f"__.select('n').values({key}), __.select({lit(o)}).values({lit(nodes[o].get('_key', 'name'))}))")
         if t == "equal":
             return Compiled(f"{head}.choose(__.select('n').has({p}).select({lit(o)}).has({p}), "
                             f"__.choose(__.where('n', eq({lit(o)})).by({p}), __.constant(true), __.constant(false)), "
@@ -185,16 +189,24 @@ def compile_gremlin(req: dict, card: Card) -> Compiled:
             else:
                 step = f"__.out({t})" if out else f"__.in({t})"
             step += _node_steps(nodes[of])
-            return Compiled(f"{_subjects(req)}.project('a', 'b').by('name').by({step}.dedup().count())")
+            return Compiled(f"{_subjects(req)}.project('a', 'b').by({key}).by({step}.dedup().count())")
         return Compiled(f"g.V(){_match(req, edges)}.select('n', {lit(of)}).dedup()"
                         f".group().by(__.select('n')).by(__.count()).unfold()"
-                        f".project('a', 'b').by(__.select(keys).values('name')).by(__.select(values))")
+                        f".project('a', 'b').by(__.select(keys).values({key})).by(__.select(values))")
 
+    if kind == "aggregate" and (ans.get("var") or "n") != "n":
+        v = ans["var"]
+        fn = {"max": "max", "min": "min", "avg": "mean", "sum": "sum"}[ans["fn"]]
+        post = "year_null" if ans.get("part") == "year" else ("agg_zero" if fn == "sum" else "agg_null")
+        return Compiled(f"g.V(){_match(req, req.get('edges') or [], frozenset([v]))}.select({lit(v)}).dedup()"
+                        f".values({p}).{fn}()", post=post)
     s = _subjects(req)
     if kind == "names":
-        return Compiled(f"{s}.values('name')")
+        return Compiled(f"{s}.values({key})")
     if kind == "names_with":
-        return Compiled(f"{s}.project('a', 'b').by('name').by({_value(p)})")
+        cols = ", ".join(lit(f"c{i}") for i in range(len(ans["props"]) + 1))
+        bys = f".by({key})" + "".join(f".by({_value(lit(x))})" for x in ans["props"])
+        return Compiled(f"{s}.project({cols}){bys}")
     if kind == "values":
         return Compiled(f"{s}.project('a').by({_value(p)})" + (".dedup()" if ans.get("distinct") else ""))
     if kind == "list_items":
@@ -216,8 +228,8 @@ def compile_gremlin(req: dict, card: Card) -> Compiled:
                 arms = f"__.unfold().hasNot({p}), __.unfold().has({p}).order().by({p}, desc)"
             else:
                 arms = f"__.unfold().has({p}).order().by({p}, asc), __.unfold().hasNot({p})"
-            return Compiled(f"{s}.fold().union({arms}).limit({k}).values('name')")
-        return Compiled(f"{s}.values('name')")
+            return Compiled(f"{s}.fold().union({arms}).limit({k}).values({key})")
+        return Compiled(f"{s}.values({key})")
     raise ValueError(f"unknown answer kind {kind}")
 
 
