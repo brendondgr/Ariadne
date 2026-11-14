@@ -35,12 +35,13 @@ class RelayClient:
         self.retries = retries
 
     def complete(self, alias: str, messages: list[dict], *, temperature: float = 0.0,
-                 max_tokens: int | None = None) -> Completion:
+                 max_tokens: int | None = None, extra: dict | None = None) -> Completion:
         body = {
             "model": alias,
             "messages": messages,
             "temperature": temperature,
             "max_tokens": max(2048, int(max_tokens or self.max_tokens)),
+            **(extra or {}),
         }
         data = json.dumps(body).encode()
         last: Exception | None = None

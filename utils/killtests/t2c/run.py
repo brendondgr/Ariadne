@@ -92,6 +92,16 @@ def _parse_validate(raw: str, card: Card):
         return req, "invalid", f"{type(exc).__name__}: {exc}"[:300]
 
 
+def effort(tag: str) -> dict:
+    """Per-model request extras, e.g. ``KILLTESTS_REASONING_EFFORT='{"qwen38-27b": "medium"}'``.
+
+    Added 2026-11-14 after the protocol was frozen (see ISSUES.md): Qwen's server defaults to
+    ``reasoning_effort=xhigh`` and ran out of the 8,192-token budget on part B.
+    """
+    lvl = json.loads(os.environ.get("KILLTESTS_REASONING_EFFORT") or "{}").get(tag)
+    return {"reasoning_effort": lvl} if lvl else {}
+
+
 def stage_generate(cfg, out: Path, b: Bench, models: dict[str, str]) -> dict:
     st = Stage(out, f"{b.part}-generate")
     if st.done:
@@ -102,9 +112,10 @@ def stage_generate(cfg, out: Path, b: Bench, models: dict[str, str]) -> dict:
 
     def one(x):
         q, arm, alias = x
-        c = relay.complete(alias, b.messages(arm, q), temperature=0.0)
+        ex = effort(models[alias])
+        c = relay.complete(alias, b.messages(arm, q), temperature=0.0, extra=ex)
         return {"raw": c.text[-6000:], "served_model": c.served_model, "finish_reason": c.finish_reason,
-                "usage": c.usage, "latency_s": c.latency_s}
+                "usage": c.usage, "latency_s": c.latency_s, **ex}
 
     res = st.map(jobs, one, workers=cfg.relay_concurrency * len(models))
     st.finish({"generations": res, "models": models})
@@ -134,9 +145,10 @@ def stage_repair(cfg, out: Path, b: Bench, gen: dict) -> dict:
             {"role": "assistant", "content": raw},
             {"role": "user", "content": f"That request is not valid: {msg}\nReply with a corrected request only, "
                                         "as JSON in one ```json fenced block."}]
-        c = relay.complete(alias, m, temperature=0.0)
+        ex = effort(gen["models"][alias])
+        c = relay.complete(alias, m, temperature=0.0, extra=ex)
         return {"raw": c.text[-6000:], "served_model": c.served_model, "finish_reason": c.finish_reason,
-                "usage": c.usage, "repaired_from": msg}
+                "usage": c.usage, "repaired_from": msg, **ex}
 
     res = st.map(jobs, one, workers=cfg.relay_concurrency * len(gen["models"]))
     st.finish({"generations": res, "n_repaired": len(jobs)})

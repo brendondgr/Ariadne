@@ -19,9 +19,10 @@ healthy() {
   done
 }
 for pass in $(seq 1 "$MAX_PASSES"); do
+  while :; do
   until healthy; do echo "$(date -Is) relay not healthy; waiting"; sleep 120; done
   echo "$(date -Is) pass $pass: relay healthy"
-  uv run python - <<'EOF' || exit 2
+  uv run python - <<'EOF'
 import json, time
 from pathlib import Path
 from utils.config import load_env
@@ -33,15 +34,28 @@ cfg = get()
 relay = RelayClient(cfg.relay_url, max_tokens=cfg.relay_max_tokens)
 hp = Path("logs/killtests-2026-11/exp005/run_header.json")
 hdr = json.loads(hp.read_text())
-now = [identify(relay, a) for a in ("default-model", "default-model-2")]
+try:
+    now = [identify(relay, a) for a in ("default-model", "default-model-2")]
+except Exception as exc:  # a transient relay error: wait and retry, do not abort
+    print("identify failed:", exc)
+    raise SystemExit(3)
 if {i["model"] for i in now} != {i["model"] for i in hdr["identities"]}:
     raise SystemExit(f"model set changed: {now}")
 hdr.setdefault("identities_initial", hdr["identities"])
-hdr.setdefault("resumes", []).append({"at": time.time(), "identities": now})
+import os
+eff = json.loads(os.environ.get("KILLTESTS_REASONING_EFFORT") or "{}")
+hdr.setdefault("resumes", []).append({"at": time.time(), "identities": now, "reasoning_effort": eff,
+                                      "concurrency_per_model": int(os.environ.get("KILLTESTS_CONCURRENCY", "64"))})
+hdr["reasoning_effort"] = eff
 hdr["identities"] = now
 hp.write_text(json.dumps(hdr, indent=1))
 print({i["alias"]: i["model"] for i in now})
 EOF
+  rc=$?
+  [ $rc = 0 ] && break
+  [ $rc = 3 ] || exit 2
+  sleep 120
+  done
   rm -f "$OUT"/B-generate.{done,json} "$OUT"/B-repair.{done,json} "$OUT"/B-execute.{done,json} \
         "$OUT"/B-score.{done,json} "$OUT"/cache/B-execute.jsonl
   KILLTESTS_CONCURRENCY=${KILLTESTS_CONCURRENCY:-64} uv run --with pyarrow python -m utils.killtests.t2c.run B 2>&1 \
