@@ -18,10 +18,10 @@ hypothesis: >
 
 # --- Reproducibility block (all fields mandatory) ---
 code:
-  commit: 7f0d9cd71978c6a0d545e3c8c021807ec7d537b5          # 40-char sha, or "unknown" for a back-filled experiment
+  commit: f6946de02fd16f0fa00b033a4fce24c8943d4496          # 40-char sha, or "unknown" for a back-filled experiment
   branch: main
   entrypoint: "KILLTESTS_EXPERIMENT=exp006 KILLTESTS_REASONING_EFFORT='{\"qwen38-27b\": \"medium\"}' KILLTESTS_CONCURRENCY=16 uv run --with pyarrow python -m utils.killtests.t2c.run A B C"
-  dirty: true             # uncommitted changes at run time? if true, explain in ISSUES.md
+  dirty: false            # uncommitted changes at run time? if true, explain in ISSUES.md
 config:
   path: null               # repo-relative path, or null if the run takes no config file
   hash: null               # sha256:... of that file
