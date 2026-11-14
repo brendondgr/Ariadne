@@ -113,7 +113,24 @@ def main() -> int:
         va[tag]["status_typed2_3shot"] = blk["status"]["typed2-3shot"]
     data = EXP / "data"
     data.mkdir(parents=True, exist_ok=True)
-    atomic_write_json(data / "metrics.json", {"A": a, "B": b})
+    summary = {}
+    for tag, blk in b["by_model"].items():
+        t = tag.replace("-", "_").replace(".", "")
+        arms, diffs = blk["arms"], blk["diffs"]
+        summary[f"B_typed2_3shot_gremlin_minus_free_gremlin_3shot_{t}"] = round(diffs["typed2-3shot-gremlin_minus_free-gremlin-3shot"]["diff"], 3)
+        summary[f"B_typed2_3shot_cypher_minus_free_cypher_3shot_{t}"] = round(diffs["typed2-3shot-cypher_minus_free-cypher-3shot"]["diff"], 3)
+        for arm, name in (("typed2-3shot-cypher", "typed2_3shot"), ("free-cypher-3shot", "free_cypher_3shot"),
+                          ("free-gremlin-3shot", "free_gremlin_3shot")):
+            summary[f"B_exact_records_{name}_{t}"] = round(arms[arm]["exact_records"], 3)
+    summary["B_typed2_3shot_gremlin_minus_free_gremlin_3shot_min"] = min(
+        v for k, v in summary.items() if k.startswith("B_typed2_3shot_gremlin_minus"))
+    summary["B_backends_agree_typed2"] = min(blk["status"][a]["backends_agree"] for blk in b["by_model"].values()
+                                             for a in blk["status"] if a.startswith("typed2"))
+    ann = data / "expressibility-sample.json"
+    if ann.exists():
+        j = json.loads(ann.read_text())
+        summary["B_expressible_share_sample"] = round(len(j["expressible"]) / j["n"], 3)
+    atomic_write_json(data / "metrics.json", {"summary": summary, "A": a, "B": b})
     atomic_write_json(data / "killrule.json", {"B": vb, "A": va})
     atomic_write_json(data / "taxonomy.json", tx)
     print(json.dumps({"B": {k: vb[k] for k in ("verdict", "H1_holds_all", "inputs")}, "A": va, "taxonomy": tx},

@@ -118,5 +118,6 @@ this file says which number is *current*.
 | [`EXP-2026-11-002`](experiments/EXP-2026-11-002-t3-synthetic-calibration/) | 2026-11-13 | `miscoverage_unweighted` | 0.0911 ± 0.0000 (n=417) | — | — |
 | [`EXP-2026-11-003`](experiments/EXP-2026-11-003-t1-free-query-gap/) | 2026-11-14 | `gremlin_minus_cypher_3shot` | -0.2950 ± 0.0000 (n=200) | — | — |
 | [`EXP-2026-11-004`](experiments/EXP-2026-11-004-t1-typed-arm/) | 2026-11-14 | `typed_3shot_gremlin_minus_free_gremlin_3shot_min` | 0.1500 ± 0.0000 (n=200) | — | — |
+| [`EXP-2026-11-005`](experiments/EXP-2026-11-005-typed-v2-second-benchmark/) | 2026-11-14 | `B_typed2_3shot_gremlin_minus_free_gremlin_3shot_min` | -0.0100 ± 0.0000 (n=390) | — | — |
 
-**24 withdrawn figure(s), 6 superseded experiment(s), 60 current headline(s).**
+**24 withdrawn figure(s), 6 superseded experiment(s), 61 current headline(s).**

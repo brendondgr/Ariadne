@@ -1,0 +1,84 @@
+{
+ "B": {
+  "rule": "killed if H2 fails for any model or H3 fails for every model (3-shot); H1 reported",
+  "inputs": {
+   "gemma4-31b": {
+    "typed2_3shot_cypher": 0.18205128205128204,
+    "typed2_3shot_gremlin": 0.18205128205128204,
+    "free_cypher_3shot": 0.358974358974359,
+    "free_gremlin_3shot": 0.19230769230769232,
+    "H1_backend_independent": true,
+    "H2_beats_free_gremlin": false,
+    "H3_not_worse_than_free_cypher": false,
+    "ci_typed_gremlin_minus_free_gremlin": [
+     -0.046153846153846156,
+     0.02564102564102564
+    ],
+    "ci_typed_cypher_minus_free_cypher": [
+     -0.2205128205128205,
+     -0.13333333333333333
+    ],
+    "repair": {
+     "cypher": 0.19230769230769232,
+     "gremlin": 0.19230769230769232
+    }
+   },
+   "qwen38-27b": {
+    "typed2_3shot_cypher": 0.2076923076923077,
+    "typed2_3shot_gremlin": 0.2076923076923077,
+    "free_cypher_3shot": 0.4,
+    "free_gremlin_3shot": 0.1564102564102564,
+    "H1_backend_independent": true,
+    "H2_beats_free_gremlin": false,
+    "H3_not_worse_than_free_cypher": false,
+    "ci_typed_gremlin_minus_free_gremlin": [
+     0.017948717948717947,
+     0.08717948717948718
+    ],
+    "ci_typed_cypher_minus_free_cypher": [
+     -0.23846153846153847,
+     -0.14615384615384616
+    ],
+    "repair": {
+     "cypher": 0.2205128205128205,
+     "gremlin": 0.2205128205128205
+    }
+   }
+  },
+  "verdict": "killed",
+  "H1_holds_all": true
+ },
+ "A": {
+  "gemma4-31b": {
+   "typed2-3shot-cypher": 0.92,
+   "typed2-3shot-gremlin": 0.92,
+   "typed2-3shot-repair-cypher": 0.945,
+   "typed-3shot-cypher": 0.895,
+   "free-cypher-3shot": 0.905,
+   "free-gremlin-3shot": 0.745,
+   "A1_not_worse_than_v1": true,
+   "union_v2": 0.9048,
+   "status_typed2_3shot": {
+    "ok": 194,
+    "invalid": 6,
+    "backends_agree": 1.0
+   }
+  },
+  "qwen38-27b": {
+   "typed2-3shot-cypher": 0.905,
+   "typed2-3shot-gremlin": 0.905,
+   "typed2-3shot-repair-cypher": 0.93,
+   "typed-3shot-cypher": 0.955,
+   "free-cypher-3shot": 0.905,
+   "free-gremlin-3shot": 0.655,
+   "A1_not_worse_than_v1": false,
+   "union_v2": 1.0,
+   "status_typed2_3shot": {
+    "ok": 194,
+    "unparseable": 1,
+    "invalid": 5,
+    "backends_agree": 1.0
+   }
+  }
+ }
+}

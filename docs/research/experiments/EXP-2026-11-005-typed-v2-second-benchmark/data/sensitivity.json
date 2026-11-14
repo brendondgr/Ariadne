@@ -1,0 +1,94 @@
+{
+ "n": 390,
+ "note": "The pre-registered scorer compares row **multisets** with exact columns. Text2Cypher's gold\nqueries often keep duplicate rows (no DISTINCT) and add columns the question does not ask for\n(e.g. the sort value next to a name), while the typed compiler always de-duplicates by entity\nand returns the columns the request names. This script re-executes every saved part-B query and\nscores it three ways, identically for every arm:",
+ "by_model": {
+  "gemma4-31b": {
+   "cypher-0shot": {
+    "strict": 0.3359,
+    "set": 0.3513,
+    "set_proj": 0.6,
+    "strict_matches_preregistered": true
+   },
+   "cypher-3shot": {
+    "strict": 0.359,
+    "set": 0.3872,
+    "set_proj": 0.7462,
+    "strict_matches_preregistered": true
+   },
+   "gremlin-0shot": {
+    "strict": 0.1821,
+    "set": 0.2026,
+    "set_proj": 0.4513,
+    "strict_matches_preregistered": true
+   },
+   "gremlin-3shot": {
+    "strict": 0.1923,
+    "set": 0.2128,
+    "set_proj": 0.4897,
+    "strict_matches_preregistered": true
+   },
+   "typed2-0shot": {
+    "strict": 0.1769,
+    "set": 0.2179,
+    "set_proj": 0.3333,
+    "strict_matches_preregistered": true
+   },
+   "typed2-3shot": {
+    "strict": 0.1821,
+    "set": 0.2231,
+    "set_proj": 0.3333,
+    "strict_matches_preregistered": true
+   },
+   "typed2-3shot-repair": {
+    "strict": 0.1923,
+    "set": 0.2333,
+    "set_proj": 0.3615,
+    "strict_matches_preregistered": true
+   }
+  },
+  "qwen38-27b": {
+   "cypher-0shot": {
+    "strict": 0.4,
+    "set": 0.4231,
+    "set_proj": 0.6641,
+    "strict_matches_preregistered": true
+   },
+   "cypher-3shot": {
+    "strict": 0.4,
+    "set": 0.4154,
+    "set_proj": 0.7462,
+    "strict_matches_preregistered": true
+   },
+   "gremlin-0shot": {
+    "strict": 0.1718,
+    "set": 0.1846,
+    "set_proj": 0.2718,
+    "strict_matches_preregistered": true
+   },
+   "gremlin-3shot": {
+    "strict": 0.1564,
+    "set": 0.1872,
+    "set_proj": 0.2846,
+    "strict_matches_preregistered": true
+   },
+   "typed2-0shot": {
+    "strict": 0.1795,
+    "set": 0.2103,
+    "set_proj": 0.3179,
+    "strict_matches_preregistered": true
+   },
+   "typed2-3shot": {
+    "strict": 0.2077,
+    "set": 0.2436,
+    "set_proj": 0.3564,
+    "strict_matches_preregistered": true
+   },
+   "typed2-3shot-repair": {
+    "strict": 0.2205,
+    "set": 0.2564,
+    "set_proj": 0.3872,
+    "strict_matches_preregistered": true
+   }
+  }
+ }
+}
