@@ -27,17 +27,25 @@ from ..config import REPO
 from ..stages import atomic_write_json
 
 GRAPHS = {"movies": 1, "northwind": 2, "fincen": 3}
+#: Mind the Query (EMNLP 2025 Industry), manually validated test split; stores on 551N / 651N.
+MTQ = ("wwc", "healthcare", "er")
+SLOT = {"movies": "01", "northwind": "02", "fincen": "03", "wwc": "11", "healthcare": "12", "er": "13"}
 OUT = REPO / "logs" / "killtests-2026-11" / "t2c"
+OUT_MTQ = REPO / "logs" / "killtests-2026-11" / "mtq"
+
+
+def out_dir(graph: str) -> Path:
+    return OUT_MTQ if graph in MTQ else OUT
 _TYPES = {"String": "str", "Long": "int", "Double": "float", "Boolean": "bool", "StringArray": "list[str]",
           "Date": "date", "DateTime": "datetime"}
 
 
 def neo4j_uri(graph: str) -> str:
-    return f"bolt://localhost:550{GRAPHS[graph]}"
+    return f"bolt://localhost:55{SLOT[graph]}"
 
 
 def gremlin_uri(graph: str) -> str:
-    return f"ws://localhost:650{GRAPHS[graph]}/gremlin"
+    return f"ws://localhost:65{SLOT[graph]}/gremlin"
 
 
 def driver(graph: str):
@@ -74,7 +82,30 @@ def _key(props: dict[str, str], label: str = "") -> str:
     for k in strs:
         if k.endswith("ID") or k.endswith("Id") or k == "id":
             return k
-    return strs[0] if strs else "name"
+    # v3 (2026-11-14): identifier-like properties of any type, e.g. an integer ``primaryid``.
+    ids = sorted((props[k] != "str", k) for k in props if k.lower().endswith("id"))
+    if ids:
+        return ids[0][1]
+    if strs:
+        return strs[0]
+    return sorted(props)[0] if props else "name"
+
+
+def _numeric_text(session, label: str, prop: str, n: int = 200) -> bool:
+    """A string property whose values are decimal numbers written as text (format v3, 2026-11-14).
+
+    True when every one of up to ``n`` sampled non-null values parses as a number and at least 10%
+    contain a decimal point, so identifiers and codes made of digits stay strings.
+    """
+    vals = [r["v"] for r in session.run(f"MATCH (n:`{label}`) WHERE n.`{prop}` IS NOT NULL "
+                                        f"RETURN n.`{prop}` AS v LIMIT {n}")]
+    if not vals or not all(isinstance(v, str) for v in vals):
+        return False
+    try:
+        [float(v) for v in vals]
+    except ValueError:
+        return False
+    return sum("." in v for v in vals) >= max(1, len(vals) // 10)
 
 
 def card(graph: str) -> dict:
@@ -98,8 +129,13 @@ def card(graph: str) -> dict:
                 rprops[rt][r["propertyName"]] = t
         pats = s.run("MATCH (a)-[r]->(b) RETURN DISTINCT labels(a)[0] AS s, type(r) AS t, labels(b)[0] AS o "
                      "ORDER BY s, t, o").data()
+        keys = {lab: _key(p, lab) for lab, p in ent.items()}
+        for lab, p in ent.items():
+            for k, t in list(p.items()):
+                if t == "str" and k != keys[lab] and _numeric_text(s, lab, k):
+                    p[k] = "float_text"
     return {"name": graph,
-            "entities": [{"label": lab, "key": _key(p, lab), "properties": dict(sorted(p.items()))}
+            "entities": [{"label": lab, "key": keys[lab], "properties": dict(sorted(p.items()))}
                          for lab, p in sorted(ent.items())],
             "relations": [{"label": x["t"], "subj_label": x["s"], "obj_label": x["o"],
                            "properties": dict(sorted(rprops.get(x["t"], {}).items()))} for x in pats]}
@@ -189,20 +225,25 @@ def parity(graph: str, sample: int = 50, seed: int = 20261114) -> dict:
     return out
 
 
-def main() -> int:
+def main(argv: list[str] | None = None) -> int:
+    import sys
+
     from utils.config import load_env
 
     load_env()
-    OUT.mkdir(parents=True, exist_ok=True)
+    graphs = (argv if argv is not None else sys.argv[1:]) or list(GRAPHS)
     res = {}
-    for g in GRAPHS:
+    for g in graphs:
+        out = out_dir(g)
+        out.mkdir(parents=True, exist_ok=True)
         m = mirror(g)
         p = parity(g)
         cd = card(g)
-        atomic_write_json(OUT / f"card-{g}.json", cd)
+        # v3 cards (with float_text) live apart, so EXP-2026-11-005's cards stay as run.
+        atomic_write_json(out / "cards-v3" / f"card-{g}.json", cd)
         res[g] = {"mirror": m, "parity_ok": p["ok"], "labels_equal": p["labels_equal"], "rels_equal": p["rels_equal"],
                   "mismatches": p["mismatches"][:10], "keys": {e["label"]: e["key"] for e in cd["entities"]}}
-    atomic_write_json(OUT / "parity.json", res)
+    atomic_write_json(out_dir(graphs[0]) / ("parity.json" if graphs[0] in GRAPHS else "parity-mtq.json"), res)
     print(json.dumps(res, indent=1, default=str))
     return 0 if all(r["parity_ok"] for r in res.values()) else 1
 

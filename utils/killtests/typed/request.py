@@ -42,6 +42,23 @@ Format (JSON)::
 Matching follows a single Cypher ``MATCH``: two relationships of the same type in
 one pattern must be different relationships.
 
+**Format v3 additions (2026-11-14):**
+
+- ``per``: for each ``n``, an aggregate over ``of`` (a node var other than ``n``, or an edge var):
+  ``fn`` is ``count`` (distinct ``of``) or ``sum``/``avg``/``max``/``min`` of ``of``'s ``prop``
+  (over distinct ``(n, of)`` pairs). Optional ``having`` ``{"op", "value"}`` keeps only groups
+  whose value passes; ``order`` (asc|desc) and ``limit`` rank the groups (ties by ``n``'s key,
+  ascending; missing values sort as in Cypher). Rows: ``n``'s key and the value.
+  ``count_per`` is ``per`` with ``fn: count``.
+- ``top`` takes optional ``props``: extra columns of ``n`` next to its key.
+- ``optional`` may name an edge written in ``edges`` by its ``var`` (as ``any_of`` may).
+- A filter may compare with another property instead of a value: ``"ref": {"var", "prop"}``.
+- ``"part": "size"`` compares the length of a list property with an integer.
+- ``none``: one edge touching ``n``; ``n`` qualifies only if it has **no** such relationship
+  (with that edge's filters and the far node's ``name`` and ``where`` filters).
+- Properties typed ``float_text`` in the card (numbers stored as text) compare, sort and aggregate
+  as numbers.
+
 Filters (``where`` on nodes, ``filters`` on edges) use ``op`` in ``=, <>, <, >, <=, >=``
 (the property must be present and satisfy it), ``contains`` / ``not_contains`` for list
 properties (``not_contains`` also requires the property present), and ``part: "year"``
@@ -59,7 +76,9 @@ from typing import Any
 from ..t1.load import schema
 
 ANSWERS = {"names", "names_with", "values", "list_items", "count", "count_values", "aggregate",
-           "count_per", "top", "compare"}
+           "count_per", "top", "compare", "per"}
+NUMERIC = {"int", "float", "float_text"}
+CMP = {"=", "<>", "<", ">", "<=", ">="}
 OPS = {"=", "<>", "<", ">", "<=", ">=", "contains", "not_contains", "starts_with", "ends_with", "contains_text"}
 TEXT_OPS = {"starts_with", "ends_with", "contains_text"}
 AGG = {"max", "min", "avg", "sum"}
@@ -130,7 +149,24 @@ def _check_filter(f: dict, ptypes: dict[str, str], where: str, *, edge: bool) ->
     p = f.get("prop")
     _need(p in ptypes, f"{where}: unknown property {p!r}; options {sorted(ptypes)}")
     t = ptypes[p]
+    if f.get("ref") is not None:
+        _need(not edge, f"{where}: 'ref' is for node filters in 'where'")
+        _need(op in CMP, f"{where}: a 'ref' comparison needs op in {sorted(CMP)}")
+        _need(isinstance(f["ref"], dict) and f["ref"].get("var") and f["ref"].get("prop"),
+              f"{where}: ref must be {{\"var\": <node var>, \"prop\": <property>}}")
+        _need("value" not in f, f"{where}: give either 'value' or 'ref', not both")
+        _need(t != "float_text", f"{where}: 'ref' does not support numbers stored as text")
+        return
     _need("value" in f, f"{where}: missing 'value'")
+    if f.get("part") == "size":
+        _need(t.startswith("list"), f"{where}: part 'size' needs a list property; {p} is {t}")
+        _need(op in CMP and isinstance(f["value"], int) and not isinstance(f["value"], bool),
+              f"{where}: a size comparison needs op in {sorted(CMP)} and an integer value")
+        return
+    if t == "float_text":
+        _need(op in CMP and isinstance(f["value"], (int, float)) and not isinstance(f["value"], bool),
+              f"{where}: {p} is a number stored as text: use op in {sorted(CMP)} with a numeric value")
+        return
     if op in ("contains", "not_contains"):
         _need(t.startswith("list"), f"{where}: {op} needs a list property; {p} is {t}")
     if op in TEXT_OPS:
@@ -160,6 +196,12 @@ def validate(req: Any, card: Card) -> dict:
             _need(isinstance(spec["name"], (str, int, float)) and not isinstance(spec["name"], bool),
                   f"node {v}: name must be a string")
         spec["_key"] = card.keys[spec["label"]]
+        kt = card.labels[spec["label"]].get(spec["_key"], "str")
+        if kt in ("int", "float") and isinstance(spec.get("name"), str):
+            try:
+                spec["name"] = int(spec["name"]) if kt == "int" else float(spec["name"])
+            except ValueError as exc:
+                raise InvalidRequest(f"node {v}: {spec['label']}'s key {spec['_key']} is a number") from exc
 
     edges = req.get("edges") or []
     _need(isinstance(edges, list), "edges must be a list")
@@ -182,6 +224,27 @@ def validate(req: Any, card: Card) -> dict:
             branches.append(out)
         req["edges"] = edges = [e for e in edges if not (isinstance(e, dict) and e.get("var") in moved)]
         req["any_of"] = any_of = branches
+    opt_in = req.get("optional") or []
+    if isinstance(opt_in, list) and any(isinstance(x, str) for x in opt_in):
+        by_var = {e.get("var"): e for e in edges if isinstance(e, dict) and e.get("var")}
+        outs = []
+        for x in opt_in:
+            if isinstance(x, str):
+                _need(x in by_var, f"optional: {x!r} names no edge in 'edges' (give the edge a 'var')")
+                outs.append(by_var[x])
+            else:
+                outs.append(x)
+        moved_o = {x for x in opt_in if isinstance(x, str)}
+        req["edges"] = edges = [e for e in edges if not (isinstance(e, dict) and e.get("var") in moved_o)]
+        req["optional"] = outs
+    none_in = req.get("none") or []
+    if none_in:
+        _need(isinstance(none_in, list) and len(none_in) == 1, "none takes exactly one edge")
+        if isinstance(none_in[0], str):
+            by_var = {e.get("var"): e for e in edges if isinstance(e, dict) and e.get("var")}
+            _need(none_in[0] in by_var, f"none: {none_in[0]!r} names no edge in 'edges'")
+            req["none"] = none_in = [by_var[none_in[0]]]
+            req["edges"] = edges = [e for e in edges if e is not none_in[0]]
     edge_vars: dict[str, dict] = {}
 
     def check_edges(es: Any, where: str, scope: set[str]) -> None:
@@ -215,9 +278,23 @@ def validate(req: Any, card: Card) -> dict:
     _need(len(opt) <= 1, "at most one optional edge")
     if opt:
         _need("n" in (opt[0]["from"], opt[0]["to"]), "the optional edge must touch n")
+    if none_in:
+        check_edges(none_in, "none", set(required))
+        ne = none_in[0]
+        _need("n" in (ne["from"], ne["to"]) and ne["from"] != ne["to"], "the none edge must join n to another node")
+        far = ne["to"] if ne["from"] == "n" else ne["from"]
+        _need(far not in pattern_vars(edges + [x for br in any_of for x in br] + opt),
+              "the none edge's other node must not appear elsewhere in the pattern")
+        req["_none_far"] = far
     for i, f in enumerate(req.get("where") or []):
         _need(isinstance(f, dict) and f.get("var") in nodes, f"where[{i}]: var must name a node")
         _check_filter(f, card.labels[nodes[f["var"]]["label"]], f"where[{i}]", edge=False)
+        if f.get("ref") is not None:
+            rv = f["ref"]["var"]
+            _need(rv in nodes, f"where[{i}]: ref.var must name a node")
+            _need(f["ref"]["prop"] in card.labels[nodes[rv]["label"]],
+                  f"where[{i}]: ref.prop must be a property of {nodes[rv]['label']}")
+            _need(none_in == [] or req.get("_none_far") not in (f["var"], rv), f"where[{i}]: ref cannot use the none node")
 
     ans = req.get("answer")
     _need(isinstance(ans, dict) and ans.get("kind") in ANSWERS, f"answer.kind must be one of {sorted(ANSWERS)}")
@@ -235,6 +312,7 @@ def validate(req: Any, card: Card) -> dict:
         _need(nprops[ans["prop"]].startswith("list"), "list_items needs a list property")
     if kind == "aggregate":
         _need(ans.get("fn") in AGG, f"answer.fn must be one of {sorted(AGG)}")
+        _need(not none_in or (ans.get("var") or "n") == "n", "an aggregate over another variable cannot use none")
         var = ans.get("var") or "n"
         _need(var == "n" or not any_of, "an aggregate over another variable cannot be combined with any_of")
         if var in nodes:
@@ -244,16 +322,48 @@ def validate(req: Any, card: Card) -> dict:
                   "answer.var must name a node or an edge var in 'edges' (not in any_of or optional)")
             ptypes = edge_vars[var]["ptypes"]
         _need(ans.get("prop") in ptypes, f"answer.prop must be a property of {var}: {sorted(ptypes)}")
+        ans["_numtext"] = ptypes[ans["prop"]] == "float_text"
         if ans.get("part") is not None:
             _need(ans["part"] == "year" and ptypes[ans["prop"]] in ("date", "datetime"), "part 'year' needs a date property")
             _need(ans["fn"] in ("max", "min"), "part 'year' supports max and min")
     if kind == "top":
         _need(ans.get("order") in ("asc", "desc"), "answer.order must be asc or desc")
+        if ans.get("props") is not None:
+            _need(isinstance(ans["props"], list) and all(p in nprops for p in ans["props"]),
+                  f"answer.props must be properties of {nodes['n']['label']}: {sorted(nprops)}")
+        ans["_numtext"] = nprops[ans["prop"]] == "float_text"
         if ans.get("limit") is not None:
             _need(isinstance(ans["limit"], int) and ans["limit"] > 0, "answer.limit must be a positive integer")
     if kind == "count_per":
         _need(ans.get("of") in nodes and ans["of"] != "n", "answer.of must name a node other than n")
         _need(not any_of, "count_per cannot be combined with any_of")
+        ans.update(kind="per", fn="count")
+        kind = "per"
+    elif kind == "per":
+        of = ans.get("of")
+        _need(not any_of, "per cannot be combined with any_of")
+        _need(ans.get("fn") in AGG | {"count"}, f"answer.fn must be one of {sorted(AGG | {'count'})}")
+        if of in nodes:
+            _need(of != "n", "answer.of must name a node other than n, or an edge var")
+            optypes = card.labels[nodes[of]["label"]]
+        else:
+            _need(of in edge_vars, "answer.of must name a node other than n, or an edge var")
+            optypes = edge_vars[of]["ptypes"]
+            ans["_edge"] = True
+        if ans["fn"] != "count":
+            _need(ans.get("prop") in optypes and optypes[ans["prop"]] in NUMERIC,
+                  f"answer.prop must be a numeric property of {of}: "
+                  f"{sorted(k for k, t in optypes.items() if t in NUMERIC)}")
+            ans["_numtext"] = optypes[ans["prop"]] == "float_text"
+        if ans.get("having") is not None:
+            h = ans["having"]
+            _need(isinstance(h, dict) and h.get("op") in CMP and isinstance(h.get("value"), (int, float))
+                  and not isinstance(h.get("value"), bool), f"answer.having must be {{op in {sorted(CMP)}, numeric value}}")
+        if ans.get("order") is not None:
+            _need(ans["order"] in ("asc", "desc"), "answer.order must be asc or desc")
+        if ans.get("limit") is not None:
+            _need(ans.get("order") is not None, "answer.limit needs answer.order")
+            _need(isinstance(ans["limit"], int) and ans["limit"] > 0, "answer.limit must be a positive integer")
     if kind == "compare":
         o = ans.get("other")
         _need(o in nodes and o != "n", "answer.other must name a node other than n")
@@ -261,7 +371,7 @@ def validate(req: Any, card: Card) -> dict:
               "compare needs both nodes named")
         _need(ans.get("test") in TESTS, f"answer.test must be one of {sorted(TESTS)}")
         _need(ans["prop"] in card.labels[nodes[o]["label"]], f"{ans['prop']} is not a property of {nodes[o]['label']}")
-        _need(not (edges or any_of or opt), "compare takes two named nodes and no edges")
+        _need(not (edges or any_of or opt or none_in), "compare takes two named nodes and no edges")
     used = {"n"}
     for e in edges + [x for br in any_of for x in br] + opt:
         used.update((e["from"], e["to"]))
@@ -269,9 +379,15 @@ def validate(req: Any, card: Card) -> dict:
         used.add(ans["other"])
     for f in req.get("where") or []:
         used.add(f["var"])
+        if f.get("ref"):
+            used.add(f["ref"]["var"])
+    for e in none_in:
+        used.update((e["from"], e["to"]))
     _need(set(nodes) <= used, f"nodes not connected to anything: {sorted(set(nodes) - used)}")
-    if kind == "count_per":
-        _need(ans["of"] in used, "answer.of is not in the pattern")
+    if kind == "per" and not ans.get("_edge"):
+        _need(ans["of"] in used and ans["of"] != req.get("_none_far"), "answer.of is not in the pattern")
+    if kind == "per" and ans.get("_edge"):
+        _need(edge_vars[ans["of"]]["edge"] in edges + opt, "answer.of must be an edge in 'edges' or 'optional'")
     if kind == "aggregate" and (ans.get("var") or "n") in nodes:
         _need((ans.get("var") or "n") in used, "answer.var is not in the pattern")
     return req

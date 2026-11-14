@@ -99,3 +99,77 @@ def main() -> int:
 
 if __name__ == "__main__":
     raise SystemExit(main())
+
+
+# --- Mind the Query (format v3 experiment, EXP-2026-11-006) -------------------------------------
+
+MTQ_DIRS = {"wwc": "wwc", "healthcare": "healthcare", "er": "er"}
+MTQ_PER_GRAPH = 150
+
+
+def select_mtq(seed: int = 20261114) -> dict:
+    """Mind the Query's manually validated **test** split on wwc, healthcare and er.
+
+    Rows the annotators marked logically correct (``logical [0/1]`` = 1), deduplicated on
+    (graph, question), then the same mechanical filters as :func:`select` (runs within 30 s,
+    returns rows, scalar values only, no LIMIT without ORDER BY), then a seeded random sample of
+    at most ``MTQ_PER_GRAPH`` per graph. No question text is read by this selection.
+    """
+    import glob
+    import random
+
+    from ..config import REPO
+    from .load import MTQ, OUT_MTQ
+
+    st = Stage(OUT_MTQ, "gold")
+    if st.done:
+        return st.load()
+    root = REPO / "data/external/mind-the-query/repo/Train_Test_Splits/Manual"
+    seen, kept, why = set(), {g: [] for g in MTQ}, Counter()
+    drivers = {g: driver(g) for g in MTQ}
+    try:
+        for g in MTQ:
+            for f in sorted(glob.glob(str(root / MTQ_DIRS[g] / "test" / "*_test.json"))):
+                import json
+
+                for r in json.load(open(f)):
+                    if str(r.get("logical [0/1]")) != "1":
+                        why["not_logical"] += 1
+                        continue
+                    k = (g, r["NL Question"].strip())
+                    if k in seen:
+                        why["duplicate"] += 1
+                        continue
+                    seen.add(k)
+                    cy = r["Cypher"].strip()
+                    if _LIMIT.search(cy) and not _ORDER.search(cy):
+                        why["limit_without_order"] += 1
+                        continue
+                    try:
+                        res = run_cypher(drivers[g], cy)
+                    except Exception:  # noqa: BLE001
+                        why["gold_error"] += 1
+                        continue
+                    if not res:
+                        why["empty"] += 1
+                        continue
+                    if not all(_scalar(v) for row in res for v in row.values()):
+                        why["non_scalar"] += 1
+                        continue
+                    qid = hashlib.sha1(f"mtq|{g}|{r['NL Question']}".encode()).hexdigest()[:16]
+                    kept[g].append({"qid": qid, "graph": g, "nl_question": r["NL Question"], "gold_cypher": cy,
+                                    "data_source": "mind_the_query_" + f.rsplit("/", 1)[1].replace("_test.json", ""),
+                                    "instance_id": r.get("unique_id"), "n_rows": len(res),
+                                    "_gold_norm": [[list(k2), v] for k2, v in normalise(res).items()]})
+    finally:
+        for d in drivers.values():
+            d.close()
+    rng = random.Random(seed)
+    out, eligible = [], {g: len(v) for g, v in kept.items()}
+    for g in MTQ:
+        v = sorted(kept[g], key=lambda q: q["qid"])
+        out.extend(v if len(v) <= MTQ_PER_GRAPH else rng.sample(v, MTQ_PER_GRAPH))
+    st.finish({"questions": out, "excluded": dict(why), "eligible_by_graph": eligible,
+               "by_graph": dict(Counter(q["graph"] for q in out)),
+               "by_source": dict(Counter(q["data_source"] for q in out))})
+    return st.load()

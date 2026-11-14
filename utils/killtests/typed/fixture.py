@@ -27,7 +27,7 @@ SCHEMA = {
     "cypherbench": True,
     "entities": [
         {"label": "Alpha", "properties": {"score": "int", "weight": "float", "born": "date", "tags": "list[str]",
-                                          "kind": "str"}},
+                                          "kind": "str", "price": "float_text"}},
         {"label": "Beta", "properties": {"rank": "int", "opened": "date", "colors": "list[str]"}},
         {"label": "Gamma", "properties": {"size": "int"}},
         {"label": "Delta", "key": "title", "properties": {"title": "str", "year": "int", "genre": "str"}},
@@ -39,7 +39,8 @@ SCHEMA = {
         {"label": "toG", "subj_label": "Beta", "obj_label": "Gamma", "properties": {}},
         {"label": "fromG", "subj_label": "Gamma", "obj_label": "Alpha", "properties": {}},
         {"label": "peer", "subj_label": "Alpha", "obj_label": "Alpha", "properties": {}},
-        {"label": "rated", "subj_label": "Alpha", "obj_label": "Delta", "properties": {"stars": "int"}},
+        {"label": "rated", "subj_label": "Alpha", "obj_label": "Delta",
+         "properties": {"stars": "int", "notes": "list[str]"}},
     ],
 }
 # Properties with no repeated values, so "top ... limit" has no ties to break.
@@ -60,7 +61,8 @@ def build(seed: int = 7) -> dict:
         ents.append({"eid": f"Alpha#{i}", "label": "Alpha", "name": f"alpha {i % 27}", "properties": {
             "score": maybe(scores[i]), "weight": maybe(round(rng.uniform(1, 9), 1)),
             "born": maybe(f"{years[i]}-{rng.randint(1, 12):02d}-{rng.randint(1, 28):02d}"),
-            "tags": maybe(rng.sample(TAGS, rng.randint(1, 3))), "kind": maybe(rng.choice(["k1", "k2", "k3"]))}})
+            "tags": maybe(rng.sample(TAGS, rng.randint(1, 3))), "kind": maybe(rng.choice(["k1", "k2", "k3"])),
+            "price": maybe(f"{rng.uniform(1, 400):.2f}")}})
     for i in range(15):
         ents.append({"eid": f"Beta#{i}", "label": "Beta", "name": f"beta {i}", "properties": {
             "rank": maybe(scores[30 + i]), "opened": maybe(f"{years[30 + i]}-06-15"),
@@ -93,7 +95,8 @@ def build(seed: int = 7) -> dict:
     for _ in range(30):
         edge("peer", rng.choice(ids["Alpha"]), rng.choice(ids["Alpha"]))
     for _ in range(50):
-        edge("rated", rng.choice(ids["Alpha"]), rng.choice(ids["Delta"]), {"stars": maybe(rng.randint(1, 5), 0.2)})
+        edge("rated", rng.choice(ids["Alpha"]), rng.choice(ids["Delta"]),
+             {"stars": maybe(rng.randint(1, 5), 0.2), "notes": maybe(rng.sample(TAGS, rng.randint(1, 3)), 0.3)})
     return {"schema": SCHEMA, "entities": ents, "relations": rels}
 
 
@@ -102,7 +105,8 @@ def card() -> Card:
 
 
 class Generator:
-    def __init__(self, kg: dict, seed: int = 11) -> None:
+    def __init__(self, kg: dict, seed: int = 11, v3: bool = False) -> None:
+        self.v3 = v3
         self.c = card()
         self.rng = random.Random(seed)
         self.names = {lab: sorted({(e["properties"].get(self.c.keys[lab]) if self.c.keys[lab] != "name" else e["name"])
@@ -128,6 +132,12 @@ class Generator:
 
     def _edge(self, a: str, b: str, t: str, a_is_src: bool, i: int) -> dict:
         e = {"from": a, "type": t, "to": b} if a_is_src else {"from": b, "type": t, "to": a}
+        if t == "rated" and self.v3 and self.rng.random() < 0.4:
+            e["var"] = f"r{i}"
+            e["filters"] = [self.rng.choice([
+                {"prop": "notes", "op": self.rng.choice(["=", ">", "<="]), "value": self.rng.randint(1, 3), "part": "size"},
+                {"prop": "stars", "op": self.rng.choice(["=", ">", "<"]), "value": self.rng.randint(1, 5)}])]
+            return e
         if t == "linkA" and self.rng.random() < 0.5:
             e["var"] = f"r{i}"
             e["filters"] = [self.rng.choice([
@@ -151,7 +161,13 @@ class Generator:
         vals = self.values.get((label, p)) or [1]
         v = self.rng.choice(vals)
         if t.startswith("list"):
+            if self.v3 and self.rng.random() < 0.4:
+                return {"var": "n", "prop": p, "op": self.rng.choice(["=", ">=", "<"]), "value": self.rng.randint(1, 3),
+                        "part": "size"}
             return {"var": "n", "prop": p, "op": self.rng.choice(["contains", "not_contains"]), "value": v}
+        if t == "float_text":
+            return {"var": "n", "prop": p, "op": self.rng.choice(["=", "<", ">", "<=", ">=", "<>"]),
+                    "value": self.rng.choice([float(v), round(float(v)), self.rng.randint(1, 400)])}
         if t == "str" and self.rng.random() < 0.5:
             sv = str(v)
             op = self.rng.choice(["starts_with", "ends_with", "contains_text"])
@@ -167,7 +183,12 @@ class Generator:
         lab = r.choice(list(self.c.labels))
         nodes = {"n": {"label": lab}}
         req: dict = {"nodes": nodes}
-        shape = r.choice(["alone", "hop", "hop_named", "chain", "star", "double", "union", "optional", "compare"])
+        shapes = ["alone", "hop", "hop_named", "chain", "star", "double", "union", "optional", "compare"]
+        if self.v3:
+            shapes += ["none", "per_hop", "per_chain", "per_optional", "per_edge", "ref"] * 2
+        shape = r.choice(shapes)
+        if shape in ("none", "per_hop", "per_chain", "per_optional", "per_edge", "ref"):
+            return self._v3(lab, shape)
         edges: list[dict] = []
         if shape == "compare":
             nodes["n"]["name"] = r.choice(self.names[lab])
@@ -224,6 +245,101 @@ class Generator:
         req["answer"] = self._answer(lab, nodes, shape, req)
         return req
 
+    def _nums(self, label: str) -> list[str]:
+        return [p for p, t in self.c.labels[label].items() if t in ("int", "float", "float_text")]
+
+    def _v3(self, lab: str, shape: str) -> dict:
+        r = self.rng
+        nodes = {"n": {"label": lab}}
+        req: dict = {"nodes": nodes}
+        if shape == "none":
+            t, o, src = self._hop(lab)
+            nodes["m0"] = self._node(o, r.random() < 0.5)
+            e = self._edge("n", "m0", t, src, 0)
+            if r.random() < 0.3 and "name" not in nodes["m0"]:
+                c = self._cond(o)
+                if c and c["prop"] != "name":
+                    c["var"] = "m0"
+                    req["where"] = [c]
+            if r.random() < 0.4:  # also a required hop
+                t2, o2, src2 = self._hop(lab)
+                nodes["m1"] = self._node(o2, True)
+                req["edges"] = [self._edge("n", "m1", t2, src2, 1)]
+            if r.random() < 0.3:
+                e["var"] = e.get("var") or "z0"
+                req.setdefault("edges", []).append(e)
+                req["none"] = [e["var"]]
+            else:
+                req["none"] = [e]
+            req["answer"] = r.choice([{"kind": "names"}, {"kind": "count"}])
+            return req
+        if shape == "ref":
+            nums = self._nums(lab)
+            nums = [p for p in nums if self.c.labels[lab][p] != "float_text"]
+            t, o, src = self._hop(lab)
+            nodes["m0"] = self._node(o, False)
+            onums = [p for p in self._nums(o) if self.c.labels[o][p] != "float_text"]
+            if not nums or not onums:
+                return self.request()
+            req["edges"] = [self._edge("n", "m0", t, src, 0)]
+            if r.random() < 0.5 or len(nums) < 2:
+                f = {"var": "n", "prop": r.choice(nums), "op": r.choice(["<", ">", "=", "<>"]),
+                     "ref": {"var": "m0", "prop": r.choice(onums)}}
+            else:
+                a, b = r.sample(nums, 2)
+                f = {"var": "n", "prop": a, "op": r.choice(["<", ">", "<>"]), "ref": {"var": "n", "prop": b}}
+            req["where"] = [f]
+            req["answer"] = r.choice([{"kind": "names"}, {"kind": "count"}])
+            return req
+        # per_*
+        t, o, src = self._hop(lab)
+        nodes["m0"] = self._node(o, False)
+        e = self._edge("n", "m0", t, src, 0)
+        of, ptypes = "m0", self.c.labels[o]
+        if shape == "per_chain":
+            req["edges"] = [e]
+            t2, o2, src2 = self._hop(o)
+            nodes["m1"] = self._node(o2, r.random() < 0.3)
+            req["edges"].append(self._edge("m0", "m1", t2, src2, 1))
+            of, ptypes = "m1", self.c.labels[o2]
+        elif shape == "per_optional":
+            if r.random() < 0.4:
+                e["var"] = e.get("var") or "q0"
+                req["edges"] = [e]
+                req["optional"] = [e["var"]]
+            else:
+                req["optional"] = [e]
+            if r.random() < 0.4:
+                eps = self.c.rel_props(e["type"], nodes[e["from"]]["label"], nodes[e["to"]]["label"]) or {}
+                if any(tt in ("int", "float") for tt in eps.values()):
+                    e["var"] = e.get("var") or "q0"
+                    if req.get("optional") == [e["var"]] or req.get("optional") == [e]:
+                        of, ptypes = e["var"], eps
+        elif shape == "per_edge":
+            eps = self.c.rel_props(e["type"], nodes[e["from"]]["label"], nodes[e["to"]]["label"]) or {}
+            e["var"] = e.get("var") or "w0"
+            req["edges"] = [e]
+            of, ptypes = e["var"], eps
+        else:
+            req["edges"] = [e]
+        if r.random() < 0.3:
+            c = self._cond(lab)
+            if c:
+                req["where"] = [c]
+        nums = [p for p, tt in ptypes.items() if tt in ("int", "float", "float_text")]
+        fn = r.choice(["count", "count"] + (["sum", "avg", "max", "min"] if nums else []))
+        ans: dict = {"kind": "per", "of": of, "fn": fn}
+        if fn != "count":
+            ans["prop"] = r.choice(nums)
+        if r.random() < 0.35:
+            ans["having"] = {"op": r.choice([">", ">=", "<", "="]), "value": r.choice([1, 2, 3, 50, 100.5])}
+        if r.random() < 0.6:
+            ans["order"] = r.choice(["asc", "desc"])
+            if r.random() < 0.7:
+                ans["limit"] = r.choice([1, 2, 3, 5])
+        req["answer"] = ans
+        return req
+
     def _answer(self, lab: str, nodes: dict, shape: str, req: dict) -> dict:
         r = self.rng
         props = {p: t for p, t in self.c.labels[lab].items()}
@@ -255,17 +371,20 @@ class Generator:
                 if oprops:
                     return {"kind": k, "fn": r.choice(["max", "min", "avg", "sum"]), "prop": r.choice(oprops),
                             "var": other}
-            nums = [p for p, t in props.items() if t in ("int", "float", "date")]
+            nums = [p for p, t in props.items() if t in ("int", "float", "date") or (self.v3 and t == "float_text")]
             p = r.choice(nums)
             if props[p] == "date":
                 return {"kind": k, "fn": r.choice(["max", "min"]), "prop": p, "part": r.choice([None, "year"])}
             return {"kind": k, "fn": r.choice(["max", "min", "avg", "sum"]), "prop": p}
         if k == "top":
-            uniq = [p for p in props if p in UNIQUE]
+            uniq = [p for p in props if p in UNIQUE or (self.v3 and props[p] == "float_text")]
             if not uniq:
                 return {"kind": "names"}
-            return {"kind": k, "prop": r.choice(uniq), "order": r.choice(["asc", "desc"]),
-                    **({"limit": r.choice([1, 3])} if r.random() < 0.6 else {})}
+            out = {"kind": k, "prop": r.choice(uniq), "order": r.choice(["asc", "desc"]),
+                   **({"limit": r.choice([1, 3])} if r.random() < 0.6 else {})}
+            if self.v3 and r.random() < 0.4:
+                out["props"] = r.sample(list(props), min(len(props), r.randint(1, 2)))
+            return out
         p = r.choice(list(props))
         if k == "values":
             return {"kind": k, "prop": p, "distinct": r.random() < 0.5}

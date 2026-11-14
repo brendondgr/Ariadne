@@ -1,0 +1,74 @@
+# Filled by scripts/new_experiment.py. Every field below is required unless
+# marked optional. Do not delete a field you do not know — record it as null or
+# "unknown" and explain in ISSUES.md. Inventing a value is worse than admitting
+# a gap.
+id: EXP-2026-11-006
+slug: typed-v3-three-benchmarks
+title: "Typed request format v3 on CypherBench, Text2Cypher (development) and Mind the Query (held out)"
+status: running            # planned | running | complete | failed | superseded
+date_started: 2026-11-14
+date_completed: null       # null until status is complete/failed
+authors: ["brendondgr", "Claude Opus 5.5"]
+
+purpose: >
+  Format v3 adds the operators EXP-2026-11-005 found missing (ranking by an aggregate, per-group aggregates, numbers stored as text, list size, property comparisons, negation, edge references in optional). Part A checks it does not regress on CypherBench and puts Qwen at reasoning_effort=medium throughout; part B checks the fixes on Text2Cypher (development data); part C tests on Mind the Query, which the format was never shaped by, whether typed requests beat free Gremlin, stay near free Cypher and agree across backends (RQ1).
+
+hypothesis: >
+  Part C, per model, 3-shot: typed3-via-Gremlin >= free Gremlin + 0.10 (H2); typed3-via-Cypher >= free Cypher - 0.05 (H3); backends within 0.02 (H1). Kill if H2 fails for any model or H3 fails for every model. Part B: typed3 >= typed2 + 0.10 (B1, development). Part A: typed3 >= typed2 - 0.02 (A1).
+
+# --- Reproducibility block (all fields mandatory) ---
+code:
+  commit: 7f0d9cd71978c6a0d545e3c8c021807ec7d537b5          # 40-char sha, or "unknown" for a back-filled experiment
+  branch: main
+  entrypoint: "KILLTESTS_EXPERIMENT=exp006 KILLTESTS_REASONING_EFFORT='{\"qwen38-27b\": \"medium\"}' KILLTESTS_CONCURRENCY=16 uv run --with pyarrow python -m utils.killtests.t2c.run A B C"
+  dirty: true             # uncommitted changes at run time? if true, explain in ISSUES.md
+config:
+  path: null               # repo-relative path, or null if the run takes no config file
+  hash: null               # sha256:... of that file
+data:
+  name: "A: CypherBench test (EXP-2026-11-003 gold); B: neo4j/text2cypher-2024v1 test (EXP-2026-11-005 selection); C: Mind the Query manually validated test split (wwc, healthcare, er)"
+  version: "CypherBench HF release; text2cypher-2024v1; Mind-the-Query ec4054a1"
+  split: "test"
+  n_examples: 1040
+  dvc_path: null           # this repository does not use DVC; leave null
+  hash: null               # md5:... or sha256:... of the dataset artifact
+seeds: [20261113, 20261114]                  # [] means seeds were not recorded — say so in ISSUES.md
+n_runs: 1                  # SYSTEM runs over the question set — grading passes are not runs
+environment:
+  python: "3.13"
+  lockfile: env/requirements.lock
+  container: null
+compute:
+  hardware: "32-core x86_64 host, 121 GB RAM; local Neo4j + Gremlin per graph; relay :9090"
+  wall_clock_hours: 0.0
+  estimated_cost_usd: 0.0
+
+# --- LLM / agentic block (delete entirely if no model was in the loop) ---
+llm:
+  model: "relay/gemma4-31b@2026-11-14 (alias default-model); relay/qwen38-27b@2026-11-14 (alias default-model-2, reasoning_effort=medium)"
+  temperature: 0.0
+  top_p: 1.0
+  max_tokens: 8192
+  prompt_files: []
+  prompt_hash: null
+  tool_schema_hash: null
+  total_input_tokens: null
+  total_output_tokens: null
+  nondeterminism_note: >
+    Provider-side nondeterminism remains even at temperature 0; results
+    are reported as mean ± std over n_runs.
+
+# --- Results block ---
+metrics:
+  primary: C_typed3_3shot_gremlin_minus_free_gremlin_3shot_min
+  values: {}               # {metric: {mean: 0.0, std: 0.0, n: 1}} — must be non-empty when status: complete
+  withdrawn: {}            # values later retracted by amendment: {metric: {mean, std, n, withdrawn_on, reason, replaced_by}}
+baselines_compared: ["free Cypher and free Gremlin, same models, prompts and run", "typed v2, same run"]
+statistical_test: "paired bootstrap 95% CI, 2,000 resamples"
+
+# --- Linkage ---
+supports_claims: []        # every ID here must exist in ../../CLAIMS.md
+figures: []                # every name here must have a file in figures/ and vice versa
+supersedes: null           # set in BOTH manifests or in neither; the validator checks symmetry
+superseded_by: null
+related: ["EXP-2026-11-003", "EXP-2026-11-004", "EXP-2026-11-005"]

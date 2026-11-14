@@ -1,4 +1,10 @@
-"""EXP-2026-11-005: format v2 on CypherBench (part A) and every arm on Text2Cypher (part B).
+"""EXP-2026-11-005 (default) and EXP-2026-11-006 (``KILLTESTS_EXPERIMENT=exp006``).
+
+EXP-2026-11-006 (format v3): parts A (CypherBench, 200), B (Text2Cypher, 390, the development
+benchmark) and C (Mind the Query, 450, held out), each with free Cypher, free Gremlin, typed v2 and
+typed v3 at 3 shots, plus ``typed3-3shot-repair``; v3 cards (``cards-v3/``) for B and C.
+
+EXP-2026-11-005: format v2 on CypherBench (part A) and every arm on Text2Cypher (part B).
 
     uv run --with pyarrow python -m utils.killtests.t2c.run [A|B ...]
 
@@ -34,15 +40,24 @@ from ..t1.prompts import extract_query, schema_block
 from ..t1.run import _paired_ci
 from ..typed.cypher import compile_cypher
 from ..typed.gremlin import compile_gremlin, finish
-from ..typed.prompts import ARMS_V2, extract_request
+from ..typed.prompts import ARMS_V2, ARMS_V3, extract_request
 from ..typed.prompts import messages as typed_messages
 from ..typed.request import Card, InvalidRequest, validate
 from ..typed.run import BASE, FREE_RUNS, identify
 from . import load as T
 from .prompts import FREE_ARMS, card_block, free_messages
 
-OUT = BASE / "exp005"
-REPAIR = "typed2-3shot-repair"
+EXPERIMENT = os.environ.get("KILLTESTS_EXPERIMENT", "exp005")
+if EXPERIMENT == "exp006":
+    OUT = BASE / "exp006"
+    REPAIR_FROM = "typed3-3shot"
+    ARMS6 = ("cypher-3shot", "gremlin-3shot", "typed2-3shot", "typed3-3shot")
+else:
+    OUT = BASE / "exp005"
+    REPAIR_FROM = "typed2-3shot"
+    ARMS6 = ()
+REPAIR = f"{REPAIR_FROM}-repair"
+_ = ARMS_V3
 
 
 class Bench:
@@ -53,14 +68,16 @@ class Bench:
             self.graphs = list(L.TEST_GRAPHS)
             self.cards = {g: Card(g) for g in self.graphs}
             self.blocks = {g: schema_block(g) for g in self.graphs}
-            self.arms = ARMS_V2
+            self.arms = ARMS6 or ARMS_V2
         else:
-            self.gold = json.loads((T.OUT / "gold.json").read_text())["questions"]
-            self.graphs = list(T.GRAPHS)
-            raw = {g: json.loads((T.OUT / f"card-{g}.json").read_text()) for g in self.graphs}
+            src = T.OUT_MTQ if part == "C" else T.OUT
+            self.gold = json.loads((src / "gold.json").read_text())["questions"]
+            self.graphs = list(T.MTQ if part == "C" else T.GRAPHS)
+            cdir = src / "cards-v3" if EXPERIMENT == "exp006" else src
+            raw = {g: json.loads((cdir / f"card-{g}.json").read_text()) for g in self.graphs}
             self.cards = {g: Card(g, raw[g]) for g in self.graphs}
             self.blocks = {g: card_block(raw[g]) for g in self.graphs}
-            self.arms = FREE_ARMS + ARMS_V2
+            self.arms = ARMS6 or (FREE_ARMS + ARMS_V2)
         self.local = threading.local()
 
     def clients(self, graph: str):
@@ -74,7 +91,7 @@ class Bench:
         return getattr(self.local, k)
 
     def messages(self, arm: str, q: dict) -> list[dict]:
-        if arm.startswith("typed2"):
+        if arm.startswith("typed"):
             return typed_messages(arm, q["graph"], q["nl_question"], block=self.blocks[q["graph"]])
         return free_messages(arm, self.blocks[q["graph"]], q["nl_question"])
 
@@ -132,7 +149,7 @@ def stage_repair(cfg, out: Path, b: Bench, gen: dict) -> dict:
     jobs = []
     for k, g in gen["generations"].items():
         qid, arm, tag = k.split("|")
-        if arm != "typed2-3shot" or "error" in g:
+        if arm != REPAIR_FROM or "error" in g:
             continue
         q = golds[qid]
         _, status, msg = _parse_validate(g["raw"], b.cards[q["graph"]])
@@ -141,7 +158,7 @@ def stage_repair(cfg, out: Path, b: Bench, gen: dict) -> dict:
 
     def one(x):
         q, alias, raw, msg = x
-        m = b.messages("typed2-3shot", q) + [
+        m = b.messages(REPAIR_FROM, q) + [
             {"role": "assistant", "content": raw},
             {"role": "user", "content": f"That request is not valid: {msg}\nReply with a corrected request only, "
                                         "as JSON in one ```json fenced block."}]
@@ -163,7 +180,7 @@ def stage_execute(cfg, out: Path, b: Bench, gen: dict, rep: dict) -> dict:
     items = dict(gen["generations"])
     for k, g in gen["generations"].items():
         qid, arm, tag = k.split("|")
-        if arm == "typed2-3shot":
+        if arm == REPAIR_FROM:
             rk = f"{qid}|{REPAIR}|{tag}"
             items[rk] = rep["generations"].get(rk, g)
 
@@ -175,7 +192,7 @@ def stage_execute(cfg, out: Path, b: Bench, gen: dict, rep: dict) -> dict:
         drv, gc = b.clients(q["graph"])
         if "error" in g:
             return {"status": "generation_error", "detail": str(g["error"])[:200], "cypher_ok": False, "gremlin_ok": False}
-        if arm.startswith("typed2"):
+        if arm.startswith("typed"):
             req, status, msg = _parse_validate(g["raw"], b.cards[q["graph"]])
             res: dict = {"request": req, "status": status, "repaired": "repaired_from" in g}
             if status != "ok":
@@ -247,7 +264,7 @@ def stage_score(cfg, out: Path, b: Bench, gen: dict, ex: dict) -> dict:
         for arm in arms_here:
             outs = [ex["executions"].get(f"{q['qid']}|{arm}|{tag}") or {"status": "missing"} for q in qs]
             block["status"][arm] = dict(Counter(o.get("status") for o in outs))
-            if arm.startswith("typed2"):
+            if arm.startswith("typed"):
                 block["status"][arm]["backends_agree"] = sum(o.get("cypher_ok") == o.get("gremlin_ok") for o in outs) / len(qs)
                 names = [(f"{arm}-cypher", "cypher_ok"), (f"{arm}-gremlin", "gremlin_ok")]
             else:
@@ -264,11 +281,24 @@ def stage_score(cfg, out: Path, b: Bench, gen: dict, ex: dict) -> dict:
                                            / max(1, sum(1 for q in qs if src_of[q["qid"]] == s)), 4)
                                   for s in sorted(set(src_of.values()))},
                 }
-        if b.part == "A":
+        if b.part == "A" and EXPERIMENT == "exp005":
             for name, d in _free_a(tag).items():
                 vec[name] = [int(d.get(q["qid"], False)) for q in qs]
                 block["arms"][name] = {"exact_records": sum(vec[name]) / len(qs)}
-        for shots in ("0shot", "3shot"):
+        for v in ("typed3", "typed2") if EXPERIMENT == "exp006" else ("typed2",):
+            for be in ("cypher", "gremlin"):
+                t, f = vec.get(f"{v}-3shot-{be}"), vec.get(f"free-{be}-3shot")
+                if EXPERIMENT == "exp006" and t and f:
+                    for fa in ("cypher", "gremlin"):
+                        f = vec.get(f"free-{fa}-3shot")
+                        block["diffs"][f"{v}-3shot-{be}_minus_free-{fa}-3shot"] = {
+                            "diff": (sum(t) - sum(f)) / len(qs), "ci95": _paired_ci(f, t, rng)}
+        if EXPERIMENT == "exp006":
+            for be in ("cypher", "gremlin"):
+                t, v2 = vec.get(f"typed3-3shot-{be}"), vec.get(f"typed2-3shot-{be}")
+                block["diffs"][f"typed3-3shot-{be}_minus_typed2-3shot-{be}"] = {
+                    "diff": (sum(t) - sum(v2)) / len(qs), "ci95": _paired_ci(v2, t, rng)}
+        for shots in ("0shot", "3shot") if EXPERIMENT == "exp005" else ():
             for be in ("cypher", "gremlin"):
                 t = vec.get(f"typed2-{shots}-{be}")
                 for fa in ("cypher", "gremlin"):

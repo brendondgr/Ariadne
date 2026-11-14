@@ -98,6 +98,7 @@ def main(argv: list[str] | None = None) -> int:
     ap.add_argument("--per-cell", type=int, default=100000)
     ap.add_argument("--workers", type=int, default=8)
     ap.add_argument("--out", default=None)
+    ap.add_argument("--v3", action="store_true", help="generate format-v3 requests in the differential")
     args = ap.parse_args(argv)
     cfg = verify_cfg()
     counts = ensure_loaded(cfg)
@@ -175,7 +176,7 @@ def main(argv: list[str] | None = None) -> int:
 def differential(cfg, args, counts) -> int:
     from . import fixture
 
-    gen = fixture.Generator(fixture.build())
+    gen = fixture.Generator(fixture.build(), v3=args.v3)
     card = fixture.card()
     reqs = [validate(gen.request(), card) for _ in range(args.n)]
     local = threading.local()

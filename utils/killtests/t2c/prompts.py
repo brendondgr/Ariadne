@@ -24,7 +24,9 @@ def card_block(cd: dict) -> str:
     lines = [f"Graph: {cd['name']}", "Node labels and properties (the key property, which identifies a node by "
                                      "name, is marked *):"]
     for e in cd["entities"]:
-        props = ", ".join(f"{k}{'*' if k == e['key'] else ''}: {t}" for k, t in e["properties"].items())
+        props = ", ".join(f"{k}{'*' if k == e['key'] else ''}: "
+                          f"{'float_text (a number stored as text)' if t == 'float_text' else t}"
+                          for k, t in e["properties"].items())
         lines.append(f"- {e['label']}: {props or '(none)'}")
     lines.append("Relationships (source label -[type]-> target label):")
     for r in cd["relations"]:

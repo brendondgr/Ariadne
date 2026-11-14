@@ -1,4 +1,4 @@
-"""Prompts for the typed arms (format v2 since EXP-2026-11-005; v1 is at tag ``killtests-typed-run``): the same schema block and the same three worked
+"""Prompts for the typed arms (format v2 since EXP-2026-11-005, v3 for ``typed3-*`` arms since EXP-2026-11-006; v1 is at tag ``killtests-typed-run``): the same schema block and the same three worked
 examples as the free arms, with the request format in place of a query language.
 
 The examples are the free arms' three shot questions, converted from their gold
@@ -17,6 +17,8 @@ from .from_gold import convert
 ARMS = ("typed-0shot", "typed-3shot")
 #: format v2 arms (EXP-2026-11-005); "-repair" gets one more turn showing the validator's message.
 ARMS_V2 = ("typed2-0shot", "typed2-3shot")
+#: format v3 arms (EXP-2026-11-006).
+ARMS_V3 = ("typed3-0shot", "typed3-3shot")
 
 FORMAT = """Write one request object (JSON) that answers the question:
 
@@ -60,6 +62,61 @@ Answers (n is counted once however many ways it matches):
   difference gives n's p minus the other's"""
 
 
+FORMAT_V3 = """Write one request object (JSON) that answers the question:
+
+{
+  "nodes": {"<var>": {"label": "<node label>", "name": "<exact value of the label's key property, only if the question names it>"}},
+  "edges": [{"from": "<var>", "type": "<relationship type>", "to": "<var>", "var": "<optional edge name>",
+             "filters": [<edge filter>]}],
+  "any_of": [[<edge or edge var>, ...], [<edge or edge var>, ...]],
+  "optional": [<edge or edge var>],
+  "none": [<edge or edge var>],
+  "where": [{"var": "<var>", "prop": "<property>", "op": "<op>", "value": <value>}],
+  "answer": {<answer>}
+}
+
+- "n" is required: the node the question asks about. Other variables are free names.
+- Every edge follows the direction listed in the schema: "from" is the source label, "to" the target.
+- Anywhere an edge is expected in "any_of", "optional" or "none", you may write the edge itself or the
+  "var" name of an edge written in "edges"; a named edge is then used only there, not required.
+- "any_of" (optional): n qualifies if ANY one branch matches ("either ... or ..."). All branches use n.
+- "optional" (optional): one relationship of n that may be absent; use it with "per" so that n with
+  none are still listed (count 0).
+- "none" (optional): one relationship of n that must NOT exist ("has no ...", "never ..."). Its other
+  node may have a "name" and "where" filters; it must not be used elsewhere.
+- "where" (optional): op is one of = <> < > <= >= (the property must be present), contains /
+  not_contains for list properties, or starts_with / ends_with / contains_text for text.
+  - Dates are written "YYYY-MM-DD"; add "part": "year" to compare a date's year with an integer.
+  - Add "part": "size" to compare the number of elements of a list property with an integer.
+  - Instead of "value", "ref": {"var": "<var>", "prop": "<property>"} compares with another property.
+  - Properties typed float_text are numbers stored as text: compare them with numbers; they sort and
+    aggregate as numbers.
+- Edge filters: the same form without "var", or, for a start/end pair of edge properties,
+  {"op": "current", "start": "<start prop>", "end": "<end prop>"} (started and not ended) or
+  {"op": "during", "year": <int>, "start": "<start prop>", "end": "<end prop>"} (ongoing in that year).
+
+Answers (n is counted once however many ways it matches):
+- {"kind": "names"}: the key property (name) of each n
+- {"kind": "names_with", "props": [p, ...]}: the key property and the listed properties of each n
+- {"kind": "values", "prop": p, "distinct": true|false}: p of each n
+- {"kind": "list_items", "prop": p}: the distinct elements of list property p over all n
+- {"kind": "count"}: how many n
+- {"kind": "count_values", "prop": p}: how many distinct values p takes among the n
+- {"kind": "aggregate", "fn": "max"|"min"|"avg"|"sum", "prop": p}: one value over all n; optionally
+  "part": "year" for a date, and "var": "<node var or edge var>" to aggregate that variable's property
+- {"kind": "per", "of": "<var or edge var>", "fn": "count"|"sum"|"avg"|"max"|"min", "prop": p,
+   "having": {"op": "<op>", "value": <number>}, "order": "asc"|"desc", "limit": k}:
+  for EACH n, its name and one number: how many distinct <var> it has (fn "count", no prop), or the
+  sum/avg/max/min of <var>'s property p. "having" keeps only n whose number passes; "order" and
+  "limit" rank them ("top 3 ... with the most ...", "who has the highest average ..."). All optional
+  except "of" and "fn".
+- {"kind": "top", "prop": p, "order": "asc"|"desc", "limit": k, "props": [p, ...]}: names of n sorted by
+  n's own property p; "limit" optional; "props" optional extra columns
+- {"kind": "compare", "other": "<var>", "prop": p, "test": "which_greater"|"equal"|"difference"}:
+  two named nodes n and <var>, no edges; which_greater gives the name of the one with the larger p,
+  difference gives n's p minus the other's"""
+
+
 def shot_requests(v2: bool = False) -> list[dict]:
     out = []
     for s in SHOTS:
@@ -74,10 +131,10 @@ def messages(arm: str, graph: str, question: str, block: str | None = None) -> l
     """``block`` replaces the CypherBench schema block (second benchmark)."""
     system = ("You translate questions about a property graph into a typed request. "
               "Reply with the request only, as JSON in one ```json fenced block.")
-    user = FORMAT + "\n\n"
+    user = (FORMAT_V3 if arm.startswith("typed3") else FORMAT) + "\n\n"
     if arm.endswith("3shot"):
         user += f"Worked examples on a DIFFERENT graph:\n{schema_block('terrorist_attack')}\n\n"
-        for s in shot_requests(v2=arm.startswith("typed2")):
+        for s in shot_requests(v2=arm.startswith(("typed2", "typed3"))):
             user += f"Question: {s['question']}\n```json\n{json.dumps(s['request'])}\n```\n\n"
         user += "Now the graph you must query:\n"
     user += f"{block or schema_block(graph)}\n\nQuestion: {question}"

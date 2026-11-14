@@ -126,3 +126,73 @@ def test_v2_text_ops_and_aggregate_over_edge():
     assert "STARTS WITH 'The'" in compile_cypher(req, c) and "WITH DISTINCT r RETURN avg(r.`stars`)" in compile_cypher(req, c)
     g = compile_gremlin(req, c).script
     assert "startingWith('The')" in g and ".as('r')" in g and "select('r').dedup().values('stars').mean()" in g
+
+
+FX = fixture.card()
+
+
+def test_v3_count_per_becomes_per_count():
+    req = validate({"nodes": {"n": {"label": "Alpha"}, "m": {"label": "Beta"}},
+                    "edges": [{"from": "n", "type": "linkB", "to": "m"}],
+                    "answer": {"kind": "count_per", "of": "m"}}, FX)
+    assert req["answer"]["kind"] == "per" and req["answer"]["fn"] == "count"
+    assert "count(DISTINCT m)" in compile_cypher(req, FX)
+
+
+def test_v3_per_with_having_order_limit_and_edge_aggregate():
+    req = validate({"nodes": {"n": {"label": "Alpha"}, "d": {"label": "Delta"}},
+                    "edges": [{"from": "n", "type": "rated", "to": "d", "var": "r"}],
+                    "answer": {"kind": "per", "of": "r", "fn": "avg", "prop": "stars",
+                               "having": {"op": ">", "value": 2}, "order": "desc", "limit": 3}}, FX)
+    cy = compile_cypher(req, FX)
+    assert "avg(r.`stars`)" in cy and "WHERE num > 2" in cy and cy.endswith("ORDER BY num DESC, n.`name` ASC LIMIT 3")
+    gr = compile_gremlin(req, FX).script
+    assert ".group()" in gr and ".limit(3)" in gr and "is(gt(2))" in gr
+    with pytest.raises(InvalidRequest, match="limit needs"):
+        validate({"nodes": {"n": {"label": "Alpha"}, "d": {"label": "Delta"}},
+                  "edges": [{"from": "n", "type": "rated", "to": "d"}],
+                  "answer": {"kind": "per", "of": "d", "fn": "count", "limit": 3}}, FX)
+
+
+def test_v3_optional_and_none_accept_edge_references():
+    req = validate({"nodes": {"n": {"label": "Alpha"}, "b": {"label": "Beta"}},
+                    "edges": [{"from": "n", "type": "linkB", "to": "b", "var": "e1"}],
+                    "optional": ["e1"], "answer": {"kind": "per", "of": "b", "fn": "count"}}, FX)
+    assert req["edges"] == [] and req["optional"][0]["var"] == "e1"
+    assert "OPTIONAL MATCH" in compile_cypher(req, FX)
+    req = validate({"nodes": {"n": {"label": "Alpha"}, "g": {"label": "Gamma", "name": "gamma 1"}},
+                    "edges": [{"from": "g", "type": "fromG", "to": "n", "var": "x"}], "none": ["x"],
+                    "answer": {"kind": "names"}}, FX)
+    assert "NOT EXISTS { MATCH (g:`Gamma`" in compile_cypher(req, FX)
+    assert ".not(__.in('fromG')" in compile_gremlin(req, FX).script
+
+
+def test_v3_ref_size_and_numbers_stored_as_text():
+    req = validate({"nodes": {"n": {"label": "Alpha"}},
+                    "where": [{"var": "n", "prop": "score", "op": ">", "ref": {"var": "n", "prop": "weight"}},
+                              {"var": "n", "prop": "tags", "op": ">=", "value": 2, "part": "size"},
+                              {"var": "n", "prop": "price", "op": "<", "value": 50}],
+                    "answer": {"kind": "top", "prop": "price", "order": "desc", "limit": 2, "props": ["price"]}}, FX)
+    cy = compile_cypher(req, FX)
+    assert "n.`score` > n.`weight`" in cy and "size(n.`tags`) >= 2" in cy
+    assert "toFloat(n.`price`) < 50" in cy and "ORDER BY toFloat(n.`price`) DESC" in cy
+    gr = compile_gremlin(req, FX).script
+    assert "asNumber(GType.DOUBLE)" in gr and "properties('tags').count()" in gr and ".by('score').by('weight')" in gr
+    with pytest.raises(InvalidRequest, match="stored as text"):
+        validate({"nodes": {"n": {"label": "Alpha"}},
+                  "where": [{"var": "n", "prop": "price", "op": "=", "value": "50"}], "answer": {"kind": "count"}}, FX)
+
+
+def test_v3_prompt_keeps_v2_text_for_typed2():
+    from utils.killtests.typed.prompts import FORMAT, FORMAT_V3
+
+    assert messages("typed2-3shot", "terrorist_attack", "q")[1]["content"].startswith(FORMAT)
+    assert messages("typed3-0shot", "terrorist_attack", "q")[1]["content"].startswith(FORMAT_V3)
+
+
+def test_v3_generator_requests_are_valid_and_compile():
+    gen = fixture.Generator(fixture.build(), v3=True)
+    for _ in range(400):
+        req = validate(gen.request(), FX)
+        compile_cypher(req, FX)
+        compile_gremlin(req, FX)
