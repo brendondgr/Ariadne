@@ -7,7 +7,7 @@ slug: t1-free-query-gap
 title: "Free query writing: model-written Cypher vs model-written Gremlin on CypherBench graphs (kill test T1)"
 status: complete            # planned | running | complete | failed | superseded
 date_started: 2026-11-13
-date_completed: 2026-11-13       # null until status is complete/failed
+date_completed: 2026-11-14       # null until status is complete/failed
 authors: ["brendondgr", "Claude Opus 5.5"]
 
 purpose: >
@@ -45,7 +45,7 @@ compute:
 
 # --- LLM / agentic block (delete entirely if no model was in the loop) ---
 llm:
-  model: "relay/swift15-flashnext@2026-11-13"
+  model: "relay/swift15-flashnext@2026-11-13; relay/gemma4-31b@2026-11-13 (alias default-model); relay/qwen38-27b@2026-11-13 (alias default-model-2)"
   temperature: 0.0
   top_p: 1.0
   max_tokens: 2048
@@ -67,6 +67,18 @@ metrics:
     exact_records_cypher_0shot: {mean: 0.81, std: 0.0, n: 200}
     exact_records_gremlin_0shot: {mean: 0.5, std: 0.0, n: 200}
     gremlin_minus_cypher_3shot: {mean: -0.295, std: 0.0, n: 200}
+    exact_records_cypher_3shot_gemma4_31b: {mean: 0.905, std: 0.0, n: 200}
+    exact_records_gremlin_3shot_gemma4_31b: {mean: 0.745, std: 0.0, n: 200}
+    exact_records_cypher_0shot_gemma4_31b: {mean: 0.765, std: 0.0, n: 200}
+    exact_records_gremlin_0shot_gemma4_31b: {mean: 0.63, std: 0.0, n: 200}
+    gremlin_minus_cypher_3shot_gemma4_31b: {mean: -0.16, std: 0.0, n: 200}
+    gremlin_minus_cypher_0shot_gemma4_31b: {mean: -0.135, std: 0.0, n: 200}
+    exact_records_cypher_3shot_qwen38_27b: {mean: 0.905, std: 0.0, n: 200}
+    exact_records_gremlin_3shot_qwen38_27b: {mean: 0.655, std: 0.0, n: 200}
+    exact_records_cypher_0shot_qwen38_27b: {mean: 0.83, std: 0.0, n: 200}
+    exact_records_gremlin_0shot_qwen38_27b: {mean: 0.505, std: 0.0, n: 200}
+    gremlin_minus_cypher_3shot_qwen38_27b: {mean: -0.25, std: 0.0, n: 200}
+    gremlin_minus_cypher_0shot_qwen38_27b: {mean: -0.325, std: 0.0, n: 200}
   withdrawn: {}            # values later retracted by amendment: {metric: {mean, std, n, withdrawn_on, reason, replaced_by}}
 baselines_compared: ["model-written Cypher (each language is the other's baseline)"]
 statistical_test: "paired bootstrap 95% CI, 2,000 resamples"

@@ -1,12 +1,12 @@
 #!/usr/bin/env bash
 # Keep checking relay aliases; run T1 (killtests_t1_model.py) on whatever model each
 # healthy alias serves. A model already scored is resumed instantly (all stages done).
-# Exits once a result exists whose folder name contains $WANT (default: Qwen's stop
-# token, stop151645).
+# Exits once a result exists whose folder name contains $WANT (default: the Qwen 3.5-family
+# end token, stop248046).
 #   KILLTESTS_CONCURRENCY=64 scripts/killtests_t1_watch.sh default-model default-model-2
 set -u
 cd "$(dirname "$0")/.."
-WANT="${WANT:-stop151645}"
+WANT="${WANT:-stop248046}"
 ALIASES=("$@")
 while true; do
   healthy=$(curl -s -m 20 localhost:9090/v1/models | python3 -c 'import json,sys

@@ -66,19 +66,23 @@ def served_model(relay: RelayClient, alias: str, tries: int = 10) -> str:
     The envelope ``model`` is the backend's *served-model-name*, which an operator
     can set to anything (on 2026-11-13 Gemma answered as ``default-model-2``). The
     stop token id is a property of the tokenizer: 106 is Gemma's ``<end_of_turn>``,
-    151645 is Qwen's ``<|im_end|>``.
+    151645 is Qwen 2/3's ``<|im_end|>`` and 248046 the Qwen 3.5-family one.
+    ``stop_reason`` is None when the model's own EOS ends the reply, so the last
+    returned token id is used instead.
     """
     for i in range(tries):
         try:
             req = urllib.request.Request(
                 relay.base_url + "/chat/completions",
-                data=json.dumps({"model": alias, "max_tokens": 2048,
+                data=json.dumps({"model": alias, "max_tokens": 2048, "return_token_ids": True,
                                  "messages": [{"role": "user", "content": "Reply with the word ok."}]}).encode(),
                 headers={"content-type": "application/json"})
             with urllib.request.urlopen(req, timeout=300) as resp:  # noqa: S310
                 env = json.loads(resp.read().decode())
             name = str(env.get("model") or "unknown")
-            stop = (env.get("choices") or [{}])[0].get("stop_reason")
+            ch = (env.get("choices") or [{}])[0]
+            ids = ch.get("token_ids") or []
+            stop = ids[-1] if ids else ch.get("stop_reason")  # stop_reason is None when EOS ends it
             return f"{name}-stop{stop}"
         except Exception as exc:  # noqa: BLE001 - a freshly loaded slot can fail its first calls
             _log(f"probe {i + 1}/{tries} failed: {exc}")

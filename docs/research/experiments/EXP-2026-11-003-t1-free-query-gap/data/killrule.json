@@ -1,16 +1,40 @@
 {
  "rule": "for every model, 3-shot: gremlin >= cypher - 0.05 AND both >= 0.80 -> killed",
  "inputs": {
-  "default-model": {
+  "swift15-flashnext": {
    "cypher_3shot": 0.9,
    "gremlin_3shot": 0.605,
+   "killed": false
+  },
+  "gemma4-31b": {
+   "cypher_3shot": 0.905,
+   "gremlin_3shot": 0.745,
+   "killed": false
+  },
+  "qwen38-27b": {
+   "cypher_3shot": 0.905,
+   "gremlin_3shot": 0.655,
    "killed": false
   }
  },
  "verdict": "survives",
- "provisional": true,
- "provisional_why": "fewer than two models served; the plan requires several sizes",
+ "provisional": false,
+ "provisional_why": null,
  "served_models": {
-  "swift15-flashnext": 800
+  "swift15-flashnext": {
+   "envelope_names": {
+    "swift15-flashnext": 800
+   }
+  },
+  "gemma4-31b": {
+   "envelope_names": {
+    "default-model-2": 800
+   }
+  },
+  "qwen38-27b": {
+   "envelope_names": {
+    "default-model": 800
+   }
+  }
  }
 }

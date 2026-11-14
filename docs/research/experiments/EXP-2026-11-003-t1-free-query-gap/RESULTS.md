@@ -2,13 +2,22 @@
 
 ## 1. Headline
 
-**Survives, provisionally (one model).** With 3 examples, `swift15-flashnext` writes Cypher that
-returns exactly the right records on **0.900** of 200 CypherBench questions, but Gremlin only
-**0.605**. The gap is −0.295 (paired 95% CI −0.36 to −0.23). Without examples it is 0.810
-against 0.500 (−0.31, CI −0.38 to −0.24).
+**Survives on three models.** With 3 examples, every model writes Cypher that returns exactly the
+right records on about 0.90 of 200 CypherBench questions. Gremlin is far behind on all three:
 
-The kill rule needs both languages ≥ 0.80 and within 5 points, so it does not fire: Cypher
-clears 0.80 and Gremlin does not.
+| Model | Cypher 3-shot | Gremlin 3-shot | Gap (paired 95% CI) | Cypher 0-shot | Gremlin 0-shot |
+|---|---|---|---|---|---|
+| `swift15-flashnext` | 0.900 | 0.605 | −0.295 (−0.36 to −0.23) | 0.810 | 0.500 |
+| Gemma 4 31B | 0.905 | 0.745 | −0.160 (−0.22 to −0.105) | 0.765 | 0.630 |
+| Qwen 3.8 27B | 0.905 | 0.655 | −0.250 (−0.315 to −0.19) | 0.830 | 0.505 |
+
+The kill rule needs, for every model, both languages ≥ 0.80 and within 5 points. It fires for none:
+no model's Gremlin reaches 0.80. The verdict is no longer provisional.
+
+**Added 2026-11-14.** The first run had one model. The other two ran afterwards on the same 200
+questions (the recorded `t1/gold` stage, copied), with the same prompts, budget and scorer, via
+`scripts/killtests_t1_model.py` at 64 concurrency. Section 2 below describes the first model in
+detail; `data/score-gemma4-31b.json` and `data/score-qwen38-27b.json` hold the others.
 
 ## 2. Results table
 
@@ -57,9 +66,12 @@ None.
 
 ## 5. Threats to validity
 
-- **One model.** The plan requires several sizes; the relay had one healthy alias. This
-  verdict is provisional until it is re-run with two or more.
-- **48 Gremlin generations, and no Cypher ones, hit the 8,192-token limit** and returned no
+- **Model identity.** The relay names models by slot, and the backends' own envelope names
+  (`default-model-2` for Gemma, `default-model` for Qwen) were the reverse of their slots. The two
+  added models were identified by tokenizer from returned token ids (Gemma: 2/105/106; Qwen
+  3.5-family: 248045/248046). Their sizes are as stated by the operator, not verified.
+- **Three models, all 27–35B class, all local.** No frontier API model was run.
+- **Truncation (first model).** 48 Gremlin generations, and no Cypher ones, hit the 8,192-token limit and returned no
   query (27 with examples, 21 without). They are counted wrong. Even if every one were right,
   Gremlin with examples would be 0.74: still under 0.80, and still at least 16 points behind.
 - **API version drift.** 10 of the 79 wrong Gremlin answers with examples use `decr`/`incr`,

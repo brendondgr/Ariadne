@@ -11,6 +11,8 @@ Run outputs live under `logs/killtests-2026-11/` (gitignored); the small summari
 | `score.json` | `logs/killtests-2026-11/t1/score.json` | 3,313 | `sha256:06e73460d3f3f113f0d12f7b55506cab20224b5ae00611ea0abe4f090afe0d9f` | scores by arm, model, category (copied to data/) |
 | `preconditions.json` | `logs/killtests-2026-11/preconditions.json` | 697 | `sha256:44cb3f553ca1ee84d626508254ecb9370e5f3bce774ea2404bb42aeebf474a34` | served models, graph counts, commit at launch |
 | `report.json` | `logs/killtests-2026-11/report.json` | 1,157 | `sha256:9409e3edb9e27506c00dbd65b6b916894b5892015aa0c06007308d13d9720a78` | kill-rule verdicts |
+| `score-gemma4-31b.json` | `logs/killtests-2026-11/t1-models/gemma4-31b__via_default-model/t1/score.json` | 3,258 | `sha256:6751c5cafb412ca13462acef92ae84fe838965b6674b3f276f511eb637af69e0` | Gemma 4 31B scores, added 2026-11-14 (copied to data/) |
+| `score-qwen38-27b.json` | `logs/killtests-2026-11/t1-models/qwen38-27b__via_default-model-2/t1/score.json` | 3,309 | `sha256:3d13b1281c4f6980d66932f7d58c36b295787d6ae17af79368c0ddf0b164a9c9` | Qwen 3.8 27B scores, added 2026-11-14 (copied to data/) |
 
 Regenerate hashes with:
 
