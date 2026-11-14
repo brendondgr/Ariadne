@@ -1,0 +1,50 @@
+{
+ "rule": "killed if H2 (typed-3shot-gremlin >= free-gremlin-3shot + 0.10) fails for any model, OR H3 (typed-3shot-cypher >= free-cypher-3shot - 0.05) fails for every model; H1 is reported, not part of the rule",
+ "inputs": {
+  "gemma4-31b": {
+   "typed_3shot_cypher": 0.895,
+   "typed_3shot_gremlin": 0.895,
+   "free_cypher_3shot": 0.905,
+   "free_gremlin_3shot": 0.745,
+   "H1_backend_independent": true,
+   "H2_beats_free_gremlin": true,
+   "H3_not_worse_than_free_cypher": true,
+   "ci_typed_gremlin_minus_free_gremlin": [
+    0.085,
+    0.22
+   ],
+   "ci_typed_cypher_minus_free_cypher": [
+    -0.06,
+    0.035
+   ]
+  },
+  "qwen38-27b": {
+   "typed_3shot_cypher": 0.955,
+   "typed_3shot_gremlin": 0.955,
+   "free_cypher_3shot": 0.905,
+   "free_gremlin_3shot": 0.655,
+   "H1_backend_independent": true,
+   "H2_beats_free_gremlin": true,
+   "H3_not_worse_than_free_cypher": true,
+   "ci_typed_gremlin_minus_free_gremlin": [
+    0.23,
+    0.37
+   ],
+   "ci_typed_cypher_minus_free_cypher": [
+    0.01,
+    0.09
+   ]
+  }
+ },
+ "verdict": "survives",
+ "H1_holds_all": true,
+ "ceiling": {
+  "n": 200,
+  "status": {
+   "ok": 200
+  },
+  "cypher": 1.0,
+  "gremlin": 1.0,
+  "misses_by_category": {}
+ }
+}

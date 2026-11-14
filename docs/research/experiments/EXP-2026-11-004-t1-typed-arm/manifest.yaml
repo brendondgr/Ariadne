@@ -5,9 +5,9 @@
 id: EXP-2026-11-004
 slug: t1-typed-arm
 title: "Typed requests compiled to Cypher and Gremlin vs free query writing on CypherBench graphs (T1 typed arm)"
-status: running            # planned | running | complete | failed | superseded
+status: complete            # planned | running | complete | failed | superseded
 date_started: 2026-11-14
-date_completed: null       # null until status is complete/failed
+date_completed: 2026-11-14       # null until status is complete/failed
 authors: ["brendondgr", "Claude Opus 5.5"]
 
 purpose: >
@@ -40,7 +40,7 @@ environment:
   container: null
 compute:
   hardware: "32-core x86_64 host, 121 GB RAM; local Neo4j + Gremlin; relay :9090"
-  wall_clock_hours: 0.0
+  wall_clock_hours: 0.13
   estimated_cost_usd: 0.0
 
 # --- LLM / agentic block (delete entirely if no model was in the loop) ---
@@ -60,8 +60,18 @@ llm:
 
 # --- Results block ---
 metrics:
-  primary: typed_3shot_gremlin_minus_free_gremlin_3shot
-  values: {}               # {metric: {mean: 0.0, std: 0.0, n: 1}} — must be non-empty when status: complete
+  primary: typed_3shot_gremlin_minus_free_gremlin_3shot_min
+  values:
+    exact_records_typed_3shot_gemma4_31b: {mean: 0.895, std: 0.0, n: 200}
+    exact_records_typed_0shot_gemma4_31b: {mean: 0.805, std: 0.0, n: 200}
+    exact_records_typed_3shot_qwen38_27b: {mean: 0.955, std: 0.0, n: 200}
+    exact_records_typed_0shot_qwen38_27b: {mean: 0.875, std: 0.0, n: 200}
+    typed_3shot_gremlin_minus_free_gremlin_3shot_min: {mean: 0.15, std: 0.0, n: 200}
+    typed_3shot_gremlin_minus_free_gremlin_3shot_gemma4_31b: {mean: 0.15, std: 0.0, n: 200}
+    typed_3shot_gremlin_minus_free_gremlin_3shot_qwen38_27b: {mean: 0.30, std: 0.0, n: 200}
+    typed_3shot_cypher_minus_free_cypher_3shot_gemma4_31b: {mean: -0.01, std: 0.0, n: 200}
+    typed_3shot_cypher_minus_free_cypher_3shot_qwen38_27b: {mean: 0.05, std: 0.0, n: 200}
+    ceiling_exact_records: {mean: 1.0, std: 0.0, n: 200}
   withdrawn: {}            # values later retracted by amendment: {metric: {mean, std, n, withdrawn_on, reason, replaced_by}}
 baselines_compared: ["free Cypher and free Gremlin, same models (EXP-2026-11-003)"]
 statistical_test: "paired bootstrap 95% CI, 2,000 resamples"

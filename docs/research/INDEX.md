@@ -10,7 +10,6 @@ that a dead end is walked into once rather than twice.
 
 | ID | Date | Title | Status | Primary metric | Claims | Link |
 |---|---|---|---|---|---|---|
-| `EXP-2026-11-004` | 2026-11-14 | Typed requests compiled to Cypher and Gremlin vs free query writing on CypherBench graphs (T1 typed arm) | running | typed_3shot_gremlin_minus_free_gremlin_3shot (not recorded) | — | [t1-typed-arm](experiments/EXP-2026-11-004-t1-typed-arm/) |
 | `EXP-2026-07-001` | 2026-07-26 | Arm A — fully deterministic pipeline (planning, extraction, synthesis) | complete | correctness 0.9972 (n=1) | C-001, C-004 | [arm-a-deterministic](experiments/EXP-2026-07-001-arm-a-deterministic/) |
 | `EXP-2026-07-002` | 2026-07-26 | Arm B — LLM planning with deterministic extraction and an LLM writer | complete | correctness 0.8505 (n=1) | C-002, C-003, C-016 | [arm-b-llm-planned](experiments/EXP-2026-07-002-arm-b-llm-planned/) |
 | `EXP-2026-07-003` | 2026-07-26 | Arm C — authored plan with an LLM writer reading raw evidence | complete | correctness 0.9690 (n=1) | C-002, C-005 | [arm-c-llm-writer-evidence](experiments/EXP-2026-07-003-arm-c-llm-writer-evidence/) |
@@ -70,6 +69,7 @@ that a dead end is walked into once rather than twice.
 | `EXP-2026-11-001` | 2026-11-13 | Answer-invariance gate: run every plausible interpretation, answer only when they agree (kill test T2) | complete | ask_rate 0.5333 ± 0.0000 (n=120) | — | [t2-invariance-gate](experiments/EXP-2026-11-001-t2-invariance-gate/) |
 | `EXP-2026-11-002` | 2026-11-13 | Label-free calibration: conformal thresholds set on card-generated questions, applied to real ones (kill test T3) | complete | miscoverage_unweighted 0.0911 ± 0.0000 (n=417) | — | [t3-synthetic-calibration](experiments/EXP-2026-11-002-t3-synthetic-calibration/) |
 | `EXP-2026-11-003` | 2026-11-14 | Free query writing: model-written Cypher vs model-written Gremlin on CypherBench graphs (kill test T1) | complete | gremlin_minus_cypher_3shot -0.2950 ± 0.0000 (n=200) | — | [t1-free-query-gap](experiments/EXP-2026-11-003-t1-free-query-gap/) |
+| `EXP-2026-11-004` | 2026-11-14 | Typed requests compiled to Cypher and Gremlin vs free query writing on CypherBench graphs (T1 typed arm) | complete | typed_3shot_gremlin_minus_free_gremlin_3shot_min 0.1500 ± 0.0000 (n=200) | — | [t1-typed-arm](experiments/EXP-2026-11-004-t1-typed-arm/) |
 | `EXP-2026-07-007` | 2026-07-26 | Arm G — generic primitives only, every hand-written template disabled | superseded → EXP-2026-08-001 | correctness 0.6388 (n=1) | C-003 | [arm-g-templates-disabled](experiments/EXP-2026-07-007-arm-g-templates-disabled/) |
 | `EXP-2026-07-010` | 2026-07-20 | First independent cross-model grading pass (the pre-fix committed baseline) | superseded → EXP-2026-07-001 | correctness 0.8946 (n=1) | C-009 | [independent-eval-baseline](experiments/EXP-2026-07-010-independent-eval-baseline/) |
 | `EXP-2026-07-011` | 2026-07-26 | Portability audit — what survives a dataset that is not MITRE | superseded → EXP-2026-08-011 | — | C-010 | [portability-audit](experiments/EXP-2026-07-011-portability-audit/) |
