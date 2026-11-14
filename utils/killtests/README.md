@@ -20,6 +20,14 @@ uv run python -m utils.killtests.analysis all    # re-evaluate the kill rules
 
 Prefix `KILLTESTS_SMOKE=1` to run the small smoke subsets into `logs/killtests-2026-11/smoke/`.
 
+**Scheduled health call.**
+- A systemd user timer, `ariadne-killtests-status.timer` (unit files in `~/.config/systemd/user/`),
+  runs `make killtests-status` every two hours at :17 and appends to
+  `logs/killtests-2026-11/timer.log`.
+- A RED result is also appended to `ALERTS.md`.
+- Once the run is DONE, remove the timer:
+  `systemctl --user disable --now ariadne-killtests-status.timer`.
+
 ## What runs where
 
 | Service | Used by |
