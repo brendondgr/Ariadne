@@ -5,9 +5,9 @@
 id: EXP-2026-11-001
 slug: t2-invariance-gate
 title: "Answer-invariance gate: run every plausible interpretation, answer only when they agree (kill test T2)"
-status: planned            # planned | running | complete | failed | superseded
+status: complete            # planned | running | complete | failed | superseded
 date_started: 2026-11-13
-date_completed: null       # null until status is complete/failed
+date_completed: 2026-11-13       # null until status is complete/failed
 authors: ["brendondgr", "Claude Opus 5.5"]
 
 purpose: >
@@ -18,10 +18,10 @@ hypothesis: >
 
 # --- Reproducibility block (all fields mandatory) ---
 code:
-  commit: e7b747890b81ef73e4eb7ef458e93b8b9b6e6b81          # 40-char sha, or "unknown" for a back-filled experiment
+  commit: eb6763582ec2a1eba6dc5891f2486102492aa5d5          # 40-char sha, or "unknown" for a back-filled experiment
   branch: main
   entrypoint: "uv run python scripts/killtests_run.py --only t2"
-  dirty: true             # uncommitted changes at run time? if true, explain in ISSUES.md
+  dirty: false
 config:
   path: null               # repo-relative path, or null if the run takes no config file
   hash: null               # sha256:... of that file
@@ -40,7 +40,7 @@ environment:
   container: null
 compute:
   hardware: "32-core x86_64 host, 121 GB RAM; local Neo4j + Gremlin; relay :9090; decider :7500"
-  wall_clock_hours: 0.0
+  wall_clock_hours: 0.73
   estimated_cost_usd: 0.0
 
 # --- LLM / agentic block (delete entirely if no model was in the loop) ---
@@ -61,10 +61,15 @@ llm:
 # --- Results block ---
 metrics:
   primary: ask_rate
-  values: {}               # {metric: {mean: 0.0, std: 0.0, n: 1}} — must be non-empty when status: complete
+  values:
+    ask_rate: {mean: 0.5333, std: 0.0, n: 120}
+    gold_pruned_rate: {mean: 0.3583, std: 0.0, n: 120}
+    answer_exact: {mean: 0.2333, std: 0.0, n: 120}
+    confident_wrong_gate: {mean: 27, std: 0.0, n: 160}
+    confident_wrong_guess: {mean: 51, std: 0.0, n: 160}
   withdrawn: {}            # values later retracted by amendment: {metric: {mean, std, n, withdrawn_on, reason, replaced_by}}
-baselines_compared: []
-statistical_test: null
+baselines_compared: ["guess-filtered (top-1 decider interpretation)", "guess-raw (BM25 top-1, lexical facet)", "T2-raw (no model)"]
+statistical_test: "bootstrap not needed for the kill rule (threshold comparison); per-tier counts in RESULTS.md"
 
 # --- Linkage ---
 supports_claims: []        # every ID here must exist in ../../CLAIMS.md

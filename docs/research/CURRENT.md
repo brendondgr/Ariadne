@@ -114,5 +114,8 @@ this file says which number is *current*.
 | [`EXP-2026-09-027`](experiments/EXP-2026-09-027-relation-lexicon-from-glosses/) | 2026-09-16 | `records_exact_T1_paraphrases_exposed` | 0.3583 (n=120) | — | — |
 | [`EXP-2026-09-028`](experiments/EXP-2026-09-028-disclosed-anchor-acceptance/) | 2026-09-16 | `records_exact_T4_disclosed_sealed` | 0.1250 (n=40) | — | — |
 | [`EXP-2026-09-029`](experiments/EXP-2026-09-029-sealed-judged-pass/) | 2026-09-16 | `completeness_T3` | 0.9187 (n=40) | — | — |
+| [`EXP-2026-11-001`](experiments/EXP-2026-11-001-t2-invariance-gate/) | 2026-11-13 | `ask_rate` | 0.5333 ± 0.0000 (n=120) | — | — |
+| [`EXP-2026-11-002`](experiments/EXP-2026-11-002-t3-synthetic-calibration/) | 2026-11-13 | `miscoverage_unweighted` | 0.0911 ± 0.0000 (n=417) | — | — |
+| [`EXP-2026-11-003`](experiments/EXP-2026-11-003-t1-free-query-gap/) | 2026-11-13 | `gremlin_minus_cypher_3shot` | -0.2950 ± 0.0000 (n=200) | — | — |
 
-**24 withdrawn figure(s), 6 superseded experiment(s), 56 current headline(s).**
+**24 withdrawn figure(s), 6 superseded experiment(s), 59 current headline(s).**
