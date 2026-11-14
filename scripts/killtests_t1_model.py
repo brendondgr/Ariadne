@@ -23,11 +23,13 @@ EXP-2026-11-003's record is a separate, deliberate step.
 from __future__ import annotations
 
 import argparse
+import json
 import os
 import re
 import shutil
 import sys
 import time
+import urllib.request
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
@@ -59,11 +61,25 @@ def wait_healthy(relay: RelayClient, alias: str, poll: int) -> None:
 
 
 def served_model(relay: RelayClient, alias: str, tries: int = 10) -> str:
+    """Envelope model name plus the stop token id.
+
+    The envelope ``model`` is the backend's *served-model-name*, which an operator
+    can set to anything (on 2026-11-13 Gemma answered as ``default-model-2``). The
+    stop token id is a property of the tokenizer: 106 is Gemma's ``<end_of_turn>``,
+    151645 is Qwen's ``<|im_end|>``.
+    """
     for i in range(tries):
         try:
-            c = relay.complete(alias, [{"role": "user", "content": "Reply with the word ok."}])
-            if c.served_model and c.served_model != "unknown":
-                return c.served_model
+            req = urllib.request.Request(
+                relay.base_url + "/chat/completions",
+                data=json.dumps({"model": alias, "max_tokens": 2048,
+                                 "messages": [{"role": "user", "content": "Reply with the word ok."}]}).encode(),
+                headers={"content-type": "application/json"})
+            with urllib.request.urlopen(req, timeout=300) as resp:  # noqa: S310
+                env = json.loads(resp.read().decode())
+            name = str(env.get("model") or "unknown")
+            stop = (env.get("choices") or [{}])[0].get("stop_reason")
+            return f"{name}-stop{stop}"
         except Exception as exc:  # noqa: BLE001 - a freshly loaded slot can fail its first calls
             _log(f"probe {i + 1}/{tries} failed: {exc}")
         time.sleep(30)
@@ -85,7 +101,10 @@ def main(argv: list[str] | None = None) -> int:
     model = served_model(relay, args.alias)
     _log(f"{args.alias} serves {model}")
 
-    out = BASE / "t1-models" / re.sub(r"[^A-Za-z0-9._-]+", "_", model)
+    out = BASE / "t1-models" / re.sub(r"[^A-Za-z0-9._-]+", "_", f"{model}__via_{args.alias}")
+    hdr = out / "run_header.json"
+    if hdr.exists() and json.loads(hdr.read_text()).get("alias") != args.alias:
+        raise SystemExit(f"{out} belongs to another alias; refusing to reuse its cached generations")
     (out / "t1").mkdir(parents=True, exist_ok=True)
     for name in ("gold.json", "gold.done"):
         if not (out / "t1" / name).exists():
