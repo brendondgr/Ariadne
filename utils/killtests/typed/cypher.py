@@ -13,12 +13,15 @@ _OPS = {"=": "=", "<>": "<>", "<": "<", ">": ">", "<=": "<=", ">=": ">="}
 _TEXT = {"starts_with": "STARTS WITH", "ends_with": "ENDS WITH", "contains_text": "CONTAINS"}
 
 
-def lit(v, *, date: bool = False) -> str:
+def lit(v, *, date: bool | str = False) -> str:
+    """A Cypher literal; ``date`` is True/"date" for ``date('..')``, "datetime" for ``datetime('..')``."""
     if isinstance(v, bool):
         return "true" if v else "false"
     if isinstance(v, (int, float)):
         return repr(v)
     s = "'" + str(v).replace("\\", "\\\\").replace("'", "\\'") + "'"
+    if date == "datetime":
+        return f"datetime({s})"
     return f"date({s})" if date else s
 
 
@@ -43,7 +46,8 @@ def _cond(ref_var: str, f: dict, ptype: str | None) -> str:
         return f"{ref} {_TEXT[op]} {lit(f['value'])}"
     if f.get("part") == "year":
         return f"{ref}.year {_OPS[op]} {int(f['value'])}"
-    return f"{ref} IS NOT NULL AND {ref} {_OPS[op]} {lit(f['value'], date=(ptype == 'date'))}"
+    kind = ptype if ptype in ("date", "datetime") else False
+    return f"{ref} IS NOT NULL AND {ref} {_OPS[op]} {lit(f['value'], date=kind)}"
 
 
 def _node(v: str, spec: dict) -> str:

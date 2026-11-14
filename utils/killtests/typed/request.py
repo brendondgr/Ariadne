@@ -136,7 +136,7 @@ def _check_filter(f: dict, ptypes: dict[str, str], where: str, *, edge: bool) ->
     if op in TEXT_OPS:
         _need(t == "str" and isinstance(f["value"], str), f"{where}: {op} needs a string property and a string value")
     if f.get("part") is not None:
-        _need(f.get("part") == "year" and t == "date", f"{where}: part 'year' needs a date property")
+        _need(f.get("part") == "year" and t in ("date", "datetime"), f"{where}: part 'year' needs a date property")
         _need(isinstance(f["value"], int), f"{where}: a year comparison needs an integer value")
 
 
@@ -245,7 +245,7 @@ def validate(req: Any, card: Card) -> dict:
             ptypes = edge_vars[var]["ptypes"]
         _need(ans.get("prop") in ptypes, f"answer.prop must be a property of {var}: {sorted(ptypes)}")
         if ans.get("part") is not None:
-            _need(ans["part"] == "year" and ptypes[ans["prop"]] == "date", "part 'year' needs a date property")
+            _need(ans["part"] == "year" and ptypes[ans["prop"]] in ("date", "datetime"), "part 'year' needs a date property")
             _need(ans["fn"] in ("max", "min"), "part 'year' supports max and min")
     if kind == "top":
         _need(ans.get("order") in ("asc", "desc"), "answer.order must be asc or desc")
