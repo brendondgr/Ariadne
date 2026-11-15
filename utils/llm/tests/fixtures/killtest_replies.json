@@ -1,0 +1,30 @@
+[
+ {
+  "name": "gemma_capped_partial_json",
+  "source": "logs/killtests-2026-11/exp006/cache/C-generate.jsonl",
+  "key": "c3b6698209cf4247|typed3-3shot|gemma4-31b",
+  "finish_reason": "length",
+  "raw": "```json\n{\n  \"nodes\": {\n    \"n\": {\n      \"label\": \"Person\"\n    },\n    \"m0\": {\n      \"label\": \"Match\"\n    },\n    \"m1\": {\n      \"label\": \"Team\",\n      \"name\": \"Norway\"\n    }\n  },\n  \"edges\": [\n    {\n      \"from\": \"m1\",\n      \"type\": \"PLAYED_IN\",\n      \"to\": \"m0\"\n    },\n    {\n      \"from\": \"n\",\n      \"type\": \"PLAYED_IN\",\n      \"to\": \""
+ },
+ {
+  "name": "gemma_capped_empty",
+  "source": "logs/killtests-2026-11/exp006/cache/C-generate.jsonl",
+  "key": "bb37c42a454dd85b|typed3-3shot|gemma4-31b",
+  "finish_reason": "length",
+  "raw": ""
+ },
+ {
+  "name": "gemma_fenced_ok",
+  "source": "logs/killtests-2026-11/exp006/cache/C-generate.jsonl",
+  "key": "1cd6ea388968bf72|typed3-3shot|gemma4-31b",
+  "finish_reason": "stop",
+  "raw": "```json\n{\n  \"nodes\": {\n    \"n\": {\n      \"label\": \"Team\"\n    },\n    \"m\": {\n      \"label\": \"Match\"\n    }\n  },\n  \"edges\": [\n    {\n      \"from\": \"n\",\n      \"type\": \"PLAYED_IN\",\n      \"to\": \"m\",\n      \"var\": \"r0\"\n    }\n  ],\n  \"answer\": {\n    \"kind\": \"per\",\n    \"of\": \"r0\",\n    \"fn\": \"avg\",\n    \"prop\": \"score\"\n  }\n}\n```"
+ },
+ {
+  "name": "qwen_leading_newlines_fenced_ok",
+  "source": "logs/killtests-2026-11/exp006/cache/C-generate.jsonl",
+  "key": "1cd6ea388968bf72|typed3-3shot|qwen38-27b",
+  "finish_reason": "stop",
+  "raw": "\n\n```json\n{\n  \"nodes\": {\n    \"n\": {\"label\": \"Team\"},\n    \"m0\": {\"label\": \"Match\"}\n  },\n  \"edges\": [\n    {\"from\": \"n\", \"type\": \"PLAYED_IN\", \"to\": \"m0\", \"var\": \"r0\"}\n  ],\n  \"answer\": {\"kind\": \"per\", \"of\": \"r0\", \"fn\": \"avg\", \"prop\": \"score\"}\n}\n```"
+ }
+]

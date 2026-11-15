@@ -1,0 +1,78 @@
+# The model registry (Era 2, Step 2): every model a test may use.
+#
+# A name here is a *registry name*, not a relay alias. The alias is how the
+# model is reached; the identity block is how we know what answered. On
+# 2026-11-14 and again on 2026-11-15 the relay's aliases and its envelope names
+# were both swapped against the operator's description, so neither is evidence.
+# Identity is the tokenizer's end-of-turn id on a plain reply
+# (``return_token_ids``): Gemma <end_of_turn> = 106, Qwen 3.5 family <|im_end|>
+# = 248046. A reply that ends in a tool call ends on another token (Gemma: 50),
+# which is why identity is a separate probe and not read off each row.
+#
+# Unknown values are null, never guessed. Fill them from the operator.
+
+defaults:
+  # A generous cap, plus the runaway check. The local models are reasoning
+  # models; small caps truncate to an empty reply that looks like an outage.
+  max_tokens: 16384
+  long_max_tokens: 32768
+  # Off. When a caller turns it on, the reply records both models and every
+  # experiment runner refuses rows that fell back.
+  fallback: null
+  connect_timeout_s: 3.0
+  # A stall limit while streaming, not a wall clock.
+  read_timeout_s: 600.0
+
+models:
+  gemma4-31b:
+    kind: llm
+    endpoint: http://localhost:9090/v1
+    alias: default-model           # envelope answers "default-model-2"
+    identity: {stop_token_id: 106, family: gemma}
+    size: "31B dense"
+    licence: null                  # Gemma terms; confirm the exact release with the operator
+    context_window: null           # unconfirmed
+    reasoning: {param: null, values: [], default: null}
+    tool_calls: {native: true, grammar_constrained: false}
+    notes: "Native tool calls through vLLM, checked 2026-11-15."
+
+  qwen38-27b:
+    kind: llm
+    endpoint: http://localhost:9090/v1
+    alias: default-model-2         # envelope answers "default-model"
+    identity: {stop_token_id: 248046, family: qwen3.5}
+    size: "27B"
+    licence: null
+    context_window: null
+    # The server's default is xhigh, which thinks until an 8,192-token cap on
+    # long prompts; EXP-2026-11-006 ran every arm at medium.
+    reasoning: {param: reasoning_effort, values: [xhigh, medium, low, none], default: medium}
+    tool_calls: {native: true, grammar_constrained: false}
+    notes: "Native tool calls through vLLM, checked 2026-11-15."
+
+  gemma4-31b-remote:
+    kind: llm
+    endpoint: http://localhost:4000/v1
+    alias: skynet                  # the :4000 relay's "remote" group
+    identity: {stop_token_id: 106, family: gemma}
+    size: "31B dense"
+    licence: null
+    context_window: null
+    reasoning: {param: null, values: [], default: null}
+    tool_calls: {native: true, grammar_constrained: false}
+    notes: >
+      The same Gemma weights as gemma4-31b behind a second relay (probed
+      2026-11-15: last token 106). Listed so a run can tell the two paths apart;
+      it is not a third model.
+
+  pplx-decider:
+    kind: decision
+    endpoint: http://localhost:7500
+    alias: null
+    identity: null                 # no token ids: the decisions protocol has none
+    size: null
+    licence: null
+    context_window: null
+    reasoning: {param: null, values: [], default: null}
+    tool_calls: {native: false, grammar_constrained: false}
+    notes: "POST /v1/decisions (protocol v3); see utils/killtests/decider.py."

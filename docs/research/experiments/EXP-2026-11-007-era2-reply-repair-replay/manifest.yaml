@@ -1,0 +1,74 @@
+# Filled by scripts/new_experiment.py. Every field below is required unless
+# marked optional. Do not delete a field you do not know — record it as null or
+# "unknown" and explain in ISSUES.md. Inventing a value is worse than admitting
+# a gap.
+id: EXP-2026-11-007
+slug: era2-reply-repair-replay
+title: "Era 2 Step 2: the reply-repair layer replayed over every saved kill-test reply, plus the live model matrix"
+status: running            # planned | running | complete | failed | superseded
+date_started: 2026-11-15
+date_completed: null       # null until status is complete/failed
+authors: ["brendondgr", "Claude Opus 5.5"]
+
+purpose: >
+  Step 2 of the era-2 plan builds one tool-call format for every model, logged reply repairs, a model registry with a token-id identity check, and a matrix runner. This experiment checks the repair layer against the 15,748 replies the typed kill tests (EXP-2026-11-004 to -006) saved: what it recovers, whether it ever changes a reply the old parser read, whether any repair is silent, and whether a recovered reply could change a kill verdict. It also records the live matrix run and the live swap refusal that validate the registry.
+
+hypothesis: >
+  Gates: zero silent repairs (H1) and zero changed readings against the kill tests' parser (H2). Expectations: Gemma's capped part-C replies stay invalid (E1); at most 2% of typed replies rescued per cache (E2); no kill verdict can change (E3). See PROTOCOL.md.
+
+# --- Reproducibility block (all fields mandatory) ---
+code:
+  commit: 44ea578a5aabef223584df835f9ffd331faf3bcb          # 40-char sha, or "unknown" for a back-filled experiment
+  branch: main
+  entrypoint: "uv run python scripts/era2_repair_replay.py --out docs/research/experiments/EXP-2026-11-007-era2-reply-repair-replay/data && uv run python scripts/era2_repair_replay.py --no-cap-aware --out docs/research/experiments/EXP-2026-11-007-era2-reply-repair-replay/data && uv run python scripts/matrix_run.py --models gemma4-31b,qwen38-27b,gemma4-31b-remote --questions 2"
+  dirty: true             # uncommitted changes at run time? if true, explain in ISSUES.md
+config:
+  path: null               # repo-relative path, or null if the run takes no config file
+  hash: null               # sha256:... of that file
+data:
+  name: "Saved generations of the typed kill tests (logs/killtests-2026-11/{typed,exp005,exp006}/cache)"
+  version: "hashes in data/POINTERS.md, 2026-11-15"
+  split: "all"
+  n_examples: 15748
+  dvc_path: null           # this repository does not use DVC; leave null
+  hash: null               # md5:... or sha256:... of the dataset artifact
+seeds: []                  # [] means seeds were not recorded — say so in ISSUES.md
+n_runs: 1                  # SYSTEM runs over the question set — grading passes are not runs
+environment:
+  python: "3.13"
+  lockfile: env/requirements.lock
+  container: null
+compute:
+  hardware: "32-core x86_64 host, 121 GB RAM; relay :9090 and :4000 for the matrix"
+  wall_clock_hours: 0.0
+  estimated_cost_usd: 0.0
+
+# --- LLM / agentic block (delete entirely if no model was in the loop) ---
+llm:
+  model: "none for the replay; the matrix: relay/gemma4-31b@2026-11-15 (alias default-model, token 106), relay/qwen38-27b@2026-11-15 (alias default-model-2, token 248046, reasoning_effort=medium), relay/gemma4-31b@2026-11-15 via :4000 skynet (token 106)"
+  temperature: 0.0
+  top_p: 1.0
+  max_tokens: 16384
+  prompt_files: []
+  prompt_hash: null
+  tool_schema_hash: null
+  total_input_tokens: null
+  total_output_tokens: null
+  nondeterminism_note: >
+    Provider-side nondeterminism remains even at temperature 0; results
+    are reported as mean ± std over n_runs.
+
+# --- Results block ---
+metrics:
+  primary: <metric name>
+  values: {}               # {metric: {mean: 0.0, std: 0.0, n: 1}} — must be non-empty when status: complete
+  withdrawn: {}            # values later retracted by amendment: {metric: {mean, std, n, withdrawn_on, reason, replaced_by}}
+baselines_compared: []
+statistical_test: null
+
+# --- Linkage ---
+supports_claims: []        # every ID here must exist in ../../CLAIMS.md
+figures: []                # every name here must have a file in figures/ and vice versa
+supersedes: null           # set in BOTH manifests or in neither; the validator checks symmetry
+superseded_by: null
+related: []

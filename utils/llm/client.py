@@ -26,9 +26,12 @@ while vLLM was still loading weights.
 
 from __future__ import annotations
 
+import json
 import logging
 import threading
 import time
+from collections.abc import Callable
+from dataclasses import dataclass, field
 from typing import Any
 from urllib.parse import urlparse
 
@@ -298,3 +301,182 @@ def probe(settings: LLMSettings, *, timeout_s: float | None = None) -> ProbeResu
         model=result.model or settings.model,
         usage=result.usage,
     )
+
+
+# --------------------------------------------------------------------------- #
+# Raw completions for the agent layer (Era 2, Step 2)
+# --------------------------------------------------------------------------- #
+#
+# ``chat`` above returns text only and is what every era-1 call site uses. The
+# agent loop needs more: native ``tool_calls``, the thinking channel kept apart
+# from the reply, the served envelope, the token ids (identity), and a stream it
+# can close when a reply degenerates into repetition. That is ``complete_raw``.
+# It still only transports -- interpretation and repairs live in
+# ``utils.llm.toolcalls`` and ``utils.llm.repair``, which are pure.
+
+#: How often (in characters of streamed text) ``should_stop`` is consulted.
+STOP_CHECK_EVERY = 1000
+
+
+@dataclass
+class RawCompletion:
+    """One completion as the server sent it, OpenAI-shaped, before any repair."""
+
+    content: str = ""
+    reasoning: str = ""
+    #: ``[{"id", "name", "arguments"}]`` with ``arguments`` as the raw text.
+    tool_calls: list[dict[str, Any]] = field(default_factory=list)
+    finish_reason: str = ""
+    usage: dict[str, int] = field(default_factory=dict)
+    #: The ``model`` field of the response envelope. Not an identity: the
+    #: relay's served-model-name is arbitrary (memory: local model).
+    envelope_model: str = ""
+    token_ids: list[int] = field(default_factory=list)
+    #: Set when ``should_stop`` closed the stream early (``"runaway"``).
+    stopped: str = ""
+    streamed: bool = False
+    latency_s: float = 0.0
+
+
+def _usage(raw: Any) -> dict[str, int]:
+    if not isinstance(raw, dict):
+        return {}
+    out = {k: int(v) for k, v in raw.items() if isinstance(v, (int, float))}
+    details = raw.get("completion_tokens_details")
+    if isinstance(details, dict) and isinstance(details.get("reasoning_tokens"), (int, float)):
+        out["reasoning_tokens"] = int(details["reasoning_tokens"])
+    return out
+
+
+def _http_error(response: requests.Response, host: str) -> LLMUnavailable:
+    detail = (response.text or "").strip()[:500]
+    return LLMUnavailable(f"HTTP {response.status_code} from {host}: {detail}")
+
+
+def complete_raw(
+    base_url: str,
+    payload: dict[str, Any],
+    *,
+    headers: dict[str, str] | None = None,
+    stream: bool = True,
+    connect_timeout_s: float = 3.0,
+    read_timeout_s: float = 600.0,
+    should_stop: Callable[[str, str], bool] | None = None,
+) -> RawCompletion:
+    """POST one ``/chat/completions`` request and return what came back, unrepaired.
+
+    ``read_timeout_s`` is a stall limit when streaming (seconds without a byte),
+    not a wall clock: a long reasoning reply is not a failure. ``should_stop`` is
+    called with ``(content, reasoning)`` every :data:`STOP_CHECK_EVERY` characters;
+    returning true closes the stream, which makes the server stop generating.
+
+    Raises :class:`LLMUnavailable` on any transport, HTTP or decode failure.
+    """
+    url = base_url.rstrip("/") + "/chat/completions"
+    host = urlparse(base_url).netloc or base_url
+    body = dict(payload)
+    body["stream"] = stream
+    if stream:
+        body["stream_options"] = {"include_usage": True}
+    else:
+        body.pop("stream_options", None)
+    hdrs = {"Content-Type": "application/json", **(headers or {})}
+    out = RawCompletion(streamed=stream)
+    started = time.monotonic()
+    try:
+        response = requests.post(url, json=body, headers=hdrs, stream=stream,
+                                 timeout=(connect_timeout_s, read_timeout_s))
+    except requests.RequestException as exc:
+        raise LLMUnavailable(f"could not reach {host}: {exc}") from exc
+    try:
+        if response.status_code >= 400:
+            raise _http_error(response, host)
+        if not stream:
+            try:
+                data = response.json()
+            except ValueError as exc:
+                raise LLMUnavailable(f"response from {host} was not JSON: {exc}") from exc
+            choice = (data.get("choices") or [{}])[0]
+            msg = choice.get("message") or {}
+            out.content = msg.get("content") or ""
+            out.reasoning = msg.get("reasoning") or msg.get("reasoning_content") or ""
+            for i, tc in enumerate(msg.get("tool_calls") or []):
+                fn = tc.get("function") or {}
+                args = fn.get("arguments")
+                out.tool_calls.append({
+                    "id": tc.get("id") or f"tc_{i}",
+                    "name": fn.get("name") or "",
+                    "arguments": args if isinstance(args, str) else json.dumps(args or {}),
+                })
+            out.finish_reason = choice.get("finish_reason") or ""
+            out.usage = _usage(data.get("usage"))
+            out.envelope_model = str(data.get("model") or "")
+            out.token_ids = [int(t) for t in (choice.get("token_ids") or []) if isinstance(t, int)]
+        else:
+            calls: dict[int, dict[str, Any]] = {}
+            checked = 0
+            try:
+                # Lines are decoded as UTF-8 here, not by requests: for a
+                # text/event-stream without a charset requests guesses
+                # ISO-8859-1, which garbles every non-ASCII name.
+                for raw_line in response.iter_lines():
+                    line = raw_line.decode("utf-8", "replace") if isinstance(raw_line, bytes) else raw_line
+                    if not line or not line.startswith("data:"):
+                        continue
+                    data_s = line[5:].strip()
+                    if data_s == "[DONE]":
+                        break
+                    try:
+                        chunk = json.loads(data_s)
+                    except ValueError:
+                        continue
+                    if chunk.get("error"):
+                        raise LLMUnavailable(f"stream error from {host}: {json.dumps(chunk['error'])[:400]}")
+                    if chunk.get("model"):
+                        out.envelope_model = str(chunk["model"])
+                    if chunk.get("usage"):
+                        out.usage = _usage(chunk["usage"])
+                    for ch in chunk.get("choices") or []:
+                        d = ch.get("delta") or {}
+                        think = d.get("reasoning") or d.get("reasoning_content")
+                        if think:
+                            out.reasoning += think
+                        if d.get("content"):
+                            out.content += d["content"]
+                        for t in ch.get("token_ids") or []:
+                            if isinstance(t, int):
+                                out.token_ids.append(t)
+                        for tc in d.get("tool_calls") or []:
+                            slot = calls.setdefault(int(tc.get("index", len(calls))),
+                                                    {"id": None, "name": "", "arguments": ""})
+                            if tc.get("id"):
+                                slot["id"] = tc["id"]
+                            fn = tc.get("function") or {}
+                            if fn.get("name"):
+                                slot["name"] += fn["name"]
+                            if fn.get("arguments"):
+                                a = fn["arguments"]
+                                slot["arguments"] += a if isinstance(a, str) else json.dumps(a)
+                        if ch.get("finish_reason"):
+                            out.finish_reason = ch["finish_reason"]
+                    if should_stop and len(out.content) + len(out.reasoning) - checked >= STOP_CHECK_EVERY:
+                        checked = len(out.content) + len(out.reasoning)
+                        if should_stop(out.content, out.reasoning):
+                            out.stopped = "runaway"
+                            out.finish_reason = "runaway"
+                            break
+            except requests.RequestException as exc:
+                raise LLMUnavailable(f"stream from {host} failed: {exc}") from exc
+            for i in sorted(calls):
+                c = calls[i]
+                if c["name"]:
+                    out.tool_calls.append({"id": c["id"] or f"tc_{i}", "name": c["name"],
+                                           "arguments": c["arguments"]})
+    finally:
+        response.close()
+    out.latency_s = round(time.monotonic() - started, 3)
+    with _METER_LOCK:
+        _METER["calls"] += 1
+        _METER["prompt_tokens"] += out.usage.get("prompt_tokens", 0)
+        _METER["completion_tokens"] += out.usage.get("completion_tokens", 0)
+    return out
