@@ -5,9 +5,9 @@
 id: EXP-2026-11-010
 slug: minicpm-vs-qwen-cypherbench
 title: "MiniCPM 4.7 35B against Qwen 3.8 27B on the kill tests' CypherBench part (typed requests and free Cypher/Gremlin)"
-status: running            # planned | running | complete | failed | superseded
+status: complete           # planned | running | complete | failed | superseded
 date_started: 2026-11-15
-date_completed: null       # null until status is complete/failed
+date_completed: 2026-11-15      # null until status is complete/failed
 authors: ["brendondgr", "Claude Opus 5.5"]
 
 purpose: >
@@ -18,10 +18,10 @@ hypothesis: >
 
 # --- Reproducibility block (all fields mandatory) ---
 code:
-  commit: c9bde0e10e038fc526d1388fad3a977a596542c1          # 40-char sha, or "unknown" for a back-filled experiment
+  commit: 71fcfb7f841813589e7db43c7e7fc130f17d84ac          # 40-char sha, or "unknown" for a back-filled experiment
   branch: main
   entrypoint: "uv run python scripts/minicpm_vs_qwen.py replay; ... run --condition on; ... run --condition off; ... compare --out docs/research/experiments/EXP-2026-11-010-minicpm-vs-qwen-cypherbench/data"
-  dirty: true             # uncommitted changes at run time? if true, explain in ISSUES.md
+  dirty: false            # uncommitted changes at run time? if true, explain in ISSUES.md
 config:
   path: null               # repo-relative path, or null if the run takes no config file
   hash: null               # sha256:... of that file
@@ -40,7 +40,7 @@ environment:
   container: null
 compute:
   hardware: "32-core x86_64 host, 121 GB RAM; killtests-verify Neo4j + Gremlin; relay :9090"
-  wall_clock_hours: 0.0
+  wall_clock_hours: 0.15
   estimated_cost_usd: 0.0
 
 # --- LLM / agentic block (delete entirely if no model was in the loop) ---
@@ -60,11 +60,20 @@ llm:
 
 # --- Results block ---
 metrics:
-  primary: <metric name>
-  values: {}               # {metric: {mean: 0.0, std: 0.0, n: 1}} — must be non-empty when status: complete
+  primary: on_typed3_3shot_cypher_minus_qwen
+  values:
+    on_typed3_3shot_cypher_minus_qwen: {mean: -0.22, std: 0.0, n: 200}
+    on_free_cypher_3shot_minus_qwen: {mean: -0.11, std: 0.0, n: 200}
+    on_typed3_3shot_cypher: {mean: 0.73, std: 0.0, n: 200}
+    on_free_cypher_3shot: {mean: 0.75, std: 0.0, n: 200}
+    off_typed3_3shot_cypher: {mean: 0.645, std: 0.0, n: 200}
+    off_free_cypher_3shot: {mean: 0.5, std: 0.0, n: 200}
+    on_recovered_typed3_3shot_cypher: {mean: 0.815, std: 0.0, n: 200}
+    on_recovered_free_cypher_3shot: {mean: 0.8, std: 0.0, n: 200}
+    on_reasoning_only: {mean: 222, std: 0.0, n: 800}
   withdrawn: {}            # values later retracted by amendment: {metric: {mean, std, n, withdrawn_on, reason, replaced_by}}
-baselines_compared: []
-statistical_test: null
+baselines_compared: ["qwen38-27b, EXP-2026-11-006 part A (replayed on today's tree: identical)"]
+statistical_test: "paired bootstrap 95% CI over 200 questions (utils.killtests.t1.run._paired_ci, 2000 resamples)"
 
 # --- Linkage ---
 supports_claims: []        # every ID here must exist in ../../CLAIMS.md

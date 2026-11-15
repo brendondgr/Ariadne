@@ -29,7 +29,8 @@ sys.path.insert(0, str(REPO))
 
 BASE = REPO / "logs" / "killtests-2026-11"
 QWEN_SRC = BASE / "exp006"
-OUT = {"replay": BASE / "exp010-replay-qwen", "on": BASE / "exp010-minicpm-on", "off": BASE / "exp010-minicpm-off"}
+OUT = {"replay": BASE / "exp010-replay-qwen", "on": BASE / "exp010-minicpm-on", "off": BASE / "exp010-minicpm-off",
+       "on_recovered": BASE / "exp010-minicpm-on-recovered"}
 TAG = {"replay": "qwen38-27b", "on": "minicpm47-35b", "off": "minicpm47-35b"}
 PRIMARY = ("typed3-3shot-cypher", "free-cypher-3shot")
 ARMS = ("free-cypher-3shot", "free-gremlin-3shot", "typed2-3shot-cypher", "typed2-3shot-gremlin",
@@ -91,6 +92,59 @@ def run(condition: str) -> None:
     _runner(out, extra)
 
 
+def recover() -> None:
+    """POST-HOC (RESULTS §4): re-request the thinking-on replies the server misfiled.
+
+    A reply whose text arrived only as reasoning is re-requested with thinking on
+    and token ids. If the think block was never closed (no 248069) and the model
+    stopped on its own, the reasoning text is the answer and becomes ``raw``. The
+    rest of the pipeline (repair, execute, score) then runs unchanged in a new
+    folder. Temperature 0, so the re-request should reproduce the same reply.
+    """
+    import concurrent.futures as cf
+    import urllib.request
+
+    os.environ["KILLTESTS_EXPERIMENT"] = "exp006"
+    from utils.killtests.t2c.run import Bench
+
+    src, out = OUT["on"], OUT["on_recovered"]
+    if out.exists():
+        raise SystemExit(f"{out} exists; remove it to recover again")
+    (out / "cache").mkdir(parents=True)
+    shutil.copy2(src / "run_header.json", out / "run_header.json")
+    gen = json.loads((src / "A-generate.json").read_text())
+    b = Bench("A")
+    qs = {q["qid"]: q for q in b.gold}
+    todo = [k for k, v in gen["generations"].items() if not (v.get("raw") or "").strip() and (v.get("reasoning_chars") or 0) > 0]
+
+    def one(k):
+        qid, arm, _tag = k.split("|")
+        body = {"model": "default-model", "temperature": 0.0, "max_tokens": 8192, "return_token_ids": True,
+                "messages": b.messages(arm, qs[qid])}
+        req = urllib.request.Request("http://localhost:9090/v1/chat/completions", data=json.dumps(body).encode(),
+                                     headers={"content-type": "application/json"})
+        d = json.load(urllib.request.urlopen(req, timeout=900))
+        c = d["choices"][0]
+        m, ids = c["message"], c.get("token_ids") or []
+        unclosed = c.get("finish_reason") == "stop" and 248069 not in ids and not (m.get("content") or "").strip()
+        text = (m.get("reasoning") or "") if unclosed else (m.get("content") or "")
+        return k, {"text": text, "unclosed": unclosed, "same_length": len(m.get("reasoning") or "") == gen["generations"][k]["reasoning_chars"]}
+
+    with cf.ThreadPoolExecutor(32) as ex:
+        got = dict(ex.map(one, todo))
+    for k, g in got.items():
+        gen["generations"][k] = {**gen["generations"][k], "raw": g["text"][-6000:], "recovered_from_reasoning": g["unclosed"]}
+    gen["recovery"] = {"rerequested": len(todo), "unclosed": sum(g["unclosed"] for g in got.values()),
+                       "same_reasoning_length": sum(g["same_length"] for g in got.values())}
+    (out / "A-generate.json").write_text(json.dumps(gen))
+    (out / "A-generate.done").write_text("")
+    with open(out / "cache" / "A-generate.jsonl", "w") as fh:
+        for k, v in gen["generations"].items():
+            fh.write(json.dumps({"key": k, "value": v}) + "\n")
+    print("recovery:", gen["recovery"])
+    _runner(out, {})
+
+
 # --------------------------------------------------------------------------- #
 # compare
 # --------------------------------------------------------------------------- #
@@ -133,7 +187,7 @@ def compare(out: Path) -> dict:
                  "qwen_replay": {a: round(sum(v) / len(v), 4) for a, v in q_replay.items()}}
     res["replay_reproduces"] = all(abs(res["qwen_replay"][a] - q_saved[a]) <= 0.005 for a in PRIMARY)
     ref = q_replay
-    for cond in ("on", "off"):
+    for cond in ("on", "off", "on_recovered"):
         if not (OUT[cond] / "A-execute.json").exists():
             continue
         m = vectors(OUT[cond], "minicpm47-35b")
@@ -163,6 +217,7 @@ def main(argv: list[str] | None = None) -> int:
     ap = argparse.ArgumentParser()
     sub = ap.add_subparsers(dest="cmd", required=True)
     sub.add_parser("replay")
+    sub.add_parser("recover")
     r = sub.add_parser("run")
     r.add_argument("--condition", choices=("on", "off"), required=True)
     c = sub.add_parser("compare")
@@ -170,6 +225,8 @@ def main(argv: list[str] | None = None) -> int:
     a = ap.parse_args(argv)
     if a.cmd == "replay":
         replay()
+    elif a.cmd == "recover":
+        recover()
     elif a.cmd == "run":
         run(a.condition)
     else:

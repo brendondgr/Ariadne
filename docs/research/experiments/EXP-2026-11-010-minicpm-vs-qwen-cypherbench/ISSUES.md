@@ -13,3 +13,12 @@ tree at run time. An empty file is fine; a missing one is not.
 **Paper implication:** what must be stated in the paper because of this.
 
 -->
+
+## 2026-11-15 — 28% of MiniCPM's thinking-on replies were filed as reasoning; a post-hoc recovery is reported beside the primary result
+**Impact:** The primary thinking-on figures count those replies as wrong. The post-hoc "recovered" column re-requests them and takes the answer from a provably unclosed think block, which moves typed3 0.730 → 0.815 and free Cypher 0.750 → 0.800. The decision is the same under both.
+**Cause:** MiniCPM's chat template opens `<think>` in the prompt. When the model answers without thinking, it never emits `</think>` (248069), and vLLM's reasoning parser then files the whole reply as reasoning.
+**Resolution:** Reported. The recovery is labelled post-hoc. It used re-requests rather than a replay: 159 of 222 reproduced the same reasoning length at temperature 0.
+
+## 2026-11-15 — Code run commit
+**Impact:** None on the figures.
+**Resolution:** The three pre-registered runs (replay, on, off) used the code at 71fcfb7f. The `recover` subcommand and the third column of `compare` were added afterwards for the post-hoc analysis, and are committed with these results.

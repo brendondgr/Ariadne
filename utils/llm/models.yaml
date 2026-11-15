@@ -42,9 +42,14 @@ models:
   #   (2026-11-15) is the evidence that this is MiniCPM.
   # - the template opens <think> (248068) in the prompt; a short reply that never
   #   closes it (no 248069) is filed whole under "reasoning" by the server, which
-  #   toolcalls re-asks with thinking off (logged as unclosed_think_retry). It
-  #   happens on one-word answers only (4 of 10 such prompts; 0 of 15 normal or
-  #   tool-calling prompts; 0 of 25 with thinking off, 2026-11-15).
+  #   toolcalls re-asks with thinking off (logged as unclosed_think_retry). It is
+  #   NOT confined to one-word answers: on CypherBench query writing it hit 222 of
+  #   800 replies (66% of Gremlin replies), EXP-2026-11-010. There, thinking-off
+  #   answers were much weaker (free Cypher 0.50 vs 0.80 recovered), so for this
+  #   model the re-ask is the worse fix.
+  # - On query writing it is clearly weaker than Qwen 3.8 27B (EXP-2026-11-010:
+  #   typed3 -0.22, free Cypher -0.11; -0.135 / -0.06 with misfiled replies
+  #   recovered).
   # - reasoning_effort "none" turns thinking off (47 vs 786 tokens on one
   #   question); "low" changed nothing, so only "none" is listed.
   # - native tool calls work.
