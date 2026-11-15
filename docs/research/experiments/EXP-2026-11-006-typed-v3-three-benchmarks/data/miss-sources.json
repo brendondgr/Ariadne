@@ -1,0 +1,113 @@
+{
+ "B": {
+  "gemma4-31b": {
+   "typed3_missed_free_cypher_right": 67,
+   "sources": {
+    "invalid_request": 21,
+    "valid_wrong_gold_uses_gap_feature": 11,
+    "valid_wrong_no_gap_feature": 16,
+    "valid_right_rows_other_columns": 12,
+    "cut_off_at_cap": 7
+   },
+   "gap_features": {
+    "list_functions": 5,
+    "with_chain": 4,
+    "several_aggregates": 4,
+    "aggregate_then_filter": 3
+   },
+   "inside_coverage": {
+    "n": 319,
+    "typed3_right": 141,
+    "free_cypher_right": 109,
+    "typed3_acc": 0.442,
+    "free_cypher_acc_same_questions": 0.342
+   }
+  },
+  "qwen38-27b": {
+   "typed3_missed_free_cypher_right": 66,
+   "sources": {
+    "invalid_request": 18,
+    "valid_wrong_no_gap_feature": 17,
+    "valid_right_rows_other_columns": 15,
+    "valid_wrong_gold_uses_gap_feature": 15,
+    "cut_off_at_cap": 1
+   },
+   "gap_features": {
+    "list_functions": 6,
+    "with_chain": 6,
+    "several_aggregates": 5,
+    "aggregate_then_filter": 5,
+    "string_functions": 1,
+    "arithmetic_in_return": 1
+   },
+   "inside_coverage": {
+    "n": 338,
+    "typed3_right": 147,
+    "free_cypher_right": 137,
+    "typed3_acc": 0.435,
+    "free_cypher_acc_same_questions": 0.405
+   }
+  },
+  "benchmark": {
+   "n": 390,
+   "gold_uses_gap_feature_or_several_aggregates": 73
+  }
+ },
+ "C": {
+  "gemma4-31b": {
+   "typed3_missed_free_cypher_right": 210,
+   "sources": {
+    "valid_right_rows_other_columns": 35,
+    "cut_off_at_cap": 99,
+    "valid_wrong_gold_uses_gap_feature": 35,
+    "invalid_request": 30,
+    "valid_wrong_no_gap_feature": 11
+   },
+   "gap_features": {
+    "case": 26,
+    "several_aggregates": 9,
+    "aggregate_then_filter": 5,
+    "with_chain": 3,
+    "arithmetic_in_return": 1,
+    "string_functions": 1,
+    "list_functions": 1
+   },
+   "inside_coverage": {
+    "n": 245,
+    "typed3_right": 108,
+    "free_cypher_right": 183,
+    "typed3_acc": 0.441,
+    "free_cypher_acc_same_questions": 0.747
+   }
+  },
+  "qwen38-27b": {
+   "typed3_missed_free_cypher_right": 215,
+   "sources": {
+    "valid_right_rows_other_columns": 48,
+    "valid_wrong_no_gap_feature": 34,
+    "valid_wrong_gold_uses_gap_feature": 65,
+    "invalid_request": 68
+   },
+   "gap_features": {
+    "several_aggregates": 36,
+    "case": 30,
+    "with_chain": 19,
+    "aggregate_then_filter": 10,
+    "list_functions": 8,
+    "arithmetic_in_return": 1,
+    "string_functions": 1
+   },
+   "inside_coverage": {
+    "n": 362,
+    "typed3_right": 98,
+    "free_cypher_right": 240,
+    "typed3_acc": 0.271,
+    "free_cypher_acc_same_questions": 0.663
+   }
+  },
+  "benchmark": {
+   "n": 450,
+   "gold_uses_gap_feature_or_several_aggregates": 288
+  }
+ }
+}

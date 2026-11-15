@@ -1,0 +1,112 @@
+{
+ "C": {
+  "rule": "killed if H2 fails for any model or H3 fails for every model (3-shot); H1 reported",
+  "inputs": {
+   "gemma4-31b": {
+    "typed3_3shot_cypher": 0.24,
+    "typed3_3shot_gremlin": 0.24,
+    "free_cypher_3shot": 0.6933333333333334,
+    "free_gremlin_3shot": 0.3622222222222222,
+    "H1_backend_independent": true,
+    "H2_beats_free_gremlin": false,
+    "H3_not_worse_than_free_cypher": false,
+    "ci_typed3_gremlin_minus_free_gremlin": [
+     -0.1688888888888889,
+     -0.07555555555555556
+    ],
+    "ci_typed3_cypher_minus_free_cypher": [
+     -0.5,
+     -0.40444444444444444
+    ],
+    "typed2": {
+     "cypher": 0.1711111111111111,
+     "gremlin": 0.1711111111111111
+    },
+    "repair": {
+     "cypher": 0.24,
+     "gremlin": 0.24
+    }
+   },
+   "qwen38-27b": {
+    "typed3_3shot_cypher": 0.21777777777777776,
+    "typed3_3shot_gremlin": 0.21777777777777776,
+    "free_cypher_3shot": 0.6844444444444444,
+    "free_gremlin_3shot": 0.24666666666666667,
+    "H1_backend_independent": true,
+    "H2_beats_free_gremlin": false,
+    "H3_not_worse_than_free_cypher": false,
+    "ci_typed3_gremlin_minus_free_gremlin": [
+     -0.07333333333333333,
+     0.011111111111111112
+    ],
+    "ci_typed3_cypher_minus_free_cypher": [
+     -0.5133333333333333,
+     -0.42
+    ],
+    "typed2": {
+     "cypher": 0.17333333333333334,
+     "gremlin": 0.17333333333333334
+    },
+    "repair": {
+     "cypher": 0.2311111111111111,
+     "gremlin": 0.2311111111111111
+    }
+   }
+  },
+  "verdict": "killed",
+  "H1_holds_all": true
+ },
+ "B": {
+  "gemma4-31b": {
+   "typed3": 0.36153846153846153,
+   "typed2": 0.18205128205128204,
+   "B1_typed3_ge_typed2_plus_010": true,
+   "ci_typed3_minus_typed2": [
+    0.14358974358974358,
+    0.2205128205128205
+   ],
+   "free_cypher": 0.35128205128205126,
+   "free_gremlin": 0.22564102564102564,
+   "typed3_gremlin": 0.3487179487179487,
+   "B2_H2": true,
+   "B2_H3": true
+  },
+  "qwen38-27b": {
+   "typed3": 0.3769230769230769,
+   "typed2": 0.20256410256410257,
+   "B1_typed3_ge_typed2_plus_010": true,
+   "ci_typed3_minus_typed2": [
+    0.1358974358974359,
+    0.2153846153846154
+   ],
+   "free_cypher": 0.4,
+   "free_gremlin": 0.1641025641025641,
+   "typed3_gremlin": 0.36666666666666664,
+   "B2_H2": true,
+   "B2_H3": true
+  }
+ },
+ "A": {
+  "gemma4-31b": {
+   "typed3": 0.945,
+   "typed2": 0.95,
+   "A1_typed3_ge_typed2_minus_002": true,
+   "free_cypher": 0.905,
+   "free_gremlin": 0.75,
+   "backends_agree_typed3": 1.0
+  },
+  "qwen38-27b": {
+   "typed3": 0.95,
+   "typed2": 0.945,
+   "A1_typed3_ge_typed2_minus_002": true,
+   "free_cypher": 0.86,
+   "free_gremlin": 0.635,
+   "backends_agree_typed3": 1.0,
+   "A2_qwen_xhigh_exp005": {
+    "free-cypher-3shot": 0.905,
+    "free-gremlin-3shot": 0.655,
+    "typed2-3shot-cypher": 0.905
+   }
+  }
+ }
+}

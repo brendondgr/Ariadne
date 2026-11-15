@@ -1,0 +1,1547 @@
+{
+ "summary": {
+  "A_exact_records_typed3_3shot_gemma4_31b": 0.945,
+  "A_exact_records_typed2_3shot_gemma4_31b": 0.95,
+  "A_exact_records_free_cypher_3shot_gemma4_31b": 0.905,
+  "A_exact_records_free_gremlin_3shot_gemma4_31b": 0.75,
+  "A_typed3_3shot_gremlin_minus_free_gremlin_3shot_gemma4_31b": 0.195,
+  "A_typed3_3shot_cypher_minus_free_cypher_3shot_gemma4_31b": 0.04,
+  "A_exact_records_typed3_3shot_qwen38_27b": 0.95,
+  "A_exact_records_typed2_3shot_qwen38_27b": 0.945,
+  "A_exact_records_free_cypher_3shot_qwen38_27b": 0.86,
+  "A_exact_records_free_gremlin_3shot_qwen38_27b": 0.635,
+  "A_typed3_3shot_gremlin_minus_free_gremlin_3shot_qwen38_27b": 0.315,
+  "A_typed3_3shot_cypher_minus_free_cypher_3shot_qwen38_27b": 0.09,
+  "B_exact_records_typed3_3shot_gemma4_31b": 0.362,
+  "B_exact_records_typed2_3shot_gemma4_31b": 0.182,
+  "B_exact_records_free_cypher_3shot_gemma4_31b": 0.351,
+  "B_exact_records_free_gremlin_3shot_gemma4_31b": 0.226,
+  "B_typed3_3shot_gremlin_minus_free_gremlin_3shot_gemma4_31b": 0.123,
+  "B_typed3_3shot_cypher_minus_free_cypher_3shot_gemma4_31b": 0.01,
+  "B_exact_records_typed3_3shot_qwen38_27b": 0.377,
+  "B_exact_records_typed2_3shot_qwen38_27b": 0.203,
+  "B_exact_records_free_cypher_3shot_qwen38_27b": 0.4,
+  "B_exact_records_free_gremlin_3shot_qwen38_27b": 0.164,
+  "B_typed3_3shot_gremlin_minus_free_gremlin_3shot_qwen38_27b": 0.203,
+  "B_typed3_3shot_cypher_minus_free_cypher_3shot_qwen38_27b": -0.023,
+  "C_exact_records_typed3_3shot_gemma4_31b": 0.24,
+  "C_exact_records_typed2_3shot_gemma4_31b": 0.171,
+  "C_exact_records_free_cypher_3shot_gemma4_31b": 0.693,
+  "C_exact_records_free_gremlin_3shot_gemma4_31b": 0.362,
+  "C_typed3_3shot_gremlin_minus_free_gremlin_3shot_gemma4_31b": -0.122,
+  "C_typed3_3shot_cypher_minus_free_cypher_3shot_gemma4_31b": -0.453,
+  "C_exact_records_typed3_3shot_qwen38_27b": 0.218,
+  "C_exact_records_typed2_3shot_qwen38_27b": 0.173,
+  "C_exact_records_free_cypher_3shot_qwen38_27b": 0.684,
+  "C_exact_records_free_gremlin_3shot_qwen38_27b": 0.247,
+  "C_typed3_3shot_gremlin_minus_free_gremlin_3shot_qwen38_27b": -0.029,
+  "C_typed3_3shot_cypher_minus_free_cypher_3shot_qwen38_27b": -0.467,
+  "C_typed3_3shot_gremlin_minus_free_gremlin_3shot_min": -0.122,
+  "A_backends_agree_typed3": 1.0,
+  "B_backends_agree_typed3": 0.9872,
+  "C_backends_agree_typed3": 1.0,
+  "C_expressible_share_sample": 0.475,
+  "B_set_proj_typed3_3shot_gemma4_31b": 0.5256,
+  "B_set_proj_free_cypher_3shot_gemma4_31b": 0.7359,
+  "B_set_proj_free_gremlin_3shot_gemma4_31b": 0.5282,
+  "B_set_proj_typed3_3shot_qwen38_27b": 0.5333,
+  "B_set_proj_free_cypher_3shot_qwen38_27b": 0.7462,
+  "B_set_proj_free_gremlin_3shot_qwen38_27b": 0.2821,
+  "C_set_proj_typed3_3shot_gemma4_31b": 0.3756,
+  "C_set_proj_free_cypher_3shot_gemma4_31b": 0.7733,
+  "C_set_proj_free_gremlin_3shot_gemma4_31b": 0.4667,
+  "C_set_proj_typed3_3shot_qwen38_27b": 0.4,
+  "C_set_proj_free_cypher_3shot_qwen38_27b": 0.7644,
+  "C_set_proj_free_gremlin_3shot_qwen38_27b": 0.3822
+ },
+ "A": {
+  "by_model": {
+   "gemma4-31b": {
+    "alias": "default-model",
+    "arms": {
+     "free-cypher-3shot": {
+      "exact_records": 0.905,
+      "by_group": {
+       "basic_(n)": 1.0,
+       "basic_(n)-(m0)": 0.6667,
+       "basic_(n)-(m0)-(m1*)": 1.0,
+       "basic_(n)-(m0*)": 1.0,
+       "basic_(n)-(m0*),(n)-(m1*)": 0.9048,
+       "basic_(n)=(m0)": 1.0,
+       "basic_(n*)": 1.0,
+       "special_comparison": 1.0,
+       "special_optional-match": 0.6,
+       "special_three-node-groupby": 0.875,
+       "special_time-sensitive": 0.6667,
+       "special_union": 0.7143
+      },
+      "by_source": {
+       "cypherbench": 0.905
+      }
+     },
+     "free-gremlin-3shot": {
+      "exact_records": 0.75,
+      "by_group": {
+       "basic_(n)": 0.8,
+       "basic_(n)-(m0)": 0.3333,
+       "basic_(n)-(m0)-(m1*)": 0.9167,
+       "basic_(n)-(m0*)": 0.9211,
+       "basic_(n)-(m0*),(n)-(m1*)": 0.8095,
+       "basic_(n)=(m0)": 0.0,
+       "basic_(n*)": 1.0,
+       "special_comparison": 0.8276,
+       "special_optional-match": 0.4,
+       "special_three-node-groupby": 0.625,
+       "special_time-sensitive": 0.8333,
+       "special_union": 0.4762
+      },
+      "by_source": {
+       "cypherbench": 0.75
+      }
+     },
+     "typed2-3shot-cypher": {
+      "exact_records": 0.95,
+      "by_group": {
+       "basic_(n)": 1.0,
+       "basic_(n)-(m0)": 1.0,
+       "basic_(n)-(m0)-(m1*)": 1.0,
+       "basic_(n)-(m0*)": 0.9737,
+       "basic_(n)-(m0*),(n)-(m1*)": 0.9048,
+       "basic_(n)=(m0)": 1.0,
+       "basic_(n*)": 1.0,
+       "special_comparison": 1.0,
+       "special_optional-match": 0.7333,
+       "special_three-node-groupby": 0.9375,
+       "special_time-sensitive": 1.0,
+       "special_union": 0.9048
+      },
+      "by_source": {
+       "cypherbench": 0.95
+      }
+     },
+     "typed2-3shot-gremlin": {
+      "exact_records": 0.95,
+      "by_group": {
+       "basic_(n)": 1.0,
+       "basic_(n)-(m0)": 1.0,
+       "basic_(n)-(m0)-(m1*)": 1.0,
+       "basic_(n)-(m0*)": 0.9737,
+       "basic_(n)-(m0*),(n)-(m1*)": 0.9048,
+       "basic_(n)=(m0)": 1.0,
+       "basic_(n*)": 1.0,
+       "special_comparison": 1.0,
+       "special_optional-match": 0.7333,
+       "special_three-node-groupby": 0.9375,
+       "special_time-sensitive": 1.0,
+       "special_union": 0.9048
+      },
+      "by_source": {
+       "cypherbench": 0.95
+      }
+     },
+     "typed3-3shot-cypher": {
+      "exact_records": 0.945,
+      "by_group": {
+       "basic_(n)": 1.0,
+       "basic_(n)-(m0)": 1.0,
+       "basic_(n)-(m0)-(m1*)": 1.0,
+       "basic_(n)-(m0*)": 1.0,
+       "basic_(n)-(m0*),(n)-(m1*)": 0.9048,
+       "basic_(n)=(m0)": 1.0,
+       "basic_(n*)": 1.0,
+       "special_comparison": 1.0,
+       "special_optional-match": 0.6,
+       "special_three-node-groupby": 1.0,
+       "special_time-sensitive": 1.0,
+       "special_union": 0.8571
+      },
+      "by_source": {
+       "cypherbench": 0.945
+      }
+     },
+     "typed3-3shot-gremlin": {
+      "exact_records": 0.945,
+      "by_group": {
+       "basic_(n)": 1.0,
+       "basic_(n)-(m0)": 1.0,
+       "basic_(n)-(m0)-(m1*)": 1.0,
+       "basic_(n)-(m0*)": 1.0,
+       "basic_(n)-(m0*),(n)-(m1*)": 0.9048,
+       "basic_(n)=(m0)": 1.0,
+       "basic_(n*)": 1.0,
+       "special_comparison": 1.0,
+       "special_optional-match": 0.6,
+       "special_three-node-groupby": 1.0,
+       "special_time-sensitive": 1.0,
+       "special_union": 0.8571
+      },
+      "by_source": {
+       "cypherbench": 0.945
+      }
+     },
+     "typed3-3shot-repair-cypher": {
+      "exact_records": 0.95,
+      "by_group": {
+       "basic_(n)": 1.0,
+       "basic_(n)-(m0)": 1.0,
+       "basic_(n)-(m0)-(m1*)": 1.0,
+       "basic_(n)-(m0*)": 1.0,
+       "basic_(n)-(m0*),(n)-(m1*)": 0.9048,
+       "basic_(n)=(m0)": 1.0,
+       "basic_(n*)": 1.0,
+       "special_comparison": 1.0,
+       "special_optional-match": 0.6,
+       "special_three-node-groupby": 1.0,
+       "special_time-sensitive": 1.0,
+       "special_union": 0.9048
+      },
+      "by_source": {
+       "cypherbench": 0.95
+      }
+     },
+     "typed3-3shot-repair-gremlin": {
+      "exact_records": 0.95,
+      "by_group": {
+       "basic_(n)": 1.0,
+       "basic_(n)-(m0)": 1.0,
+       "basic_(n)-(m0)-(m1*)": 1.0,
+       "basic_(n)-(m0*)": 1.0,
+       "basic_(n)-(m0*),(n)-(m1*)": 0.9048,
+       "basic_(n)=(m0)": 1.0,
+       "basic_(n*)": 1.0,
+       "special_comparison": 1.0,
+       "special_optional-match": 0.6,
+       "special_three-node-groupby": 1.0,
+       "special_time-sensitive": 1.0,
+       "special_union": 0.9048
+      },
+      "by_source": {
+       "cypherbench": 0.95
+      }
+     }
+    },
+    "status": {
+     "cypher-3shot": {
+      "ok": 199,
+      "empty": 1
+     },
+     "gremlin-3shot": {
+      "ok": 180,
+      "empty": 15,
+      "error": 5
+     },
+     "typed2-3shot": {
+      "ok": 200,
+      "backends_agree": 1.0
+     },
+     "typed3-3shot": {
+      "ok": 199,
+      "invalid": 1,
+      "backends_agree": 1.0
+     },
+     "typed3-3shot-repair": {
+      "ok": 200,
+      "backends_agree": 1.0
+     }
+    },
+    "diffs": {
+     "typed3-3shot-cypher_minus_free-cypher-3shot": {
+      "diff": 0.04,
+      "ci95": [
+       0.005,
+       0.075
+      ]
+     },
+     "typed3-3shot-cypher_minus_free-gremlin-3shot": {
+      "diff": 0.195,
+      "ci95": [
+       0.135,
+       0.255
+      ]
+     },
+     "typed3-3shot-gremlin_minus_free-cypher-3shot": {
+      "diff": 0.04,
+      "ci95": [
+       0.005,
+       0.075
+      ]
+     },
+     "typed3-3shot-gremlin_minus_free-gremlin-3shot": {
+      "diff": 0.195,
+      "ci95": [
+       0.135,
+       0.255
+      ]
+     },
+     "typed2-3shot-cypher_minus_free-cypher-3shot": {
+      "diff": 0.045,
+      "ci95": [
+       0.01,
+       0.085
+      ]
+     },
+     "typed2-3shot-cypher_minus_free-gremlin-3shot": {
+      "diff": 0.2,
+      "ci95": [
+       0.14,
+       0.26
+      ]
+     },
+     "typed2-3shot-gremlin_minus_free-cypher-3shot": {
+      "diff": 0.045,
+      "ci95": [
+       0.01,
+       0.085
+      ]
+     },
+     "typed2-3shot-gremlin_minus_free-gremlin-3shot": {
+      "diff": 0.2,
+      "ci95": [
+       0.14,
+       0.265
+      ]
+     },
+     "typed3-3shot-cypher_minus_typed2-3shot-cypher": {
+      "diff": -0.005,
+      "ci95": [
+       -0.025,
+       0.015
+      ]
+     },
+     "typed3-3shot-gremlin_minus_typed2-3shot-gremlin": {
+      "diff": -0.005,
+      "ci95": [
+       -0.025,
+       0.015
+      ]
+     },
+     "typed3-3shot-repair-cypher_minus_free-cypher-3shot": {
+      "diff": 0.045,
+      "ci95": [
+       0.01,
+       0.08
+      ]
+     },
+     "typed3-3shot-repair-gremlin_minus_free-gremlin-3shot": {
+      "diff": 0.2,
+      "ci95": [
+       0.14,
+       0.26
+      ]
+     }
+    }
+   },
+   "qwen38-27b": {
+    "alias": "default-model-2",
+    "arms": {
+     "free-cypher-3shot": {
+      "exact_records": 0.86,
+      "by_group": {
+       "basic_(n)": 1.0,
+       "basic_(n)-(m0)": 0.6667,
+       "basic_(n)-(m0)-(m1*)": 0.8333,
+       "basic_(n)-(m0*)": 0.9737,
+       "basic_(n)-(m0*),(n)-(m1*)": 0.9048,
+       "basic_(n)=(m0)": 1.0,
+       "basic_(n*)": 1.0,
+       "special_comparison": 0.9655,
+       "special_optional-match": 0.6,
+       "special_three-node-groupby": 0.8125,
+       "special_time-sensitive": 0.8333,
+       "special_union": 0.5714
+      },
+      "by_source": {
+       "cypherbench": 0.86
+      }
+     },
+     "free-gremlin-3shot": {
+      "exact_records": 0.635,
+      "by_group": {
+       "basic_(n)": 0.8,
+       "basic_(n)-(m0)": 0.3333,
+       "basic_(n)-(m0)-(m1*)": 0.875,
+       "basic_(n)-(m0*)": 0.9211,
+       "basic_(n)-(m0*),(n)-(m1*)": 0.7619,
+       "basic_(n)=(m0)": 0.0,
+       "basic_(n*)": 1.0,
+       "special_comparison": 0.3448,
+       "special_optional-match": 0.6,
+       "special_three-node-groupby": 0.0625,
+       "special_time-sensitive": 0.5,
+       "special_union": 0.5238
+      },
+      "by_source": {
+       "cypherbench": 0.635
+      }
+     },
+     "typed2-3shot-cypher": {
+      "exact_records": 0.945,
+      "by_group": {
+       "basic_(n)": 1.0,
+       "basic_(n)-(m0)": 1.0,
+       "basic_(n)-(m0)-(m1*)": 1.0,
+       "basic_(n)-(m0*)": 0.9737,
+       "basic_(n)-(m0*),(n)-(m1*)": 0.9048,
+       "basic_(n)=(m0)": 1.0,
+       "basic_(n*)": 1.0,
+       "special_comparison": 1.0,
+       "special_optional-match": 0.6,
+       "special_three-node-groupby": 1.0,
+       "special_time-sensitive": 1.0,
+       "special_union": 0.9048
+      },
+      "by_source": {
+       "cypherbench": 0.945
+      }
+     },
+     "typed2-3shot-gremlin": {
+      "exact_records": 0.945,
+      "by_group": {
+       "basic_(n)": 1.0,
+       "basic_(n)-(m0)": 1.0,
+       "basic_(n)-(m0)-(m1*)": 1.0,
+       "basic_(n)-(m0*)": 0.9737,
+       "basic_(n)-(m0*),(n)-(m1*)": 0.9048,
+       "basic_(n)=(m0)": 1.0,
+       "basic_(n*)": 1.0,
+       "special_comparison": 1.0,
+       "special_optional-match": 0.6,
+       "special_three-node-groupby": 1.0,
+       "special_time-sensitive": 1.0,
+       "special_union": 0.9048
+      },
+      "by_source": {
+       "cypherbench": 0.945
+      }
+     },
+     "typed3-3shot-cypher": {
+      "exact_records": 0.95,
+      "by_group": {
+       "basic_(n)": 1.0,
+       "basic_(n)-(m0)": 1.0,
+       "basic_(n)-(m0)-(m1*)": 1.0,
+       "basic_(n)-(m0*)": 0.9737,
+       "basic_(n)-(m0*),(n)-(m1*)": 0.9524,
+       "basic_(n)=(m0)": 1.0,
+       "basic_(n*)": 1.0,
+       "special_comparison": 1.0,
+       "special_optional-match": 0.6667,
+       "special_three-node-groupby": 1.0,
+       "special_time-sensitive": 1.0,
+       "special_union": 0.8571
+      },
+      "by_source": {
+       "cypherbench": 0.95
+      }
+     },
+     "typed3-3shot-gremlin": {
+      "exact_records": 0.95,
+      "by_group": {
+       "basic_(n)": 1.0,
+       "basic_(n)-(m0)": 1.0,
+       "basic_(n)-(m0)-(m1*)": 1.0,
+       "basic_(n)-(m0*)": 0.9737,
+       "basic_(n)-(m0*),(n)-(m1*)": 0.9524,
+       "basic_(n)=(m0)": 1.0,
+       "basic_(n*)": 1.0,
+       "special_comparison": 1.0,
+       "special_optional-match": 0.6667,
+       "special_three-node-groupby": 1.0,
+       "special_time-sensitive": 1.0,
+       "special_union": 0.8571
+      },
+      "by_source": {
+       "cypherbench": 0.95
+      }
+     },
+     "typed3-3shot-repair-cypher": {
+      "exact_records": 0.95,
+      "by_group": {
+       "basic_(n)": 1.0,
+       "basic_(n)-(m0)": 1.0,
+       "basic_(n)-(m0)-(m1*)": 1.0,
+       "basic_(n)-(m0*)": 0.9737,
+       "basic_(n)-(m0*),(n)-(m1*)": 0.9524,
+       "basic_(n)=(m0)": 1.0,
+       "basic_(n*)": 1.0,
+       "special_comparison": 1.0,
+       "special_optional-match": 0.6667,
+       "special_three-node-groupby": 1.0,
+       "special_time-sensitive": 1.0,
+       "special_union": 0.8571
+      },
+      "by_source": {
+       "cypherbench": 0.95
+      }
+     },
+     "typed3-3shot-repair-gremlin": {
+      "exact_records": 0.95,
+      "by_group": {
+       "basic_(n)": 1.0,
+       "basic_(n)-(m0)": 1.0,
+       "basic_(n)-(m0)-(m1*)": 1.0,
+       "basic_(n)-(m0*)": 0.9737,
+       "basic_(n)-(m0*),(n)-(m1*)": 0.9524,
+       "basic_(n)=(m0)": 1.0,
+       "basic_(n*)": 1.0,
+       "special_comparison": 1.0,
+       "special_optional-match": 0.6667,
+       "special_three-node-groupby": 1.0,
+       "special_time-sensitive": 1.0,
+       "special_union": 0.8571
+      },
+      "by_source": {
+       "cypherbench": 0.95
+      }
+     }
+    },
+    "status": {
+     "cypher-3shot": {
+      "ok": 195,
+      "error": 5
+     },
+     "gremlin-3shot": {
+      "ok": 176,
+      "error": 22,
+      "empty": 2
+     },
+     "typed2-3shot": {
+      "ok": 200,
+      "backends_agree": 1.0
+     },
+     "typed3-3shot": {
+      "ok": 200,
+      "backends_agree": 1.0
+     },
+     "typed3-3shot-repair": {
+      "ok": 200,
+      "backends_agree": 1.0
+     }
+    },
+    "diffs": {
+     "typed3-3shot-cypher_minus_free-cypher-3shot": {
+      "diff": 0.09,
+      "ci95": [
+       0.045,
+       0.14
+      ]
+     },
+     "typed3-3shot-cypher_minus_free-gremlin-3shot": {
+      "diff": 0.315,
+      "ci95": [
+       0.245,
+       0.385
+      ]
+     },
+     "typed3-3shot-gremlin_minus_free-cypher-3shot": {
+      "diff": 0.09,
+      "ci95": [
+       0.045,
+       0.135
+      ]
+     },
+     "typed3-3shot-gremlin_minus_free-gremlin-3shot": {
+      "diff": 0.315,
+      "ci95": [
+       0.245,
+       0.385
+      ]
+     },
+     "typed2-3shot-cypher_minus_free-cypher-3shot": {
+      "diff": 0.085,
+      "ci95": [
+       0.04,
+       0.135
+      ]
+     },
+     "typed2-3shot-cypher_minus_free-gremlin-3shot": {
+      "diff": 0.31,
+      "ci95": [
+       0.24,
+       0.38
+      ]
+     },
+     "typed2-3shot-gremlin_minus_free-cypher-3shot": {
+      "diff": 0.085,
+      "ci95": [
+       0.04,
+       0.13
+      ]
+     },
+     "typed2-3shot-gremlin_minus_free-gremlin-3shot": {
+      "diff": 0.31,
+      "ci95": [
+       0.24,
+       0.38
+      ]
+     },
+     "typed3-3shot-cypher_minus_typed2-3shot-cypher": {
+      "diff": 0.005,
+      "ci95": [
+       -0.01,
+       0.025
+      ]
+     },
+     "typed3-3shot-gremlin_minus_typed2-3shot-gremlin": {
+      "diff": 0.005,
+      "ci95": [
+       -0.01,
+       0.02
+      ]
+     },
+     "typed3-3shot-repair-cypher_minus_free-cypher-3shot": {
+      "diff": 0.09,
+      "ci95": [
+       0.045,
+       0.135
+      ]
+     },
+     "typed3-3shot-repair-gremlin_minus_free-gremlin-3shot": {
+      "diff": 0.315,
+      "ci95": [
+       0.245,
+       0.385
+      ]
+     }
+    }
+   }
+  },
+  "n": 200,
+  "served_models": {
+   "default-model-2": 800,
+   "default-model": 800
+  }
+ },
+ "B": {
+  "by_model": {
+   "gemma4-31b": {
+    "alias": "default-model",
+    "arms": {
+     "free-cypher-3shot": {
+      "exact_records": 0.35128205128205126,
+      "by_group": {
+       "fincen": 0.3793,
+       "movies": 0.3699,
+       "northwind": 0.3185
+      },
+      "by_source": {
+       "neo4jLabs_synthetic_claudeopus": 0.3214,
+       "neo4jLabs_synthetic_gemini": 0.5503,
+       "neo4jLabs_synthetic_gpt4o": 0.203,
+       "neo4jLabs_synthetic_gpt4turbo": 0.2154,
+       "neo4j_crowdsourced": 0.3333
+      }
+     },
+     "free-gremlin-3shot": {
+      "exact_records": 0.22564102564102564,
+      "by_group": {
+       "fincen": 0.2529,
+       "movies": 0.1986,
+       "northwind": 0.2357
+      },
+      "by_source": {
+       "neo4jLabs_synthetic_claudeopus": 0.1429,
+       "neo4jLabs_synthetic_gemini": 0.349,
+       "neo4jLabs_synthetic_gpt4o": 0.1729,
+       "neo4jLabs_synthetic_gpt4turbo": 0.1077,
+       "neo4j_crowdsourced": 0.1333
+      }
+     },
+     "typed2-3shot-cypher": {
+      "exact_records": 0.18205128205128204,
+      "by_group": {
+       "fincen": 0.1724,
+       "movies": 0.2534,
+       "northwind": 0.121
+      },
+      "by_source": {
+       "neo4jLabs_synthetic_claudeopus": 0.1786,
+       "neo4jLabs_synthetic_gemini": 0.2617,
+       "neo4jLabs_synthetic_gpt4o": 0.1353,
+       "neo4jLabs_synthetic_gpt4turbo": 0.0769,
+       "neo4j_crowdsourced": 0.2667
+      }
+     },
+     "typed2-3shot-gremlin": {
+      "exact_records": 0.18205128205128204,
+      "by_group": {
+       "fincen": 0.1724,
+       "movies": 0.2534,
+       "northwind": 0.121
+      },
+      "by_source": {
+       "neo4jLabs_synthetic_claudeopus": 0.1786,
+       "neo4jLabs_synthetic_gemini": 0.2617,
+       "neo4jLabs_synthetic_gpt4o": 0.1353,
+       "neo4jLabs_synthetic_gpt4turbo": 0.0769,
+       "neo4j_crowdsourced": 0.2667
+      }
+     },
+     "typed3-3shot-cypher": {
+      "exact_records": 0.36153846153846153,
+      "by_group": {
+       "fincen": 0.4023,
+       "movies": 0.3973,
+       "northwind": 0.3057
+      },
+      "by_source": {
+       "neo4jLabs_synthetic_claudeopus": 0.3571,
+       "neo4jLabs_synthetic_gemini": 0.3557,
+       "neo4jLabs_synthetic_gpt4o": 0.3759,
+       "neo4jLabs_synthetic_gpt4turbo": 0.3385,
+       "neo4j_crowdsourced": 0.4
+      }
+     },
+     "typed3-3shot-gremlin": {
+      "exact_records": 0.3487179487179487,
+      "by_group": {
+       "fincen": 0.3448,
+       "movies": 0.3973,
+       "northwind": 0.3057
+      },
+      "by_source": {
+       "neo4jLabs_synthetic_claudeopus": 0.3571,
+       "neo4jLabs_synthetic_gemini": 0.3423,
+       "neo4jLabs_synthetic_gpt4o": 0.3684,
+       "neo4jLabs_synthetic_gpt4turbo": 0.3077,
+       "neo4j_crowdsourced": 0.4
+      }
+     },
+     "typed3-3shot-repair-cypher": {
+      "exact_records": 0.38461538461538464,
+      "by_group": {
+       "fincen": 0.4138,
+       "movies": 0.4452,
+       "northwind": 0.3121
+      },
+      "by_source": {
+       "neo4jLabs_synthetic_claudeopus": 0.3929,
+       "neo4jLabs_synthetic_gemini": 0.3826,
+       "neo4jLabs_synthetic_gpt4o": 0.391,
+       "neo4jLabs_synthetic_gpt4turbo": 0.3692,
+       "neo4j_crowdsourced": 0.4
+      }
+     },
+     "typed3-3shot-repair-gremlin": {
+      "exact_records": 0.3717948717948718,
+      "by_group": {
+       "fincen": 0.3563,
+       "movies": 0.4452,
+       "northwind": 0.3121
+      },
+      "by_source": {
+       "neo4jLabs_synthetic_claudeopus": 0.3929,
+       "neo4jLabs_synthetic_gemini": 0.3691,
+       "neo4jLabs_synthetic_gpt4o": 0.3835,
+       "neo4jLabs_synthetic_gpt4turbo": 0.3385,
+       "neo4j_crowdsourced": 0.4
+      }
+     }
+    },
+    "status": {
+     "cypher-3shot": {
+      "ok": 360,
+      "error": 16,
+      "empty": 14
+     },
+     "gremlin-3shot": {
+      "empty": 64,
+      "error": 27,
+      "ok": 299
+     },
+     "typed2-3shot": {
+      "invalid": 87,
+      "unparseable": 25,
+      "ok": 278,
+      "backends_agree": 1.0
+     },
+     "typed3-3shot": {
+      "ok": 319,
+      "invalid": 54,
+      "unparseable": 17,
+      "backends_agree": 0.9871794871794872
+     },
+     "typed3-3shot-repair": {
+      "ok": 356,
+      "unparseable": 27,
+      "invalid": 7,
+      "backends_agree": 0.9871794871794872
+     }
+    },
+    "diffs": {
+     "typed3-3shot-cypher_minus_free-cypher-3shot": {
+      "diff": 0.010256410256410256,
+      "ci95": [
+       -0.046153846153846156,
+       0.07179487179487179
+      ]
+     },
+     "typed3-3shot-cypher_minus_free-gremlin-3shot": {
+      "diff": 0.1358974358974359,
+      "ci95": [
+       0.08461538461538462,
+       0.18717948717948718
+      ]
+     },
+     "typed3-3shot-gremlin_minus_free-cypher-3shot": {
+      "diff": -0.002564102564102564,
+      "ci95": [
+       -0.06153846153846154,
+       0.05641025641025641
+      ]
+     },
+     "typed3-3shot-gremlin_minus_free-gremlin-3shot": {
+      "diff": 0.12307692307692308,
+      "ci95": [
+       0.07179487179487179,
+       0.17692307692307693
+      ]
+     },
+     "typed2-3shot-cypher_minus_free-cypher-3shot": {
+      "diff": -0.16923076923076924,
+      "ci95": [
+       -0.2153846153846154,
+       -0.12564102564102564
+      ]
+     },
+     "typed2-3shot-cypher_minus_free-gremlin-3shot": {
+      "diff": -0.04358974358974359,
+      "ci95": [
+       -0.08205128205128205,
+       -0.005128205128205128
+      ]
+     },
+     "typed2-3shot-gremlin_minus_free-cypher-3shot": {
+      "diff": -0.16923076923076924,
+      "ci95": [
+       -0.2128205128205128,
+       -0.12307692307692308
+      ]
+     },
+     "typed2-3shot-gremlin_minus_free-gremlin-3shot": {
+      "diff": -0.04358974358974359,
+      "ci95": [
+       -0.08205128205128205,
+       -0.005128205128205128
+      ]
+     },
+     "typed3-3shot-cypher_minus_typed2-3shot-cypher": {
+      "diff": 0.1794871794871795,
+      "ci95": [
+       0.14358974358974358,
+       0.2205128205128205
+      ]
+     },
+     "typed3-3shot-gremlin_minus_typed2-3shot-gremlin": {
+      "diff": 0.16666666666666666,
+      "ci95": [
+       0.12564102564102564,
+       0.2076923076923077
+      ]
+     },
+     "typed3-3shot-repair-cypher_minus_free-cypher-3shot": {
+      "diff": 0.03333333333333333,
+      "ci95": [
+       -0.02564102564102564,
+       0.09230769230769231
+      ]
+     },
+     "typed3-3shot-repair-gremlin_minus_free-gremlin-3shot": {
+      "diff": 0.14615384615384616,
+      "ci95": [
+       0.09487179487179487,
+       0.19487179487179487
+      ]
+     }
+    }
+   },
+   "qwen38-27b": {
+    "alias": "default-model-2",
+    "arms": {
+     "free-cypher-3shot": {
+      "exact_records": 0.4,
+      "by_group": {
+       "fincen": 0.4023,
+       "movies": 0.4041,
+       "northwind": 0.3949
+      },
+      "by_source": {
+       "neo4jLabs_synthetic_claudeopus": 0.3214,
+       "neo4jLabs_synthetic_gemini": 0.5503,
+       "neo4jLabs_synthetic_gpt4o": 0.3308,
+       "neo4jLabs_synthetic_gpt4turbo": 0.2615,
+       "neo4j_crowdsourced": 0.2667
+      }
+     },
+     "free-gremlin-3shot": {
+      "exact_records": 0.1641025641025641,
+      "by_group": {
+       "fincen": 0.2414,
+       "movies": 0.1507,
+       "northwind": 0.1338
+      },
+      "by_source": {
+       "neo4jLabs_synthetic_claudeopus": 0.1429,
+       "neo4jLabs_synthetic_gemini": 0.2416,
+       "neo4jLabs_synthetic_gpt4o": 0.1278,
+       "neo4jLabs_synthetic_gpt4turbo": 0.0615,
+       "neo4j_crowdsourced": 0.2
+      }
+     },
+     "typed2-3shot-cypher": {
+      "exact_records": 0.20256410256410257,
+      "by_group": {
+       "fincen": 0.2069,
+       "movies": 0.2603,
+       "northwind": 0.1465
+      },
+      "by_source": {
+       "neo4jLabs_synthetic_claudeopus": 0.2143,
+       "neo4jLabs_synthetic_gemini": 0.302,
+       "neo4jLabs_synthetic_gpt4o": 0.1504,
+       "neo4jLabs_synthetic_gpt4turbo": 0.0615,
+       "neo4j_crowdsourced": 0.2667
+      }
+     },
+     "typed2-3shot-gremlin": {
+      "exact_records": 0.20256410256410257,
+      "by_group": {
+       "fincen": 0.2069,
+       "movies": 0.2603,
+       "northwind": 0.1465
+      },
+      "by_source": {
+       "neo4jLabs_synthetic_claudeopus": 0.2143,
+       "neo4jLabs_synthetic_gemini": 0.302,
+       "neo4jLabs_synthetic_gpt4o": 0.1504,
+       "neo4jLabs_synthetic_gpt4turbo": 0.0615,
+       "neo4j_crowdsourced": 0.2667
+      }
+     },
+     "typed3-3shot-cypher": {
+      "exact_records": 0.3769230769230769,
+      "by_group": {
+       "fincen": 0.3793,
+       "movies": 0.4178,
+       "northwind": 0.3376
+      },
+      "by_source": {
+       "neo4jLabs_synthetic_claudeopus": 0.3929,
+       "neo4jLabs_synthetic_gemini": 0.3826,
+       "neo4jLabs_synthetic_gpt4o": 0.3759,
+       "neo4jLabs_synthetic_gpt4turbo": 0.3538,
+       "neo4j_crowdsourced": 0.4
+      }
+     },
+     "typed3-3shot-gremlin": {
+      "exact_records": 0.36666666666666664,
+      "by_group": {
+       "fincen": 0.3333,
+       "movies": 0.4178,
+       "northwind": 0.3376
+      },
+      "by_source": {
+       "neo4jLabs_synthetic_claudeopus": 0.3929,
+       "neo4jLabs_synthetic_gemini": 0.3691,
+       "neo4jLabs_synthetic_gpt4o": 0.3684,
+       "neo4jLabs_synthetic_gpt4turbo": 0.3385,
+       "neo4j_crowdsourced": 0.4
+      }
+     },
+     "typed3-3shot-repair-cypher": {
+      "exact_records": 0.3871794871794872,
+      "by_group": {
+       "fincen": 0.3908,
+       "movies": 0.4247,
+       "northwind": 0.3503
+      },
+      "by_source": {
+       "neo4jLabs_synthetic_claudeopus": 0.3929,
+       "neo4jLabs_synthetic_gemini": 0.4027,
+       "neo4jLabs_synthetic_gpt4o": 0.3835,
+       "neo4jLabs_synthetic_gpt4turbo": 0.3538,
+       "neo4j_crowdsourced": 0.4
+      }
+     },
+     "typed3-3shot-repair-gremlin": {
+      "exact_records": 0.3769230769230769,
+      "by_group": {
+       "fincen": 0.3448,
+       "movies": 0.4247,
+       "northwind": 0.3503
+      },
+      "by_source": {
+       "neo4jLabs_synthetic_claudeopus": 0.3929,
+       "neo4jLabs_synthetic_gemini": 0.3893,
+       "neo4jLabs_synthetic_gpt4o": 0.3759,
+       "neo4jLabs_synthetic_gpt4turbo": 0.3385,
+       "neo4j_crowdsourced": 0.4
+      }
+     }
+    },
+    "status": {
+     "cypher-3shot": {
+      "ok": 377,
+      "error": 11,
+      "empty": 2
+     },
+     "gremlin-3shot": {
+      "empty": 27,
+      "error": 190,
+      "ok": 173
+     },
+     "typed2-3shot": {
+      "invalid": 98,
+      "ok": 291,
+      "unparseable": 1,
+      "backends_agree": 1.0
+     },
+     "typed3-3shot": {
+      "ok": 338,
+      "invalid": 51,
+      "unparseable": 1,
+      "backends_agree": 0.9897435897435898
+     },
+     "typed3-3shot-repair": {
+      "ok": 377,
+      "invalid": 12,
+      "unparseable": 1,
+      "backends_agree": 0.9897435897435898
+     }
+    },
+    "diffs": {
+     "typed3-3shot-cypher_minus_free-cypher-3shot": {
+      "diff": -0.023076923076923078,
+      "ci95": [
+       -0.07692307692307693,
+       0.03333333333333333
+      ]
+     },
+     "typed3-3shot-cypher_minus_free-gremlin-3shot": {
+      "diff": 0.2128205128205128,
+      "ci95": [
+       0.1641025641025641,
+       0.26153846153846155
+      ]
+     },
+     "typed3-3shot-gremlin_minus_free-cypher-3shot": {
+      "diff": -0.03333333333333333,
+      "ci95": [
+       -0.08717948717948718,
+       0.023076923076923078
+      ]
+     },
+     "typed3-3shot-gremlin_minus_free-gremlin-3shot": {
+      "diff": 0.20256410256410257,
+      "ci95": [
+       0.15384615384615385,
+       0.24871794871794872
+      ]
+     },
+     "typed2-3shot-cypher_minus_free-cypher-3shot": {
+      "diff": -0.19743589743589743,
+      "ci95": [
+       -0.24358974358974358,
+       -0.15128205128205127
+      ]
+     },
+     "typed2-3shot-cypher_minus_free-gremlin-3shot": {
+      "diff": 0.038461538461538464,
+      "ci95": [
+       0.002564102564102564,
+       0.07435897435897436
+      ]
+     },
+     "typed2-3shot-gremlin_minus_free-cypher-3shot": {
+      "diff": -0.19743589743589743,
+      "ci95": [
+       -0.24358974358974358,
+       -0.15128205128205127
+      ]
+     },
+     "typed2-3shot-gremlin_minus_free-gremlin-3shot": {
+      "diff": 0.038461538461538464,
+      "ci95": [
+       0.002564102564102564,
+       0.07435897435897436
+      ]
+     },
+     "typed3-3shot-cypher_minus_typed2-3shot-cypher": {
+      "diff": 0.17435897435897435,
+      "ci95": [
+       0.1358974358974359,
+       0.2153846153846154
+      ]
+     },
+     "typed3-3shot-gremlin_minus_typed2-3shot-gremlin": {
+      "diff": 0.1641025641025641,
+      "ci95": [
+       0.12564102564102564,
+       0.20256410256410257
+      ]
+     },
+     "typed3-3shot-repair-cypher_minus_free-cypher-3shot": {
+      "diff": -0.01282051282051282,
+      "ci95": [
+       -0.06666666666666667,
+       0.04358974358974359
+      ]
+     },
+     "typed3-3shot-repair-gremlin_minus_free-gremlin-3shot": {
+      "diff": 0.2128205128205128,
+      "ci95": [
+       0.1641025641025641,
+       0.2641025641025641
+      ]
+     }
+    }
+   }
+  },
+  "n": 390,
+  "served_models": {
+   "default-model-2": 1560,
+   "default-model": 1560
+  }
+ },
+ "C": {
+  "by_model": {
+   "gemma4-31b": {
+    "alias": "default-model",
+    "arms": {
+     "free-cypher-3shot": {
+      "exact_records": 0.6933333333333334,
+      "by_group": {
+       "er": 0.66,
+       "healthcare": 0.9067,
+       "wwc": 0.5133
+      },
+      "by_source": {
+       "mind_the_query_Complex_Aggregation": 0.6027,
+       "mind_the_query_Complex_Retrieval": 0.7832
+      }
+     },
+     "free-gremlin-3shot": {
+      "exact_records": 0.3622222222222222,
+      "by_group": {
+       "er": 0.38,
+       "healthcare": 0.3867,
+       "wwc": 0.32
+      },
+      "by_source": {
+       "mind_the_query_Complex_Aggregation": 0.1295,
+       "mind_the_query_Complex_Retrieval": 0.5929
+      }
+     },
+     "typed2-3shot-cypher": {
+      "exact_records": 0.1711111111111111,
+      "by_group": {
+       "er": 0.1667,
+       "healthcare": 0.26,
+       "wwc": 0.0867
+      },
+      "by_source": {
+       "mind_the_query_Complex_Aggregation": 0.0625,
+       "mind_the_query_Complex_Retrieval": 0.2788
+      }
+     },
+     "typed2-3shot-gremlin": {
+      "exact_records": 0.1711111111111111,
+      "by_group": {
+       "er": 0.1667,
+       "healthcare": 0.26,
+       "wwc": 0.0867
+      },
+      "by_source": {
+       "mind_the_query_Complex_Aggregation": 0.0625,
+       "mind_the_query_Complex_Retrieval": 0.2788
+      }
+     },
+     "typed3-3shot-cypher": {
+      "exact_records": 0.24,
+      "by_group": {
+       "er": 0.2267,
+       "healthcare": 0.3933,
+       "wwc": 0.1
+      },
+      "by_source": {
+       "mind_the_query_Complex_Aggregation": 0.1429,
+       "mind_the_query_Complex_Retrieval": 0.3363
+      }
+     },
+     "typed3-3shot-gremlin": {
+      "exact_records": 0.24,
+      "by_group": {
+       "er": 0.2267,
+       "healthcare": 0.3933,
+       "wwc": 0.1
+      },
+      "by_source": {
+       "mind_the_query_Complex_Aggregation": 0.1429,
+       "mind_the_query_Complex_Retrieval": 0.3363
+      }
+     },
+     "typed3-3shot-repair-cypher": {
+      "exact_records": 0.24,
+      "by_group": {
+       "er": 0.2267,
+       "healthcare": 0.3933,
+       "wwc": 0.1
+      },
+      "by_source": {
+       "mind_the_query_Complex_Aggregation": 0.1429,
+       "mind_the_query_Complex_Retrieval": 0.3363
+      }
+     },
+     "typed3-3shot-repair-gremlin": {
+      "exact_records": 0.24,
+      "by_group": {
+       "er": 0.2267,
+       "healthcare": 0.3933,
+       "wwc": 0.1
+      },
+      "by_source": {
+       "mind_the_query_Complex_Aggregation": 0.1429,
+       "mind_the_query_Complex_Retrieval": 0.3363
+      }
+     }
+    },
+    "status": {
+     "cypher-3shot": {
+      "ok": 431,
+      "empty": 7,
+      "error": 12
+     },
+     "gremlin-3shot": {
+      "ok": 336,
+      "empty": 86,
+      "error": 28
+     },
+     "typed2-3shot": {
+      "ok": 293,
+      "unparseable": 101,
+      "invalid": 56,
+      "backends_agree": 1.0
+     },
+     "typed3-3shot": {
+      "ok": 245,
+      "unparseable": 161,
+      "invalid": 44,
+      "backends_agree": 1.0
+     },
+     "typed3-3shot-repair": {
+      "ok": 322,
+      "invalid": 37,
+      "unparseable": 91,
+      "backends_agree": 1.0
+     }
+    },
+    "diffs": {
+     "typed3-3shot-cypher_minus_free-cypher-3shot": {
+      "diff": -0.4533333333333333,
+      "ci95": [
+       -0.5,
+       -0.40444444444444444
+      ]
+     },
+     "typed3-3shot-cypher_minus_free-gremlin-3shot": {
+      "diff": -0.12222222222222222,
+      "ci95": [
+       -0.16666666666666666,
+       -0.07333333333333333
+      ]
+     },
+     "typed3-3shot-gremlin_minus_free-cypher-3shot": {
+      "diff": -0.4533333333333333,
+      "ci95": [
+       -0.5,
+       -0.4022222222222222
+      ]
+     },
+     "typed3-3shot-gremlin_minus_free-gremlin-3shot": {
+      "diff": -0.12222222222222222,
+      "ci95": [
+       -0.1688888888888889,
+       -0.07555555555555556
+      ]
+     },
+     "typed2-3shot-cypher_minus_free-cypher-3shot": {
+      "diff": -0.5222222222222223,
+      "ci95": [
+       -0.5711111111111111,
+       -0.4777777777777778
+      ]
+     },
+     "typed2-3shot-cypher_minus_free-gremlin-3shot": {
+      "diff": -0.19111111111111112,
+      "ci95": [
+       -0.23333333333333334,
+       -0.14888888888888888
+      ]
+     },
+     "typed2-3shot-gremlin_minus_free-cypher-3shot": {
+      "diff": -0.5222222222222223,
+      "ci95": [
+       -0.5666666666666667,
+       -0.47555555555555556
+      ]
+     },
+     "typed2-3shot-gremlin_minus_free-gremlin-3shot": {
+      "diff": -0.19111111111111112,
+      "ci95": [
+       -0.23555555555555555,
+       -0.14888888888888888
+      ]
+     },
+     "typed3-3shot-cypher_minus_typed2-3shot-cypher": {
+      "diff": 0.06888888888888889,
+      "ci95": [
+       0.04666666666666667,
+       0.09333333333333334
+      ]
+     },
+     "typed3-3shot-gremlin_minus_typed2-3shot-gremlin": {
+      "diff": 0.06888888888888889,
+      "ci95": [
+       0.04666666666666667,
+       0.09333333333333334
+      ]
+     },
+     "typed3-3shot-repair-cypher_minus_free-cypher-3shot": {
+      "diff": -0.4533333333333333,
+      "ci95": [
+       -0.5,
+       -0.40444444444444444
+      ]
+     },
+     "typed3-3shot-repair-gremlin_minus_free-gremlin-3shot": {
+      "diff": -0.12222222222222222,
+      "ci95": [
+       -0.1688888888888889,
+       -0.07555555555555556
+      ]
+     }
+    }
+   },
+   "qwen38-27b": {
+    "alias": "default-model-2",
+    "arms": {
+     "free-cypher-3shot": {
+      "exact_records": 0.6844444444444444,
+      "by_group": {
+       "er": 0.6867,
+       "healthcare": 0.86,
+       "wwc": 0.5067
+      },
+      "by_source": {
+       "mind_the_query_Complex_Aggregation": 0.6384,
+       "mind_the_query_Complex_Retrieval": 0.7301
+      }
+     },
+     "free-gremlin-3shot": {
+      "exact_records": 0.24666666666666667,
+      "by_group": {
+       "er": 0.2533,
+       "healthcare": 0.2667,
+       "wwc": 0.22
+      },
+      "by_source": {
+       "mind_the_query_Complex_Aggregation": 0.0446,
+       "mind_the_query_Complex_Retrieval": 0.4469
+      }
+     },
+     "typed2-3shot-cypher": {
+      "exact_records": 0.17333333333333334,
+      "by_group": {
+       "er": 0.1733,
+       "healthcare": 0.2467,
+       "wwc": 0.1
+      },
+      "by_source": {
+       "mind_the_query_Complex_Aggregation": 0.0536,
+       "mind_the_query_Complex_Retrieval": 0.292
+      }
+     },
+     "typed2-3shot-gremlin": {
+      "exact_records": 0.17333333333333334,
+      "by_group": {
+       "er": 0.1733,
+       "healthcare": 0.2467,
+       "wwc": 0.1
+      },
+      "by_source": {
+       "mind_the_query_Complex_Aggregation": 0.0536,
+       "mind_the_query_Complex_Retrieval": 0.292
+      }
+     },
+     "typed3-3shot-cypher": {
+      "exact_records": 0.21777777777777776,
+      "by_group": {
+       "er": 0.2133,
+       "healthcare": 0.3267,
+       "wwc": 0.1133
+      },
+      "by_source": {
+       "mind_the_query_Complex_Aggregation": 0.1116,
+       "mind_the_query_Complex_Retrieval": 0.323
+      }
+     },
+     "typed3-3shot-gremlin": {
+      "exact_records": 0.21777777777777776,
+      "by_group": {
+       "er": 0.2133,
+       "healthcare": 0.3267,
+       "wwc": 0.1133
+      },
+      "by_source": {
+       "mind_the_query_Complex_Aggregation": 0.1116,
+       "mind_the_query_Complex_Retrieval": 0.323
+      }
+     },
+     "typed3-3shot-repair-cypher": {
+      "exact_records": 0.2311111111111111,
+      "by_group": {
+       "er": 0.22,
+       "healthcare": 0.36,
+       "wwc": 0.1133
+      },
+      "by_source": {
+       "mind_the_query_Complex_Aggregation": 0.1295,
+       "mind_the_query_Complex_Retrieval": 0.3319
+      }
+     },
+     "typed3-3shot-repair-gremlin": {
+      "exact_records": 0.2311111111111111,
+      "by_group": {
+       "er": 0.22,
+       "healthcare": 0.36,
+       "wwc": 0.1133
+      },
+      "by_source": {
+       "mind_the_query_Complex_Aggregation": 0.1295,
+       "mind_the_query_Complex_Retrieval": 0.3319
+      }
+     }
+    },
+    "status": {
+     "cypher-3shot": {
+      "ok": 438,
+      "error": 12
+     },
+     "gremlin-3shot": {
+      "ok": 300,
+      "empty": 40,
+      "error": 109,
+      "blocked": 1
+     },
+     "typed2-3shot": {
+      "ok": 372,
+      "invalid": 78,
+      "backends_agree": 1.0
+     },
+     "typed3-3shot": {
+      "ok": 362,
+      "invalid": 88,
+      "backends_agree": 1.0
+     },
+     "typed3-3shot-repair": {
+      "ok": 436,
+      "invalid": 12,
+      "unparseable": 2,
+      "backends_agree": 1.0
+     }
+    },
+    "diffs": {
+     "typed3-3shot-cypher_minus_free-cypher-3shot": {
+      "diff": -0.4666666666666667,
+      "ci95": [
+       -0.5133333333333333,
+       -0.42
+      ]
+     },
+     "typed3-3shot-cypher_minus_free-gremlin-3shot": {
+      "diff": -0.028888888888888888,
+      "ci95": [
+       -0.06888888888888889,
+       0.013333333333333334
+      ]
+     },
+     "typed3-3shot-gremlin_minus_free-cypher-3shot": {
+      "diff": -0.4666666666666667,
+      "ci95": [
+       -0.5155555555555555,
+       -0.41555555555555557
+      ]
+     },
+     "typed3-3shot-gremlin_minus_free-gremlin-3shot": {
+      "diff": -0.028888888888888888,
+      "ci95": [
+       -0.07333333333333333,
+       0.011111111111111112
+      ]
+     },
+     "typed2-3shot-cypher_minus_free-cypher-3shot": {
+      "diff": -0.5111111111111111,
+      "ci95": [
+       -0.5555555555555556,
+       -0.46444444444444444
+      ]
+     },
+     "typed2-3shot-cypher_minus_free-gremlin-3shot": {
+      "diff": -0.07333333333333333,
+      "ci95": [
+       -0.10888888888888888,
+       -0.035555555555555556
+      ]
+     },
+     "typed2-3shot-gremlin_minus_free-cypher-3shot": {
+      "diff": -0.5111111111111111,
+      "ci95": [
+       -0.56,
+       -0.4622222222222222
+      ]
+     },
+     "typed2-3shot-gremlin_minus_free-gremlin-3shot": {
+      "diff": -0.07333333333333333,
+      "ci95": [
+       -0.11333333333333333,
+       -0.035555555555555556
+      ]
+     },
+     "typed3-3shot-cypher_minus_typed2-3shot-cypher": {
+      "diff": 0.044444444444444446,
+      "ci95": [
+       0.024444444444444446,
+       0.06666666666666667
+      ]
+     },
+     "typed3-3shot-gremlin_minus_typed2-3shot-gremlin": {
+      "diff": 0.044444444444444446,
+      "ci95": [
+       0.022222222222222223,
+       0.06444444444444444
+      ]
+     },
+     "typed3-3shot-repair-cypher_minus_free-cypher-3shot": {
+      "diff": -0.4533333333333333,
+      "ci95": [
+       -0.5,
+       -0.4066666666666667
+      ]
+     },
+     "typed3-3shot-repair-gremlin_minus_free-gremlin-3shot": {
+      "diff": -0.015555555555555555,
+      "ci95": [
+       -0.06,
+       0.03111111111111111
+      ]
+     }
+    }
+   }
+  },
+  "n": 450,
+  "served_models": {
+   "default-model": 1800,
+   "default-model-2": 1800
+  }
+ }
+}

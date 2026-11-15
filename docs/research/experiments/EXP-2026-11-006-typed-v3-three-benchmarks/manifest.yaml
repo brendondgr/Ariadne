@@ -5,9 +5,9 @@
 id: EXP-2026-11-006
 slug: typed-v3-three-benchmarks
 title: "Typed request format v3 on CypherBench, Text2Cypher (development) and Mind the Query (held out)"
-status: running            # planned | running | complete | failed | superseded
+status: complete           # planned | running | complete | failed | superseded
 date_started: 2026-11-14
-date_completed: null       # null until status is complete/failed
+date_completed: 2026-11-14 # null until status is complete/failed
 authors: ["brendondgr", "Claude Opus 5.5"]
 
 purpose: >
@@ -40,7 +40,7 @@ environment:
   container: null
 compute:
   hardware: "32-core x86_64 host, 121 GB RAM; local Neo4j + Gremlin per graph; relay :9090"
-  wall_clock_hours: 0.0
+  wall_clock_hours: 5.8   # one pass, 14:05-19:52, zero generation errors
   estimated_cost_usd: 0.0
 
 # --- LLM / agentic block (delete entirely if no model was in the loop) ---
@@ -52,8 +52,8 @@ llm:
   prompt_files: []
   prompt_hash: null
   tool_schema_hash: null
-  total_input_tokens: null
-  total_output_tokens: null
+  total_input_tokens: 12762556
+  total_output_tokens: 19276132
   nondeterminism_note: >
     Provider-side nondeterminism remains even at temperature 0; results
     are reported as mean ± std over n_runs.
@@ -61,7 +61,49 @@ llm:
 # --- Results block ---
 metrics:
   primary: C_typed3_3shot_gremlin_minus_free_gremlin_3shot_min
-  values: {}               # {metric: {mean: 0.0, std: 0.0, n: 1}} — must be non-empty when status: complete
+  values:
+    C_typed3_3shot_gremlin_minus_free_gremlin_3shot_min: {mean: -0.122, std: 0.0, n: 450}
+    C_typed3_3shot_gremlin_minus_free_gremlin_3shot_gemma4_31b: {mean: -0.122, std: 0.0, n: 450}
+    C_typed3_3shot_gremlin_minus_free_gremlin_3shot_qwen38_27b: {mean: -0.029, std: 0.0, n: 450}
+    C_typed3_3shot_cypher_minus_free_cypher_3shot_gemma4_31b: {mean: -0.453, std: 0.0, n: 450}
+    C_typed3_3shot_cypher_minus_free_cypher_3shot_qwen38_27b: {mean: -0.467, std: 0.0, n: 450}
+    C_exact_records_typed3_3shot_gemma4_31b: {mean: 0.24, std: 0.0, n: 450}
+    C_exact_records_typed3_3shot_qwen38_27b: {mean: 0.218, std: 0.0, n: 450}
+    C_exact_records_typed2_3shot_gemma4_31b: {mean: 0.171, std: 0.0, n: 450}
+    C_exact_records_typed2_3shot_qwen38_27b: {mean: 0.173, std: 0.0, n: 450}
+    C_exact_records_free_cypher_3shot_gemma4_31b: {mean: 0.693, std: 0.0, n: 450}
+    C_exact_records_free_cypher_3shot_qwen38_27b: {mean: 0.684, std: 0.0, n: 450}
+    C_exact_records_free_gremlin_3shot_gemma4_31b: {mean: 0.362, std: 0.0, n: 450}
+    C_exact_records_free_gremlin_3shot_qwen38_27b: {mean: 0.247, std: 0.0, n: 450}
+    C_backends_agree_typed3: {mean: 1.0, std: 0.0, n: 1800}
+    C_expressible_share_sample: {mean: 0.475, std: 0.0, n: 40}
+    C_set_proj_typed3_3shot_gemma4_31b: {mean: 0.3756, std: 0.0, n: 450}
+    C_set_proj_typed3_3shot_qwen38_27b: {mean: 0.4, std: 0.0, n: 450}
+    C_set_proj_free_cypher_3shot_gemma4_31b: {mean: 0.7733, std: 0.0, n: 450}
+    C_set_proj_free_cypher_3shot_qwen38_27b: {mean: 0.7644, std: 0.0, n: 450}
+    C_set_proj_free_gremlin_3shot_gemma4_31b: {mean: 0.4667, std: 0.0, n: 450}
+    C_set_proj_free_gremlin_3shot_qwen38_27b: {mean: 0.3822, std: 0.0, n: 450}
+    B_exact_records_typed3_3shot_gemma4_31b: {mean: 0.362, std: 0.0, n: 390}
+    B_exact_records_typed3_3shot_qwen38_27b: {mean: 0.377, std: 0.0, n: 390}
+    B_exact_records_typed2_3shot_gemma4_31b: {mean: 0.182, std: 0.0, n: 390}
+    B_exact_records_typed2_3shot_qwen38_27b: {mean: 0.203, std: 0.0, n: 390}
+    B_exact_records_free_cypher_3shot_gemma4_31b: {mean: 0.351, std: 0.0, n: 390}
+    B_exact_records_free_cypher_3shot_qwen38_27b: {mean: 0.4, std: 0.0, n: 390}
+    B_exact_records_free_gremlin_3shot_gemma4_31b: {mean: 0.226, std: 0.0, n: 390}
+    B_exact_records_free_gremlin_3shot_qwen38_27b: {mean: 0.164, std: 0.0, n: 390}
+    B_typed3_3shot_gremlin_minus_free_gremlin_3shot_gemma4_31b: {mean: 0.123, std: 0.0, n: 390}
+    B_typed3_3shot_gremlin_minus_free_gremlin_3shot_qwen38_27b: {mean: 0.203, std: 0.0, n: 390}
+    B_typed3_3shot_cypher_minus_free_cypher_3shot_gemma4_31b: {mean: 0.01, std: 0.0, n: 390}
+    B_typed3_3shot_cypher_minus_free_cypher_3shot_qwen38_27b: {mean: -0.023, std: 0.0, n: 390}
+    B_backends_agree_typed3: {mean: 0.9872, std: 0.0, n: 1560}
+    A_exact_records_typed3_3shot_gemma4_31b: {mean: 0.945, std: 0.0, n: 200}
+    A_exact_records_typed3_3shot_qwen38_27b: {mean: 0.95, std: 0.0, n: 200}
+    A_exact_records_typed2_3shot_gemma4_31b: {mean: 0.95, std: 0.0, n: 200}
+    A_exact_records_typed2_3shot_qwen38_27b: {mean: 0.945, std: 0.0, n: 200}
+    A_exact_records_free_cypher_3shot_gemma4_31b: {mean: 0.905, std: 0.0, n: 200}
+    A_exact_records_free_cypher_3shot_qwen38_27b: {mean: 0.86, std: 0.0, n: 200}
+    A_exact_records_free_gremlin_3shot_gemma4_31b: {mean: 0.75, std: 0.0, n: 200}
+    A_exact_records_free_gremlin_3shot_qwen38_27b: {mean: 0.635, std: 0.0, n: 200}
   withdrawn: {}            # values later retracted by amendment: {metric: {mean, std, n, withdrawn_on, reason, replaced_by}}
 baselines_compared: ["free Cypher and free Gremlin, same models, prompts and run", "typed v2, same run"]
 statistical_test: "paired bootstrap 95% CI, 2,000 resamples"
