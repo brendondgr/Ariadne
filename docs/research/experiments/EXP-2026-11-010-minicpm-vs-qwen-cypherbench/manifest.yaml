@@ -1,0 +1,74 @@
+# Filled by scripts/new_experiment.py. Every field below is required unless
+# marked optional. Do not delete a field you do not know — record it as null or
+# "unknown" and explain in ISSUES.md. Inventing a value is worse than admitting
+# a gap.
+id: EXP-2026-11-010
+slug: minicpm-vs-qwen-cypherbench
+title: "MiniCPM 4.7 35B against Qwen 3.8 27B on the kill tests' CypherBench part (typed requests and free Cypher/Gremlin)"
+status: running            # planned | running | complete | failed | superseded
+date_started: 2026-11-15
+date_completed: null       # null until status is complete/failed
+authors: ["brendondgr", "Claude Opus 5.5"]
+
+purpose: >
+  The operator moved the one open model from Qwen 3.8 27B to MiniCPM 4.7 35B. This runs EXP-2026-11-006 part A (CypherBench, 200 questions; free Cypher, free Gremlin, typed2 and typed3 requests) on MiniCPM with thinking on and off, against Qwen's saved per-question results, after a replay confirms today's evaluation reproduces them. It decides, by a rule fixed in advance, whether to stay on MiniCPM or ask for Qwen back.
+
+hypothesis: >
+  Decision rule on the primary arms (typed3-3shot via Cypher, free cypher-3shot; MiniCPM thinking on): ask for Qwen back if either is worse by more than 0.05 with the paired CI upper bound below 0; stay if both within 0.05 or better; otherwise inconclusive. No strong prior on MiniCPM.
+
+# --- Reproducibility block (all fields mandatory) ---
+code:
+  commit: c9bde0e10e038fc526d1388fad3a977a596542c1          # 40-char sha, or "unknown" for a back-filled experiment
+  branch: main
+  entrypoint: "uv run python scripts/minicpm_vs_qwen.py replay; ... run --condition on; ... run --condition off; ... compare --out docs/research/experiments/EXP-2026-11-010-minicpm-vs-qwen-cypherbench/data"
+  dirty: true             # uncommitted changes at run time? if true, explain in ISSUES.md
+config:
+  path: null               # repo-relative path, or null if the run takes no config file
+  hash: null               # sha256:... of that file
+data:
+  name: "CypherBench test, the 200 questions of EXP-2026-11-003/-006 part A"
+  version: "CypherBench HF release (as in EXP-2026-11-006)"
+  split: "test"
+  n_examples: 200
+  dvc_path: null           # this repository does not use DVC; leave null
+  hash: null               # md5:... or sha256:... of the dataset artifact
+seeds: []                  # [] means seeds were not recorded — say so in ISSUES.md
+n_runs: 1                  # SYSTEM runs over the question set — grading passes are not runs
+environment:
+  python: "3.13"
+  lockfile: env/requirements.lock
+  container: null
+compute:
+  hardware: "32-core x86_64 host, 121 GB RAM; killtests-verify Neo4j + Gremlin; relay :9090"
+  wall_clock_hours: 0.0
+  estimated_cost_usd: 0.0
+
+# --- LLM / agentic block (delete entirely if no model was in the loop) ---
+llm:
+  model: "relay/minicpm47-35b@2026-11-15 (alias default-model, token 248046 + prompt fingerprint; thinking on, and reasoning_effort=none); reference relay/qwen38-27b@2026-11-14 (reasoning_effort=medium, saved)"
+  temperature: 0.0
+  top_p: 1.0
+  max_tokens: 8192
+  prompt_files: []
+  prompt_hash: null
+  tool_schema_hash: null
+  total_input_tokens: null
+  total_output_tokens: null
+  nondeterminism_note: >
+    Provider-side nondeterminism remains even at temperature 0; results
+    are reported as mean ± std over n_runs.
+
+# --- Results block ---
+metrics:
+  primary: <metric name>
+  values: {}               # {metric: {mean: 0.0, std: 0.0, n: 1}} — must be non-empty when status: complete
+  withdrawn: {}            # values later retracted by amendment: {metric: {mean, std, n, withdrawn_on, reason, replaced_by}}
+baselines_compared: []
+statistical_test: null
+
+# --- Linkage ---
+supports_claims: []        # every ID here must exist in ../../CLAIMS.md
+figures: []                # every name here must have a file in figures/ and vice versa
+supersedes: null           # set in BOTH manifests or in neither; the validator checks symmetry
+superseded_by: null
+related: []

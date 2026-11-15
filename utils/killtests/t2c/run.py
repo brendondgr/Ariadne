@@ -131,8 +131,10 @@ def stage_generate(cfg, out: Path, b: Bench, models: dict[str, str]) -> dict:
         q, arm, alias = x
         ex = effort(models[alias])
         c = relay.complete(alias, b.messages(arm, q), temperature=0.0, extra=ex)
+        # reasoning_chars added 2026-11-15 (EXP-2026-11-010): counts replies whose
+        # text arrived only in the reasoning channel. Additive; `raw` is unchanged.
         return {"raw": c.text[-6000:], "served_model": c.served_model, "finish_reason": c.finish_reason,
-                "usage": c.usage, "latency_s": c.latency_s, **ex}
+                "usage": c.usage, "latency_s": c.latency_s, "reasoning_chars": len(c.reasoning), **ex}
 
     res = st.map(jobs, one, workers=cfg.relay_concurrency * len(models))
     st.finish({"generations": res, "models": models})
