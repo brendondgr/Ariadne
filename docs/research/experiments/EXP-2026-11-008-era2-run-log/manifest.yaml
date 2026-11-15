@@ -1,0 +1,74 @@
+# Filled by scripts/new_experiment.py. Every field below is required unless
+# marked optional. Do not delete a field you do not know — record it as null or
+# "unknown" and explain in ISSUES.md. Inventing a value is worse than admitting
+# a gap.
+id: EXP-2026-11-008
+slug: era2-run-log
+title: "Era 2 Step 3: the append-only run log and the agent contract (crash, resume, fork, schema, provenance)"
+status: running            # planned | running | complete | failed | superseded
+date_started: 2026-11-15
+date_completed: null       # null until status is complete/failed
+authors: ["brendondgr", "Claude Opus 5.5"]
+
+purpose: >
+  Step 3 of the era-2 plan makes every agent run an append-only SQLite event log from which the model's messages are rebuilt before every call, fixes the request and envelope contract (plan v2 section 4) as typed classes with a JSON Schema, and adds a minimal driver so resume, pause-for-clarification and fork are exercised for real. This experiment records the crash sweep, the append overhead, concurrent writers, schema validity over every path (including the 120 recorded era-1 answers through the fast-path adapter) and live runs of Gemma 4 31B through the log, including a live crash and resume.
+
+hypothesis: >
+  G1 a run killed after any append resumes to the same envelope (clock keys excluded) with no call logged twice; G2 every envelope validates; G3 every live model_call names its verified served model and token counts. Expectations: median append under 1 ms (E1); 8 concurrent writers gap-free (E2); Gemma answers the canned question through the log 3/3 (E3); a live crash resumes without re-asking step 1 (E4).
+
+# --- Reproducibility block (all fields mandatory) ---
+code:
+  commit: 2e9d0139ee0674d84c3f61583feb20e651700f58          # 40-char sha, or "unknown" for a back-filled experiment
+  branch: main
+  entrypoint: "uv run python scripts/era2_runlog_check.py --out docs/research/experiments/EXP-2026-11-008-era2-run-log/data"
+  dirty: true             # uncommitted changes at run time? if true, explain in ISSUES.md
+config:
+  path: null               # repo-relative path, or null if the run takes no config file
+  hash: null               # sha256:... of that file
+data:
+  name: "Synthetic scripted run; 120 recorded era-1 answers (docs/evaluation/answers); live canned two-tool question"
+  version: "2026-11-15"
+  split: "n/a"
+  n_examples: 124
+  dvc_path: null           # this repository does not use DVC; leave null
+  hash: null               # md5:... or sha256:... of the dataset artifact
+seeds: []                  # [] means seeds were not recorded — say so in ISSUES.md
+n_runs: 1                  # SYSTEM runs over the question set — grading passes are not runs
+environment:
+  python: "3.13"
+  lockfile: env/requirements.lock
+  container: null
+compute:
+  hardware: "32-core x86_64 host, 121 GB RAM; relay :9090"
+  wall_clock_hours: 0.0
+  estimated_cost_usd: 0.0
+
+# --- LLM / agentic block (delete entirely if no model was in the loop) ---
+llm:
+  model: "relay/gemma4-31b@2026-11-15 (alias default-model, token id 106) for the live runs; scripted model otherwise"
+  temperature: 0.0
+  top_p: 1.0
+  max_tokens: 16384
+  prompt_files: []
+  prompt_hash: null
+  tool_schema_hash: null
+  total_input_tokens: null
+  total_output_tokens: null
+  nondeterminism_note: >
+    Provider-side nondeterminism remains even at temperature 0; results
+    are reported as mean ± std over n_runs.
+
+# --- Results block ---
+metrics:
+  primary: <metric name>
+  values: {}               # {metric: {mean: 0.0, std: 0.0, n: 1}} — must be non-empty when status: complete
+  withdrawn: {}            # values later retracted by amendment: {metric: {mean, std, n, withdrawn_on, reason, replaced_by}}
+baselines_compared: []
+statistical_test: null
+
+# --- Linkage ---
+supports_claims: []        # every ID here must exist in ../../CLAIMS.md
+figures: []                # every name here must have a file in figures/ and vice versa
+supersedes: null           # set in BOTH manifests or in neither; the validator checks symmetry
+superseded_by: null
+related: []

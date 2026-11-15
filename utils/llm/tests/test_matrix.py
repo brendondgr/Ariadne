@@ -73,3 +73,10 @@ def test_identity_change_mid_run_marks_rows():
 def test_unreachable_model_is_reported_not_skipped():
     res = run_matrix(["fake-gemma"], "toolcall-roundtrip", registry=_reg("http://127.0.0.1:9/v1"))
     assert [r["status"] for r in res.rows] == ["unreachable"]
+
+
+def test_closed_model_is_not_called():
+    spec = R.ModelSpec(name="shut", kind="llm", endpoint="http://127.0.0.1:9/v1", alias="a",
+                       stop_token_id=106, status="closed")
+    res = run_matrix(["shut"], "toolcall-roundtrip", registry=R.Registry({"shut": spec}, {}, R.REGISTRY_PATH))
+    assert [r["status"] for r in res.rows] == ["closed"]

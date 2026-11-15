@@ -1,0 +1,107 @@
+{
+  "$defs": {
+    "Budget": {
+      "additionalProperties": false,
+      "properties": {
+        "seconds": {
+          "default": 60.0,
+          "description": "wall-clock budget for the whole run",
+          "exclusiveMinimum": 0,
+          "title": "Seconds",
+          "type": "number"
+        },
+        "steps": {
+          "default": 6,
+          "description": "model calls the loop may make",
+          "maximum": 50,
+          "minimum": 1,
+          "title": "Steps",
+          "type": "integer"
+        }
+      },
+      "title": "Budget",
+      "type": "object"
+    },
+    "Caller": {
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Id"
+        },
+        "kind": {
+          "default": "script",
+          "enum": [
+            "person",
+            "script",
+            "agent",
+            "mcp"
+          ],
+          "title": "Kind",
+          "type": "string"
+        }
+      },
+      "title": "Caller",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "budget": {
+      "$ref": "#/$defs/Budget"
+    },
+    "caller": {
+      "$ref": "#/$defs/Caller"
+    },
+    "graph": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        }
+      ],
+      "description": "a source key, or a list of them for federation",
+      "title": "Graph"
+    },
+    "interactive": {
+      "default": false,
+      "description": "may the run pause to ask the caller?",
+      "title": "Interactive",
+      "type": "boolean"
+    },
+    "mode": {
+      "default": "auto",
+      "enum": [
+        "fast",
+        "auto",
+        "thorough"
+      ],
+      "title": "Mode",
+      "type": "string"
+    },
+    "question": {
+      "minLength": 1,
+      "title": "Question",
+      "type": "string"
+    }
+  },
+  "required": [
+    "question",
+    "graph"
+  ],
+  "title": "AgentRequest",
+  "type": "object"
+}

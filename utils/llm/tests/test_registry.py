@@ -144,3 +144,19 @@ def test_identity_cache_respects_max_age():
 def test_unreachable_endpoint_raises_unavailable():
     with pytest.raises(R.LLMUnavailable):
         R.check_identity(_spec("http://127.0.0.1:9/v1", connect_timeout_s=0.5))
+
+
+def test_default_is_the_one_open_model():
+    reg = R.load()
+    assert reg.default.name == "gemma4-31b" and reg.default.status == "open"
+    assert reg.open_models() == ["gemma4-31b"]
+
+
+def test_default_must_be_open(tmp_path):
+    p = _write(tmp_path, """
+        defaults: {max_tokens: 16384, default_model: x}
+        models:
+          x: {kind: llm, endpoint: http://h, alias: a, status: closed}
+    """)
+    with pytest.raises(ValueError, match="open"):
+        R.load(p)

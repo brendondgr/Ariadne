@@ -34,6 +34,9 @@ from utils.llm.types import LLMUnavailable
 
 REGISTRY_PATH = Path(__file__).with_name("models.yaml")
 KINDS = ("llm", "decision", "reranker", "nli", "embedder")
+#: ``open``: the operator has it running for us. ``closed``: listed for the
+#: record, not to be called (runners refuse it without probing).
+STATUSES = ("open", "closed")
 
 #: The probe sends a real completion; 2,048 tokens because a reasoning model
 #: given less can spend it all thinking and return nothing.
@@ -64,6 +67,7 @@ class ModelSpec:
     #: Name of an environment variable holding an API key; never the key itself.
     api_key_env: str | None = None
     notes: str = ""
+    status: str = "open"
     max_tokens: int = 16384
     long_max_tokens: int = 32768
     connect_timeout_s: float = 3.0
@@ -122,6 +126,17 @@ class Registry(dict[str, ModelSpec]):
         self.defaults = defaults
         self.path = path
 
+    @property
+    def default(self) -> ModelSpec:
+        """The model every step uses unless told otherwise (``defaults.default_model``)."""
+        name = self.defaults.get("default_model")
+        if not name:
+            raise KeyError(f"{self.path} names no defaults.default_model")
+        return self[name]
+
+    def open_models(self) -> list[str]:
+        return [n for n, s in self.items() if s.status == "open"]
+
     def __missing__(self, key: str) -> ModelSpec:
         raise KeyError(f"no model {key!r} in {self.path}; known: {', '.join(sorted(self))}")
 
@@ -136,6 +151,9 @@ def _spec(name: str, entry: dict[str, Any], defaults: dict[str, Any]) -> ModelSp
     identity = entry.get("identity") or {}
     reasoning = entry.get("reasoning") or {}
     tools = entry.get("tool_calls") or {}
+    status = entry.get("status") or "open"
+    if status not in STATUSES:
+        raise ValueError(f"{name}: status must be one of {STATUSES}, got {status!r}")
     if kind == "llm" and not entry.get("alias"):
         raise ValueError(f"{name}: an llm needs the alias it is reached by")
     return ModelSpec(
@@ -155,6 +173,7 @@ def _spec(name: str, entry: dict[str, Any], defaults: dict[str, Any]) -> ModelSp
         grammar_constrained=bool(tools.get("grammar_constrained")),
         api_key_env=entry.get("api_key_env"),
         notes=str(entry.get("notes") or "").strip(),
+        status=status,
         max_tokens=int(entry.get("max_tokens") or defaults.get("max_tokens") or 16384),
         long_max_tokens=int(entry.get("long_max_tokens") or defaults.get("long_max_tokens") or 32768),
         connect_timeout_s=float(defaults.get("connect_timeout_s") or 3.0),
@@ -172,6 +191,9 @@ def load(path: str | Path | None = None) -> Registry:
     if defaults.get("fallback"):
         raise ValueError("defaults.fallback must be null: fallback is opt-in per call, never a default")
     specs = {name: _spec(name, entry or {}, defaults) for name, entry in (raw.get("models") or {}).items()}
+    dm = defaults.get("default_model")
+    if dm is not None and (dm not in specs or specs[dm].status != "open"):
+        raise ValueError(f"defaults.default_model {dm!r} must name an open model")
     return Registry(specs, defaults, p)
 
 

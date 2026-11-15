@@ -196,6 +196,9 @@ def run_matrix(models: list[str], test: str, *, n_questions: int | None = None,
         spec = reg[name]
         base = {"run_id": run_id, "test": test, "model": name, "alias": spec.alias,
                 "endpoint": spec.endpoint}
+        if spec.status != "open":
+            rows.append({**base, "status": "closed", "error": f"{name} is closed in the registry"})
+            continue
         try:
             before = check_identity(spec)
         except LLMUnavailable as exc:

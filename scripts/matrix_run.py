@@ -27,7 +27,7 @@ from utils.llm.registry import load  # noqa: E402
 
 def main(argv: list[str] | None = None) -> int:
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    ap.add_argument("--models", required=True, help="comma-separated registry names")
+    ap.add_argument("--models", default=None, help="comma-separated registry names (default: the registry default)")
     ap.add_argument("--test", default="toolcall-roundtrip", choices=sorted(TESTS))
     ap.add_argument("--questions", type=int, default=None, help="first N questions only")
     ap.add_argument("--registry", default=None, help="registry YAML (default utils/llm/models.yaml)")
@@ -35,7 +35,8 @@ def main(argv: list[str] | None = None) -> int:
     args = ap.parse_args(argv)
 
     reg = load(args.registry)
-    models = [m.strip() for m in args.models.split(",") if m.strip()]
+    models = ([m.strip() for m in args.models.split(",") if m.strip()] if args.models
+              else [reg.default.name])
     result = run_matrix(models, args.test, n_questions=args.questions, registry=reg)
     out = Path(args.out)
     out.mkdir(parents=True, exist_ok=True)

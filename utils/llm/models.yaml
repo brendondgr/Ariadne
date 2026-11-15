@@ -16,6 +16,9 @@ defaults:
   # models; small caps truncate to an empty reply that looks like an outage.
   max_tokens: 16384
   long_max_tokens: 32768
+  # The one model the operator has open (2026-11-15): only :9090 default-model,
+  # which serves Gemma 4 31B. Every era-2 step uses it unless told otherwise.
+  default_model: gemma4-31b
   # Off. When a caller turns it on, the reply records both models and every
   # experiment runner refuses rows that fell back.
   fallback: null
@@ -34,6 +37,7 @@ models:
     context_window: null           # unconfirmed
     reasoning: {param: null, values: [], default: null}
     tool_calls: {native: true, grammar_constrained: false}
+    status: open
     notes: "Native tool calls through vLLM, checked 2026-11-15."
 
   qwen38-27b:
@@ -48,7 +52,8 @@ models:
     # long prompts; EXP-2026-11-006 ran every arm at medium.
     reasoning: {param: reasoning_effort, values: [xhigh, medium, low, none], default: medium}
     tool_calls: {native: true, grammar_constrained: false}
-    notes: "Native tool calls through vLLM, checked 2026-11-15."
+    status: closed                 # operator, 2026-11-15: only default-model is open
+    notes: "Native tool calls through vLLM, checked 2026-11-15. Health 'failed' on the relay since 2026-11-15."
 
   gemma4-31b-remote:
     kind: llm
@@ -64,6 +69,7 @@ models:
       The same Gemma weights as gemma4-31b behind a second relay (probed
       2026-11-15: last token 106). Listed so a run can tell the two paths apart;
       it is not a third model.
+    status: closed                 # operator, 2026-11-15
 
   pplx-decider:
     kind: decision
@@ -75,4 +81,5 @@ models:
     context_window: null
     reasoning: {param: null, values: [], default: null}
     tool_calls: {native: false, grammar_constrained: false}
+    status: closed                 # not running on 2026-11-15
     notes: "POST /v1/decisions (protocol v3); see utils/killtests/decider.py."

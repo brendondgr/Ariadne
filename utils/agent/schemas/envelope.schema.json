@@ -1,0 +1,365 @@
+{
+  "$defs": {
+    "Answer": {
+      "additionalProperties": false,
+      "properties": {
+        "sets": {
+          "items": {
+            "$ref": "#/$defs/AnswerSet"
+          },
+          "title": "Sets",
+          "type": "array"
+        },
+        "text": {
+          "title": "Text",
+          "type": "string"
+        }
+      },
+      "required": [
+        "text"
+      ],
+      "title": "Answer",
+      "type": "object"
+    },
+    "AnswerSet": {
+      "additionalProperties": false,
+      "properties": {
+        "complete": {
+          "description": "false when a ceiling cut the set short",
+          "title": "Complete",
+          "type": "boolean"
+        },
+        "handle": {
+          "description": "server-side handle, e.g. set:7",
+          "title": "Handle",
+          "type": "string"
+        },
+        "ids": {
+          "description": "every member's identifier",
+          "items": {
+            "type": "string"
+          },
+          "title": "Ids",
+          "type": "array"
+        },
+        "kind": {
+          "description": "the node label the set holds",
+          "title": "Kind",
+          "type": "string"
+        },
+        "total": {
+          "description": "exact size of the set",
+          "minimum": 0,
+          "title": "Total",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "handle",
+        "kind",
+        "total",
+        "complete"
+      ],
+      "title": "AnswerSet",
+      "type": "object"
+    },
+    "CitationRef": {
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "title": "Id",
+          "type": "string"
+        },
+        "query_hash": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Query Hash"
+        },
+        "source": {
+          "title": "Source",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "source"
+      ],
+      "title": "CitationRef",
+      "type": "object"
+    },
+    "Clarification": {
+      "additionalProperties": false,
+      "properties": {
+        "questions": {
+          "items": {
+            "$ref": "#/$defs/ClarifyQuestion"
+          },
+          "maxItems": 4,
+          "minItems": 1,
+          "title": "Questions",
+          "type": "array"
+        },
+        "resume": {
+          "description": "the run id to pass to resume()",
+          "title": "Resume",
+          "type": "string"
+        },
+        "why": {
+          "default": "",
+          "title": "Why",
+          "type": "string"
+        }
+      },
+      "required": [
+        "resume",
+        "questions"
+      ],
+      "title": "Clarification",
+      "type": "object"
+    },
+    "ClarifyOption": {
+      "additionalProperties": false,
+      "properties": {
+        "detail": {
+          "default": "",
+          "title": "Detail",
+          "type": "string"
+        },
+        "label": {
+          "minLength": 1,
+          "title": "Label",
+          "type": "string"
+        }
+      },
+      "required": [
+        "label"
+      ],
+      "title": "ClarifyOption",
+      "type": "object"
+    },
+    "ClarifyQuestion": {
+      "additionalProperties": false,
+      "properties": {
+        "header": {
+          "maxLength": 40,
+          "minLength": 1,
+          "title": "Header",
+          "type": "string"
+        },
+        "options": {
+          "items": {
+            "$ref": "#/$defs/ClarifyOption"
+          },
+          "maxItems": 4,
+          "minItems": 2,
+          "title": "Options",
+          "type": "array"
+        },
+        "question": {
+          "minLength": 1,
+          "title": "Question",
+          "type": "string"
+        }
+      },
+      "required": [
+        "header",
+        "question",
+        "options"
+      ],
+      "title": "ClarifyQuestion",
+      "type": "object"
+    },
+    "Confidence": {
+      "additionalProperties": false,
+      "properties": {
+        "calibrated_on": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Calibrated On"
+        },
+        "score": {
+          "anyOf": [
+            {
+              "maximum": 1.0,
+              "minimum": 0.0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Score"
+        },
+        "threshold": {
+          "anyOf": [
+            {
+              "maximum": 1.0,
+              "minimum": 0.0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Threshold"
+        }
+      },
+      "title": "Confidence",
+      "type": "object"
+    },
+    "Trace": {
+      "additionalProperties": false,
+      "properties": {
+        "repairs": {
+          "default": 0,
+          "description": "logged reply repairs over the run",
+          "minimum": 0,
+          "title": "Repairs",
+          "type": "integer"
+        },
+        "seconds": {
+          "default": 0.0,
+          "minimum": 0,
+          "title": "Seconds",
+          "type": "number"
+        },
+        "served_model": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "registry name and verified token id, e.g. gemma4-31b/106",
+          "title": "Served Model"
+        },
+        "steps": {
+          "default": 0,
+          "description": "model calls made",
+          "minimum": 0,
+          "title": "Steps",
+          "type": "integer"
+        },
+        "tools": {
+          "description": "tool names, in call order",
+          "items": {
+            "type": "string"
+          },
+          "title": "Tools",
+          "type": "array"
+        }
+      },
+      "title": "Trace",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "description": "Rules beyond the field types: status answered|partial requires answer; status needs_clarification requires clarification (and no other status may carry one); status insufficient|not_expressible|error requires reason.",
+  "properties": {
+    "answer": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/Answer"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null
+    },
+    "citations": {
+      "items": {
+        "$ref": "#/$defs/CitationRef"
+      },
+      "title": "Citations",
+      "type": "array"
+    },
+    "clarification": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/Clarification"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null
+    },
+    "confidence": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/Confidence"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null
+    },
+    "path": {
+      "enum": [
+        "fast",
+        "loop"
+      ],
+      "title": "Path",
+      "type": "string"
+    },
+    "reason": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Reason"
+    },
+    "run_id": {
+      "title": "Run Id",
+      "type": "string"
+    },
+    "status": {
+      "enum": [
+        "answered",
+        "partial",
+        "insufficient",
+        "needs_clarification",
+        "not_expressible",
+        "error"
+      ],
+      "title": "Status",
+      "type": "string"
+    },
+    "trace": {
+      "$ref": "#/$defs/Trace"
+    }
+  },
+  "required": [
+    "run_id",
+    "status",
+    "path"
+  ],
+  "title": "AnswerEnvelope",
+  "type": "object"
+}
