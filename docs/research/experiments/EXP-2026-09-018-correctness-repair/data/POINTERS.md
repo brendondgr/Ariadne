@@ -48,7 +48,7 @@ ever written under the `repair-reference-` prefix.
 
 | Artifact | Path (repo-relative) | Bytes | SHA-256 | What it is |
 |---|---|---:|---|---|
-| dev, `deterministic` (gitignored) | `docs/evaluation/experiments/repair-after-step2-dev/deterministic/answers` | 22090766 | `sha256:ef4bd2c9c6bc6f0ad65c1e3e798652c9c4c254b8610c731fd00d08261de2ebd7` | 284 answers, 0 of 284 changed against the reference |
+| dev, `deterministic` (gitignored) | `docs/evaluation/experiments/repair-after-step2-dev/deterministic/answers` | 22084377 | `sha256:6c20e4a1f2550a3ac7e96b9d13b223ecd51e8dfae16692fcdc942a124e595699` | 284 answers, 0 of 284 changed against the reference **Re-hashed 2026-11-15:** the answer file `D2-kill_chain_phase-T1021.008-38d7af::indirect.json` was destroyed in the 2026-10-20 memory-corruption event and deleted on 2026-10-31 (no copy exists); 283 of 284 remain; previous `sha256:ef4bd2c9c6bc…`. |
 | dev, `generic_composed` (gitignored) | `docs/evaluation/experiments/repair-after-step2-dev/generic_composed/answers` | 7153914 | `sha256:5438dd1e191735cadc56dbe6c16f865b05fba2552cb5af8cea0e5bf1c18ad1c9` | 284 answers, mean gold coverage 0.654044, 55 changed cumulatively, coverage lost on none |
 | holdout, `deterministic` (gitignored) | `docs/evaluation/experiments/repair-after-step2-holdout/deterministic/answers` | 25556863 | `sha256:642210c7cf533c8506a726d1bbda20006df62039dfc99372d5f6ef9c48c6b57f` | 288 answers, 0 of 288 changed |
 | holdout, `generic_composed` (gitignored) | `docs/evaluation/experiments/repair-after-step2-holdout/generic_composed/answers` | 8257423 | `sha256:1b3f4efdd64ad011907f529ee21b0a3f47bb4ec8007c106c4f033d6862ce59ea` | 288 answers, mean gold coverage 0.688673, 45 changed cumulatively, coverage lost on none |

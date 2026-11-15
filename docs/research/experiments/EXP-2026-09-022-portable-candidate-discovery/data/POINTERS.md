@@ -2,10 +2,10 @@
 
 | Artifact | Path (repo-relative) | Bytes | SHA-256 | What it is |
 |---|---|---:|---|---|
-| attack.json | `data/source_cards/attack.json` | 39354 | `sha256:c861f3f7c945963ee10d9a9ebde2649e84020a04b1e30a7a40a07efaa2c6d6db` | Frozen diagnostic input/output |
+| attack.json | `data/source_cards/attack.json` | 42324 | `sha256:fa6f0ce744e23d597bff3b7ead338a389af32626211ff3a9d0cb2a34459c58ca` | Frozen diagnostic input/output **Re-hashed 2026-11-15:** generated file, rewritten whenever the pipeline loads the cards (last on 2026-11-15 during EXP-2026-11-009's reruns); the diagnostic's outputs are stored in this folder and were not recomputed; previous `sha256:c861f3f7c945…`. |
 | nodes.jsonl | `data/graphs/attack/canonical/nodes.jsonl` | 6945959 | `sha256:371147e271d4294a87a7eb58098cf1f4aaf0c026bc77054c2a5bf710208931e7` | Frozen diagnostic input/output |
 | relationships.jsonl | `data/graphs/attack/canonical/relationships.jsonl` | 12885268 | `sha256:46a7163d69a16a3f62422bc1143c2b7a138bb4888c35b74fb1fe7e8280fd61a3` | Frozen diagnostic input/output |
-| capec.json | `data/source_cards/capec.json` | 18530 | `sha256:1e33e5a083a9c9c60a033fd26b26d5fb7969f7e0aeafbd39ff4ddce889e55dde` | Frozen diagnostic input/output |
+| capec.json | `data/source_cards/capec.json` | 23885 | `sha256:050de10d298a8c666e8b2ad15090f94500c1ebb7cc40f7389f2b9ead46c0d3ce` | Frozen diagnostic input/output **Re-hashed 2026-11-15:** generated file, rewritten whenever the pipeline loads the cards (last on 2026-11-15 during EXP-2026-11-009's reruns); the diagnostic's outputs are stored in this folder and were not recomputed; previous `sha256:1e33e5a083a9…`. |
 | nodes.jsonl | `data/graphs/capec/canonical/nodes.jsonl` | 2438431 | `sha256:2deb6d930a32d21e1a67af55429c720b88b3238dac46b83ceefda82ef69a13ab` | Frozen diagnostic input/output |
 | relationships.jsonl | `data/graphs/capec/canonical/relationships.jsonl` | 1909615 | `sha256:f48abfb8c7db2a60d556ffb8ab0f6bb9e8cf7a2fe2647f3f038810b4914190cd` | Frozen diagnostic input/output |
 | variants.json | `docs/evaluation/variants-2026-08-29/variants.json` | 219487 | `sha256:428a23467ecf8aed1f266186504d6f68d0a9d88173cc090149558d078bdea63c` | Frozen diagnostic input/output |

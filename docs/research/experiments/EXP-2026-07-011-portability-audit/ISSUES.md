@@ -96,3 +96,8 @@ row. `derive_templates.py` re-run: 14 gremlin template literals, 29 distinct
 across both builders, 20 exercised — identical to every previous derivation.
 The change adds no `QueryDraft(template=…)` literal, which is what this row
 exists to detect.
+
+## 2026-11-15 — Builder pointers re-hashed; the template counts re-derived and unchanged
+**Impact:** None. Both builders were edited by later commits (last 37a8c755, 2026-09-15). `derive_templates.py`, re-run on 2026-11-15, still prints 29 distinct template identifiers, 20 exercised (cypher 20 literals, gremlin 14), as the record states.
+**Cause:** The artifact changed after the pointer was recorded; `make validate-research` flagged the hash.
+**Resolution:** Both rows in `data/POINTERS.md` re-hashed, each with the previous hash in its note.

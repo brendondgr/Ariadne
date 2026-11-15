@@ -932,3 +932,8 @@ bypassed. It should hash the `hashes` block of the canonical manifest (the data
 digests) rather than the manifest file. Filed here rather than changed tonight,
 because altering the loader's safety check unattended is a worse idea than
 recording it.
+
+## 2026-11-15 — One dev `deterministic` answer file is lost
+**Impact:** The figures were computed with 284 files and stand as recorded. `D2-kill_chain_phase-T1021.008-38d7af::indirect.json` was destroyed in the 2026-10-20 memory-corruption event and deleted on 2026-10-31, leaving 283 of 284. No copy exists.
+**Cause:** The artifact changed after the pointer was recorded; `make validate-research` flagged the hash.
+**Resolution:** Re-hashed as it now stands, with the previous hash in the row's note. Only a re-run could regenerate the file.

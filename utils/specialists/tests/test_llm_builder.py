@@ -250,13 +250,21 @@ def test_the_arm_is_registered_everywhere_it_must_be() -> None:
     assert env["SYNTHESIS_LLM_ENABLED"] == "false"
 
 
+#: Arms whose purpose is a model writing the queries. `generic_local_full`
+#: (EXP-2026-09-019 Step 4, commit d08146ef) is the 2B narrator arm plus a model
+#: drafting queries, and sets the flag deliberately; its own test asserts it.
+#: Any other arm turning the builder on is an accident.
+QUERY_BUILDER_ARMS = {"llm_query", "generic_local_full"}
+
+
 def test_no_other_arm_turns_the_query_builder_on() -> None:
     from utils.evaluation.experiment_untruncated import ARMS, untruncated_env
 
+    assert QUERY_BUILDER_ARMS <= set(ARMS)
     for arm in ARMS:
         env = untruncated_env(arm=arm, llm_model="m", llm_max_tokens=4096)
         flag = env.get("SPECIALIST_LLM_QUERY_BUILDER")
-        assert (flag == "true") == (arm == "llm_query"), f"{arm} set the builder flag to {flag}"
+        assert (flag == "true") == (arm in QUERY_BUILDER_ARMS), f"{arm} set the builder flag to {flag}"
 
 
 class TestTheBudgetIsReadAtCallTime:

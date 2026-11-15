@@ -191,3 +191,7 @@ chosen for.
 
 No figure of this experiment changed, and none can: the row pins a *shared parent directory* that every experiment writes into, so it moves whenever anyone runs anything, whether or not this experiment's own inputs are touched. That is a property of the pointer rather than of the data, and it has now cost six re-hashes. A pointer to the specific judgment trees this experiment actually reads would not have moved once.
 
+## 2026-11-15 — Judgment-tree pointer re-hashed a seventh time; it will keep drifting
+**Impact:** None on the audit, whose stored output `data/recompute-audit.json` is the record of what was read. The tree changed for two reasons: two answer files were lost in the 2026-10-20 memory-corruption event (EXP-2026-09-010, -09-018), and every run since 2026-09-14 added files.
+**Cause:** The artifact changed after the pointer was recorded; `make validate-research` flagged the hash.
+**Resolution:** Re-hashed, with the previous hash in the row's note. Not resolved: a pointer to a tree that grows with every run cannot hold one hash. A narrower pointer (the 218 audited cells) or a validator exemption is a follow-up.

@@ -72,3 +72,8 @@ Left on disk and noted in `data/POINTERS.md`.
 See RESULTS.md A-1 for every field filled on 2026-09-09 (old → new). One
 manifest field outside `values` changed: `metrics.primary`
 `identity_rate_content` → `identity_rate_deterministic`.
+
+## 2026-11-15 — One answer file of the guarded re-run is lost
+**Impact:** The figures were computed with all files present and stand as recorded. They can no longer be recomputed byte-for-byte: `a-try1/generic/answers/D0-Category-ChildOf-CAPEC-210-c437b1::analyst.json` was destroyed in the 2026-10-20 memory-corruption event (an in-memory fault, not the drive) and deleted on 2026-10-31. No copy exists, in git or in the era-1 freeze.
+**Cause:** The artifact changed after the pointer was recorded; `make validate-research` flagged the hash.
+**Resolution:** The tree is re-hashed as it now stands (652 files), with the previous hash in the row's note. Only a re-run could regenerate the file.
