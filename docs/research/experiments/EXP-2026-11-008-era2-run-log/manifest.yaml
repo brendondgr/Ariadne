@@ -5,9 +5,9 @@
 id: EXP-2026-11-008
 slug: era2-run-log
 title: "Era 2 Step 3: the append-only run log and the agent contract (crash, resume, fork, schema, provenance)"
-status: running            # planned | running | complete | failed | superseded
+status: complete           # planned | running | complete | failed | superseded
 date_started: 2026-11-15
-date_completed: null       # null until status is complete/failed
+date_completed: 2026-11-15      # null until status is complete/failed
 authors: ["brendondgr", "Claude Opus 5.5"]
 
 purpose: >
@@ -18,10 +18,10 @@ hypothesis: >
 
 # --- Reproducibility block (all fields mandatory) ---
 code:
-  commit: 2e9d0139ee0674d84c3f61583feb20e651700f58          # 40-char sha, or "unknown" for a back-filled experiment
+  commit: 1502fee2b4100f59dae2221af4410a3949ee0870          # 40-char sha, or "unknown" for a back-filled experiment
   branch: main
   entrypoint: "uv run python scripts/era2_runlog_check.py --out docs/research/experiments/EXP-2026-11-008-era2-run-log/data"
-  dirty: true             # uncommitted changes at run time? if true, explain in ISSUES.md
+  dirty: false            # uncommitted changes at run time? if true, explain in ISSUES.md
 config:
   path: null               # repo-relative path, or null if the run takes no config file
   hash: null               # sha256:... of that file
@@ -40,7 +40,7 @@ environment:
   container: null
 compute:
   hardware: "32-core x86_64 host, 121 GB RAM; relay :9090"
-  wall_clock_hours: 0.0
+  wall_clock_hours: 0.05
   estimated_cost_usd: 0.0
 
 # --- LLM / agentic block (delete entirely if no model was in the loop) ---
@@ -60,10 +60,18 @@ llm:
 
 # --- Results block ---
 metrics:
-  primary: <metric name>
-  values: {}               # {metric: {mean: 0.0, std: 0.0, n: 1}} — must be non-empty when status: complete
+  primary: crash_points_equal
+  values:
+    crash_points_equal: {mean: 12, std: 0.0, n: 12}
+    duplicate_calls: {mean: 0, std: 0.0, n: 12}
+    envelopes_valid: {mean: 137, std: 0.0, n: 137}
+    append_ms_median: {mean: 0.0153, std: 0.0, n: 2000}
+    append_ms_p95: {mean: 0.0224, std: 0.0, n: 2000}
+    live_answered: {mean: 3, std: 0.0, n: 3}
+    provenance_ok_runs: {mean: 4, std: 0.0, n: 4}
+    live_resume_repeated_step1: {mean: 0, std: 0.0, n: 1}
   withdrawn: {}            # values later retracted by amendment: {metric: {mean, std, n, withdrawn_on, reason, replaced_by}}
-baselines_compared: []
+baselines_compared: []   # plumbing: no accuracy baseline (PROTOCOL.md)
 statistical_test: null
 
 # --- Linkage ---

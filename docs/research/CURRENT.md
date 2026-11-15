@@ -121,5 +121,6 @@ this file says which number is *current*.
 | [`EXP-2026-11-005`](experiments/EXP-2026-11-005-typed-v2-second-benchmark/) | 2026-11-14 | `B_typed2_3shot_gremlin_minus_free_gremlin_3shot_min` | -0.0100 ± 0.0000 (n=390) | — | — |
 | [`EXP-2026-11-006`](experiments/EXP-2026-11-006-typed-v3-three-benchmarks/) | 2026-11-14 | `C_typed3_3shot_gremlin_minus_free_gremlin_3shot_min` | -0.1220 ± 0.0000 (n=450) | — | — |
 | [`EXP-2026-11-007`](experiments/EXP-2026-11-007-era2-reply-repair-replay/) | 2026-11-15 | `silent_repairs` | 0.0000 ± 0.0000 (n=15748) | — | — |
+| [`EXP-2026-11-008`](experiments/EXP-2026-11-008-era2-run-log/) | 2026-11-15 | `crash_points_equal` | 12.0000 ± 0.0000 (n=12) | — | — |
 
-**24 withdrawn figure(s), 6 superseded experiment(s), 63 current headline(s).**
+**24 withdrawn figure(s), 6 superseded experiment(s), 64 current headline(s).**
