@@ -10,7 +10,6 @@ that a dead end is walked into once rather than twice.
 
 | ID | Date | Title | Status | Primary metric | Claims | Link |
 |---|---|---|---|---|---|---|
-| `EXP-2026-11-007` | 2026-11-15 | Era 2 Step 2: the reply-repair layer replayed over every saved kill-test reply, plus the live model matrix | running | <metric name> (not recorded) | — | [era2-reply-repair-replay](experiments/EXP-2026-11-007-era2-reply-repair-replay/) |
 | `EXP-2026-07-001` | 2026-07-26 | Arm A — fully deterministic pipeline (planning, extraction, synthesis) | complete | correctness 0.9972 (n=1) | C-001, C-004 | [arm-a-deterministic](experiments/EXP-2026-07-001-arm-a-deterministic/) |
 | `EXP-2026-07-002` | 2026-07-26 | Arm B — LLM planning with deterministic extraction and an LLM writer | complete | correctness 0.8505 (n=1) | C-002, C-003, C-016 | [arm-b-llm-planned](experiments/EXP-2026-07-002-arm-b-llm-planned/) |
 | `EXP-2026-07-003` | 2026-07-26 | Arm C — authored plan with an LLM writer reading raw evidence | complete | correctness 0.9690 (n=1) | C-002, C-005 | [arm-c-llm-writer-evidence](experiments/EXP-2026-07-003-arm-c-llm-writer-evidence/) |
@@ -73,6 +72,7 @@ that a dead end is walked into once rather than twice.
 | `EXP-2026-11-004` | 2026-11-14 | Typed requests compiled to Cypher and Gremlin vs free query writing on CypherBench graphs (T1 typed arm) | complete | typed_3shot_gremlin_minus_free_gremlin_3shot_min 0.1500 ± 0.0000 (n=200) | — | [t1-typed-arm](experiments/EXP-2026-11-004-t1-typed-arm/) |
 | `EXP-2026-11-005` | 2026-11-14 | Typed request format v2 on CypherBench, and every T1 arm on a second benchmark (Text2Cypher) | complete | B_typed2_3shot_gremlin_minus_free_gremlin_3shot_min -0.0100 ± 0.0000 (n=390) | — | [typed-v2-second-benchmark](experiments/EXP-2026-11-005-typed-v2-second-benchmark/) |
 | `EXP-2026-11-006` | 2026-11-14 | Typed request format v3 on CypherBench, Text2Cypher (development) and Mind the Query (held out) | complete | C_typed3_3shot_gremlin_minus_free_gremlin_3shot_min -0.1220 ± 0.0000 (n=450) | — | [typed-v3-three-benchmarks](experiments/EXP-2026-11-006-typed-v3-three-benchmarks/) |
+| `EXP-2026-11-007` | 2026-11-15 | Era 2 Step 2: the reply-repair layer replayed over every saved kill-test reply, plus the live model matrix | complete | silent_repairs 0.0000 ± 0.0000 (n=15748) | — | [era2-reply-repair-replay](experiments/EXP-2026-11-007-era2-reply-repair-replay/) |
 | `EXP-2026-07-007` | 2026-07-26 | Arm G — generic primitives only, every hand-written template disabled | superseded → EXP-2026-08-001 | correctness 0.6388 (n=1) | C-003 | [arm-g-templates-disabled](experiments/EXP-2026-07-007-arm-g-templates-disabled/) |
 | `EXP-2026-07-010` | 2026-07-20 | First independent cross-model grading pass (the pre-fix committed baseline) | superseded → EXP-2026-07-001 | correctness 0.8946 (n=1) | C-009 | [independent-eval-baseline](experiments/EXP-2026-07-010-independent-eval-baseline/) |
 | `EXP-2026-07-011` | 2026-07-26 | Portability audit — what survives a dataset that is not MITRE | superseded → EXP-2026-08-011 | — | C-010 | [portability-audit](experiments/EXP-2026-07-011-portability-audit/) |

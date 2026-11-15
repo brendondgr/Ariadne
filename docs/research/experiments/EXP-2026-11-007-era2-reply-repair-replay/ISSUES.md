@@ -29,6 +29,6 @@ tree at run time. An empty file is fine; a missing one is not.
 **Resolution:** Recorded. A third model (a frontier API model, or another local one) is an operator decision; the v2 plan already lists it as open.
 **Paper implication:** None yet.
 
-## 2026-11-15 — The tree was dirty during development runs
+## 2026-11-15 — The tree was dirty during development runs (resolved)
 **Impact:** None on the reported data. The first replay and the first matrix ran on an uncommitted tree while the code was written.
-**Resolution:** Every number in RESULTS.md comes from a rerun at the commit recorded in `code.commit`, on a clean tree.
+**Resolution:** Every number in RESULTS.md comes from a rerun at 3d9965e1, on a clean tree. The rerun reproduced the development run exactly.
