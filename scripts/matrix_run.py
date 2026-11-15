@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Run one model test over a list of registry models (Era 2, Step 2).
 
-    uv run python scripts/matrix_run.py --models gemma4-31b,qwen38-27b,gemma4-31b-remote \\
+    uv run python scripts/matrix_run.py --models minicpm47-35b \\
         --test toolcall-roundtrip --questions 2
 
 Each model's identity is probed by token id before its first call and after its

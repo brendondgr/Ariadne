@@ -29,7 +29,7 @@ def _spec(base_url: str, stop: int | None = 106, **kw) -> R.ModelSpec:
 
 def test_shipped_registry_loads_and_names_identities():
     reg = R.load()
-    assert reg["gemma4-31b"].stop_token_id == 106
+    assert "gemma4-31b" not in reg and "gemma4-31b-remote" not in reg     # retired 2026-11-15
     assert reg["qwen38-27b"].stop_token_id == 248046
     assert reg["qwen38-27b"].reasoning_extra() == {"reasoning_effort": "medium"}
     assert reg["pplx-decider"].kind == "decision"
@@ -42,7 +42,7 @@ def test_shipped_registry_loads_and_names_identities():
 
 
 def test_unknown_model_names_the_known_ones():
-    with pytest.raises(KeyError, match="gemma4-31b"):
+    with pytest.raises(KeyError, match="minicpm47-35b"):
         R.load()["gpt-nonexistent"]
 
 
@@ -93,8 +93,9 @@ def test_reasoning_level_validated():
     with pytest.raises(ValueError):
         reg["qwen38-27b"].reasoning_extra("ultra")
     with pytest.raises(ValueError):
-        reg["gemma4-31b"].reasoning_extra("high")
-    assert reg["gemma4-31b"].reasoning_extra() == {}
+        reg["pplx-decider"].reasoning_extra("high")
+    assert reg["pplx-decider"].reasoning_extra() == {}
+    assert reg["minicpm47-35b"].reasoning_off == "none"
 
 
 # --------------------------------------------------------------------------- #

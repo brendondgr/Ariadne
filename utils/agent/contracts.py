@@ -109,7 +109,7 @@ class Confidence(_Strict):
 class Trace(_Strict):
     steps: int = Field(0, ge=0, description="model calls made")
     tools: list[str] = Field(default_factory=list, description="tool names, in call order")
-    served_model: str | None = Field(None, description="registry name and verified token id, e.g. gemma4-31b/106")
+    served_model: str | None = Field(None, description="registry name and verified token id, e.g. minicpm47-35b/248046")
     seconds: float = Field(0.0, ge=0)
     repairs: int = Field(0, ge=0, description="logged reply repairs over the run")
 

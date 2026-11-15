@@ -2,7 +2,7 @@
 """Run one test over a list of models from one command (Era 2, Step 2).
 
     from utils.llm.matrix import run_matrix
-    rows = run_matrix(["gemma4-31b", "qwen38-27b"], "toolcall-roundtrip", n_questions=2)
+    rows = run_matrix(["minicpm47-35b"], "toolcall-roundtrip", n_questions=2)
 
 **Every row names the model that served it.** Before a model's first call its
 identity is probed by token id (:mod:`utils.llm.registry`); a model that fails

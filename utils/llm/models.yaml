@@ -5,9 +5,14 @@
 # 2026-11-14 and again on 2026-11-15 the relay's aliases and its envelope names
 # were both swapped against the operator's description, so neither is evidence.
 # Identity is the tokenizer's end-of-turn id on a plain reply
-# (``return_token_ids``): Gemma <end_of_turn> = 106, Qwen 3.5 family <|im_end|>
-# = 248046. A reply that ends in a tool call ends on another token (Gemma: 50),
-# which is why identity is a separate probe and not read off each row.
+# (``return_token_ids``; Qwen 3.5 family <|im_end|> = 248046), plus the probe's
+# rendered prompt ids where two models share that id. A reply that ends in a
+# tool call ends on another token, which is why identity is a separate probe
+# and not read off each row.
+#
+# Gemma 4 31B (token 106) served Era 2 Steps 2-3 and is retired (operator,
+# 2026-11-15): it is not a basis for any later comparison. Its entries were
+# removed; git history and the experiment manifests keep the record.
 #
 # Unknown values are null, never guessed. Fill them from the operator.
 
@@ -16,9 +21,8 @@ defaults:
   # models; small caps truncate to an empty reply that looks like an outage.
   max_tokens: 16384
   long_max_tokens: 32768
-  # The one model the operator has open: only :9090 default-model. It served
-  # Gemma 4 31B until 2026-11-15, then MiniCPM 4.7 35B. Every era-2 step uses it
-  # unless told otherwise.
+  # The one model the operator has open: :9090 default-model, MiniCPM 4.7 35B
+  # from 2026-11-15. Every era-2 step uses it unless told otherwise.
   default_model: minicpm47-35b
   # Off. When a caller turns it on, the reply records both models and every
   # experiment runner refuses rows that fell back.
@@ -38,7 +42,9 @@ models:
   #   (2026-11-15) is the evidence that this is MiniCPM.
   # - the template opens <think> (248068) in the prompt; a short reply that never
   #   closes it (no 248069) is filed whole under "reasoning" by the server, which
-  #   toolcalls.finalize repairs and logs (content_in_reasoning).
+  #   toolcalls re-asks with thinking off (logged as unclosed_think_retry). It
+  #   happens on one-word answers only (4 of 10 such prompts; 0 of 15 normal or
+  #   tool-calling prompts; 0 of 25 with thinking off, 2026-11-15).
   # - reasoning_effort "none" turns thinking off (47 vs 786 tokens on one
   #   question); "low" changed nothing, so only "none" is listed.
   # - native tool calls work.
@@ -53,24 +59,12 @@ models:
     size: "35B"
     licence: null
     context_window: null
-    reasoning: {param: reasoning_effort, values: [none], default: null, think_close_token_id: 248069}
+    reasoning: {param: reasoning_effort, values: [none], default: null, thinking_off: "none", think_close_token_id: 248069}
     tool_calls: {native: true, grammar_constrained: false}
     status: open
     max_concurrency: 32
     notes: "Served from 2026-11-15. Thinking on by default; pass reasoning_effort=none to turn it off."
 
-  gemma4-31b:
-    kind: llm
-    endpoint: http://localhost:9090/v1
-    alias: default-model           # envelope answers "default-model-2"
-    identity: {stop_token_id: 106, family: gemma}
-    size: "31B dense"
-    licence: null                  # Gemma terms; confirm the exact release with the operator
-    context_window: null           # unconfirmed
-    reasoning: {param: null, values: [], default: null}
-    tool_calls: {native: true, grammar_constrained: false}
-    status: closed                 # replaced by MiniCPM 4.7 35B on :9090, 2026-11-15
-    notes: "Native tool calls through vLLM, checked 2026-11-15. Served Era 2 Steps 2-3."
 
   qwen38-27b:
     kind: llm
@@ -87,21 +81,6 @@ models:
     status: closed                 # operator, 2026-11-15: only default-model is open
     notes: "Native tool calls through vLLM, checked 2026-11-15. Health 'failed' on the relay since 2026-11-15."
 
-  gemma4-31b-remote:
-    kind: llm
-    endpoint: http://localhost:4000/v1
-    alias: skynet                  # the :4000 relay's "remote" group
-    identity: {stop_token_id: 106, family: gemma}
-    size: "31B dense"
-    licence: null
-    context_window: null
-    reasoning: {param: null, values: [], default: null}
-    tool_calls: {native: true, grammar_constrained: false}
-    notes: >
-      The same Gemma weights as gemma4-31b behind a second relay (probed
-      2026-11-15: last token 106). Listed so a run can tell the two paths apart;
-      it is not a third model.
-    status: closed                 # operator, 2026-11-15
 
   pplx-decider:
     kind: decision

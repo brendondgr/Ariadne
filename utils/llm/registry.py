@@ -66,6 +66,9 @@ class ModelSpec:
     #: whose completion never emitted it and came back with only "reasoning" is
     #: the answer itself, misfiled by the server (see toolcalls.finalize).
     think_close_token_id: int | None = None
+    #: The ``reasoning_param`` value that turns thinking off. With it the chat
+    #: template closes the think block itself, so the reply cannot be misfiled.
+    reasoning_off: str | None = None
     #: The identity probe's rendered prompt token ids. A second identity check
     #: for models that share an end-of-turn id (MiniCPM 4.7 and Qwen 3.8 both end
     #: on 248046); it distinguishes them only if their chat templates differ.
@@ -180,6 +183,7 @@ def _spec(name: str, entry: dict[str, Any], defaults: dict[str, Any]) -> ModelSp
         reasoning_values=tuple(reasoning.get("values") or ()),
         reasoning_default=reasoning.get("default"),
         think_close_token_id=reasoning.get("think_close_token_id"),
+        reasoning_off=reasoning.get("thinking_off"),
         prompt_fingerprint=tuple(identity.get("prompt_fingerprint") or ()),
         native_tool_calls=bool(tools.get("native")),
         grammar_constrained=bool(tools.get("grammar_constrained")),

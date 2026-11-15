@@ -37,7 +37,7 @@ def test_the_plans_example_envelope_validates():
         "citations": [{"id": "T1059", "source": "attack", "query_hash": "sha256:00"}],
         "confidence": {"score": 0.93, "threshold": 0.81, "calibrated_on": "card-generated"},
         "trace": {"steps": 4, "tools": ["resolve_entity", "expand", "expand", "set_op"],
-                  "served_model": "gemma4-31b/106", "seconds": 7.4},
+                  "served_model": "minicpm47-35b/248046", "seconds": 7.4},
         "clarification": None, "reason": None,
     }
     assert validate_envelope(env).status == "answered"

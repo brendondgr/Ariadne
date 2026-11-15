@@ -232,40 +232,45 @@ def test_streamed_non_ascii_survives():
 THINK_CLOSE = 248069
 
 
-def test_unclosed_think_reply_is_promoted_to_the_answer_and_logged():
+def mc_spec(url: str = "") -> ModelSpec:
+    return ModelSpec(name="mc", kind="llm", endpoint=url, alias="a", stop_token_id=248046,
+                     think_close_token_id=THINK_CLOSE, reasoning_param="reasoning_effort",
+                     reasoning_values=("none",), reasoning_off="none", connect_timeout_s=1.0, read_timeout_s=10.0)
+
+
+def test_unclosed_think_is_flagged_not_promoted():
     raw = RawCompletion(content="", reasoning="Okay", finish_reason="stop", token_ids=[31248, 248046])
     r = finalize(raw, "m", KNOWN, think_close_token_id=THINK_CLOSE)
-    assert (r.text, r.thinking, r.status) == ("Okay", "", "ok")
-    assert [e.kind for e in r.repairs] == ["content_in_reasoning"]
+    assert r.unclosed_think and r.text == "" and r.thinking == "Okay" and r.status == "empty"
+    assert r.repairs == []
 
 
-def test_closed_think_with_no_answer_is_not_promoted():
-    raw = RawCompletion(content="", reasoning="I should count...", finish_reason="stop",
-                        token_ids=[5, 6, THINK_CLOSE, 248046])
-    assert finalize(raw, "m", KNOWN, think_close_token_id=THINK_CLOSE).status == "empty"
+def test_closed_think_or_unproven_or_cut_off_is_not_flagged():
+    closed = RawCompletion(content="", reasoning="hm", finish_reason="stop", token_ids=[5, THINK_CLOSE, 248046])
+    no_ids = RawCompletion(content="", reasoning="Okay", finish_reason="stop")
+    capped = RawCompletion(content="", reasoning="Okay", finish_reason="length", token_ids=[1])
+    for raw in (closed, no_ids, capped):
+        assert not finalize(raw, "m", KNOWN, think_close_token_id=THINK_CLOSE).unclosed_think
+    assert not finalize(RawCompletion(content="", reasoning="Okay", finish_reason="stop", token_ids=[1]),
+                        "m", KNOWN).unclosed_think
 
 
-def test_no_promotion_without_token_ids_or_when_cut_off_or_unconfigured():
-    base = dict(content="", reasoning="Okay")
-    assert finalize(RawCompletion(**base, finish_reason="stop"), "m", KNOWN,
-                    think_close_token_id=THINK_CLOSE).status == "empty"           # no ids: unproven
-    assert finalize(RawCompletion(**base, finish_reason="length", token_ids=[1]), "m", KNOWN,
-                    think_close_token_id=THINK_CLOSE).status == "cut_off_at_cap"
-    assert finalize(RawCompletion(**base, finish_reason="stop", token_ids=[1]), "m", KNOWN).status == "empty"
+def test_unclosed_think_is_re_asked_with_thinking_off():
+    first = body(None, reasoning="Yes", token_ids=[9454, 248046])
+    second = body("Yes", token_ids=[9454, 248046])
+    with FakeServer([first, second]) as srv:
+        r = chat(mc_spec(srv.base_url), MSGS, stream=False)
+    assert r.text == "Yes" and r.status == "ok" and r.attempts == 2
+    assert [e.kind for e in r.repairs] == ["unclosed_think_retry"]
+    assert "reasoning_effort" not in srv.requests[0] and srv.requests[1]["reasoning_effort"] == "none"
+    assert srv.requests[0]["return_token_ids"] is True
+    assert r.request_extra == {"reasoning_effort": "none", "retried_from_thinking": True}
 
 
-def test_promoted_reply_can_hold_a_leaked_call():
-    raw = RawCompletion(content="", reasoning='<tool_call>{"name": "count", "arguments": {"handle": "set:1"}}</tool_call>',
-                        finish_reason="stop", token_ids=[1, 2])
-    r = finalize(raw, "m", KNOWN, think_close_token_id=THINK_CLOSE)
-    assert [c.name for c in r.tool_calls] == ["count"]
-    assert [e.kind for e in r.repairs] == ["content_in_reasoning", "leaked_call_hermes"]
-
-
-def test_think_close_spec_requests_token_ids():
-    s = ModelSpec(name="mc", kind="llm", endpoint="", alias="a", think_close_token_id=THINK_CLOSE)
-    with FakeServer([body(None, reasoning="Okay", token_ids=[31248, 248046])]) as srv:
+def test_a_model_without_a_thinking_off_value_is_not_retried():
+    s = mc_spec()
+    s = ModelSpec(**{**s.__dict__, "reasoning_off": None})
+    with FakeServer([body(None, reasoning="Yes", token_ids=[1, 248046]), body("")]) as srv:
         s = ModelSpec(**{**s.__dict__, "endpoint": srv.base_url})
         r = chat(s, MSGS, stream=False)
-    assert srv.requests[0]["return_token_ids"] is True
-    assert r.text == "Okay"
+    assert r.status == "empty" and len(srv.requests) == 1

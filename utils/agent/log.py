@@ -15,7 +15,7 @@ and the record of what happened is the same object that drives what happens
 next. Nothing is ever updated or deleted in ``events``.
 
 **Provenance on every event.** Each row carries the served model (registry name
-and verified token id, e.g. ``gemma4-31b/106``) when a model was involved, and
+and verified token id, e.g. ``minicpm47-35b/248046``) when a model was involved, and
 the code commit the run used. Research runners read model identity from here,
 never from configuration (:func:`RunLog.provenance`).
 

@@ -105,6 +105,9 @@ class ModelReply:
     #: The registry name of the model that was asked first, when a fallback answered.
     fallback_from: str | None = None
     request_extra: dict[str, Any] = field(default_factory=dict)
+    #: The model ended its turn inside the template's open think block (no
+    #: think-close token), so the server filed whatever it wrote as reasoning.
+    unclosed_think: bool = False
 
     @property
     def repaired(self) -> bool:
@@ -200,17 +203,13 @@ def finalize(raw: RawCompletion, model: str, known: set[str], *,
     if not reply.tool_calls and reply.text and known:
         _recover_leaks(reply, known, cut_off)
 
-    # A thinking template opens <think> in the prompt; a short reply that never
-    # closes it is filed whole under "reasoning" by the server's parser, and the
-    # reply text comes back empty. Promoted only when the token ids prove the
-    # think block was never closed and the model stopped on its own.
-    if (not reply.text and not reply.tool_calls and reply.thinking and think_close_token_id is not None
+    # A thinking template opens <think> in the prompt. If the model ends its turn
+    # without ever closing it, the server files everything it wrote as reasoning
+    # and the reply text is empty. That text is NOT promoted to an answer: it is
+    # a malformed turn, and _turn re-asks it with thinking off.
+    if (not reply.text and not reply.tool_calls and think_close_token_id is not None
             and raw.finish_reason == "stop" and raw.token_ids and think_close_token_id not in raw.token_ids):
-        reply.text, reply.thinking = reply.thinking.strip(), ""
-        reply.repairs.append(RepairEvent("content_in_reasoning",
-                                         f"{len(raw.token_ids)} tokens, no think-close {think_close_token_id}"))
-        if known:
-            _recover_leaks(reply, known, cut_off=False)
+        reply.unclosed_think = True
 
     if not reply.text and not reply.tool_calls:
         if raw.finish_reason == "length":
@@ -281,7 +280,7 @@ def chat(
                      temperature=temperature, extra=extra, stream=stream)
         reply.fallback_from = spec.name
         return reply
-    reply.request_extra = request_extra
+    reply.request_extra = {**request_extra, **reply.request_extra}   # a retry records what it changed
     return reply
 
 
@@ -301,6 +300,22 @@ def _turn(spec: ModelSpec, payload: dict[str, Any], known: set[str], *, stream: 
             reply.repairs = [*pending, RepairEvent("runaway_error")]
             return reply
     reply = finalize(raw, spec.name, known, think_close_token_id=spec.think_close_token_id)
+    if reply.unclosed_think and spec.reasoning_param and spec.reasoning_off is not None:
+        # The model ended its turn inside the open think block. Re-ask once with
+        # thinking off: the template then closes the block itself, so the answer
+        # comes back as reply text. Logged; the reply records the setting used.
+        pending.append(RepairEvent("unclosed_think_retry",
+                                   f"{len(raw.token_ids)} tokens, no think-close {spec.think_close_token_id}; "
+                                   f"wrote {reply.thinking[:60]!r}"))
+        attempts += 1
+        retry = {**payload, spec.reasoning_param: spec.reasoning_off}
+        raw = _attempt(spec, retry, stream=stream)
+        reply = finalize(raw, spec.name, known, think_close_token_id=spec.think_close_token_id)
+        reply.request_extra = {**reply.request_extra, spec.reasoning_param: spec.reasoning_off,
+                               "retried_from_thinking": True}
+        reply.repairs = [*pending, *reply.repairs]
+        reply.attempts = attempts
+        return reply
     if reply.status == "empty" and stream:
         pending.append(RepairEvent("empty_retry", f"finish_reason={raw.finish_reason!r}"))
         attempts += 1
