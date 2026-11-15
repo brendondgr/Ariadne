@@ -419,3 +419,16 @@ class TestComposedCapped:
     def test_missing_limits_get_the_planner_caps(self):
         assert exp.cap_task_limits({"task": {}})["task"]["limits"] == {"max_result_rows": 1000,
                                                                        "max_traversal_depth": 3}
+
+
+def test_the_real_pipeline_records_stage_timings(monkeypatch):
+    """Era 2 Step 4: planned arms keep iter_pipeline's timings (a first edit put them in the wrong runner)."""
+    import utils.orchestration.main as orch
+
+    def fake_iter(question, *, run, **kw):
+        run.timings.update({"plan_ms": 1.5, "total_ms": 9.0})
+        yield "answer", {"plan": None, "evidence": object(), "synthesized": object()}
+
+    monkeypatch.setattr(orch, "iter_pipeline", fake_iter)
+    _, _, extra = exp._run_real_pipeline({"question": "q"}, "attack", use_llm=False)
+    assert extra["timings"] == {"plan_ms": 1.5, "total_ms": 9.0}

@@ -1065,6 +1065,9 @@ def _run_real_pipeline(
         "observed_plan": _plan_dict(plan),
         "exit_code": run.exit_code,
         "status": run.status,
+        # Per-stage timings from iter_pipeline (plan_ms, specialists, total_ms),
+        # recorded from Era 2 Step 4 on; they were measured and discarded before.
+        "timings": dict(run.timings),
     }
 
 

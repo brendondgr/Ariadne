@@ -13,3 +13,7 @@ tree at run time. An empty file is fine; a missing one is not.
 **Paper implication:** what must be stated in the paper because of this.
 
 -->
+
+## 2026-11-15 — The first rerun recorded no stage timings; fixed and the three arms rerun
+**Impact:** The first rerun at 3187ad51 saved no per-stage timings for `generic_planned`. The text-replace edit matched the gold-replay loop runner first, not `_run_real_pipeline`. Coverage figures were unaffected.
+**Resolution:** `_run_real_pipeline` now records `run.timings`, and a test fails if it does not. All three arms were rerun back to back at the fixing commit, and the first rerun was discarded. Every rerun figure in RESULTS.md comes from the second rerun.
