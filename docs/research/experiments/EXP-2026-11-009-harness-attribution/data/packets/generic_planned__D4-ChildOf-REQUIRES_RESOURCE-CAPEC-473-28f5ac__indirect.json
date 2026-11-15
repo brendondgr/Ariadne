@@ -1,0 +1,62 @@
+{
+ "qid": "D4-ChildOf-REQUIRES_RESOURCE-CAPEC-473-28f5ac::indirect",
+ "planner": "deterministic rules planner",
+ "question": "I'm trying to gauge how much an attacker needs to pull off the narrower forms of Signature Spoof (CAPEC-473), so which CAPEC attack patterns are more specific cases of it, and what resources does each of those require?",
+ "authored_records": 1,
+ "authored_steps": [
+  {
+   "source": "capec",
+   "sub_question": "I'm trying to gauge how much an attacker needs to pull off the narrower forms of Signature Spoof (CAPEC-473), so which CAPEC attack patterns are more specific cases of it, and what resources does each of those require?",
+   "labels": [
+    "AttackPattern",
+    "Resource"
+   ],
+   "relationships": [
+    "ChildOf",
+    "REQUIRES_RESOURCE"
+   ],
+   "seed_ids_bound": [
+    "CAPEC-473"
+   ],
+   "template": "generic_walk",
+   "query": "g.V().has(\"id\", within(ids)).as(\"ap\").union(__.or(__.hasLabel(\"AttackPattern\"), __.not(__.hasLabel(\"AttackPattern\", \"Resource\"))).both(\"CHILD_OF\"), __.or(__.hasLabel(\"AttackPattern\"), __.not(__.hasLabel(\"AttackPattern\", \"Resource\"))).both(\"CHILD_OF\").out(\"REQUIRES_RESOURCE\")).as(\"nbr\").select(\"ap\",\"nbr\").by(elementMap()).limit(20000)",
+   "error": "",
+   "summary": "Found 1 CAPEC record(s): CAPEC-473."
+  }
+ ],
+ "planner_observed_plan": [
+  {
+   "sub_question_id": "q1",
+   "source": "capec",
+   "text": "In capec, identify AttackPattern, REQUIRES_RESOURCE, REQUIRES_SKILL, Resource relevant to: I'm trying to gauge how much an attacker needs to pull off the narrower forms of Signature Spoof (CAPEC-473), so which CAPEC attack patterns are more specific cases of it, and what resources does each of those require?",
+   "seed_ids": [],
+   "depends_on": null,
+   "limits": {
+    "max_traversal_depth": 3,
+    "max_result_rows": 1000,
+    "query_timeout_ms": 5000
+   }
+  }
+ ],
+ "planner_executed_steps": [
+  {
+   "source": "capec",
+   "sub_question": "In capec, identify AttackPattern, REQUIRES_RESOURCE, REQUIRES_SKILL, Resource relevant to: I'm trying to gauge how much an attacker needs to pull off the narrower forms of Signature Spoof (CAPEC-473), so which CAPEC attack patterns are more specific cases of it, and what resources does each of those require?",
+   "labels": [
+    "AttackPattern",
+    "Resource"
+   ],
+   "relationships": [
+    "REQUIRES_RESOURCE",
+    "REQUIRES_SKILL"
+   ],
+   "seed_ids_bound": [
+    "CAPEC-473"
+   ],
+   "template": "generic_walk",
+   "query": "g.V().has(\"id\", within(ids)).as(\"ap\").union(__.or(__.hasLabel(\"AttackPattern\"), __.not(__.hasLabel(\"AttackPattern\", \"Resource\"))).out(\"REQUIRES_RESOURCE\"), __.or(__.hasLabel(\"Resource\"), __.not(__.hasLabel(\"AttackPattern\", \"Resource\"))).in(\"REQUIRES_RESOURCE\")).as(\"nbr\").select(\"ap\",\"nbr\").by(elementMap()).limit(1000)",
+   "error": "",
+   "summary": "No CAPEC records found."
+  }
+ ]
+}

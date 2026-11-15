@@ -1,0 +1,85 @@
+{
+ "generic_planned": {
+  "n": 20,
+  "exact": 0.75,
+  "kappa": 0.5763,
+  "stage_agreement": 0.75
+ },
+ "generic_planned_llm": {
+  "n": 20,
+  "exact": 0.9,
+  "kappa": 0.8305,
+  "stage_agreement": 0.9
+ },
+ "all": {
+  "n": 40,
+  "exact": 0.825,
+  "kappa": 0.7098,
+  "stage_agreement": 0.825
+ },
+ "disagreements": [
+  {
+   "arm": "generic_planned",
+   "qid": "D5-HAS_MEMBER-Abstraction-CAPEC-703-59080d::indirect",
+   "auto": "relation",
+   "annotator": "direction",
+   "auto_stage": "plan",
+   "annotator_stage": "downstream",
+   "annotator_reason": "Anchor CAPEC-703 is a View and relation IN_VIEW (alias of MEMBER_OF) is present, but the P query only does out(IN_VIEW) while A also does in(IN_VIEW) from the View; PEER_OF walks added. Ambiguous: MEMBER_OF vs IN_VIEW naming."
+  },
+  {
+   "arm": "generic_planned",
+   "qid": "D2-MAPS_TO[WASC]-CAPEC-126-d48ec7::indirect",
+   "auto": "decomposition",
+   "annotator": "direction",
+   "auto_stage": "plan",
+   "annotator_stage": "downstream",
+   "annotator_reason": "Seed CAPEC-126 is an AttackPattern; authored does out(MAPS_TO) while P (bridge template) does in(MAPS_TO) from the seed treating it as the taxonomy entry."
+  },
+  {
+   "arm": "generic_planned",
+   "qid": "D0-View-HAS_INDICATOR-CAPEC-703-9098da::indirect",
+   "auto": "other",
+   "annotator": "direction",
+   "auto_stage": "unattributed",
+   "annotator_stage": "downstream",
+   "annotator_reason": "HAS_INDICATOR and seed bound, but P uses out(HAS_INDICATOR) from the View seed where authored uses in(HAS_INDICATOR)."
+  },
+  {
+   "arm": "generic_planned",
+   "qid": "D2-HAS_PREREQUISITE-CAPEC-68-7a82c1::analyst",
+   "auto": "other",
+   "annotator": "direction",
+   "auto_stage": "unattributed",
+   "annotator_stage": "downstream",
+   "annotator_reason": "Relation and seed bound; P has in(HAS_PREREQUISITE) from the pattern where authored uses out(HAS_PREREQUISITE)."
+  },
+  {
+   "arm": "generic_planned",
+   "qid": "D5-HAS_MEMBER-Likelihood_Of_Attack-CAPEC-703-0c5b15::indirect",
+   "auto": "relation",
+   "annotator": "other",
+   "auto_stage": "plan",
+   "annotator_stage": "unattributed",
+   "annotator_reason": "IN_VIEW is resolved and the seed is bound, but the query traverses only REQUIRES_SKILL; no rule fits (treated IN_VIEW as MEMBER_OF alias)."
+  },
+  {
+   "arm": "generic_planned_llm",
+   "qid": "D0-View-HAS_INDICATOR-CAPEC-703-9098da::indirect",
+   "auto": "other",
+   "annotator": "direction",
+   "auto_stage": "unattributed",
+   "annotator_stage": "downstream",
+   "annotator_reason": "Relations and seed bound; P uses out(HAS_INDICATOR) where authored uses in(HAS_INDICATOR)."
+  },
+  {
+   "arm": "generic_planned_llm",
+   "qid": "D2-HAS_MEMBER-CAPEC-156-d26a33::analyst",
+   "auto": "other",
+   "annotator": "direction",
+   "auto_stage": "unattributed",
+   "annotator_stage": "downstream",
+   "annotator_reason": "MEMBER_OF and seed bound; P query has only out(MEMBER_OF), authored also in(MEMBER_OF) from the Category seed."
+  }
+ ]
+}

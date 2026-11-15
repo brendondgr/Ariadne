@@ -1,0 +1,83 @@
+{
+ "qid": "D2-MAPS_TO[WASC]-CAPEC-126-d48ec7::indirect",
+ "planner": "deterministic rules planner",
+ "question": "Which WASC taxonomy entries does Path Traversal (CAPEC-126) map to?",
+ "authored_records": 1,
+ "authored_steps": [
+  {
+   "source": "capec",
+   "sub_question": "Which WASC taxonomy entries does Path Traversal (CAPEC-126) map to?",
+   "labels": [
+    "AttackPattern",
+    "TaxonomyEntry"
+   ],
+   "relationships": [
+    "MAPS_TO"
+   ],
+   "seed_ids_bound": [
+    "CAPEC-126"
+   ],
+   "template": "generic_walk",
+   "query": "g.V().has(\"id\", within(ids)).as(\"ap\").union(__.or(__.hasLabel(\"AttackPattern\"), __.not(__.hasLabel(\"AttackPattern\", \"TaxonomyEntry\"))).out(\"MAPS_TO\"), __.or(__.hasLabel(\"TaxonomyEntry\"), __.not(__.hasLabel(\"AttackPattern\", \"TaxonomyEntry\"))).in(\"MAPS_TO\")).as(\"nbr\").select(\"ap\",\"nbr\").by(elementMap()).limit(20000)",
+   "error": "",
+   "summary": "Found 1 CAPEC record(s): CAPEC-126."
+  }
+ ],
+ "planner_observed_plan": [
+  {
+   "sub_question_id": "q1",
+   "source": "capec",
+   "text": "In capec, identify MAPS_TO, TaxonomyEntry, View relevant to: Which WASC taxonomy entries does Path Traversal (CAPEC-126) map to?",
+   "seed_ids": [],
+   "depends_on": null,
+   "limits": {
+    "max_traversal_depth": 3,
+    "max_result_rows": 1000,
+    "query_timeout_ms": 5000
+   }
+  },
+  {
+   "sub_question_id": "q2",
+   "source": "attack",
+   "text": "In attack, identify Technique, SubTechnique relevant to: Which WASC taxonomy entries does Path Traversal (CAPEC-126) map to?",
+   "seed_ids": [],
+   "depends_on": null,
+   "limits": {
+    "max_traversal_depth": 3,
+    "max_result_rows": 1000,
+    "query_timeout_ms": 5000
+   }
+  }
+ ],
+ "planner_executed_steps": [
+  {
+   "source": "capec",
+   "sub_question": "In capec, identify MAPS_TO, TaxonomyEntry, View relevant to: Which WASC taxonomy entries does Path Traversal (CAPEC-126) map to?",
+   "labels": [
+    "TaxonomyEntry",
+    "View"
+   ],
+   "relationships": [
+    "MAPS_TO"
+   ],
+   "seed_ids_bound": [
+    "CAPEC-126"
+   ],
+   "template": "generic_bridge",
+   "query": "g.V().has(\"id\", within(ids)).as(\"w\").in(\"MAPS_TO\").hasLabel(\"AttackPattern\").as(\"ap\").project(\"w\",\"ap\",\"tax\").by(__.select(\"w\").elementMap()).by(__.select(\"ap\").elementMap()).by(__.out(\"MAPS_TO\").hasLabel(\"TaxonomyEntry\").elementMap().fold()).limit(1000)",
+   "error": "",
+   "summary": "No CAPEC records found."
+  },
+  {
+   "source": "attack",
+   "sub_question": "In attack, identify Technique, SubTechnique relevant to: Which WASC taxonomy entries does Path Traversal (CAPEC-126) map to?",
+   "labels": [],
+   "relationships": [],
+   "seed_ids_bound": [],
+   "template": null,
+   "query": "",
+   "error": "",
+   "summary": "Skipped: this sub-question depends on q1 for its seed identifiers, but it returned no join values."
+  }
+ ]
+}

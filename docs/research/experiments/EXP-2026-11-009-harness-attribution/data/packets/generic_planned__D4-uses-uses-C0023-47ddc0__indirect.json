@@ -1,0 +1,63 @@
+{
+ "qid": "D4-uses-uses-C0023-47ddc0::indirect",
+ "planner": "deterministic rules planner",
+ "question": "Which malware and tools were used in Operation Ghost (C0023), and which ATT&CK techniques does each of those pieces of malware or tooling use?",
+ "authored_records": 1,
+ "authored_steps": [
+  {
+   "source": "attack",
+   "sub_question": "Which malware and tools were used in Operation Ghost (C0023), and which ATT&CK techniques does each of those pieces of malware or tooling use?",
+   "labels": [
+    "Campaign",
+    "Software",
+    "Technique"
+   ],
+   "relationships": [
+    "USES"
+   ],
+   "seed_ids_bound": [
+    "C0023"
+   ],
+   "template": "generic_chain",
+   "query": "MATCH (n) WHERE coalesce(n.attack_id, n.id) IN $ids OPTIONAL MATCH (n)-[:USES]->(m0) WHERE n:Campaign OR NOT (n:Campaign OR n:Software OR n:Technique) WITH n, collect(DISTINCT {m: m0, r: 'USES'}) AS h0 OPTIONAL MATCH (n)<-[:USES]-(m1) WHERE n:Software OR NOT (n:Campaign OR n:Software OR n:Technique) WITH n, h0, collect(DISTINCT {m: m1, r: 'USES'}) AS h1 OPTIONAL MATCH (n)-[:USES]->(m2) WHERE n:Software OR NOT (n:Campaign OR n:Software OR n:Technique) WITH n, h0, h1, collect(DISTINCT {m: m2, r: 'USES'}) AS h2 OPTIONAL MATCH (n)<-[:USES]-(m3) WHERE n:Technique OR NOT (n:Campaign OR n:Software OR n:Technique) WITH n, h0, h1, h2, collect(DISTINCT {m: m3, r: 'USES'}) AS h3 OPTIONAL MATCH (n)-[:US",
+   "error": "",
+   "summary": "Found 67 item(s) related to C0023 (e.g. S0029, S0051, S0512) in MITRE ATT&CK."
+  }
+ ],
+ "planner_observed_plan": [
+  {
+   "sub_question_id": "q1",
+   "source": "attack",
+   "text": "In attack, identify HAS_TECHNIQUE, Matrix, Software, SubTechnique, Technique relevant to: Which malware and tools were used in Operation Ghost (C0023), and which ATT&CK techniques does each of those pieces of malware or tooling use?",
+   "seed_ids": [],
+   "depends_on": null,
+   "limits": {
+    "max_traversal_depth": 3,
+    "max_result_rows": 1000,
+    "query_timeout_ms": 5000
+   }
+  }
+ ],
+ "planner_executed_steps": [
+  {
+   "source": "attack",
+   "sub_question": "In attack, identify HAS_TECHNIQUE, Matrix, Software, SubTechnique, Technique relevant to: Which malware and tools were used in Operation Ghost (C0023), and which ATT&CK techniques does each of those pieces of malware or tooling use?",
+   "labels": [
+    "Matrix",
+    "Software",
+    "SubTechnique",
+    "Technique"
+   ],
+   "relationships": [
+    "HAS_TECHNIQUE"
+   ],
+   "seed_ids_bound": [
+    "C0023"
+   ],
+   "template": "generic_chain",
+   "query": "MATCH (n) WHERE coalesce(n.attack_id, n.id) IN $ids OPTIONAL MATCH (n)-[:HAS_TACTIC]->(m0) WHERE n:Matrix OR NOT (n:Matrix OR n:Software OR n:SubTechnique OR n:Technique) WITH n, collect(DISTINCT {m: m0, r: 'HAS_TACTIC'}) AS h0 OPTIONAL MATCH (n)-[:USES]->(m1) WHERE n:Software OR NOT (n:Matrix OR n:Software OR n:SubTechnique OR n:Technique) WITH n, h0, collect(DISTINCT {m: m1, r: 'USES'}) AS h1 OPTIONAL MATCH (n)<-[:HAS_TECHNIQUE]-(m2) WHERE n:SubTechnique OR NOT (n:Matrix OR n:Software OR n:SubTechnique OR n:Technique) WITH n, h0, h1, collect(DISTINCT {m: m2, r: 'HAS_TECHNIQUE'}) AS h2 OPTIONAL MATCH (n)<-[:USES]-(m3) WHERE n:SubTechnique OR NOT (n:Matrix OR n:Software OR n:SubTechnique OR ",
+   "error": "pre-run gate rejected all drafts: traversal depth 4 exceeds max_traversal_depth 3 (literal hop chain)",
+   "summary": ""
+  }
+ ]
+}

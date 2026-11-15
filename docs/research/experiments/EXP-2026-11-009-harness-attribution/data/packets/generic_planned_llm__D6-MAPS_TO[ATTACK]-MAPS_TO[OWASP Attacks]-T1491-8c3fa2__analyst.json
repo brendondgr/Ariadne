@@ -1,0 +1,79 @@
+{
+ "qid": "D6-MAPS_TO[ATTACK]-MAPS_TO[OWASP Attacks]-T1491-8c3fa2::analyst",
+ "planner": "LLM planner (Gemma 4 26B; its plan format has no seed-id field)",
+ "question": "Which CAPEC attack patterns correspond to Defacement (T1491), and which OWASP taxonomy entries do those correspond to?",
+ "authored_records": 2,
+ "authored_steps": [
+  {
+   "source": "capec",
+   "sub_question": "For T1491: the CAPEC attack patterns that correspond to it.",
+   "labels": [
+    "AttackPattern"
+   ],
+   "relationships": [
+    "MAPS_TO"
+   ],
+   "seed_ids_bound": [
+    "T1491"
+   ],
+   "template": "generic_bridge",
+   "query": "g.V().hasLabel(\"TaxonomyEntry\").has(\"entry_id\", within(entryIds)).as(\"tax\").in(\"MAPS_TO\").hasLabel(\"AttackPattern\").as(\"ap\").select(\"ap\",\"tax\").by(elementMap()).limit(20000)",
+   "error": "",
+   "summary": "Found 1 CAPEC record(s) for CAPEC-148; ATT&CK mappings: T1491."
+  },
+  {
+   "source": "capec",
+   "sub_question": "For each of those: the OWASP taxonomy entries each of those corresponds to.",
+   "labels": [
+    "AttackPattern",
+    "TaxonomyEntry"
+   ],
+   "relationships": [
+    "MAPS_TO"
+   ],
+   "seed_ids_bound": [
+    "CAPEC-148",
+    "T1491"
+   ],
+   "template": "generic_bridge",
+   "query": "g.V().has(\"id\", within(ids)).project(\"ap\",\"tax\").by(elementMap()).by(__.out(\"MAPS_TO\").hasLabel(\"TaxonomyEntry\").elementMap().fold()).limit(20000)",
+   "error": "",
+   "summary": "Found 1 CAPEC record(s) for CAPEC-148; ATT&CK mappings: T1491."
+  }
+ ],
+ "planner_observed_plan": [
+  {
+   "sub_question_id": "q1",
+   "source": "capec",
+   "text": "In capec, identify AttackPattern, TaxonomyEntry, View relevant to: Which CAPEC attack patterns correspond to Defacement (T1491), and which OWASP taxonomy entries do those correspond to?",
+   "entities": [
+    "AttackPattern",
+    "TaxonomyEntry",
+    "View"
+   ],
+   "seed_ids": [],
+   "depends_on": null,
+   "limits": {
+    "max_traversal_depth": 3,
+    "max_result_rows": 1000,
+    "query_timeout_ms": 5000
+   }
+  },
+  {
+   "sub_question_id": "q2",
+   "source": "attack",
+   "text": "In attack, identify Software relevant to: Which CAPEC attack patterns correspond to Defacement (T1491), and which OWASP taxonomy entries do those correspond to?",
+   "entities": [
+    "Software"
+   ],
+   "seed_ids": [],
+   "depends_on": null,
+   "limits": {
+    "max_traversal_depth": 3,
+    "max_result_rows": 1000,
+    "query_timeout_ms": 5000
+   }
+  }
+ ],
+ "planner_executed_steps": []
+}

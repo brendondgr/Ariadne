@@ -1,0 +1,62 @@
+{
+ "qid": "D5-CanPrecede-Typical_Severity-CAPEC-273-97972f::formal",
+ "planner": "LLM planner (Gemma 4 26B; its plan format has no seed-id field)",
+ "question": "Which attack patterns with a typical severity of Medium can follow HTTP Response Smuggling, CAPEC-273?",
+ "authored_records": 1,
+ "authored_steps": [
+  {
+   "source": "capec",
+   "sub_question": "Which attack patterns with a typical severity of Medium can follow HTTP Response Smuggling, CAPEC-273?",
+   "labels": [
+    "AttackPattern"
+   ],
+   "relationships": [
+    "CanPrecede"
+   ],
+   "seed_ids_bound": [
+    "CAPEC-273"
+   ],
+   "template": "generic_walk",
+   "query": "g.V().has(\"id\", within(ids)).as(\"ap\").union(__.or(__.hasLabel(\"AttackPattern\"), __.not(__.hasLabel(\"AttackPattern\"))).repeat(__.in(\"CAN_PRECEDE\")).times(3).emit(), __.or(__.hasLabel(\"AttackPattern\"), __.not(__.hasLabel(\"AttackPattern\"))).repeat(__.out(\"CAN_PRECEDE\")).times(3).emit()).as(\"nbr\").select(\"ap\",\"nbr\").by(elementMap()).limit(20000)",
+   "error": "",
+   "summary": "Found 1 CAPEC record(s): CAPEC-273."
+  }
+ ],
+ "planner_observed_plan": [
+  {
+   "sub_question_id": "q1",
+   "source": "capec",
+   "text": "Find AttackPattern nodes whose typical severity is Medium and that can follow the AttackPattern identified as CAPEC-273 / HTTP Response Smuggling, using the CanFollow relationship in the direction where the returned pattern can follow CAPEC-273.",
+   "entities": [
+    "AttackPattern",
+    "CanFollow"
+   ],
+   "seed_ids": [],
+   "depends_on": null,
+   "limits": {
+    "max_traversal_depth": 1,
+    "max_result_rows": 1000,
+    "query_timeout_ms": 5000
+   }
+  }
+ ],
+ "planner_executed_steps": [
+  {
+   "source": "capec",
+   "sub_question": "Find AttackPattern nodes whose typical severity is Medium and that can follow the AttackPattern identified as CAPEC-273 / HTTP Response Smuggling, using the CanFollow relationship in the direction where the returned pattern can follow CAPEC-273.",
+   "labels": [
+    "AttackPattern"
+   ],
+   "relationships": [
+    "CanFollow"
+   ],
+   "seed_ids_bound": [
+    "CAPEC-273"
+   ],
+   "template": "generic_walk",
+   "query": "g.V().has(\"id\", within(ids)).as(\"ap\").union(__.or(__.hasLabel(\"AttackPattern\"), __.not(__.hasLabel(\"AttackPattern\"))).repeat(__.in(\"CAN_FOLLOW\")).times(3).emit()).as(\"nbr\").select(\"ap\",\"nbr\").by(elementMap()).limit(1000)",
+   "error": "pre-run gate rejected all drafts: repeat(...).times(3) exceeds max_traversal_depth 1",
+   "summary": ""
+  }
+ ]
+}

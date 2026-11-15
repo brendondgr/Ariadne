@@ -41,8 +41,8 @@ kind; their detail is kept privately with the rest of the positioning material (
 | Q54 | Two CAPEC properties the questions filter on were never parsed from the source | EXP-2026-09-018 Step 4 | 10 dev and 16 holdout filtered questions; part of Q52's slice *(open)* |
 | Q55 | The Neo4j loader packs every non-core property into a JSON string, so no Cypher filter can see it | EXP-2026-09-018 Step 4 | every ATT&CK-side filter push-down *(open)* |
 | Q56 | The arm runner's default model was one the configured endpoint does not serve, so an LLM arm ran model-free and finished | EXP-2026-09-018 Step 5 preflight | answered and fixed; archived runners still carry the old default *(partly)* |
-| Q57 | Every headline figure replays an authored retrieval plan; the system's own planner costs −0.3814 gold coverage | EXP-2026-09-019 Steps 2, 5 | **the meaning of every 0.90 this project reports** — a ceiling given a correct plan, not an end-to-end result *(open)* |
-| Q58 | The planner arm's loss is not separated from the tighter per-plan bounds it inherits | EXP-2026-09-019 I-2 | how much of Q57 is a worse decomposition; what a fix should target *(open)* |
+| Q57 | Every headline figure replays an authored retrieval plan; the system's own planner costs −0.3814 gold coverage | EXP-2026-09-019 Steps 2, 5; EXP-2026-11-009 | the 77 lost questions are attributed: wrong relation choice dominates for both planners; the harness loses 0.16 (pre-registered, a lower bound) to 0.41 of the LLM planner's losses *(amended)* |
+| Q58 | The planner arm's loss is not separated from the tighter per-plan bounds it inherits | EXP-2026-09-019 I-2; EXP-2026-11-009 | limits effect −0.001 (SE 0.001), decomposition −0.3342 (SE 0.026): the loss is the decomposition *(answered)* |
 | Q59 | An entity name is never looked up unless the router first picks a dataset, so a question naming a thing in ordinary words binds nothing | EXP-2026-09-021 A-1; EXP-2026-09-023 H2 | lookup order fixed behind `ARIADNE_ANCHOR_BEFORE_ROUTING`: unresolved T3 anchors 37 → 4 of 101; the remaining T3 loss is the rung's rendering, not the bind *(amended)* |
 | Q60 | Can portable candidate discovery become accurate open-question answers through role-aware selection, reranking, and evidence completion? | EXP-2026-09-022; EXP-2026-09-023 Step 0; EXP-2026-09-028 | the shipped index beats the prototype at every budget ≥ 5; a reranked, disclosed closed choice reaches 0.125/0.20 exact at wrong-entity 0.10/0.15 on the sealed bank and 0.35 wrong at T4 on the exposed bank — a clarification, not an answer *(amended)* |
 
@@ -795,6 +795,15 @@ cases to specific planner decisions. `Q58` must be settled first or in parallel,
 or the target of any fix is guessed. **From:** `EXP-2026-09-019` Steps 2 and 5.
 **Cost:** a judged pass plus a third arm. **Where it lands:** unassigned.
 
+**Amended 2026-11-15 (EXP-2026-11-009).** All 77 lost questions are attributed, together with
+the 105 the Gemma 4 26B planner lost (EXP-2026-09-020 A-2). The largest single cause for both
+planners is choosing the wrong relation: 59 of 77, and 68 of 105 (42 after a post-hoc
+correction). On the LLM side, the harness loses a share of plans that were right: 0.16
+pre-registered, a lower bound, against 0.30 in a blind annotator's sample and 0.41 with the
+builder's fixed walk counted. The causes are seed ids re-read from English, a builder walk that
+ignores the plan's depth, and wrong direction. Still open: a fix and its measurement (era-2
+Steps 10 and 11).
+
 ### Q58 — The planner arm's loss is not separated from its tighter per-plan bounds
 
 **Why it matters:** `generic_planned` runs the real pipeline, so the planner's
@@ -814,6 +823,12 @@ under the gold-replay path's bounds. The difference between that arm and
 `generic_composed` is the decomposition. **From:** `EXP-2026-09-019` `I-2`.
 **Cost:** one run, no grading. **Where it lands:** unassigned.
 
+
+**Answered 2026-11-15 (EXP-2026-11-009).** The third arm ran the authored plan under the
+deterministic planner's limits (1,000 rows, depth 3), back to back with both controls,
+model-free and guarded at the socket. Limits effect: **−0.001** (SE 0.001). Decomposition
+effect: **−0.3342** (SE 0.026). The loss is the decomposition; tighter bounds cost nothing
+measurable.
 ### Q52 — A declared property filter reaches neither the query nor the composer
 
 **Why it matters:** 47 dev questions and 105 bank questions carry a `filters`

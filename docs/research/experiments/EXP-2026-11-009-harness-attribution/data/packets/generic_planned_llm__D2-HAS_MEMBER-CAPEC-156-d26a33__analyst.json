@@ -1,0 +1,65 @@
+{
+ "qid": "D2-HAS_MEMBER-CAPEC-156-d26a33::analyst",
+ "planner": "LLM planner (Gemma 4 26B; its plan format has no seed-id field)",
+ "question": "Which CAPEC attack patterns does the category Engage in Deceptive Interactions (CAPEC-156) contain?",
+ "authored_records": 1,
+ "authored_steps": [
+  {
+   "source": "capec",
+   "sub_question": "Which CAPEC attack patterns does the category Engage in Deceptive Interactions (CAPEC-156) contain?",
+   "labels": [
+    "Category",
+    "AttackPattern"
+   ],
+   "relationships": [
+    "MEMBER_OF"
+   ],
+   "seed_ids_bound": [
+    "CAPEC-156"
+   ],
+   "template": "generic_walk",
+   "query": "g.V().has(\"id\", within(ids)).as(\"ap\").union(__.or(__.hasLabel(\"AttackPattern\"), __.not(__.hasLabel(\"AttackPattern\", \"Category\"))).out(\"MEMBER_OF\"), __.or(__.hasLabel(\"Category\"), __.not(__.hasLabel(\"AttackPattern\", \"Category\"))).in(\"MEMBER_OF\")).as(\"nbr\").select(\"ap\",\"nbr\").by(elementMap()).limit(20000)",
+   "error": "",
+   "summary": "Found 1 CAPEC record(s): CAPEC-156."
+  }
+ ],
+ "planner_observed_plan": [
+  {
+   "sub_question_id": "q1",
+   "source": "capec",
+   "text": "Retrieve all AttackPattern nodes that are members of the Category node named 'Engage in Deceptive Interactions' with identifier CAPEC-156, using the MEMBER_OF relationship or its inverse, and return each AttackPattern's name and CAPEC identifier.",
+   "entities": [
+    "Category",
+    "AttackPattern",
+    "MEMBER_OF"
+   ],
+   "seed_ids": [],
+   "depends_on": null,
+   "limits": {
+    "max_traversal_depth": 1,
+    "max_result_rows": 1000,
+    "query_timeout_ms": 5000
+   }
+  }
+ ],
+ "planner_executed_steps": [
+  {
+   "source": "capec",
+   "sub_question": "Retrieve all AttackPattern nodes that are members of the Category node named 'Engage in Deceptive Interactions' with identifier CAPEC-156, using the MEMBER_OF relationship or its inverse, and return each AttackPattern's name and CAPEC identifier.",
+   "labels": [
+    "Category",
+    "AttackPattern"
+   ],
+   "relationships": [
+    "MEMBER_OF"
+   ],
+   "seed_ids_bound": [
+    "CAPEC-156"
+   ],
+   "template": "generic_walk",
+   "query": "g.V().has(\"id\", within(ids)).as(\"ap\").union(__.or(__.hasLabel(\"AttackPattern\"), __.not(__.hasLabel(\"AttackPattern\", \"Category\"))).out(\"MEMBER_OF\")).as(\"nbr\").select(\"ap\",\"nbr\").by(elementMap()).limit(1000)",
+   "error": "",
+   "summary": "No CAPEC records found."
+  }
+ ]
+}

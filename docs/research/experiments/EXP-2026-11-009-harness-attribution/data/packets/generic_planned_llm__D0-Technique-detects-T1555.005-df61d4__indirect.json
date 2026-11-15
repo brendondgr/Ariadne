@@ -1,0 +1,48 @@
+{
+ "qid": "D0-Technique-detects-T1555.005-df61d4::indirect",
+ "planner": "LLM planner (Gemma 4 26B; its plan format has no seed-id field)",
+ "question": "Which ATT&CK techniques does T1555.005, Password Managers, detect?",
+ "authored_records": 1,
+ "authored_steps": [
+  {
+   "source": "attack",
+   "sub_question": "Which ATT&CK techniques does T1555.005, Password Managers, detect?",
+   "labels": [
+    "Technique"
+   ],
+   "relationships": [
+    "DETECTS"
+   ],
+   "seed_ids_bound": [
+    "T1555.005"
+   ],
+   "template": "generic_neighbors",
+   "query": "MATCH (n) WHERE coalesce(n.attack_id, n.id) IN $ids OPTIONAL MATCH (n)-[r:DETECTS]-(m) RETURN coalesce(n.attack_id, n.id) AS anchor_id, n.name AS anchor_name, labels(n)[0] AS anchor_label, coalesce(m.attack_id, m.id) AS neighbour_id, m.name AS neighbour_name, labels(m)[0] AS neighbour_label, type(r) AS rel_type LIMIT 20000",
+   "error": "",
+   "summary": "Found 1 item(s) related to T1555.005 (e.g. DET0597) in MITRE ATT&CK."
+  }
+ ],
+ "planner_observed_plan": [
+  {
+   "sub_question_id": "q1",
+   "source": "attack",
+   "text": "In attack, identify DETECTS, DetectionStrategy, HAS_TECHNIQUE, Matrix, SubTechnique, Technique relevant to: Which ATT&CK techniques does T1555.005, Password Managers, detect?",
+   "entities": [
+    "DETECTS",
+    "DetectionStrategy",
+    "HAS_TECHNIQUE",
+    "Matrix",
+    "SubTechnique",
+    "Technique"
+   ],
+   "seed_ids": [],
+   "depends_on": null,
+   "limits": {
+    "max_traversal_depth": 3,
+    "max_result_rows": 1000,
+    "query_timeout_ms": 5000
+   }
+  }
+ ],
+ "planner_executed_steps": []
+}

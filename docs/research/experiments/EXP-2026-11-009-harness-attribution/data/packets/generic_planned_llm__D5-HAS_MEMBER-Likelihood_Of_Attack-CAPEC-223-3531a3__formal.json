@@ -1,0 +1,69 @@
+{
+ "qid": "D5-HAS_MEMBER-Likelihood_Of_Attack-CAPEC-223-3531a3::formal",
+ "planner": "LLM planner (Gemma 4 26B; its plan format has no seed-id field)",
+ "question": "Which attack patterns with a High likelihood of attack are contained in the Employ Probabilistic Techniques category, CAPEC-223?",
+ "authored_records": 1,
+ "authored_steps": [
+  {
+   "source": "capec",
+   "sub_question": "Which attack patterns with a High likelihood of attack are contained in the Employ Probabilistic Techniques category, CAPEC-223?",
+   "labels": [
+    "Category",
+    "AttackPattern"
+   ],
+   "relationships": [
+    "MEMBER_OF"
+   ],
+   "seed_ids_bound": [
+    "CAPEC-223"
+   ],
+   "template": "generic_walk",
+   "query": "g.V().has(\"id\", within(ids)).as(\"ap\").union(__.or(__.hasLabel(\"AttackPattern\"), __.not(__.hasLabel(\"AttackPattern\", \"Category\"))).out(\"MEMBER_OF\"), __.or(__.hasLabel(\"Category\"), __.not(__.hasLabel(\"AttackPattern\", \"Category\"))).in(\"MEMBER_OF\")).or(__.not(__.hasLabel(\"AttackPattern\")), __.has(\"Likelihood_Of_Attack\", filterValue)).as(\"nbr\").select(\"ap\",\"nbr\").by(elementMap()).limit(20000)",
+   "error": "",
+   "summary": "Found 1 CAPEC record(s): CAPEC-223."
+  }
+ ],
+ "planner_observed_plan": [
+  {
+   "sub_question_id": "q1",
+   "source": "capec",
+   "text": "Find CAPEC AttackPattern nodes that are contained in the Category node with id CAPEC-223, named Employ Probabilistic Techniques, and that have a High likelihood of attack. Return the matching attack pattern identifiers/names and their likelihood values.",
+   "entities": [
+    "Category",
+    "AttackPattern",
+    "ChildOf",
+    "ParentOf",
+    "MEMBER_OF"
+   ],
+   "seed_ids": [],
+   "depends_on": null,
+   "limits": {
+    "max_traversal_depth": 1,
+    "max_result_rows": 1000,
+    "query_timeout_ms": 5000
+   }
+  }
+ ],
+ "planner_executed_steps": [
+  {
+   "source": "capec",
+   "sub_question": "Find CAPEC AttackPattern nodes that are contained in the Category node with id CAPEC-223, named Employ Probabilistic Techniques, and that have a High likelihood of attack. Return the matching attack pattern identifiers/names and their likelihood values.",
+   "labels": [
+    "Category",
+    "AttackPattern"
+   ],
+   "relationships": [
+    "ChildOf",
+    "ParentOf",
+    "MEMBER_OF"
+   ],
+   "seed_ids_bound": [
+    "CAPEC-223"
+   ],
+   "template": "generic_walk",
+   "query": "g.V().has(\"id\", within(ids)).as(\"ap\").union(__.or(__.hasLabel(\"AttackPattern\"), __.not(__.hasLabel(\"AttackPattern\", \"Category\"))).repeat(__.in(\"CHILD_OF\")).times(3).emit()).or(__.not(__.hasLabel(\"AttackPattern\")), __.has(\"Likelihood_Of_Attack\", filterValue)).as(\"nbr\").select(\"ap\",\"nbr\").by(elementMap()).limit(1000)",
+   "error": "pre-run gate rejected all drafts: repeat(...).times(3) exceeds max_traversal_depth 1",
+   "summary": ""
+  }
+ ]
+}

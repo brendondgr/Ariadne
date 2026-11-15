@@ -1,0 +1,64 @@
+{
+ "qid": "D3-ChildOf-CAPEC-227-5f6f39::analyst",
+ "planner": "LLM planner (Gemma 4 26B; its plan format has no seed-id field)",
+ "question": "Which CAPEC attack patterns are more specific cases of Sustained Client Engagement (CAPEC-227)?",
+ "authored_records": 1,
+ "authored_steps": [
+  {
+   "source": "capec",
+   "sub_question": "Which CAPEC attack patterns are more specific cases of Sustained Client Engagement (CAPEC-227)?",
+   "labels": [
+    "AttackPattern"
+   ],
+   "relationships": [
+    "ChildOf"
+   ],
+   "seed_ids_bound": [
+    "CAPEC-227"
+   ],
+   "template": "generic_walk",
+   "query": "g.V().has(\"id\", within(ids)).as(\"ap\").union(__.or(__.hasLabel(\"AttackPattern\"), __.not(__.hasLabel(\"AttackPattern\"))).repeat(__.in(\"CHILD_OF\")).times(3).emit(), __.or(__.hasLabel(\"AttackPattern\"), __.not(__.hasLabel(\"AttackPattern\"))).repeat(__.out(\"CHILD_OF\")).times(3).emit()).as(\"nbr\").select(\"ap\",\"nbr\").by(elementMap()).limit(20000)",
+   "error": "",
+   "summary": "Found 1 CAPEC record(s): CAPEC-227."
+  }
+ ],
+ "planner_observed_plan": [
+  {
+   "sub_question_id": "q1",
+   "source": "capec",
+   "text": "Find the CAPEC AttackPattern 'Sustained Client Engagement' (CAPEC-227) and return the more specific child AttackPattern nodes in its CAPEC hierarchy, using ChildOf or ParentOf edges.",
+   "entities": [
+    "AttackPattern",
+    "ChildOf",
+    "ParentOf"
+   ],
+   "seed_ids": [],
+   "depends_on": null,
+   "limits": {
+    "max_traversal_depth": 1,
+    "max_result_rows": 1000,
+    "query_timeout_ms": 5000
+   }
+  }
+ ],
+ "planner_executed_steps": [
+  {
+   "source": "capec",
+   "sub_question": "Find the CAPEC AttackPattern 'Sustained Client Engagement' (CAPEC-227) and return the more specific child AttackPattern nodes in its CAPEC hierarchy, using ChildOf or ParentOf edges.",
+   "labels": [
+    "AttackPattern"
+   ],
+   "relationships": [
+    "ChildOf",
+    "ParentOf"
+   ],
+   "seed_ids_bound": [
+    "CAPEC-227"
+   ],
+   "template": "generic_walk",
+   "query": "g.V().has(\"id\", within(ids)).as(\"ap\").union(__.or(__.hasLabel(\"AttackPattern\"), __.not(__.hasLabel(\"AttackPattern\"))).repeat(__.in(\"CHILD_OF\")).times(3).emit()).as(\"nbr\").select(\"ap\",\"nbr\").by(elementMap()).limit(1000)",
+   "error": "pre-run gate rejected all drafts: repeat(...).times(3) exceeds max_traversal_depth 1",
+   "summary": ""
+  }
+ ]
+}

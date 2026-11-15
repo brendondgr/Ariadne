@@ -1,0 +1,50 @@
+{
+ "qid": "D0-Analytic-kill_chain_phase-AN1955-53c2dd::indirect",
+ "planner": "LLM planner (Gemma 4 26B; its plan format has no seed-id field)",
+ "question": "Which ATT&CK tactics does the detection analytic AN1955 belong to?",
+ "authored_records": 1,
+ "authored_steps": [
+  {
+   "source": "attack",
+   "sub_question": "Which ATT&CK tactics does the detection analytic AN1955 belong to?",
+   "labels": [
+    "Analytic",
+    "Tactic"
+   ],
+   "relationships": [
+    "HAS_TECHNIQUE"
+   ],
+   "seed_ids_bound": [
+    "AN1955"
+   ],
+   "template": "generic_chain",
+   "query": "MATCH (n) WHERE coalesce(n.attack_id, n.id) IN $ids OPTIONAL MATCH (n)<-[:HAS_ANALYTIC]-(m0) WHERE n:Analytic OR NOT (n:Analytic OR n:Tactic) WITH n, collect(DISTINCT {m: m0, r: 'HAS_ANALYTIC'}) AS h0 OPTIONAL MATCH (n)-[:HAS_TECHNIQUE]->(m1) WHERE n:Tactic OR NOT (n:Analytic OR n:Tactic) WITH n, h0, collect(DISTINCT {m: m1, r: 'HAS_TECHNIQUE'}) AS h1 OPTIONAL MATCH (n)<-[:HAS_ANALYTIC]-()-[:DETECTS]->(m2) WHERE n:Analytic OR NOT (n:Analytic OR n:Tactic) WITH n, h0, h1, collect(DISTINCT {m: m2, r: 'DETECTS'}) AS h2 OPTIONAL MATCH (n)-[:HAS_TECHNIQUE]->()<-[:DETECTS]-(m3) WHERE n:Tactic OR NOT (n:Analytic OR n:Tactic) WITH n, h0, h1, h2, collect(DISTINCT {m: m3, r: 'DETECTS'}) AS h3 OPTIONAL ",
+   "error": "",
+   "summary": "Found 3 item(s) related to AN1955 (e.g. DET0823, T1598, TA0043) in MITRE ATT&CK."
+  }
+ ],
+ "planner_observed_plan": [
+  {
+   "sub_question_id": "q1",
+   "source": "attack",
+   "text": "Find all ATT&CK Tactic nodes associated with the detection analytic AN1955, following available paths from Analytic to DetectionStrategy to Technique to Tactic, and return the tactic identifiers and names.",
+   "entities": [
+    "Analytic",
+    "DetectionStrategy",
+    "Technique",
+    "Tactic",
+    "HAS_ANALYTIC",
+    "DETECTS",
+    "HAS_TACTIC"
+   ],
+   "seed_ids": [],
+   "depends_on": null,
+   "limits": {
+    "max_traversal_depth": 3,
+    "max_result_rows": 1000,
+    "query_timeout_ms": 5000
+   }
+  }
+ ],
+ "planner_executed_steps": []
+}

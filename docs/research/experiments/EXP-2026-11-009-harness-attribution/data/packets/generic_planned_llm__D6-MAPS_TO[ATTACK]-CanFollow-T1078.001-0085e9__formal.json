@@ -1,0 +1,112 @@
+{
+ "qid": "D6-MAPS_TO[ATTACK]-CanFollow-T1078.001-0085e9::formal",
+ "planner": "LLM planner (Gemma 4 26B; its plan format has no seed-id field)",
+ "question": "Which CAPEC attack patterns correspond to the ATT&CK technique Default Accounts (T1078.001), and which CAPEC attack patterns can follow each of those?",
+ "authored_records": 2,
+ "authored_steps": [
+  {
+   "source": "capec",
+   "sub_question": "For T1078.001: the CAPEC attack patterns that correspond to it.",
+   "labels": [
+    "AttackPattern"
+   ],
+   "relationships": [
+    "MAPS_TO"
+   ],
+   "seed_ids_bound": [
+    "T1078.001"
+   ],
+   "template": "generic_bridge",
+   "query": "g.V().hasLabel(\"TaxonomyEntry\").has(\"entry_id\", within(entryIds)).as(\"tax\").in(\"MAPS_TO\").hasLabel(\"AttackPattern\").as(\"ap\").select(\"ap\",\"tax\").by(elementMap()).limit(20000)",
+   "error": "",
+   "summary": "Found 1 CAPEC record(s) for CAPEC-70; ATT&CK mappings: T1078.001."
+  },
+  {
+   "source": "capec",
+   "sub_question": "For each of those: the CAPEC attack patterns that can follow each of those.",
+   "labels": [
+    "AttackPattern"
+   ],
+   "relationships": [
+    "CanFollow"
+   ],
+   "seed_ids_bound": [
+    "CAPEC-70"
+   ],
+   "template": "generic_walk",
+   "query": "g.V().has(\"id\", within(ids)).as(\"ap\").union(__.or(__.hasLabel(\"AttackPattern\"), __.not(__.hasLabel(\"AttackPattern\"))).repeat(__.in(\"CAN_FOLLOW\")).times(3).emit(), __.or(__.hasLabel(\"AttackPattern\"), __.not(__.hasLabel(\"AttackPattern\"))).repeat(__.out(\"CAN_FOLLOW\")).times(3).emit()).as(\"nbr\").select(\"ap\",\"nbr\").by(elementMap()).limit(20000)",
+   "error": "",
+   "summary": "Found 1 CAPEC record(s): CAPEC-70."
+  }
+ ],
+ "planner_observed_plan": [
+  {
+   "sub_question_id": "q1",
+   "source": "capec",
+   "text": "In capec, identify AttackPattern, CanFollow relevant to: Which CAPEC attack patterns correspond to the ATT&CK technique Default Accounts (T1078.001), and which CAPEC attack patterns can follow each of those?",
+   "entities": [
+    "AttackPattern",
+    "CanFollow"
+   ],
+   "seed_ids": [],
+   "depends_on": null,
+   "limits": {
+    "max_traversal_depth": 3,
+    "max_result_rows": 1000,
+    "query_timeout_ms": 5000
+   }
+  },
+  {
+   "sub_question_id": "q2",
+   "source": "attack",
+   "text": "In attack, identify HAS_TECHNIQUE, Matrix, Software, SubTechnique, Technique relevant to: Which CAPEC attack patterns correspond to the ATT&CK technique Default Accounts (T1078.001), and which CAPEC attack patterns can follow each of those?",
+   "entities": [
+    "HAS_TECHNIQUE",
+    "Matrix",
+    "Software",
+    "SubTechnique",
+    "Technique"
+   ],
+   "seed_ids": [],
+   "depends_on": null,
+   "limits": {
+    "max_traversal_depth": 3,
+    "max_result_rows": 1000,
+    "query_timeout_ms": 5000
+   }
+  }
+ ],
+ "planner_executed_steps": [
+  {
+   "source": "attack",
+   "sub_question": "In attack, identify HAS_TECHNIQUE, Matrix, Software, SubTechnique, Technique relevant to: Which CAPEC attack patterns correspond to the ATT&CK technique Default Accounts (T1078.001), and which CAPEC attack patterns can follow each of those?",
+   "labels": [
+    "Matrix",
+    "Software",
+    "SubTechnique",
+    "Technique"
+   ],
+   "relationships": [
+    "HAS_TECHNIQUE"
+   ],
+   "seed_ids_bound": [
+    "T1078.001"
+   ],
+   "template": "generic_chain",
+   "query": "MATCH (n) WHERE coalesce(n.attack_id, n.id) IN $ids OPTIONAL MATCH (n)-[:HAS_TACTIC]->(m0) WHERE n:Matrix OR NOT (n:Matrix OR n:Software OR n:SubTechnique OR n:Technique) WITH n, collect(DISTINCT {m: m0, r: 'HAS_TACTIC'}) AS h0 OPTIONAL MATCH (n)-[:USES]->(m1) WHERE n:Software OR NOT (n:Matrix OR n:Software OR n:SubTechnique OR n:Technique) WITH n, h0, collect(DISTINCT {m: m1, r: 'USES'}) AS h1 OPTIONAL MATCH (n)<-[:HAS_TECHNIQUE]-(m2) WHERE n:SubTechnique OR NOT (n:Matrix OR n:Software OR n:SubTechnique OR n:Technique) WITH n, h0, h1, collect(DISTINCT {m: m2, r: 'HAS_TECHNIQUE'}) AS h2 OPTIONAL MATCH (n)<-[:USES]-(m3) WHERE n:SubTechnique OR NOT (n:Matrix OR n:Software OR n:SubTechnique OR ",
+   "error": "pre-run gate rejected all drafts: traversal depth 4 exceeds max_traversal_depth 3 (literal hop chain)",
+   "summary": ""
+  },
+  {
+   "source": "capec",
+   "sub_question": "In capec, identify AttackPattern, CanFollow relevant to: Which CAPEC attack patterns correspond to the ATT&CK technique Default Accounts (T1078.001), and which CAPEC attack patterns can follow each of those?",
+   "labels": [],
+   "relationships": [],
+   "seed_ids_bound": [],
+   "template": null,
+   "query": "",
+   "error": "",
+   "summary": "Skipped: this sub-question depends on q2 for its seed identifiers, but it failed (pre-run gate rejected all drafts: traversal depth 4 exceeds max_traversal_depth 3 (literal hop chain))."
+  }
+ ]
+}

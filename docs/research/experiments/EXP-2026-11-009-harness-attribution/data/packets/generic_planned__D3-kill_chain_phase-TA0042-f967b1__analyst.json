@@ -1,0 +1,81 @@
+{
+ "qid": "D3-kill_chain_phase-TA0042-f967b1::analyst",
+ "planner": "deterministic rules planner",
+ "question": "Which ATT&CK techniques belong to the Resource Development tactic (TA0042)?",
+ "authored_records": 1,
+ "authored_steps": [
+  {
+   "source": "attack",
+   "sub_question": "Which ATT&CK techniques belong to the Resource Development tactic (TA0042)?",
+   "labels": [
+    "Tactic",
+    "Technique"
+   ],
+   "relationships": [
+    "HAS_TECHNIQUE"
+   ],
+   "seed_ids_bound": [
+    "TA0042"
+   ],
+   "template": "generic_chain",
+   "query": "MATCH (n) WHERE coalesce(n.attack_id, n.id) IN $ids OPTIONAL MATCH (n)-[:HAS_TECHNIQUE]->(m0) WHERE n:Tactic OR NOT (n:Tactic OR n:Technique) WITH n, collect(DISTINCT {m: m0, r: 'HAS_TECHNIQUE'}) AS h0 OPTIONAL MATCH (n)<-[:HAS_TECHNIQUE]-(m1) WHERE n:Technique OR NOT (n:Tactic OR n:Technique) WITH n, h0, collect(DISTINCT {m: m1, r: 'HAS_TECHNIQUE'}) AS h1 WITH n, h0 + h1 AS hops UNWIND (CASE WHEN size(hops) = 0 THEN [{m: null, r: null}] ELSE hops END) AS hop RETURN coalesce(n.attack_id, n.id) AS anchor_id, n.name AS anchor_name, labels(n)[0] AS anchor_label, coalesce(hop.m.attack_id, hop.m.id) AS neighbour_id, hop.m.name AS neighbour_name, labels(hop.m)[0] AS neighbour_label, hop.r AS rel_t",
+   "error": "",
+   "summary": "Found 50 item(s) related to TA0042 (e.g. T1583, T1583.007, T1588.007) in MITRE ATT&CK."
+  }
+ ],
+ "planner_observed_plan": [
+  {
+   "sub_question_id": "q1",
+   "source": "attack",
+   "text": "In attack, identify HAS_TACTIC, HAS_TECHNIQUE, Matrix, SubTechnique, Tactic, Technique relevant to: Which ATT&CK techniques belong to the Resource Development tactic (TA0042)?",
+   "seed_ids": [],
+   "depends_on": null,
+   "limits": {
+    "max_traversal_depth": 3,
+    "max_result_rows": 1000,
+    "query_timeout_ms": 5000
+   }
+  },
+  {
+   "sub_question_id": "q2",
+   "source": "capec",
+   "text": "In capec, identify AttackPattern, REQUIRES_RESOURCE, Resource relevant to: Which ATT&CK techniques belong to the Resource Development tactic (TA0042)?",
+   "seed_ids": [],
+   "depends_on": null,
+   "limits": {
+    "max_traversal_depth": 3,
+    "max_result_rows": 1000,
+    "query_timeout_ms": 5000
+   }
+  }
+ ],
+ "planner_executed_steps": [
+  {
+   "source": "capec",
+   "sub_question": "In capec, identify AttackPattern, REQUIRES_RESOURCE, Resource relevant to: Which ATT&CK techniques belong to the Resource Development tactic (TA0042)?",
+   "labels": [
+    "AttackPattern",
+    "Resource"
+   ],
+   "relationships": [
+    "REQUIRES_RESOURCE"
+   ],
+   "seed_ids_bound": [],
+   "template": "unanchored",
+   "query": "g.V().hasLabel(\"AttackPattern\").has(\"id\", within(ids)).elementMap().limit(1000)",
+   "error": "",
+   "summary": "No CAPEC records found."
+  },
+  {
+   "source": "attack",
+   "sub_question": "In attack, identify HAS_TACTIC, HAS_TECHNIQUE, Matrix, SubTechnique, Tactic, Technique relevant to: Which ATT&CK techniques belong to the Resource Development tactic (TA0042)?",
+   "labels": [],
+   "relationships": [],
+   "seed_ids_bound": [],
+   "template": null,
+   "query": "",
+   "error": "",
+   "summary": "Skipped: this sub-question depends on q2 for its seed identifiers, but it returned no join values."
+  }
+ ]
+}

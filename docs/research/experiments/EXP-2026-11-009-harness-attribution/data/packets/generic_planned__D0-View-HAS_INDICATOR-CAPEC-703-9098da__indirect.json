@@ -1,0 +1,62 @@
+{
+ "qid": "D0-View-HAS_INDICATOR-CAPEC-703-9098da::indirect",
+ "planner": "deterministic rules planner",
+ "question": "Which indicators indicate CAPEC-703, the Industrial Control System (ICS) Patterns view?",
+ "authored_records": 1,
+ "authored_steps": [
+  {
+   "source": "capec",
+   "sub_question": "Which indicators indicate CAPEC-703, the Industrial Control System (ICS) Patterns view?",
+   "labels": [
+    "View",
+    "Indicator"
+   ],
+   "relationships": [
+    "HAS_INDICATOR"
+   ],
+   "seed_ids_bound": [
+    "CAPEC-703"
+   ],
+   "template": "generic_walk",
+   "query": "g.V().has(\"id\", within(ids)).as(\"ap\").union(__.or(__.hasLabel(\"Indicator\"), __.not(__.hasLabel(\"Indicator\", \"View\"))).in(\"HAS_INDICATOR\"), __.or(__.hasLabel(\"View\"), __.not(__.hasLabel(\"Indicator\", \"View\"))).in(\"IN_VIEW\")).as(\"nbr\").select(\"ap\",\"nbr\").by(elementMap()).limit(20000)",
+   "error": "",
+   "summary": "Found 1 CAPEC record(s): CAPEC-703."
+  }
+ ],
+ "planner_observed_plan": [
+  {
+   "sub_question_id": "q1",
+   "source": "capec",
+   "text": "In capec, identify AttackPattern, HAS_INDICATOR, IN_VIEW, Indicator, View relevant to: Which indicators indicate CAPEC-703, the Industrial Control System (ICS) Patterns view?",
+   "seed_ids": [],
+   "depends_on": null,
+   "limits": {
+    "max_traversal_depth": 3,
+    "max_result_rows": 1000,
+    "query_timeout_ms": 5000
+   }
+  }
+ ],
+ "planner_executed_steps": [
+  {
+   "source": "capec",
+   "sub_question": "In capec, identify AttackPattern, HAS_INDICATOR, IN_VIEW, Indicator, View relevant to: Which indicators indicate CAPEC-703, the Industrial Control System (ICS) Patterns view?",
+   "labels": [
+    "AttackPattern",
+    "Indicator",
+    "View"
+   ],
+   "relationships": [
+    "HAS_INDICATOR",
+    "IN_VIEW"
+   ],
+   "seed_ids_bound": [
+    "CAPEC-703"
+   ],
+   "template": "generic_walk",
+   "query": "g.V().has(\"id\", within(ids)).as(\"ap\").union(__.or(__.hasLabel(\"AttackPattern\"), __.not(__.hasLabel(\"AttackPattern\", \"Indicator\", \"View\"))).out(\"HAS_INDICATOR\"), __.or(__.hasLabel(\"AttackPattern\"), __.not(__.hasLabel(\"AttackPattern\", \"Indicator\", \"View\"))).out(\"HAS_INDICATOR\").in(\"HAS_INDICATOR\")).as(\"nbr\").select(\"ap\",\"nbr\").by(elementMap()).limit(1000)",
+   "error": "",
+   "summary": "No CAPEC records found."
+  }
+ ]
+}

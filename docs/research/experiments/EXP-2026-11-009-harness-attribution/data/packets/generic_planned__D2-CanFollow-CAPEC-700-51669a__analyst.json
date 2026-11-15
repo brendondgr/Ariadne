@@ -1,0 +1,58 @@
+{
+ "qid": "D2-CanFollow-CAPEC-700-51669a::analyst",
+ "planner": "deterministic rules planner",
+ "question": "Which CAPEC attack patterns can precede Network Boundary Bridging (CAPEC-700)?",
+ "authored_records": 1,
+ "authored_steps": [
+  {
+   "source": "capec",
+   "sub_question": "Which CAPEC attack patterns can precede Network Boundary Bridging (CAPEC-700)?",
+   "labels": [
+    "AttackPattern"
+   ],
+   "relationships": [
+    "CanFollow"
+   ],
+   "seed_ids_bound": [
+    "CAPEC-700"
+   ],
+   "template": "generic_walk",
+   "query": "g.V().has(\"id\", within(ids)).as(\"ap\").union(__.or(__.hasLabel(\"AttackPattern\"), __.not(__.hasLabel(\"AttackPattern\"))).repeat(__.in(\"CAN_FOLLOW\")).times(3).emit(), __.or(__.hasLabel(\"AttackPattern\"), __.not(__.hasLabel(\"AttackPattern\"))).repeat(__.out(\"CAN_FOLLOW\")).times(3).emit()).as(\"nbr\").select(\"ap\",\"nbr\").by(elementMap()).limit(20000)",
+   "error": "",
+   "summary": "Found 1 CAPEC record(s): CAPEC-700."
+  }
+ ],
+ "planner_observed_plan": [
+  {
+   "sub_question_id": "q1",
+   "source": "capec",
+   "text": "In capec, identify AttackPattern, CanPrecede relevant to: Which CAPEC attack patterns can precede Network Boundary Bridging (CAPEC-700)?",
+   "seed_ids": [],
+   "depends_on": null,
+   "limits": {
+    "max_traversal_depth": 3,
+    "max_result_rows": 1000,
+    "query_timeout_ms": 5000
+   }
+  }
+ ],
+ "planner_executed_steps": [
+  {
+   "source": "capec",
+   "sub_question": "In capec, identify AttackPattern, CanPrecede relevant to: Which CAPEC attack patterns can precede Network Boundary Bridging (CAPEC-700)?",
+   "labels": [
+    "AttackPattern"
+   ],
+   "relationships": [
+    "CanPrecede"
+   ],
+   "seed_ids_bound": [
+    "CAPEC-700"
+   ],
+   "template": "generic_walk",
+   "query": "g.V().has(\"id\", within(ids)).as(\"ap\").union(__.or(__.hasLabel(\"AttackPattern\"), __.not(__.hasLabel(\"AttackPattern\"))).repeat(__.in(\"CAN_PRECEDE\")).times(3).emit(), __.or(__.hasLabel(\"AttackPattern\"), __.not(__.hasLabel(\"AttackPattern\"))).repeat(__.out(\"CAN_PRECEDE\")).times(3).emit()).as(\"nbr\").select(\"ap\",\"nbr\").by(elementMap()).limit(1000)",
+   "error": "",
+   "summary": "No CAPEC records found."
+  }
+ ]
+}

@@ -1,0 +1,59 @@
+{
+ "qid": "D5-CanFollow-Likelihood_Of_Attack-CAPEC-234-6037d9::indirect",
+ "planner": "deterministic rules planner",
+ "question": "For Hijacking a privileged process, CAPEC-234, which attack patterns can lead up to it, keeping just the ones rated Medium for likelihood of attack?",
+ "authored_records": 1,
+ "authored_steps": [
+  {
+   "source": "capec",
+   "sub_question": "For Hijacking a privileged process, CAPEC-234, which attack patterns can lead up to it, keeping just the ones rated Medium for likelihood of attack?",
+   "labels": [
+    "AttackPattern"
+   ],
+   "relationships": [
+    "CanFollow"
+   ],
+   "seed_ids_bound": [
+    "CAPEC-234"
+   ],
+   "template": "generic_walk",
+   "query": "g.V().has(\"id\", within(ids)).as(\"ap\").union(__.or(__.hasLabel(\"AttackPattern\"), __.not(__.hasLabel(\"AttackPattern\"))).repeat(__.in(\"CAN_FOLLOW\")).times(3).emit(), __.or(__.hasLabel(\"AttackPattern\"), __.not(__.hasLabel(\"AttackPattern\"))).repeat(__.out(\"CAN_FOLLOW\")).times(3).emit()).or(__.not(__.hasLabel(\"AttackPattern\")), __.has(\"Likelihood_Of_Attack\", filterValue)).as(\"nbr\").select(\"ap\",\"nbr\").by(elementMap()).limit(20000)",
+   "error": "",
+   "summary": "Found 1 CAPEC record(s): CAPEC-234."
+  }
+ ],
+ "planner_observed_plan": [
+  {
+   "sub_question_id": "q1",
+   "source": "capec",
+   "text": "In capec, identify AttackPattern, HAS_CONSEQUENCE, Skill relevant to: For Hijacking a privileged process, CAPEC-234, which attack patterns can lead up to it, keeping just the ones rated Medium for likelihood of attack?",
+   "seed_ids": [],
+   "depends_on": null,
+   "limits": {
+    "max_traversal_depth": 3,
+    "max_result_rows": 1000,
+    "query_timeout_ms": 5000
+   }
+  }
+ ],
+ "planner_executed_steps": [
+  {
+   "source": "capec",
+   "sub_question": "In capec, identify AttackPattern, HAS_CONSEQUENCE, Skill relevant to: For Hijacking a privileged process, CAPEC-234, which attack patterns can lead up to it, keeping just the ones rated Medium for likelihood of attack?",
+   "labels": [
+    "AttackPattern",
+    "Skill"
+   ],
+   "relationships": [
+    "HAS_CONSEQUENCE"
+   ],
+   "seed_ids_bound": [
+    "CAPEC-234"
+   ],
+   "template": "generic_walk",
+   "query": "g.V().has(\"id\", within(ids)).as(\"ap\").union(__.or(__.hasLabel(\"AttackPattern\"), __.not(__.hasLabel(\"AttackPattern\", \"Skill\"))).out(\"REQUIRES_SKILL\"), __.or(__.hasLabel(\"Skill\"), __.not(__.hasLabel(\"AttackPattern\", \"Skill\"))).in(\"REQUIRES_SKILL\")).or(__.not(__.hasLabel(\"AttackPattern\")), __.has(\"Likelihood_Of_Attack\", filterValue)).as(\"nbr\").select(\"ap\",\"nbr\").by(elementMap()).limit(1000)",
+   "error": "",
+   "summary": "No CAPEC records found."
+  }
+ ]
+}

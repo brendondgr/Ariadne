@@ -1,0 +1,67 @@
+{
+ "qid": "D5-HAS_MEMBER-Typical_Severity-CAPEC-512-dd2e01::analyst",
+ "planner": "LLM planner (Gemma 4 26B; its plan format has no seed-id field)",
+ "question": "Which attack patterns in the Communications category CAPEC-512 have Very High typical severity?",
+ "authored_records": 1,
+ "authored_steps": [
+  {
+   "source": "capec",
+   "sub_question": "Which attack patterns in the Communications category CAPEC-512 have Very High typical severity?",
+   "labels": [
+    "Category",
+    "AttackPattern"
+   ],
+   "relationships": [
+    "MEMBER_OF"
+   ],
+   "seed_ids_bound": [
+    "CAPEC-512"
+   ],
+   "template": "generic_walk",
+   "query": "g.V().has(\"id\", within(ids)).as(\"ap\").union(__.or(__.hasLabel(\"AttackPattern\"), __.not(__.hasLabel(\"AttackPattern\", \"Category\"))).out(\"MEMBER_OF\"), __.or(__.hasLabel(\"Category\"), __.not(__.hasLabel(\"AttackPattern\", \"Category\"))).in(\"MEMBER_OF\")).or(__.not(__.hasLabel(\"AttackPattern\")), __.has(\"Typical_Severity\", filterValue)).as(\"nbr\").select(\"ap\",\"nbr\").by(elementMap()).limit(20000)",
+   "error": "",
+   "summary": "Found 1 CAPEC record(s): CAPEC-512."
+  }
+ ],
+ "planner_observed_plan": [
+  {
+   "sub_question_id": "q1",
+   "source": "capec",
+   "text": "Retrieve AttackPattern nodes associated with the Category identified as CAPEC-512 or Communications, where the AttackPattern has a typical severity value of Very High.",
+   "entities": [
+    "AttackPattern",
+    "Category",
+    "ChildOf",
+    "ParentOf"
+   ],
+   "seed_ids": [],
+   "depends_on": null,
+   "limits": {
+    "max_traversal_depth": 2,
+    "max_result_rows": 1000,
+    "query_timeout_ms": 5000
+   }
+  }
+ ],
+ "planner_executed_steps": [
+  {
+   "source": "capec",
+   "sub_question": "Retrieve AttackPattern nodes associated with the Category identified as CAPEC-512 or Communications, where the AttackPattern has a typical severity value of Very High.",
+   "labels": [
+    "AttackPattern",
+    "Category"
+   ],
+   "relationships": [
+    "ChildOf",
+    "ParentOf"
+   ],
+   "seed_ids_bound": [
+    "CAPEC-512"
+   ],
+   "template": "generic_walk",
+   "query": "g.V().has(\"id\", within(ids)).as(\"ap\").union(__.or(__.hasLabel(\"AttackPattern\"), __.not(__.hasLabel(\"AttackPattern\", \"Category\"))).repeat(__.in(\"CHILD_OF\")).times(3).emit(), __.or(__.hasLabel(\"AttackPattern\"), __.not(__.hasLabel(\"AttackPattern\", \"Category\"))).repeat(__.out(\"CHILD_OF\")).times(3).emit()).or(__.not(__.hasLabel(\"AttackPattern\")), __.has(\"Typical_Severity\", filterValue)).as(\"nbr\").select(\"ap\",\"nbr\").by(elementMap()).limit(1000)",
+   "error": "pre-run gate rejected all drafts: repeat(...).times(3) exceeds max_traversal_depth 2",
+   "summary": ""
+  }
+ ]
+}

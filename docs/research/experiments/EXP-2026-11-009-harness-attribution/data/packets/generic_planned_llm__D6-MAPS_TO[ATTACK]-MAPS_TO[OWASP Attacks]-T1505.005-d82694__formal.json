@@ -1,0 +1,84 @@
+{
+ "qid": "D6-MAPS_TO[ATTACK]-MAPS_TO[OWASP Attacks]-T1505.005-d82694::formal",
+ "planner": "LLM planner (Gemma 4 26B; its plan format has no seed-id field)",
+ "question": "For the CAPEC attack patterns that correspond to the Terminal Services DLL technique T1505.005, which OWASP taxonomy entries does each of them correspond to?",
+ "authored_records": 6,
+ "authored_steps": [
+  {
+   "source": "capec",
+   "sub_question": "For T1505.005: the CAPEC attack patterns that correspond to it.",
+   "labels": [
+    "AttackPattern"
+   ],
+   "relationships": [
+    "MAPS_TO"
+   ],
+   "seed_ids_bound": [
+    "T1505.005"
+   ],
+   "template": "generic_bridge",
+   "query": "g.V().hasLabel(\"TaxonomyEntry\").has(\"entry_id\", within(entryIds)).as(\"tax\").in(\"MAPS_TO\").hasLabel(\"AttackPattern\").as(\"ap\").select(\"ap\",\"tax\").by(elementMap()).limit(20000)",
+   "error": "",
+   "summary": "Found 3 CAPEC record(s) for CAPEC-558, CAPEC-640, CAPEC-642; ATT&CK mappings: T1505.005."
+  },
+  {
+   "source": "capec",
+   "sub_question": "For each of those: the OWASP taxonomy entries each of those corresponds to.",
+   "labels": [
+    "AttackPattern",
+    "TaxonomyEntry"
+   ],
+   "relationships": [
+    "MAPS_TO"
+   ],
+   "seed_ids_bound": [
+    "CAPEC-558",
+    "CAPEC-640",
+    "CAPEC-642",
+    "T1505.005"
+   ],
+   "template": "generic_bridge",
+   "query": "g.V().has(\"id\", within(ids)).project(\"ap\",\"tax\").by(elementMap()).by(__.out(\"MAPS_TO\").hasLabel(\"TaxonomyEntry\").elementMap().fold()).limit(20000)",
+   "error": "",
+   "summary": "Found 3 CAPEC record(s) for CAPEC-558, CAPEC-640, CAPEC-642; ATT&CK mappings: T1505.005, T1546.008, T1554, T1574.005, T1574.006."
+  }
+ ],
+ "planner_observed_plan": [
+  {
+   "sub_question_id": "q1",
+   "source": "capec",
+   "text": "In capec, identify AttackPattern, TaxonomyEntry, View relevant to: For the CAPEC attack patterns that correspond to the Terminal Services DLL technique T1505.005, which OWASP taxonomy entries does each of them correspond to?",
+   "entities": [
+    "AttackPattern",
+    "TaxonomyEntry",
+    "View"
+   ],
+   "seed_ids": [],
+   "depends_on": null,
+   "limits": {
+    "max_traversal_depth": 3,
+    "max_result_rows": 1000,
+    "query_timeout_ms": 5000
+   }
+  },
+  {
+   "sub_question_id": "q2",
+   "source": "attack",
+   "text": "In attack, identify HAS_TECHNIQUE, Software, SubTechnique, Technique relevant to: For the CAPEC attack patterns that correspond to the Terminal Services DLL technique T1505.005, which OWASP taxonomy entries does each of them correspond to?",
+   "entities": [
+    "HAS_TECHNIQUE",
+    "Software",
+    "SubTechnique",
+    "Technique"
+   ],
+   "seed_ids": [],
+   "depends_on": null,
+   "limits": {
+    "max_traversal_depth": 3,
+    "max_result_rows": 1000,
+    "query_timeout_ms": 5000
+   }
+  }
+ ],
+ "planner_executed_steps": []
+}

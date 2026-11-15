@@ -1,0 +1,59 @@
+{
+ "qid": "D3-CanFollow-CAPEC-390-754ead::indirect",
+ "planner": "deterministic rules planner",
+ "question": "Once an attacker has pulled off Bypassing Physical Security (CAPEC-390), which attack patterns can they move on to next?",
+ "authored_records": 1,
+ "authored_steps": [
+  {
+   "source": "capec",
+   "sub_question": "Once an attacker has pulled off Bypassing Physical Security (CAPEC-390), which attack patterns can they move on to next?",
+   "labels": [
+    "AttackPattern"
+   ],
+   "relationships": [
+    "CanFollow"
+   ],
+   "seed_ids_bound": [
+    "CAPEC-390"
+   ],
+   "template": "generic_walk",
+   "query": "g.V().has(\"id\", within(ids)).as(\"ap\").union(__.or(__.hasLabel(\"AttackPattern\"), __.not(__.hasLabel(\"AttackPattern\"))).repeat(__.in(\"CAN_FOLLOW\")).times(3).emit(), __.or(__.hasLabel(\"AttackPattern\"), __.not(__.hasLabel(\"AttackPattern\"))).repeat(__.out(\"CAN_FOLLOW\")).times(3).emit()).as(\"nbr\").select(\"ap\",\"nbr\").by(elementMap()).limit(20000)",
+   "error": "",
+   "summary": "Found 1 CAPEC record(s): CAPEC-390."
+  }
+ ],
+ "planner_observed_plan": [
+  {
+   "sub_question_id": "q1",
+   "source": "capec",
+   "text": "In capec, identify AttackPattern, Consequence, NEXT_STEP relevant to: Once an attacker has pulled off Bypassing Physical Security (CAPEC-390), which attack patterns can they move on to next?",
+   "seed_ids": [],
+   "depends_on": null,
+   "limits": {
+    "max_traversal_depth": 3,
+    "max_result_rows": 1000,
+    "query_timeout_ms": 5000
+   }
+  }
+ ],
+ "planner_executed_steps": [
+  {
+   "source": "capec",
+   "sub_question": "In capec, identify AttackPattern, Consequence, NEXT_STEP relevant to: Once an attacker has pulled off Bypassing Physical Security (CAPEC-390), which attack patterns can they move on to next?",
+   "labels": [
+    "AttackPattern",
+    "Consequence"
+   ],
+   "relationships": [
+    "NEXT_STEP"
+   ],
+   "seed_ids_bound": [
+    "CAPEC-390"
+   ],
+   "template": "generic_walk",
+   "query": "g.V().has(\"id\", within(ids)).as(\"ap\").union(__.or(__.hasLabel(\"AttackPattern\"), __.not(__.hasLabel(\"AttackPattern\", \"Consequence\"))).out(\"HAS_CONSEQUENCE\"), __.or(__.hasLabel(\"Consequence\"), __.not(__.hasLabel(\"AttackPattern\", \"Consequence\"))).in(\"HAS_CONSEQUENCE\")).as(\"nbr\").select(\"ap\",\"nbr\").by(elementMap()).limit(1000)",
+   "error": "",
+   "summary": "No CAPEC records found."
+  }
+ ]
+}

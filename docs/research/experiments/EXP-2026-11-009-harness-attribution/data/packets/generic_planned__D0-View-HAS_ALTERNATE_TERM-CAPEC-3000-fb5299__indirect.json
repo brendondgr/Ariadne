@@ -1,0 +1,61 @@
+{
+ "qid": "D0-View-HAS_ALTERNATE_TERM-CAPEC-3000-fb5299::indirect",
+ "planner": "deterministic rules planner",
+ "question": "What other names does CAPEC-3000, Domains of Attack, also go by?",
+ "authored_records": 1,
+ "authored_steps": [
+  {
+   "source": "capec",
+   "sub_question": "What other names does CAPEC-3000, Domains of Attack, also go by?",
+   "labels": [
+    "View",
+    "AlternateTerm"
+   ],
+   "relationships": [
+    "HAS_ALTERNATE_TERM"
+   ],
+   "seed_ids_bound": [
+    "CAPEC-3000"
+   ],
+   "template": "generic_walk",
+   "query": "g.V().has(\"id\", within(ids)).as(\"ap\").union(__.or(__.hasLabel(\"AlternateTerm\"), __.not(__.hasLabel(\"AlternateTerm\", \"View\"))).in(\"HAS_ALTERNATE_TERM\"), __.or(__.hasLabel(\"View\"), __.not(__.hasLabel(\"AlternateTerm\", \"View\"))).in(\"IN_VIEW\")).as(\"nbr\").select(\"ap\",\"nbr\").by(elementMap()).limit(20000)",
+   "error": "",
+   "summary": "Found 1 CAPEC record(s): CAPEC-3000."
+  }
+ ],
+ "planner_observed_plan": [
+  {
+   "sub_question_id": "q1",
+   "source": "capec",
+   "text": "In capec, identify AlternateTerm, AttackPattern, CanAlsoBe, HAS_ALTERNATE_TERM relevant to: What other names does CAPEC-3000, Domains of Attack, also go by?",
+   "seed_ids": [],
+   "depends_on": null,
+   "limits": {
+    "max_traversal_depth": 3,
+    "max_result_rows": 1000,
+    "query_timeout_ms": 5000
+   }
+  }
+ ],
+ "planner_executed_steps": [
+  {
+   "source": "capec",
+   "sub_question": "In capec, identify AlternateTerm, AttackPattern, CanAlsoBe, HAS_ALTERNATE_TERM relevant to: What other names does CAPEC-3000, Domains of Attack, also go by?",
+   "labels": [
+    "AlternateTerm",
+    "AttackPattern"
+   ],
+   "relationships": [
+    "CanAlsoBe",
+    "HAS_ALTERNATE_TERM"
+   ],
+   "seed_ids_bound": [
+    "CAPEC-3000"
+   ],
+   "template": "generic_walk",
+   "query": "g.V().has(\"id\", within(ids)).as(\"ap\").union(__.or(__.hasLabel(\"AttackPattern\"), __.not(__.hasLabel(\"AlternateTerm\", \"AttackPattern\"))).repeat(__.in(\"CAN_ALSO_BE\")).times(3).emit(), __.or(__.hasLabel(\"AttackPattern\"), __.not(__.hasLabel(\"AlternateTerm\", \"AttackPattern\"))).repeat(__.out(\"CAN_ALSO_BE\")).times(3).emit(), __.or(__.hasLabel(\"AlternateTerm\"), __.not(__.hasLabel(\"AlternateTerm\", \"AttackPattern\"))).in(\"HAS_ALTERNATE_TERM\")).as(\"nbr\").select(\"ap\",\"nbr\").by(elementMap()).limit(1000)",
+   "error": "",
+   "summary": "No CAPEC records found."
+  }
+ ]
+}

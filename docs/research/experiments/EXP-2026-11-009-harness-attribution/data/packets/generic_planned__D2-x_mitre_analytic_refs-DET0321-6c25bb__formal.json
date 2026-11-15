@@ -1,0 +1,82 @@
+{
+ "qid": "D2-x_mitre_analytic_refs-DET0321-6c25bb::formal",
+ "planner": "deterministic rules planner",
+ "question": "Which detection analytics implement the detection strategy for hidden virtual instance execution (DET0321)?",
+ "authored_records": 1,
+ "authored_steps": [
+  {
+   "source": "attack",
+   "sub_question": "Which detection analytics implement the detection strategy for hidden virtual instance execution (DET0321)?",
+   "labels": [
+    "DetectionStrategy",
+    "Analytic"
+   ],
+   "relationships": [
+    "HAS_ANALYTIC"
+   ],
+   "seed_ids_bound": [
+    "DET0321"
+   ],
+   "template": "generic_chain",
+   "query": "MATCH (n) WHERE coalesce(n.attack_id, n.id) IN $ids OPTIONAL MATCH (n)<-[:HAS_ANALYTIC]-(m0) WHERE n:Analytic OR NOT (n:Analytic OR n:DetectionStrategy) WITH n, collect(DISTINCT {m: m0, r: 'HAS_ANALYTIC'}) AS h0 OPTIONAL MATCH (n)-[:HAS_ANALYTIC]->(m1) WHERE n:DetectionStrategy OR NOT (n:Analytic OR n:DetectionStrategy) WITH n, h0, collect(DISTINCT {m: m1, r: 'HAS_ANALYTIC'}) AS h1 WITH n, h0 + h1 AS hops UNWIND (CASE WHEN size(hops) = 0 THEN [{m: null, r: null}] ELSE hops END) AS hop RETURN coalesce(n.attack_id, n.id) AS anchor_id, n.name AS anchor_name, labels(n)[0] AS anchor_label, coalesce(hop.m.attack_id, hop.m.id) AS neighbour_id, hop.m.name AS neighbour_name, labels(hop.m)[0] AS neigh",
+   "error": "",
+   "summary": "Found 4 item(s) related to DET0321 (e.g. AN0909, AN0912, AN0910) in MITRE ATT&CK."
+  }
+ ],
+ "planner_observed_plan": [
+  {
+   "sub_question_id": "q1",
+   "source": "attack",
+   "text": "In attack, identify Analytic, DetectionStrategy, HAS_ANALYTIC relevant to: Which detection analytics implement the detection strategy for hidden virtual instance execution (DET0321)?",
+   "seed_ids": [],
+   "depends_on": null,
+   "limits": {
+    "max_traversal_depth": 3,
+    "max_result_rows": 1000,
+    "query_timeout_ms": 5000
+   }
+  },
+  {
+   "sub_question_id": "q2",
+   "source": "capec",
+   "text": "In capec, identify Example, ExecutionStep, HAS_EXAMPLE, HAS_EXECUTION_STEP relevant to: Which detection analytics implement the detection strategy for hidden virtual instance execution (DET0321)?",
+   "seed_ids": [],
+   "depends_on": null,
+   "limits": {
+    "max_traversal_depth": 3,
+    "max_result_rows": 1000,
+    "query_timeout_ms": 5000
+   }
+  }
+ ],
+ "planner_executed_steps": [
+  {
+   "source": "capec",
+   "sub_question": "In capec, identify Example, ExecutionStep, HAS_EXAMPLE, HAS_EXECUTION_STEP relevant to: Which detection analytics implement the detection strategy for hidden virtual instance execution (DET0321)?",
+   "labels": [
+    "Example",
+    "ExecutionStep"
+   ],
+   "relationships": [
+    "HAS_EXAMPLE",
+    "HAS_EXECUTION_STEP"
+   ],
+   "seed_ids_bound": [],
+   "template": "unanchored",
+   "query": "g.V().hasLabel(\"Example\").has(\"id\", within(ids)).elementMap().limit(1000)",
+   "error": "",
+   "summary": "No CAPEC records found."
+  },
+  {
+   "source": "attack",
+   "sub_question": "In attack, identify Analytic, DetectionStrategy, HAS_ANALYTIC relevant to: Which detection analytics implement the detection strategy for hidden virtual instance execution (DET0321)?",
+   "labels": [],
+   "relationships": [],
+   "seed_ids_bound": [],
+   "template": null,
+   "query": "",
+   "error": "",
+   "summary": "Skipped: this sub-question depends on q2 for its seed identifiers, but it returned no join values."
+  }
+ ]
+}

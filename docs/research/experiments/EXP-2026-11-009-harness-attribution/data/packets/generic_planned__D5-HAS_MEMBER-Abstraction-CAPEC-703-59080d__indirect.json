@@ -1,0 +1,61 @@
+{
+ "qid": "D5-HAS_MEMBER-Abstraction-CAPEC-703-59080d::indirect",
+ "planner": "deterministic rules planner",
+ "question": "In the Industrial Control System patterns view, CAPEC-703, which of the attack patterns it gathers are written at the Meta level of abstraction?",
+ "authored_records": 1,
+ "authored_steps": [
+  {
+   "source": "capec",
+   "sub_question": "In the Industrial Control System patterns view, CAPEC-703, which of the attack patterns it gathers are written at the Meta level of abstraction?",
+   "labels": [
+    "View",
+    "AttackPattern"
+   ],
+   "relationships": [
+    "MEMBER_OF"
+   ],
+   "seed_ids_bound": [
+    "CAPEC-703"
+   ],
+   "template": "generic_walk",
+   "query": "g.V().has(\"id\", within(ids)).as(\"ap\").union(__.or(__.hasLabel(\"AttackPattern\"), __.not(__.hasLabel(\"AttackPattern\", \"View\"))).out(\"IN_VIEW\"), __.or(__.hasLabel(\"View\"), __.not(__.hasLabel(\"AttackPattern\", \"View\"))).in(\"IN_VIEW\")).or(__.not(__.hasLabel(\"AttackPattern\")), __.has(\"Abstraction\", filterValue)).as(\"nbr\").select(\"ap\",\"nbr\").by(elementMap()).limit(20000)",
+   "error": "",
+   "summary": "Found 1 CAPEC record(s): CAPEC-703."
+  }
+ ],
+ "planner_observed_plan": [
+  {
+   "sub_question_id": "q1",
+   "source": "capec",
+   "text": "In capec, identify AttackPattern, IN_VIEW, PeerOf, View relevant to: In the Industrial Control System patterns view, CAPEC-703, which of the attack patterns it gathers are written at the Meta level of abstraction?",
+   "seed_ids": [],
+   "depends_on": null,
+   "limits": {
+    "max_traversal_depth": 3,
+    "max_result_rows": 1000,
+    "query_timeout_ms": 5000
+   }
+  }
+ ],
+ "planner_executed_steps": [
+  {
+   "source": "capec",
+   "sub_question": "In capec, identify AttackPattern, IN_VIEW, PeerOf, View relevant to: In the Industrial Control System patterns view, CAPEC-703, which of the attack patterns it gathers are written at the Meta level of abstraction?",
+   "labels": [
+    "AttackPattern",
+    "View"
+   ],
+   "relationships": [
+    "IN_VIEW",
+    "PeerOf"
+   ],
+   "seed_ids_bound": [
+    "CAPEC-703"
+   ],
+   "template": "generic_walk",
+   "query": "g.V().has(\"id\", within(ids)).as(\"ap\").union(__.or(__.hasLabel(\"AttackPattern\"), __.not(__.hasLabel(\"AttackPattern\", \"View\"))).repeat(__.in(\"PEER_OF\")).times(3).emit(), __.or(__.hasLabel(\"AttackPattern\"), __.not(__.hasLabel(\"AttackPattern\", \"View\"))).repeat(__.out(\"PEER_OF\")).times(3).emit(), __.or(__.hasLabel(\"AttackPattern\"), __.not(__.hasLabel(\"AttackPattern\", \"View\"))).out(\"IN_VIEW\")).or(__.not(__.hasLabel(\"AttackPattern\")), __.has(\"Abstraction\", filterValue)).as(\"nbr\").select(\"ap\",\"nbr\").by(elementMap()).limit(1000)",
+   "error": "",
+   "summary": "No CAPEC records found."
+  }
+ ]
+}

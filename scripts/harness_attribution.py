@@ -111,6 +111,15 @@ def code_all(out: Path, rerun_root: Path | None) -> dict:
             "mechanisms": dict(mech.most_common()), "any_flag": dict(flags.most_common()),
             "by_tier": {t: dict(c) for t, c in sorted(tiers.items())},
         }
+    # Post-hoc sensitivity: the builder's fixed walk counted as downstream (RESULTS §4).
+    for arm, planned in ((H.DET, det), (H.LLM, llm)):
+        cs = [c for c in codings if c.arm == arm]
+        rec = [H.recode_builder_walk(c, planned[c.qid]) for c in cs]
+        st = Counter(c.stage for c in rec)
+        res[arm]["posthoc_builder_walk"] = {
+            "recoded": sum(a.cause != b.cause for a, b in zip(cs, rec)),
+            "causes": dict(Counter(c.cause for c in rec).most_common()), "stages": dict(st),
+            "downstream_share": round(st["downstream"] / len(rec), 4) if rec else None}
     both = sorted(set(H.lost(authored, det)) & set(H.lost(authored, llm)))
     by = {(c.arm, c.qid): c for c in codings}
     res["both_lost"] = {"n": len(both),
@@ -140,6 +149,11 @@ def code_all(out: Path, rerun_root: Path | None) -> dict:
             "socket_guard_attempts": {a: len(json.loads((rerun_root / a / "socket_guard.json").read_text())["attempts"])
                                       for a in RERUN_ARMS},
         }
+        # Post-hoc: the deterministic planner's losses on today's tree, coded the same way.
+        today = [H.code(q, runs["generic_composed"][q], runs["generic_planned"][q], arm=H.DET)
+                 for q in H.lost(runs["generic_composed"], runs["generic_planned"])]
+        res["rerun"]["today_det_causes"] = dict(Counter(c.cause for c in today).most_common())
+        res["rerun"]["today_det_overlap_with_saved_77"] = len({c.qid for c in today} & set(H.lost(authored, det)))
         timings = defaultdict(list)
         for d in runs["generic_planned"].values():
             t = (d.get("run_meta") or {}).get("timings") or {}

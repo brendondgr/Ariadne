@@ -1,0 +1,60 @@
+{
+ "qid": "D2-HAS_EXECUTION_STEP-CAPEC-568-afa84d::formal",
+ "planner": "deterministic rules planner",
+ "question": "Through which execution steps is Capture Credentials via Keylogger (CAPEC-568) carried out?",
+ "authored_records": 1,
+ "authored_steps": [
+  {
+   "source": "capec",
+   "sub_question": "Through which execution steps is Capture Credentials via Keylogger (CAPEC-568) carried out?",
+   "labels": [
+    "AttackPattern",
+    "ExecutionStep"
+   ],
+   "relationships": [
+    "HAS_EXECUTION_STEP"
+   ],
+   "seed_ids_bound": [
+    "CAPEC-568"
+   ],
+   "template": "generic_walk",
+   "query": "g.V().has(\"id\", within(ids)).as(\"ap\").union(__.or(__.hasLabel(\"AttackPattern\"), __.not(__.hasLabel(\"AttackPattern\", \"ExecutionStep\"))).out(\"HAS_EXECUTION_STEP\"), __.or(__.hasLabel(\"ExecutionStep\"), __.not(__.hasLabel(\"AttackPattern\", \"ExecutionStep\"))).in(\"HAS_EXECUTION_STEP\")).as(\"nbr\").select(\"ap\",\"nbr\").by(elementMap()).limit(20000)",
+   "error": "",
+   "summary": "Found 1 CAPEC record(s): CAPEC-568."
+  }
+ ],
+ "planner_observed_plan": [
+  {
+   "sub_question_id": "q1",
+   "source": "capec",
+   "text": "In capec, identify ExecutionStep, HAS_EXECUTION_STEP, NEXT_STEP relevant to: Through which execution steps is Capture Credentials via Keylogger (CAPEC-568) carried out?",
+   "seed_ids": [],
+   "depends_on": null,
+   "limits": {
+    "max_traversal_depth": 3,
+    "max_result_rows": 1000,
+    "query_timeout_ms": 5000
+   }
+  }
+ ],
+ "planner_executed_steps": [
+  {
+   "source": "capec",
+   "sub_question": "In capec, identify ExecutionStep, HAS_EXECUTION_STEP, NEXT_STEP relevant to: Through which execution steps is Capture Credentials via Keylogger (CAPEC-568) carried out?",
+   "labels": [
+    "ExecutionStep"
+   ],
+   "relationships": [
+    "HAS_EXECUTION_STEP",
+    "NEXT_STEP"
+   ],
+   "seed_ids_bound": [
+    "CAPEC-568"
+   ],
+   "template": "generic_walk",
+   "query": "g.V().has(\"id\", within(ids)).as(\"ap\").union(__.or(__.hasLabel(\"ExecutionStep\"), __.not(__.hasLabel(\"ExecutionStep\"))).repeat(__.in(\"NEXT_STEP\")).times(3).emit(), __.or(__.hasLabel(\"ExecutionStep\"), __.not(__.hasLabel(\"ExecutionStep\"))).repeat(__.out(\"NEXT_STEP\")).times(3).emit()).as(\"nbr\").select(\"ap\",\"nbr\").by(elementMap()).limit(1000)",
+   "error": "",
+   "summary": "No CAPEC records found."
+  }
+ ]
+}

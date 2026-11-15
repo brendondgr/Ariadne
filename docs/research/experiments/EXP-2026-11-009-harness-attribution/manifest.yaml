@@ -5,9 +5,9 @@
 id: EXP-2026-11-009
 slug: harness-attribution
 title: "Era 2 Step 4: where the planned path loses an answer, and whether the model or the harness lost it (RQ5, Q57, Q58)"
-status: running            # planned | running | complete | failed | superseded
+status: complete           # planned | running | complete | failed | superseded
 date_started: 2026-11-15
-date_completed: null       # null until status is complete/failed
+date_completed: 2026-11-15      # null until status is complete/failed
 authors: ["brendondgr", "Claude Opus 5.5"]
 
 purpose: >
@@ -18,10 +18,10 @@ hypothesis: >
 
 # --- Reproducibility block (all fields mandatory) ---
 code:
-  commit: 6eb8c665abd9a1cbf3178cedd82872446d90da64          # 40-char sha, or "unknown" for a back-filled experiment
+  commit: 8b1e6e8f1b97711b554cf15603dc6b016e0a4905          # 40-char sha, or "unknown" for a back-filled experiment
   branch: main
   entrypoint: "uv run python scripts/harness_attribution.py rerun --root docs/evaluation/experiments/harness-attribution-2026-11-15; uv run python scripts/harness_attribution.py code --out docs/research/experiments/EXP-2026-11-009-harness-attribution/data --rerun-root docs/evaluation/experiments/harness-attribution-2026-11-15; ... packets; ... agree"
-  dirty: true             # uncommitted changes at run time? if true, explain in ISSUES.md
+  dirty: false            # uncommitted changes at run time? if true, explain in ISSUES.md
 config:
   path: null               # repo-relative path, or null if the run takes no config file
   hash: null               # sha256:... of that file
@@ -40,7 +40,7 @@ environment:
   container: null
 compute:
   hardware: "32-core x86_64 host, 121 GB RAM; local Neo4j + Gremlin (ariadne-neo4j, ariadne-gremlin)"
-  wall_clock_hours: 0.0
+  wall_clock_hours: 0.3
   estimated_cost_usd: 0.0
 
 # --- LLM / agentic block (delete entirely if no model was in the loop) ---
@@ -60,11 +60,21 @@ llm:
 
 # --- Results block ---
 metrics:
-  primary: <metric name>
-  values: {}               # {metric: {mean: 0.0, std: 0.0, n: 1}} — must be non-empty when status: complete
+  primary: llm_downstream_share
+  values:
+    llm_downstream_share: {mean: 0.1619, std: 0.0, n: 105}
+    llm_downstream_share_posthoc_builder_walk: {mean: 0.4095, std: 0.0, n: 105}
+    llm_downstream_share_annotator_sample: {mean: 0.3, std: 0.0, n: 20}
+    det_downstream: {mean: 1, std: 0.0, n: 77}
+    limits_effect: {mean: -0.001, std: 0.001, n: 284}
+    decomposition_effect: {mean: -0.3342, std: 0.026, n: 284}
+    rerun_composed: {mean: 0.8526, std: 0.0, n: 284}
+    rerun_planned: {mean: 0.5173, std: 0.0, n: 284}
+    kappa_all: {mean: 0.7098, std: 0.0, n: 40}
+    socket_guard_attempts: {mean: 0, std: 0.0, n: 852}
   withdrawn: {}            # values later retracted by amendment: {metric: {mean, std, n, withdrawn_on, reason, replaced_by}}
-baselines_compared: []
-statistical_test: null
+baselines_compared: ["generic_composed (authored plan)", "second annotator (claude-sonnet-5-5, blind)"]
+statistical_test: "paired mean difference with standard error over 284 questions; Cohen kappa for agreement"
 
 # --- Linkage ---
 supports_claims: []        # every ID here must exist in ../../CLAIMS.md

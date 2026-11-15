@@ -268,6 +268,33 @@ def cohen_kappa(a: list[str], b: list[str]) -> float:
     return round((po - pe) / (1 - pe), 4) if pe < 1 else 1.0
 
 
+# --------------------------------------------------------------------------- #
+# Post-hoc sensitivity (EXP-2026-11-009 RESULTS §4): the builder's fixed walk
+# --------------------------------------------------------------------------- #
+
+BUILDER_WALK = "repeat(...).times("
+
+
+def recode_builder_walk(c: Coding, planned_answer: dict[str, Any]) -> Coding:
+    """The post-hoc correction, kept apart from the pre-registered rule.
+
+    The pre-registered rule 5 read every depth rejection as an over-long chain
+    built from the plan's own elements. The saved traces show a second origin:
+    the query builder emits a fixed ``repeat(...).times(3)`` walk whatever depth
+    the plan set, and the gate then rejects the builder's own query. When the
+    plan named every authored relation (``superfluous_schema``) and the rejected
+    query is that walk, the plan was right and the harness lost it.
+    """
+    if c.mechanism != "superfluous_schema":
+        return c
+    errs = " ".join(s.error for s in steps(planned_answer))
+    if BUILDER_WALK not in errs:
+        return c
+    return Coding(qid=c.qid, arm=c.arm, cause="english_reread", stage="downstream",
+                  mechanism="builder_fixed_walk_depth", flags=c.flags + ["english_reread:builder_fixed_walk_depth"],
+                  detail=c.detail)
+
+
 __all__ = ["AUTHORED", "CAUSES", "DET", "LLM", "SAVED_ROOT", "STAGE", "Coding", "Step", "anchors", "code",
-           "cohen_kappa", "coverage", "load_arm", "lost", "observed_plan", "orientations", "packet", "paired",
+           "cohen_kappa", "coverage", "recode_builder_walk", "load_arm", "lost", "observed_plan", "orientations", "packet", "paired",
            "records", "steps", "tier_of"]

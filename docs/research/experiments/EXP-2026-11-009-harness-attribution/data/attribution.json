@@ -1,0 +1,292 @@
+{
+ "saved_root": "docs/evaluation/experiments/plan-source-2026-09-14",
+ "generic_planned": {
+  "n_lost": 77,
+  "one_cause_each": true,
+  "causes": {
+   "relation": 59,
+   "other": 9,
+   "shape": 7,
+   "decomposition": 1,
+   "english_reread": 1
+  },
+  "stages": {
+   "plan": 67,
+   "unattributed": 9,
+   "downstream": 1
+  },
+  "downstream_share": 0.013,
+  "mechanisms": {
+   "relation:missing": 55,
+   "other:bound_correctly_but_empty": 9,
+   "shape:attribute_lookup_planned_as_traversal": 7,
+   "relation:superfluous_schema": 4,
+   "decomposition:dependent_step_skipped": 1,
+   "english_reread:seeds_dropped": 1
+  },
+  "any_flag": {
+   "relation": 60,
+   "english_reread": 19,
+   "decomposition": 17,
+   "shape": 7,
+   "direction": 2
+  },
+  "by_tier": {
+   "D0": {
+    "relation": 8,
+    "other": 5
+   },
+   "D1": {
+    "shape": 7
+   },
+   "D2": {
+    "relation": 8,
+    "other": 3,
+    "decomposition": 1
+   },
+   "D3": {
+    "relation": 8,
+    "english_reread": 1
+   },
+   "D4": {
+    "other": 1,
+    "relation": 14
+   },
+   "D5": {
+    "relation": 15
+   },
+   "D6": {
+    "relation": 6
+   }
+  },
+  "posthoc_builder_walk": {
+   "recoded": 0,
+   "causes": {
+    "relation": 59,
+    "other": 9,
+    "shape": 7,
+    "decomposition": 1,
+    "english_reread": 1
+   },
+   "stages": {
+    "plan": 67,
+    "unattributed": 9,
+    "downstream": 1
+   },
+   "downstream_share": 0.013
+  }
+ },
+ "generic_planned_llm": {
+  "n_lost": 105,
+  "one_cause_each": true,
+  "causes": {
+   "relation": 68,
+   "english_reread": 14,
+   "shape": 12,
+   "other": 7,
+   "direction": 3,
+   "source": 1
+  },
+  "stages": {
+   "plan": 81,
+   "downstream": 17,
+   "unattributed": 7
+  },
+  "downstream_share": 0.1619,
+  "mechanisms": {
+   "relation:missing": 35,
+   "relation:superfluous_schema": 33,
+   "shape:attribute_lookup_planned_as_traversal": 12,
+   "english_reread:resolver_changed_schema": 11,
+   "other:bound_correctly_but_empty": 7,
+   "english_reread:seeds_dropped": 3,
+   "direction:EXPLOITS_WEAKNESS": 1,
+   "direction:HAS_PREREQUISITE": 1,
+   "direction:HAS_INDICATOR": 1,
+   "source:authored_source_not_routed": 1
+  },
+  "any_flag": {
+   "relation": 70,
+   "english_reread": 38,
+   "shape": 13,
+   "decomposition": 6,
+   "direction": 3,
+   "source": 1
+  },
+  "by_tier": {
+   "D0": {
+    "relation": 7,
+    "shape": 2,
+    "english_reread": 7,
+    "direction": 3,
+    "other": 4
+   },
+   "D1": {
+    "shape": 10,
+    "source": 1
+   },
+   "D2": {
+    "relation": 8,
+    "other": 1,
+    "english_reread": 1
+   },
+   "D3": {
+    "relation": 8,
+    "other": 1,
+    "english_reread": 2
+   },
+   "D4": {
+    "relation": 16,
+    "other": 1,
+    "english_reread": 1
+   },
+   "D5": {
+    "relation": 16,
+    "english_reread": 1
+   },
+   "D6": {
+    "relation": 13,
+    "english_reread": 2
+   }
+  },
+  "posthoc_builder_walk": {
+   "recoded": 26,
+   "causes": {
+    "relation": 42,
+    "english_reread": 40,
+    "shape": 12,
+    "other": 7,
+    "direction": 3,
+    "source": 1
+   },
+   "stages": {
+    "plan": 55,
+    "downstream": 43,
+    "unattributed": 7
+   },
+   "downstream_share": 0.4095
+  }
+ },
+ "both_lost": {
+  "n": 38,
+  "same_cause": 31,
+  "pairs": {
+   "relation | relation": 21,
+   "relation | english_reread": 5,
+   "shape | shape": 5,
+   "other | other": 4,
+   "other | direction": 1,
+   "english_reread | english_reread": 1,
+   "other | relation": 1
+  }
+ },
+ "saved_coverage": {
+  "generic_composed": 0.8611,
+  "generic_planned": 0.4797,
+  "generic_planned_llm": 0.4858
+ },
+ "saved_paired": {
+  "det_minus_authored": {
+   "n": 284,
+   "mean_a": 0.8611,
+   "mean_b": 0.4797,
+   "diff": -0.3814,
+   "se": 0.0262
+  },
+  "llm_minus_authored": {
+   "n": 284,
+   "mean_a": 0.8611,
+   "mean_b": 0.4858,
+   "diff": -0.3754,
+   "se": 0.028
+  },
+  "llm_minus_det": {
+   "n": 284,
+   "mean_a": 0.4797,
+   "mean_b": 0.4858,
+   "diff": 0.006,
+   "se": 0.0327
+  }
+ },
+ "rerun": {
+  "root": "docs/evaluation/experiments/harness-attribution-2026-11-15",
+  "counts": {
+   "generic_composed": 284,
+   "generic_composed_capped": 284,
+   "generic_planned": 284
+  },
+  "coverage": {
+   "generic_composed": 0.8526,
+   "generic_composed_capped": 0.8516,
+   "generic_planned": 0.5173
+  },
+  "limits_effect_capped_minus_composed": {
+   "n": 284,
+   "mean_a": 0.8526,
+   "mean_b": 0.8516,
+   "diff": -0.001,
+   "se": 0.001
+  },
+  "decomposition_effect_planned_minus_capped": {
+   "n": 284,
+   "mean_a": 0.8516,
+   "mean_b": 0.5173,
+   "diff": -0.3342,
+   "se": 0.026
+  },
+  "plan_effect_planned_minus_composed": {
+   "n": 284,
+   "mean_a": 0.8526,
+   "mean_b": 0.5173,
+   "diff": -0.3353,
+   "se": 0.0261
+  },
+  "drift_vs_saved": {
+   "generic_composed": {
+    "n": 284,
+    "mean_a": 0.8611,
+    "mean_b": 0.8526,
+    "diff": -0.0085,
+    "se": 0.0043
+   },
+   "generic_planned": {
+    "n": 284,
+    "mean_a": 0.4797,
+    "mean_b": 0.5173,
+    "diff": 0.0376,
+    "se": 0.0095
+   }
+  },
+  "lost_today": 77,
+  "socket_guard_attempts": {
+   "generic_composed": 0,
+   "generic_composed_capped": 0,
+   "generic_planned": 0
+  },
+  "today_det_causes": {
+   "relation": 59,
+   "other": 9,
+   "shape": 7,
+   "decomposition": 1,
+   "english_reread": 1
+  },
+  "today_det_overlap_with_saved_77": 77,
+  "stage_timing_generic_planned": {
+   "plan_ms": {
+    "n": 284,
+    "median": 61.2,
+    "p95": 158.3
+   },
+   "total_ms": {
+    "n": 284,
+    "median": 418.2,
+    "p95": 771.9
+   },
+   "specialist_ms": {
+    "n": 330,
+    "median": 34.8,
+    "p95": 90.9
+   }
+  }
+ }
+}

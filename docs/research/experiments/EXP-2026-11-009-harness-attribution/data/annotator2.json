@@ -1,0 +1,282 @@
+[
+ {
+  "arm": "generic_planned",
+  "qid": "D3-uses-T1552.004-88380d::formal",
+  "cause": "relation",
+  "stage": "plan",
+  "reason": "Authored relation USES is absent from the planner's resolved relations (HAS_TECHNIQUE only); the gate depth rejection is later in order."
+ },
+ {
+  "arm": "generic_planned",
+  "qid": "D0-Analytic-subtechnique-of-AN1112-b87d8e::formal",
+  "cause": "relation",
+  "stage": "plan",
+  "reason": "Authored HAS_SUBTECHNIQUE is not among the planner's resolved relations (HAS_ANALYTIC, HAS_TECHNIQUE)."
+ },
+ {
+  "arm": "generic_planned",
+  "qid": "D5-HAS_MEMBER-Abstraction-CAPEC-703-59080d::indirect",
+  "cause": "direction",
+  "stage": "downstream",
+  "reason": "Anchor CAPEC-703 is a View and relation IN_VIEW (alias of MEMBER_OF) is present, but the P query only does out(IN_VIEW) while A also does in(IN_VIEW) from the View; PEER_OF walks added. Ambiguous: MEMBER_OF vs IN_VIEW naming."
+ },
+ {
+  "arm": "generic_planned",
+  "qid": "D2-CanFollow-CAPEC-700-51669a::analyst",
+  "cause": "relation",
+  "stage": "plan",
+  "reason": "Authored CanFollow; planner resolved CanPrecede only."
+ },
+ {
+  "arm": "generic_planned",
+  "qid": "D4-ChildOf-REQUIRES_RESOURCE-CAPEC-473-28f5ac::indirect",
+  "cause": "relation",
+  "stage": "plan",
+  "reason": "Authored ChildOf is missing from the planner's relations (REQUIRES_RESOURCE, REQUIRES_SKILL)."
+ },
+ {
+  "arm": "generic_planned",
+  "qid": "D2-HAS_EXECUTION_STEP-CAPEC-568-afa84d::formal",
+  "cause": "other",
+  "stage": "unattributed",
+  "reason": "HAS_EXECUTION_STEP is in resolved relations and the seed is bound, but the built query walks only NEXT_STEP and never traverses it; no codebook rule fits."
+ },
+ {
+  "arm": "generic_planned",
+  "qid": "D5-CanFollow-Likelihood_Of_Attack-CAPEC-234-6037d9::indirect",
+  "cause": "relation",
+  "stage": "plan",
+  "reason": "Authored CanFollow absent; planner resolved HAS_CONSEQUENCE."
+ },
+ {
+  "arm": "generic_planned",
+  "qid": "D2-MAPS_TO[WASC]-CAPEC-126-d48ec7::indirect",
+  "cause": "direction",
+  "stage": "downstream",
+  "reason": "Seed CAPEC-126 is an AttackPattern; authored does out(MAPS_TO) while P (bridge template) does in(MAPS_TO) from the seed treating it as the taxonomy entry."
+ },
+ {
+  "arm": "generic_planned",
+  "qid": "D0-View-HAS_INDICATOR-CAPEC-703-9098da::indirect",
+  "cause": "direction",
+  "stage": "downstream",
+  "reason": "HAS_INDICATOR and seed bound, but P uses out(HAS_INDICATOR) from the View seed where authored uses in(HAS_INDICATOR)."
+ },
+ {
+  "arm": "generic_planned",
+  "qid": "D0-Category-HAS_PREREQUISITE-CAPEC-689-5018c8::analyst",
+  "cause": "other",
+  "stage": "unattributed",
+  "reason": "HAS_PREREQUISITE resolved and seed bound, yet the capec_neighbors query traverses only REQUIRES_SKILL; no rule fits."
+ },
+ {
+  "arm": "generic_planned",
+  "qid": "D2-uses-G1003-260507::formal",
+  "cause": "relation",
+  "stage": "plan",
+  "reason": "Authored USES absent; the executed step resolved only MEMBER_OF (and attack step was skipped)."
+ },
+ {
+  "arm": "generic_planned",
+  "qid": "D2-HAS_PREREQUISITE-CAPEC-68-7a82c1::analyst",
+  "cause": "direction",
+  "stage": "downstream",
+  "reason": "Relation and seed bound; P has in(HAS_PREREQUISITE) from the pattern where authored uses out(HAS_PREREQUISITE)."
+ },
+ {
+  "arm": "generic_planned",
+  "qid": "D1-View-Type-CAPEC-333-69177c::analyst",
+  "cause": "shape",
+  "stage": "plan",
+  "reason": "Authored step is a describe lookup; planner ran generic_walk, no describe."
+ },
+ {
+  "arm": "generic_planned",
+  "qid": "D0-View-HAS_ALTERNATE_TERM-CAPEC-3000-fb5299::indirect",
+  "cause": "other",
+  "stage": "unattributed",
+  "reason": "HAS_ALTERNATE_TERM resolved, seed bound, same in() orientation as authored; the difference is the extra CAN_ALSO_BE walks and no IN_VIEW branch; no rule fits."
+ },
+ {
+  "arm": "generic_planned",
+  "qid": "D3-kill_chain_phase-TA0042-f967b1::analyst",
+  "cause": "relation",
+  "stage": "plan",
+  "reason": "Authored HAS_TECHNIQUE missing from the executed relations (REQUIRES_RESOURCE); attack step skipped."
+ },
+ {
+  "arm": "generic_planned",
+  "qid": "D5-CanPrecede-Abstraction-CAPEC-600-1a0fa9::formal",
+  "cause": "relation",
+  "stage": "plan",
+  "reason": "Authored CanPrecede absent; planner resolved CanFollow, PeerOf."
+ },
+ {
+  "arm": "generic_planned",
+  "qid": "D2-x_mitre_analytic_refs-DET0321-6c25bb::formal",
+  "cause": "relation",
+  "stage": "plan",
+  "reason": "Authored HAS_ANALYTIC missing from the executed relations (HAS_EXAMPLE, HAS_EXECUTION_STEP); attack step skipped."
+ },
+ {
+  "arm": "generic_planned",
+  "qid": "D5-HAS_MEMBER-Likelihood_Of_Attack-CAPEC-703-0c5b15::indirect",
+  "cause": "other",
+  "stage": "unattributed",
+  "reason": "IN_VIEW is resolved and the seed is bound, but the query traverses only REQUIRES_SKILL; no rule fits (treated IN_VIEW as MEMBER_OF alias)."
+ },
+ {
+  "arm": "generic_planned",
+  "qid": "D4-uses-uses-C0023-47ddc0::indirect",
+  "cause": "relation",
+  "stage": "plan",
+  "reason": "Authored USES absent; planner resolved HAS_TECHNIQUE."
+ },
+ {
+  "arm": "generic_planned",
+  "qid": "D3-CanFollow-CAPEC-390-754ead::indirect",
+  "cause": "relation",
+  "stage": "plan",
+  "reason": "Authored CanFollow absent; planner resolved NEXT_STEP."
+ },
+ {
+  "arm": "generic_planned_llm",
+  "qid": "D6-MAPS_TO[ATTACK]-MAPS_TO[OWASP Attacks]-T1557.002-26aa05::indirect",
+  "cause": "english_reread",
+  "stage": "downstream",
+  "reason": "OP entities contain MAPS_TO and the anchor T1557.002 is in the text, but nothing resolved/executed (no seed bound). Ambiguous between rule 4 and 9; both english_reread."
+ },
+ {
+  "arm": "generic_planned_llm",
+  "qid": "D6-MAPS_TO[ATTACK]-CanFollow-T1078.001-0085e9::formal",
+  "cause": "relation",
+  "stage": "plan",
+  "reason": "MAPS_TO is in no OP entity list; the authored first hop is missing from the plan."
+ },
+ {
+  "arm": "generic_planned_llm",
+  "qid": "D2-log_source-AN0280-dd36b8::formal",
+  "cause": "english_reread",
+  "stage": "downstream",
+  "reason": "OP entities include MONITORS and AN0280 is in the text, but the executed step bound no seed (name-based generic_neighbors)."
+ },
+ {
+  "arm": "generic_planned_llm",
+  "qid": "D6-MAPS_TO[ATTACK]-MAPS_TO[OWASP Attacks]-T1505.005-d82694::formal",
+  "cause": "relation",
+  "stage": "plan",
+  "reason": "OP entities lack MAPS_TO (AttackPattern, TaxonomyEntry, View; HAS_TECHNIQUE...)."
+ },
+ {
+  "arm": "generic_planned_llm",
+  "qid": "D0-Technique-detects-T1555.005-df61d4::indirect",
+  "cause": "english_reread",
+  "stage": "downstream",
+  "reason": "OP entities include DETECTS and T1555.005 is in the text, but nothing was resolved or executed; rule 4/9 both english_reread."
+ },
+ {
+  "arm": "generic_planned_llm",
+  "qid": "D3-ChildOf-CAPEC-227-5f6f39::indirect",
+  "cause": "relation",
+  "stage": "plan",
+  "reason": "Gate rejected times(3) vs depth 1; the resolver's relations (ChildOf, ParentOf) equal OP entities, so superfluous_schema."
+ },
+ {
+  "arm": "generic_planned_llm",
+  "qid": "D4-CanFollow-HAS_PREREQUISITE-CAPEC-271-109948::indirect",
+  "cause": "other",
+  "stage": "unattributed",
+  "reason": "All authored relations are in entities and resolved, seed bound, no gate error; P traverses CAN_PRECEDE/CAN_FOLLOW with both() and never HAS_PREREQUISITE; no rule fits."
+ },
+ {
+  "arm": "generic_planned_llm",
+  "qid": "D5-HAS_MEMBER-Typical_Severity-CAPEC-512-dd2e01::analyst",
+  "cause": "relation",
+  "stage": "plan",
+  "reason": "OP entities (ChildOf, ParentOf) lack authored MEMBER_OF."
+ },
+ {
+  "arm": "generic_planned_llm",
+  "qid": "D0-View-HAS_INDICATOR-CAPEC-703-9098da::indirect",
+  "cause": "direction",
+  "stage": "downstream",
+  "reason": "Relations and seed bound; P uses out(HAS_INDICATOR) where authored uses in(HAS_INDICATOR)."
+ },
+ {
+  "arm": "generic_planned_llm",
+  "qid": "D4-PeerOf-MAPS_TO[WASC]-CAPEC-33-60d908::formal",
+  "cause": "relation",
+  "stage": "plan",
+  "reason": "Gate rejected times(3) vs depth 2; resolved relations equal OP entities, so superfluous_schema."
+ },
+ {
+  "arm": "generic_planned_llm",
+  "qid": "D0-AttackPattern-HAS_MEMBER-CAPEC-136-9dabb8::formal",
+  "cause": "shape",
+  "stage": "plan",
+  "reason": "Authored is a describe lookup; planner ran generic_walk (ChildOf/ParentOf), no describe."
+ },
+ {
+  "arm": "generic_planned_llm",
+  "qid": "D5-HAS_MEMBER-Likelihood_Of_Attack-CAPEC-223-3531a3::formal",
+  "cause": "relation",
+  "stage": "plan",
+  "reason": "Gate rejected times(3) vs depth 1; resolved relations equal OP entities, so superfluous_schema."
+ },
+ {
+  "arm": "generic_planned_llm",
+  "qid": "D3-x_mitre_analytic_refs-AN0751-50875a::indirect",
+  "cause": "english_reread",
+  "stage": "downstream",
+  "reason": "HAS_ANALYTIC in entities and AN0751 in text, but the executed generic_neighbors step bound no seed."
+ },
+ {
+  "arm": "generic_planned_llm",
+  "qid": "D0-Analytic-kill_chain_phase-AN1955-53c2dd::indirect",
+  "cause": "relation",
+  "stage": "plan",
+  "reason": "OP entities lack authored HAS_TECHNIQUE (has HAS_TACTIC); literal rule 3. Ambiguous since authored path labels differ."
+ },
+ {
+  "arm": "generic_planned_llm",
+  "qid": "D4-detects-x_mitre_analytic_refs-T1003.005-a591fa::indirect",
+  "cause": "relation",
+  "stage": "plan",
+  "reason": "Gate rejected depth 4 vs 3; resolved labels/relations equal OP entities, so superfluous_schema."
+ },
+ {
+  "arm": "generic_planned_llm",
+  "qid": "D2-HAS_MEMBER-CAPEC-156-d26a33::analyst",
+  "cause": "direction",
+  "stage": "downstream",
+  "reason": "MEMBER_OF and seed bound; P query has only out(MEMBER_OF), authored also in(MEMBER_OF) from the Category seed."
+ },
+ {
+  "arm": "generic_planned_llm",
+  "qid": "D6-MAPS_TO[ATTACK]-MAPS_TO[OWASP Attacks]-T1491-8c3fa2::analyst",
+  "cause": "relation",
+  "stage": "plan",
+  "reason": "OP entities lack MAPS_TO."
+ },
+ {
+  "arm": "generic_planned_llm",
+  "qid": "D2-PeerOf-CAPEC-273-3968f1::formal",
+  "cause": "relation",
+  "stage": "plan",
+  "reason": "Gate rejected times(3) vs depth 1; relations equal OP entities, so superfluous_schema."
+ },
+ {
+  "arm": "generic_planned_llm",
+  "qid": "D5-CanPrecede-Typical_Severity-CAPEC-273-97972f::formal",
+  "cause": "relation",
+  "stage": "plan",
+  "reason": "Authored CanPrecede absent; OP entities have only CanFollow."
+ },
+ {
+  "arm": "generic_planned_llm",
+  "qid": "D3-ChildOf-CAPEC-227-5f6f39::analyst",
+  "cause": "relation",
+  "stage": "plan",
+  "reason": "Gate rejected times(3) vs depth 1; relations equal OP entities, so superfluous_schema."
+ }
+]

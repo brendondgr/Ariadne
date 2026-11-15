@@ -1,0 +1,57 @@
+{
+ "qid": "D1-View-Type-CAPEC-333-69177c::analyst",
+ "planner": "deterministic rules planner",
+ "question": "What kind of view is WASC Threat Classification 2.0 (CAPEC-333)?",
+ "authored_records": 1,
+ "authored_steps": [
+  {
+   "source": "capec",
+   "sub_question": "What kind of view is WASC Threat Classification 2.0 (CAPEC-333)?",
+   "labels": [
+    "View"
+   ],
+   "relationships": [],
+   "seed_ids_bound": [
+    "CAPEC-333"
+   ],
+   "template": "describe",
+   "query": "g.V().has(\"id\", within(ids)).project(\"node\",\"out\",\"in\").by(elementMap()).by(outE().project(\"rel\",\"label\").by(label()).by(inV().label()).fold()).by(inE().project(\"rel\",\"label\").by(label()).by(outV().label()).fold()).limit(20000)",
+   "error": "",
+   "summary": "Found 1 CAPEC record(s): CAPEC-333."
+  }
+ ],
+ "planner_observed_plan": [
+  {
+   "sub_question_id": "q1",
+   "source": "capec",
+   "text": "In capec, identify IN_VIEW, TaxonomyEntry, View relevant to: What kind of view is WASC Threat Classification 2.0 (CAPEC-333)?",
+   "seed_ids": [],
+   "depends_on": null,
+   "limits": {
+    "max_traversal_depth": 3,
+    "max_result_rows": 1000,
+    "query_timeout_ms": 5000
+   }
+  }
+ ],
+ "planner_executed_steps": [
+  {
+   "source": "capec",
+   "sub_question": "In capec, identify IN_VIEW, TaxonomyEntry, View relevant to: What kind of view is WASC Threat Classification 2.0 (CAPEC-333)?",
+   "labels": [
+    "TaxonomyEntry",
+    "View"
+   ],
+   "relationships": [
+    "IN_VIEW"
+   ],
+   "seed_ids_bound": [
+    "CAPEC-333"
+   ],
+   "template": "generic_walk",
+   "query": "g.V().has(\"id\", within(ids)).as(\"ap\").union(__.or(__.hasLabel(\"TaxonomyEntry\"), __.not(__.hasLabel(\"TaxonomyEntry\", \"View\"))).in(\"MAPS_TO\"), __.or(__.hasLabel(\"View\"), __.not(__.hasLabel(\"TaxonomyEntry\", \"View\"))).in(\"IN_VIEW\")).as(\"nbr\").select(\"ap\",\"nbr\").by(elementMap()).limit(1000)",
+   "error": "",
+   "summary": "No CAPEC records found."
+  }
+ ]
+}

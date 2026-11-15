@@ -1,0 +1,62 @@
+{
+ "qid": "D0-Analytic-subtechnique-of-AN1112-b87d8e::formal",
+ "planner": "deterministic rules planner",
+ "question": "Which ATT&CK techniques is the detection analytic AN1112 a sub-technique of?",
+ "authored_records": 1,
+ "authored_steps": [
+  {
+   "source": "attack",
+   "sub_question": "Which ATT&CK techniques is the detection analytic AN1112 a sub-technique of?",
+   "labels": [
+    "Analytic",
+    "Technique"
+   ],
+   "relationships": [
+    "HAS_SUBTECHNIQUE"
+   ],
+   "seed_ids_bound": [
+    "AN1112"
+   ],
+   "template": "generic_chain",
+   "query": "MATCH (n) WHERE coalesce(n.attack_id, n.id) IN $ids OPTIONAL MATCH (n)<-[:HAS_ANALYTIC]-(m0) WHERE n:Analytic OR NOT (n:Analytic OR n:Technique) WITH n, collect(DISTINCT {m: m0, r: 'HAS_ANALYTIC'}) AS h0 OPTIONAL MATCH (n)<-[:DETECTS]-(m1) WHERE n:Technique OR NOT (n:Analytic OR n:Technique) WITH n, h0, collect(DISTINCT {m: m1, r: 'DETECTS'}) AS h1 OPTIONAL MATCH (n)<-[:HAS_ANALYTIC]-()-[:DETECTS]->(m2) WHERE n:Analytic OR NOT (n:Analytic OR n:Technique) WITH n, h0, h1, collect(DISTINCT {m: m2, r: 'DETECTS'}) AS h2 OPTIONAL MATCH (n)<-[:DETECTS]-()-[:HAS_ANALYTIC]->(m3) WHERE n:Technique OR NOT (n:Analytic OR n:Technique) WITH n, h0, h1, h2, collect(DISTINCT {m: m3, r: 'HAS_ANALYTIC'}) AS h3",
+   "error": "",
+   "summary": "Found 2 item(s) related to AN1112 (e.g. DET0396, T1555.001) in MITRE ATT&CK."
+  }
+ ],
+ "planner_observed_plan": [
+  {
+   "sub_question_id": "q1",
+   "source": "attack",
+   "text": "In attack, identify Analytic, DetectionStrategy, HAS_ANALYTIC, HAS_TECHNIQUE, Matrix, SubTechnique, Technique relevant to: Which ATT&CK techniques is the detection analytic AN1112 a sub-technique of?",
+   "seed_ids": [],
+   "depends_on": null,
+   "limits": {
+    "max_traversal_depth": 3,
+    "max_result_rows": 1000,
+    "query_timeout_ms": 5000
+   }
+  }
+ ],
+ "planner_executed_steps": [
+  {
+   "source": "attack",
+   "sub_question": "In attack, identify Analytic, DetectionStrategy, HAS_ANALYTIC, HAS_TECHNIQUE, Matrix, SubTechnique, Technique relevant to: Which ATT&CK techniques is the detection analytic AN1112 a sub-technique of?",
+   "labels": [
+    "Analytic",
+    "DetectionStrategy",
+    "Matrix",
+    "SubTechnique",
+    "Technique"
+   ],
+   "relationships": [
+    "HAS_ANALYTIC",
+    "HAS_TECHNIQUE"
+   ],
+   "seed_ids_bound": [],
+   "template": "generic_neighbors",
+   "query": "MATCH (n) WHERE any(term IN $names WHERE toLower(n.name) CONTAINS term) WITH collect(n) AS cand WITH cand, [x IN cand WHERE any(t IN $names WHERE toLower(x.name) = t)] AS exact UNWIND (CASE WHEN size(exact) > 0 THEN exact ELSE cand END) AS n OPTIONAL MATCH (n)-[r:HAS_ANALYTIC|HAS_TECHNIQUE]-(m) RETURN coalesce(n.attack_id, n.id) AS anchor_id, n.name AS anchor_name, labels(n)[0] AS anchor_label, coalesce(m.attack_id, m.id) AS neighbour_id, m.name AS neighbour_name, labels(m)[0] AS neighbour_label, type(r) AS rel_type LIMIT 1000",
+   "error": "",
+   "summary": "No records found in attack for this query."
+  }
+ ]
+}

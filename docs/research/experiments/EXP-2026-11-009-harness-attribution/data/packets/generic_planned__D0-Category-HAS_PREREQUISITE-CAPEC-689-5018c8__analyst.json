@@ -1,0 +1,61 @@
+{
+ "qid": "D0-Category-HAS_PREREQUISITE-CAPEC-689-5018c8::analyst",
+ "planner": "deterministic rules planner",
+ "question": "What prerequisites does CAPEC-689 require as a precondition?",
+ "authored_records": 1,
+ "authored_steps": [
+  {
+   "source": "capec",
+   "sub_question": "What prerequisites does CAPEC-689 require as a precondition?",
+   "labels": [
+    "Category",
+    "Prerequisite"
+   ],
+   "relationships": [
+    "HAS_PREREQUISITE"
+   ],
+   "seed_ids_bound": [
+    "CAPEC-689"
+   ],
+   "template": "generic_walk",
+   "query": "g.V().has(\"id\", within(ids)).as(\"ap\").union(__.or(__.hasLabel(\"Category\"), __.not(__.hasLabel(\"Category\", \"Prerequisite\"))).in(\"MEMBER_OF\"), __.or(__.hasLabel(\"Prerequisite\"), __.not(__.hasLabel(\"Category\", \"Prerequisite\"))).in(\"HAS_PREREQUISITE\")).as(\"nbr\").select(\"ap\",\"nbr\").by(elementMap()).limit(20000)",
+   "error": "",
+   "summary": "Found 1 CAPEC record(s): CAPEC-689."
+  }
+ ],
+ "planner_observed_plan": [
+  {
+   "sub_question_id": "q1",
+   "source": "capec",
+   "text": "In capec, identify HAS_PREREQUISITE, Prerequisite, REQUIRES_RESOURCE, REQUIRES_SKILL relevant to: What prerequisites does CAPEC-689 require as a precondition?",
+   "seed_ids": [],
+   "depends_on": null,
+   "limits": {
+    "max_traversal_depth": 3,
+    "max_result_rows": 1000,
+    "query_timeout_ms": 5000
+   }
+  }
+ ],
+ "planner_executed_steps": [
+  {
+   "source": "capec",
+   "sub_question": "In capec, identify HAS_PREREQUISITE, Prerequisite, REQUIRES_RESOURCE, REQUIRES_SKILL relevant to: What prerequisites does CAPEC-689 require as a precondition?",
+   "labels": [
+    "Prerequisite"
+   ],
+   "relationships": [
+    "HAS_PREREQUISITE",
+    "REQUIRES_RESOURCE",
+    "REQUIRES_SKILL"
+   ],
+   "seed_ids_bound": [
+    "CAPEC-689"
+   ],
+   "template": "capec_neighbors",
+   "query": "g.V().has(\"id\", within(ids)).as(\"ap\").out(\"REQUIRES_SKILL\").hasLabel(\"Skill\").as(\"nbr\").select(\"ap\",\"nbr\").by(elementMap()).limit(1000)",
+   "error": "",
+   "summary": "No CAPEC records found."
+  }
+ ]
+}

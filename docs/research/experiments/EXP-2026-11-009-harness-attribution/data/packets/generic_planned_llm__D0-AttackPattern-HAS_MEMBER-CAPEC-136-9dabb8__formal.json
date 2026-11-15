@@ -1,0 +1,64 @@
+{
+ "qid": "D0-AttackPattern-HAS_MEMBER-CAPEC-136-9dabb8::formal",
+ "planner": "LLM planner (Gemma 4 26B; its plan format has no seed-id field)",
+ "question": "Which CAPEC attack patterns does the LDAP Injection attack pattern CAPEC-136 contain?",
+ "authored_records": 1,
+ "authored_steps": [
+  {
+   "source": "capec",
+   "sub_question": "Which CAPEC attack patterns does the LDAP Injection attack pattern CAPEC-136 contain?",
+   "labels": [
+    "AttackPattern"
+   ],
+   "relationships": [
+    "MEMBER_OF"
+   ],
+   "seed_ids_bound": [
+    "CAPEC-136"
+   ],
+   "template": "describe",
+   "query": "g.V().has(\"id\", within(ids)).project(\"node\",\"out\",\"in\").by(elementMap()).by(outE().project(\"rel\",\"label\").by(label()).by(inV().label()).fold()).by(inE().project(\"rel\",\"label\").by(label()).by(outV().label()).fold()).limit(20000)",
+   "error": "",
+   "summary": "Found 1 CAPEC record(s): CAPEC-136."
+  }
+ ],
+ "planner_observed_plan": [
+  {
+   "sub_question_id": "q1",
+   "source": "capec",
+   "text": "Find the AttackPattern for CAPEC-136 (LDAP Injection) and return the AttackPattern nodes it contains as child patterns, using the CAPEC taxonomy relationships ChildOf and ParentOf to resolve the containment direction.",
+   "entities": [
+    "AttackPattern",
+    "ChildOf",
+    "ParentOf"
+   ],
+   "seed_ids": [],
+   "depends_on": null,
+   "limits": {
+    "max_traversal_depth": 1,
+    "max_result_rows": 1000,
+    "query_timeout_ms": 5000
+   }
+  }
+ ],
+ "planner_executed_steps": [
+  {
+   "source": "capec",
+   "sub_question": "Find the AttackPattern for CAPEC-136 (LDAP Injection) and return the AttackPattern nodes it contains as child patterns, using the CAPEC taxonomy relationships ChildOf and ParentOf to resolve the containment direction.",
+   "labels": [
+    "AttackPattern"
+   ],
+   "relationships": [
+    "ChildOf",
+    "ParentOf"
+   ],
+   "seed_ids_bound": [
+    "CAPEC-136"
+   ],
+   "template": "generic_walk",
+   "query": "g.V().has(\"id\", within(ids)).as(\"ap\").union(__.or(__.hasLabel(\"AttackPattern\"), __.not(__.hasLabel(\"AttackPattern\"))).repeat(__.in(\"CHILD_OF\")).times(3).emit()).as(\"nbr\").select(\"ap\",\"nbr\").by(elementMap()).limit(1000)",
+   "error": "pre-run gate rejected all drafts: repeat(...).times(3) exceeds max_traversal_depth 1",
+   "summary": ""
+  }
+ ]
+}

@@ -1,0 +1,63 @@
+{
+ "qid": "D2-HAS_PREREQUISITE-CAPEC-68-7a82c1::analyst",
+ "planner": "deterministic rules planner",
+ "question": "What prerequisites does Subvert Code-signing Facilities (CAPEC-68) require as a precondition?",
+ "authored_records": 1,
+ "authored_steps": [
+  {
+   "source": "capec",
+   "sub_question": "What prerequisites does Subvert Code-signing Facilities (CAPEC-68) require as a precondition?",
+   "labels": [
+    "AttackPattern",
+    "Prerequisite"
+   ],
+   "relationships": [
+    "HAS_PREREQUISITE"
+   ],
+   "seed_ids_bound": [
+    "CAPEC-68"
+   ],
+   "template": "generic_walk",
+   "query": "g.V().has(\"id\", within(ids)).as(\"ap\").union(__.or(__.hasLabel(\"AttackPattern\"), __.not(__.hasLabel(\"AttackPattern\", \"Prerequisite\"))).out(\"HAS_PREREQUISITE\"), __.or(__.hasLabel(\"Prerequisite\"), __.not(__.hasLabel(\"AttackPattern\", \"Prerequisite\"))).in(\"HAS_PREREQUISITE\")).as(\"nbr\").select(\"ap\",\"nbr\").by(elementMap()).limit(20000)",
+   "error": "",
+   "summary": "Found 1 CAPEC record(s): CAPEC-68."
+  }
+ ],
+ "planner_observed_plan": [
+  {
+   "sub_question_id": "q1",
+   "source": "capec",
+   "text": "In capec, identify HAS_INDICATOR, HAS_PREREQUISITE, Indicator, Prerequisite, REQUIRES_RESOURCE, REQUIRES_SKILL relevant to: What prerequisites does Subvert Code-signing Facilities (CAPEC-68) require as a precondition?",
+   "seed_ids": [],
+   "depends_on": null,
+   "limits": {
+    "max_traversal_depth": 3,
+    "max_result_rows": 1000,
+    "query_timeout_ms": 5000
+   }
+  }
+ ],
+ "planner_executed_steps": [
+  {
+   "source": "capec",
+   "sub_question": "In capec, identify HAS_INDICATOR, HAS_PREREQUISITE, Indicator, Prerequisite, REQUIRES_RESOURCE, REQUIRES_SKILL relevant to: What prerequisites does Subvert Code-signing Facilities (CAPEC-68) require as a precondition?",
+   "labels": [
+    "Indicator",
+    "Prerequisite"
+   ],
+   "relationships": [
+    "HAS_INDICATOR",
+    "HAS_PREREQUISITE",
+    "REQUIRES_RESOURCE",
+    "REQUIRES_SKILL"
+   ],
+   "seed_ids_bound": [
+    "CAPEC-68"
+   ],
+   "template": "generic_walk",
+   "query": "g.V().has(\"id\", within(ids)).as(\"ap\").union(__.or(__.hasLabel(\"Indicator\"), __.not(__.hasLabel(\"Indicator\", \"Prerequisite\"))).in(\"HAS_INDICATOR\"), __.or(__.hasLabel(\"Prerequisite\"), __.not(__.hasLabel(\"Indicator\", \"Prerequisite\"))).in(\"HAS_PREREQUISITE\")).as(\"nbr\").select(\"ap\",\"nbr\").by(elementMap()).limit(1000)",
+   "error": "",
+   "summary": "No CAPEC records found."
+  }
+ ]
+}

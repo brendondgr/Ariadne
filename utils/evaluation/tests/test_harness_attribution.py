@@ -160,3 +160,17 @@ def test_kappa():
 def test_packet_hides_the_automatic_code():
     pk = H.packet("q", AUTH, answer([step(seeds=())], records=0, plan=[op()]), H.DET)
     assert "cause" not in pk and "flags" not in pk and pk["planner_executed_steps"][0]["seed_ids_bound"] == []
+
+
+def test_posthoc_builder_walk_recode_only_touches_the_builders_walk():
+    walk = answer([step(error="pre-run gate rejected all drafts: repeat(...).times(3) exceeds max_traversal_depth 1")],
+                  records=0, plan=[op(entities=["Group", "USES", "Technique"], depth=1)])
+    c = coded(walk, arm=H.LLM)
+    assert (c.cause, c.mechanism) == ("relation", "superfluous_schema")          # the pre-registered rule
+    r = H.recode_builder_walk(c, walk)
+    assert (r.cause, r.stage, r.mechanism) == ("english_reread", "downstream", "builder_fixed_walk_depth")
+    chain = answer([step(labels=("Group", "Matrix", "Technique"),
+                         error="traversal depth 4 exceeds max_traversal_depth 3 (literal hop chain)")],
+                   records=0, plan=[op()])
+    c2 = coded(chain)
+    assert H.recode_builder_walk(c2, chain) is c2
