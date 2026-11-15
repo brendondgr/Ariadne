@@ -68,6 +68,8 @@ class ModelSpec:
     api_key_env: str | None = None
     notes: str = ""
     status: str = "open"
+    #: Concurrent requests the operator has said the server takes; None = unknown.
+    max_concurrency: int | None = None
     max_tokens: int = 16384
     long_max_tokens: int = 32768
     connect_timeout_s: float = 3.0
@@ -174,6 +176,7 @@ def _spec(name: str, entry: dict[str, Any], defaults: dict[str, Any]) -> ModelSp
         api_key_env=entry.get("api_key_env"),
         notes=str(entry.get("notes") or "").strip(),
         status=status,
+        max_concurrency=entry.get("max_concurrency"),
         max_tokens=int(entry.get("max_tokens") or defaults.get("max_tokens") or 16384),
         long_max_tokens=int(entry.get("long_max_tokens") or defaults.get("long_max_tokens") or 32768),
         connect_timeout_s=float(defaults.get("connect_timeout_s") or 3.0),
@@ -192,6 +195,9 @@ def load(path: str | Path | None = None) -> Registry:
         raise ValueError("defaults.fallback must be null: fallback is opt-in per call, never a default")
     specs = {name: _spec(name, entry or {}, defaults) for name, entry in (raw.get("models") or {}).items()}
     dm = defaults.get("default_model")
+    for spec in specs.values():
+        if spec.kind == "llm" and spec.status == "open" and spec.stop_token_id is None:
+            raise ValueError(f"{spec.name}: an open llm needs identity.stop_token_id (probe it first)")
     if dm is not None and (dm not in specs or specs[dm].status != "open"):
         raise ValueError(f"defaults.default_model {dm!r} must name an open model")
     return Registry(specs, defaults, p)

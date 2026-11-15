@@ -36,7 +36,9 @@ def test_shipped_registry_loads_and_names_identities():
     for spec in reg.values():
         assert spec.max_tokens >= 2048
         if spec.kind == "llm":
-            assert spec.alias and spec.stop_token_id
+            assert spec.alias
+        if spec.kind == "llm" and spec.status == "open":
+            assert spec.stop_token_id, f"{spec.name} is open without a verified identity"
 
 
 def test_unknown_model_names_the_known_ones():
@@ -160,3 +162,10 @@ def test_default_must_be_open(tmp_path):
     """)
     with pytest.raises(ValueError, match="open"):
         R.load(p)
+
+
+def test_announced_model_is_closed_until_its_identity_is_known():
+    spec = R.load()["minicpm47-35b"]
+    assert spec.status == "closed" and spec.stop_token_id is None and spec.max_concurrency == 32
+    with pytest.raises(R.IdentityMismatch, match="cannot be verified"):
+        R.require_identity(spec)

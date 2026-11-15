@@ -27,6 +27,26 @@ defaults:
   read_timeout_s: 600.0
 
 models:
+  # Operator, 2026-11-15: the server goes down briefly to switch :9090 to
+  # MiniCPM 4.7 35B, which will take at least 32 concurrent requests. Until the
+  # switch is confirmed by probe this entry stays closed. Its end-of-turn token
+  # id is unknown and must be read off the first probe, never guessed. Once
+  # filled in, it becomes open and the default, and gemma4-31b becomes closed.
+  # (The same alias served "minicpmv47-35b" once before, on 2026-10-26.)
+  minicpm47-35b:
+    kind: llm
+    endpoint: http://localhost:9090/v1
+    alias: default-model
+    identity: {stop_token_id: null, family: minicpm}
+    size: "35B"
+    licence: null
+    context_window: null
+    reasoning: {param: null, values: [], default: null}   # unknown until probed
+    tool_calls: {native: null, grammar_constrained: false} # unknown until probed
+    status: closed
+    max_concurrency: 32
+    notes: "Announced 2026-11-15; not yet served."
+
   gemma4-31b:
     kind: llm
     endpoint: http://localhost:9090/v1
