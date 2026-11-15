@@ -16,9 +16,10 @@ defaults:
   # models; small caps truncate to an empty reply that looks like an outage.
   max_tokens: 16384
   long_max_tokens: 32768
-  # The one model the operator has open (2026-11-15): only :9090 default-model,
-  # which serves Gemma 4 31B. Every era-2 step uses it unless told otherwise.
-  default_model: gemma4-31b
+  # The one model the operator has open: only :9090 default-model. It served
+  # Gemma 4 31B until 2026-11-15, then MiniCPM 4.7 35B. Every era-2 step uses it
+  # unless told otherwise.
+  default_model: minicpm47-35b
   # Off. When a caller turns it on, the reply records both models and every
   # experiment runner refuses rows that fell back.
   fallback: null
@@ -27,25 +28,36 @@ defaults:
   read_timeout_s: 600.0
 
 models:
-  # Operator, 2026-11-15: the server goes down briefly to switch :9090 to
-  # MiniCPM 4.7 35B, which will take at least 32 concurrent requests. Until the
-  # switch is confirmed by probe this entry stays closed. Its end-of-turn token
-  # id is unknown and must be read off the first probe, never guessed. Once
-  # filled in, it becomes open and the default, and gemma4-31b becomes closed.
-  # (The same alias served "minicpmv47-35b" once before, on 2026-10-26.)
+  # Operator, 2026-11-15: :9090 default-model now serves MiniCPM 4.7 35B and
+  # takes at least 32 concurrent requests (measured that day: 32 and 64 at once,
+  # all answered). Probed 2026-11-15:
+  # - the reply ends on 248046, the same end-of-turn id as Qwen 3.8 27B (a
+  #   Qwen-3.5-family tokenizer), so the end-of-turn id alone cannot tell them
+  #   apart. The identity probe's rendered prompt ids are a second check; they
+  #   separate the two only if the chat templates differ. The operator's word
+  #   (2026-11-15) is the evidence that this is MiniCPM.
+  # - the template opens <think> (248068) in the prompt; a short reply that never
+  #   closes it (no 248069) is filed whole under "reasoning" by the server, which
+  #   toolcalls.finalize repairs and logs (content_in_reasoning).
+  # - reasoning_effort "none" turns thinking off (47 vs 786 tokens on one
+  #   question); "low" changed nothing, so only "none" is listed.
+  # - native tool calls work.
   minicpm47-35b:
     kind: llm
     endpoint: http://localhost:9090/v1
-    alias: default-model
-    identity: {stop_token_id: null, family: minicpm}
+    alias: default-model           # envelope answers "default-model"
+    identity:
+      stop_token_id: 248046
+      family: minicpm (Qwen-3.5-family tokenizer)
+      prompt_fingerprint: [248045, 846, 198, 20206, 440, 279, 3299, 5226, 13, 248046, 198, 248045, 74455, 198, 248068, 198]
     size: "35B"
     licence: null
     context_window: null
-    reasoning: {param: null, values: [], default: null}   # unknown until probed
-    tool_calls: {native: null, grammar_constrained: false} # unknown until probed
-    status: closed
+    reasoning: {param: reasoning_effort, values: [none], default: null, think_close_token_id: 248069}
+    tool_calls: {native: true, grammar_constrained: false}
+    status: open
     max_concurrency: 32
-    notes: "Announced 2026-11-15; not yet served."
+    notes: "Served from 2026-11-15. Thinking on by default; pass reasoning_effort=none to turn it off."
 
   gemma4-31b:
     kind: llm
@@ -57,8 +69,8 @@ models:
     context_window: null           # unconfirmed
     reasoning: {param: null, values: [], default: null}
     tool_calls: {native: true, grammar_constrained: false}
-    status: open
-    notes: "Native tool calls through vLLM, checked 2026-11-15."
+    status: closed                 # replaced by MiniCPM 4.7 35B on :9090, 2026-11-15
+    notes: "Native tool calls through vLLM, checked 2026-11-15. Served Era 2 Steps 2-3."
 
   qwen38-27b:
     kind: llm

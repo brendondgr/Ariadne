@@ -160,7 +160,21 @@ def tool_names(tools: list[dict[str, Any]] | None) -> set[str]:
     return {((t.get("function") or {}).get("name") or t.get("name") or "") for t in (tools or [])} - {""}
 
 
-def finalize(raw: RawCompletion, model: str, known: set[str]) -> ModelReply:
+def _recover_leaks(reply: ModelReply, known: set[str], cut_off: bool) -> None:
+    """Move tool calls written into ``reply.text`` into ``reply.tool_calls``, logging each."""
+    rest, leaked = recover_leaked_calls(reply.text, known)
+    for i, lc in enumerate(leaked):
+        cid = f"leak_{i}"
+        reply.repairs.append(RepairEvent(lc.kind, lc.name, cid))
+        parsed = parse_arguments(lc.arguments, cid, cut_off=cut_off and i == len(leaked) - 1)
+        reply.repairs.extend(parsed.events)
+        reply.tool_calls.append(ToolCall(cid, lc.name, parsed.value, lc.arguments, lc.kind, parsed.error))
+    if leaked:
+        reply.text = rest
+
+
+def finalize(raw: RawCompletion, model: str, known: set[str], *,
+             think_close_token_id: int | None = None) -> ModelReply:
     """Turn one raw completion into a :class:`ModelReply`. Pure.
 
     Thinking markers are split off the text; native calls have their arguments
@@ -184,15 +198,19 @@ def finalize(raw: RawCompletion, model: str, known: set[str]) -> ModelReply:
                                          tc.get("arguments") or "", "native", parsed.error))
 
     if not reply.tool_calls and reply.text and known:
-        rest, leaked = recover_leaked_calls(reply.text, known)
-        for i, lc in enumerate(leaked):
-            cid = f"leak_{i}"
-            reply.repairs.append(RepairEvent(lc.kind, lc.name, cid))
-            parsed = parse_arguments(lc.arguments, cid, cut_off=cut_off and i == len(leaked) - 1)
-            reply.repairs.extend(parsed.events)
-            reply.tool_calls.append(ToolCall(cid, lc.name, parsed.value, lc.arguments, lc.kind, parsed.error))
-        if leaked:
-            reply.text = rest
+        _recover_leaks(reply, known, cut_off)
+
+    # A thinking template opens <think> in the prompt; a short reply that never
+    # closes it is filed whole under "reasoning" by the server's parser, and the
+    # reply text comes back empty. Promoted only when the token ids prove the
+    # think block was never closed and the model stopped on its own.
+    if (not reply.text and not reply.tool_calls and reply.thinking and think_close_token_id is not None
+            and raw.finish_reason == "stop" and raw.token_ids and think_close_token_id not in raw.token_ids):
+        reply.text, reply.thinking = reply.thinking.strip(), ""
+        reply.repairs.append(RepairEvent("content_in_reasoning",
+                                         f"{len(raw.token_ids)} tokens, no think-close {think_close_token_id}"))
+        if known:
+            _recover_leaks(reply, known, cut_off=False)
 
     if not reply.text and not reply.tool_calls:
         if raw.finish_reason == "length":
@@ -250,6 +268,8 @@ def chat(
     if tools:
         payload["tools"] = tools
         payload["tool_choice"] = tool_choice
+    if spec.think_close_token_id is not None:
+        payload.setdefault("return_token_ids", True)       # needed to prove an unclosed think block
     known = tool_names(tools)
 
     try:
@@ -280,12 +300,12 @@ def _turn(spec: ModelSpec, payload: dict[str, Any], known: set[str], *, stream: 
                                latency_s=raw.latency_s, attempts=attempts)
             reply.repairs = [*pending, RepairEvent("runaway_error")]
             return reply
-    reply = finalize(raw, spec.name, known)
+    reply = finalize(raw, spec.name, known, think_close_token_id=spec.think_close_token_id)
     if reply.status == "empty" and stream:
         pending.append(RepairEvent("empty_retry", f"finish_reason={raw.finish_reason!r}"))
         attempts += 1
         raw = _attempt(spec, payload, stream=False)
-        reply = finalize(raw, spec.name, known)
+        reply = finalize(raw, spec.name, known, think_close_token_id=spec.think_close_token_id)
     reply.repairs = [*pending, *reply.repairs]
     reply.attempts = attempts
     return reply

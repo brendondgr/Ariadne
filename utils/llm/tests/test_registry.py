@@ -150,8 +150,9 @@ def test_unreachable_endpoint_raises_unavailable():
 
 def test_default_is_the_one_open_model():
     reg = R.load()
-    assert reg.default.name == "gemma4-31b" and reg.default.status == "open"
-    assert reg.open_models() == ["gemma4-31b"]
+    assert reg.default.name == "minicpm47-35b" and reg.default.status == "open"
+    assert reg.open_models() == ["minicpm47-35b"]
+    assert reg.default.think_close_token_id == 248069 and len(reg.default.prompt_fingerprint) == 16
 
 
 def test_default_must_be_open(tmp_path):
@@ -164,8 +165,20 @@ def test_default_must_be_open(tmp_path):
         R.load(p)
 
 
-def test_announced_model_is_closed_until_its_identity_is_known():
-    spec = R.load()["minicpm47-35b"]
-    assert spec.status == "closed" and spec.stop_token_id is None and spec.max_concurrency == 32
+def test_a_model_with_no_known_identity_cannot_be_verified():
+    spec = R.ModelSpec(name="new", kind="llm", endpoint="http://127.0.0.1:9/v1", alias="a", status="closed")
     with pytest.raises(R.IdentityMismatch, match="cannot be verified"):
         R.require_identity(spec)
+
+
+def test_prompt_fingerprint_separates_models_sharing_an_end_of_turn_id():
+    fp = (248045, 846, 198)
+    spec = R.ModelSpec(name="mc", kind="llm", endpoint="", alias="a", stop_token_id=248046, prompt_fingerprint=fp)
+    good = body("ok", token_ids=[31248, 248046]); good["prompt_token_ids"] = list(fp)
+    other = body("ok", token_ids=[9, 248046]); other["prompt_token_ids"] = [248045, 846, 198, 1]
+    with FakeServer([good, other]) as srv:
+        spec = R.ModelSpec(**{**spec.__dict__, "endpoint": srv.base_url})
+        assert R.check_identity(spec).verified is True
+        R.clear_identity_cache()
+        bad = R.check_identity(spec)
+    assert bad.verified is False and "fingerprint" in bad.reason

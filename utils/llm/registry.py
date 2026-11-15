@@ -62,6 +62,14 @@ class ModelSpec:
     reasoning_param: str | None = None
     reasoning_values: tuple[str, ...] = ()
     reasoning_default: str | None = None
+    #: The token that closes a thinking block (``</think>``). When set, a reply
+    #: whose completion never emitted it and came back with only "reasoning" is
+    #: the answer itself, misfiled by the server (see toolcalls.finalize).
+    think_close_token_id: int | None = None
+    #: The identity probe's rendered prompt token ids. A second identity check
+    #: for models that share an end-of-turn id (MiniCPM 4.7 and Qwen 3.8 both end
+    #: on 248046); it distinguishes them only if their chat templates differ.
+    prompt_fingerprint: tuple[int, ...] = ()
     native_tool_calls: bool = False
     grammar_constrained: bool = False
     #: Name of an environment variable holding an API key; never the key itself.
@@ -171,6 +179,8 @@ def _spec(name: str, entry: dict[str, Any], defaults: dict[str, Any]) -> ModelSp
         reasoning_param=reasoning.get("param"),
         reasoning_values=tuple(reasoning.get("values") or ()),
         reasoning_default=reasoning.get("default"),
+        think_close_token_id=reasoning.get("think_close_token_id"),
+        prompt_fingerprint=tuple(identity.get("prompt_fingerprint") or ()),
         native_tool_calls=bool(tools.get("native")),
         grammar_constrained=bool(tools.get("grammar_constrained")),
         api_key_env=entry.get("api_key_env"),
@@ -231,6 +241,15 @@ def check_identity(spec: ModelSpec, *, max_age_s: float = 0.0) -> Identity:
     raw = complete_raw(spec.endpoint, payload, headers=spec.headers, stream=False,
                        connect_timeout_s=spec.connect_timeout_s, read_timeout_s=300.0)
     last = raw.token_ids[-1] if raw.token_ids else None
+    fp = spec.prompt_fingerprint
+    if last is not None and last == spec.stop_token_id and fp and raw.prompt_token_ids \
+            and tuple(raw.prompt_token_ids) != fp:
+        ident = Identity(spec.name, False, spec.stop_token_id, last, raw.envelope_model,
+                         reason=(f"end-of-turn id {last} matches but the prompt fingerprint differs "
+                                 f"(got {raw.prompt_token_ids[:20]}...): another model or chat template "
+                                 f"is behind {spec.alias!r}"))
+        _IDENTITY_CACHE[key] = ident
+        return ident
     if last is None:
         ident = Identity(spec.name, None, spec.stop_token_id, None, raw.envelope_model,
                          reason="the server returned no token ids (return_token_ids unsupported?)")

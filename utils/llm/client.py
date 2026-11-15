@@ -332,6 +332,9 @@ class RawCompletion:
     #: relay's served-model-name is arbitrary (memory: local model).
     envelope_model: str = ""
     token_ids: list[int] = field(default_factory=list)
+    #: The rendered prompt's token ids (non-streamed, when the server returns them):
+    #: a fingerprint of the tokenizer and chat template behind an alias.
+    prompt_token_ids: list[int] = field(default_factory=list)
     #: Set when ``should_stop`` closed the stream early (``"runaway"``).
     stopped: str = ""
     streamed: bool = False
@@ -412,6 +415,7 @@ def complete_raw(
             out.usage = _usage(data.get("usage"))
             out.envelope_model = str(data.get("model") or "")
             out.token_ids = [int(t) for t in (choice.get("token_ids") or []) if isinstance(t, int)]
+            out.prompt_token_ids = [int(t) for t in (data.get("prompt_token_ids") or []) if isinstance(t, int)]
         else:
             calls: dict[int, dict[str, Any]] = {}
             checked = 0

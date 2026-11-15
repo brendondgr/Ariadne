@@ -223,3 +223,49 @@ def test_streamed_non_ascii_survives():
     with FakeServer([chunks]) as srv:
         r = chat(spec(srv.base_url), MSGS, TOOLS)
     assert r.tool_calls[0].arguments == {"text": "Zürich – São Paulo"}
+
+
+# --------------------------------------------------------------------------- #
+# An unclosed think block (MiniCPM 4.7 behind vLLM's reasoning parser, 2026-11-15)
+# --------------------------------------------------------------------------- #
+
+THINK_CLOSE = 248069
+
+
+def test_unclosed_think_reply_is_promoted_to_the_answer_and_logged():
+    raw = RawCompletion(content="", reasoning="Okay", finish_reason="stop", token_ids=[31248, 248046])
+    r = finalize(raw, "m", KNOWN, think_close_token_id=THINK_CLOSE)
+    assert (r.text, r.thinking, r.status) == ("Okay", "", "ok")
+    assert [e.kind for e in r.repairs] == ["content_in_reasoning"]
+
+
+def test_closed_think_with_no_answer_is_not_promoted():
+    raw = RawCompletion(content="", reasoning="I should count...", finish_reason="stop",
+                        token_ids=[5, 6, THINK_CLOSE, 248046])
+    assert finalize(raw, "m", KNOWN, think_close_token_id=THINK_CLOSE).status == "empty"
+
+
+def test_no_promotion_without_token_ids_or_when_cut_off_or_unconfigured():
+    base = dict(content="", reasoning="Okay")
+    assert finalize(RawCompletion(**base, finish_reason="stop"), "m", KNOWN,
+                    think_close_token_id=THINK_CLOSE).status == "empty"           # no ids: unproven
+    assert finalize(RawCompletion(**base, finish_reason="length", token_ids=[1]), "m", KNOWN,
+                    think_close_token_id=THINK_CLOSE).status == "cut_off_at_cap"
+    assert finalize(RawCompletion(**base, finish_reason="stop", token_ids=[1]), "m", KNOWN).status == "empty"
+
+
+def test_promoted_reply_can_hold_a_leaked_call():
+    raw = RawCompletion(content="", reasoning='<tool_call>{"name": "count", "arguments": {"handle": "set:1"}}</tool_call>',
+                        finish_reason="stop", token_ids=[1, 2])
+    r = finalize(raw, "m", KNOWN, think_close_token_id=THINK_CLOSE)
+    assert [c.name for c in r.tool_calls] == ["count"]
+    assert [e.kind for e in r.repairs] == ["content_in_reasoning", "leaked_call_hermes"]
+
+
+def test_think_close_spec_requests_token_ids():
+    s = ModelSpec(name="mc", kind="llm", endpoint="", alias="a", think_close_token_id=THINK_CLOSE)
+    with FakeServer([body(None, reasoning="Okay", token_ids=[31248, 248046])]) as srv:
+        s = ModelSpec(**{**s.__dict__, "endpoint": srv.base_url})
+        r = chat(s, MSGS, stream=False)
+    assert srv.requests[0]["return_token_ids"] is True
+    assert r.text == "Okay"

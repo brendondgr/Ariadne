@@ -24,6 +24,10 @@ class Completion:
     finish_reason: str | None
     usage: dict
     latency_s: float
+    #: The server's reasoning channel, kept apart from ``text`` (which stays
+    #: ``content`` only, as every kill-test run read it). Added 2026-11-15: under
+    #: MiniCPM 4.7 a short reply that never closes its think block arrives here.
+    reasoning: str = ""
 
 
 class RelayClient:
@@ -61,6 +65,7 @@ class RelayClient:
                     finish_reason=choice.get("finish_reason"),
                     usage=out.get("usage") or {},
                     latency_s=round(time.time() - t0, 3),
+                    reasoning=msg.get("reasoning") or msg.get("reasoning_content") or "",
                 )
             except urllib.error.HTTPError as exc:
                 body_txt = exc.read().decode(errors="replace")[:300]

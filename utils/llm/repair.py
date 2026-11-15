@@ -57,6 +57,7 @@ REPAIR_KINDS = (
     "args_bad",                 # still invalid after every repair: kept as bad_arguments
     "json_fenced",              # a JSON body taken out of a ``` fence (free-text replies)
     "json_braces",              # a JSON body taken from the first { to the last }
+    "content_in_reasoning",     # an unclosed think block: the server filed the whole reply as reasoning
     "empty_retry",              # an empty streamed reply was retried without streaming
     "runaway_retry",            # a degenerate repeating reply was cut and retried
     "runaway_error",            # …and repeated again: an honest error, no answer
