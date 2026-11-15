@@ -396,3 +396,26 @@ class TestEveryArmDeclaresItsSeams:
     def test_every_arm_has_a_runner(self):
         missing = [arm for arm in ARMS if arm not in RUNNERS]
         assert missing == []
+
+
+class TestComposedCapped:
+    """Q58's third arm (Era 2 Step 4): authored plan, the planner's limits."""
+
+    def test_registered_model_free_and_configured_like_its_control(self):
+        assert "generic_composed_capped" in ARMS
+        assert "generic_composed_capped" in exp._MODEL_FREE_ARMS
+        assert env_for("generic_composed_capped") == env_for("generic_composed")
+        assert RUNNERS["generic_composed_capped"] is exp.run_composed_capped
+
+    def test_caps_every_task_and_sub_question_without_raising_any(self):
+        entry = {"task": {"limits": {"max_result_rows": 20000, "max_traversal_depth": 3}},
+                 "sub_questions": [{"limits": {"max_result_rows": 50, "max_traversal_depth": 5}}, "x"]}
+        out = exp.cap_task_limits(entry)
+        assert out["task"]["limits"] == {"max_result_rows": 1000, "max_traversal_depth": 3}
+        assert out["sub_questions"][0]["limits"] == {"max_result_rows": 50, "max_traversal_depth": 3}
+        assert out["sub_questions"][1] == "x"
+        assert entry["task"]["limits"]["max_result_rows"] == 20000          # not mutated
+
+    def test_missing_limits_get_the_planner_caps(self):
+        assert exp.cap_task_limits({"task": {}})["task"]["limits"] == {"max_result_rows": 1000,
+                                                                       "max_traversal_depth": 3}

@@ -44,7 +44,7 @@ DEFAULT_ROOT = "docs/evaluation/experiments/untruncated"
 # un-truncation, A − C isolates the composer, and B − C isolates LLM planning.
 ARMS = ("deterministic", "llm", "gold_llm", "llm_loop", "gold_loop_llm", "generic",
         "llm_query", "merged", "generic_composed", "generic_planned",
-        "deterministic_planned", "generic_planned_llm",
+        "deterministic_planned", "generic_planned_llm", "generic_composed_capped",
         "generic_local_narrator", "generic_local_full", "generic_narrator_off",
         "generic_planned_local",
         "rewrite_off", "rewrite_det", "rewrite_model")
@@ -212,7 +212,9 @@ def untruncated_env(*, arm: str, llm_model: str, llm_max_tokens: int) -> dict[st
             # affordable enough to be worth re-running at all.
             "LLM_THINKING_BUDGET": os.environ.get("LLM_THINKING_BUDGET", "512"),
         })
-    elif arm == "generic_composed":
+    elif arm in ("generic_composed", "generic_composed_capped"):
+        # (`generic_composed_capped` is this arm with the deterministic
+        # planner's per-plan limits put back: Q58's third arm, Era 2 Step 4.)
         # The control the merged arm actually needed, and the one that did not
         # exist. `generic` disables the templates but ALSO turns on the LLM
         # narrator and the facet loop, so reading `merged` against it compares
@@ -759,6 +761,45 @@ def run_deterministic(entry: dict, kind: str, pool: _RouterPool) -> tuple[Any, A
     return _run_gold_replay(entry, kind, pool, llm_synthesis=False)
 
 
+#: The deterministic planner's per-plan limits, as observed on all 334 of its
+#: sub-questions in EXP-2026-09-020 (`plan-source-2026-09-14/generic_planned`).
+PLANNER_MAX_RESULT_ROWS = 1000
+PLANNER_MAX_TRAVERSAL_DEPTH = 3
+
+
+def cap_task_limits(entry: dict, *, rows: int = PLANNER_MAX_RESULT_ROWS,
+                    depth: int = PLANNER_MAX_TRAVERSAL_DEPTH) -> dict:
+    """``entry`` with every task's limits lowered to at most ``rows`` / ``depth`` (in memory)."""
+
+    def _cap(limits: dict | None) -> dict:
+        out = dict(limits or {})
+        out["max_result_rows"] = min(int(out.get("max_result_rows") or rows), rows)
+        out["max_traversal_depth"] = min(int(out.get("max_traversal_depth") or depth), depth)
+        return out
+
+    patched = dict(entry)
+    if isinstance(patched.get("task"), dict):
+        patched["task"] = {**patched["task"], "limits": _cap(patched["task"].get("limits"))}
+    if isinstance(patched.get("sub_questions"), list):
+        patched["sub_questions"] = [
+            {**sub, "limits": _cap(sub.get("limits"))} if isinstance(sub, dict) else sub
+            for sub in patched["sub_questions"]
+        ]
+    return patched
+
+
+def run_composed_capped(entry: dict, kind: str, pool: _RouterPool) -> tuple[Any, Any, dict]:
+    """Q58's third arm: the AUTHORED plan under the deterministic planner's limits.
+
+    Against `generic_composed` (authored plan, lifted limits) the difference is
+    the limits alone; against `generic_planned` (planner, its own limits) it is
+    the decomposition alone. Model-free like both.
+    """
+    evidence, answer, extra = _run_gold_replay(cap_task_limits(entry), kind, pool, llm_synthesis=False)
+    return evidence, answer, {**extra, "limits": {"max_result_rows": PLANNER_MAX_RESULT_ROWS,
+                                                 "max_traversal_depth": PLANNER_MAX_TRAVERSAL_DEPTH}}
+
+
 def run_gold_llm(entry: dict, kind: str, pool: _RouterPool) -> tuple[Any, Any, dict]:
     """ARM C — the baseline's configuration, un-truncated: gold plan + LLM synthesis."""
     return _run_gold_replay(entry, kind, pool, llm_synthesis=True)
@@ -889,6 +930,9 @@ def run_gold_loop_llm(entry: dict, kind: str, _pool: Any) -> tuple[Any, Any, dic
         "observed_plan": _plan_dict(plan),
         "exit_code": run.exit_code,
         "status": run.status,
+        # Per-stage timings from iter_pipeline (plan_ms, specialists, total_ms),
+        # recorded from Era 2 Step 4 on; they were measured and discarded before.
+        "timings": dict(run.timings),
     }
 
 
@@ -1088,6 +1132,7 @@ RUNNERS = {
     # And again: this arm differs from `deterministic` only by an env flag the
     # query builders read, so it needs no driver of its own.
     "generic_composed": run_deterministic,
+    "generic_composed_capped": run_composed_capped,
     # NOT `run_deterministic`: that runner replays the authored plan, which is
     # precisely the variable this arm exists to remove. `run_rewrite` drives the
     # real pipeline with the planner in it and no language model anywhere.
@@ -1256,7 +1301,7 @@ def run_arm(
 #: Arms with no model seam. A preflight against a relay they never call would
 #: fail a run that cannot be affected by the relay at all.
 _MODEL_FREE_ARMS = frozenset({
-    "deterministic", "generic_composed", "generic_planned", "merged",
+    "deterministic", "generic_composed", "generic_composed_capped", "generic_planned", "merged",
     "deterministic_planned",
     # No live seam: SYNTHESIS_LLM_ENABLED=false, and every other seam off. It
     # names an endpoint only so that its config resolves identically to the

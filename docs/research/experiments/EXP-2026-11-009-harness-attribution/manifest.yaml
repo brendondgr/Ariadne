@@ -1,0 +1,74 @@
+# Filled by scripts/new_experiment.py. Every field below is required unless
+# marked optional. Do not delete a field you do not know — record it as null or
+# "unknown" and explain in ISSUES.md. Inventing a value is worse than admitting
+# a gap.
+id: EXP-2026-11-009
+slug: harness-attribution
+title: "Era 2 Step 4: where the planned path loses an answer, and whether the model or the harness lost it (RQ5, Q57, Q58)"
+status: running            # planned | running | complete | failed | superseded
+date_started: 2026-11-15
+date_completed: null       # null until status is complete/failed
+authors: ["brendondgr", "Claude Opus 5.5"]
+
+purpose: >
+  Attributes every question a planner loses (authored plan retrieves records, planner retrieves none) to exactly one cause in pipeline order, for the deterministic planner (77, Q57) and the Gemma 4 26B LLM planner (105, EXP-2026-09-020 A-2), and splits each cause into the plan stage (the planner's own output; the model's decision for the LLM planner) or downstream (the harness lost a plan that was right). Also runs Q58's third arm (the authored plan under the planner's limits) back to back with its two controls, model-free and guarded at the socket, and records per-stage timing. Corrects the era-2 plan's reading of EXP-2026-09-019: its model swap was a narrator, not a planner.
+
+hypothesis: >
+  G1 one cause per lost question; G2 zero model-port connections in the reruns. E1 the downstream share of the LLM planner's losses is at least 0.25 (bands: >=0.50 mostly harness, 0.25-0.50 mixed, <0.25 mostly model); E2 plan-stage causes are the majority of the deterministic planner's 77; E3 the limits effect |composed - capped| <= 0.02; E4 today's reruns within 0.01 of the saved figures; E5 D5/D6 dominated by decomposition; E6 second annotator exact agreement >= 0.75, kappa >= 0.6. Informed by a disclosed pilot (PROTOCOL.md).
+
+# --- Reproducibility block (all fields mandatory) ---
+code:
+  commit: 6eb8c665abd9a1cbf3178cedd82872446d90da64          # 40-char sha, or "unknown" for a back-filled experiment
+  branch: main
+  entrypoint: "uv run python scripts/harness_attribution.py rerun --root docs/evaluation/experiments/harness-attribution-2026-11-15; uv run python scripts/harness_attribution.py code --out docs/research/experiments/EXP-2026-11-009-harness-attribution/data --rerun-root docs/evaluation/experiments/harness-attribution-2026-11-15; ... packets; ... agree"
+  dirty: true             # uncommitted changes at run time? if true, explain in ISSUES.md
+config:
+  path: null               # repo-relative path, or null if the run takes no config file
+  hash: null               # sha256:... of that file
+data:
+  name: "Development bank (284) and the saved plan-source-2026-09-14 arms"
+  version: "bank-dev.json; arms of EXP-2026-09-020"
+  split: "dev"
+  n_examples: 284
+  dvc_path: null           # this repository does not use DVC; leave null
+  hash: null               # md5:... or sha256:... of the dataset artifact
+seeds: []                  # [] means seeds were not recorded — say so in ISSUES.md
+n_runs: 1                  # SYSTEM runs over the question set — grading passes are not runs
+environment:
+  python: "3.13"
+  lockfile: env/requirements.lock
+  container: null
+compute:
+  hardware: "32-core x86_64 host, 121 GB RAM; local Neo4j + Gremlin (ariadne-neo4j, ariadne-gremlin)"
+  wall_clock_hours: 0.0
+  estimated_cost_usd: 0.0
+
+# --- LLM / agentic block (delete entirely if no model was in the loop) ---
+llm:
+  model: "none run here (model-free reruns, guarded at the socket); the saved LLM-planner arm used relay gemma-4-26B-it@2026-09-14; second annotator claude-sonnet-5-5"
+  temperature: 0.0
+  top_p: 1.0
+  max_tokens: 2048
+  prompt_files: []
+  prompt_hash: null
+  tool_schema_hash: null
+  total_input_tokens: null
+  total_output_tokens: null
+  nondeterminism_note: >
+    Provider-side nondeterminism remains even at temperature 0; results
+    are reported as mean ± std over n_runs.
+
+# --- Results block ---
+metrics:
+  primary: <metric name>
+  values: {}               # {metric: {mean: 0.0, std: 0.0, n: 1}} — must be non-empty when status: complete
+  withdrawn: {}            # values later retracted by amendment: {metric: {mean, std, n, withdrawn_on, reason, replaced_by}}
+baselines_compared: []
+statistical_test: null
+
+# --- Linkage ---
+supports_claims: []        # every ID here must exist in ../../CLAIMS.md
+figures: []                # every name here must have a file in figures/ and vice versa
+supersedes: null           # set in BOTH manifests or in neither; the validator checks symmetry
+superseded_by: null
+related: []
