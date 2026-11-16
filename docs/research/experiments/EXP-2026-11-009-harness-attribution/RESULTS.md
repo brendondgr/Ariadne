@@ -193,3 +193,32 @@ uv run python scripts/harness_attribution.py packets --out docs/research/experim
 # the second annotator codes data/packets/ blind, writing data/annotator2.json
 uv run python scripts/harness_attribution.py agree   --out docs/research/experiments/EXP-2026-11-009-harness-attribution/data
 ```
+
+## Amendment A-1 (2026-11-16): the model half on Qwen 3.8 27B
+
+Gemma is retired as a basis (operator). The LLM-planner arm was rerun on Qwen 3.8 27B at
+`reasoning_effort=medium`, back to back with both model-free arms, at the same commit, with 32
+workers. Data: `data/attribution-qwen.json` and `data/codings-qwen.jsonl`.
+
+| | Saved, Gemma 4 26B (retired) | Qwen 3.8 27B (today) |
+|---|---:|---:|
+| LLM-planner coverage | 0.4858 | **0.5811** |
+| … minus the authored plan (0.8526 today) | −0.3754 | **−0.2715** (SE 0.025) |
+| … minus the deterministic planner (0.5173 today) | +0.006 | **+0.064** (SE 0.030) |
+| questions lost (authored retrieves, the planner does not) | 105 | **71** |
+| wrong relation, first cause | 68 | 44 |
+| shape (attribute lookup planned as a traversal) | 12 | 8 |
+| english_reread (downstream) | 14 | 12 |
+| **downstream share, pre-registered rules** | 0.162 | **0.169** |
+| downstream share, builder-walk reading (named in advance for A-1) | 0.410 | **0.437** |
+
+- **The finding replicates on the open model.** The primary reading falls in the same band
+  ("mostly model", 0.169). The builder-walk reading, named in advance this time, falls in
+  "mixed" (0.437). Read together, as the main result was, RQ5 is **mixed**, and wrong relation
+  choice is the largest single cause.
+- **Qwen plans better than Gemma 26B did,** and better than the rules: +0.064, about two
+  standard errors. Of its 71 losses, 26 are also lost by the deterministic planner.
+- **Run checks:** zero model-port connections in the two guarded arms. Qwen's identity was
+  verified before and after (token id plus default-rendering fingerprint). The model-free arms
+  reproduce yesterday's reruns exactly (0.8526 and 0.5173).
+- **The first A-1 attempt was void**, because the CAPEC Gremlin graph was empty (ISSUES).

@@ -45,7 +45,7 @@ compute:
 
 # --- LLM / agentic block (delete entirely if no model was in the loop) ---
 llm:
-  model: "none run here (model-free reruns, guarded at the socket); the saved LLM-planner arm used relay gemma-4-26B-it@2026-09-14; second annotator claude-sonnet-5-5"
+  model: "none run here (model-free reruns, guarded at the socket); the saved LLM-planner arm used relay gemma-4-26B-it@2026-09-14 (Gemma retired 2026-11-16); A-1 used relay/qwen38-27b@2026-11-16 (reasoning_effort=medium); second annotator claude-sonnet-5-5"
   temperature: 0.0
   top_p: 1.0
   max_tokens: 2048
@@ -71,6 +71,9 @@ metrics:
     rerun_composed: {mean: 0.8526, std: 0.0, n: 284}
     rerun_planned: {mean: 0.5173, std: 0.0, n: 284}
     kappa_all: {mean: 0.7098, std: 0.0, n: 40}
+    a1_qwen_planner_coverage: {mean: 0.5811, std: 0.0, n: 284}
+    a1_qwen_downstream_share: {mean: 0.169, std: 0.0, n: 71}
+    a1_qwen_downstream_share_builder_walk: {mean: 0.4366, std: 0.0, n: 71}
     socket_guard_attempts: {mean: 0, std: 0.0, n: 852}
   withdrawn: {}            # values later retracted by amendment: {metric: {mean, std, n, withdrawn_on, reason, replaced_by}}
 baselines_compared: ["generic_composed (authored plan)", "second annotator (claude-sonnet-5-5, blind)"]

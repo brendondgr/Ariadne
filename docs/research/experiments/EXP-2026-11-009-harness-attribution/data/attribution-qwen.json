@@ -1,0 +1,108 @@
+{
+ "root": "docs/evaluation/experiments/harness-attribution-qwen-2026-11-16",
+ "identity": {
+  "model": "qwen38-27b",
+  "reasoning_effort": "medium",
+  "before": {
+   "model": "qwen38-27b",
+   "verified": true,
+   "expected_token_id": 248046,
+   "last_token_id": 248046,
+   "envelope_model": "default-model",
+   "checked_at": 1794862460.992,
+   "reason": ""
+  },
+  "after": {
+   "model": "qwen38-27b",
+   "verified": true,
+   "expected_token_id": 248046,
+   "last_token_id": 248046,
+   "envelope_model": "default-model",
+   "checked_at": 1794863045.249,
+   "reason": ""
+  }
+ },
+ "counts": {
+  "generic_composed": 284,
+  "generic_planned": 284,
+  "generic_planned_llm": 284
+ },
+ "coverage": {
+  "generic_composed": 0.8526,
+  "generic_planned": 0.5173,
+  "generic_planned_llm": 0.5811
+ },
+ "llm_minus_authored": {
+  "n": 284,
+  "mean_a": 0.8526,
+  "mean_b": 0.5811,
+  "diff": -0.2715,
+  "se": 0.0252
+ },
+ "det_minus_authored": {
+  "n": 284,
+  "mean_a": 0.8526,
+  "mean_b": 0.5173,
+  "diff": -0.3353,
+  "se": 0.0261
+ },
+ "llm_minus_det": {
+  "n": 284,
+  "mean_a": 0.5173,
+  "mean_b": 0.5811,
+  "diff": 0.0638,
+  "se": 0.0303
+ },
+ "llm_planner_used": {
+  "llm": 284
+ },
+ "n_lost": 71,
+ "causes": {
+  "relation": 44,
+  "english_reread": 12,
+  "shape": 8,
+  "other": 3,
+  "decomposition": 2,
+  "source": 2
+ },
+ "stages": {
+  "plan": 56,
+  "downstream": 12,
+  "unattributed": 3
+ },
+ "downstream_share": 0.169,
+ "mechanisms": {
+  "relation:missing": 23,
+  "relation:superfluous_schema": 21,
+  "shape:attribute_lookup_planned_as_traversal": 8,
+  "english_reread:resolver_changed_schema": 8,
+  "english_reread:seeds_dropped": 4,
+  "other:bound_correctly_but_empty": 3,
+  "source:authored_source_not_routed": 2,
+  "decomposition:steps_2_vs_authored_1": 1,
+  "decomposition:steps_1_vs_authored_2": 1
+ },
+ "builder_walk": {
+  "recoded": 19,
+  "causes": {
+   "english_reread": 31,
+   "relation": 25,
+   "shape": 8,
+   "other": 3,
+   "decomposition": 2,
+   "source": 2
+  },
+  "stages": {
+   "plan": 37,
+   "downstream": 31,
+   "unattributed": 3
+  },
+  "downstream_share": 0.4366
+ },
+ "overlap_with_det_lost": 26,
+ "det_lost_today": 77,
+ "socket_guard_attempts": {
+  "generic_composed": 0,
+  "generic_planned": 0
+ }
+}
