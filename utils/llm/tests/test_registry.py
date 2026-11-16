@@ -42,7 +42,7 @@ def test_shipped_registry_loads_and_names_identities():
 
 
 def test_unknown_model_names_the_known_ones():
-    with pytest.raises(KeyError, match="minicpm47-35b"):
+    with pytest.raises(KeyError, match="qwen38-27b"):
         R.load()["gpt-nonexistent"]
 
 
@@ -151,9 +151,11 @@ def test_unreachable_endpoint_raises_unavailable():
 
 def test_default_is_the_one_open_model():
     reg = R.load()
-    assert reg.default.name == "minicpm47-35b" and reg.default.status == "open"
-    assert reg.open_models() == ["minicpm47-35b"]
-    assert reg.default.think_close_token_id == 248069 and len(reg.default.prompt_fingerprint) == 16
+    assert reg.default.name == "qwen38-27b" and reg.default.status == "open"
+    assert reg.open_models() == ["qwen38-27b"]
+    assert reg.default.think_close_token_id == 248069 and reg.default.max_concurrency == 8
+    # the two models share an end-of-turn id; their default renderings differ
+    assert reg.default.prompt_fingerprint != reg["minicpm47-35b"].prompt_fingerprint
 
 
 def test_default_must_be_open(tmp_path):
@@ -183,3 +185,12 @@ def test_prompt_fingerprint_separates_models_sharing_an_end_of_turn_id():
         R.clear_identity_cache()
         bad = R.check_identity(spec)
     assert bad.verified is False and "fingerprint" in bad.reason
+
+
+def test_identity_probe_renders_the_servers_default_prompt():
+    """At reasoning_effort=medium Qwen 3.8 and MiniCPM 4.7 render identically; only the default differs."""
+    spec = R.ModelSpec(name="q", kind="llm", endpoint="", alias="a", stop_token_id=106,
+                       reasoning_param="reasoning_effort", reasoning_values=("medium",), reasoning_default="medium")
+    with FakeServer([body("ok", token_ids=[106])]) as srv:
+        R.check_identity(R.ModelSpec(**{**spec.__dict__, "endpoint": srv.base_url}))
+    assert "reasoning_effort" not in srv.requests[0]

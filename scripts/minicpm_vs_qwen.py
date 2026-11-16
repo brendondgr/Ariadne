@@ -30,16 +30,19 @@ sys.path.insert(0, str(REPO))
 BASE = REPO / "logs" / "killtests-2026-11"
 QWEN_SRC = BASE / "exp006"
 OUT = {"replay": BASE / "exp010-replay-qwen", "on": BASE / "exp010-minicpm-on", "off": BASE / "exp010-minicpm-off",
-       "on_recovered": BASE / "exp010-minicpm-on-recovered"}
+       "on_recovered": BASE / "exp010-minicpm-on-recovered", "qwen_today": BASE / "exp010-qwen-today"}
 TAG = {"replay": "qwen38-27b", "on": "minicpm47-35b", "off": "minicpm47-35b"}
 PRIMARY = ("typed3-3shot-cypher", "free-cypher-3shot")
 ARMS = ("free-cypher-3shot", "free-gremlin-3shot", "typed2-3shot-cypher", "typed2-3shot-gremlin",
         "typed3-3shot-cypher", "typed3-3shot-gremlin", "typed3-3shot-repair-cypher", "typed3-3shot-repair-gremlin")
 
 
+CONCURRENCY = int(os.environ.get("EXP010_CONCURRENCY", "32"))
+
+
 def _runner(out: Path, extra_env: dict[str, str]) -> None:
     env = {**os.environ, "KILLTESTS_EXPERIMENT": "exp006", "KILLTESTS_EXP005_OUT": str(out),
-           "KILLTESTS_CONCURRENCY": "32", **extra_env}
+           "KILLTESTS_CONCURRENCY": str(CONCURRENCY), **extra_env}
     t = time.time()
     rc = subprocess.run([sys.executable, "-m", "utils.killtests.t2c.run", "A"], cwd=REPO, env=env).returncode
     print(f"runner exit {rc} in {time.time() - t:.0f}s")
@@ -145,6 +148,26 @@ def recover() -> None:
     _runner(out, {})
 
 
+def qwen_today() -> None:
+    """Amendment A-1: part A on today's Qwen 3.8 27B, at reasoning_effort=medium."""
+    from utils.llm.registry import load, require_identity
+
+    out = OUT["qwen_today"]
+    out.mkdir(parents=True, exist_ok=True)
+    hp = out / "run_header.json"
+    if not hp.exists():
+        spec = load()["qwen38-27b"]
+        ident = require_identity(spec)
+        hp.write_text(json.dumps({
+            "started_at": time.time(),
+            "identities": [{"alias": spec.alias, "model": spec.name, "envelope_model": ident.envelope_model,
+                            "last_token_id": ident.last_token_id,
+                            "verified_by": "utils.llm.registry (token id + default-rendering fingerprint)"}],
+            "concurrency_per_model": CONCURRENCY, "max_tokens": 8192,
+            "reasoning_effort": {spec.name: "medium"}}, indent=1))
+    _runner(out, {"KILLTESTS_REASONING_EFFORT": json.dumps({"qwen38-27b": "medium"})})
+
+
 # --------------------------------------------------------------------------- #
 # compare
 # --------------------------------------------------------------------------- #
@@ -208,6 +231,17 @@ def compare(out: Path) -> dict:
         block["primary_verdicts"] = dict(zip(PRIMARY, verdicts))
         res[f"minicpm_{cond}"] = block
     res["qwen_generation"] = gen_stats(QWEN_SRC, "qwen38-27b")
+    if (OUT["qwen_today"] / "A-execute.json").exists():
+        t = vectors(OUT["qwen_today"], "qwen38-27b")
+        rng = random.Random(20261116)
+        res["qwen_today"] = {
+            "exact_records": {a: round(sum(v) / len(v), 4) for a, v in t.items()},
+            "minus_saved_qwen": {a: {"diff": round((sum(t[a]) - sum(ref[a])) / len(ref[a]), 4),
+                                     "ci95": [round(x, 4) for x in _paired_ci(ref[a], t[a], rng)]} for a in t},
+            "generation": gen_stats(OUT["qwen_today"], "qwen38-27b"),
+        }
+        res["qwen_today"]["same_behaviour"] = all(abs(res["qwen_today"]["minus_saved_qwen"][a]["diff"]) <= 0.03
+                                                  for a in PRIMARY)
     out.mkdir(parents=True, exist_ok=True)
     (out / "comparison.json").write_text(json.dumps(res, indent=1))
     return res
@@ -218,6 +252,7 @@ def main(argv: list[str] | None = None) -> int:
     sub = ap.add_subparsers(dest="cmd", required=True)
     sub.add_parser("replay")
     sub.add_parser("recover")
+    sub.add_parser("qwen-today")
     r = sub.add_parser("run")
     r.add_argument("--condition", choices=("on", "off"), required=True)
     c = sub.add_parser("compare")
@@ -227,6 +262,8 @@ def main(argv: list[str] | None = None) -> int:
         replay()
     elif a.cmd == "recover":
         recover()
+    elif a.cmd == "qwen-today":
+        qwen_today()
     elif a.cmd == "run":
         run(a.condition)
     else:

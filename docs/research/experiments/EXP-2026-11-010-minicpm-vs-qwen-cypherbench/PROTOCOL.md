@@ -87,3 +87,19 @@ uv run python scripts/minicpm_vs_qwen.py run --condition on
 uv run python scripts/minicpm_vs_qwen.py run --condition off
 uv run python scripts/minicpm_vs_qwen.py compare --out docs/research/experiments/EXP-2026-11-010-minicpm-vs-qwen-cypherbench/data
 ```
+
+## Amendment A-1 (written 2026-11-16, before the run): does today's Qwen match the saved Qwen?
+
+The operator restored Qwen 3.8 27B on `:9090 default-model`. It was identified by end-of-turn id
+248046 plus the server's default prompt rendering. That rendering injects a "Reasoning effort is
+set to xhigh" system prompt, which MiniCPM's did not.
+
+- **Run:** part A once more on today's Qwen, at `reasoning_effort=medium` as in EXP-2026-11-006.
+  It uses 8 concurrent requests (the operator's limit today) and the same code, in a new folder.
+- **Check:** it is the same model, behaving the same, if typed3-3shot→Cypher is within 0.03 of
+  0.950 and free cypher-3shot is within 0.03 of 0.860.
+  - The margin allows for temperature-0 nondeterminism under concurrency, which A-recovery
+    measured on MiniCPM.
+  - A larger gap is reported as a different deployment or behaviour, and the comparison above
+    is then re-read against today's Qwen.
+- **Also counted:** reasoning-only replies, which should be 0, as on 2026-11-14.

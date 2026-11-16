@@ -21,9 +21,10 @@ defaults:
   # models; small caps truncate to an empty reply that looks like an outage.
   max_tokens: 16384
   long_max_tokens: 32768
-  # The one model the operator has open: :9090 default-model, MiniCPM 4.7 35B
-  # from 2026-11-15. Every era-2 step uses it unless told otherwise.
-  default_model: minicpm47-35b
+  # The one model the operator has open: :9090 default-model. MiniCPM 4.7 35B
+  # served 2026-11-15; Qwen 3.8 27B from 2026-11-16. Every era-2 step uses it
+  # unless told otherwise.
+  default_model: qwen38-27b
   # Off. When a caller turns it on, the reply records both models and every
   # experiment runner refuses rows that fell back.
   fallback: null
@@ -66,26 +67,38 @@ models:
     context_window: null
     reasoning: {param: reasoning_effort, values: [none], default: null, thinking_off: "none", think_close_token_id: 248069}
     tool_calls: {native: true, grammar_constrained: false}
-    status: open
+    status: closed                 # replaced by Qwen 3.8 27B on 2026-11-16 (EXP-2026-11-010)
     max_concurrency: 32
-    notes: "Served from 2026-11-15. Thinking on by default; pass reasoning_effort=none to turn it off."
+    notes: "Served 2026-11-15 only. Thinking on by default; pass reasoning_effort=none to turn it off."
 
 
+  # Back on :9090 default-model from 2026-11-16 (operator), after EXP-2026-11-010
+  # found MiniCPM 4.7 35B clearly weaker. Identified 2026-11-16: end-of-turn
+  # 248046, and the server's default rendering injects the system prompt
+  # "Reasoning effort is set to xhigh..." (the fingerprint below), which MiniCPM's
+  # did not. At reasoning_effort=medium the two render identically, so identity
+  # is probed at the default. Closes its think block: 10 of 10 one-word prompts
+  # answered as content at medium.
   qwen38-27b:
     kind: llm
     endpoint: http://localhost:9090/v1
-    alias: default-model-2         # envelope answers "default-model"
-    identity: {stop_token_id: 248046, family: qwen3.5}
+    alias: default-model           # default-model-2 until 2026-11-14
+    identity:
+      stop_token_id: 248046
+      family: qwen3.5
+      prompt_fingerprint: [248045, 8678, 198, 24342, 286, 4879, 369, 716, 310, 830, 11553, 13, 5044, 1683, 15060, 1472, 279, 3274, 11, 9307, 1328, 30800, 11, 2814, 47675, 25605, 11, 321, 60445, 55404, 11, 27224, 11, 321, 30246, 303, 279, 1534, 4087, 13, 248046, 198, 248045, 846, 198, 20206, 440, 279, 3299, 5226, 13, 248046, 198, 248045, 74455, 198, 248068, 198]
     size: "27B"
     licence: null
     context_window: null
     # The server's default is xhigh, which thinks until an 8,192-token cap on
-    # long prompts; EXP-2026-11-006 ran every arm at medium.
-    reasoning: {param: reasoning_effort, values: [xhigh, medium, low, none], default: medium}
+    # long prompts; EXP-2026-11-006 ran every arm at medium, and so does every
+    # caller unless it says otherwise.
+    reasoning: {param: reasoning_effort, values: [xhigh, medium, low, none], default: medium, thinking_off: "none", think_close_token_id: 248069}
     tool_calls: {native: true, grammar_constrained: false}
-    status: closed                 # operator, 2026-11-15: only default-model is open
-    notes: "Native tool calls through vLLM, checked 2026-11-15. Health 'failed' on the relay since 2026-11-15."
-
+    status: open
+    # Operator, 2026-11-16: 8 at a time today (other work shares the server).
+    max_concurrency: 8
+    notes: "Native tool calls through vLLM (checked 2026-11-15 under default-model-2)."
 
   pplx-decider:
     kind: decision

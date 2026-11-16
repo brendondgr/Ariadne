@@ -241,7 +241,11 @@ def check_identity(spec: ModelSpec, *, max_age_s: float = 0.0) -> Identity:
         "return_token_ids": True,
         "messages": [{"role": "user", "content": IDENTITY_PROMPT}],
     }
-    payload.update(spec.reasoning_extra())
+    # No reasoning setting: the probe renders the server's DEFAULT prompt. Qwen 3.8
+    # 27B and MiniCPM 4.7 35B share a tokenizer and end-of-turn id, and at
+    # reasoning_effort=medium their rendered prompts are identical; only the
+    # default differs (Qwen's template injects a "Reasoning effort is set to
+    # xhigh" system prompt). Verified 2026-11-16.
     raw = complete_raw(spec.endpoint, payload, headers=spec.headers, stream=False,
                        connect_timeout_s=spec.connect_timeout_s, read_timeout_s=300.0)
     last = raw.token_ids[-1] if raw.token_ids else None
