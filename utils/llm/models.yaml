@@ -100,6 +100,9 @@ models:
     max_concurrency: 8
     notes: "Native tool calls through vLLM (checked 2026-11-15 under default-model-2)."
 
+  # Decision models answer multiple-choice, yes/no or score questions with a
+  # probability per option and no generated text. Two servers (user, 2026-11-16).
+  # The registry's token-id identity check does not apply to them.
   pplx-decider:
     kind: decision
     endpoint: http://localhost:7500
@@ -110,5 +113,25 @@ models:
     context_window: null
     reasoning: {param: null, values: [], default: null}
     tool_calls: {native: false, grammar_constrained: false}
-    status: closed                 # not running on 2026-11-15
-    notes: "POST /v1/decisions (protocol v3); see utils/killtests/decider.py."
+    status: open                   # answering on 2026-11-16 (0.21 s for one 2-option choice)
+    notes: >
+      vLLM decision server on :7500. POST /v1/decisions {"state", "questions": {name: {"type": "choice",
+      "criteria": {key: description}}}} -> answers.<name>.probabilities; several questions batch in one
+      request. Client: utils/killtests/decider.py.
+
+  d3-lite:
+    kind: decision
+    endpoint: http://localhost:5107
+    alias: null
+    identity: null
+    size: "0.85B"
+    licence: apache-2.0
+    context_window: null
+    reasoning: {param: null, values: [], default: null}
+    tool_calls: {native: false, grammar_constrained: false}
+    status: open
+    notes: >
+      GAIFA's decide service on :5107 (vllm-sr/d3-lite, revision 03560c26). POST /v1/decide {"input",
+      "questions": [{"id", "type": yesno|choice|score, "question", "options"}]} -> per-option probabilities
+      and p (the top answer's); its tuned trust threshold is 0.35. Loads on first use (about 7.7 GB of
+      GPU memory). No client in this repository yet.

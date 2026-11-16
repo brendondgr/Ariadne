@@ -152,7 +152,9 @@ def test_unreachable_endpoint_raises_unavailable():
 def test_default_is_the_one_open_model():
     reg = R.load()
     assert reg.default.name == "qwen38-27b" and reg.default.status == "open"
-    assert reg.open_models() == ["qwen38-27b"]
+    # one open LLM; the two decision-model servers are open alongside it (2026-11-16)
+    assert [n for n in reg.open_models() if reg[n].kind == "llm"] == ["qwen38-27b"]
+    assert {n for n in reg.open_models() if reg[n].kind == "decision"} == {"pplx-decider", "d3-lite"}
     assert reg.default.think_close_token_id == 248069 and reg.default.max_concurrency == 8
     # the two models share an end-of-turn id; their default renderings differ
     assert reg.default.prompt_fingerprint != reg["minicpm47-35b"].prompt_fingerprint
