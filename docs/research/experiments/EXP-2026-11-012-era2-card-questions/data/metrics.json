@@ -1,0 +1,209 @@
+{
+ "total_questions": 837,
+ "datasets": {
+  "attack": {
+   "questions": 483,
+   "by_kind": {
+    "answerable": 433,
+    "insufficient": 24,
+    "ambiguous": 14,
+    "out_of_coverage": 12
+   },
+   "by_split": {
+    "tuning": 228,
+    "heldout": 255
+   },
+   "by_decision": {
+    "grounding": 294,
+    "relation_choice": 139,
+    "exit": 50
+   },
+   "ambiguous_by_type": {
+    "entity": 14
+   },
+   "insufficient_diagnoses": {
+    "relation_absent": 9,
+    "label_excludes_all": 14,
+    "direction_reversed": 1
+   },
+   "yield_by_tier": {
+    "description": {
+     "kept": 69,
+     "dropped": 6,
+     "yield": 0.92
+    },
+    "identifier": {
+     "kept": 75,
+     "dropped": 0,
+     "yield": 1.0
+    },
+    "name": {
+     "kept": 75,
+     "dropped": 0,
+     "yield": 1.0
+    },
+    "paraphrased_schema": {
+     "kept": 75,
+     "dropped": 0,
+     "yield": 1.0
+    },
+    "reworded_name": {
+     "kept": 75,
+     "dropped": 0,
+     "yield": 1.0
+    },
+    "synonym_relation": {
+     "kept": 64,
+     "dropped": 11,
+     "yield": 0.8533
+    }
+   },
+   "dropped": {
+    "description: no description reference": 6,
+    "synonym_relation: leak or missing reference after retry": 11
+   },
+   "G1_gold_reexecuted": "483/483",
+   "G2_split_overlap": 0,
+   "G3_leaks": 0,
+   "notes": [
+    "38 slots, 75 anchor draws, 26 slots with zero-degree anchors"
+   ],
+   "gold_size_median": 2
+  },
+  "capec": {
+   "questions": 354,
+   "by_kind": {
+    "answerable": 310,
+    "insufficient": 24,
+    "ambiguous": 8,
+    "out_of_coverage": 12
+   },
+   "by_split": {
+    "tuning": 205,
+    "heldout": 149
+   },
+   "by_decision": {
+    "grounding": 217,
+    "relation_choice": 93,
+    "exit": 44
+   },
+   "ambiguous_by_type": {
+    "relation": 8
+   },
+   "insufficient_diagnoses": {
+    "relation_absent": 22,
+    "direction_reversed": 2
+   },
+   "yield_by_tier": {
+    "description": {
+     "kept": 46,
+     "dropped": 11,
+     "yield": 0.807
+    },
+    "identifier": {
+     "kept": 57,
+     "dropped": 0,
+     "yield": 1.0
+    },
+    "name": {
+     "kept": 57,
+     "dropped": 0,
+     "yield": 1.0
+    },
+    "paraphrased_schema": {
+     "kept": 57,
+     "dropped": 0,
+     "yield": 1.0
+    },
+    "reworded_name": {
+     "kept": 57,
+     "dropped": 0,
+     "yield": 1.0
+    },
+    "synonym_relation": {
+     "kept": 36,
+     "dropped": 21,
+     "yield": 0.6316
+    }
+   },
+   "dropped": {
+    "synonym_relation: leak or missing reference after retry": 21,
+    "description: no description reference": 10,
+    "description: leak or missing reference after retry": 1
+   },
+   "G1_gold_reexecuted": "354/354",
+   "G2_split_overlap": 0,
+   "G3_leaks": 0,
+   "notes": [
+    "42 slots, 57 anchor draws, 26 slots with zero-degree anchors"
+   ],
+   "gold_size_median": 1
+  }
+ },
+ "G2_global_split_overlap": 0,
+ "E2_proxy": {
+  "reader": "proxy: Claude Sonnet 5.5, medium effort, blind (not a person)",
+  "n": 50,
+  "fluent": 50,
+  "fluent_by_tier": {
+   "description": "5/5",
+   "identifier": "20/20",
+   "name": "10/10",
+   "paraphrased_schema": "5/5",
+   "reworded_name": "5/5",
+   "synonym_relation": "5/5"
+  },
+  "ambiguous_truly": "10/10",
+  "rejected": []
+ },
+ "banks": {
+  "card-2026-11-16-attack-exit-heldout": {
+   "n": 23,
+   "sha256": "ab50c66812cfeb4e0bea33f6be23376c4d1d8ce33b37233270cf31c5e5a8789c"
+  },
+  "card-2026-11-16-attack-exit-tuning": {
+   "n": 27,
+   "sha256": "9ad761482c85cda8d86816c412619a75d4caa721805480be741cb87635c6d499"
+  },
+  "card-2026-11-16-attack-grounding-heldout": {
+   "n": 156,
+   "sha256": "a82812272f6568877ee26cc78af18ea8f41503d71c45c8d1b9a3dfdd39173417"
+  },
+  "card-2026-11-16-attack-grounding-tuning": {
+   "n": 138,
+   "sha256": "41330f29695b0c6b32500de98c3b8af6ce5c7e0746bb2e577d52e1359d3e3c0f"
+  },
+  "card-2026-11-16-attack-relation_choice-heldout": {
+   "n": 76,
+   "sha256": "cbd7c7d1ea96094a75d06c636d476fca7e18b79a9ffe4ffac802bd681552d453"
+  },
+  "card-2026-11-16-attack-relation_choice-tuning": {
+   "n": 63,
+   "sha256": "bce5a25ee1b8742b9484ff0fc27939ad59a01d53b07d6ba5c604ee853dd43097"
+  },
+  "card-2026-11-16-capec-exit-heldout": {
+   "n": 22,
+   "sha256": "a34ee3ee52ace2855247696368eb1935c63ddff2d486af502809e5497f267ab7"
+  },
+  "card-2026-11-16-capec-exit-tuning": {
+   "n": 22,
+   "sha256": "19cfc8987f8f2fa415ff01b106ba15b9b3c8fbbce639525813f46839bf39bd00"
+  },
+  "card-2026-11-16-capec-grounding-heldout": {
+   "n": 87,
+   "sha256": "e7650146d7e363c8fcef03919e297af91f07beea566924ab285ab0d23a16c078"
+  },
+  "card-2026-11-16-capec-grounding-tuning": {
+   "n": 130,
+   "sha256": "ae7ef6540ee1c2b031323c53d17f0b12cba869a9bd8c6f81b199caea9ba411a6"
+  },
+  "card-2026-11-16-capec-relation_choice-heldout": {
+   "n": 40,
+   "sha256": "14d812eea034a5eb1eb71a9a7ae3bb360b7e4002ded3d627a19acb4da8693c93"
+  },
+  "card-2026-11-16-capec-relation_choice-tuning": {
+   "n": 53,
+   "sha256": "7cbdd6f87af7a4428344b9133657adb87a50946c57fac09c40d265e91a1a7f99"
+  }
+ }
+}

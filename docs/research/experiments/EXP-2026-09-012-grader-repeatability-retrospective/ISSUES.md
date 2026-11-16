@@ -4,6 +4,12 @@ Bugs, anomalies, aborted runs, and gotchas. Also the honest record of anything
 the manifest could not capture: unrecorded seeds, an unknown commit, a dirty
 tree at run time. An empty file is fine; a missing one is not.
 
+## 2026-11-16 — The judgment-tree pointer re-hashed (eighth time)
+**Impact:** none. No sidecar this experiment reads changed, and no figure moves.
+**Cause:** era 2 Steps 4–5 wrote new runs under `docs/evaluation/experiments`: EXP-2026-11-009 A-1 and A-2. The tree grows with every run.
+**Resolution:** the row was re-hashed: 1656509784 bytes, `sha256:f24430456a49…`.
+**Paper implication:** none.
+
 ## 2026-09-09 — `code.dirty: true`: the audit script was uncommitted when its output was written
 **Impact:** provenance only.
 **Cause:** `code.commit` is `fe45e68` (2026-09-07 02:50).

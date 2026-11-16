@@ -209,10 +209,19 @@ class GremlinBackend:
     name = "gremlin"
 
     def __init__(self, client: Any, *, id_props: tuple[str, ...] = ("eid", "attack_id", "id"),
-                 timeout_s: float = 60.0) -> None:
+                 timeout_s: float = 60.0, edge_label: Callable[[str], str] | None = None) -> None:
+        """``edge_label`` maps a card relation name to the stored edge label.
+
+        Ariadne's loader stores every edge as SCREAMING_SNAKE (``CHILD_OF``) while cards
+        keep the source vocabulary (CAPEC's ``ChildOf``): pass
+        ``utils.graph_loader.stores.gremlin.gremlin_edge_label`` for such stores, or a
+        card-named set over those relations is silently empty. Stores that keep the
+        source names (the kill-test loader's ``playsFor``) leave it unset.
+        """
         self.client = client
         self.id_props = tuple(_ident(p, "id property") for p in id_props)
         self.timeout_s = timeout_s
+        self._edge_label = edge_label
 
     def _id(self) -> str:
         if len(self.id_props) == 1:
@@ -224,10 +233,14 @@ class GremlinBackend:
             return f"has('{self.id_props[0]}', within(seeds))"
         return "or(" + ", ".join(f"__.has('{p}', within(seeds))" for p in self.id_props) + ")"
 
+    def edge_label(self, rel: str) -> str:
+        """The stored edge label for a card relation name (identity unless configured)."""
+        return self._edge_label(rel) if self._edge_label else rel
+
     def _walk(self, spec: SetSpec) -> str:
         start = f"g.V().hasLabel('{spec.seed_label}')" if spec.seed_label else "g.V()"
         step = {"out": "out", "in": "in", "both": "both"}[spec.direction]
-        q = f"{start}.{self._seed_filter()}.{step}('{spec.rel}')"
+        q = f"{start}.{self._seed_filter()}.{step}('{self.edge_label(spec.rel)}')"
         if spec.target_label:
             q += f".hasLabel('{spec.target_label}')"
         return q
@@ -297,7 +310,7 @@ class GremlinBackend:
 
     def degrees(self, label: str, rel: str, direction: str, target_label: str | None) -> dict[str, int]:
         step = {"out": "out", "in": "in", "both": "both"}[direction]
-        hop = f"__.{step}('{_ident(rel, 'relationship')}')"
+        hop = f"__.{step}('{self.edge_label(_ident(rel, 'relationship'))}')"
         if target_label:
             hop += f".hasLabel('{_ident(target_label, 'label')}')"
         q = (f"g.V().hasLabel('{_ident(label, 'label')}').project('id', 'n')"

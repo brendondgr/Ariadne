@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import json
 import re
+from collections import Counter
 from dataclasses import dataclass
 
 import pytest
@@ -223,3 +224,49 @@ def test_public_ids_are_used_in_questions_and_gold_and_storage_ids_kept_for_fetc
         assert all(i.startswith("PUB-") for i in cg["gold_ids"])
         if cg["tier"] == "identifier":
             assert cg["anchor"] in q["question"]
+
+
+def test_a_slot_with_no_edge_anywhere_in_the_store_is_reported_not_used():
+    """A card relation the store spells differently reads as empty everywhere: a mismatch, not `insufficient`."""
+    class R(Registry):
+        FACETS = {**Registry.FACETS, "Mitigation": [*Registry.FACETS["Mitigation"], F("TRAINS", "out", "Group")]}
+
+    cfg = CG.GenConfig(seed=7, ambiguous=0, out_of_coverage=0, insufficient=10, workers=2)
+    g = CG.generate(CARD, R(), Backend(), writer(), cfg)
+    assert g.absent_slots == ["toy|Mitigation|TRAINS|out|Group"]
+    assert not any(q["card_gen"]["slot"] and q["card_gen"]["slot"]["rel"] == "TRAINS" for q in g.questions)
+    assert any("no edge anywhere" in n for n in g.notes)
+
+
+def test_relation_ambiguity_draws_several_anchors_per_pair_and_entity_fills_the_rest():
+    cfg = CG.GenConfig(seed=7, anchors_per_slot=2, ambiguous=8, out_of_coverage=0, insufficient=0, workers=2)
+    g = CG.generate(CARD, Registry(), Backend(), writer(), cfg)
+    amb = Counter(q["card_gen"]["ambiguity"] for q in g.questions if q["card_gen"]["kind"] == "ambiguous")
+    assert amb["relation"] > 2            # two label pairs, more than one anchor each
+    assert amb["entity"] == 1             # the toy graph shares one name
+
+
+def test_entity_ambiguity_takes_the_whole_budget_when_the_card_has_no_relation_pair():
+    class R(Registry):
+        FACETS = {"Group": [F("USES", "out", "Technique")], "Technique": [F("USES", "in", "Group")]}
+
+    nodes = {**Backend.NODES, "Group": {**Backend.NODES["Group"], "G5": "Alpha Bear"}}
+    edges = [*Backend.EDGES, ("G5", "USES", "T3")]
+
+    class B(Backend):
+        NODES, EDGES = nodes, edges
+
+    cfg = CG.GenConfig(seed=7, ambiguous=2, out_of_coverage=0, insufficient=0, workers=2)
+    g = CG.generate(CARD, R(), B(), writer(), cfg)
+    amb = [q for q in g.questions if q["card_gen"]["kind"] == "ambiguous"]
+    assert {q["card_gen"]["ambiguity"] for q in amb} <= {"entity"}
+    assert len(amb) == 2                  # both shared names (G1/G5, G2/G4) sit within one split each
+
+
+def test_schema_tier_rejects_id_format_hints_copied_from_the_label_description():
+    assert CG.format_hints("Which more specific variants (T-ID.NNN) does S0001 use?") == ["NNN", "T-ID"]
+    assert CG.format_hints("Which named v19 approaches (DET-IDs) target T1546.016?") == ["DET-IDs", "v19"]
+    assert CG.format_hints("Which IPv6 attack methods does G0016 use?") == []
+    q = {"id": "x", "question": "Which variants (T-ID.NNN) does G1 use?",
+         "card_gen": {"tier": "paraphrased_schema", "slot": {"rel": "USES", "target": "Technique"}}}
+    assert CG.leak_audit(CARD, [q]) == [{"id": "x", "tier": "paraphrased_schema", "leaks": ["NNN", "T-ID"]}]

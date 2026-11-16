@@ -109,6 +109,15 @@ def leaked_stems(text: str, forbidden: set[str]) -> list[str]:
     return sorted({t for t in toks if stem(t) in forbidden})
 
 
+#: Id-format and version hints copied from a label's description ("T-ID.NNN", "DET-IDs", "v19"):
+#: they name the label by its id scheme, so the schema tier forbids them (EXP-2026-11-012 found 12).
+_FORMAT_HINT = re.compile(r"\b[A-Z]{1,6}-IDs?\b|\bN{3,}\b|\bv\d+\b")
+
+
+def format_hints(text: str) -> list[str]:
+    return sorted(set(_FORMAT_HINT.findall(text or "")))
+
+
 def relation_gloss(card: dict, rel: str) -> str:
     return str(((card.get("entity_descriptions") or {}).get("relationships") or {}).get(rel) or rel)
 
@@ -164,6 +173,8 @@ def write_question(writer: Writer, card: dict, slot: Slot, ref: str, tier: str, 
     elif tier == "paraphrased_schema":
         rules.append(f"Name the asked-for kind ({slot.target}: {label_gloss(card, slot.target)}) by what it "
                      f"means, NOT by the words {', '.join(sorted(lab_forbidden))} or any form of them.")
+        rules.append("Do not copy identifier formats or version tags from that description (such as "
+                     "'X-ID', 'NNN' or 'v19').")
     else:
         rules.append("You may use the relation's own words and name the asked-for kind directly.")
     user = "\n".join(f"- {r}" for r in rules)
@@ -178,6 +189,7 @@ def write_question(writer: Writer, card: dict, slot: Slot, ref: str, tier: str, 
             problems += leaked_stems(text, rel_forbidden)
         if tier == "paraphrased_schema":
             problems += leaked_stems(text, lab_forbidden)
+            problems += format_hints(text)
         problems += [w for w in name_forbidden if w.lower() in text.lower().replace(ref.lower(), "")]
         attempts.append({"text": text, "problems": problems})
         if text and not problems:
@@ -243,6 +255,7 @@ class Generated:
     questions: list[dict[str, Any]] = field(default_factory=list)
     dropped: Counter = field(default_factory=Counter)
     notes: list[str] = field(default_factory=list)
+    absent_slots: list[str] = field(default_factory=list)
 
 
 def _bank_entry(dataset: str, qid: str, text: str, slot: Slot | None, anchor: str | None,
@@ -303,6 +316,12 @@ def generate(card: dict, registry: Any, backend: Any, writer: Writer, cfg: GenCo
         if not pool:
             continue
         deg = backend.degrees(slot.label, slot.rel, slot.direction, slot.target)
+        if not any(deg.values()):
+            # The card allows it, but no node of this label has a single such edge in the
+            # store: a card/store mismatch (e.g. a relation name the store spells
+            # differently), not a source of `insufficient` questions. Reported, never used.
+            out.absent_slots.append(slot.key())
+            continue
         live = sorted((i for i in pool if deg.get(i, 0) > 0), key=lambda i: (deg[i], i))
         if live:
             halves = [live[: max(1, len(live) // 2)], live[len(live) // 2:] or live]
@@ -376,8 +395,49 @@ def generate(card: dict, registry: Any, backend: Any, writer: Writer, cfg: GenCo
                                          extra={"gold_status": "insufficient", "diagnosis": diag.get("reason"),
                                                 "anchor_storage": a}))
 
-    # ---- ambiguous (a): two anchors share a name, answers differ ----
+    # ---- ambiguous (b): a neutral verb, two card relations to the same target ----
+    # Runs first, with half the budget spread over the label pairs that allow it; the
+    # entity kind below fills whatever is left. (EXP-2026-11-012's first runs split the
+    # budget in fixed halves and wrote one question per pair: ATT&CK's card has no such
+    # pair, CAPEC has one, so 8 and 1 of 16 were made.)
     amb = 0
+    pairs: dict[tuple[str, str], list[Slot]] = defaultdict(list)
+    for s in slots:
+        pairs[(s.label, s.target)].append(s)
+    eligible = [(k, g) for k, g in sorted(pairs.items())
+                if len(g) >= 2 and any(sl.label == k[0] for sl, _ in jobs)]
+    rel_budget = cfg.ambiguous // 2
+    per_pair = -(-rel_budget // len(eligible)) if eligible else 0
+    for (label, target), group in eligible:
+        order = sorted({a for sl, a in jobs if sl.label == label})
+        rng.shuffle(order)
+        made = 0
+        for a in order:
+            if made >= per_pair or amb >= rel_budget:
+                break
+            readings = {sl.key(): gold(sl, a) for sl in group}
+            if len({tuple(v) for v in readings.values()}) < 2 or not any(readings.values()):
+                continue
+            intended = rng.choice([sl for sl in group if readings[sl.key()]])
+            pa = public(a)
+            text = rng.choice([f"Which {target} entries are connected to {pa}?",
+                               f"What {target} entries does the graph link with {pa}?",
+                               f"Show me the {target} entries associated with {pa}."])
+            qid = "CG-" + hashlib.sha1(f"amb-rel|{label}|{target}|{a}".encode()).hexdigest()[:12]
+            out.questions.append(_bank_entry(
+                ds, qid, text, intended, pa, readings[intended.key()], kind="ambiguous", tier="identifier",
+                split=split_of(ds, pa),
+                extra={"ambiguity": "relation", "readings": readings, "anchor_storage": a,
+                       "clarification": {"question": f"Which link between {pa} and {target} do you mean?",
+                                         "options": [{"label": f"{sl.rel} ({sl.direction})",
+                                                      "detail": relation_gloss(card, sl.rel)} for sl in group],
+                                         "answer": f"{intended.rel} ({intended.direction})"}}))
+            made += 1
+            amb += 1
+        if not made:
+            out.dropped["ambiguous: no anchor separates the readings"] += 1
+
+    # ---- ambiguous (a): two anchors share a name, answers differ (the rest of the budget) ----
     by_name: dict[str, list[tuple[str, str]]] = defaultdict(list)
     for label in sorted({s.label for s in slots}):
         for i, n in nodes(label).items():
@@ -385,7 +445,7 @@ def generate(card: dict, registry: Any, backend: Any, writer: Writer, cfg: GenCo
             if is_public_id(public(i)) and public(i) not in cfg.exclude and len(str(n.get("name") or "").strip()) >= 4:
                 by_name[str(n["name"]).strip().lower()].append((label, i))
     for name, cands in sorted(by_name.items()):
-        if amb >= cfg.ambiguous // 2:
+        if amb >= cfg.ambiguous:
             break
         cands = sorted(set(cands))
         if len(cands) < 2 or len({split_of(ds, public(i)) for _, i in cands}) != 1:
@@ -418,36 +478,6 @@ def generate(card: dict, registry: Any, backend: Any, writer: Writer, cfg: GenCo
                                      "answer": next(f"{public(i)} ({lab})" for lab, i in cands if i == intended_sto)}}))
         amb += 1
 
-    # ---- ambiguous (b): a neutral verb, two card relations to the same target ----
-    pairs: dict[tuple[str, str], list[Slot]] = defaultdict(list)
-    for s in slots:
-        pairs[(s.label, s.target)].append(s)
-    for (label, target), group in sorted(pairs.items()):
-        if amb >= cfg.ambiguous or len(group) < 2:
-            continue
-        cand = [a for s, a in jobs if s.label == label]
-        if not cand:
-            continue
-        a = rng.choice(sorted(set(cand)))
-        readings = {s.key(): gold(s, a) for s in group}
-        if len({tuple(v) for v in readings.values()}) < 2 or not any(readings.values()):
-            continue
-        intended = rng.choice([s for s in group if readings[s.key()]])
-        pa = public(a)
-        text = rng.choice([f"Which {target} entries are connected to {pa}?",
-                           f"What {target} entries does the graph link with {pa}?",
-                           f"Show me the {target} entries associated with {pa}."])
-        qid = "CG-" + hashlib.sha1(f"amb-rel|{label}|{target}|{a}".encode()).hexdigest()[:12]
-        out.questions.append(_bank_entry(
-            ds, qid, text, intended, pa, readings[intended.key()], kind="ambiguous", tier="identifier",
-            split=split_of(ds, pa),
-            extra={"ambiguity": "relation", "readings": readings, "anchor_storage": a,
-                   "clarification": {"question": f"Which link between {pa} and {target} do you mean?",
-                                     "options": [{"label": f"{s.rel} ({s.direction})",
-                                                  "detail": relation_gloss(card, s.rel)} for s in group],
-                                     "answer": f"{intended.rel} ({intended.direction})"}}))
-        amb += 1
-
     # ---- out of coverage: needs an operator the catalog lacks ----
     live_anchors = sorted({(s.label, public(a), s.target) for s, a in jobs})
     rng.shuffle(live_anchors)
@@ -476,6 +506,9 @@ def generate(card: dict, registry: Any, backend: Any, writer: Writer, cfg: GenCo
                                                 "other_anchor": b}))
         oc += 1
     out.notes.append(f"{len(slots)} slots, {len(jobs)} anchor draws, {len(empties)} slots with zero-degree anchors")
+    if out.absent_slots:
+        out.notes.append(f"{len(out.absent_slots)} card slots have no edge anywhere in the store: "
+                         + ", ".join(out.absent_slots))
     return out
 
 
@@ -512,7 +545,7 @@ def leak_audit(card: dict, questions: list[dict]) -> list[dict]:
         if cg["tier"] == "synonym_relation":
             leaks = leaked_stems(q["question"], forbidden_relation_stems(card, slot["rel"]))
         elif cg["tier"] == "paraphrased_schema":
-            leaks = leaked_stems(q["question"], forbidden_label_stems(slot["target"]))
+            leaks = leaked_stems(q["question"], forbidden_label_stems(slot["target"])) + format_hints(q["question"])
         else:
             continue
         if leaks:

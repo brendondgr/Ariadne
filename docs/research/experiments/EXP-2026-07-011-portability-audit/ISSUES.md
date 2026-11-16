@@ -1,5 +1,11 @@
 # ISSUES — EXP-2026-07-011
 
+## 2026-11-16 — The Gremlin builder pointer re-hashed (third time)
+**Impact:** none. The template-literal count is unchanged at 14, and no figure moves.
+**Cause:** 5d1b93e2, era 2 Step 4's walk fix, added a `_walk_hops` helper to `utils/specialists/gremlin/builder.py` and changed the interpolation inside one existing template literal (`.times(...)`).
+**Resolution:** the row was re-hashed: 74453 bytes, `sha256:624ed49e24f1…`.
+**Paper implication:** none.
+
 ## 2026-08-06 — Recorded as an experiment despite being an audit
 
 **Impact:** `metrics.primary` is null and no metric here was measured against

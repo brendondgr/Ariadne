@@ -136,3 +136,34 @@ def test_an_empty_result_is_diagnosed_with_the_nearest_options(backends, name):
     wrong_label = diagnose_empty(SetSpec((team,), "playsFor", "in", "Award"), be)
     assert wrong_label["reason"] == "label_excludes_all"
     assert any(o["rel"] == "playsFor" and o["direction"] == "in" for o in wrong_label["nearest"])
+
+
+def test_card_relation_names_reach_snake_case_edges_on_the_ariadne_capec_store():
+    """CAPEC's card says ``ChildOf``; Ariadne's loader stores ``CHILD_OF``. With the loader's
+    edge-label map the set is found; without it the same set reads as empty (the Step 6
+    defect, where every AttackPattern-to-AttackPattern question came out "insufficient")."""
+    try:
+        from gremlin_python.driver import client as gc
+
+        from utils.config import load_env
+        from utils.graph_loader.stores.gremlin import gremlin_edge_label
+        from utils.specialists.config import SpecialistConfig
+
+        load_env()
+        cli = gc.Client(SpecialistConfig.from_env().endpoint_for("gremlin", "capec"), "g")
+        if cli.submit("g.V().has('id', 'capec:attack-pattern:66').count()").all().result(timeout=10)[0] == 0:
+            cli.close()
+            pytest.skip("CAPEC Gremlin store is empty (reload it)")
+    except pytest.skip.Exception:
+        raise
+    except Exception as exc:  # noqa: BLE001
+        pytest.skip(f"CAPEC Gremlin store unreachable: {exc}")
+    try:
+        spec = SetSpec(("capec:attack-pattern:66",), "ChildOf", "out", "AttackPattern", "AttackPattern")
+        mapped = GremlinBackend(cli, id_props=("id",), edge_label=gremlin_edge_label)
+        assert fetch(mapped, spec).ids
+        assert fetch(GremlinBackend(cli, id_props=("id",)), spec).ids == []
+        assert diagnose_empty(SetSpec(("capec:attack-pattern:66",), "ChildOf", "in", "Weakness",
+                                      "AttackPattern"), mapped)["reason"] != "relation_absent"
+    finally:
+        cli.close()

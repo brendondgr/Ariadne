@@ -1,0 +1,3354 @@
+{
+ "meta": {
+  "count": 53,
+  "created": "2026-11-16",
+  "dataset": "capec",
+  "decision": "relation_choice",
+  "generator": "utils/specialists/evalset/card_generator.py",
+  "model": "qwen38-27b/248046",
+  "sealed": false,
+  "seed": 20261116,
+  "split": "tuning"
+ },
+ "questions": [
+  {
+   "assertions": {
+    "min_records": 1,
+    "must_include_ids": [
+     "CAPEC-74"
+    ],
+    "must_include_related": [
+     "capec:attack-pattern:74:resource:1"
+    ]
+   },
+   "card_gen": {
+    "anchor": "CAPEC-74",
+    "anchor_storage": "capec:attack-pattern:74",
+    "attempts": 1,
+    "decision": "relation_choice",
+    "gold_ids": [
+     "capec:attack-pattern:74:resource:1"
+    ],
+    "kind": "answerable",
+    "slot": {
+     "dataset": "capec",
+     "direction": "out",
+     "label": "AttackPattern",
+     "rel": "REQUIRES_RESOURCE",
+     "target": "Resource"
+    },
+    "tier": "synonym_relation"
+   },
+   "ex_gold": {
+    "expected": [
+     "capec:attack-pattern:74:resource:1"
+    ],
+    "pool": "neighbors",
+    "scheme": "capec"
+   },
+   "id": "CG-04f59ad6bf3a",
+   "question": "What capabilities or access does the attacker need in order to execute CAPEC-74?",
+   "split": "tuning",
+   "task": {
+    "entities": [
+     "AttackPattern",
+     "REQUIRES_RESOURCE",
+     "Resource"
+    ],
+    "join_key": null,
+    "limits": {
+     "max_result_rows": 20000,
+     "max_traversal_depth": 3,
+     "query_timeout_ms": 5000
+    },
+    "rationale": "card_generator",
+    "seed_ids": [
+     "CAPEC-74"
+    ],
+    "source": "capec",
+    "sub_question_id": "CG-04f59ad6bf3a",
+    "text": "What capabilities or access does the attacker need in order to execute CAPEC-74?"
+   },
+   "tier": "synonym_relation"
+  },
+  {
+   "assertions": {
+    "min_records": 1,
+    "must_include_ids": [
+     "CAPEC-64"
+    ],
+    "must_include_related": [
+     "CAPEC-80"
+    ]
+   },
+   "card_gen": {
+    "anchor": "CAPEC-64",
+    "anchor_storage": "capec:attack-pattern:64",
+    "attempts": 1,
+    "decision": "relation_choice",
+    "gold_ids": [
+     "CAPEC-80"
+    ],
+    "kind": "answerable",
+    "slot": {
+     "dataset": "capec",
+     "direction": "in",
+     "label": "AttackPattern",
+     "rel": "PeerOf",
+     "target": "AttackPattern"
+    },
+    "tier": "synonym_relation"
+   },
+   "ex_gold": {
+    "expected": [
+     "CAPEC-80"
+    ],
+    "pool": "neighbors",
+    "scheme": "capec"
+   },
+   "id": "CG-0676c31681d7",
+   "question": "Which AttackPattern entries are grouped alongside CAPEC-64?",
+   "split": "tuning",
+   "task": {
+    "entities": [
+     "AttackPattern",
+     "PeerOf",
+     "AttackPattern"
+    ],
+    "join_key": null,
+    "limits": {
+     "max_result_rows": 20000,
+     "max_traversal_depth": 3,
+     "query_timeout_ms": 5000
+    },
+    "rationale": "card_generator",
+    "seed_ids": [
+     "CAPEC-64"
+    ],
+    "source": "capec",
+    "sub_question_id": "CG-0676c31681d7",
+    "text": "Which AttackPattern entries are grouped alongside CAPEC-64?"
+   },
+   "tier": "synonym_relation"
+  },
+  {
+   "assertions": {
+    "min_records": 1,
+    "must_include_ids": [
+     "CWE-1279"
+    ],
+    "must_include_related": [
+     "CAPEC-97"
+    ]
+   },
+   "card_gen": {
+    "anchor": "CWE-1279",
+    "anchor_storage": "cwe:1279",
+    "attempts": 1,
+    "decision": "relation_choice",
+    "gold_ids": [
+     "CAPEC-97"
+    ],
+    "kind": "answerable",
+    "slot": {
+     "dataset": "capec",
+     "direction": "in",
+     "label": "Weakness",
+     "rel": "EXPLOITS_WEAKNESS",
+     "target": "AttackPattern"
+    },
+    "tier": "paraphrased_schema"
+   },
+   "ex_gold": {
+    "expected": [
+     "CAPEC-97"
+    ],
+    "pool": "neighbors",
+    "scheme": "capec"
+   },
+   "id": "CG-088026c49f93",
+   "question": "Which CAPEC adversarial techniques exploit CWE-1279?",
+   "split": "tuning",
+   "task": {
+    "entities": [
+     "Weakness",
+     "EXPLOITS_WEAKNESS",
+     "AttackPattern"
+    ],
+    "join_key": null,
+    "limits": {
+     "max_result_rows": 20000,
+     "max_traversal_depth": 3,
+     "query_timeout_ms": 5000
+    },
+    "rationale": "card_generator",
+    "seed_ids": [
+     "CWE-1279"
+    ],
+    "source": "capec",
+    "sub_question_id": "CG-088026c49f93",
+    "text": "Which CAPEC adversarial techniques exploit CWE-1279?"
+   },
+   "tier": "paraphrased_schema"
+  },
+  {
+   "assertions": {
+    "min_records": 1,
+    "must_include_ids": [
+     "CAPEC-285"
+    ],
+    "must_include_related": [
+     "capec:external-reference:REF-123",
+     "capec:external-reference:REF-124",
+     "capec:external-reference:REF-125",
+     "capec:external-reference:REF-33",
+     "capec:external-reference:REF-34"
+    ]
+   },
+   "card_gen": {
+    "anchor": "CAPEC-285",
+    "anchor_storage": "capec:attack-pattern:285",
+    "attempts": 1,
+    "decision": "relation_choice",
+    "gold_ids": [
+     "capec:external-reference:REF-123",
+     "capec:external-reference:REF-124",
+     "capec:external-reference:REF-125",
+     "capec:external-reference:REF-33",
+     "capec:external-reference:REF-34"
+    ],
+    "kind": "answerable",
+    "slot": {
+     "dataset": "capec",
+     "direction": "out",
+     "label": "AttackPattern",
+     "rel": "HAS_REFERENCE",
+     "target": "ExternalReference"
+    },
+    "tier": "synonym_relation"
+   },
+   "ex_gold": {
+    "expected": [
+     "capec:external-reference:REF-123",
+     "capec:external-reference:REF-124",
+     "capec:external-reference:REF-125",
+     "capec:external-reference:REF-33",
+     "capec:external-reference:REF-34"
+    ],
+    "pool": "neighbors",
+    "scheme": "capec"
+   },
+   "id": "CG-0bae4e92a187",
+   "question": "What ExternalReference entries are listed for CAPEC-285?",
+   "split": "tuning",
+   "task": {
+    "entities": [
+     "AttackPattern",
+     "HAS_REFERENCE",
+     "ExternalReference"
+    ],
+    "join_key": null,
+    "limits": {
+     "max_result_rows": 20000,
+     "max_traversal_depth": 3,
+     "query_timeout_ms": 5000
+    },
+    "rationale": "card_generator",
+    "seed_ids": [
+     "CAPEC-285"
+    ],
+    "source": "capec",
+    "sub_question_id": "CG-0bae4e92a187",
+    "text": "What ExternalReference entries are listed for CAPEC-285?"
+   },
+   "tier": "synonym_relation"
+  },
+  {
+   "assertions": {
+    "min_records": 1,
+    "must_include_ids": [
+     "CAPEC-390"
+    ],
+    "must_include_related": [
+     "CAPEC-665"
+    ]
+   },
+   "card_gen": {
+    "anchor": "CAPEC-390",
+    "anchor_storage": "capec:attack-pattern:390",
+    "attempts": 1,
+    "decision": "relation_choice",
+    "gold_ids": [
+     "CAPEC-665"
+    ],
+    "kind": "answerable",
+    "slot": {
+     "dataset": "capec",
+     "direction": "in",
+     "label": "AttackPattern",
+     "rel": "CanFollow",
+     "target": "AttackPattern"
+    },
+    "tier": "synonym_relation"
+   },
+   "ex_gold": {
+    "expected": [
+     "CAPEC-665"
+    ],
+    "pool": "neighbors",
+    "scheme": "capec"
+   },
+   "id": "CG-0ec8604473db",
+   "question": "What AttackPatterns can precede CAPEC-390 in an attack chain?",
+   "split": "tuning",
+   "task": {
+    "entities": [
+     "AttackPattern",
+     "CanFollow",
+     "AttackPattern"
+    ],
+    "join_key": null,
+    "limits": {
+     "max_result_rows": 20000,
+     "max_traversal_depth": 3,
+     "query_timeout_ms": 5000
+    },
+    "rationale": "card_generator",
+    "seed_ids": [
+     "CAPEC-390"
+    ],
+    "source": "capec",
+    "sub_question_id": "CG-0ec8604473db",
+    "text": "What AttackPatterns can precede CAPEC-390 in an attack chain?"
+   },
+   "tier": "synonym_relation"
+  },
+  {
+   "assertions": {
+    "min_records": 1,
+    "must_include_ids": [
+     "CAPEC-592"
+    ],
+    "must_include_related": [
+     "CAPEC-73",
+     "CAPEC-93"
+    ]
+   },
+   "card_gen": {
+    "anchor": "CAPEC-592",
+    "anchor_storage": "capec:attack-pattern:592",
+    "attempts": 1,
+    "decision": "relation_choice",
+    "gold_ids": [
+     "CAPEC-73",
+     "CAPEC-93"
+    ],
+    "kind": "answerable",
+    "slot": {
+     "dataset": "capec",
+     "direction": "in",
+     "label": "AttackPattern",
+     "rel": "CanPrecede",
+     "target": "AttackPattern"
+    },
+    "tier": "synonym_relation"
+   },
+   "ex_gold": {
+    "expected": [
+     "CAPEC-73",
+     "CAPEC-93"
+    ],
+    "pool": "neighbors",
+    "scheme": "capec"
+   },
+   "id": "CG-15f8e89f0d1b",
+   "question": "Which AttackPatterns might an attacker try ahead of CAPEC-592?",
+   "split": "tuning",
+   "task": {
+    "entities": [
+     "AttackPattern",
+     "CanPrecede",
+     "AttackPattern"
+    ],
+    "join_key": null,
+    "limits": {
+     "max_result_rows": 20000,
+     "max_traversal_depth": 3,
+     "query_timeout_ms": 5000
+    },
+    "rationale": "card_generator",
+    "seed_ids": [
+     "CAPEC-592"
+    ],
+    "source": "capec",
+    "sub_question_id": "CG-15f8e89f0d1b",
+    "text": "Which AttackPatterns might an attacker try ahead of CAPEC-592?"
+   },
+   "tier": "synonym_relation"
+  },
+  {
+   "assertions": {
+    "min_records": 1,
+    "must_include_ids": [
+     "CAPEC-605"
+    ],
+    "must_include_related": [
+     "CAPEC-601"
+    ]
+   },
+   "card_gen": {
+    "anchor": "CAPEC-605",
+    "anchor_storage": "capec:attack-pattern:605",
+    "attempts": 1,
+    "decision": "relation_choice",
+    "gold_ids": [
+     "CAPEC-601"
+    ],
+    "kind": "answerable",
+    "slot": {
+     "dataset": "capec",
+     "direction": "out",
+     "label": "AttackPattern",
+     "rel": "ChildOf",
+     "target": "AttackPattern"
+    },
+    "tier": "paraphrased_schema"
+   },
+   "ex_gold": {
+    "expected": [
+     "CAPEC-601"
+    ],
+    "pool": "neighbors",
+    "scheme": "capec"
+   },
+   "id": "CG-17cee265953f",
+   "question": "What abstract-level adversarial techniques is CAPEC-605 a more specific variant of?",
+   "split": "tuning",
+   "task": {
+    "entities": [
+     "AttackPattern",
+     "ChildOf",
+     "AttackPattern"
+    ],
+    "join_key": null,
+    "limits": {
+     "max_result_rows": 20000,
+     "max_traversal_depth": 3,
+     "query_timeout_ms": 5000
+    },
+    "rationale": "card_generator",
+    "seed_ids": [
+     "CAPEC-605"
+    ],
+    "source": "capec",
+    "sub_question_id": "CG-17cee265953f",
+    "text": "What abstract-level adversarial techniques is CAPEC-605 a more specific variant of?"
+   },
+   "tier": "paraphrased_schema"
+  },
+  {
+   "assertions": {
+    "min_records": 1,
+    "must_include_ids": [
+     "CAPEC-35"
+    ],
+    "must_include_related": [
+     "CAPEC-23",
+     "CAPEC-75"
+    ]
+   },
+   "card_gen": {
+    "anchor": "CAPEC-35",
+    "anchor_storage": "capec:attack-pattern:35",
+    "attempts": 1,
+    "decision": "relation_choice",
+    "gold_ids": [
+     "CAPEC-23",
+     "CAPEC-75"
+    ],
+    "kind": "answerable",
+    "slot": {
+     "dataset": "capec",
+     "direction": "out",
+     "label": "AttackPattern",
+     "rel": "PeerOf",
+     "target": "AttackPattern"
+    },
+    "tier": "synonym_relation"
+   },
+   "ex_gold": {
+    "expected": [
+     "CAPEC-23",
+     "CAPEC-75"
+    ],
+    "pool": "neighbors",
+    "scheme": "capec"
+   },
+   "id": "CG-190df7abeb3a",
+   "question": "Which other AttackPatterns are listed alongside CAPEC-35?",
+   "split": "tuning",
+   "task": {
+    "entities": [
+     "AttackPattern",
+     "PeerOf",
+     "AttackPattern"
+    ],
+    "join_key": null,
+    "limits": {
+     "max_result_rows": 20000,
+     "max_traversal_depth": 3,
+     "query_timeout_ms": 5000
+    },
+    "rationale": "card_generator",
+    "seed_ids": [
+     "CAPEC-35"
+    ],
+    "source": "capec",
+    "sub_question_id": "CG-190df7abeb3a",
+    "text": "Which other AttackPatterns are listed alongside CAPEC-35?"
+   },
+   "tier": "synonym_relation"
+  },
+  {
+   "assertions": {
+    "min_records": 1,
+    "must_include_ids": [
+     "CAPEC-156"
+    ],
+    "must_include_related": [
+     "CAPEC-1000"
+    ]
+   },
+   "card_gen": {
+    "anchor": "CAPEC-156",
+    "anchor_storage": "capec:category:156",
+    "attempts": 1,
+    "decision": "relation_choice",
+    "gold_ids": [
+     "CAPEC-1000"
+    ],
+    "kind": "answerable",
+    "slot": {
+     "dataset": "capec",
+     "direction": "out",
+     "label": "Category",
+     "rel": "IN_VIEW",
+     "target": "View"
+    },
+    "tier": "paraphrased_schema"
+   },
+   "ex_gold": {
+    "expected": [
+     "CAPEC-1000"
+    ],
+    "pool": "neighbors",
+    "scheme": "capec"
+   },
+   "id": "CG-1b02f6b61b87",
+   "question": "What curated perspectives over the CAPEC catalog include CAPEC-156?",
+   "split": "tuning",
+   "task": {
+    "entities": [
+     "Category",
+     "IN_VIEW",
+     "View"
+    ],
+    "join_key": null,
+    "limits": {
+     "max_result_rows": 20000,
+     "max_traversal_depth": 3,
+     "query_timeout_ms": 5000
+    },
+    "rationale": "card_generator",
+    "seed_ids": [
+     "CAPEC-156"
+    ],
+    "source": "capec",
+    "sub_question_id": "CG-1b02f6b61b87",
+    "text": "What curated perspectives over the CAPEC catalog include CAPEC-156?"
+   },
+   "tier": "paraphrased_schema"
+  },
+  {
+   "assertions": {
+    "min_records": 1,
+    "must_include_ids": [
+     "CAPEC-175"
+    ],
+    "must_include_related": [
+     "CAPEC-234"
+    ]
+   },
+   "card_gen": {
+    "anchor": "CAPEC-175",
+    "anchor_storage": "capec:attack-pattern:175",
+    "attempts": 1,
+    "decision": "relation_choice",
+    "gold_ids": [
+     "CAPEC-234"
+    ],
+    "kind": "answerable",
+    "slot": {
+     "dataset": "capec",
+     "direction": "in",
+     "label": "AttackPattern",
+     "rel": "CanFollow",
+     "target": "AttackPattern"
+    },
+    "tier": "synonym_relation"
+   },
+   "ex_gold": {
+    "expected": [
+     "CAPEC-234"
+    ],
+    "pool": "neighbors",
+    "scheme": "capec"
+   },
+   "id": "CG-1b2cc1d96898",
+   "question": "Which AttackPatterns typically lead into CAPEC-175 within an attack chain?",
+   "split": "tuning",
+   "task": {
+    "entities": [
+     "AttackPattern",
+     "CanFollow",
+     "AttackPattern"
+    ],
+    "join_key": null,
+    "limits": {
+     "max_result_rows": 20000,
+     "max_traversal_depth": 3,
+     "query_timeout_ms": 5000
+    },
+    "rationale": "card_generator",
+    "seed_ids": [
+     "CAPEC-175"
+    ],
+    "source": "capec",
+    "sub_question_id": "CG-1b2cc1d96898",
+    "text": "Which AttackPatterns typically lead into CAPEC-175 within an attack chain?"
+   },
+   "tier": "synonym_relation"
+  },
+  {
+   "assertions": {
+    "min_records": 1,
+    "must_include_ids": [
+     "CAPEC-122"
+    ],
+    "must_include_related": [
+     "capec:taxonomy:ATTACK:1548"
+    ]
+   },
+   "card_gen": {
+    "anchor": "CAPEC-122",
+    "anchor_storage": "capec:attack-pattern:122",
+    "attempts": 1,
+    "decision": "relation_choice",
+    "gold_ids": [
+     "capec:taxonomy:ATTACK:1548"
+    ],
+    "kind": "answerable",
+    "slot": {
+     "dataset": "capec",
+     "direction": "out",
+     "label": "AttackPattern",
+     "rel": "MAPS_TO",
+     "target": "TaxonomyEntry"
+    },
+    "tier": "synonym_relation"
+   },
+   "ex_gold": {
+    "expected": [
+     "capec:taxonomy:ATTACK:1548"
+    ],
+    "pool": "neighbors",
+    "scheme": "capec"
+   },
+   "id": "CG-1f0c4e3a90e3",
+   "question": "What TaxonomyEntry entries is CAPEC-122 linked to in an external taxonomy?",
+   "split": "tuning",
+   "task": {
+    "entities": [
+     "AttackPattern",
+     "MAPS_TO",
+     "TaxonomyEntry"
+    ],
+    "join_key": null,
+    "limits": {
+     "max_result_rows": 20000,
+     "max_traversal_depth": 3,
+     "query_timeout_ms": 5000
+    },
+    "rationale": "card_generator",
+    "seed_ids": [
+     "CAPEC-122"
+    ],
+    "source": "capec",
+    "sub_question_id": "CG-1f0c4e3a90e3",
+    "text": "What TaxonomyEntry entries is CAPEC-122 linked to in an external taxonomy?"
+   },
+   "tier": "synonym_relation"
+  },
+  {
+   "assertions": {
+    "min_records": 1,
+    "must_include_ids": [
+     "CAPEC-234"
+    ],
+    "must_include_related": [
+     "CAPEC-100",
+     "CAPEC-175",
+     "CAPEC-242"
+    ]
+   },
+   "card_gen": {
+    "anchor": "CAPEC-234",
+    "anchor_storage": "capec:attack-pattern:234",
+    "attempts": 1,
+    "decision": "relation_choice",
+    "gold_ids": [
+     "CAPEC-100",
+     "CAPEC-175",
+     "CAPEC-242"
+    ],
+    "kind": "answerable",
+    "slot": {
+     "dataset": "capec",
+     "direction": "out",
+     "label": "AttackPattern",
+     "rel": "CanFollow",
+     "target": "AttackPattern"
+    },
+    "tier": "synonym_relation"
+   },
+   "ex_gold": {
+    "expected": [
+     "CAPEC-100",
+     "CAPEC-175",
+     "CAPEC-242"
+    ],
+    "pool": "neighbors",
+    "scheme": "capec"
+   },
+   "id": "CG-244c15e0976a",
+   "question": "In an attack chain, what AttackPatterns can precede CAPEC-234?",
+   "split": "tuning",
+   "task": {
+    "entities": [
+     "AttackPattern",
+     "CanFollow",
+     "AttackPattern"
+    ],
+    "join_key": null,
+    "limits": {
+     "max_result_rows": 20000,
+     "max_traversal_depth": 3,
+     "query_timeout_ms": 5000
+    },
+    "rationale": "card_generator",
+    "seed_ids": [
+     "CAPEC-234"
+    ],
+    "source": "capec",
+    "sub_question_id": "CG-244c15e0976a",
+    "text": "In an attack chain, what AttackPatterns can precede CAPEC-234?"
+   },
+   "tier": "synonym_relation"
+  },
+  {
+   "assertions": {
+    "min_records": 1,
+    "must_include_ids": [
+     "CAPEC-635"
+    ],
+    "must_include_related": [
+     "CAPEC-703"
+    ]
+   },
+   "card_gen": {
+    "anchor": "CAPEC-635",
+    "anchor_storage": "capec:attack-pattern:635",
+    "attempts": 1,
+    "decision": "relation_choice",
+    "gold_ids": [
+     "CAPEC-703"
+    ],
+    "kind": "answerable",
+    "slot": {
+     "dataset": "capec",
+     "direction": "out",
+     "label": "AttackPattern",
+     "rel": "IN_VIEW",
+     "target": "View"
+    },
+    "tier": "paraphrased_schema"
+   },
+   "ex_gold": {
+    "expected": [
+     "CAPEC-703"
+    ],
+    "pool": "neighbors",
+    "scheme": "capec"
+   },
+   "id": "CG-2ec2bb9e7bf5",
+   "question": "Which curated subsets or perspectives over the CAPEC catalog include CAPEC-635?",
+   "split": "tuning",
+   "task": {
+    "entities": [
+     "AttackPattern",
+     "IN_VIEW",
+     "View"
+    ],
+    "join_key": null,
+    "limits": {
+     "max_result_rows": 20000,
+     "max_traversal_depth": 3,
+     "query_timeout_ms": 5000
+    },
+    "rationale": "card_generator",
+    "seed_ids": [
+     "CAPEC-635"
+    ],
+    "source": "capec",
+    "sub_question_id": "CG-2ec2bb9e7bf5",
+    "text": "Which curated subsets or perspectives over the CAPEC catalog include CAPEC-635?"
+   },
+   "tier": "paraphrased_schema"
+  },
+  {
+   "assertions": {
+    "min_records": 1,
+    "must_include_ids": [
+     "CAPEC-186"
+    ],
+    "must_include_related": [
+     "CAPEC-98"
+    ]
+   },
+   "card_gen": {
+    "anchor": "CAPEC-186",
+    "anchor_storage": "capec:attack-pattern:186",
+    "attempts": 1,
+    "decision": "relation_choice",
+    "gold_ids": [
+     "CAPEC-98"
+    ],
+    "kind": "answerable",
+    "slot": {
+     "dataset": "capec",
+     "direction": "out",
+     "label": "AttackPattern",
+     "rel": "CanFollow",
+     "target": "AttackPattern"
+    },
+    "tier": "paraphrased_schema"
+   },
+   "ex_gold": {
+    "expected": [
+     "CAPEC-98"
+    ],
+    "pool": "neighbors",
+    "scheme": "capec"
+   },
+   "id": "CG-30c0a1691c68",
+   "question": "Which adversarial techniques at an abstract level can CAPEC-186 occur after?",
+   "split": "tuning",
+   "task": {
+    "entities": [
+     "AttackPattern",
+     "CanFollow",
+     "AttackPattern"
+    ],
+    "join_key": null,
+    "limits": {
+     "max_result_rows": 20000,
+     "max_traversal_depth": 3,
+     "query_timeout_ms": 5000
+    },
+    "rationale": "card_generator",
+    "seed_ids": [
+     "CAPEC-186"
+    ],
+    "source": "capec",
+    "sub_question_id": "CG-30c0a1691c68",
+    "text": "Which adversarial techniques at an abstract level can CAPEC-186 occur after?"
+   },
+   "tier": "paraphrased_schema"
+  },
+  {
+   "assertions": {
+    "min_records": 1,
+    "must_include_ids": [
+     "CAPEC-390"
+    ],
+    "must_include_related": [
+     "CAPEC-665"
+    ]
+   },
+   "card_gen": {
+    "anchor": "CAPEC-390",
+    "anchor_storage": "capec:attack-pattern:390",
+    "attempts": 1,
+    "decision": "relation_choice",
+    "gold_ids": [
+     "CAPEC-665"
+    ],
+    "kind": "answerable",
+    "slot": {
+     "dataset": "capec",
+     "direction": "in",
+     "label": "AttackPattern",
+     "rel": "CanFollow",
+     "target": "AttackPattern"
+    },
+    "tier": "paraphrased_schema"
+   },
+   "ex_gold": {
+    "expected": [
+     "CAPEC-665"
+    ],
+    "pool": "neighbors",
+    "scheme": "capec"
+   },
+   "id": "CG-34c7fce7e886",
+   "question": "Which adversarial techniques can occur after CAPEC-390 in a threat sequence?",
+   "split": "tuning",
+   "task": {
+    "entities": [
+     "AttackPattern",
+     "CanFollow",
+     "AttackPattern"
+    ],
+    "join_key": null,
+    "limits": {
+     "max_result_rows": 20000,
+     "max_traversal_depth": 3,
+     "query_timeout_ms": 5000
+    },
+    "rationale": "card_generator",
+    "seed_ids": [
+     "CAPEC-390"
+    ],
+    "source": "capec",
+    "sub_question_id": "CG-34c7fce7e886",
+    "text": "Which adversarial techniques can occur after CAPEC-390 in a threat sequence?"
+   },
+   "tier": "paraphrased_schema"
+  },
+  {
+   "assertions": {
+    "min_records": 1,
+    "must_include_ids": [
+     "CAPEC-285"
+    ],
+    "must_include_related": [
+     "capec:external-reference:REF-123",
+     "capec:external-reference:REF-124",
+     "capec:external-reference:REF-125",
+     "capec:external-reference:REF-33",
+     "capec:external-reference:REF-34"
+    ]
+   },
+   "card_gen": {
+    "anchor": "CAPEC-285",
+    "anchor_storage": "capec:attack-pattern:285",
+    "attempts": 1,
+    "decision": "relation_choice",
+    "gold_ids": [
+     "capec:external-reference:REF-123",
+     "capec:external-reference:REF-124",
+     "capec:external-reference:REF-125",
+     "capec:external-reference:REF-33",
+     "capec:external-reference:REF-34"
+    ],
+    "kind": "answerable",
+    "slot": {
+     "dataset": "capec",
+     "direction": "out",
+     "label": "AttackPattern",
+     "rel": "HAS_REFERENCE",
+     "target": "ExternalReference"
+    },
+    "tier": "paraphrased_schema"
+   },
+   "ex_gold": {
+    "expected": [
+     "capec:external-reference:REF-123",
+     "capec:external-reference:REF-124",
+     "capec:external-reference:REF-125",
+     "capec:external-reference:REF-33",
+     "capec:external-reference:REF-34"
+    ],
+    "pool": "neighbors",
+    "scheme": "capec"
+   },
+   "id": "CG-36321de37eaa",
+   "question": "Which published resources, CVEs, or URLs are linked to CAPEC-285?",
+   "split": "tuning",
+   "task": {
+    "entities": [
+     "AttackPattern",
+     "HAS_REFERENCE",
+     "ExternalReference"
+    ],
+    "join_key": null,
+    "limits": {
+     "max_result_rows": 20000,
+     "max_traversal_depth": 3,
+     "query_timeout_ms": 5000
+    },
+    "rationale": "card_generator",
+    "seed_ids": [
+     "CAPEC-285"
+    ],
+    "source": "capec",
+    "sub_question_id": "CG-36321de37eaa",
+    "text": "Which published resources, CVEs, or URLs are linked to CAPEC-285?"
+   },
+   "tier": "paraphrased_schema"
+  },
+  {
+   "assertions": {
+    "min_records": 1,
+    "must_include_ids": [
+     "CAPEC-1"
+    ],
+    "must_include_related": [
+     "CAPEC-17"
+    ]
+   },
+   "card_gen": {
+    "anchor": "CAPEC-1",
+    "anchor_storage": "capec:attack-pattern:1",
+    "attempts": 1,
+    "decision": "relation_choice",
+    "gold_ids": [
+     "CAPEC-17"
+    ],
+    "kind": "answerable",
+    "slot": {
+     "dataset": "capec",
+     "direction": "out",
+     "label": "AttackPattern",
+     "rel": "CanPrecede",
+     "target": "AttackPattern"
+    },
+    "tier": "paraphrased_schema"
+   },
+   "ex_gold": {
+    "expected": [
+     "CAPEC-17"
+    ],
+    "pool": "neighbors",
+    "scheme": "capec"
+   },
+   "id": "CG-4242f2e5a8f3",
+   "question": "Which adversarial techniques at an abstract level can occur after CAPEC-1 in a sequence of techniques?",
+   "split": "tuning",
+   "task": {
+    "entities": [
+     "AttackPattern",
+     "CanPrecede",
+     "AttackPattern"
+    ],
+    "join_key": null,
+    "limits": {
+     "max_result_rows": 20000,
+     "max_traversal_depth": 3,
+     "query_timeout_ms": 5000
+    },
+    "rationale": "card_generator",
+    "seed_ids": [
+     "CAPEC-1"
+    ],
+    "source": "capec",
+    "sub_question_id": "CG-4242f2e5a8f3",
+    "text": "Which adversarial techniques at an abstract level can occur after CAPEC-1 in a sequence of techniques?"
+   },
+   "tier": "paraphrased_schema"
+  },
+  {
+   "assertions": {
+    "min_records": 1,
+    "must_include_ids": [
+     "CAPEC-33"
+    ],
+    "must_include_related": [
+     "capec:attack-pattern:33:alternate-term:1"
+    ]
+   },
+   "card_gen": {
+    "anchor": "CAPEC-33",
+    "anchor_storage": "capec:attack-pattern:33",
+    "attempts": 1,
+    "decision": "relation_choice",
+    "gold_ids": [
+     "capec:attack-pattern:33:alternate-term:1"
+    ],
+    "kind": "answerable",
+    "slot": {
+     "dataset": "capec",
+     "direction": "out",
+     "label": "AttackPattern",
+     "rel": "HAS_ALTERNATE_TERM",
+     "target": "AlternateTerm"
+    },
+    "tier": "paraphrased_schema"
+   },
+   "ex_gold": {
+    "expected": [
+     "capec:attack-pattern:33:alternate-term:1"
+    ],
+    "pool": "neighbors",
+    "scheme": "capec"
+   },
+   "id": "CG-4959c6a2f683",
+   "question": "What other names is the attack pattern CAPEC-33 known by?",
+   "split": "tuning",
+   "task": {
+    "entities": [
+     "AttackPattern",
+     "HAS_ALTERNATE_TERM",
+     "AlternateTerm"
+    ],
+    "join_key": null,
+    "limits": {
+     "max_result_rows": 20000,
+     "max_traversal_depth": 3,
+     "query_timeout_ms": 5000
+    },
+    "rationale": "card_generator",
+    "seed_ids": [
+     "CAPEC-33"
+    ],
+    "source": "capec",
+    "sub_question_id": "CG-4959c6a2f683",
+    "text": "What other names is the attack pattern CAPEC-33 known by?"
+   },
+   "tier": "paraphrased_schema"
+  },
+  {
+   "assertions": {
+    "min_records": 1,
+    "must_include_ids": [
+     "CAPEC-230"
+    ],
+    "must_include_related": [
+     "capec:attack-pattern:230:indicator:1"
+    ]
+   },
+   "card_gen": {
+    "anchor": "CAPEC-230",
+    "anchor_storage": "capec:attack-pattern:230",
+    "attempts": 1,
+    "decision": "relation_choice",
+    "gold_ids": [
+     "capec:attack-pattern:230:indicator:1"
+    ],
+    "kind": "answerable",
+    "slot": {
+     "dataset": "capec",
+     "direction": "out",
+     "label": "AttackPattern",
+     "rel": "HAS_INDICATOR",
+     "target": "Indicator"
+    },
+    "tier": "paraphrased_schema"
+   },
+   "ex_gold": {
+    "expected": [
+     "capec:attack-pattern:230:indicator:1"
+    ],
+    "pool": "neighbors",
+    "scheme": "capec"
+   },
+   "id": "CG-49a19fd34ab2",
+   "question": "What observable signs of an attempted or successful execution are linked to CAPEC-230?",
+   "split": "tuning",
+   "task": {
+    "entities": [
+     "AttackPattern",
+     "HAS_INDICATOR",
+     "Indicator"
+    ],
+    "join_key": null,
+    "limits": {
+     "max_result_rows": 20000,
+     "max_traversal_depth": 3,
+     "query_timeout_ms": 5000
+    },
+    "rationale": "card_generator",
+    "seed_ids": [
+     "CAPEC-230"
+    ],
+    "source": "capec",
+    "sub_question_id": "CG-49a19fd34ab2",
+    "text": "What observable signs of an attempted or successful execution are linked to CAPEC-230?"
+   },
+   "tier": "paraphrased_schema"
+  },
+  {
+   "assertions": {
+    "min_records": 1,
+    "must_include_ids": [
+     "CAPEC-234"
+    ],
+    "must_include_related": [
+     "CAPEC-100",
+     "CAPEC-175",
+     "CAPEC-242"
+    ]
+   },
+   "card_gen": {
+    "anchor": "CAPEC-234",
+    "anchor_storage": "capec:attack-pattern:234",
+    "attempts": 1,
+    "decision": "relation_choice",
+    "gold_ids": [
+     "CAPEC-100",
+     "CAPEC-175",
+     "CAPEC-242"
+    ],
+    "kind": "answerable",
+    "slot": {
+     "dataset": "capec",
+     "direction": "out",
+     "label": "AttackPattern",
+     "rel": "CanFollow",
+     "target": "AttackPattern"
+    },
+    "tier": "paraphrased_schema"
+   },
+   "ex_gold": {
+    "expected": [
+     "CAPEC-100",
+     "CAPEC-175",
+     "CAPEC-242"
+    ],
+    "pool": "neighbors",
+    "scheme": "capec"
+   },
+   "id": "CG-4b2094427c42",
+   "question": "Which adversarial techniques at an abstract level can precede CAPEC-234 in a sequence of adversarial actions?",
+   "split": "tuning",
+   "task": {
+    "entities": [
+     "AttackPattern",
+     "CanFollow",
+     "AttackPattern"
+    ],
+    "join_key": null,
+    "limits": {
+     "max_result_rows": 20000,
+     "max_traversal_depth": 3,
+     "query_timeout_ms": 5000
+    },
+    "rationale": "card_generator",
+    "seed_ids": [
+     "CAPEC-234"
+    ],
+    "source": "capec",
+    "sub_question_id": "CG-4b2094427c42",
+    "text": "Which adversarial techniques at an abstract level can precede CAPEC-234 in a sequence of adversarial actions?"
+   },
+   "tier": "paraphrased_schema"
+  },
+  {
+   "assertions": {
+    "min_records": 1,
+    "must_include_ids": [
+     "CAPEC-175"
+    ],
+    "must_include_related": [
+     "CAPEC-234"
+    ]
+   },
+   "card_gen": {
+    "anchor": "CAPEC-175",
+    "anchor_storage": "capec:attack-pattern:175",
+    "attempts": 1,
+    "decision": "relation_choice",
+    "gold_ids": [
+     "CAPEC-234"
+    ],
+    "kind": "answerable",
+    "slot": {
+     "dataset": "capec",
+     "direction": "in",
+     "label": "AttackPattern",
+     "rel": "CanFollow",
+     "target": "AttackPattern"
+    },
+    "tier": "paraphrased_schema"
+   },
+   "ex_gold": {
+    "expected": [
+     "CAPEC-234"
+    ],
+    "pool": "neighbors",
+    "scheme": "capec"
+   },
+   "id": "CG-57ef075b7040",
+   "question": "Which adversarial techniques can follow CAPEC-175 in an adversarial sequence?",
+   "split": "tuning",
+   "task": {
+    "entities": [
+     "AttackPattern",
+     "CanFollow",
+     "AttackPattern"
+    ],
+    "join_key": null,
+    "limits": {
+     "max_result_rows": 20000,
+     "max_traversal_depth": 3,
+     "query_timeout_ms": 5000
+    },
+    "rationale": "card_generator",
+    "seed_ids": [
+     "CAPEC-175"
+    ],
+    "source": "capec",
+    "sub_question_id": "CG-57ef075b7040",
+    "text": "Which adversarial techniques can follow CAPEC-175 in an adversarial sequence?"
+   },
+   "tier": "paraphrased_schema"
+  },
+  {
+   "assertions": {
+    "min_records": 1,
+    "must_include_ids": [
+     "CAPEC-165"
+    ],
+    "must_include_related": [
+     "CAPEC-23"
+    ]
+   },
+   "card_gen": {
+    "anchor": "CAPEC-165",
+    "anchor_storage": "capec:attack-pattern:165",
+    "attempts": 1,
+    "decision": "relation_choice",
+    "gold_ids": [
+     "CAPEC-23"
+    ],
+    "kind": "answerable",
+    "slot": {
+     "dataset": "capec",
+     "direction": "in",
+     "label": "AttackPattern",
+     "rel": "CanAlsoBe",
+     "target": "AttackPattern"
+    },
+    "tier": "synonym_relation"
+   },
+   "ex_gold": {
+    "expected": [
+     "CAPEC-23"
+    ],
+    "pool": "neighbors",
+    "scheme": "capec"
+   },
+   "id": "CG-5a2019e3f1a5",
+   "question": "Which AttackPatterns are essentially the same as CAPEC-165?",
+   "split": "tuning",
+   "task": {
+    "entities": [
+     "AttackPattern",
+     "CanAlsoBe",
+     "AttackPattern"
+    ],
+    "join_key": null,
+    "limits": {
+     "max_result_rows": 20000,
+     "max_traversal_depth": 3,
+     "query_timeout_ms": 5000
+    },
+    "rationale": "card_generator",
+    "seed_ids": [
+     "CAPEC-165"
+    ],
+    "source": "capec",
+    "sub_question_id": "CG-5a2019e3f1a5",
+    "text": "Which AttackPatterns are essentially the same as CAPEC-165?"
+   },
+   "tier": "synonym_relation"
+  },
+  {
+   "assertions": {
+    "min_records": 1,
+    "must_include_ids": [
+     "CAPEC-186"
+    ],
+    "must_include_related": [
+     "CAPEC-98"
+    ]
+   },
+   "card_gen": {
+    "anchor": "CAPEC-186",
+    "anchor_storage": "capec:attack-pattern:186",
+    "attempts": 1,
+    "decision": "relation_choice",
+    "gold_ids": [
+     "CAPEC-98"
+    ],
+    "kind": "answerable",
+    "slot": {
+     "dataset": "capec",
+     "direction": "out",
+     "label": "AttackPattern",
+     "rel": "CanFollow",
+     "target": "AttackPattern"
+    },
+    "tier": "synonym_relation"
+   },
+   "ex_gold": {
+    "expected": [
+     "CAPEC-98"
+    ],
+    "pool": "neighbors",
+    "scheme": "capec"
+   },
+   "id": "CG-5ac9ee5f4931",
+   "question": "In an attack chain, which AttackPatterns does CAPEC-186 sit behind?",
+   "split": "tuning",
+   "task": {
+    "entities": [
+     "AttackPattern",
+     "CanFollow",
+     "AttackPattern"
+    ],
+    "join_key": null,
+    "limits": {
+     "max_result_rows": 20000,
+     "max_traversal_depth": 3,
+     "query_timeout_ms": 5000
+    },
+    "rationale": "card_generator",
+    "seed_ids": [
+     "CAPEC-186"
+    ],
+    "source": "capec",
+    "sub_question_id": "CG-5ac9ee5f4931",
+    "text": "In an attack chain, which AttackPatterns does CAPEC-186 sit behind?"
+   },
+   "tier": "synonym_relation"
+  },
+  {
+   "assertions": {
+    "min_records": 1,
+    "must_include_ids": [
+     "CAPEC-248"
+    ],
+    "must_include_related": [
+     "CAPEC-152",
+     "CAPEC-513"
+    ]
+   },
+   "card_gen": {
+    "anchor": "CAPEC-248",
+    "anchor_storage": "capec:attack-pattern:248",
+    "attempts": 1,
+    "decision": "relation_choice",
+    "gold_ids": [
+     "CAPEC-152",
+     "CAPEC-513"
+    ],
+    "kind": "answerable",
+    "slot": {
+     "dataset": "capec",
+     "direction": "out",
+     "label": "AttackPattern",
+     "rel": "MEMBER_OF",
+     "target": "Category"
+    },
+    "tier": "synonym_relation"
+   },
+   "ex_gold": {
+    "expected": [
+     "CAPEC-152",
+     "CAPEC-513"
+    ],
+    "pool": "neighbors",
+    "scheme": "capec"
+   },
+   "id": "CG-6a3b1ed2b9f9",
+   "question": "Which Category is CAPEC-248 part of?",
+   "split": "tuning",
+   "task": {
+    "entities": [
+     "AttackPattern",
+     "MEMBER_OF",
+     "Category"
+    ],
+    "join_key": null,
+    "limits": {
+     "max_result_rows": 20000,
+     "max_traversal_depth": 3,
+     "query_timeout_ms": 5000
+    },
+    "rationale": "card_generator",
+    "seed_ids": [
+     "CAPEC-248"
+    ],
+    "source": "capec",
+    "sub_question_id": "CG-6a3b1ed2b9f9",
+    "text": "Which Category is CAPEC-248 part of?"
+   },
+   "tier": "synonym_relation"
+  },
+  {
+   "assertions": {
+    "min_records": 1,
+    "must_include_ids": [
+     "CAPEC-174"
+    ],
+    "must_include_related": [
+     "CAPEC-460"
+    ]
+   },
+   "card_gen": {
+    "anchor": "CAPEC-174",
+    "anchor_storage": "capec:attack-pattern:174",
+    "attempts": 1,
+    "decision": "relation_choice",
+    "gold_ids": [
+     "CAPEC-460"
+    ],
+    "kind": "answerable",
+    "slot": {
+     "dataset": "capec",
+     "direction": "out",
+     "label": "AttackPattern",
+     "rel": "CanAlsoBe",
+     "target": "AttackPattern"
+    },
+    "tier": "synonym_relation"
+   },
+   "ex_gold": {
+    "expected": [
+     "CAPEC-460"
+    ],
+    "pool": "neighbors",
+    "scheme": "capec"
+   },
+   "id": "CG-74d751da7eff",
+   "question": "Which AttackPattern entries can CAPEC-174 be identified as?",
+   "split": "tuning",
+   "task": {
+    "entities": [
+     "AttackPattern",
+     "CanAlsoBe",
+     "AttackPattern"
+    ],
+    "join_key": null,
+    "limits": {
+     "max_result_rows": 20000,
+     "max_traversal_depth": 3,
+     "query_timeout_ms": 5000
+    },
+    "rationale": "card_generator",
+    "seed_ids": [
+     "CAPEC-174"
+    ],
+    "source": "capec",
+    "sub_question_id": "CG-74d751da7eff",
+    "text": "Which AttackPattern entries can CAPEC-174 be identified as?"
+   },
+   "tier": "synonym_relation"
+  },
+  {
+   "assertions": {
+    "min_records": 1,
+    "must_include_ids": [
+     "CAPEC-156"
+    ],
+    "must_include_related": [
+     "CAPEC-148",
+     "CAPEC-151",
+     "CAPEC-154",
+     "CAPEC-173",
+     "CAPEC-416",
+     "CAPEC-690"
+    ]
+   },
+   "card_gen": {
+    "anchor": "CAPEC-156",
+    "anchor_storage": "capec:category:156",
+    "attempts": 1,
+    "decision": "relation_choice",
+    "gold_ids": [
+     "CAPEC-148",
+     "CAPEC-151",
+     "CAPEC-154",
+     "CAPEC-173",
+     "CAPEC-416",
+     "CAPEC-690"
+    ],
+    "kind": "answerable",
+    "slot": {
+     "dataset": "capec",
+     "direction": "in",
+     "label": "Category",
+     "rel": "MEMBER_OF",
+     "target": "AttackPattern"
+    },
+    "tier": "paraphrased_schema"
+   },
+   "ex_gold": {
+    "expected": [
+     "CAPEC-148",
+     "CAPEC-151",
+     "CAPEC-154",
+     "CAPEC-173",
+     "CAPEC-416",
+     "CAPEC-690"
+    ],
+    "pool": "neighbors",
+    "scheme": "capec"
+   },
+   "id": "CG-7ab9299e022e",
+   "question": "Which adversarial techniques at an abstract level are members of the category CAPEC-156?",
+   "split": "tuning",
+   "task": {
+    "entities": [
+     "Category",
+     "MEMBER_OF",
+     "AttackPattern"
+    ],
+    "join_key": null,
+    "limits": {
+     "max_result_rows": 20000,
+     "max_traversal_depth": 3,
+     "query_timeout_ms": 5000
+    },
+    "rationale": "card_generator",
+    "seed_ids": [
+     "CAPEC-156"
+    ],
+    "source": "capec",
+    "sub_question_id": "CG-7ab9299e022e",
+    "text": "Which adversarial techniques at an abstract level are members of the category CAPEC-156?"
+   },
+   "tier": "paraphrased_schema"
+  },
+  {
+   "assertions": {
+    "min_records": 1,
+    "must_include_ids": [
+     "CAPEC-460"
+    ],
+    "must_include_related": [
+     "CAPEC-174"
+    ]
+   },
+   "card_gen": {
+    "anchor": "CAPEC-460",
+    "anchor_storage": "capec:attack-pattern:460",
+    "attempts": 1,
+    "decision": "relation_choice",
+    "gold_ids": [
+     "CAPEC-174"
+    ],
+    "kind": "answerable",
+    "slot": {
+     "dataset": "capec",
+     "direction": "in",
+     "label": "AttackPattern",
+     "rel": "CanAlsoBe",
+     "target": "AttackPattern"
+    },
+    "tier": "synonym_relation"
+   },
+   "ex_gold": {
+    "expected": [
+     "CAPEC-174"
+    ],
+    "pool": "neighbors",
+    "scheme": "capec"
+   },
+   "id": "CG-7b2431697d9e",
+   "question": "Which AttackPatterns could be seen as CAPEC-460?",
+   "split": "tuning",
+   "task": {
+    "entities": [
+     "AttackPattern",
+     "CanAlsoBe",
+     "AttackPattern"
+    ],
+    "join_key": null,
+    "limits": {
+     "max_result_rows": 20000,
+     "max_traversal_depth": 3,
+     "query_timeout_ms": 5000
+    },
+    "rationale": "card_generator",
+    "seed_ids": [
+     "CAPEC-460"
+    ],
+    "source": "capec",
+    "sub_question_id": "CG-7b2431697d9e",
+    "text": "Which AttackPatterns could be seen as CAPEC-460?"
+   },
+   "tier": "synonym_relation"
+  },
+  {
+   "assertions": {
+    "min_records": 1,
+    "must_include_ids": [
+     "CAPEC-108"
+    ],
+    "must_include_related": [
+     "capec:attack-pattern:108:consequence:1",
+     "capec:attack-pattern:108:consequence:2",
+     "capec:attack-pattern:108:consequence:3",
+     "capec:attack-pattern:108:consequence:4",
+     "capec:attack-pattern:108:consequence:5"
+    ]
+   },
+   "card_gen": {
+    "anchor": "CAPEC-108",
+    "anchor_storage": "capec:attack-pattern:108",
+    "attempts": 1,
+    "decision": "relation_choice",
+    "gold_ids": [
+     "capec:attack-pattern:108:consequence:1",
+     "capec:attack-pattern:108:consequence:2",
+     "capec:attack-pattern:108:consequence:3",
+     "capec:attack-pattern:108:consequence:4",
+     "capec:attack-pattern:108:consequence:5"
+    ],
+    "kind": "answerable",
+    "slot": {
+     "dataset": "capec",
+     "direction": "out",
+     "label": "AttackPattern",
+     "rel": "HAS_CONSEQUENCE",
+     "target": "Consequence"
+    },
+    "tier": "paraphrased_schema"
+   },
+   "ex_gold": {
+    "expected": [
+     "capec:attack-pattern:108:consequence:1",
+     "capec:attack-pattern:108:consequence:2",
+     "capec:attack-pattern:108:consequence:3",
+     "capec:attack-pattern:108:consequence:4",
+     "capec:attack-pattern:108:consequence:5"
+    ],
+    "pool": "neighbors",
+    "scheme": "capec"
+   },
+   "id": "CG-801aee640666",
+   "question": "What security impact results from a successful execution of CAPEC-108?",
+   "split": "tuning",
+   "task": {
+    "entities": [
+     "AttackPattern",
+     "HAS_CONSEQUENCE",
+     "Consequence"
+    ],
+    "join_key": null,
+    "limits": {
+     "max_result_rows": 20000,
+     "max_traversal_depth": 3,
+     "query_timeout_ms": 5000
+    },
+    "rationale": "card_generator",
+    "seed_ids": [
+     "CAPEC-108"
+    ],
+    "source": "capec",
+    "sub_question_id": "CG-801aee640666",
+    "text": "What security impact results from a successful execution of CAPEC-108?"
+   },
+   "tier": "paraphrased_schema"
+  },
+  {
+   "assertions": {
+    "min_records": 1,
+    "must_include_ids": [
+     "CAPEC-64"
+    ],
+    "must_include_related": [
+     "CAPEC-80"
+    ]
+   },
+   "card_gen": {
+    "anchor": "CAPEC-64",
+    "anchor_storage": "capec:attack-pattern:64",
+    "attempts": 1,
+    "decision": "relation_choice",
+    "gold_ids": [
+     "CAPEC-80"
+    ],
+    "kind": "answerable",
+    "slot": {
+     "dataset": "capec",
+     "direction": "in",
+     "label": "AttackPattern",
+     "rel": "PeerOf",
+     "target": "AttackPattern"
+    },
+    "tier": "paraphrased_schema"
+   },
+   "ex_gold": {
+    "expected": [
+     "CAPEC-80"
+    ],
+    "pool": "neighbors",
+    "scheme": "capec"
+   },
+   "id": "CG-833e30cc8ab4",
+   "question": "Which adversarial techniques at the same abstraction level are peers of CAPEC-64?",
+   "split": "tuning",
+   "task": {
+    "entities": [
+     "AttackPattern",
+     "PeerOf",
+     "AttackPattern"
+    ],
+    "join_key": null,
+    "limits": {
+     "max_result_rows": 20000,
+     "max_traversal_depth": 3,
+     "query_timeout_ms": 5000
+    },
+    "rationale": "card_generator",
+    "seed_ids": [
+     "CAPEC-64"
+    ],
+    "source": "capec",
+    "sub_question_id": "CG-833e30cc8ab4",
+    "text": "Which adversarial techniques at the same abstraction level are peers of CAPEC-64?"
+   },
+   "tier": "paraphrased_schema"
+  },
+  {
+   "assertions": {
+    "min_records": 1,
+    "must_include_ids": [
+     "CAPEC-74"
+    ],
+    "must_include_related": [
+     "CAPEC-140",
+     "CAPEC-663"
+    ]
+   },
+   "card_gen": {
+    "anchor": "CAPEC-74",
+    "anchor_storage": "capec:attack-pattern:74",
+    "attempts": 1,
+    "decision": "relation_choice",
+    "gold_ids": [
+     "CAPEC-140",
+     "CAPEC-663"
+    ],
+    "kind": "answerable",
+    "slot": {
+     "dataset": "capec",
+     "direction": "in",
+     "label": "AttackPattern",
+     "rel": "ChildOf",
+     "target": "AttackPattern"
+    },
+    "tier": "synonym_relation"
+   },
+   "ex_gold": {
+    "expected": [
+     "CAPEC-140",
+     "CAPEC-663"
+    ],
+    "pool": "neighbors",
+    "scheme": "capec"
+   },
+   "id": "CG-85a546c63e4c",
+   "question": "What AttackPatterns does CAPEC-74 fall under?",
+   "split": "tuning",
+   "task": {
+    "entities": [
+     "AttackPattern",
+     "ChildOf",
+     "AttackPattern"
+    ],
+    "join_key": null,
+    "limits": {
+     "max_result_rows": 20000,
+     "max_traversal_depth": 3,
+     "query_timeout_ms": 5000
+    },
+    "rationale": "card_generator",
+    "seed_ids": [
+     "CAPEC-74"
+    ],
+    "source": "capec",
+    "sub_question_id": "CG-85a546c63e4c",
+    "text": "What AttackPatterns does CAPEC-74 fall under?"
+   },
+   "tier": "synonym_relation"
+  },
+  {
+   "assertions": {
+    "min_records": 1,
+    "must_include_ids": [
+     "CAPEC-33"
+    ],
+    "must_include_related": [
+     "capec:attack-pattern:33:alternate-term:1"
+    ]
+   },
+   "card_gen": {
+    "anchor": "CAPEC-33",
+    "anchor_storage": "capec:attack-pattern:33",
+    "attempts": 1,
+    "decision": "relation_choice",
+    "gold_ids": [
+     "capec:attack-pattern:33:alternate-term:1"
+    ],
+    "kind": "answerable",
+    "slot": {
+     "dataset": "capec",
+     "direction": "out",
+     "label": "AttackPattern",
+     "rel": "HAS_ALTERNATE_TERM",
+     "target": "AlternateTerm"
+    },
+    "tier": "synonym_relation"
+   },
+   "ex_gold": {
+    "expected": [
+     "capec:attack-pattern:33:alternate-term:1"
+    ],
+    "pool": "neighbors",
+    "scheme": "capec"
+   },
+   "id": "CG-85e191856f0e",
+   "question": "What AlternateTerm entries are associated with the attack pattern CAPEC-33?",
+   "split": "tuning",
+   "task": {
+    "entities": [
+     "AttackPattern",
+     "HAS_ALTERNATE_TERM",
+     "AlternateTerm"
+    ],
+    "join_key": null,
+    "limits": {
+     "max_result_rows": 20000,
+     "max_traversal_depth": 3,
+     "query_timeout_ms": 5000
+    },
+    "rationale": "card_generator",
+    "seed_ids": [
+     "CAPEC-33"
+    ],
+    "source": "capec",
+    "sub_question_id": "CG-85e191856f0e",
+    "text": "What AlternateTerm entries are associated with the attack pattern CAPEC-33?"
+   },
+   "tier": "synonym_relation"
+  },
+  {
+   "assertions": {
+    "min_records": 1,
+    "must_include_ids": [
+     "CAPEC-138"
+    ],
+    "must_include_related": [
+     "capec:attack-pattern:138:resource:1"
+    ]
+   },
+   "card_gen": {
+    "anchor": "CAPEC-138",
+    "anchor_storage": "capec:attack-pattern:138",
+    "attempts": 1,
+    "decision": "relation_choice",
+    "gold_ids": [
+     "capec:attack-pattern:138:resource:1"
+    ],
+    "kind": "answerable",
+    "slot": {
+     "dataset": "capec",
+     "direction": "out",
+     "label": "AttackPattern",
+     "rel": "REQUIRES_RESOURCE",
+     "target": "Resource"
+    },
+    "tier": "paraphrased_schema"
+   },
+   "ex_gold": {
+    "expected": [
+     "capec:attack-pattern:138:resource:1"
+    ],
+    "pool": "neighbors",
+    "scheme": "capec"
+   },
+   "id": "CG-87a3a3cb70a7",
+   "question": "What capabilities, tools, or access does an attacker need in order to carry out CAPEC-138?",
+   "split": "tuning",
+   "task": {
+    "entities": [
+     "AttackPattern",
+     "REQUIRES_RESOURCE",
+     "Resource"
+    ],
+    "join_key": null,
+    "limits": {
+     "max_result_rows": 20000,
+     "max_traversal_depth": 3,
+     "query_timeout_ms": 5000
+    },
+    "rationale": "card_generator",
+    "seed_ids": [
+     "CAPEC-138"
+    ],
+    "source": "capec",
+    "sub_question_id": "CG-87a3a3cb70a7",
+    "text": "What capabilities, tools, or access does an attacker need in order to carry out CAPEC-138?"
+   },
+   "tier": "paraphrased_schema"
+  },
+  {
+   "assertions": {
+    "min_records": 1,
+    "must_include_ids": [
+     "CAPEC-138"
+    ],
+    "must_include_related": [
+     "CWE-470"
+    ]
+   },
+   "card_gen": {
+    "anchor": "CAPEC-138",
+    "anchor_storage": "capec:attack-pattern:138",
+    "attempts": 1,
+    "decision": "relation_choice",
+    "gold_ids": [
+     "CWE-470"
+    ],
+    "kind": "answerable",
+    "slot": {
+     "dataset": "capec",
+     "direction": "out",
+     "label": "AttackPattern",
+     "rel": "EXPLOITS_WEAKNESS",
+     "target": "Weakness"
+    },
+    "tier": "paraphrased_schema"
+   },
+   "ex_gold": {
+    "expected": [
+     "CWE-470"
+    ],
+    "pool": "neighbors",
+    "scheme": "capec"
+   },
+   "id": "CG-885fc47e0a77",
+   "question": "What software flaws does CAPEC-138 exploit?",
+   "split": "tuning",
+   "task": {
+    "entities": [
+     "AttackPattern",
+     "EXPLOITS_WEAKNESS",
+     "Weakness"
+    ],
+    "join_key": null,
+    "limits": {
+     "max_result_rows": 20000,
+     "max_traversal_depth": 3,
+     "query_timeout_ms": 5000
+    },
+    "rationale": "card_generator",
+    "seed_ids": [
+     "CAPEC-138"
+    ],
+    "source": "capec",
+    "sub_question_id": "CG-885fc47e0a77",
+    "text": "What software flaws does CAPEC-138 exploit?"
+   },
+   "tier": "paraphrased_schema"
+  },
+  {
+   "assertions": {
+    "min_records": 1,
+    "must_include_ids": [
+     "CAPEC-12"
+    ],
+    "must_include_related": [
+     "capec:attack-pattern:12:example:1"
+    ]
+   },
+   "card_gen": {
+    "anchor": "CAPEC-12",
+    "anchor_storage": "capec:attack-pattern:12",
+    "attempts": 1,
+    "decision": "relation_choice",
+    "gold_ids": [
+     "capec:attack-pattern:12:example:1"
+    ],
+    "kind": "answerable",
+    "slot": {
+     "dataset": "capec",
+     "direction": "out",
+     "label": "AttackPattern",
+     "rel": "HAS_EXAMPLE",
+     "target": "Example"
+    },
+    "tier": "paraphrased_schema"
+   },
+   "ex_gold": {
+    "expected": [
+     "capec:attack-pattern:12:example:1"
+    ],
+    "pool": "neighbors",
+    "scheme": "capec"
+   },
+   "id": "CG-8f6cd913d12c",
+   "question": "What concrete real-world instances illustrate the attack pattern CAPEC-12?",
+   "split": "tuning",
+   "task": {
+    "entities": [
+     "AttackPattern",
+     "HAS_EXAMPLE",
+     "Example"
+    ],
+    "join_key": null,
+    "limits": {
+     "max_result_rows": 20000,
+     "max_traversal_depth": 3,
+     "query_timeout_ms": 5000
+    },
+    "rationale": "card_generator",
+    "seed_ids": [
+     "CAPEC-12"
+    ],
+    "source": "capec",
+    "sub_question_id": "CG-8f6cd913d12c",
+    "text": "What concrete real-world instances illustrate the attack pattern CAPEC-12?"
+   },
+   "tier": "paraphrased_schema"
+  },
+  {
+   "assertions": {
+    "min_records": 1,
+    "must_include_ids": [
+     "CAPEC-125"
+    ],
+    "must_include_related": [
+     "CAPEC-703"
+    ]
+   },
+   "card_gen": {
+    "anchor": "CAPEC-125",
+    "anchor_storage": "capec:attack-pattern:125",
+    "attempts": 1,
+    "decision": "relation_choice",
+    "gold_ids": [
+     "CAPEC-703"
+    ],
+    "kind": "answerable",
+    "slot": {
+     "dataset": "capec",
+     "direction": "out",
+     "label": "AttackPattern",
+     "rel": "IN_VIEW",
+     "target": "View"
+    },
+    "tier": "paraphrased_schema"
+   },
+   "ex_gold": {
+    "expected": [
+     "CAPEC-703"
+    ],
+    "pool": "neighbors",
+    "scheme": "capec"
+   },
+   "id": "CG-9470600dee7a",
+   "question": "Which curated subsets of the CAPEC catalog include CAPEC-125?",
+   "split": "tuning",
+   "task": {
+    "entities": [
+     "AttackPattern",
+     "IN_VIEW",
+     "View"
+    ],
+    "join_key": null,
+    "limits": {
+     "max_result_rows": 20000,
+     "max_traversal_depth": 3,
+     "query_timeout_ms": 5000
+    },
+    "rationale": "card_generator",
+    "seed_ids": [
+     "CAPEC-125"
+    ],
+    "source": "capec",
+    "sub_question_id": "CG-9470600dee7a",
+    "text": "Which curated subsets of the CAPEC catalog include CAPEC-125?"
+   },
+   "tier": "paraphrased_schema"
+  },
+  {
+   "assertions": {
+    "min_records": 1,
+    "must_include_ids": [
+     "CAPEC-290"
+    ],
+    "must_include_related": [
+     "capec:attack-pattern:290:consequence:1",
+     "capec:attack-pattern:290:consequence:2"
+    ]
+   },
+   "card_gen": {
+    "anchor": "CAPEC-290",
+    "anchor_storage": "capec:attack-pattern:290",
+    "attempts": 1,
+    "decision": "relation_choice",
+    "gold_ids": [
+     "capec:attack-pattern:290:consequence:1",
+     "capec:attack-pattern:290:consequence:2"
+    ],
+    "kind": "answerable",
+    "slot": {
+     "dataset": "capec",
+     "direction": "out",
+     "label": "AttackPattern",
+     "rel": "HAS_CONSEQUENCE",
+     "target": "Consequence"
+    },
+    "tier": "paraphrased_schema"
+   },
+   "ex_gold": {
+    "expected": [
+     "capec:attack-pattern:290:consequence:1",
+     "capec:attack-pattern:290:consequence:2"
+    ],
+    "pool": "neighbors",
+    "scheme": "capec"
+   },
+   "id": "CG-99201b32a994",
+   "question": "What security impacts result from a successful execution of CAPEC-290?",
+   "split": "tuning",
+   "task": {
+    "entities": [
+     "AttackPattern",
+     "HAS_CONSEQUENCE",
+     "Consequence"
+    ],
+    "join_key": null,
+    "limits": {
+     "max_result_rows": 20000,
+     "max_traversal_depth": 3,
+     "query_timeout_ms": 5000
+    },
+    "rationale": "card_generator",
+    "seed_ids": [
+     "CAPEC-290"
+    ],
+    "source": "capec",
+    "sub_question_id": "CG-99201b32a994",
+    "text": "What security impacts result from a successful execution of CAPEC-290?"
+   },
+   "tier": "paraphrased_schema"
+  },
+  {
+   "assertions": {
+    "min_records": 1,
+    "must_include_ids": [
+     "CAPEC-513"
+    ],
+    "must_include_related": [
+     "CAPEC-3000"
+    ]
+   },
+   "card_gen": {
+    "anchor": "CAPEC-513",
+    "anchor_storage": "capec:category:513",
+    "attempts": 1,
+    "decision": "relation_choice",
+    "gold_ids": [
+     "CAPEC-3000"
+    ],
+    "kind": "answerable",
+    "slot": {
+     "dataset": "capec",
+     "direction": "out",
+     "label": "Category",
+     "rel": "IN_VIEW",
+     "target": "View"
+    },
+    "tier": "paraphrased_schema"
+   },
+   "ex_gold": {
+    "expected": [
+     "CAPEC-3000"
+    ],
+    "pool": "neighbors",
+    "scheme": "capec"
+   },
+   "id": "CG-9a6b5a64d474",
+   "question": "What curated subsets of the CAPEC catalog does CAPEC-513 appear in?",
+   "split": "tuning",
+   "task": {
+    "entities": [
+     "Category",
+     "IN_VIEW",
+     "View"
+    ],
+    "join_key": null,
+    "limits": {
+     "max_result_rows": 20000,
+     "max_traversal_depth": 3,
+     "query_timeout_ms": 5000
+    },
+    "rationale": "card_generator",
+    "seed_ids": [
+     "CAPEC-513"
+    ],
+    "source": "capec",
+    "sub_question_id": "CG-9a6b5a64d474",
+    "text": "What curated subsets of the CAPEC catalog does CAPEC-513 appear in?"
+   },
+   "tier": "paraphrased_schema"
+  },
+  {
+   "assertions": {
+    "min_records": 1,
+    "must_include_ids": [
+     "CAPEC-174"
+    ],
+    "must_include_related": [
+     "CAPEC-460"
+    ]
+   },
+   "card_gen": {
+    "anchor": "CAPEC-174",
+    "anchor_storage": "capec:attack-pattern:174",
+    "attempts": 1,
+    "decision": "relation_choice",
+    "gold_ids": [
+     "CAPEC-460"
+    ],
+    "kind": "answerable",
+    "slot": {
+     "dataset": "capec",
+     "direction": "out",
+     "label": "AttackPattern",
+     "rel": "CanAlsoBe",
+     "target": "AttackPattern"
+    },
+    "tier": "paraphrased_schema"
+   },
+   "ex_gold": {
+    "expected": [
+     "CAPEC-460"
+    ],
+    "pool": "neighbors",
+    "scheme": "capec"
+   },
+   "id": "CG-9ac4756f4d0b",
+   "question": "What adversarial techniques at an abstract level can CAPEC-174 also be characterized as?",
+   "split": "tuning",
+   "task": {
+    "entities": [
+     "AttackPattern",
+     "CanAlsoBe",
+     "AttackPattern"
+    ],
+    "join_key": null,
+    "limits": {
+     "max_result_rows": 20000,
+     "max_traversal_depth": 3,
+     "query_timeout_ms": 5000
+    },
+    "rationale": "card_generator",
+    "seed_ids": [
+     "CAPEC-174"
+    ],
+    "source": "capec",
+    "sub_question_id": "CG-9ac4756f4d0b",
+    "text": "What adversarial techniques at an abstract level can CAPEC-174 also be characterized as?"
+   },
+   "tier": "paraphrased_schema"
+  },
+  {
+   "assertions": {
+    "min_records": 1,
+    "must_include_ids": [
+     "CAPEC-1"
+    ],
+    "must_include_related": [
+     "CAPEC-17"
+    ]
+   },
+   "card_gen": {
+    "anchor": "CAPEC-1",
+    "anchor_storage": "capec:attack-pattern:1",
+    "attempts": 1,
+    "decision": "relation_choice",
+    "gold_ids": [
+     "CAPEC-17"
+    ],
+    "kind": "answerable",
+    "slot": {
+     "dataset": "capec",
+     "direction": "out",
+     "label": "AttackPattern",
+     "rel": "CanPrecede",
+     "target": "AttackPattern"
+    },
+    "tier": "synonym_relation"
+   },
+   "ex_gold": {
+    "expected": [
+     "CAPEC-17"
+    ],
+    "pool": "neighbors",
+    "scheme": "capec"
+   },
+   "id": "CG-9c37e99f27a7",
+   "question": "Which AttackPattern entries does CAPEC-1 lead into?",
+   "split": "tuning",
+   "task": {
+    "entities": [
+     "AttackPattern",
+     "CanPrecede",
+     "AttackPattern"
+    ],
+    "join_key": null,
+    "limits": {
+     "max_result_rows": 20000,
+     "max_traversal_depth": 3,
+     "query_timeout_ms": 5000
+    },
+    "rationale": "card_generator",
+    "seed_ids": [
+     "CAPEC-1"
+    ],
+    "source": "capec",
+    "sub_question_id": "CG-9c37e99f27a7",
+    "text": "Which AttackPattern entries does CAPEC-1 lead into?"
+   },
+   "tier": "synonym_relation"
+  },
+  {
+   "assertions": {
+    "min_records": 1,
+    "must_include_ids": [
+     "CAPEC-74"
+    ],
+    "must_include_related": [
+     "capec:attack-pattern:74:resource:1"
+    ]
+   },
+   "card_gen": {
+    "anchor": "CAPEC-74",
+    "anchor_storage": "capec:attack-pattern:74",
+    "attempts": 1,
+    "decision": "relation_choice",
+    "gold_ids": [
+     "capec:attack-pattern:74:resource:1"
+    ],
+    "kind": "answerable",
+    "slot": {
+     "dataset": "capec",
+     "direction": "out",
+     "label": "AttackPattern",
+     "rel": "REQUIRES_RESOURCE",
+     "target": "Resource"
+    },
+    "tier": "paraphrased_schema"
+   },
+   "ex_gold": {
+    "expected": [
+     "capec:attack-pattern:74:resource:1"
+    ],
+    "pool": "neighbors",
+    "scheme": "capec"
+   },
+   "id": "CG-abc1cbd50f01",
+   "question": "What capabilities, tools, or access must an attacker have in order to attempt CAPEC-74?",
+   "split": "tuning",
+   "task": {
+    "entities": [
+     "AttackPattern",
+     "REQUIRES_RESOURCE",
+     "Resource"
+    ],
+    "join_key": null,
+    "limits": {
+     "max_result_rows": 20000,
+     "max_traversal_depth": 3,
+     "query_timeout_ms": 5000
+    },
+    "rationale": "card_generator",
+    "seed_ids": [
+     "CAPEC-74"
+    ],
+    "source": "capec",
+    "sub_question_id": "CG-abc1cbd50f01",
+    "text": "What capabilities, tools, or access must an attacker have in order to attempt CAPEC-74?"
+   },
+   "tier": "paraphrased_schema"
+  },
+  {
+   "assertions": {
+    "min_records": 1,
+    "must_include_ids": [
+     "CAPEC-35"
+    ],
+    "must_include_related": [
+     "CAPEC-23",
+     "CAPEC-75"
+    ]
+   },
+   "card_gen": {
+    "anchor": "CAPEC-35",
+    "anchor_storage": "capec:attack-pattern:35",
+    "attempts": 1,
+    "decision": "relation_choice",
+    "gold_ids": [
+     "CAPEC-23",
+     "CAPEC-75"
+    ],
+    "kind": "answerable",
+    "slot": {
+     "dataset": "capec",
+     "direction": "out",
+     "label": "AttackPattern",
+     "rel": "PeerOf",
+     "target": "AttackPattern"
+    },
+    "tier": "paraphrased_schema"
+   },
+   "ex_gold": {
+    "expected": [
+     "CAPEC-23",
+     "CAPEC-75"
+    ],
+    "pool": "neighbors",
+    "scheme": "capec"
+   },
+   "id": "CG-aeaca28106b3",
+   "question": "Which adversarial techniques at an abstract level are peer alternatives to CAPEC-35?",
+   "split": "tuning",
+   "task": {
+    "entities": [
+     "AttackPattern",
+     "PeerOf",
+     "AttackPattern"
+    ],
+    "join_key": null,
+    "limits": {
+     "max_result_rows": 20000,
+     "max_traversal_depth": 3,
+     "query_timeout_ms": 5000
+    },
+    "rationale": "card_generator",
+    "seed_ids": [
+     "CAPEC-35"
+    ],
+    "source": "capec",
+    "sub_question_id": "CG-aeaca28106b3",
+    "text": "Which adversarial techniques at an abstract level are peer alternatives to CAPEC-35?"
+   },
+   "tier": "paraphrased_schema"
+  },
+  {
+   "assertions": {
+    "min_records": 1,
+    "must_include_ids": [
+     "CAPEC-165"
+    ],
+    "must_include_related": [
+     "CAPEC-23"
+    ]
+   },
+   "card_gen": {
+    "anchor": "CAPEC-165",
+    "anchor_storage": "capec:attack-pattern:165",
+    "attempts": 1,
+    "decision": "relation_choice",
+    "gold_ids": [
+     "CAPEC-23"
+    ],
+    "kind": "answerable",
+    "slot": {
+     "dataset": "capec",
+     "direction": "in",
+     "label": "AttackPattern",
+     "rel": "CanAlsoBe",
+     "target": "AttackPattern"
+    },
+    "tier": "paraphrased_schema"
+   },
+   "ex_gold": {
+    "expected": [
+     "CAPEC-23"
+    ],
+    "pool": "neighbors",
+    "scheme": "capec"
+   },
+   "id": "CG-b1e811fbe962",
+   "question": "What adversarial techniques can also be characterized as CAPEC-165?",
+   "split": "tuning",
+   "task": {
+    "entities": [
+     "AttackPattern",
+     "CanAlsoBe",
+     "AttackPattern"
+    ],
+    "join_key": null,
+    "limits": {
+     "max_result_rows": 20000,
+     "max_traversal_depth": 3,
+     "query_timeout_ms": 5000
+    },
+    "rationale": "card_generator",
+    "seed_ids": [
+     "CAPEC-165"
+    ],
+    "source": "capec",
+    "sub_question_id": "CG-b1e811fbe962",
+    "text": "What adversarial techniques can also be characterized as CAPEC-165?"
+   },
+   "tier": "paraphrased_schema"
+  },
+  {
+   "assertions": {
+    "min_records": 1,
+    "must_include_ids": [
+     "CAPEC-122"
+    ],
+    "must_include_related": [
+     "capec:taxonomy:ATTACK:1548"
+    ]
+   },
+   "card_gen": {
+    "anchor": "CAPEC-122",
+    "anchor_storage": "capec:attack-pattern:122",
+    "attempts": 1,
+    "decision": "relation_choice",
+    "gold_ids": [
+     "capec:taxonomy:ATTACK:1548"
+    ],
+    "kind": "answerable",
+    "slot": {
+     "dataset": "capec",
+     "direction": "out",
+     "label": "AttackPattern",
+     "rel": "MAPS_TO",
+     "target": "TaxonomyEntry"
+    },
+    "tier": "paraphrased_schema"
+   },
+   "ex_gold": {
+    "expected": [
+     "capec:taxonomy:ATTACK:1548"
+    ],
+    "pool": "neighbors",
+    "scheme": "capec"
+   },
+   "id": "CG-b53bd8d33629",
+   "question": "Which external framework techniques does CAPEC-122 map to?",
+   "split": "tuning",
+   "task": {
+    "entities": [
+     "AttackPattern",
+     "MAPS_TO",
+     "TaxonomyEntry"
+    ],
+    "join_key": null,
+    "limits": {
+     "max_result_rows": 20000,
+     "max_traversal_depth": 3,
+     "query_timeout_ms": 5000
+    },
+    "rationale": "card_generator",
+    "seed_ids": [
+     "CAPEC-122"
+    ],
+    "source": "capec",
+    "sub_question_id": "CG-b53bd8d33629",
+    "text": "Which external framework techniques does CAPEC-122 map to?"
+   },
+   "tier": "paraphrased_schema"
+  },
+  {
+   "assertions": {
+    "min_records": 1,
+    "must_include_ids": [
+     "CAPEC-74"
+    ],
+    "must_include_related": [
+     "CAPEC-140",
+     "CAPEC-663"
+    ]
+   },
+   "card_gen": {
+    "anchor": "CAPEC-74",
+    "anchor_storage": "capec:attack-pattern:74",
+    "attempts": 1,
+    "decision": "relation_choice",
+    "gold_ids": [
+     "CAPEC-140",
+     "CAPEC-663"
+    ],
+    "kind": "answerable",
+    "slot": {
+     "dataset": "capec",
+     "direction": "in",
+     "label": "AttackPattern",
+     "rel": "ChildOf",
+     "target": "AttackPattern"
+    },
+    "tier": "paraphrased_schema"
+   },
+   "ex_gold": {
+    "expected": [
+     "CAPEC-140",
+     "CAPEC-663"
+    ],
+    "pool": "neighbors",
+    "scheme": "capec"
+   },
+   "id": "CG-b704a0ec2f5f",
+   "question": "What abstract adversarial techniques is CAPEC-74 a more specific variant of?",
+   "split": "tuning",
+   "task": {
+    "entities": [
+     "AttackPattern",
+     "ChildOf",
+     "AttackPattern"
+    ],
+    "join_key": null,
+    "limits": {
+     "max_result_rows": 20000,
+     "max_traversal_depth": 3,
+     "query_timeout_ms": 5000
+    },
+    "rationale": "card_generator",
+    "seed_ids": [
+     "CAPEC-74"
+    ],
+    "source": "capec",
+    "sub_question_id": "CG-b704a0ec2f5f",
+    "text": "What abstract adversarial techniques is CAPEC-74 a more specific variant of?"
+   },
+   "tier": "paraphrased_schema"
+  },
+  {
+   "assertions": {
+    "min_records": 1,
+    "must_include_ids": [
+     "CWE-693"
+    ],
+    "must_include_related": [
+     "CAPEC-1",
+     "CAPEC-107",
+     "CAPEC-127",
+     "CAPEC-17",
+     "CAPEC-20",
+     "CAPEC-22",
+     "CAPEC-237",
+     "CAPEC-36",
+     "CAPEC-477",
+     "CAPEC-480",
+     "CAPEC-51",
+     "CAPEC-57",
+     "CAPEC-59",
+     "CAPEC-65",
+     "CAPEC-668",
+     "CAPEC-74",
+     "CAPEC-87"
+    ]
+   },
+   "card_gen": {
+    "anchor": "CWE-693",
+    "anchor_storage": "cwe:693",
+    "attempts": 1,
+    "decision": "relation_choice",
+    "gold_ids": [
+     "CAPEC-1",
+     "CAPEC-107",
+     "CAPEC-127",
+     "CAPEC-17",
+     "CAPEC-20",
+     "CAPEC-22",
+     "CAPEC-237",
+     "CAPEC-36",
+     "CAPEC-477",
+     "CAPEC-480",
+     "CAPEC-51",
+     "CAPEC-57",
+     "CAPEC-59",
+     "CAPEC-65",
+     "CAPEC-668",
+     "CAPEC-74",
+     "CAPEC-87"
+    ],
+    "kind": "answerable",
+    "slot": {
+     "dataset": "capec",
+     "direction": "in",
+     "label": "Weakness",
+     "rel": "EXPLOITS_WEAKNESS",
+     "target": "AttackPattern"
+    },
+    "tier": "paraphrased_schema"
+   },
+   "ex_gold": {
+    "expected": [
+     "CAPEC-1",
+     "CAPEC-107",
+     "CAPEC-127",
+     "CAPEC-17",
+     "CAPEC-20",
+     "CAPEC-22",
+     "CAPEC-237",
+     "CAPEC-36",
+     "CAPEC-477",
+     "CAPEC-480",
+     "CAPEC-51",
+     "CAPEC-57",
+     "CAPEC-59",
+     "CAPEC-65",
+     "CAPEC-668",
+     "CAPEC-74",
+     "CAPEC-87"
+    ],
+    "pool": "neighbors",
+    "scheme": "capec"
+   },
+   "id": "CG-bb9f252a9dce",
+   "question": "Which adversarial techniques at an abstract level exploit the weakness CWE-693?",
+   "split": "tuning",
+   "task": {
+    "entities": [
+     "Weakness",
+     "EXPLOITS_WEAKNESS",
+     "AttackPattern"
+    ],
+    "join_key": null,
+    "limits": {
+     "max_result_rows": 20000,
+     "max_traversal_depth": 3,
+     "query_timeout_ms": 5000
+    },
+    "rationale": "card_generator",
+    "seed_ids": [
+     "CWE-693"
+    ],
+    "source": "capec",
+    "sub_question_id": "CG-bb9f252a9dce",
+    "text": "Which adversarial techniques at an abstract level exploit the weakness CWE-693?"
+   },
+   "tier": "paraphrased_schema"
+  },
+  {
+   "assertions": {
+    "min_records": 1,
+    "must_include_ids": [
+     "CAPEC-605"
+    ],
+    "must_include_related": [
+     "CAPEC-601"
+    ]
+   },
+   "card_gen": {
+    "anchor": "CAPEC-605",
+    "anchor_storage": "capec:attack-pattern:605",
+    "attempts": 1,
+    "decision": "relation_choice",
+    "gold_ids": [
+     "CAPEC-601"
+    ],
+    "kind": "answerable",
+    "slot": {
+     "dataset": "capec",
+     "direction": "out",
+     "label": "AttackPattern",
+     "rel": "ChildOf",
+     "target": "AttackPattern"
+    },
+    "tier": "synonym_relation"
+   },
+   "ex_gold": {
+    "expected": [
+     "CAPEC-601"
+    ],
+    "pool": "neighbors",
+    "scheme": "capec"
+   },
+   "id": "CG-c21ffe712522",
+   "question": "What AttackPatterns does CAPEC-605 fall under?",
+   "split": "tuning",
+   "task": {
+    "entities": [
+     "AttackPattern",
+     "ChildOf",
+     "AttackPattern"
+    ],
+    "join_key": null,
+    "limits": {
+     "max_result_rows": 20000,
+     "max_traversal_depth": 3,
+     "query_timeout_ms": 5000
+    },
+    "rationale": "card_generator",
+    "seed_ids": [
+     "CAPEC-605"
+    ],
+    "source": "capec",
+    "sub_question_id": "CG-c21ffe712522",
+    "text": "What AttackPatterns does CAPEC-605 fall under?"
+   },
+   "tier": "synonym_relation"
+  },
+  {
+   "assertions": {
+    "min_records": 1,
+    "must_include_ids": [
+     "CAPEC-17"
+    ],
+    "must_include_related": [
+     "capec:attack-pattern:17:skill:1"
+    ]
+   },
+   "card_gen": {
+    "anchor": "CAPEC-17",
+    "anchor_storage": "capec:attack-pattern:17",
+    "attempts": 1,
+    "decision": "relation_choice",
+    "gold_ids": [
+     "capec:attack-pattern:17:skill:1"
+    ],
+    "kind": "answerable",
+    "slot": {
+     "dataset": "capec",
+     "direction": "out",
+     "label": "AttackPattern",
+     "rel": "REQUIRES_SKILL",
+     "target": "Skill"
+    },
+    "tier": "paraphrased_schema"
+   },
+   "ex_gold": {
+    "expected": [
+     "capec:attack-pattern:17:skill:1"
+    ],
+    "pool": "neighbors",
+    "scheme": "capec"
+   },
+   "id": "CG-cc7a77a2c989",
+   "question": "What required attacker capability does CAPEC-17 need in order to be executed?",
+   "split": "tuning",
+   "task": {
+    "entities": [
+     "AttackPattern",
+     "REQUIRES_SKILL",
+     "Skill"
+    ],
+    "join_key": null,
+    "limits": {
+     "max_result_rows": 20000,
+     "max_traversal_depth": 3,
+     "query_timeout_ms": 5000
+    },
+    "rationale": "card_generator",
+    "seed_ids": [
+     "CAPEC-17"
+    ],
+    "source": "capec",
+    "sub_question_id": "CG-cc7a77a2c989",
+    "text": "What required attacker capability does CAPEC-17 need in order to be executed?"
+   },
+   "tier": "paraphrased_schema"
+  },
+  {
+   "assertions": {
+    "min_records": 1,
+    "must_include_ids": [
+     "CAPEC-183"
+    ],
+    "must_include_related": [
+     "capec:attack-pattern:183:prerequisite:1",
+     "capec:attack-pattern:183:prerequisite:2",
+     "capec:attack-pattern:183:prerequisite:3"
+    ]
+   },
+   "card_gen": {
+    "anchor": "CAPEC-183",
+    "anchor_storage": "capec:attack-pattern:183",
+    "attempts": 1,
+    "decision": "relation_choice",
+    "gold_ids": [
+     "capec:attack-pattern:183:prerequisite:1",
+     "capec:attack-pattern:183:prerequisite:2",
+     "capec:attack-pattern:183:prerequisite:3"
+    ],
+    "kind": "answerable",
+    "slot": {
+     "dataset": "capec",
+     "direction": "out",
+     "label": "AttackPattern",
+     "rel": "HAS_PREREQUISITE",
+     "target": "Prerequisite"
+    },
+    "tier": "paraphrased_schema"
+   },
+   "ex_gold": {
+    "expected": [
+     "capec:attack-pattern:183:prerequisite:1",
+     "capec:attack-pattern:183:prerequisite:2",
+     "capec:attack-pattern:183:prerequisite:3"
+    ],
+    "pool": "neighbors",
+    "scheme": "capec"
+   },
+   "id": "CG-ce507854815b",
+   "question": "What conditions must be in place before an attacker can attempt CAPEC-183?",
+   "split": "tuning",
+   "task": {
+    "entities": [
+     "AttackPattern",
+     "HAS_PREREQUISITE",
+     "Prerequisite"
+    ],
+    "join_key": null,
+    "limits": {
+     "max_result_rows": 20000,
+     "max_traversal_depth": 3,
+     "query_timeout_ms": 5000
+    },
+    "rationale": "card_generator",
+    "seed_ids": [
+     "CAPEC-183"
+    ],
+    "source": "capec",
+    "sub_question_id": "CG-ce507854815b",
+    "text": "What conditions must be in place before an attacker can attempt CAPEC-183?"
+   },
+   "tier": "paraphrased_schema"
+  },
+  {
+   "assertions": {
+    "min_records": 1,
+    "must_include_ids": [
+     "CAPEC-156"
+    ],
+    "must_include_related": [
+     "CAPEC-148",
+     "CAPEC-151",
+     "CAPEC-154",
+     "CAPEC-173",
+     "CAPEC-416",
+     "CAPEC-690"
+    ]
+   },
+   "card_gen": {
+    "anchor": "CAPEC-156",
+    "anchor_storage": "capec:category:156",
+    "attempts": 1,
+    "decision": "relation_choice",
+    "gold_ids": [
+     "CAPEC-148",
+     "CAPEC-151",
+     "CAPEC-154",
+     "CAPEC-173",
+     "CAPEC-416",
+     "CAPEC-690"
+    ],
+    "kind": "answerable",
+    "slot": {
+     "dataset": "capec",
+     "direction": "in",
+     "label": "Category",
+     "rel": "MEMBER_OF",
+     "target": "AttackPattern"
+    },
+    "tier": "synonym_relation"
+   },
+   "ex_gold": {
+    "expected": [
+     "CAPEC-148",
+     "CAPEC-151",
+     "CAPEC-154",
+     "CAPEC-173",
+     "CAPEC-416",
+     "CAPEC-690"
+    ],
+    "pool": "neighbors",
+    "scheme": "capec"
+   },
+   "id": "CG-d658b839a86c",
+   "question": "Which AttackPatterns are included in CAPEC-156?",
+   "split": "tuning",
+   "task": {
+    "entities": [
+     "Category",
+     "MEMBER_OF",
+     "AttackPattern"
+    ],
+    "join_key": null,
+    "limits": {
+     "max_result_rows": 20000,
+     "max_traversal_depth": 3,
+     "query_timeout_ms": 5000
+    },
+    "rationale": "card_generator",
+    "seed_ids": [
+     "CAPEC-156"
+    ],
+    "source": "capec",
+    "sub_question_id": "CG-d658b839a86c",
+    "text": "Which AttackPatterns are included in CAPEC-156?"
+   },
+   "tier": "synonym_relation"
+  },
+  {
+   "assertions": {
+    "min_records": 1,
+    "must_include_ids": [
+     "CAPEC-248"
+    ],
+    "must_include_related": [
+     "CAPEC-152",
+     "CAPEC-513"
+    ]
+   },
+   "card_gen": {
+    "anchor": "CAPEC-248",
+    "anchor_storage": "capec:attack-pattern:248",
+    "attempts": 1,
+    "decision": "relation_choice",
+    "gold_ids": [
+     "CAPEC-152",
+     "CAPEC-513"
+    ],
+    "kind": "answerable",
+    "slot": {
+     "dataset": "capec",
+     "direction": "out",
+     "label": "AttackPattern",
+     "rel": "MEMBER_OF",
+     "target": "Category"
+    },
+    "tier": "paraphrased_schema"
+   },
+   "ex_gold": {
+    "expected": [
+     "CAPEC-152",
+     "CAPEC-513"
+    ],
+    "pool": "neighbors",
+    "scheme": "capec"
+   },
+   "id": "CG-ddfc985a66f4",
+   "question": "What grouping of related attack patterns sharing a common theme does CAPEC-248 belong to?",
+   "split": "tuning",
+   "task": {
+    "entities": [
+     "AttackPattern",
+     "MEMBER_OF",
+     "Category"
+    ],
+    "join_key": null,
+    "limits": {
+     "max_result_rows": 20000,
+     "max_traversal_depth": 3,
+     "query_timeout_ms": 5000
+    },
+    "rationale": "card_generator",
+    "seed_ids": [
+     "CAPEC-248"
+    ],
+    "source": "capec",
+    "sub_question_id": "CG-ddfc985a66f4",
+    "text": "What grouping of related attack patterns sharing a common theme does CAPEC-248 belong to?"
+   },
+   "tier": "paraphrased_schema"
+  },
+  {
+   "assertions": {
+    "min_records": 1,
+    "must_include_ids": [
+     "CAPEC-592"
+    ],
+    "must_include_related": [
+     "CAPEC-73",
+     "CAPEC-93"
+    ]
+   },
+   "card_gen": {
+    "anchor": "CAPEC-592",
+    "anchor_storage": "capec:attack-pattern:592",
+    "attempts": 1,
+    "decision": "relation_choice",
+    "gold_ids": [
+     "CAPEC-73",
+     "CAPEC-93"
+    ],
+    "kind": "answerable",
+    "slot": {
+     "dataset": "capec",
+     "direction": "in",
+     "label": "AttackPattern",
+     "rel": "CanPrecede",
+     "target": "AttackPattern"
+    },
+    "tier": "paraphrased_schema"
+   },
+   "ex_gold": {
+    "expected": [
+     "CAPEC-73",
+     "CAPEC-93"
+    ],
+    "pool": "neighbors",
+    "scheme": "capec"
+   },
+   "id": "CG-f24012f214ed",
+   "question": "Which adversarial techniques at an abstract level can occur before CAPEC-592 in a sequence of steps?",
+   "split": "tuning",
+   "task": {
+    "entities": [
+     "AttackPattern",
+     "CanPrecede",
+     "AttackPattern"
+    ],
+    "join_key": null,
+    "limits": {
+     "max_result_rows": 20000,
+     "max_traversal_depth": 3,
+     "query_timeout_ms": 5000
+    },
+    "rationale": "card_generator",
+    "seed_ids": [
+     "CAPEC-592"
+    ],
+    "source": "capec",
+    "sub_question_id": "CG-f24012f214ed",
+    "text": "Which adversarial techniques at an abstract level can occur before CAPEC-592 in a sequence of steps?"
+   },
+   "tier": "paraphrased_schema"
+  },
+  {
+   "assertions": {
+    "min_records": 1,
+    "must_include_ids": [
+     "CAPEC-460"
+    ],
+    "must_include_related": [
+     "CAPEC-174"
+    ]
+   },
+   "card_gen": {
+    "anchor": "CAPEC-460",
+    "anchor_storage": "capec:attack-pattern:460",
+    "attempts": 1,
+    "decision": "relation_choice",
+    "gold_ids": [
+     "CAPEC-174"
+    ],
+    "kind": "answerable",
+    "slot": {
+     "dataset": "capec",
+     "direction": "in",
+     "label": "AttackPattern",
+     "rel": "CanAlsoBe",
+     "target": "AttackPattern"
+    },
+    "tier": "paraphrased_schema"
+   },
+   "ex_gold": {
+    "expected": [
+     "CAPEC-174"
+    ],
+    "pool": "neighbors",
+    "scheme": "capec"
+   },
+   "id": "CG-f891655e0e1f",
+   "question": "Which adversarial techniques at an abstract level can also be characterized as CAPEC-460?",
+   "split": "tuning",
+   "task": {
+    "entities": [
+     "AttackPattern",
+     "CanAlsoBe",
+     "AttackPattern"
+    ],
+    "join_key": null,
+    "limits": {
+     "max_result_rows": 20000,
+     "max_traversal_depth": 3,
+     "query_timeout_ms": 5000
+    },
+    "rationale": "card_generator",
+    "seed_ids": [
+     "CAPEC-460"
+    ],
+    "source": "capec",
+    "sub_question_id": "CG-f891655e0e1f",
+    "text": "Which adversarial techniques at an abstract level can also be characterized as CAPEC-460?"
+   },
+   "tier": "paraphrased_schema"
+  },
+  {
+   "assertions": {
+    "min_records": 1,
+    "must_include_ids": [
+     "CAPEC-77"
+    ],
+    "must_include_related": [
+     "capec:attack-pattern:77:indicator:1"
+    ]
+   },
+   "card_gen": {
+    "anchor": "CAPEC-77",
+    "anchor_storage": "capec:attack-pattern:77",
+    "attempts": 1,
+    "decision": "relation_choice",
+    "gold_ids": [
+     "capec:attack-pattern:77:indicator:1"
+    ],
+    "kind": "answerable",
+    "slot": {
+     "dataset": "capec",
+     "direction": "out",
+     "label": "AttackPattern",
+     "rel": "HAS_INDICATOR",
+     "target": "Indicator"
+    },
+    "tier": "paraphrased_schema"
+   },
+   "ex_gold": {
+    "expected": [
+     "capec:attack-pattern:77:indicator:1"
+    ],
+    "pool": "neighbors",
+    "scheme": "capec"
+   },
+   "id": "CG-fd2b676a1ec3",
+   "question": "What observable signs that the attack pattern is being attempted or has succeeded are associated with CAPEC-77?",
+   "split": "tuning",
+   "task": {
+    "entities": [
+     "AttackPattern",
+     "HAS_INDICATOR",
+     "Indicator"
+    ],
+    "join_key": null,
+    "limits": {
+     "max_result_rows": 20000,
+     "max_traversal_depth": 3,
+     "query_timeout_ms": 5000
+    },
+    "rationale": "card_generator",
+    "seed_ids": [
+     "CAPEC-77"
+    ],
+    "source": "capec",
+    "sub_question_id": "CG-fd2b676a1ec3",
+    "text": "What observable signs that the attack pattern is being attempted or has succeeded are associated with CAPEC-77?"
+   },
+   "tier": "paraphrased_schema"
+  }
+ ]
+}

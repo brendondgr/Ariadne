@@ -71,7 +71,8 @@ def diagnose_empty(spec: SetSpec, backend: Any, *, options: int = 8) -> dict[str
                 "fix": "resolve the entity first; none of these ids exists in the graph"}
     facets = backend.anchor_facets(spec.seeds)
     nearest = sorted(facets, key=lambda f: (-int(f["n"]), f["rel"]))[:options]
-    same_rel = [f for f in facets if f["rel"] == spec.rel]
+    stored = getattr(backend, "edge_label", lambda r: r)(spec.rel)
+    same_rel = [f for f in facets if f["rel"] == stored]
     if not same_rel:
         reason, fix = "relation_absent", f"the anchors have no {spec.rel} edges; choose one of the options"
     elif spec.direction != "both" and not any(f["direction"] == spec.direction for f in same_rel):

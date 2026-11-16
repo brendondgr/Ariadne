@@ -46,6 +46,7 @@ def backends():
 
     from utils.agent.exact import CypherBackend, GremlinBackend
     from utils.config import load_env
+    from utils.graph_loader.stores.gremlin import gremlin_edge_label
     from utils.specialists.config import SpecialistConfig
 
     load_env()
@@ -53,7 +54,7 @@ def backends():
     drv = GraphDatabase.driver(sc.endpoint_for("neo4j", "attack"), auth=(sc.neo4j_user, sc.neo4j_password))
     cli = gc.Client(sc.endpoint_for("gremlin", "capec"), "g")
     return {"attack": CypherBackend(drv, id_props=("attack_id", "id")),
-            "capec": GremlinBackend(cli, id_props=("id",))}, (drv, cli)
+            "capec": GremlinBackend(cli, id_props=("id",), edge_label=gremlin_edge_label)}, (drv, cli)
 
 
 def regold(q: dict, backend, public) -> bool:

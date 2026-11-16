@@ -45,6 +45,7 @@ kind; their detail is kept privately with the rest of the positioning material (
 | Q58 | The planner arm's loss is not separated from the tighter per-plan bounds it inherits | EXP-2026-09-019 I-2; EXP-2026-11-009 | limits effect −0.001 (SE 0.001), decomposition −0.3342 (SE 0.026): the loss is the decomposition *(answered)* |
 | Q59 | An entity name is never looked up unless the router first picks a dataset, so a question naming a thing in ordinary words binds nothing | EXP-2026-09-021 A-1; EXP-2026-09-023 H2 | lookup order fixed behind `ARIADNE_ANCHOR_BEFORE_ROUTING`: unresolved T3 anchors 37 → 4 of 101; the remaining T3 loss is the rung's rendering, not the bind *(amended)* |
 | Q60 | Can portable candidate discovery become accurate open-question answers through role-aware selection, reranking, and evidence completion? | EXP-2026-09-022; EXP-2026-09-023 Step 0; EXP-2026-09-028 | the shipped index beats the prototype at every budget ≥ 5; a reranked, disclosed closed choice reaches 0.125/0.20 exact at wrong-entity 0.10/0.15 on the sealed bank and 0.35 wrong at T4 on the exposed bank — a clarification, not an answer *(amended)* |
+| Q61 | The card banks are written by the same model (Qwen 3.8 27B) that era 2's agent will plan with | EXP-2026-11-012 | every era-2 figure scored on the card-2026-11-16 banks *(open)* |
 
 ---
 
@@ -1071,3 +1072,20 @@ disclosed on the answer's first line: sealed T4/T5 `records_exact` 0.125 /
 changed which wrong entity was chosen, not how often. What remains open is the
 clarification form — the candidates as a question, nothing asserted — which
 D-038 records as the build not done.
+
+### Q61 — The card banks are written by the same model the agent will plan with
+
+**Opened 2026-11-16** by `EXP-2026-11-012`. Era 2's evaluation banks
+(`card-2026-11-16-*`) were worded by Qwen 3.8 27B. That is the only open model, and the one
+era 2's agent will plan with.
+
+- **Why it matters:** a model may read its own phrasings more easily than a person's. Era 1
+  saw a related effect: the cascade arm scored 0.984 on questions written alongside the system
+  and 0.837 on blind ones (a gap of 0.147, same night, same judge).
+- **Not affected:** gold answers come from the card and the graph, not from the writer.
+- **Affected:** every rewording tier's difficulty, and the synonym tier most of all.
+
+**To settle:** before Step 9's held-out score is read, re-word a sample of the held-out
+questions with a different writer (a person, or a closed model with no part in the agent).
+Score the agent on both wordings, and report the gap next to the figure.
+

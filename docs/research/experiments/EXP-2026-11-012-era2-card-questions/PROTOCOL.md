@@ -8,6 +8,66 @@ Reading 20 of its questions led to two changes:
 - ambiguous-by-name questions now need names of at least 4 characters ("at" made an
   unreadable question).
 
+## Amendment, 2026-11-16, before the second recorded run
+
+The first recorded run (G1 476/476 and 227/227, 0 leaks, no split overlap) is **void**.
+Looking into why CAPEC produced no ambiguous questions turned up two defects:
+
+- **A card/store name mismatch.** The CAPEC card names five relations in CamelCase
+  (`ChildOf`, `CanPrecede`, `CanFollow`, `CanAlsoBe`, `PeerOf`). Ariadne's loader stores
+  them as `CHILD_OF` and so on. Step 5's Gremlin backend queried the card names, so every
+  AttackPattern-to-AttackPattern set read as empty.
+  - All 9 of the first run's AttackPattern-to-AttackPattern questions were therefore labelled
+    "insufficient" with empty gold, when they had answers.
+  - G1 did not catch this because the keyset path used the same wrong name.
+  - **Fix:** `GremlinBackend(edge_label=...)` maps card names to stored labels. It is set
+    to the loader's `gremlin_edge_label` for Ariadne stores; the kill-test stores keep source
+    names, so Step 5's results are unaffected.
+  - **New guard:** a slot with no edge anywhere in the store is now reported in `notes` and
+    never used. After the fix, neither dataset has one.
+  - **New live test:** the mapping is tested on the CAPEC store.
+- **Relation ambiguity was never produced.** One random anchor was drawn per label pair. It
+  never separated the readings in either dataset. Up to 25 anchors are now tried.
+
+Everything else is unchanged: seed, writer, settings, gates and expectations. The second run
+replaces the first, and the proxy read is repeated on its new review sheet.
+
+## Amendment 2, 2026-11-16, before the third recorded run
+
+The second run passed G1–G3 (476/476 and 349/349, no overlap, 0 leaks). It still made only 8
+ATT&CK and 1 CAPEC ambiguous questions of the 16 budgeted per dataset. Both shortfalls come
+from how the budget was split:
+
+- **ATT&CK's card has no two relations joining the same pair of labels.** A neutral-verb
+  relation ambiguity therefore cannot be built from it. Its half of the budget went unused,
+  while entity ambiguity was capped at the other half.
+- **CAPEC has one usable label pair** (AttackPattern to AttackPattern; ExecutionStep ids are
+  not public), and the generator wrote one question per pair. Its names are all distinct, so
+  entity ambiguity is impossible.
+
+**Change:** relation ambiguity now runs first, with half the budget spread over the eligible
+pairs and several anchors per pair. Entity ambiguity fills whatever budget is left. Two
+fixture tests cover this.
+
+The second run is superseded. Its outputs are not kept, apart from the counts above.
+
+## Amendment 3, 2026-11-16, before the fourth recorded run
+
+The third run passed G1–G3 (482/482 and 354/354, no overlap, 0 leaks). It made 14 ATT&CK and
+8 CAPEC ambiguous questions. Its blind proxy read found 49 of 50 fluent and 10 of 10 ambiguous
+truly ambiguous.
+
+The one rejected question exposed a leak the audit did not define. The writer copies id-format
+and version hints from the target label's description ("T-ID.NNN", "DET-IDs", "v19"). These
+name the label by its id scheme, which defeats the schema tier.
+
+- **Extent:** the extended audit finds 14 such questions in the third run, all in ATT&CK's
+  schema tier.
+- **Change:** the schema-tier rule now forbids them. They are leak-checked (`format_hints`)
+  and retried once, then dropped. G3's audit includes them, and a fixture test covers this.
+
+The third run is superseded, and the proxy read is repeated on the fourth run's sheet.
+
 ## Question
 
 Can era 2's evaluation questions be generated from a source card alone, with gold answers known

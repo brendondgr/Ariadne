@@ -1,0 +1,6087 @@
+{
+ "meta": {
+  "count": 87,
+  "created": "2026-11-16",
+  "dataset": "capec",
+  "decision": "grounding",
+  "generator": "utils/specialists/evalset/card_generator.py",
+  "model": "qwen38-27b/248046",
+  "sealed": true,
+  "seed": 20261116,
+  "split": "heldout"
+ },
+ "questions": [
+  {
+   "assertions": {
+    "min_records": 1,
+    "must_include_ids": [
+     "CAPEC-3000"
+    ],
+    "must_include_related": [
+     "CAPEC-403",
+     "CAPEC-437",
+     "CAPEC-512",
+     "CAPEC-513",
+     "CAPEC-514",
+     "CAPEC-515"
+    ]
+   },
+   "card_gen": {
+    "anchor": "CAPEC-3000",
+    "anchor_storage": "capec:view:3000",
+    "attempts": 1,
+    "decision": "grounding",
+    "gold_ids": [
+     "CAPEC-403",
+     "CAPEC-437",
+     "CAPEC-512",
+     "CAPEC-513",
+     "CAPEC-514",
+     "CAPEC-515"
+    ],
+    "kind": "answerable",
+    "slot": {
+     "dataset": "capec",
+     "direction": "in",
+     "label": "View",
+     "rel": "IN_VIEW",
+     "target": "Category"
+    },
+    "tier": "name"
+   },
+   "ex_gold": {
+    "expected": [
+     "CAPEC-403",
+     "CAPEC-437",
+     "CAPEC-512",
+     "CAPEC-513",
+     "CAPEC-514",
+     "CAPEC-515"
+    ],
+    "pool": "neighbors",
+    "scheme": "capec"
+   },
+   "id": "CG-000221d7747a",
+   "question": "What Categories appear in the Domains of Attack view?",
+   "split": "heldout",
+   "task": {
+    "entities": [
+     "View",
+     "IN_VIEW",
+     "Category"
+    ],
+    "join_key": null,
+    "limits": {
+     "max_result_rows": 20000,
+     "max_traversal_depth": 3,
+     "query_timeout_ms": 5000
+    },
+    "rationale": "card_generator",
+    "seed_ids": [
+     "CAPEC-3000"
+    ],
+    "source": "capec",
+    "sub_question_id": "CG-000221d7747a",
+    "text": "What Categories appear in the Domains of Attack view?"
+   },
+   "tier": "name"
+  },
+  {
+   "assertions": {
+    "min_records": 1,
+    "must_include_ids": [
+     "CAPEC-23"
+    ],
+    "must_include_related": [
+     "CAPEC-165"
+    ]
+   },
+   "card_gen": {
+    "anchor": "CAPEC-23",
+    "anchor_storage": "capec:attack-pattern:23",
+    "attempts": 1,
+    "decision": "grounding",
+    "gold_ids": [
+     "CAPEC-165"
+    ],
+    "kind": "answerable",
+    "slot": {
+     "dataset": "capec",
+     "direction": "out",
+     "label": "AttackPattern",
+     "rel": "CanAlsoBe",
+     "target": "AttackPattern"
+    },
+    "tier": "identifier"
+   },
+   "ex_gold": {
+    "expected": [
+     "CAPEC-165"
+    ],
+    "pool": "neighbors",
+    "scheme": "capec"
+   },
+   "id": "CG-03f3c8292c65",
+   "question": "What other AttackPatterns can CAPEC-23 also be characterized as?",
+   "split": "heldout",
+   "task": {
+    "entities": [
+     "AttackPattern",
+     "CanAlsoBe",
+     "AttackPattern"
+    ],
+    "join_key": null,
+    "limits": {
+     "max_result_rows": 20000,
+     "max_traversal_depth": 3,
+     "query_timeout_ms": 5000
+    },
+    "rationale": "card_generator",
+    "seed_ids": [
+     "CAPEC-23"
+    ],
+    "source": "capec",
+    "sub_question_id": "CG-03f3c8292c65",
+    "text": "What other AttackPatterns can CAPEC-23 also be characterized as?"
+   },
+   "tier": "identifier"
+  },
+  {
+   "assertions": {
+    "min_records": 1,
+    "must_include_ids": [
+     "CAPEC-256"
+    ],
+    "must_include_related": [
+     "capec:attack-pattern:256:prerequisite:1"
+    ]
+   },
+   "card_gen": {
+    "anchor": "CAPEC-256",
+    "anchor_storage": "capec:attack-pattern:256",
+    "attempts": 1,
+    "decision": "grounding",
+    "gold_ids": [
+     "capec:attack-pattern:256:prerequisite:1"
+    ],
+    "kind": "answerable",
+    "slot": {
+     "dataset": "capec",
+     "direction": "out",
+     "label": "AttackPattern",
+     "rel": "HAS_PREREQUISITE",
+     "target": "Prerequisite"
+    },
+    "tier": "identifier"
+   },
+   "ex_gold": {
+    "expected": [
+     "capec:attack-pattern:256:prerequisite:1"
+    ],
+    "pool": "neighbors",
+    "scheme": "capec"
+   },
+   "id": "CG-06a938fe11f8",
+   "question": "What prerequisites must hold before the attack pattern CAPEC-256 can be attempted?",
+   "split": "heldout",
+   "task": {
+    "entities": [
+     "AttackPattern",
+     "HAS_PREREQUISITE",
+     "Prerequisite"
+    ],
+    "join_key": null,
+    "limits": {
+     "max_result_rows": 20000,
+     "max_traversal_depth": 3,
+     "query_timeout_ms": 5000
+    },
+    "rationale": "card_generator",
+    "seed_ids": [
+     "CAPEC-256"
+    ],
+    "source": "capec",
+    "sub_question_id": "CG-06a938fe11f8",
+    "text": "What prerequisites must hold before the attack pattern CAPEC-256 can be attempted?"
+   },
+   "tier": "identifier"
+  },
+  {
+   "assertions": {
+    "min_records": 1,
+    "must_include_ids": [
+     "CAPEC-548"
+    ],
+    "must_include_related": [
+     "capec:attack-pattern:548:alternate-term:1"
+    ]
+   },
+   "card_gen": {
+    "anchor": "CAPEC-548",
+    "anchor_storage": "capec:attack-pattern:548",
+    "attempts": 1,
+    "decision": "grounding",
+    "gold_ids": [
+     "capec:attack-pattern:548:alternate-term:1"
+    ],
+    "kind": "answerable",
+    "slot": {
+     "dataset": "capec",
+     "direction": "out",
+     "label": "AttackPattern",
+     "rel": "HAS_ALTERNATE_TERM",
+     "target": "AlternateTerm"
+    },
+    "tier": "name"
+   },
+   "ex_gold": {
+    "expected": [
+     "capec:attack-pattern:548:alternate-term:1"
+    ],
+    "pool": "neighbors",
+    "scheme": "capec"
+   },
+   "id": "CG-13aaed96f5f6",
+   "question": "What alternate term is the attack pattern Contaminate Resource known by?",
+   "split": "heldout",
+   "task": {
+    "entities": [
+     "AttackPattern",
+     "HAS_ALTERNATE_TERM",
+     "AlternateTerm"
+    ],
+    "join_key": null,
+    "limits": {
+     "max_result_rows": 20000,
+     "max_traversal_depth": 3,
+     "query_timeout_ms": 5000
+    },
+    "rationale": "card_generator",
+    "seed_ids": [
+     "CAPEC-548"
+    ],
+    "source": "capec",
+    "sub_question_id": "CG-13aaed96f5f6",
+    "text": "What alternate term is the attack pattern Contaminate Resource known by?"
+   },
+   "tier": "name"
+  },
+  {
+   "assertions": {
+    "min_records": 1,
+    "must_include_ids": [
+     "CAPEC-272"
+    ],
+    "must_include_related": [
+     "CAPEC-210",
+     "CAPEC-512",
+     "CAPEC-513"
+    ]
+   },
+   "card_gen": {
+    "anchor": "CAPEC-272",
+    "anchor_storage": "capec:attack-pattern:272",
+    "attempts": 1,
+    "decision": "grounding",
+    "gold_ids": [
+     "CAPEC-210",
+     "CAPEC-512",
+     "CAPEC-513"
+    ],
+    "kind": "answerable",
+    "slot": {
+     "dataset": "capec",
+     "direction": "out",
+     "label": "AttackPattern",
+     "rel": "MEMBER_OF",
+     "target": "Category"
+    },
+    "tier": "identifier"
+   },
+   "ex_gold": {
+    "expected": [
+     "CAPEC-210",
+     "CAPEC-512",
+     "CAPEC-513"
+    ],
+    "pool": "neighbors",
+    "scheme": "capec"
+   },
+   "id": "CG-170c2a615584",
+   "question": "What category is the attack pattern CAPEC-272 a member of?",
+   "split": "heldout",
+   "task": {
+    "entities": [
+     "AttackPattern",
+     "MEMBER_OF",
+     "Category"
+    ],
+    "join_key": null,
+    "limits": {
+     "max_result_rows": 20000,
+     "max_traversal_depth": 3,
+     "query_timeout_ms": 5000
+    },
+    "rationale": "card_generator",
+    "seed_ids": [
+     "CAPEC-272"
+    ],
+    "source": "capec",
+    "sub_question_id": "CG-170c2a615584",
+    "text": "What category is the attack pattern CAPEC-272 a member of?"
+   },
+   "tier": "identifier"
+  },
+  {
+   "assertions": {
+    "min_records": 1,
+    "must_include_ids": [
+     "CAPEC-611"
+    ],
+    "must_include_related": [
+     "capec:attack-pattern:611:step:1",
+     "capec:attack-pattern:611:step:2",
+     "capec:attack-pattern:611:step:3"
+    ]
+   },
+   "card_gen": {
+    "anchor": "CAPEC-611",
+    "anchor_storage": "capec:attack-pattern:611",
+    "attempts": 1,
+    "decision": "grounding",
+    "gold_ids": [
+     "capec:attack-pattern:611:step:1",
+     "capec:attack-pattern:611:step:2",
+     "capec:attack-pattern:611:step:3"
+    ],
+    "kind": "answerable",
+    "slot": {
+     "dataset": "capec",
+     "direction": "out",
+     "label": "AttackPattern",
+     "rel": "HAS_EXECUTION_STEP",
+     "target": "ExecutionStep"
+    },
+    "tier": "name"
+   },
+   "ex_gold": {
+    "expected": [
+     "capec:attack-pattern:611:step:1",
+     "capec:attack-pattern:611:step:2",
+     "capec:attack-pattern:611:step:3"
+    ],
+    "pool": "neighbors",
+    "scheme": "capec"
+   },
+   "id": "CG-1b9ec5d9ffb8",
+   "question": "What execution steps does BitSquatting contain?",
+   "split": "heldout",
+   "task": {
+    "entities": [
+     "AttackPattern",
+     "HAS_EXECUTION_STEP",
+     "ExecutionStep"
+    ],
+    "join_key": null,
+    "limits": {
+     "max_result_rows": 20000,
+     "max_traversal_depth": 3,
+     "query_timeout_ms": 5000
+    },
+    "rationale": "card_generator",
+    "seed_ids": [
+     "CAPEC-611"
+    ],
+    "source": "capec",
+    "sub_question_id": "CG-1b9ec5d9ffb8",
+    "text": "What execution steps does BitSquatting contain?"
+   },
+   "tier": "name"
+  },
+  {
+   "assertions": {
+    "min_records": 1,
+    "must_include_ids": [
+     "CAPEC-548"
+    ],
+    "must_include_related": [
+     "capec:attack-pattern:548:alternate-term:1"
+    ]
+   },
+   "card_gen": {
+    "anchor": "CAPEC-548",
+    "anchor_storage": "capec:attack-pattern:548",
+    "attempts": 1,
+    "decision": "grounding",
+    "gold_ids": [
+     "capec:attack-pattern:548:alternate-term:1"
+    ],
+    "kind": "answerable",
+    "slot": {
+     "dataset": "capec",
+     "direction": "out",
+     "label": "AttackPattern",
+     "rel": "HAS_ALTERNATE_TERM",
+     "target": "AlternateTerm"
+    },
+    "tier": "identifier"
+   },
+   "ex_gold": {
+    "expected": [
+     "capec:attack-pattern:548:alternate-term:1"
+    ],
+    "pool": "neighbors",
+    "scheme": "capec"
+   },
+   "id": "CG-1be25286c525",
+   "question": "What alternate terms does CAPEC-548 have?",
+   "split": "heldout",
+   "task": {
+    "entities": [
+     "AttackPattern",
+     "HAS_ALTERNATE_TERM",
+     "AlternateTerm"
+    ],
+    "join_key": null,
+    "limits": {
+     "max_result_rows": 20000,
+     "max_traversal_depth": 3,
+     "query_timeout_ms": 5000
+    },
+    "rationale": "card_generator",
+    "seed_ids": [
+     "CAPEC-548"
+    ],
+    "source": "capec",
+    "sub_question_id": "CG-1be25286c525",
+    "text": "What alternate terms does CAPEC-548 have?"
+   },
+   "tier": "identifier"
+  },
+  {
+   "assertions": {
+    "min_records": 1,
+    "must_include_ids": [
+     "CAPEC-440"
+    ],
+    "must_include_related": [
+     "capec:taxonomy:ATTACK:1195.003",
+     "capec:taxonomy:ATTACK:1200"
+    ]
+   },
+   "card_gen": {
+    "anchor": "CAPEC-440",
+    "anchor_storage": "capec:attack-pattern:440",
+    "attempts": 1,
+    "decision": "grounding",
+    "gold_ids": [
+     "capec:taxonomy:ATTACK:1195.003",
+     "capec:taxonomy:ATTACK:1200"
+    ],
+    "kind": "answerable",
+    "slot": {
+     "dataset": "capec",
+     "direction": "out",
+     "label": "AttackPattern",
+     "rel": "MAPS_TO",
+     "target": "TaxonomyEntry"
+    },
+    "tier": "identifier"
+   },
+   "ex_gold": {
+    "expected": [
+     "capec:taxonomy:ATTACK:1195.003",
+     "capec:taxonomy:ATTACK:1200"
+    ],
+    "pool": "neighbors",
+    "scheme": "capec"
+   },
+   "id": "CG-1c0939f1ac16",
+   "question": "What taxonomy entries does CAPEC-440 map to?",
+   "split": "heldout",
+   "task": {
+    "entities": [
+     "AttackPattern",
+     "MAPS_TO",
+     "TaxonomyEntry"
+    ],
+    "join_key": null,
+    "limits": {
+     "max_result_rows": 20000,
+     "max_traversal_depth": 3,
+     "query_timeout_ms": 5000
+    },
+    "rationale": "card_generator",
+    "seed_ids": [
+     "CAPEC-440"
+    ],
+    "source": "capec",
+    "sub_question_id": "CG-1c0939f1ac16",
+    "text": "What taxonomy entries does CAPEC-440 map to?"
+   },
+   "tier": "identifier"
+  },
+  {
+   "assertions": {
+    "min_records": 1,
+    "must_include_ids": [
+     "CAPEC-44"
+    ],
+    "must_include_related": [
+     "capec:external-reference:REF-1"
+    ]
+   },
+   "card_gen": {
+    "anchor": "CAPEC-44",
+    "anchor_storage": "capec:attack-pattern:44",
+    "attempts": 1,
+    "decision": "grounding",
+    "gold_ids": [
+     "capec:external-reference:REF-1"
+    ],
+    "kind": "answerable",
+    "slot": {
+     "dataset": "capec",
+     "direction": "out",
+     "label": "AttackPattern",
+     "rel": "HAS_REFERENCE",
+     "target": "ExternalReference"
+    },
+    "tier": "identifier"
+   },
+   "ex_gold": {
+    "expected": [
+     "capec:external-reference:REF-1"
+    ],
+    "pool": "neighbors",
+    "scheme": "capec"
+   },
+   "id": "CG-1e6c2ec860f0",
+   "question": "What ExternalReferences are documented for the attack pattern CAPEC-44?",
+   "split": "heldout",
+   "task": {
+    "entities": [
+     "AttackPattern",
+     "HAS_REFERENCE",
+     "ExternalReference"
+    ],
+    "join_key": null,
+    "limits": {
+     "max_result_rows": 20000,
+     "max_traversal_depth": 3,
+     "query_timeout_ms": 5000
+    },
+    "rationale": "card_generator",
+    "seed_ids": [
+     "CAPEC-44"
+    ],
+    "source": "capec",
+    "sub_question_id": "CG-1e6c2ec860f0",
+    "text": "What ExternalReferences are documented for the attack pattern CAPEC-44?"
+   },
+   "tier": "identifier"
+  },
+  {
+   "assertions": {
+    "min_records": 1,
+    "must_include_ids": [
+     "CAPEC-105"
+    ],
+    "must_include_related": [
+     "CAPEC-34"
+    ]
+   },
+   "card_gen": {
+    "anchor": "CAPEC-105",
+    "anchor_storage": "capec:attack-pattern:105",
+    "attempts": 1,
+    "decision": "grounding",
+    "gold_ids": [
+     "CAPEC-34"
+    ],
+    "kind": "answerable",
+    "slot": {
+     "dataset": "capec",
+     "direction": "in",
+     "label": "AttackPattern",
+     "rel": "PeerOf",
+     "target": "AttackPattern"
+    },
+    "tier": "identifier"
+   },
+   "ex_gold": {
+    "expected": [
+     "CAPEC-34"
+    ],
+    "pool": "neighbors",
+    "scheme": "capec"
+   },
+   "id": "CG-23f67e559a49",
+   "question": "What AttackPatterns are peers of CAPEC-105?",
+   "split": "heldout",
+   "task": {
+    "entities": [
+     "AttackPattern",
+     "PeerOf",
+     "AttackPattern"
+    ],
+    "join_key": null,
+    "limits": {
+     "max_result_rows": 20000,
+     "max_traversal_depth": 3,
+     "query_timeout_ms": 5000
+    },
+    "rationale": "card_generator",
+    "seed_ids": [
+     "CAPEC-105"
+    ],
+    "source": "capec",
+    "sub_question_id": "CG-23f67e559a49",
+    "text": "What AttackPatterns are peers of CAPEC-105?"
+   },
+   "tier": "identifier"
+  },
+  {
+   "assertions": {
+    "min_records": 1,
+    "must_include_ids": [
+     "CAPEC-132"
+    ],
+    "must_include_related": [
+     "capec:attack-pattern:132:skill:1",
+     "capec:attack-pattern:132:skill:2"
+    ]
+   },
+   "card_gen": {
+    "anchor": "CAPEC-132",
+    "anchor_storage": "capec:attack-pattern:132",
+    "attempts": 1,
+    "decision": "grounding",
+    "gold_ids": [
+     "capec:attack-pattern:132:skill:1",
+     "capec:attack-pattern:132:skill:2"
+    ],
+    "kind": "answerable",
+    "slot": {
+     "dataset": "capec",
+     "direction": "out",
+     "label": "AttackPattern",
+     "rel": "REQUIRES_SKILL",
+     "target": "Skill"
+    },
+    "tier": "reworded_name"
+   },
+   "ex_gold": {
+    "expected": [
+     "capec:attack-pattern:132:skill:1",
+     "capec:attack-pattern:132:skill:2"
+    ],
+    "pool": "neighbors",
+    "scheme": "capec"
+   },
+   "id": "CG-254da6044a50",
+   "question": "What skills does the attack pattern Exploiting file-reference indirection to misdirect an application's access require?",
+   "split": "heldout",
+   "task": {
+    "entities": [
+     "AttackPattern",
+     "REQUIRES_SKILL",
+     "Skill"
+    ],
+    "join_key": null,
+    "limits": {
+     "max_result_rows": 20000,
+     "max_traversal_depth": 3,
+     "query_timeout_ms": 5000
+    },
+    "rationale": "card_generator",
+    "seed_ids": [
+     "CAPEC-132"
+    ],
+    "source": "capec",
+    "sub_question_id": "CG-254da6044a50",
+    "text": "What skills does the attack pattern Exploiting file-reference indirection to misdirect an application's access require?"
+   },
+   "tier": "reworded_name"
+  },
+  {
+   "assertions": {
+    "min_records": 1,
+    "must_include_ids": [
+     "CAPEC-1000"
+    ],
+    "must_include_related": [
+     "CAPEC-118",
+     "CAPEC-152",
+     "CAPEC-156",
+     "CAPEC-172",
+     "CAPEC-210",
+     "CAPEC-223",
+     "CAPEC-225",
+     "CAPEC-255",
+     "CAPEC-262"
+    ]
+   },
+   "card_gen": {
+    "anchor": "CAPEC-1000",
+    "anchor_storage": "capec:view:1000",
+    "attempts": 1,
+    "decision": "grounding",
+    "gold_ids": [
+     "CAPEC-118",
+     "CAPEC-152",
+     "CAPEC-156",
+     "CAPEC-172",
+     "CAPEC-210",
+     "CAPEC-223",
+     "CAPEC-225",
+     "CAPEC-255",
+     "CAPEC-262"
+    ],
+    "kind": "answerable",
+    "slot": {
+     "dataset": "capec",
+     "direction": "in",
+     "label": "View",
+     "rel": "IN_VIEW",
+     "target": "Category"
+    },
+    "tier": "identifier"
+   },
+   "ex_gold": {
+    "expected": [
+     "CAPEC-118",
+     "CAPEC-152",
+     "CAPEC-156",
+     "CAPEC-172",
+     "CAPEC-210",
+     "CAPEC-223",
+     "CAPEC-225",
+     "CAPEC-255",
+     "CAPEC-262"
+    ],
+    "pool": "neighbors",
+    "scheme": "capec"
+   },
+   "id": "CG-2996de37d103",
+   "question": "Which categories appear in the view CAPEC-1000?",
+   "split": "heldout",
+   "task": {
+    "entities": [
+     "View",
+     "IN_VIEW",
+     "Category"
+    ],
+    "join_key": null,
+    "limits": {
+     "max_result_rows": 20000,
+     "max_traversal_depth": 3,
+     "query_timeout_ms": 5000
+    },
+    "rationale": "card_generator",
+    "seed_ids": [
+     "CAPEC-1000"
+    ],
+    "source": "capec",
+    "sub_question_id": "CG-2996de37d103",
+    "text": "Which categories appear in the view CAPEC-1000?"
+   },
+   "tier": "identifier"
+  },
+  {
+   "assertions": {
+    "min_records": 1,
+    "must_include_ids": [
+     "CAPEC-97"
+    ],
+    "must_include_related": [
+     "CWE-1204",
+     "CWE-1240",
+     "CWE-1241",
+     "CWE-1279",
+     "CWE-327"
+    ]
+   },
+   "card_gen": {
+    "anchor": "CAPEC-97",
+    "anchor_storage": "capec:attack-pattern:97",
+    "attempts": 1,
+    "decision": "grounding",
+    "gold_ids": [
+     "CWE-1204",
+     "CWE-1240",
+     "CWE-1241",
+     "CWE-1279",
+     "CWE-327"
+    ],
+    "kind": "answerable",
+    "slot": {
+     "dataset": "capec",
+     "direction": "out",
+     "label": "AttackPattern",
+     "rel": "EXPLOITS_WEAKNESS",
+     "target": "Weakness"
+    },
+    "tier": "name"
+   },
+   "ex_gold": {
+    "expected": [
+     "CWE-1204",
+     "CWE-1240",
+     "CWE-1241",
+     "CWE-1279",
+     "CWE-327"
+    ],
+    "pool": "neighbors",
+    "scheme": "capec"
+   },
+   "id": "CG-2f6c3f774fc0",
+   "question": "What CWE weaknesses does Cryptanalysis exploit?",
+   "split": "heldout",
+   "task": {
+    "entities": [
+     "AttackPattern",
+     "EXPLOITS_WEAKNESS",
+     "Weakness"
+    ],
+    "join_key": null,
+    "limits": {
+     "max_result_rows": 20000,
+     "max_traversal_depth": 3,
+     "query_timeout_ms": 5000
+    },
+    "rationale": "card_generator",
+    "seed_ids": [
+     "CAPEC-97"
+    ],
+    "source": "capec",
+    "sub_question_id": "CG-2f6c3f774fc0",
+    "text": "What CWE weaknesses does Cryptanalysis exploit?"
+   },
+   "tier": "name"
+  },
+  {
+   "assertions": {
+    "min_records": 1,
+    "must_include_ids": [
+     "CAPEC-143"
+    ],
+    "must_include_related": [
+     "CAPEC-150"
+    ]
+   },
+   "card_gen": {
+    "anchor": "CAPEC-143",
+    "anchor_storage": "capec:attack-pattern:143",
+    "attempts": 1,
+    "decision": "grounding",
+    "gold_ids": [
+     "CAPEC-150"
+    ],
+    "kind": "answerable",
+    "slot": {
+     "dataset": "capec",
+     "direction": "out",
+     "label": "AttackPattern",
+     "rel": "ChildOf",
+     "target": "AttackPattern"
+    },
+    "tier": "reworded_name"
+   },
+   "ex_gold": {
+    "expected": [
+     "CAPEC-150"
+    ],
+    "pool": "neighbors",
+    "scheme": "capec"
+   },
+   "id": "CG-2fb424e81e11",
+   "question": "What AttackPattern is Searching a target site for undisclosed digital content a more specific variant of?",
+   "split": "heldout",
+   "task": {
+    "entities": [
+     "AttackPattern",
+     "ChildOf",
+     "AttackPattern"
+    ],
+    "join_key": null,
+    "limits": {
+     "max_result_rows": 20000,
+     "max_traversal_depth": 3,
+     "query_timeout_ms": 5000
+    },
+    "rationale": "card_generator",
+    "seed_ids": [
+     "CAPEC-143"
+    ],
+    "source": "capec",
+    "sub_question_id": "CG-2fb424e81e11",
+    "text": "What AttackPattern is Searching a target site for undisclosed digital content a more specific variant of?"
+   },
+   "tier": "reworded_name"
+  },
+  {
+   "assertions": {
+    "min_records": 1,
+    "must_include_ids": [
+     "CAPEC-180"
+    ],
+    "must_include_related": [
+     "CAPEC-58",
+     "CAPEC-679",
+     "CAPEC-680",
+     "CAPEC-681",
+     "CAPEC-702"
+    ]
+   },
+   "card_gen": {
+    "anchor": "CAPEC-180",
+    "anchor_storage": "capec:attack-pattern:180",
+    "attempts": 1,
+    "decision": "grounding",
+    "gold_ids": [
+     "CAPEC-58",
+     "CAPEC-679",
+     "CAPEC-680",
+     "CAPEC-681",
+     "CAPEC-702"
+    ],
+    "kind": "answerable",
+    "slot": {
+     "dataset": "capec",
+     "direction": "in",
+     "label": "AttackPattern",
+     "rel": "ChildOf",
+     "target": "AttackPattern"
+    },
+    "tier": "name"
+   },
+   "ex_gold": {
+    "expected": [
+     "CAPEC-58",
+     "CAPEC-679",
+     "CAPEC-680",
+     "CAPEC-681",
+     "CAPEC-702"
+    ],
+    "pool": "neighbors",
+    "scheme": "capec"
+   },
+   "id": "CG-2fb9e7b12705",
+   "question": "Which parent AttackPatterns is Exploiting Incorrectly Configured Access Control Security Levels a more specific variant of?",
+   "split": "heldout",
+   "task": {
+    "entities": [
+     "AttackPattern",
+     "ChildOf",
+     "AttackPattern"
+    ],
+    "join_key": null,
+    "limits": {
+     "max_result_rows": 20000,
+     "max_traversal_depth": 3,
+     "query_timeout_ms": 5000
+    },
+    "rationale": "card_generator",
+    "seed_ids": [
+     "CAPEC-180"
+    ],
+    "source": "capec",
+    "sub_question_id": "CG-2fb9e7b12705",
+    "text": "Which parent AttackPatterns is Exploiting Incorrectly Configured Access Control Security Levels a more specific variant of?"
+   },
+   "tier": "name"
+  },
+  {
+   "assertions": {
+    "min_records": 1,
+    "must_include_ids": [
+     "CAPEC-23"
+    ],
+    "must_include_related": [
+     "CAPEC-165"
+    ]
+   },
+   "card_gen": {
+    "anchor": "CAPEC-23",
+    "anchor_storage": "capec:attack-pattern:23",
+    "attempts": 1,
+    "decision": "grounding",
+    "gold_ids": [
+     "CAPEC-165"
+    ],
+    "kind": "answerable",
+    "slot": {
+     "dataset": "capec",
+     "direction": "out",
+     "label": "AttackPattern",
+     "rel": "CanAlsoBe",
+     "target": "AttackPattern"
+    },
+    "tier": "description"
+   },
+   "ex_gold": {
+    "expected": [
+     "CAPEC-165"
+    ],
+    "pool": "neighbors",
+    "scheme": "capec"
+   },
+   "id": "CG-31fd21fd95a4",
+   "question": "What AttackPatterns can Poisoning of documents with malicious payloads delivered via standard channels to exploit a host's trust in executing remote material also be characterized as?",
+   "split": "heldout",
+   "task": {
+    "entities": [
+     "AttackPattern",
+     "CanAlsoBe",
+     "AttackPattern"
+    ],
+    "join_key": null,
+    "limits": {
+     "max_result_rows": 20000,
+     "max_traversal_depth": 3,
+     "query_timeout_ms": 5000
+    },
+    "rationale": "card_generator",
+    "seed_ids": [
+     "CAPEC-23"
+    ],
+    "source": "capec",
+    "sub_question_id": "CG-31fd21fd95a4",
+    "text": "What AttackPatterns can Poisoning of documents with malicious payloads delivered via standard channels to exploit a host's trust in executing remote material also be characterized as?"
+   },
+   "tier": "description"
+  },
+  {
+   "assertions": {
+    "min_records": 1,
+    "must_include_ids": [
+     "CAPEC-23"
+    ],
+    "must_include_related": [
+     "CAPEC-165"
+    ]
+   },
+   "card_gen": {
+    "anchor": "CAPEC-23",
+    "anchor_storage": "capec:attack-pattern:23",
+    "attempts": 1,
+    "decision": "grounding",
+    "gold_ids": [
+     "CAPEC-165"
+    ],
+    "kind": "answerable",
+    "slot": {
+     "dataset": "capec",
+     "direction": "out",
+     "label": "AttackPattern",
+     "rel": "CanAlsoBe",
+     "target": "AttackPattern"
+    },
+    "tier": "reworded_name"
+   },
+   "ex_gold": {
+    "expected": [
+     "CAPEC-165"
+    ],
+    "pool": "neighbors",
+    "scheme": "capec"
+   },
+   "id": "CG-3696965ac42b",
+   "question": "What other attack patterns can poisoning stored documents with hostile payloads to exploit trusted processing also be characterized as?",
+   "split": "heldout",
+   "task": {
+    "entities": [
+     "AttackPattern",
+     "CanAlsoBe",
+     "AttackPattern"
+    ],
+    "join_key": null,
+    "limits": {
+     "max_result_rows": 20000,
+     "max_traversal_depth": 3,
+     "query_timeout_ms": 5000
+    },
+    "rationale": "card_generator",
+    "seed_ids": [
+     "CAPEC-23"
+    ],
+    "source": "capec",
+    "sub_question_id": "CG-3696965ac42b",
+    "text": "What other attack patterns can poisoning stored documents with hostile payloads to exploit trusted processing also be characterized as?"
+   },
+   "tier": "reworded_name"
+  },
+  {
+   "assertions": {
+    "min_records": 1,
+    "must_include_ids": [
+     "CAPEC-132"
+    ],
+    "must_include_related": [
+     "capec:attack-pattern:132:skill:1",
+     "capec:attack-pattern:132:skill:2"
+    ]
+   },
+   "card_gen": {
+    "anchor": "CAPEC-132",
+    "anchor_storage": "capec:attack-pattern:132",
+    "attempts": 1,
+    "decision": "grounding",
+    "gold_ids": [
+     "capec:attack-pattern:132:skill:1",
+     "capec:attack-pattern:132:skill:2"
+    ],
+    "kind": "answerable",
+    "slot": {
+     "dataset": "capec",
+     "direction": "out",
+     "label": "AttackPattern",
+     "rel": "REQUIRES_SKILL",
+     "target": "Skill"
+    },
+    "tier": "description"
+   },
+   "ex_gold": {
+    "expected": [
+     "capec:attack-pattern:132:skill:1",
+     "capec:attack-pattern:132:skill:2"
+    ],
+    "pool": "neighbors",
+    "scheme": "capec"
+   },
+   "id": "CG-36c6f3e5e738",
+   "question": "What skills are required by the attack pattern \"Positioning of a symbolic link so a user or application reaches the endpoint under the mistaken assumption of a file bearing that name\"?",
+   "split": "heldout",
+   "task": {
+    "entities": [
+     "AttackPattern",
+     "REQUIRES_SKILL",
+     "Skill"
+    ],
+    "join_key": null,
+    "limits": {
+     "max_result_rows": 20000,
+     "max_traversal_depth": 3,
+     "query_timeout_ms": 5000
+    },
+    "rationale": "card_generator",
+    "seed_ids": [
+     "CAPEC-132"
+    ],
+    "source": "capec",
+    "sub_question_id": "CG-36c6f3e5e738",
+    "text": "What skills are required by the attack pattern \"Positioning of a symbolic link so a user or application reaches the endpoint under the mistaken assumption of a file bearing that name\"?"
+   },
+   "tier": "description"
+  },
+  {
+   "assertions": {
+    "min_records": 1,
+    "must_include_ids": [
+     "CAPEC-1000"
+    ],
+    "must_include_related": [
+     "CAPEC-118",
+     "CAPEC-152",
+     "CAPEC-156",
+     "CAPEC-172",
+     "CAPEC-210",
+     "CAPEC-223",
+     "CAPEC-225",
+     "CAPEC-255",
+     "CAPEC-262"
+    ]
+   },
+   "card_gen": {
+    "anchor": "CAPEC-1000",
+    "anchor_storage": "capec:view:1000",
+    "attempts": 1,
+    "decision": "grounding",
+    "gold_ids": [
+     "CAPEC-118",
+     "CAPEC-152",
+     "CAPEC-156",
+     "CAPEC-172",
+     "CAPEC-210",
+     "CAPEC-223",
+     "CAPEC-225",
+     "CAPEC-255",
+     "CAPEC-262"
+    ],
+    "kind": "answerable",
+    "slot": {
+     "dataset": "capec",
+     "direction": "in",
+     "label": "View",
+     "rel": "IN_VIEW",
+     "target": "Category"
+    },
+    "tier": "reworded_name"
+   },
+   "ex_gold": {
+    "expected": [
+     "CAPEC-118",
+     "CAPEC-152",
+     "CAPEC-156",
+     "CAPEC-172",
+     "CAPEC-210",
+     "CAPEC-223",
+     "CAPEC-225",
+     "CAPEC-255",
+     "CAPEC-262"
+    ],
+    "pool": "neighbors",
+    "scheme": "capec"
+   },
+   "id": "CG-38cecbec7bea",
+   "question": "Which categories appear in the view Adversarial exploitation methods and their structural patterns?",
+   "split": "heldout",
+   "task": {
+    "entities": [
+     "View",
+     "IN_VIEW",
+     "Category"
+    ],
+    "join_key": null,
+    "limits": {
+     "max_result_rows": 20000,
+     "max_traversal_depth": 3,
+     "query_timeout_ms": 5000
+    },
+    "rationale": "card_generator",
+    "seed_ids": [
+     "CAPEC-1000"
+    ],
+    "source": "capec",
+    "sub_question_id": "CG-38cecbec7bea",
+    "text": "Which categories appear in the view Adversarial exploitation methods and their structural patterns?"
+   },
+   "tier": "reworded_name"
+  },
+  {
+   "assertions": {
+    "min_records": 1,
+    "must_include_ids": [
+     "CAPEC-97"
+    ],
+    "must_include_related": [
+     "CWE-1204",
+     "CWE-1240",
+     "CWE-1241",
+     "CWE-1279",
+     "CWE-327"
+    ]
+   },
+   "card_gen": {
+    "anchor": "CAPEC-97",
+    "anchor_storage": "capec:attack-pattern:97",
+    "attempts": 1,
+    "decision": "grounding",
+    "gold_ids": [
+     "CWE-1204",
+     "CWE-1240",
+     "CWE-1241",
+     "CWE-1279",
+     "CWE-327"
+    ],
+    "kind": "answerable",
+    "slot": {
+     "dataset": "capec",
+     "direction": "out",
+     "label": "AttackPattern",
+     "rel": "EXPLOITS_WEAKNESS",
+     "target": "Weakness"
+    },
+    "tier": "description"
+   },
+   "ex_gold": {
+    "expected": [
+     "CWE-1204",
+     "CWE-1240",
+     "CWE-1241",
+     "CWE-1279",
+     "CWE-327"
+    ],
+    "pool": "neighbors",
+    "scheme": "capec"
+   },
+   "id": "CG-3ce071a74977",
+   "question": "What CWE weaknesses does A process of finding weaknesses in cryptographic algorithms to decipher ciphertext without knowing the secret key exploit?",
+   "split": "heldout",
+   "task": {
+    "entities": [
+     "AttackPattern",
+     "EXPLOITS_WEAKNESS",
+     "Weakness"
+    ],
+    "join_key": null,
+    "limits": {
+     "max_result_rows": 20000,
+     "max_traversal_depth": 3,
+     "query_timeout_ms": 5000
+    },
+    "rationale": "card_generator",
+    "seed_ids": [
+     "CAPEC-97"
+    ],
+    "source": "capec",
+    "sub_question_id": "CG-3ce071a74977",
+    "text": "What CWE weaknesses does A process of finding weaknesses in cryptographic algorithms to decipher ciphertext without knowing the secret key exploit?"
+   },
+   "tier": "description"
+  },
+  {
+   "assertions": {
+    "min_records": 1,
+    "must_include_ids": [
+     "CAPEC-440"
+    ],
+    "must_include_related": [
+     "capec:taxonomy:ATTACK:1195.003",
+     "capec:taxonomy:ATTACK:1200"
+    ]
+   },
+   "card_gen": {
+    "anchor": "CAPEC-440",
+    "anchor_storage": "capec:attack-pattern:440",
+    "attempts": 1,
+    "decision": "grounding",
+    "gold_ids": [
+     "capec:taxonomy:ATTACK:1195.003",
+     "capec:taxonomy:ATTACK:1200"
+    ],
+    "kind": "answerable",
+    "slot": {
+     "dataset": "capec",
+     "direction": "out",
+     "label": "AttackPattern",
+     "rel": "MAPS_TO",
+     "target": "TaxonomyEntry"
+    },
+    "tier": "name"
+   },
+   "ex_gold": {
+    "expected": [
+     "capec:taxonomy:ATTACK:1195.003",
+     "capec:taxonomy:ATTACK:1200"
+    ],
+    "pool": "neighbors",
+    "scheme": "capec"
+   },
+   "id": "CG-40286b920eba",
+   "question": "Which TaxonomyEntry does Hardware Integrity Attack map to?",
+   "split": "heldout",
+   "task": {
+    "entities": [
+     "AttackPattern",
+     "MAPS_TO",
+     "TaxonomyEntry"
+    ],
+    "join_key": null,
+    "limits": {
+     "max_result_rows": 20000,
+     "max_traversal_depth": 3,
+     "query_timeout_ms": 5000
+    },
+    "rationale": "card_generator",
+    "seed_ids": [
+     "CAPEC-440"
+    ],
+    "source": "capec",
+    "sub_question_id": "CG-40286b920eba",
+    "text": "Which TaxonomyEntry does Hardware Integrity Attack map to?"
+   },
+   "tier": "name"
+  },
+  {
+   "assertions": {
+    "min_records": 1,
+    "must_include_ids": [
+     "CAPEC-703"
+    ],
+    "must_include_related": [
+     "CAPEC-1",
+     "CAPEC-125",
+     "CAPEC-130",
+     "CAPEC-131",
+     "CAPEC-141",
+     "CAPEC-148",
+     "CAPEC-158",
+     "CAPEC-163",
+     "CAPEC-165",
+     "CAPEC-169",
+     "CAPEC-177",
+     "CAPEC-180",
+     "CAPEC-184",
+     "CAPEC-191",
+     "CAPEC-227",
+     "CAPEC-268",
+     "CAPEC-292",
+     "CAPEC-309",
+     "CAPEC-312",
+     "CAPEC-313",
+     "CAPEC-438",
+     "CAPEC-439",
+     "CAPEC-441",
+     "CAPEC-457",
+     "CAPEC-473",
+     "CAPEC-504",
+     "CAPEC-540",
+     "CAPEC-547",
+     "CAPEC-552",
+     "CAPEC-555",
+     "CAPEC-560",
+     "CAPEC-57",
+     "CAPEC-573",
+     "CAPEC-580",
+     "CAPEC-603",
+     "CAPEC-607",
+     "CAPEC-635",
+     "CAPEC-648",
+     "CAPEC-649",
+     "CAPEC-65",
+     "CAPEC-690",
+     "CAPEC-691",
+     "CAPEC-692",
+     "CAPEC-70",
+     "CAPEC-94",
+     "CAPEC-98"
+    ]
+   },
+   "card_gen": {
+    "anchor": "CAPEC-703",
+    "anchor_storage": "capec:view:703",
+    "attempts": 1,
+    "decision": "grounding",
+    "gold_ids": [
+     "CAPEC-1",
+     "CAPEC-125",
+     "CAPEC-130",
+     "CAPEC-131",
+     "CAPEC-141",
+     "CAPEC-148",
+     "CAPEC-158",
+     "CAPEC-163",
+     "CAPEC-165",
+     "CAPEC-169",
+     "CAPEC-177",
+     "CAPEC-180",
+     "CAPEC-184",
+     "CAPEC-191",
+     "CAPEC-227",
+     "CAPEC-268",
+     "CAPEC-292",
+     "CAPEC-309",
+     "CAPEC-312",
+     "CAPEC-313",
+     "CAPEC-438",
+     "CAPEC-439",
+     "CAPEC-441",
+     "CAPEC-457",
+     "CAPEC-473",
+     "CAPEC-504",
+     "CAPEC-540",
+     "CAPEC-547",
+     "CAPEC-552",
+     "CAPEC-555",
+     "CAPEC-560",
+     "CAPEC-57",
+     "CAPEC-573",
+     "CAPEC-580",
+     "CAPEC-603",
+     "CAPEC-607",
+     "CAPEC-635",
+     "CAPEC-648",
+     "CAPEC-649",
+     "CAPEC-65",
+     "CAPEC-690",
+     "CAPEC-691",
+     "CAPEC-692",
+     "CAPEC-70",
+     "CAPEC-94",
+     "CAPEC-98"
+    ],
+    "kind": "answerable",
+    "slot": {
+     "dataset": "capec",
+     "direction": "in",
+     "label": "View",
+     "rel": "IN_VIEW",
+     "target": "AttackPattern"
+    },
+    "tier": "identifier"
+   },
+   "ex_gold": {
+    "expected": [
+     "CAPEC-1",
+     "CAPEC-125",
+     "CAPEC-130",
+     "CAPEC-131",
+     "CAPEC-141",
+     "CAPEC-148",
+     "CAPEC-158",
+     "CAPEC-163",
+     "CAPEC-165",
+     "CAPEC-169",
+     "CAPEC-177",
+     "CAPEC-180",
+     "CAPEC-184",
+     "CAPEC-191",
+     "CAPEC-227",
+     "CAPEC-268",
+     "CAPEC-292",
+     "CAPEC-309",
+     "CAPEC-312",
+     "CAPEC-313",
+     "CAPEC-438",
+     "CAPEC-439",
+     "CAPEC-441",
+     "CAPEC-457",
+     "CAPEC-473",
+     "CAPEC-504",
+     "CAPEC-540",
+     "CAPEC-547",
+     "CAPEC-552",
+     "CAPEC-555",
+     "CAPEC-560",
+     "CAPEC-57",
+     "CAPEC-573",
+     "CAPEC-580",
+     "CAPEC-603",
+     "CAPEC-607",
+     "CAPEC-635",
+     "CAPEC-648",
+     "CAPEC-649",
+     "CAPEC-65",
+     "CAPEC-690",
+     "CAPEC-691",
+     "CAPEC-692",
+     "CAPEC-70",
+     "CAPEC-94",
+     "CAPEC-98"
+    ],
+    "pool": "neighbors",
+    "scheme": "capec"
+   },
+   "id": "CG-41991d2d1053",
+   "question": "Which attack patterns appear in CAPEC-703?",
+   "split": "heldout",
+   "task": {
+    "entities": [
+     "View",
+     "IN_VIEW",
+     "AttackPattern"
+    ],
+    "join_key": null,
+    "limits": {
+     "max_result_rows": 20000,
+     "max_traversal_depth": 3,
+     "query_timeout_ms": 5000
+    },
+    "rationale": "card_generator",
+    "seed_ids": [
+     "CAPEC-703"
+    ],
+    "source": "capec",
+    "sub_question_id": "CG-41991d2d1053",
+    "text": "Which attack patterns appear in CAPEC-703?"
+   },
+   "tier": "identifier"
+  },
+  {
+   "assertions": {
+    "min_records": 1,
+    "must_include_ids": [
+     "CAPEC-180"
+    ],
+    "must_include_related": [
+     "CAPEC-58",
+     "CAPEC-679",
+     "CAPEC-680",
+     "CAPEC-681",
+     "CAPEC-702"
+    ]
+   },
+   "card_gen": {
+    "anchor": "CAPEC-180",
+    "anchor_storage": "capec:attack-pattern:180",
+    "attempts": 1,
+    "decision": "grounding",
+    "gold_ids": [
+     "CAPEC-58",
+     "CAPEC-679",
+     "CAPEC-680",
+     "CAPEC-681",
+     "CAPEC-702"
+    ],
+    "kind": "answerable",
+    "slot": {
+     "dataset": "capec",
+     "direction": "in",
+     "label": "AttackPattern",
+     "rel": "ChildOf",
+     "target": "AttackPattern"
+    },
+    "tier": "description"
+   },
+   "ex_gold": {
+    "expected": [
+     "CAPEC-58",
+     "CAPEC-679",
+     "CAPEC-680",
+     "CAPEC-681",
+     "CAPEC-702"
+    ],
+    "pool": "neighbors",
+    "scheme": "capec"
+   },
+   "id": "CG-437924902212",
+   "question": "What parent AttackPattern is the AttackPattern \"A technique in which an attacker leverages mistakes in protection settings to bypass intended safeguards and gain unauthorized entry to a system or network\" a child of?",
+   "split": "heldout",
+   "task": {
+    "entities": [
+     "AttackPattern",
+     "ChildOf",
+     "AttackPattern"
+    ],
+    "join_key": null,
+    "limits": {
+     "max_result_rows": 20000,
+     "max_traversal_depth": 3,
+     "query_timeout_ms": 5000
+    },
+    "rationale": "card_generator",
+    "seed_ids": [
+     "CAPEC-180"
+    ],
+    "source": "capec",
+    "sub_question_id": "CG-437924902212",
+    "text": "What parent AttackPattern is the AttackPattern \"A technique in which an attacker leverages mistakes in protection settings to bypass intended safeguards and gain unauthorized entry to a system or network\" a child of?"
+   },
+   "tier": "description"
+  },
+  {
+   "assertions": {
+    "min_records": 1,
+    "must_include_ids": [
+     "CAPEC-215"
+    ],
+    "must_include_related": [
+     "capec:attack-pattern:215:step:1",
+     "capec:attack-pattern:215:step:2",
+     "capec:attack-pattern:215:step:3",
+     "capec:attack-pattern:215:step:4"
+    ]
+   },
+   "card_gen": {
+    "anchor": "CAPEC-215",
+    "anchor_storage": "capec:attack-pattern:215",
+    "attempts": 1,
+    "decision": "grounding",
+    "gold_ids": [
+     "capec:attack-pattern:215:step:1",
+     "capec:attack-pattern:215:step:2",
+     "capec:attack-pattern:215:step:3",
+     "capec:attack-pattern:215:step:4"
+    ],
+    "kind": "answerable",
+    "slot": {
+     "dataset": "capec",
+     "direction": "out",
+     "label": "AttackPattern",
+     "rel": "HAS_EXECUTION_STEP",
+     "target": "ExecutionStep"
+    },
+    "tier": "name"
+   },
+   "ex_gold": {
+    "expected": [
+     "capec:attack-pattern:215:step:1",
+     "capec:attack-pattern:215:step:2",
+     "capec:attack-pattern:215:step:3",
+     "capec:attack-pattern:215:step:4"
+    ],
+    "pool": "neighbors",
+    "scheme": "capec"
+   },
+   "id": "CG-43f52b6309da",
+   "question": "What are the execution steps of Fuzzing for application mapping?",
+   "split": "heldout",
+   "task": {
+    "entities": [
+     "AttackPattern",
+     "HAS_EXECUTION_STEP",
+     "ExecutionStep"
+    ],
+    "join_key": null,
+    "limits": {
+     "max_result_rows": 20000,
+     "max_traversal_depth": 3,
+     "query_timeout_ms": 5000
+    },
+    "rationale": "card_generator",
+    "seed_ids": [
+     "CAPEC-215"
+    ],
+    "source": "capec",
+    "sub_question_id": "CG-43f52b6309da",
+    "text": "What are the execution steps of Fuzzing for application mapping?"
+   },
+   "tier": "name"
+  },
+  {
+   "assertions": {
+    "min_records": 1,
+    "must_include_ids": [
+     "CAPEC-155"
+    ],
+    "must_include_related": [
+     "CAPEC-149"
+    ]
+   },
+   "card_gen": {
+    "anchor": "CAPEC-155",
+    "anchor_storage": "capec:attack-pattern:155",
+    "attempts": 1,
+    "decision": "grounding",
+    "gold_ids": [
+     "CAPEC-149"
+    ],
+    "kind": "answerable",
+    "slot": {
+     "dataset": "capec",
+     "direction": "in",
+     "label": "AttackPattern",
+     "rel": "CanPrecede",
+     "target": "AttackPattern"
+    },
+    "tier": "name"
+   },
+   "ex_gold": {
+    "expected": [
+     "CAPEC-149"
+    ],
+    "pool": "neighbors",
+    "scheme": "capec"
+   },
+   "id": "CG-49e38cb0c80f",
+   "question": "Which AttackPatterns can precede Screen Temporary Files for Sensitive Information in an attack chain?",
+   "split": "heldout",
+   "task": {
+    "entities": [
+     "AttackPattern",
+     "CanPrecede",
+     "AttackPattern"
+    ],
+    "join_key": null,
+    "limits": {
+     "max_result_rows": 20000,
+     "max_traversal_depth": 3,
+     "query_timeout_ms": 5000
+    },
+    "rationale": "card_generator",
+    "seed_ids": [
+     "CAPEC-155"
+    ],
+    "source": "capec",
+    "sub_question_id": "CG-49e38cb0c80f",
+    "text": "Which AttackPatterns can precede Screen Temporary Files for Sensitive Information in an attack chain?"
+   },
+   "tier": "name"
+  },
+  {
+   "assertions": {
+    "min_records": 1,
+    "must_include_ids": [
+     "CAPEC-406"
+    ],
+    "must_include_related": [
+     "CAPEC-163",
+     "CAPEC-675"
+    ]
+   },
+   "card_gen": {
+    "anchor": "CAPEC-406",
+    "anchor_storage": "capec:attack-pattern:406",
+    "attempts": 1,
+    "decision": "grounding",
+    "gold_ids": [
+     "CAPEC-163",
+     "CAPEC-675"
+    ],
+    "kind": "answerable",
+    "slot": {
+     "dataset": "capec",
+     "direction": "out",
+     "label": "AttackPattern",
+     "rel": "CanPrecede",
+     "target": "AttackPattern"
+    },
+    "tier": "reworded_name"
+   },
+   "ex_gold": {
+    "expected": [
+     "CAPEC-163",
+     "CAPEC-675"
+    ],
+    "pool": "neighbors",
+    "scheme": "capec"
+   },
+   "id": "CG-4af8b2b78098",
+   "question": "What AttackPatterns can Searching through discarded waste and bins for accidentally thrown-away sensitive documents precede in an attack chain?",
+   "split": "heldout",
+   "task": {
+    "entities": [
+     "AttackPattern",
+     "CanPrecede",
+     "AttackPattern"
+    ],
+    "join_key": null,
+    "limits": {
+     "max_result_rows": 20000,
+     "max_traversal_depth": 3,
+     "query_timeout_ms": 5000
+    },
+    "rationale": "card_generator",
+    "seed_ids": [
+     "CAPEC-406"
+    ],
+    "source": "capec",
+    "sub_question_id": "CG-4af8b2b78098",
+    "text": "What AttackPatterns can Searching through discarded waste and bins for accidentally thrown-away sensitive documents precede in an attack chain?"
+   },
+   "tier": "reworded_name"
+  },
+  {
+   "assertions": {
+    "min_records": 1,
+    "must_include_ids": [
+     "CAPEC-44"
+    ],
+    "must_include_related": [
+     "capec:external-reference:REF-1"
+    ]
+   },
+   "card_gen": {
+    "anchor": "CAPEC-44",
+    "anchor_storage": "capec:attack-pattern:44",
+    "attempts": 1,
+    "decision": "grounding",
+    "gold_ids": [
+     "capec:external-reference:REF-1"
+    ],
+    "kind": "answerable",
+    "slot": {
+     "dataset": "capec",
+     "direction": "out",
+     "label": "AttackPattern",
+     "rel": "HAS_REFERENCE",
+     "target": "ExternalReference"
+    },
+    "tier": "reworded_name"
+   },
+   "ex_gold": {
+    "expected": [
+     "capec:external-reference:REF-1"
+    ],
+    "pool": "neighbors",
+    "scheme": "capec"
+   },
+   "id": "CG-4b406ed8b78d",
+   "question": "Which ExternalReferences document the AttackPattern Memory overrun triggered by parsing maliciously crafted multimedia or encoded data?",
+   "split": "heldout",
+   "task": {
+    "entities": [
+     "AttackPattern",
+     "HAS_REFERENCE",
+     "ExternalReference"
+    ],
+    "join_key": null,
+    "limits": {
+     "max_result_rows": 20000,
+     "max_traversal_depth": 3,
+     "query_timeout_ms": 5000
+    },
+    "rationale": "card_generator",
+    "seed_ids": [
+     "CAPEC-44"
+    ],
+    "source": "capec",
+    "sub_question_id": "CG-4b406ed8b78d",
+    "text": "Which ExternalReferences document the AttackPattern Memory overrun triggered by parsing maliciously crafted multimedia or encoded data?"
+   },
+   "tier": "reworded_name"
+  },
+  {
+   "assertions": {
+    "min_records": 1,
+    "must_include_ids": [
+     "CAPEC-440"
+    ],
+    "must_include_related": [
+     "capec:taxonomy:ATTACK:1195.003",
+     "capec:taxonomy:ATTACK:1200"
+    ]
+   },
+   "card_gen": {
+    "anchor": "CAPEC-440",
+    "anchor_storage": "capec:attack-pattern:440",
+    "attempts": 1,
+    "decision": "grounding",
+    "gold_ids": [
+     "capec:taxonomy:ATTACK:1195.003",
+     "capec:taxonomy:ATTACK:1200"
+    ],
+    "kind": "answerable",
+    "slot": {
+     "dataset": "capec",
+     "direction": "out",
+     "label": "AttackPattern",
+     "rel": "MAPS_TO",
+     "target": "TaxonomyEntry"
+    },
+    "tier": "reworded_name"
+   },
+   "ex_gold": {
+    "expected": [
+     "capec:taxonomy:ATTACK:1195.003",
+     "capec:taxonomy:ATTACK:1200"
+    ],
+    "pool": "neighbors",
+    "scheme": "capec"
+   },
+   "id": "CG-4ba3afd4d6d1",
+   "question": "What TaxonomyEntry does Malicious alteration of physical components to enable future exploitation map to?",
+   "split": "heldout",
+   "task": {
+    "entities": [
+     "AttackPattern",
+     "MAPS_TO",
+     "TaxonomyEntry"
+    ],
+    "join_key": null,
+    "limits": {
+     "max_result_rows": 20000,
+     "max_traversal_depth": 3,
+     "query_timeout_ms": 5000
+    },
+    "rationale": "card_generator",
+    "seed_ids": [
+     "CAPEC-440"
+    ],
+    "source": "capec",
+    "sub_question_id": "CG-4ba3afd4d6d1",
+    "text": "What TaxonomyEntry does Malicious alteration of physical components to enable future exploitation map to?"
+   },
+   "tier": "reworded_name"
+  },
+  {
+   "assertions": {
+    "min_records": 1,
+    "must_include_ids": [
+     "CAPEC-44"
+    ],
+    "must_include_related": [
+     "capec:external-reference:REF-1"
+    ]
+   },
+   "card_gen": {
+    "anchor": "CAPEC-44",
+    "anchor_storage": "capec:attack-pattern:44",
+    "attempts": 1,
+    "decision": "grounding",
+    "gold_ids": [
+     "capec:external-reference:REF-1"
+    ],
+    "kind": "answerable",
+    "slot": {
+     "dataset": "capec",
+     "direction": "out",
+     "label": "AttackPattern",
+     "rel": "HAS_REFERENCE",
+     "target": "ExternalReference"
+    },
+    "tier": "name"
+   },
+   "ex_gold": {
+    "expected": [
+     "capec:external-reference:REF-1"
+    ],
+    "pool": "neighbors",
+    "scheme": "capec"
+   },
+   "id": "CG-5378ee00112d",
+   "question": "What ExternalReferences document Overflow Binary Resource File?",
+   "split": "heldout",
+   "task": {
+    "entities": [
+     "AttackPattern",
+     "HAS_REFERENCE",
+     "ExternalReference"
+    ],
+    "join_key": null,
+    "limits": {
+     "max_result_rows": 20000,
+     "max_traversal_depth": 3,
+     "query_timeout_ms": 5000
+    },
+    "rationale": "card_generator",
+    "seed_ids": [
+     "CAPEC-44"
+    ],
+    "source": "capec",
+    "sub_question_id": "CG-5378ee00112d",
+    "text": "What ExternalReferences document Overflow Binary Resource File?"
+   },
+   "tier": "name"
+  },
+  {
+   "assertions": {
+    "min_records": 1,
+    "must_include_ids": [
+     "CAPEC-611"
+    ],
+    "must_include_related": [
+     "capec:attack-pattern:611:step:1",
+     "capec:attack-pattern:611:step:2",
+     "capec:attack-pattern:611:step:3"
+    ]
+   },
+   "card_gen": {
+    "anchor": "CAPEC-611",
+    "anchor_storage": "capec:attack-pattern:611",
+    "attempts": 1,
+    "decision": "grounding",
+    "gold_ids": [
+     "capec:attack-pattern:611:step:1",
+     "capec:attack-pattern:611:step:2",
+     "capec:attack-pattern:611:step:3"
+    ],
+    "kind": "answerable",
+    "slot": {
+     "dataset": "capec",
+     "direction": "out",
+     "label": "AttackPattern",
+     "rel": "HAS_EXECUTION_STEP",
+     "target": "ExecutionStep"
+    },
+    "tier": "description"
+   },
+   "ex_gold": {
+    "expected": [
+     "capec:attack-pattern:611:step:1",
+     "capec:attack-pattern:611:step:2",
+     "capec:attack-pattern:611:step:3"
+    ],
+    "pool": "neighbors",
+    "scheme": "capec"
+   },
+   "id": "CG-53a7324295c2",
+   "question": "Which ExecutionSteps does the AttackPattern \"A domain-registration technique leveraging random memory errors to redirect Internet traffic to adversary-controlled destinations\" contain?",
+   "split": "heldout",
+   "task": {
+    "entities": [
+     "AttackPattern",
+     "HAS_EXECUTION_STEP",
+     "ExecutionStep"
+    ],
+    "join_key": null,
+    "limits": {
+     "max_result_rows": 20000,
+     "max_traversal_depth": 3,
+     "query_timeout_ms": 5000
+    },
+    "rationale": "card_generator",
+    "seed_ids": [
+     "CAPEC-611"
+    ],
+    "source": "capec",
+    "sub_question_id": "CG-53a7324295c2",
+    "text": "Which ExecutionSteps does the AttackPattern \"A domain-registration technique leveraging random memory errors to redirect Internet traffic to adversary-controlled destinations\" contain?"
+   },
+   "tier": "description"
+  },
+  {
+   "assertions": {
+    "min_records": 1,
+    "must_include_ids": [
+     "CAPEC-105"
+    ],
+    "must_include_related": [
+     "CAPEC-34"
+    ]
+   },
+   "card_gen": {
+    "anchor": "CAPEC-105",
+    "anchor_storage": "capec:attack-pattern:105",
+    "attempts": 1,
+    "decision": "grounding",
+    "gold_ids": [
+     "CAPEC-34"
+    ],
+    "kind": "answerable",
+    "slot": {
+     "dataset": "capec",
+     "direction": "out",
+     "label": "AttackPattern",
+     "rel": "PeerOf",
+     "target": "AttackPattern"
+    },
+    "tier": "reworded_name"
+   },
+   "ex_gold": {
+    "expected": [
+     "CAPEC-34"
+    ],
+    "pool": "neighbors",
+    "scheme": "capec"
+   },
+   "id": "CG-574ed37e292a",
+   "question": "What are the peer attack patterns of Fragmentation of a single web message into multiple unauthorized ones via parser discrepancies?",
+   "split": "heldout",
+   "task": {
+    "entities": [
+     "AttackPattern",
+     "PeerOf",
+     "AttackPattern"
+    ],
+    "join_key": null,
+    "limits": {
+     "max_result_rows": 20000,
+     "max_traversal_depth": 3,
+     "query_timeout_ms": 5000
+    },
+    "rationale": "card_generator",
+    "seed_ids": [
+     "CAPEC-105"
+    ],
+    "source": "capec",
+    "sub_question_id": "CG-574ed37e292a",
+    "text": "What are the peer attack patterns of Fragmentation of a single web message into multiple unauthorized ones via parser discrepancies?"
+   },
+   "tier": "reworded_name"
+  },
+  {
+   "assertions": {
+    "min_records": 1,
+    "must_include_ids": [
+     "CAPEC-256"
+    ],
+    "must_include_related": [
+     "capec:attack-pattern:256:prerequisite:1"
+    ]
+   },
+   "card_gen": {
+    "anchor": "CAPEC-256",
+    "anchor_storage": "capec:attack-pattern:256",
+    "attempts": 1,
+    "decision": "grounding",
+    "gold_ids": [
+     "capec:attack-pattern:256:prerequisite:1"
+    ],
+    "kind": "answerable",
+    "slot": {
+     "dataset": "capec",
+     "direction": "out",
+     "label": "AttackPattern",
+     "rel": "HAS_PREREQUISITE",
+     "target": "Prerequisite"
+    },
+    "tier": "description"
+   },
+   "ex_gold": {
+    "expected": [
+     "capec:attack-pattern:256:prerequisite:1"
+    ],
+    "pool": "neighbors",
+    "scheme": "capec"
+   },
+   "id": "CG-5885fecb2779",
+   "question": "What prerequisites must hold before an intentionally understated length declaration in a service request that causes the server to read beyond its allocated memory can be executed?",
+   "split": "heldout",
+   "task": {
+    "entities": [
+     "AttackPattern",
+     "HAS_PREREQUISITE",
+     "Prerequisite"
+    ],
+    "join_key": null,
+    "limits": {
+     "max_result_rows": 20000,
+     "max_traversal_depth": 3,
+     "query_timeout_ms": 5000
+    },
+    "rationale": "card_generator",
+    "seed_ids": [
+     "CAPEC-256"
+    ],
+    "source": "capec",
+    "sub_question_id": "CG-5885fecb2779",
+    "text": "What prerequisites must hold before an intentionally understated length declaration in a service request that causes the server to read beyond its allocated memory can be executed?"
+   },
+   "tier": "description"
+  },
+  {
+   "assertions": {
+    "min_records": 1,
+    "must_include_ids": [
+     "CAPEC-95"
+    ],
+    "must_include_related": [
+     "capec:attack-pattern:95:mitigation:1",
+     "capec:attack-pattern:95:mitigation:2",
+     "capec:attack-pattern:95:mitigation:3",
+     "capec:attack-pattern:95:mitigation:4",
+     "capec:attack-pattern:95:mitigation:5"
+    ]
+   },
+   "card_gen": {
+    "anchor": "CAPEC-95",
+    "anchor_storage": "capec:attack-pattern:95",
+    "attempts": 1,
+    "decision": "grounding",
+    "gold_ids": [
+     "capec:attack-pattern:95:mitigation:1",
+     "capec:attack-pattern:95:mitigation:2",
+     "capec:attack-pattern:95:mitigation:3",
+     "capec:attack-pattern:95:mitigation:4",
+     "capec:attack-pattern:95:mitigation:5"
+    ],
+    "kind": "answerable",
+    "slot": {
+     "dataset": "capec",
+     "direction": "out",
+     "label": "AttackPattern",
+     "rel": "HAS_MITIGATION",
+     "target": "Mitigation"
+    },
+    "tier": "description"
+   },
+   "ex_gold": {
+    "expected": [
+     "capec:attack-pattern:95:mitigation:1",
+     "capec:attack-pattern:95:mitigation:2",
+     "capec:attack-pattern:95:mitigation:3",
+     "capec:attack-pattern:95:mitigation:4",
+     "capec:attack-pattern:95:mitigation:5"
+    ],
+    "pool": "neighbors",
+    "scheme": "capec"
+   },
+   "id": "CG-59ef70de8a35",
+   "question": "What mitigations address Reconnaissance of a web service's interface document to expose invocation methods, underlying technology, and vulnerabilities for further exploitation?",
+   "split": "heldout",
+   "task": {
+    "entities": [
+     "AttackPattern",
+     "HAS_MITIGATION",
+     "Mitigation"
+    ],
+    "join_key": null,
+    "limits": {
+     "max_result_rows": 20000,
+     "max_traversal_depth": 3,
+     "query_timeout_ms": 5000
+    },
+    "rationale": "card_generator",
+    "seed_ids": [
+     "CAPEC-95"
+    ],
+    "source": "capec",
+    "sub_question_id": "CG-59ef70de8a35",
+    "text": "What mitigations address Reconnaissance of a web service's interface document to expose invocation methods, underlying technology, and vulnerabilities for further exploitation?"
+   },
+   "tier": "description"
+  },
+  {
+   "assertions": {
+    "min_records": 1,
+    "must_include_ids": [
+     "CAPEC-437"
+    ],
+    "must_include_related": [
+     "CAPEC-116",
+     "CAPEC-154",
+     "CAPEC-176",
+     "CAPEC-184",
+     "CAPEC-438",
+     "CAPEC-439",
+     "CAPEC-440",
+     "CAPEC-690"
+    ]
+   },
+   "card_gen": {
+    "anchor": "CAPEC-437",
+    "anchor_storage": "capec:category:437",
+    "attempts": 1,
+    "decision": "grounding",
+    "gold_ids": [
+     "CAPEC-116",
+     "CAPEC-154",
+     "CAPEC-176",
+     "CAPEC-184",
+     "CAPEC-438",
+     "CAPEC-439",
+     "CAPEC-440",
+     "CAPEC-690"
+    ],
+    "kind": "answerable",
+    "slot": {
+     "dataset": "capec",
+     "direction": "in",
+     "label": "Category",
+     "rel": "MEMBER_OF",
+     "target": "AttackPattern"
+    },
+    "tier": "reworded_name"
+   },
+   "ex_gold": {
+    "expected": [
+     "CAPEC-116",
+     "CAPEC-154",
+     "CAPEC-176",
+     "CAPEC-184",
+     "CAPEC-438",
+     "CAPEC-439",
+     "CAPEC-440",
+     "CAPEC-690"
+    ],
+    "pool": "neighbors",
+    "scheme": "capec"
+   },
+   "id": "CG-5ad2359f4122",
+   "question": "Which attack patterns are members of The network of vendors and processes that produce and deliver a product?",
+   "split": "heldout",
+   "task": {
+    "entities": [
+     "Category",
+     "MEMBER_OF",
+     "AttackPattern"
+    ],
+    "join_key": null,
+    "limits": {
+     "max_result_rows": 20000,
+     "max_traversal_depth": 3,
+     "query_timeout_ms": 5000
+    },
+    "rationale": "card_generator",
+    "seed_ids": [
+     "CAPEC-437"
+    ],
+    "source": "capec",
+    "sub_question_id": "CG-5ad2359f4122",
+    "text": "Which attack patterns are members of The network of vendors and processes that produce and deliver a product?"
+   },
+   "tier": "reworded_name"
+  },
+  {
+   "assertions": {
+    "min_records": 1,
+    "must_include_ids": [
+     "CAPEC-611"
+    ],
+    "must_include_related": [
+     "capec:attack-pattern:611:step:1",
+     "capec:attack-pattern:611:step:2",
+     "capec:attack-pattern:611:step:3"
+    ]
+   },
+   "card_gen": {
+    "anchor": "CAPEC-611",
+    "anchor_storage": "capec:attack-pattern:611",
+    "attempts": 1,
+    "decision": "grounding",
+    "gold_ids": [
+     "capec:attack-pattern:611:step:1",
+     "capec:attack-pattern:611:step:2",
+     "capec:attack-pattern:611:step:3"
+    ],
+    "kind": "answerable",
+    "slot": {
+     "dataset": "capec",
+     "direction": "out",
+     "label": "AttackPattern",
+     "rel": "HAS_EXECUTION_STEP",
+     "target": "ExecutionStep"
+    },
+    "tier": "identifier"
+   },
+   "ex_gold": {
+    "expected": [
+     "capec:attack-pattern:611:step:1",
+     "capec:attack-pattern:611:step:2",
+     "capec:attack-pattern:611:step:3"
+    ],
+    "pool": "neighbors",
+    "scheme": "capec"
+   },
+   "id": "CG-5b97d963fe32",
+   "question": "What execution steps does CAPEC-611 contain?",
+   "split": "heldout",
+   "task": {
+    "entities": [
+     "AttackPattern",
+     "HAS_EXECUTION_STEP",
+     "ExecutionStep"
+    ],
+    "join_key": null,
+    "limits": {
+     "max_result_rows": 20000,
+     "max_traversal_depth": 3,
+     "query_timeout_ms": 5000
+    },
+    "rationale": "card_generator",
+    "seed_ids": [
+     "CAPEC-611"
+    ],
+    "source": "capec",
+    "sub_question_id": "CG-5b97d963fe32",
+    "text": "What execution steps does CAPEC-611 contain?"
+   },
+   "tier": "identifier"
+  },
+  {
+   "assertions": {
+    "min_records": 1,
+    "must_include_ids": [
+     "CAPEC-680"
+    ],
+    "must_include_related": [
+     "capec:attack-pattern:680:example:1"
+    ]
+   },
+   "card_gen": {
+    "anchor": "CAPEC-680",
+    "anchor_storage": "capec:attack-pattern:680",
+    "attempts": 1,
+    "decision": "grounding",
+    "gold_ids": [
+     "capec:attack-pattern:680:example:1"
+    ],
+    "kind": "answerable",
+    "slot": {
+     "dataset": "capec",
+     "direction": "out",
+     "label": "AttackPattern",
+     "rel": "HAS_EXAMPLE",
+     "target": "Example"
+    },
+    "tier": "name"
+   },
+   "ex_gold": {
+    "expected": [
+     "capec:attack-pattern:680:example:1"
+    ],
+    "pool": "neighbors",
+    "scheme": "capec"
+   },
+   "id": "CG-5cd537d0a7be",
+   "question": "What real-world examples illustrate the attack pattern Exploitation of Improperly Controlled Registers?",
+   "split": "heldout",
+   "task": {
+    "entities": [
+     "AttackPattern",
+     "HAS_EXAMPLE",
+     "Example"
+    ],
+    "join_key": null,
+    "limits": {
+     "max_result_rows": 20000,
+     "max_traversal_depth": 3,
+     "query_timeout_ms": 5000
+    },
+    "rationale": "card_generator",
+    "seed_ids": [
+     "CAPEC-680"
+    ],
+    "source": "capec",
+    "sub_question_id": "CG-5cd537d0a7be",
+    "text": "What real-world examples illustrate the attack pattern Exploitation of Improperly Controlled Registers?"
+   },
+   "tier": "name"
+  },
+  {
+   "assertions": {
+    "min_records": 1,
+    "must_include_ids": [
+     "CAPEC-272"
+    ],
+    "must_include_related": [
+     "CAPEC-210",
+     "CAPEC-512",
+     "CAPEC-513"
+    ]
+   },
+   "card_gen": {
+    "anchor": "CAPEC-272",
+    "anchor_storage": "capec:attack-pattern:272",
+    "attempts": 1,
+    "decision": "grounding",
+    "gold_ids": [
+     "CAPEC-210",
+     "CAPEC-512",
+     "CAPEC-513"
+    ],
+    "kind": "answerable",
+    "slot": {
+     "dataset": "capec",
+     "direction": "out",
+     "label": "AttackPattern",
+     "rel": "MEMBER_OF",
+     "target": "Category"
+    },
+    "tier": "description"
+   },
+   "ex_gold": {
+    "expected": [
+     "CAPEC-210",
+     "CAPEC-512",
+     "CAPEC-513"
+    ],
+    "pool": "neighbors",
+    "scheme": "capec"
+   },
+   "id": "CG-5f22bd3134f8",
+   "question": "What category is An attack subverting a communications standard to impersonate others, reveal sensitive information, or dictate a session's outcome a member of?",
+   "split": "heldout",
+   "task": {
+    "entities": [
+     "AttackPattern",
+     "MEMBER_OF",
+     "Category"
+    ],
+    "join_key": null,
+    "limits": {
+     "max_result_rows": 20000,
+     "max_traversal_depth": 3,
+     "query_timeout_ms": 5000
+    },
+    "rationale": "card_generator",
+    "seed_ids": [
+     "CAPEC-272"
+    ],
+    "source": "capec",
+    "sub_question_id": "CG-5f22bd3134f8",
+    "text": "What category is An attack subverting a communications standard to impersonate others, reveal sensitive information, or dictate a session's outcome a member of?"
+   },
+   "tier": "description"
+  },
+  {
+   "assertions": {
+    "min_records": 1,
+    "must_include_ids": [
+     "CAPEC-155"
+    ],
+    "must_include_related": [
+     "CAPEC-149"
+    ]
+   },
+   "card_gen": {
+    "anchor": "CAPEC-155",
+    "anchor_storage": "capec:attack-pattern:155",
+    "attempts": 1,
+    "decision": "grounding",
+    "gold_ids": [
+     "CAPEC-149"
+    ],
+    "kind": "answerable",
+    "slot": {
+     "dataset": "capec",
+     "direction": "in",
+     "label": "AttackPattern",
+     "rel": "CanPrecede",
+     "target": "AttackPattern"
+    },
+    "tier": "reworded_name"
+   },
+   "ex_gold": {
+    "expected": [
+     "CAPEC-149"
+    ],
+    "pool": "neighbors",
+    "scheme": "capec"
+   },
+   "id": "CG-6063f49f81a4",
+   "question": "What AttackPatterns can precede Inspecting ephemeral working storage to extract confidential content?",
+   "split": "heldout",
+   "task": {
+    "entities": [
+     "AttackPattern",
+     "CanPrecede",
+     "AttackPattern"
+    ],
+    "join_key": null,
+    "limits": {
+     "max_result_rows": 20000,
+     "max_traversal_depth": 3,
+     "query_timeout_ms": 5000
+    },
+    "rationale": "card_generator",
+    "seed_ids": [
+     "CAPEC-155"
+    ],
+    "source": "capec",
+    "sub_question_id": "CG-6063f49f81a4",
+    "text": "What AttackPatterns can precede Inspecting ephemeral working storage to extract confidential content?"
+   },
+   "tier": "reworded_name"
+  },
+  {
+   "assertions": {
+    "min_records": 1,
+    "must_include_ids": [
+     "CAPEC-406"
+    ],
+    "must_include_related": [
+     "CAPEC-163",
+     "CAPEC-675"
+    ]
+   },
+   "card_gen": {
+    "anchor": "CAPEC-406",
+    "anchor_storage": "capec:attack-pattern:406",
+    "attempts": 1,
+    "decision": "grounding",
+    "gold_ids": [
+     "CAPEC-163",
+     "CAPEC-675"
+    ],
+    "kind": "answerable",
+    "slot": {
+     "dataset": "capec",
+     "direction": "out",
+     "label": "AttackPattern",
+     "rel": "CanPrecede",
+     "target": "AttackPattern"
+    },
+    "tier": "identifier"
+   },
+   "ex_gold": {
+    "expected": [
+     "CAPEC-163",
+     "CAPEC-675"
+    ],
+    "pool": "neighbors",
+    "scheme": "capec"
+   },
+   "id": "CG-647357035355",
+   "question": "What attack patterns can CAPEC-406 precede in an attack chain?",
+   "split": "heldout",
+   "task": {
+    "entities": [
+     "AttackPattern",
+     "CanPrecede",
+     "AttackPattern"
+    ],
+    "join_key": null,
+    "limits": {
+     "max_result_rows": 20000,
+     "max_traversal_depth": 3,
+     "query_timeout_ms": 5000
+    },
+    "rationale": "card_generator",
+    "seed_ids": [
+     "CAPEC-406"
+    ],
+    "source": "capec",
+    "sub_question_id": "CG-647357035355",
+    "text": "What attack patterns can CAPEC-406 precede in an attack chain?"
+   },
+   "tier": "identifier"
+  },
+  {
+   "assertions": {
+    "min_records": 1,
+    "must_include_ids": [
+     "CAPEC-3000"
+    ],
+    "must_include_related": [
+     "CAPEC-403",
+     "CAPEC-437",
+     "CAPEC-512",
+     "CAPEC-513",
+     "CAPEC-514",
+     "CAPEC-515"
+    ]
+   },
+   "card_gen": {
+    "anchor": "CAPEC-3000",
+    "anchor_storage": "capec:view:3000",
+    "attempts": 1,
+    "decision": "grounding",
+    "gold_ids": [
+     "CAPEC-403",
+     "CAPEC-437",
+     "CAPEC-512",
+     "CAPEC-513",
+     "CAPEC-514",
+     "CAPEC-515"
+    ],
+    "kind": "answerable",
+    "slot": {
+     "dataset": "capec",
+     "direction": "in",
+     "label": "View",
+     "rel": "IN_VIEW",
+     "target": "Category"
+    },
+    "tier": "reworded_name"
+   },
+   "ex_gold": {
+    "expected": [
+     "CAPEC-403",
+     "CAPEC-437",
+     "CAPEC-512",
+     "CAPEC-513",
+     "CAPEC-514",
+     "CAPEC-515"
+    ],
+    "pool": "neighbors",
+    "scheme": "capec"
+   },
+   "id": "CG-664d5a99d6aa",
+   "question": "Which categories appear in the view Broad categorical groupings for adversarial vectors?",
+   "split": "heldout",
+   "task": {
+    "entities": [
+     "View",
+     "IN_VIEW",
+     "Category"
+    ],
+    "join_key": null,
+    "limits": {
+     "max_result_rows": 20000,
+     "max_traversal_depth": 3,
+     "query_timeout_ms": 5000
+    },
+    "rationale": "card_generator",
+    "seed_ids": [
+     "CAPEC-3000"
+    ],
+    "source": "capec",
+    "sub_question_id": "CG-664d5a99d6aa",
+    "text": "Which categories appear in the view Broad categorical groupings for adversarial vectors?"
+   },
+   "tier": "reworded_name"
+  },
+  {
+   "assertions": {
+    "min_records": 1,
+    "must_include_ids": [
+     "CAPEC-611"
+    ],
+    "must_include_related": [
+     "capec:attack-pattern:611:step:1",
+     "capec:attack-pattern:611:step:2",
+     "capec:attack-pattern:611:step:3"
+    ]
+   },
+   "card_gen": {
+    "anchor": "CAPEC-611",
+    "anchor_storage": "capec:attack-pattern:611",
+    "attempts": 1,
+    "decision": "grounding",
+    "gold_ids": [
+     "capec:attack-pattern:611:step:1",
+     "capec:attack-pattern:611:step:2",
+     "capec:attack-pattern:611:step:3"
+    ],
+    "kind": "answerable",
+    "slot": {
+     "dataset": "capec",
+     "direction": "out",
+     "label": "AttackPattern",
+     "rel": "HAS_EXECUTION_STEP",
+     "target": "ExecutionStep"
+    },
+    "tier": "reworded_name"
+   },
+   "ex_gold": {
+    "expected": [
+     "capec:attack-pattern:611:step:1",
+     "capec:attack-pattern:611:step:2",
+     "capec:attack-pattern:611:step:3"
+    ],
+    "pool": "neighbors",
+    "scheme": "capec"
+   },
+   "id": "CG-71bc0876a51c",
+   "question": "What ExecutionSteps are contained in Domain registration exploiting a single binary-digit difference to redirect traffic to an adversary?",
+   "split": "heldout",
+   "task": {
+    "entities": [
+     "AttackPattern",
+     "HAS_EXECUTION_STEP",
+     "ExecutionStep"
+    ],
+    "join_key": null,
+    "limits": {
+     "max_result_rows": 20000,
+     "max_traversal_depth": 3,
+     "query_timeout_ms": 5000
+    },
+    "rationale": "card_generator",
+    "seed_ids": [
+     "CAPEC-611"
+    ],
+    "source": "capec",
+    "sub_question_id": "CG-71bc0876a51c",
+    "text": "What ExecutionSteps are contained in Domain registration exploiting a single binary-digit difference to redirect traffic to an adversary?"
+   },
+   "tier": "reworded_name"
+  },
+  {
+   "assertions": {
+    "min_records": 1,
+    "must_include_ids": [
+     "CAPEC-132"
+    ],
+    "must_include_related": [
+     "capec:attack-pattern:132:skill:1",
+     "capec:attack-pattern:132:skill:2"
+    ]
+   },
+   "card_gen": {
+    "anchor": "CAPEC-132",
+    "anchor_storage": "capec:attack-pattern:132",
+    "attempts": 1,
+    "decision": "grounding",
+    "gold_ids": [
+     "capec:attack-pattern:132:skill:1",
+     "capec:attack-pattern:132:skill:2"
+    ],
+    "kind": "answerable",
+    "slot": {
+     "dataset": "capec",
+     "direction": "out",
+     "label": "AttackPattern",
+     "rel": "REQUIRES_SKILL",
+     "target": "Skill"
+    },
+    "tier": "identifier"
+   },
+   "ex_gold": {
+    "expected": [
+     "capec:attack-pattern:132:skill:1",
+     "capec:attack-pattern:132:skill:2"
+    ],
+    "pool": "neighbors",
+    "scheme": "capec"
+   },
+   "id": "CG-73825979a831",
+   "question": "What skills does the attack pattern CAPEC-132 require?",
+   "split": "heldout",
+   "task": {
+    "entities": [
+     "AttackPattern",
+     "REQUIRES_SKILL",
+     "Skill"
+    ],
+    "join_key": null,
+    "limits": {
+     "max_result_rows": 20000,
+     "max_traversal_depth": 3,
+     "query_timeout_ms": 5000
+    },
+    "rationale": "card_generator",
+    "seed_ids": [
+     "CAPEC-132"
+    ],
+    "source": "capec",
+    "sub_question_id": "CG-73825979a831",
+    "text": "What skills does the attack pattern CAPEC-132 require?"
+   },
+   "tier": "identifier"
+  },
+  {
+   "assertions": {
+    "min_records": 1,
+    "must_include_ids": [
+     "CAPEC-158"
+    ],
+    "must_include_related": [
+     "capec:attack-pattern:158:mitigation:1",
+     "capec:attack-pattern:158:mitigation:2"
+    ]
+   },
+   "card_gen": {
+    "anchor": "CAPEC-158",
+    "anchor_storage": "capec:attack-pattern:158",
+    "attempts": 1,
+    "decision": "grounding",
+    "gold_ids": [
+     "capec:attack-pattern:158:mitigation:1",
+     "capec:attack-pattern:158:mitigation:2"
+    ],
+    "kind": "answerable",
+    "slot": {
+     "dataset": "capec",
+     "direction": "out",
+     "label": "AttackPattern",
+     "rel": "HAS_MITIGATION",
+     "target": "Mitigation"
+    },
+    "tier": "description"
+   },
+   "ex_gold": {
+    "expected": [
+     "capec:attack-pattern:158:mitigation:1",
+     "capec:attack-pattern:158:mitigation:2"
+    ],
+    "pool": "neighbors",
+    "scheme": "capec"
+   },
+   "id": "CG-76363edfc942",
+   "question": "What mitigations address a passive adversary approach to monitoring low-level communication between nodes in order to capture protocol-level data?",
+   "split": "heldout",
+   "task": {
+    "entities": [
+     "AttackPattern",
+     "HAS_MITIGATION",
+     "Mitigation"
+    ],
+    "join_key": null,
+    "limits": {
+     "max_result_rows": 20000,
+     "max_traversal_depth": 3,
+     "query_timeout_ms": 5000
+    },
+    "rationale": "card_generator",
+    "seed_ids": [
+     "CAPEC-158"
+    ],
+    "source": "capec",
+    "sub_question_id": "CG-76363edfc942",
+    "text": "What mitigations address a passive adversary approach to monitoring low-level communication between nodes in order to capture protocol-level data?"
+   },
+   "tier": "description"
+  },
+  {
+   "assertions": {
+    "min_records": 1,
+    "must_include_ids": [
+     "CAPEC-105"
+    ],
+    "must_include_related": [
+     "CAPEC-34"
+    ]
+   },
+   "card_gen": {
+    "anchor": "CAPEC-105",
+    "anchor_storage": "capec:attack-pattern:105",
+    "attempts": 1,
+    "decision": "grounding",
+    "gold_ids": [
+     "CAPEC-34"
+    ],
+    "kind": "answerable",
+    "slot": {
+     "dataset": "capec",
+     "direction": "in",
+     "label": "AttackPattern",
+     "rel": "PeerOf",
+     "target": "AttackPattern"
+    },
+    "tier": "reworded_name"
+   },
+   "ex_gold": {
+    "expected": [
+     "CAPEC-34"
+    ],
+    "pool": "neighbors",
+    "scheme": "capec"
+   },
+   "id": "CG-78221212f565",
+   "question": "What AttackPatterns are peers of Fragmentation of a single web message into multiple unauthorized ones via parser discrepancies?",
+   "split": "heldout",
+   "task": {
+    "entities": [
+     "AttackPattern",
+     "PeerOf",
+     "AttackPattern"
+    ],
+    "join_key": null,
+    "limits": {
+     "max_result_rows": 20000,
+     "max_traversal_depth": 3,
+     "query_timeout_ms": 5000
+    },
+    "rationale": "card_generator",
+    "seed_ids": [
+     "CAPEC-105"
+    ],
+    "source": "capec",
+    "sub_question_id": "CG-78221212f565",
+    "text": "What AttackPatterns are peers of Fragmentation of a single web message into multiple unauthorized ones via parser discrepancies?"
+   },
+   "tier": "reworded_name"
+  },
+  {
+   "assertions": {
+    "min_records": 1,
+    "must_include_ids": [
+     "CAPEC-132"
+    ],
+    "must_include_related": [
+     "capec:attack-pattern:132:skill:1",
+     "capec:attack-pattern:132:skill:2"
+    ]
+   },
+   "card_gen": {
+    "anchor": "CAPEC-132",
+    "anchor_storage": "capec:attack-pattern:132",
+    "attempts": 1,
+    "decision": "grounding",
+    "gold_ids": [
+     "capec:attack-pattern:132:skill:1",
+     "capec:attack-pattern:132:skill:2"
+    ],
+    "kind": "answerable",
+    "slot": {
+     "dataset": "capec",
+     "direction": "out",
+     "label": "AttackPattern",
+     "rel": "REQUIRES_SKILL",
+     "target": "Skill"
+    },
+    "tier": "name"
+   },
+   "ex_gold": {
+    "expected": [
+     "capec:attack-pattern:132:skill:1",
+     "capec:attack-pattern:132:skill:2"
+    ],
+    "pool": "neighbors",
+    "scheme": "capec"
+   },
+   "id": "CG-7fd22a383fb1",
+   "question": "What skills does the Symlink Attack require?",
+   "split": "heldout",
+   "task": {
+    "entities": [
+     "AttackPattern",
+     "REQUIRES_SKILL",
+     "Skill"
+    ],
+    "join_key": null,
+    "limits": {
+     "max_result_rows": 20000,
+     "max_traversal_depth": 3,
+     "query_timeout_ms": 5000
+    },
+    "rationale": "card_generator",
+    "seed_ids": [
+     "CAPEC-132"
+    ],
+    "source": "capec",
+    "sub_question_id": "CG-7fd22a383fb1",
+    "text": "What skills does the Symlink Attack require?"
+   },
+   "tier": "name"
+  },
+  {
+   "assertions": {
+    "min_records": 1,
+    "must_include_ids": [
+     "CAPEC-256"
+    ],
+    "must_include_related": [
+     "capec:attack-pattern:256:prerequisite:1"
+    ]
+   },
+   "card_gen": {
+    "anchor": "CAPEC-256",
+    "anchor_storage": "capec:attack-pattern:256",
+    "attempts": 1,
+    "decision": "grounding",
+    "gold_ids": [
+     "capec:attack-pattern:256:prerequisite:1"
+    ],
+    "kind": "answerable",
+    "slot": {
+     "dataset": "capec",
+     "direction": "out",
+     "label": "AttackPattern",
+     "rel": "HAS_PREREQUISITE",
+     "target": "Prerequisite"
+    },
+    "tier": "reworded_name"
+   },
+   "ex_gold": {
+    "expected": [
+     "capec:attack-pattern:256:prerequisite:1"
+    ],
+    "pool": "neighbors",
+    "scheme": "capec"
+   },
+   "id": "CG-806f7eb33061",
+   "question": "What prerequisites must be in place before the memory overrun from a misreported collection size in a web service request can be attempted?",
+   "split": "heldout",
+   "task": {
+    "entities": [
+     "AttackPattern",
+     "HAS_PREREQUISITE",
+     "Prerequisite"
+    ],
+    "join_key": null,
+    "limits": {
+     "max_result_rows": 20000,
+     "max_traversal_depth": 3,
+     "query_timeout_ms": 5000
+    },
+    "rationale": "card_generator",
+    "seed_ids": [
+     "CAPEC-256"
+    ],
+    "source": "capec",
+    "sub_question_id": "CG-806f7eb33061",
+    "text": "What prerequisites must be in place before the memory overrun from a misreported collection size in a web service request can be attempted?"
+   },
+   "tier": "reworded_name"
+  },
+  {
+   "assertions": {
+    "min_records": 1,
+    "must_include_ids": [
+     "CAPEC-1000"
+    ],
+    "must_include_related": [
+     "CAPEC-118",
+     "CAPEC-152",
+     "CAPEC-156",
+     "CAPEC-172",
+     "CAPEC-210",
+     "CAPEC-223",
+     "CAPEC-225",
+     "CAPEC-255",
+     "CAPEC-262"
+    ]
+   },
+   "card_gen": {
+    "anchor": "CAPEC-1000",
+    "anchor_storage": "capec:view:1000",
+    "attempts": 1,
+    "decision": "grounding",
+    "gold_ids": [
+     "CAPEC-118",
+     "CAPEC-152",
+     "CAPEC-156",
+     "CAPEC-172",
+     "CAPEC-210",
+     "CAPEC-223",
+     "CAPEC-225",
+     "CAPEC-255",
+     "CAPEC-262"
+    ],
+    "kind": "answerable",
+    "slot": {
+     "dataset": "capec",
+     "direction": "in",
+     "label": "View",
+     "rel": "IN_VIEW",
+     "target": "Category"
+    },
+    "tier": "name"
+   },
+   "ex_gold": {
+    "expected": [
+     "CAPEC-118",
+     "CAPEC-152",
+     "CAPEC-156",
+     "CAPEC-172",
+     "CAPEC-210",
+     "CAPEC-223",
+     "CAPEC-225",
+     "CAPEC-255",
+     "CAPEC-262"
+    ],
+    "pool": "neighbors",
+    "scheme": "capec"
+   },
+   "id": "CG-83a8f94482de",
+   "question": "Which categories appear in the Mechanisms of Attack view?",
+   "split": "heldout",
+   "task": {
+    "entities": [
+     "View",
+     "IN_VIEW",
+     "Category"
+    ],
+    "join_key": null,
+    "limits": {
+     "max_result_rows": 20000,
+     "max_traversal_depth": 3,
+     "query_timeout_ms": 5000
+    },
+    "rationale": "card_generator",
+    "seed_ids": [
+     "CAPEC-1000"
+    ],
+    "source": "capec",
+    "sub_question_id": "CG-83a8f94482de",
+    "text": "Which categories appear in the Mechanisms of Attack view?"
+   },
+   "tier": "name"
+  },
+  {
+   "assertions": {
+    "min_records": 1,
+    "must_include_ids": [
+     "CAPEC-95"
+    ],
+    "must_include_related": [
+     "capec:attack-pattern:95:mitigation:1",
+     "capec:attack-pattern:95:mitigation:2",
+     "capec:attack-pattern:95:mitigation:3",
+     "capec:attack-pattern:95:mitigation:4",
+     "capec:attack-pattern:95:mitigation:5"
+    ]
+   },
+   "card_gen": {
+    "anchor": "CAPEC-95",
+    "anchor_storage": "capec:attack-pattern:95",
+    "attempts": 1,
+    "decision": "grounding",
+    "gold_ids": [
+     "capec:attack-pattern:95:mitigation:1",
+     "capec:attack-pattern:95:mitigation:2",
+     "capec:attack-pattern:95:mitigation:3",
+     "capec:attack-pattern:95:mitigation:4",
+     "capec:attack-pattern:95:mitigation:5"
+    ],
+    "kind": "answerable",
+    "slot": {
+     "dataset": "capec",
+     "direction": "out",
+     "label": "AttackPattern",
+     "rel": "HAS_MITIGATION",
+     "target": "Mitigation"
+    },
+    "tier": "identifier"
+   },
+   "ex_gold": {
+    "expected": [
+     "capec:attack-pattern:95:mitigation:1",
+     "capec:attack-pattern:95:mitigation:2",
+     "capec:attack-pattern:95:mitigation:3",
+     "capec:attack-pattern:95:mitigation:4",
+     "capec:attack-pattern:95:mitigation:5"
+    ],
+    "pool": "neighbors",
+    "scheme": "capec"
+   },
+   "id": "CG-86497aaa78ac",
+   "question": "What mitigations address the attack pattern CAPEC-95?",
+   "split": "heldout",
+   "task": {
+    "entities": [
+     "AttackPattern",
+     "HAS_MITIGATION",
+     "Mitigation"
+    ],
+    "join_key": null,
+    "limits": {
+     "max_result_rows": 20000,
+     "max_traversal_depth": 3,
+     "query_timeout_ms": 5000
+    },
+    "rationale": "card_generator",
+    "seed_ids": [
+     "CAPEC-95"
+    ],
+    "source": "capec",
+    "sub_question_id": "CG-86497aaa78ac",
+    "text": "What mitigations address the attack pattern CAPEC-95?"
+   },
+   "tier": "identifier"
+  },
+  {
+   "assertions": {
+    "min_records": 1,
+    "must_include_ids": [
+     "CAPEC-680"
+    ],
+    "must_include_related": [
+     "capec:attack-pattern:680:example:1"
+    ]
+   },
+   "card_gen": {
+    "anchor": "CAPEC-680",
+    "anchor_storage": "capec:attack-pattern:680",
+    "attempts": 2,
+    "decision": "grounding",
+    "gold_ids": [
+     "capec:attack-pattern:680:example:1"
+    ],
+    "kind": "answerable",
+    "slot": {
+     "dataset": "capec",
+     "direction": "out",
+     "label": "AttackPattern",
+     "rel": "HAS_EXAMPLE",
+     "target": "Example"
+    },
+    "tier": "description"
+   },
+   "ex_gold": {
+    "expected": [
+     "capec:attack-pattern:680:example:1"
+    ],
+    "pool": "neighbors",
+    "scheme": "capec"
+   },
+   "id": "CG-89334c644215",
+   "question": "What examples illustrate the attack pattern \"A technique in which an adversary leverages missing or misconfigured access control to read or modify data not meant for the user\"?",
+   "split": "heldout",
+   "task": {
+    "entities": [
+     "AttackPattern",
+     "HAS_EXAMPLE",
+     "Example"
+    ],
+    "join_key": null,
+    "limits": {
+     "max_result_rows": 20000,
+     "max_traversal_depth": 3,
+     "query_timeout_ms": 5000
+    },
+    "rationale": "card_generator",
+    "seed_ids": [
+     "CAPEC-680"
+    ],
+    "source": "capec",
+    "sub_question_id": "CG-89334c644215",
+    "text": "What examples illustrate the attack pattern \"A technique in which an adversary leverages missing or misconfigured access control to read or modify data not meant for the user\"?"
+   },
+   "tier": "description"
+  },
+  {
+   "assertions": {
+    "min_records": 1,
+    "must_include_ids": [
+     "CAPEC-155"
+    ],
+    "must_include_related": [
+     "CAPEC-149"
+    ]
+   },
+   "card_gen": {
+    "anchor": "CAPEC-155",
+    "anchor_storage": "capec:attack-pattern:155",
+    "attempts": 1,
+    "decision": "grounding",
+    "gold_ids": [
+     "CAPEC-149"
+    ],
+    "kind": "answerable",
+    "slot": {
+     "dataset": "capec",
+     "direction": "in",
+     "label": "AttackPattern",
+     "rel": "CanPrecede",
+     "target": "AttackPattern"
+    },
+    "tier": "identifier"
+   },
+   "ex_gold": {
+    "expected": [
+     "CAPEC-149"
+    ],
+    "pool": "neighbors",
+    "scheme": "capec"
+   },
+   "id": "CG-8b2d702b303d",
+   "question": "What attack patterns can precede CAPEC-155 in an attack chain?",
+   "split": "heldout",
+   "task": {
+    "entities": [
+     "AttackPattern",
+     "CanPrecede",
+     "AttackPattern"
+    ],
+    "join_key": null,
+    "limits": {
+     "max_result_rows": 20000,
+     "max_traversal_depth": 3,
+     "query_timeout_ms": 5000
+    },
+    "rationale": "card_generator",
+    "seed_ids": [
+     "CAPEC-155"
+    ],
+    "source": "capec",
+    "sub_question_id": "CG-8b2d702b303d",
+    "text": "What attack patterns can precede CAPEC-155 in an attack chain?"
+   },
+   "tier": "identifier"
+  },
+  {
+   "assertions": {
+    "min_records": 1,
+    "must_include_ids": [
+     "CAPEC-155"
+    ],
+    "must_include_related": [
+     "CAPEC-149"
+    ]
+   },
+   "card_gen": {
+    "anchor": "CAPEC-155",
+    "anchor_storage": "capec:attack-pattern:155",
+    "attempts": 1,
+    "decision": "grounding",
+    "gold_ids": [
+     "CAPEC-149"
+    ],
+    "kind": "answerable",
+    "slot": {
+     "dataset": "capec",
+     "direction": "in",
+     "label": "AttackPattern",
+     "rel": "CanPrecede",
+     "target": "AttackPattern"
+    },
+    "tier": "description"
+   },
+   "ex_gold": {
+    "expected": [
+     "CAPEC-149"
+    ],
+    "pool": "neighbors",
+    "scheme": "capec"
+   },
+   "id": "CG-921988d04e81",
+   "question": "Which attack patterns can precede Monitoring an application's transient data stores to recover privileged content?",
+   "split": "heldout",
+   "task": {
+    "entities": [
+     "AttackPattern",
+     "CanPrecede",
+     "AttackPattern"
+    ],
+    "join_key": null,
+    "limits": {
+     "max_result_rows": 20000,
+     "max_traversal_depth": 3,
+     "query_timeout_ms": 5000
+    },
+    "rationale": "card_generator",
+    "seed_ids": [
+     "CAPEC-155"
+    ],
+    "source": "capec",
+    "sub_question_id": "CG-921988d04e81",
+    "text": "Which attack patterns can precede Monitoring an application's transient data stores to recover privileged content?"
+   },
+   "tier": "description"
+  },
+  {
+   "assertions": {
+    "min_records": 1,
+    "must_include_ids": [
+     "CAPEC-158"
+    ],
+    "must_include_related": [
+     "capec:attack-pattern:158:mitigation:1",
+     "capec:attack-pattern:158:mitigation:2"
+    ]
+   },
+   "card_gen": {
+    "anchor": "CAPEC-158",
+    "anchor_storage": "capec:attack-pattern:158",
+    "attempts": 1,
+    "decision": "grounding",
+    "gold_ids": [
+     "capec:attack-pattern:158:mitigation:1",
+     "capec:attack-pattern:158:mitigation:2"
+    ],
+    "kind": "answerable",
+    "slot": {
+     "dataset": "capec",
+     "direction": "out",
+     "label": "AttackPattern",
+     "rel": "HAS_MITIGATION",
+     "target": "Mitigation"
+    },
+    "tier": "name"
+   },
+   "ex_gold": {
+    "expected": [
+     "capec:attack-pattern:158:mitigation:1",
+     "capec:attack-pattern:158:mitigation:2"
+    ],
+    "pool": "neighbors",
+    "scheme": "capec"
+   },
+   "id": "CG-92a4e6b8836d",
+   "question": "What mitigations address Sniffing Network Traffic?",
+   "split": "heldout",
+   "task": {
+    "entities": [
+     "AttackPattern",
+     "HAS_MITIGATION",
+     "Mitigation"
+    ],
+    "join_key": null,
+    "limits": {
+     "max_result_rows": 20000,
+     "max_traversal_depth": 3,
+     "query_timeout_ms": 5000
+    },
+    "rationale": "card_generator",
+    "seed_ids": [
+     "CAPEC-158"
+    ],
+    "source": "capec",
+    "sub_question_id": "CG-92a4e6b8836d",
+    "text": "What mitigations address Sniffing Network Traffic?"
+   },
+   "tier": "name"
+  },
+  {
+   "assertions": {
+    "min_records": 1,
+    "must_include_ids": [
+     "CAPEC-158"
+    ],
+    "must_include_related": [
+     "capec:attack-pattern:158:mitigation:1",
+     "capec:attack-pattern:158:mitigation:2"
+    ]
+   },
+   "card_gen": {
+    "anchor": "CAPEC-158",
+    "anchor_storage": "capec:attack-pattern:158",
+    "attempts": 1,
+    "decision": "grounding",
+    "gold_ids": [
+     "capec:attack-pattern:158:mitigation:1",
+     "capec:attack-pattern:158:mitigation:2"
+    ],
+    "kind": "answerable",
+    "slot": {
+     "dataset": "capec",
+     "direction": "out",
+     "label": "AttackPattern",
+     "rel": "HAS_MITIGATION",
+     "target": "Mitigation"
+    },
+    "tier": "reworded_name"
+   },
+   "ex_gold": {
+    "expected": [
+     "capec:attack-pattern:158:mitigation:1",
+     "capec:attack-pattern:158:mitigation:2"
+    ],
+    "pool": "neighbors",
+    "scheme": "capec"
+   },
+   "id": "CG-947c785182c0",
+   "question": "What mitigations address Passive eavesdropping on data packets flowing across a shared digital channel?",
+   "split": "heldout",
+   "task": {
+    "entities": [
+     "AttackPattern",
+     "HAS_MITIGATION",
+     "Mitigation"
+    ],
+    "join_key": null,
+    "limits": {
+     "max_result_rows": 20000,
+     "max_traversal_depth": 3,
+     "query_timeout_ms": 5000
+    },
+    "rationale": "card_generator",
+    "seed_ids": [
+     "CAPEC-158"
+    ],
+    "source": "capec",
+    "sub_question_id": "CG-947c785182c0",
+    "text": "What mitigations address Passive eavesdropping on data packets flowing across a shared digital channel?"
+   },
+   "tier": "reworded_name"
+  },
+  {
+   "assertions": {
+    "min_records": 1,
+    "must_include_ids": [
+     "CAPEC-95"
+    ],
+    "must_include_related": [
+     "capec:attack-pattern:95:mitigation:1",
+     "capec:attack-pattern:95:mitigation:2",
+     "capec:attack-pattern:95:mitigation:3",
+     "capec:attack-pattern:95:mitigation:4",
+     "capec:attack-pattern:95:mitigation:5"
+    ]
+   },
+   "card_gen": {
+    "anchor": "CAPEC-95",
+    "anchor_storage": "capec:attack-pattern:95",
+    "attempts": 1,
+    "decision": "grounding",
+    "gold_ids": [
+     "capec:attack-pattern:95:mitigation:1",
+     "capec:attack-pattern:95:mitigation:2",
+     "capec:attack-pattern:95:mitigation:3",
+     "capec:attack-pattern:95:mitigation:4",
+     "capec:attack-pattern:95:mitigation:5"
+    ],
+    "kind": "answerable",
+    "slot": {
+     "dataset": "capec",
+     "direction": "out",
+     "label": "AttackPattern",
+     "rel": "HAS_MITIGATION",
+     "target": "Mitigation"
+    },
+    "tier": "reworded_name"
+   },
+   "ex_gold": {
+    "expected": [
+     "capec:attack-pattern:95:mitigation:1",
+     "capec:attack-pattern:95:mitigation:2",
+     "capec:attack-pattern:95:mitigation:3",
+     "capec:attack-pattern:95:mitigation:4",
+     "capec:attack-pattern:95:mitigation:5"
+    ],
+    "pool": "neighbors",
+    "scheme": "capec"
+   },
+   "id": "CG-9626705a820c",
+   "question": "What mitigations address Probing a web service's published interface contract for reconnaissance?",
+   "split": "heldout",
+   "task": {
+    "entities": [
+     "AttackPattern",
+     "HAS_MITIGATION",
+     "Mitigation"
+    ],
+    "join_key": null,
+    "limits": {
+     "max_result_rows": 20000,
+     "max_traversal_depth": 3,
+     "query_timeout_ms": 5000
+    },
+    "rationale": "card_generator",
+    "seed_ids": [
+     "CAPEC-95"
+    ],
+    "source": "capec",
+    "sub_question_id": "CG-9626705a820c",
+    "text": "What mitigations address Probing a web service's published interface contract for reconnaissance?"
+   },
+   "tier": "reworded_name"
+  },
+  {
+   "assertions": {
+    "min_records": 1,
+    "must_include_ids": [
+     "CAPEC-158"
+    ],
+    "must_include_related": [
+     "capec:attack-pattern:158:mitigation:1",
+     "capec:attack-pattern:158:mitigation:2"
+    ]
+   },
+   "card_gen": {
+    "anchor": "CAPEC-158",
+    "anchor_storage": "capec:attack-pattern:158",
+    "attempts": 1,
+    "decision": "grounding",
+    "gold_ids": [
+     "capec:attack-pattern:158:mitigation:1",
+     "capec:attack-pattern:158:mitigation:2"
+    ],
+    "kind": "answerable",
+    "slot": {
+     "dataset": "capec",
+     "direction": "out",
+     "label": "AttackPattern",
+     "rel": "HAS_MITIGATION",
+     "target": "Mitigation"
+    },
+    "tier": "identifier"
+   },
+   "ex_gold": {
+    "expected": [
+     "capec:attack-pattern:158:mitigation:1",
+     "capec:attack-pattern:158:mitigation:2"
+    ],
+    "pool": "neighbors",
+    "scheme": "capec"
+   },
+   "id": "CG-9836e9dcfd0a",
+   "question": "What mitigations address CAPEC-158?",
+   "split": "heldout",
+   "task": {
+    "entities": [
+     "AttackPattern",
+     "HAS_MITIGATION",
+     "Mitigation"
+    ],
+    "join_key": null,
+    "limits": {
+     "max_result_rows": 20000,
+     "max_traversal_depth": 3,
+     "query_timeout_ms": 5000
+    },
+    "rationale": "card_generator",
+    "seed_ids": [
+     "CAPEC-158"
+    ],
+    "source": "capec",
+    "sub_question_id": "CG-9836e9dcfd0a",
+    "text": "What mitigations address CAPEC-158?"
+   },
+   "tier": "identifier"
+  },
+  {
+   "assertions": {
+    "min_records": 1,
+    "must_include_ids": [
+     "CAPEC-440"
+    ],
+    "must_include_related": [
+     "capec:taxonomy:ATTACK:1195.003",
+     "capec:taxonomy:ATTACK:1200"
+    ]
+   },
+   "card_gen": {
+    "anchor": "CAPEC-440",
+    "anchor_storage": "capec:attack-pattern:440",
+    "attempts": 2,
+    "decision": "grounding",
+    "gold_ids": [
+     "capec:taxonomy:ATTACK:1195.003",
+     "capec:taxonomy:ATTACK:1200"
+    ],
+    "kind": "answerable",
+    "slot": {
+     "dataset": "capec",
+     "direction": "out",
+     "label": "AttackPattern",
+     "rel": "MAPS_TO",
+     "target": "TaxonomyEntry"
+    },
+    "tier": "description"
+   },
+   "ex_gold": {
+    "expected": [
+     "capec:taxonomy:ATTACK:1195.003",
+     "capec:taxonomy:ATTACK:1200"
+    ],
+    "pool": "neighbors",
+    "scheme": "capec"
+   },
+   "id": "CG-990477fe1d24",
+   "question": "What TaxonomyEntry entries does A maintenance-process exploitation that alters or adds to a deployed technology, product, or component at the victim location to enable a malicious operation map to?",
+   "split": "heldout",
+   "task": {
+    "entities": [
+     "AttackPattern",
+     "MAPS_TO",
+     "TaxonomyEntry"
+    ],
+    "join_key": null,
+    "limits": {
+     "max_result_rows": 20000,
+     "max_traversal_depth": 3,
+     "query_timeout_ms": 5000
+    },
+    "rationale": "card_generator",
+    "seed_ids": [
+     "CAPEC-440"
+    ],
+    "source": "capec",
+    "sub_question_id": "CG-990477fe1d24",
+    "text": "What TaxonomyEntry entries does A maintenance-process exploitation that alters or adds to a deployed technology, product, or component at the victim location to enable a malicious operation map to?"
+   },
+   "tier": "description"
+  },
+  {
+   "assertions": {
+    "min_records": 1,
+    "must_include_ids": [
+     "CAPEC-272"
+    ],
+    "must_include_related": [
+     "CAPEC-210",
+     "CAPEC-512",
+     "CAPEC-513"
+    ]
+   },
+   "card_gen": {
+    "anchor": "CAPEC-272",
+    "anchor_storage": "capec:attack-pattern:272",
+    "attempts": 1,
+    "decision": "grounding",
+    "gold_ids": [
+     "CAPEC-210",
+     "CAPEC-512",
+     "CAPEC-513"
+    ],
+    "kind": "answerable",
+    "slot": {
+     "dataset": "capec",
+     "direction": "out",
+     "label": "AttackPattern",
+     "rel": "MEMBER_OF",
+     "target": "Category"
+    },
+    "tier": "reworded_name"
+   },
+   "ex_gold": {
+    "expected": [
+     "CAPEC-210",
+     "CAPEC-512",
+     "CAPEC-513"
+    ],
+    "pool": "neighbors",
+    "scheme": "capec"
+   },
+   "id": "CG-9f71b52d8dd9",
+   "question": "Which category is Subverting the agreed-upon rules of message exchange to gain unauthorized control a member of?",
+   "split": "heldout",
+   "task": {
+    "entities": [
+     "AttackPattern",
+     "MEMBER_OF",
+     "Category"
+    ],
+    "join_key": null,
+    "limits": {
+     "max_result_rows": 20000,
+     "max_traversal_depth": 3,
+     "query_timeout_ms": 5000
+    },
+    "rationale": "card_generator",
+    "seed_ids": [
+     "CAPEC-272"
+    ],
+    "source": "capec",
+    "sub_question_id": "CG-9f71b52d8dd9",
+    "text": "Which category is Subverting the agreed-upon rules of message exchange to gain unauthorized control a member of?"
+   },
+   "tier": "reworded_name"
+  },
+  {
+   "assertions": {
+    "min_records": 1,
+    "must_include_ids": [
+     "CAPEC-180"
+    ],
+    "must_include_related": [
+     "CAPEC-58",
+     "CAPEC-679",
+     "CAPEC-680",
+     "CAPEC-681",
+     "CAPEC-702"
+    ]
+   },
+   "card_gen": {
+    "anchor": "CAPEC-180",
+    "anchor_storage": "capec:attack-pattern:180",
+    "attempts": 1,
+    "decision": "grounding",
+    "gold_ids": [
+     "CAPEC-58",
+     "CAPEC-679",
+     "CAPEC-680",
+     "CAPEC-681",
+     "CAPEC-702"
+    ],
+    "kind": "answerable",
+    "slot": {
+     "dataset": "capec",
+     "direction": "in",
+     "label": "AttackPattern",
+     "rel": "ChildOf",
+     "target": "AttackPattern"
+    },
+    "tier": "identifier"
+   },
+   "ex_gold": {
+    "expected": [
+     "CAPEC-58",
+     "CAPEC-679",
+     "CAPEC-680",
+     "CAPEC-681",
+     "CAPEC-702"
+    ],
+    "pool": "neighbors",
+    "scheme": "capec"
+   },
+   "id": "CG-a70099fb6ce6",
+   "question": "What AttackPatterns is CAPEC-180 a more specific variant of?",
+   "split": "heldout",
+   "task": {
+    "entities": [
+     "AttackPattern",
+     "ChildOf",
+     "AttackPattern"
+    ],
+    "join_key": null,
+    "limits": {
+     "max_result_rows": 20000,
+     "max_traversal_depth": 3,
+     "query_timeout_ms": 5000
+    },
+    "rationale": "card_generator",
+    "seed_ids": [
+     "CAPEC-180"
+    ],
+    "source": "capec",
+    "sub_question_id": "CG-a70099fb6ce6",
+    "text": "What AttackPatterns is CAPEC-180 a more specific variant of?"
+   },
+   "tier": "identifier"
+  },
+  {
+   "assertions": {
+    "min_records": 1,
+    "must_include_ids": [
+     "CAPEC-97"
+    ],
+    "must_include_related": [
+     "CWE-1204",
+     "CWE-1240",
+     "CWE-1241",
+     "CWE-1279",
+     "CWE-327"
+    ]
+   },
+   "card_gen": {
+    "anchor": "CAPEC-97",
+    "anchor_storage": "capec:attack-pattern:97",
+    "attempts": 1,
+    "decision": "grounding",
+    "gold_ids": [
+     "CWE-1204",
+     "CWE-1240",
+     "CWE-1241",
+     "CWE-1279",
+     "CWE-327"
+    ],
+    "kind": "answerable",
+    "slot": {
+     "dataset": "capec",
+     "direction": "out",
+     "label": "AttackPattern",
+     "rel": "EXPLOITS_WEAKNESS",
+     "target": "Weakness"
+    },
+    "tier": "identifier"
+   },
+   "ex_gold": {
+    "expected": [
+     "CWE-1204",
+     "CWE-1240",
+     "CWE-1241",
+     "CWE-1279",
+     "CWE-327"
+    ],
+    "pool": "neighbors",
+    "scheme": "capec"
+   },
+   "id": "CG-a797c3a64fe5",
+   "question": "Which CWE weaknesses does CAPEC-97 exploit?",
+   "split": "heldout",
+   "task": {
+    "entities": [
+     "AttackPattern",
+     "EXPLOITS_WEAKNESS",
+     "Weakness"
+    ],
+    "join_key": null,
+    "limits": {
+     "max_result_rows": 20000,
+     "max_traversal_depth": 3,
+     "query_timeout_ms": 5000
+    },
+    "rationale": "card_generator",
+    "seed_ids": [
+     "CAPEC-97"
+    ],
+    "source": "capec",
+    "sub_question_id": "CG-a797c3a64fe5",
+    "text": "Which CWE weaknesses does CAPEC-97 exploit?"
+   },
+   "tier": "identifier"
+  },
+  {
+   "assertions": {
+    "min_records": 1,
+    "must_include_ids": [
+     "CAPEC-105"
+    ],
+    "must_include_related": [
+     "CAPEC-34"
+    ]
+   },
+   "card_gen": {
+    "anchor": "CAPEC-105",
+    "anchor_storage": "capec:attack-pattern:105",
+    "attempts": 1,
+    "decision": "grounding",
+    "gold_ids": [
+     "CAPEC-34"
+    ],
+    "kind": "answerable",
+    "slot": {
+     "dataset": "capec",
+     "direction": "out",
+     "label": "AttackPattern",
+     "rel": "PeerOf",
+     "target": "AttackPattern"
+    },
+    "tier": "name"
+   },
+   "ex_gold": {
+    "expected": [
+     "CAPEC-34"
+    ],
+    "pool": "neighbors",
+    "scheme": "capec"
+   },
+   "id": "CG-a7aaa89bb349",
+   "question": "What AttackPatterns are peers of HTTP Request Splitting?",
+   "split": "heldout",
+   "task": {
+    "entities": [
+     "AttackPattern",
+     "PeerOf",
+     "AttackPattern"
+    ],
+    "join_key": null,
+    "limits": {
+     "max_result_rows": 20000,
+     "max_traversal_depth": 3,
+     "query_timeout_ms": 5000
+    },
+    "rationale": "card_generator",
+    "seed_ids": [
+     "CAPEC-105"
+    ],
+    "source": "capec",
+    "sub_question_id": "CG-a7aaa89bb349",
+    "text": "What AttackPatterns are peers of HTTP Request Splitting?"
+   },
+   "tier": "name"
+  },
+  {
+   "assertions": {
+    "min_records": 1,
+    "must_include_ids": [
+     "CAPEC-105"
+    ],
+    "must_include_related": [
+     "CAPEC-34"
+    ]
+   },
+   "card_gen": {
+    "anchor": "CAPEC-105",
+    "anchor_storage": "capec:attack-pattern:105",
+    "attempts": 1,
+    "decision": "grounding",
+    "gold_ids": [
+     "CAPEC-34"
+    ],
+    "kind": "answerable",
+    "slot": {
+     "dataset": "capec",
+     "direction": "out",
+     "label": "AttackPattern",
+     "rel": "PeerOf",
+     "target": "AttackPattern"
+    },
+    "tier": "description"
+   },
+   "ex_gold": {
+    "expected": [
+     "CAPEC-34"
+    ],
+    "pool": "neighbors",
+    "scheme": "capec"
+   },
+   "id": "CG-ab125088dfc9",
+   "question": "What AttackPatterns are peers of Abuse of parsing discrepancies among intermediary agents to divide a single message into multiple unauthorized ones sent to a back-end server?",
+   "split": "heldout",
+   "task": {
+    "entities": [
+     "AttackPattern",
+     "PeerOf",
+     "AttackPattern"
+    ],
+    "join_key": null,
+    "limits": {
+     "max_result_rows": 20000,
+     "max_traversal_depth": 3,
+     "query_timeout_ms": 5000
+    },
+    "rationale": "card_generator",
+    "seed_ids": [
+     "CAPEC-105"
+    ],
+    "source": "capec",
+    "sub_question_id": "CG-ab125088dfc9",
+    "text": "What AttackPatterns are peers of Abuse of parsing discrepancies among intermediary agents to divide a single message into multiple unauthorized ones sent to a back-end server?"
+   },
+   "tier": "description"
+  },
+  {
+   "assertions": {
+    "min_records": 1,
+    "must_include_ids": [
+     "CAPEC-215"
+    ],
+    "must_include_related": [
+     "capec:attack-pattern:215:step:1",
+     "capec:attack-pattern:215:step:2",
+     "capec:attack-pattern:215:step:3",
+     "capec:attack-pattern:215:step:4"
+    ]
+   },
+   "card_gen": {
+    "anchor": "CAPEC-215",
+    "anchor_storage": "capec:attack-pattern:215",
+    "attempts": 1,
+    "decision": "grounding",
+    "gold_ids": [
+     "capec:attack-pattern:215:step:1",
+     "capec:attack-pattern:215:step:2",
+     "capec:attack-pattern:215:step:3",
+     "capec:attack-pattern:215:step:4"
+    ],
+    "kind": "answerable",
+    "slot": {
+     "dataset": "capec",
+     "direction": "out",
+     "label": "AttackPattern",
+     "rel": "HAS_EXECUTION_STEP",
+     "target": "ExecutionStep"
+    },
+    "tier": "identifier"
+   },
+   "ex_gold": {
+    "expected": [
+     "capec:attack-pattern:215:step:1",
+     "capec:attack-pattern:215:step:2",
+     "capec:attack-pattern:215:step:3",
+     "capec:attack-pattern:215:step:4"
+    ],
+    "pool": "neighbors",
+    "scheme": "capec"
+   },
+   "id": "CG-af3a90be2256",
+   "question": "What execution steps does CAPEC-215 contain?",
+   "split": "heldout",
+   "task": {
+    "entities": [
+     "AttackPattern",
+     "HAS_EXECUTION_STEP",
+     "ExecutionStep"
+    ],
+    "join_key": null,
+    "limits": {
+     "max_result_rows": 20000,
+     "max_traversal_depth": 3,
+     "query_timeout_ms": 5000
+    },
+    "rationale": "card_generator",
+    "seed_ids": [
+     "CAPEC-215"
+    ],
+    "source": "capec",
+    "sub_question_id": "CG-af3a90be2256",
+    "text": "What execution steps does CAPEC-215 contain?"
+   },
+   "tier": "identifier"
+  },
+  {
+   "assertions": {
+    "min_records": 1,
+    "must_include_ids": [
+     "CAPEC-406"
+    ],
+    "must_include_related": [
+     "CAPEC-163",
+     "CAPEC-675"
+    ]
+   },
+   "card_gen": {
+    "anchor": "CAPEC-406",
+    "anchor_storage": "capec:attack-pattern:406",
+    "attempts": 1,
+    "decision": "grounding",
+    "gold_ids": [
+     "CAPEC-163",
+     "CAPEC-675"
+    ],
+    "kind": "answerable",
+    "slot": {
+     "dataset": "capec",
+     "direction": "out",
+     "label": "AttackPattern",
+     "rel": "CanPrecede",
+     "target": "AttackPattern"
+    },
+    "tier": "description"
+   },
+   "ex_gold": {
+    "expected": [
+     "CAPEC-163",
+     "CAPEC-675"
+    ],
+    "pool": "neighbors",
+    "scheme": "capec"
+   },
+   "id": "CG-b17ea63ae410",
+   "question": "Which AttackPatterns can be preceded by Searching through discarded waste for sensitive personal or organizational information to support an adversary's subsequent attack?",
+   "split": "heldout",
+   "task": {
+    "entities": [
+     "AttackPattern",
+     "CanPrecede",
+     "AttackPattern"
+    ],
+    "join_key": null,
+    "limits": {
+     "max_result_rows": 20000,
+     "max_traversal_depth": 3,
+     "query_timeout_ms": 5000
+    },
+    "rationale": "card_generator",
+    "seed_ids": [
+     "CAPEC-406"
+    ],
+    "source": "capec",
+    "sub_question_id": "CG-b17ea63ae410",
+    "text": "Which AttackPatterns can be preceded by Searching through discarded waste for sensitive personal or organizational information to support an adversary's subsequent attack?"
+   },
+   "tier": "description"
+  },
+  {
+   "assertions": {
+    "min_records": 1,
+    "must_include_ids": [
+     "CAPEC-548"
+    ],
+    "must_include_related": [
+     "capec:attack-pattern:548:alternate-term:1"
+    ]
+   },
+   "card_gen": {
+    "anchor": "CAPEC-548",
+    "anchor_storage": "capec:attack-pattern:548",
+    "attempts": 1,
+    "decision": "grounding",
+    "gold_ids": [
+     "capec:attack-pattern:548:alternate-term:1"
+    ],
+    "kind": "answerable",
+    "slot": {
+     "dataset": "capec",
+     "direction": "out",
+     "label": "AttackPattern",
+     "rel": "HAS_ALTERNATE_TERM",
+     "target": "AlternateTerm"
+    },
+    "tier": "reworded_name"
+   },
+   "ex_gold": {
+    "expected": [
+     "capec:attack-pattern:548:alternate-term:1"
+    ],
+    "pool": "neighbors",
+    "scheme": "capec"
+   },
+   "id": "CG-b5f25f3fdd37",
+   "question": "What alternate terms is the attack pattern Breach of data classification boundaries forcing affected systems offline for investigation known by?",
+   "split": "heldout",
+   "task": {
+    "entities": [
+     "AttackPattern",
+     "HAS_ALTERNATE_TERM",
+     "AlternateTerm"
+    ],
+    "join_key": null,
+    "limits": {
+     "max_result_rows": 20000,
+     "max_traversal_depth": 3,
+     "query_timeout_ms": 5000
+    },
+    "rationale": "card_generator",
+    "seed_ids": [
+     "CAPEC-548"
+    ],
+    "source": "capec",
+    "sub_question_id": "CG-b5f25f3fdd37",
+    "text": "What alternate terms is the attack pattern Breach of data classification boundaries forcing affected systems offline for investigation known by?"
+   },
+   "tier": "reworded_name"
+  },
+  {
+   "assertions": {
+    "min_records": 1,
+    "must_include_ids": [
+     "CAPEC-548"
+    ],
+    "must_include_related": [
+     "capec:attack-pattern:548:alternate-term:1"
+    ]
+   },
+   "card_gen": {
+    "anchor": "CAPEC-548",
+    "anchor_storage": "capec:attack-pattern:548",
+    "attempts": 1,
+    "decision": "grounding",
+    "gold_ids": [
+     "capec:attack-pattern:548:alternate-term:1"
+    ],
+    "kind": "answerable",
+    "slot": {
+     "dataset": "capec",
+     "direction": "out",
+     "label": "AttackPattern",
+     "rel": "HAS_ALTERNATE_TERM",
+     "target": "AlternateTerm"
+    },
+    "tier": "description"
+   },
+   "ex_gold": {
+    "expected": [
+     "capec:attack-pattern:548:alternate-term:1"
+    ],
+    "pool": "neighbors",
+    "scheme": "capec"
+   },
+   "id": "CG-b8fbcb450c95",
+   "question": "What alternate terms are known for the attack pattern described as an adversary's forcing of information systems to handle unauthorized sensitivity-class data, requiring offline investigation of the resulting data spill?",
+   "split": "heldout",
+   "task": {
+    "entities": [
+     "AttackPattern",
+     "HAS_ALTERNATE_TERM",
+     "AlternateTerm"
+    ],
+    "join_key": null,
+    "limits": {
+     "max_result_rows": 20000,
+     "max_traversal_depth": 3,
+     "query_timeout_ms": 5000
+    },
+    "rationale": "card_generator",
+    "seed_ids": [
+     "CAPEC-548"
+    ],
+    "source": "capec",
+    "sub_question_id": "CG-b8fbcb450c95",
+    "text": "What alternate terms are known for the attack pattern described as an adversary's forcing of information systems to handle unauthorized sensitivity-class data, requiring offline investigation of the resulting data spill?"
+   },
+   "tier": "description"
+  },
+  {
+   "assertions": {
+    "min_records": 1,
+    "must_include_ids": [
+     "CAPEC-105"
+    ],
+    "must_include_related": [
+     "CAPEC-34"
+    ]
+   },
+   "card_gen": {
+    "anchor": "CAPEC-105",
+    "anchor_storage": "capec:attack-pattern:105",
+    "attempts": 1,
+    "decision": "grounding",
+    "gold_ids": [
+     "CAPEC-34"
+    ],
+    "kind": "answerable",
+    "slot": {
+     "dataset": "capec",
+     "direction": "in",
+     "label": "AttackPattern",
+     "rel": "PeerOf",
+     "target": "AttackPattern"
+    },
+    "tier": "description"
+   },
+   "ex_gold": {
+    "expected": [
+     "CAPEC-34"
+    ],
+    "pool": "neighbors",
+    "scheme": "capec"
+   },
+   "id": "CG-b91d436b65b3",
+   "question": "What attack patterns are peers of Abuse of parsing discrepancies among intermediary agents to divide a single message into multiple unauthorized ones sent to a back-end server?",
+   "split": "heldout",
+   "task": {
+    "entities": [
+     "AttackPattern",
+     "PeerOf",
+     "AttackPattern"
+    ],
+    "join_key": null,
+    "limits": {
+     "max_result_rows": 20000,
+     "max_traversal_depth": 3,
+     "query_timeout_ms": 5000
+    },
+    "rationale": "card_generator",
+    "seed_ids": [
+     "CAPEC-105"
+    ],
+    "source": "capec",
+    "sub_question_id": "CG-b91d436b65b3",
+    "text": "What attack patterns are peers of Abuse of parsing discrepancies among intermediary agents to divide a single message into multiple unauthorized ones sent to a back-end server?"
+   },
+   "tier": "description"
+  },
+  {
+   "assertions": {
+    "min_records": 1,
+    "must_include_ids": [
+     "CAPEC-3000"
+    ],
+    "must_include_related": [
+     "CAPEC-403",
+     "CAPEC-437",
+     "CAPEC-512",
+     "CAPEC-513",
+     "CAPEC-514",
+     "CAPEC-515"
+    ]
+   },
+   "card_gen": {
+    "anchor": "CAPEC-3000",
+    "anchor_storage": "capec:view:3000",
+    "attempts": 1,
+    "decision": "grounding",
+    "gold_ids": [
+     "CAPEC-403",
+     "CAPEC-437",
+     "CAPEC-512",
+     "CAPEC-513",
+     "CAPEC-514",
+     "CAPEC-515"
+    ],
+    "kind": "answerable",
+    "slot": {
+     "dataset": "capec",
+     "direction": "in",
+     "label": "View",
+     "rel": "IN_VIEW",
+     "target": "Category"
+    },
+    "tier": "identifier"
+   },
+   "ex_gold": {
+    "expected": [
+     "CAPEC-403",
+     "CAPEC-437",
+     "CAPEC-512",
+     "CAPEC-513",
+     "CAPEC-514",
+     "CAPEC-515"
+    ],
+    "pool": "neighbors",
+    "scheme": "capec"
+   },
+   "id": "CG-bd00a9c95221",
+   "question": "Which categories appear in CAPEC-3000?",
+   "split": "heldout",
+   "task": {
+    "entities": [
+     "View",
+     "IN_VIEW",
+     "Category"
+    ],
+    "join_key": null,
+    "limits": {
+     "max_result_rows": 20000,
+     "max_traversal_depth": 3,
+     "query_timeout_ms": 5000
+    },
+    "rationale": "card_generator",
+    "seed_ids": [
+     "CAPEC-3000"
+    ],
+    "source": "capec",
+    "sub_question_id": "CG-bd00a9c95221",
+    "text": "Which categories appear in CAPEC-3000?"
+   },
+   "tier": "identifier"
+  },
+  {
+   "assertions": {
+    "min_records": 1,
+    "must_include_ids": [
+     "CAPEC-680"
+    ],
+    "must_include_related": [
+     "capec:attack-pattern:680:example:1"
+    ]
+   },
+   "card_gen": {
+    "anchor": "CAPEC-680",
+    "anchor_storage": "capec:attack-pattern:680",
+    "attempts": 1,
+    "decision": "grounding",
+    "gold_ids": [
+     "capec:attack-pattern:680:example:1"
+    ],
+    "kind": "answerable",
+    "slot": {
+     "dataset": "capec",
+     "direction": "out",
+     "label": "AttackPattern",
+     "rel": "HAS_EXAMPLE",
+     "target": "Example"
+    },
+    "tier": "reworded_name"
+   },
+   "ex_gold": {
+    "expected": [
+     "capec:attack-pattern:680:example:1"
+    ],
+    "pool": "neighbors",
+    "scheme": "capec"
+   },
+   "id": "CG-bd582ad33405",
+   "question": "What are the examples of the attack pattern Abusing missing access restrictions within hardware memory locations to read or write forbidden data?",
+   "split": "heldout",
+   "task": {
+    "entities": [
+     "AttackPattern",
+     "HAS_EXAMPLE",
+     "Example"
+    ],
+    "join_key": null,
+    "limits": {
+     "max_result_rows": 20000,
+     "max_traversal_depth": 3,
+     "query_timeout_ms": 5000
+    },
+    "rationale": "card_generator",
+    "seed_ids": [
+     "CAPEC-680"
+    ],
+    "source": "capec",
+    "sub_question_id": "CG-bd582ad33405",
+    "text": "What are the examples of the attack pattern Abusing missing access restrictions within hardware memory locations to read or write forbidden data?"
+   },
+   "tier": "reworded_name"
+  },
+  {
+   "assertions": {
+    "min_records": 1,
+    "must_include_ids": [
+     "CAPEC-256"
+    ],
+    "must_include_related": [
+     "capec:attack-pattern:256:prerequisite:1"
+    ]
+   },
+   "card_gen": {
+    "anchor": "CAPEC-256",
+    "anchor_storage": "capec:attack-pattern:256",
+    "attempts": 1,
+    "decision": "grounding",
+    "gold_ids": [
+     "capec:attack-pattern:256:prerequisite:1"
+    ],
+    "kind": "answerable",
+    "slot": {
+     "dataset": "capec",
+     "direction": "out",
+     "label": "AttackPattern",
+     "rel": "HAS_PREREQUISITE",
+     "target": "Prerequisite"
+    },
+    "tier": "name"
+   },
+   "ex_gold": {
+    "expected": [
+     "capec:attack-pattern:256:prerequisite:1"
+    ],
+    "pool": "neighbors",
+    "scheme": "capec"
+   },
+   "id": "CG-bf3118cc8f1b",
+   "question": "What prerequisites must be met before a SOAP Array Overflow can be attempted?",
+   "split": "heldout",
+   "task": {
+    "entities": [
+     "AttackPattern",
+     "HAS_PREREQUISITE",
+     "Prerequisite"
+    ],
+    "join_key": null,
+    "limits": {
+     "max_result_rows": 20000,
+     "max_traversal_depth": 3,
+     "query_timeout_ms": 5000
+    },
+    "rationale": "card_generator",
+    "seed_ids": [
+     "CAPEC-256"
+    ],
+    "source": "capec",
+    "sub_question_id": "CG-bf3118cc8f1b",
+    "text": "What prerequisites must be met before a SOAP Array Overflow can be attempted?"
+   },
+   "tier": "name"
+  },
+  {
+   "assertions": {
+    "min_records": 1,
+    "must_include_ids": [
+     "CAPEC-105"
+    ],
+    "must_include_related": [
+     "CAPEC-34"
+    ]
+   },
+   "card_gen": {
+    "anchor": "CAPEC-105",
+    "anchor_storage": "capec:attack-pattern:105",
+    "attempts": 1,
+    "decision": "grounding",
+    "gold_ids": [
+     "CAPEC-34"
+    ],
+    "kind": "answerable",
+    "slot": {
+     "dataset": "capec",
+     "direction": "out",
+     "label": "AttackPattern",
+     "rel": "PeerOf",
+     "target": "AttackPattern"
+    },
+    "tier": "identifier"
+   },
+   "ex_gold": {
+    "expected": [
+     "CAPEC-34"
+    ],
+    "pool": "neighbors",
+    "scheme": "capec"
+   },
+   "id": "CG-bf7463efccaa",
+   "question": "What are the peer attack patterns of CAPEC-105?",
+   "split": "heldout",
+   "task": {
+    "entities": [
+     "AttackPattern",
+     "PeerOf",
+     "AttackPattern"
+    ],
+    "join_key": null,
+    "limits": {
+     "max_result_rows": 20000,
+     "max_traversal_depth": 3,
+     "query_timeout_ms": 5000
+    },
+    "rationale": "card_generator",
+    "seed_ids": [
+     "CAPEC-105"
+    ],
+    "source": "capec",
+    "sub_question_id": "CG-bf7463efccaa",
+    "text": "What are the peer attack patterns of CAPEC-105?"
+   },
+   "tier": "identifier"
+  },
+  {
+   "assertions": {
+    "min_records": 1,
+    "must_include_ids": [
+     "CAPEC-143"
+    ],
+    "must_include_related": [
+     "CAPEC-150"
+    ]
+   },
+   "card_gen": {
+    "anchor": "CAPEC-143",
+    "anchor_storage": "capec:attack-pattern:143",
+    "attempts": 1,
+    "decision": "grounding",
+    "gold_ids": [
+     "CAPEC-150"
+    ],
+    "kind": "answerable",
+    "slot": {
+     "dataset": "capec",
+     "direction": "out",
+     "label": "AttackPattern",
+     "rel": "ChildOf",
+     "target": "AttackPattern"
+    },
+    "tier": "identifier"
+   },
+   "ex_gold": {
+    "expected": [
+     "CAPEC-150"
+    ],
+    "pool": "neighbors",
+    "scheme": "capec"
+   },
+   "id": "CG-c894c4712dbe",
+   "question": "Which AttackPattern is CAPEC-143 a more specific variant of?",
+   "split": "heldout",
+   "task": {
+    "entities": [
+     "AttackPattern",
+     "ChildOf",
+     "AttackPattern"
+    ],
+    "join_key": null,
+    "limits": {
+     "max_result_rows": 20000,
+     "max_traversal_depth": 3,
+     "query_timeout_ms": 5000
+    },
+    "rationale": "card_generator",
+    "seed_ids": [
+     "CAPEC-143"
+    ],
+    "source": "capec",
+    "sub_question_id": "CG-c894c4712dbe",
+    "text": "Which AttackPattern is CAPEC-143 a more specific variant of?"
+   },
+   "tier": "identifier"
+  },
+  {
+   "assertions": {
+    "min_records": 1,
+    "must_include_ids": [
+     "CAPEC-215"
+    ],
+    "must_include_related": [
+     "capec:attack-pattern:215:step:1",
+     "capec:attack-pattern:215:step:2",
+     "capec:attack-pattern:215:step:3",
+     "capec:attack-pattern:215:step:4"
+    ]
+   },
+   "card_gen": {
+    "anchor": "CAPEC-215",
+    "anchor_storage": "capec:attack-pattern:215",
+    "attempts": 1,
+    "decision": "grounding",
+    "gold_ids": [
+     "capec:attack-pattern:215:step:1",
+     "capec:attack-pattern:215:step:2",
+     "capec:attack-pattern:215:step:3",
+     "capec:attack-pattern:215:step:4"
+    ],
+    "kind": "answerable",
+    "slot": {
+     "dataset": "capec",
+     "direction": "out",
+     "label": "AttackPattern",
+     "rel": "HAS_EXECUTION_STEP",
+     "target": "ExecutionStep"
+    },
+    "tier": "reworded_name"
+   },
+   "ex_gold": {
+    "expected": [
+     "capec:attack-pattern:215:step:1",
+     "capec:attack-pattern:215:step:2",
+     "capec:attack-pattern:215:step:3",
+     "capec:attack-pattern:215:step:4"
+    ],
+    "pool": "neighbors",
+    "scheme": "capec"
+   },
+   "id": "CG-cc25447f4f37",
+   "question": "What execution steps are contained in the attack pattern Randomized input exploration to chart a system's behavioral response patterns?",
+   "split": "heldout",
+   "task": {
+    "entities": [
+     "AttackPattern",
+     "HAS_EXECUTION_STEP",
+     "ExecutionStep"
+    ],
+    "join_key": null,
+    "limits": {
+     "max_result_rows": 20000,
+     "max_traversal_depth": 3,
+     "query_timeout_ms": 5000
+    },
+    "rationale": "card_generator",
+    "seed_ids": [
+     "CAPEC-215"
+    ],
+    "source": "capec",
+    "sub_question_id": "CG-cc25447f4f37",
+    "text": "What execution steps are contained in the attack pattern Randomized input exploration to chart a system's behavioral response patterns?"
+   },
+   "tier": "reworded_name"
+  },
+  {
+   "assertions": {
+    "min_records": 1,
+    "must_include_ids": [
+     "CAPEC-143"
+    ],
+    "must_include_related": [
+     "CAPEC-150"
+    ]
+   },
+   "card_gen": {
+    "anchor": "CAPEC-143",
+    "anchor_storage": "capec:attack-pattern:143",
+    "attempts": 1,
+    "decision": "grounding",
+    "gold_ids": [
+     "CAPEC-150"
+    ],
+    "kind": "answerable",
+    "slot": {
+     "dataset": "capec",
+     "direction": "out",
+     "label": "AttackPattern",
+     "rel": "ChildOf",
+     "target": "AttackPattern"
+    },
+    "tier": "name"
+   },
+   "ex_gold": {
+    "expected": [
+     "CAPEC-150"
+    ],
+    "pool": "neighbors",
+    "scheme": "capec"
+   },
+   "id": "CG-ce60a4de0acf",
+   "question": "What AttackPattern is Detect Unpublicized Web Pages a more specific variant of?",
+   "split": "heldout",
+   "task": {
+    "entities": [
+     "AttackPattern",
+     "ChildOf",
+     "AttackPattern"
+    ],
+    "join_key": null,
+    "limits": {
+     "max_result_rows": 20000,
+     "max_traversal_depth": 3,
+     "query_timeout_ms": 5000
+    },
+    "rationale": "card_generator",
+    "seed_ids": [
+     "CAPEC-143"
+    ],
+    "source": "capec",
+    "sub_question_id": "CG-ce60a4de0acf",
+    "text": "What AttackPattern is Detect Unpublicized Web Pages a more specific variant of?"
+   },
+   "tier": "name"
+  },
+  {
+   "assertions": {
+    "min_records": 1,
+    "must_include_ids": [
+     "CAPEC-143"
+    ],
+    "must_include_related": [
+     "CAPEC-150"
+    ]
+   },
+   "card_gen": {
+    "anchor": "CAPEC-143",
+    "anchor_storage": "capec:attack-pattern:143",
+    "attempts": 1,
+    "decision": "grounding",
+    "gold_ids": [
+     "CAPEC-150"
+    ],
+    "kind": "answerable",
+    "slot": {
+     "dataset": "capec",
+     "direction": "out",
+     "label": "AttackPattern",
+     "rel": "ChildOf",
+     "target": "AttackPattern"
+    },
+    "tier": "description"
+   },
+   "ex_gold": {
+    "expected": [
+     "CAPEC-150"
+    ],
+    "pool": "neighbors",
+    "scheme": "capec"
+   },
+   "id": "CG-d1f8ebf0d569",
+   "question": "What AttackPatterns are more specific variants of an adversary's search of a targeted site for content the owner did not intend to make public, potentially exposing hidden information?",
+   "split": "heldout",
+   "task": {
+    "entities": [
+     "AttackPattern",
+     "ChildOf",
+     "AttackPattern"
+    ],
+    "join_key": null,
+    "limits": {
+     "max_result_rows": 20000,
+     "max_traversal_depth": 3,
+     "query_timeout_ms": 5000
+    },
+    "rationale": "card_generator",
+    "seed_ids": [
+     "CAPEC-143"
+    ],
+    "source": "capec",
+    "sub_question_id": "CG-d1f8ebf0d569",
+    "text": "What AttackPatterns are more specific variants of an adversary's search of a targeted site for content the owner did not intend to make public, potentially exposing hidden information?"
+   },
+   "tier": "description"
+  },
+  {
+   "assertions": {
+    "min_records": 1,
+    "must_include_ids": [
+     "CAPEC-105"
+    ],
+    "must_include_related": [
+     "CAPEC-34"
+    ]
+   },
+   "card_gen": {
+    "anchor": "CAPEC-105",
+    "anchor_storage": "capec:attack-pattern:105",
+    "attempts": 1,
+    "decision": "grounding",
+    "gold_ids": [
+     "CAPEC-34"
+    ],
+    "kind": "answerable",
+    "slot": {
+     "dataset": "capec",
+     "direction": "in",
+     "label": "AttackPattern",
+     "rel": "PeerOf",
+     "target": "AttackPattern"
+    },
+    "tier": "name"
+   },
+   "ex_gold": {
+    "expected": [
+     "CAPEC-34"
+    ],
+    "pool": "neighbors",
+    "scheme": "capec"
+   },
+   "id": "CG-d604c4be7ff1",
+   "question": "Which attack patterns are peers of HTTP Request Splitting?",
+   "split": "heldout",
+   "task": {
+    "entities": [
+     "AttackPattern",
+     "PeerOf",
+     "AttackPattern"
+    ],
+    "join_key": null,
+    "limits": {
+     "max_result_rows": 20000,
+     "max_traversal_depth": 3,
+     "query_timeout_ms": 5000
+    },
+    "rationale": "card_generator",
+    "seed_ids": [
+     "CAPEC-105"
+    ],
+    "source": "capec",
+    "sub_question_id": "CG-d604c4be7ff1",
+    "text": "Which attack patterns are peers of HTTP Request Splitting?"
+   },
+   "tier": "name"
+  },
+  {
+   "assertions": {
+    "min_records": 1,
+    "must_include_ids": [
+     "CAPEC-97"
+    ],
+    "must_include_related": [
+     "CWE-1204",
+     "CWE-1240",
+     "CWE-1241",
+     "CWE-1279",
+     "CWE-327"
+    ]
+   },
+   "card_gen": {
+    "anchor": "CAPEC-97",
+    "anchor_storage": "capec:attack-pattern:97",
+    "attempts": 1,
+    "decision": "grounding",
+    "gold_ids": [
+     "CWE-1204",
+     "CWE-1240",
+     "CWE-1241",
+     "CWE-1279",
+     "CWE-327"
+    ],
+    "kind": "answerable",
+    "slot": {
+     "dataset": "capec",
+     "direction": "out",
+     "label": "AttackPattern",
+     "rel": "EXPLOITS_WEAKNESS",
+     "target": "Weakness"
+    },
+    "tier": "reworded_name"
+   },
+   "ex_gold": {
+    "expected": [
+     "CWE-1204",
+     "CWE-1240",
+     "CWE-1241",
+     "CWE-1279",
+     "CWE-327"
+    ],
+    "pool": "neighbors",
+    "scheme": "capec"
+   },
+   "id": "CG-dbf88da8035d",
+   "question": "What CWE Weaknesses does The systematic unraveling of cipher schemes to recover concealed plaintext exploit?",
+   "split": "heldout",
+   "task": {
+    "entities": [
+     "AttackPattern",
+     "EXPLOITS_WEAKNESS",
+     "Weakness"
+    ],
+    "join_key": null,
+    "limits": {
+     "max_result_rows": 20000,
+     "max_traversal_depth": 3,
+     "query_timeout_ms": 5000
+    },
+    "rationale": "card_generator",
+    "seed_ids": [
+     "CAPEC-97"
+    ],
+    "source": "capec",
+    "sub_question_id": "CG-dbf88da8035d",
+    "text": "What CWE Weaknesses does The systematic unraveling of cipher schemes to recover concealed plaintext exploit?"
+   },
+   "tier": "reworded_name"
+  },
+  {
+   "assertions": {
+    "min_records": 1,
+    "must_include_ids": [
+     "CAPEC-680"
+    ],
+    "must_include_related": [
+     "capec:attack-pattern:680:example:1"
+    ]
+   },
+   "card_gen": {
+    "anchor": "CAPEC-680",
+    "anchor_storage": "capec:attack-pattern:680",
+    "attempts": 1,
+    "decision": "grounding",
+    "gold_ids": [
+     "capec:attack-pattern:680:example:1"
+    ],
+    "kind": "answerable",
+    "slot": {
+     "dataset": "capec",
+     "direction": "out",
+     "label": "AttackPattern",
+     "rel": "HAS_EXAMPLE",
+     "target": "Example"
+    },
+    "tier": "identifier"
+   },
+   "ex_gold": {
+    "expected": [
+     "capec:attack-pattern:680:example:1"
+    ],
+    "pool": "neighbors",
+    "scheme": "capec"
+   },
+   "id": "CG-e00834bb3a18",
+   "question": "What examples illustrate the attack pattern CAPEC-680?",
+   "split": "heldout",
+   "task": {
+    "entities": [
+     "AttackPattern",
+     "HAS_EXAMPLE",
+     "Example"
+    ],
+    "join_key": null,
+    "limits": {
+     "max_result_rows": 20000,
+     "max_traversal_depth": 3,
+     "query_timeout_ms": 5000
+    },
+    "rationale": "card_generator",
+    "seed_ids": [
+     "CAPEC-680"
+    ],
+    "source": "capec",
+    "sub_question_id": "CG-e00834bb3a18",
+    "text": "What examples illustrate the attack pattern CAPEC-680?"
+   },
+   "tier": "identifier"
+  },
+  {
+   "assertions": {
+    "min_records": 1,
+    "must_include_ids": [
+     "CAPEC-703"
+    ],
+    "must_include_related": [
+     "CAPEC-1",
+     "CAPEC-125",
+     "CAPEC-130",
+     "CAPEC-131",
+     "CAPEC-141",
+     "CAPEC-148",
+     "CAPEC-158",
+     "CAPEC-163",
+     "CAPEC-165",
+     "CAPEC-169",
+     "CAPEC-177",
+     "CAPEC-180",
+     "CAPEC-184",
+     "CAPEC-191",
+     "CAPEC-227",
+     "CAPEC-268",
+     "CAPEC-292",
+     "CAPEC-309",
+     "CAPEC-312",
+     "CAPEC-313",
+     "CAPEC-438",
+     "CAPEC-439",
+     "CAPEC-441",
+     "CAPEC-457",
+     "CAPEC-473",
+     "CAPEC-504",
+     "CAPEC-540",
+     "CAPEC-547",
+     "CAPEC-552",
+     "CAPEC-555",
+     "CAPEC-560",
+     "CAPEC-57",
+     "CAPEC-573",
+     "CAPEC-580",
+     "CAPEC-603",
+     "CAPEC-607",
+     "CAPEC-635",
+     "CAPEC-648",
+     "CAPEC-649",
+     "CAPEC-65",
+     "CAPEC-690",
+     "CAPEC-691",
+     "CAPEC-692",
+     "CAPEC-70",
+     "CAPEC-94",
+     "CAPEC-98"
+    ]
+   },
+   "card_gen": {
+    "anchor": "CAPEC-703",
+    "anchor_storage": "capec:view:703",
+    "attempts": 1,
+    "decision": "grounding",
+    "gold_ids": [
+     "CAPEC-1",
+     "CAPEC-125",
+     "CAPEC-130",
+     "CAPEC-131",
+     "CAPEC-141",
+     "CAPEC-148",
+     "CAPEC-158",
+     "CAPEC-163",
+     "CAPEC-165",
+     "CAPEC-169",
+     "CAPEC-177",
+     "CAPEC-180",
+     "CAPEC-184",
+     "CAPEC-191",
+     "CAPEC-227",
+     "CAPEC-268",
+     "CAPEC-292",
+     "CAPEC-309",
+     "CAPEC-312",
+     "CAPEC-313",
+     "CAPEC-438",
+     "CAPEC-439",
+     "CAPEC-441",
+     "CAPEC-457",
+     "CAPEC-473",
+     "CAPEC-504",
+     "CAPEC-540",
+     "CAPEC-547",
+     "CAPEC-552",
+     "CAPEC-555",
+     "CAPEC-560",
+     "CAPEC-57",
+     "CAPEC-573",
+     "CAPEC-580",
+     "CAPEC-603",
+     "CAPEC-607",
+     "CAPEC-635",
+     "CAPEC-648",
+     "CAPEC-649",
+     "CAPEC-65",
+     "CAPEC-690",
+     "CAPEC-691",
+     "CAPEC-692",
+     "CAPEC-70",
+     "CAPEC-94",
+     "CAPEC-98"
+    ],
+    "kind": "answerable",
+    "slot": {
+     "dataset": "capec",
+     "direction": "in",
+     "label": "View",
+     "rel": "IN_VIEW",
+     "target": "AttackPattern"
+    },
+    "tier": "name"
+   },
+   "ex_gold": {
+    "expected": [
+     "CAPEC-1",
+     "CAPEC-125",
+     "CAPEC-130",
+     "CAPEC-131",
+     "CAPEC-141",
+     "CAPEC-148",
+     "CAPEC-158",
+     "CAPEC-163",
+     "CAPEC-165",
+     "CAPEC-169",
+     "CAPEC-177",
+     "CAPEC-180",
+     "CAPEC-184",
+     "CAPEC-191",
+     "CAPEC-227",
+     "CAPEC-268",
+     "CAPEC-292",
+     "CAPEC-309",
+     "CAPEC-312",
+     "CAPEC-313",
+     "CAPEC-438",
+     "CAPEC-439",
+     "CAPEC-441",
+     "CAPEC-457",
+     "CAPEC-473",
+     "CAPEC-504",
+     "CAPEC-540",
+     "CAPEC-547",
+     "CAPEC-552",
+     "CAPEC-555",
+     "CAPEC-560",
+     "CAPEC-57",
+     "CAPEC-573",
+     "CAPEC-580",
+     "CAPEC-603",
+     "CAPEC-607",
+     "CAPEC-635",
+     "CAPEC-648",
+     "CAPEC-649",
+     "CAPEC-65",
+     "CAPEC-690",
+     "CAPEC-691",
+     "CAPEC-692",
+     "CAPEC-70",
+     "CAPEC-94",
+     "CAPEC-98"
+    ],
+    "pool": "neighbors",
+    "scheme": "capec"
+   },
+   "id": "CG-e1255d122137",
+   "question": "What attack patterns appear in the Industrial Control System (ICS) Patterns view?",
+   "split": "heldout",
+   "task": {
+    "entities": [
+     "View",
+     "IN_VIEW",
+     "AttackPattern"
+    ],
+    "join_key": null,
+    "limits": {
+     "max_result_rows": 20000,
+     "max_traversal_depth": 3,
+     "query_timeout_ms": 5000
+    },
+    "rationale": "card_generator",
+    "seed_ids": [
+     "CAPEC-703"
+    ],
+    "source": "capec",
+    "sub_question_id": "CG-e1255d122137",
+    "text": "What attack patterns appear in the Industrial Control System (ICS) Patterns view?"
+   },
+   "tier": "name"
+  },
+  {
+   "assertions": {
+    "min_records": 1,
+    "must_include_ids": [
+     "CAPEC-44"
+    ],
+    "must_include_related": [
+     "capec:external-reference:REF-1"
+    ]
+   },
+   "card_gen": {
+    "anchor": "CAPEC-44",
+    "anchor_storage": "capec:attack-pattern:44",
+    "attempts": 1,
+    "decision": "grounding",
+    "gold_ids": [
+     "capec:external-reference:REF-1"
+    ],
+    "kind": "answerable",
+    "slot": {
+     "dataset": "capec",
+     "direction": "out",
+     "label": "AttackPattern",
+     "rel": "HAS_REFERENCE",
+     "target": "ExternalReference"
+    },
+    "tier": "description"
+   },
+   "ex_gold": {
+    "expected": [
+     "capec:external-reference:REF-1"
+    ],
+    "pool": "neighbors",
+    "scheme": "capec"
+   },
+   "id": "CG-e19603dc9816",
+   "question": "Which ExternalReferences document the AttackPattern A vulnerability in the processing of media or image data that allows arbitrary code execution in the target process?",
+   "split": "heldout",
+   "task": {
+    "entities": [
+     "AttackPattern",
+     "HAS_REFERENCE",
+     "ExternalReference"
+    ],
+    "join_key": null,
+    "limits": {
+     "max_result_rows": 20000,
+     "max_traversal_depth": 3,
+     "query_timeout_ms": 5000
+    },
+    "rationale": "card_generator",
+    "seed_ids": [
+     "CAPEC-44"
+    ],
+    "source": "capec",
+    "sub_question_id": "CG-e19603dc9816",
+    "text": "Which ExternalReferences document the AttackPattern A vulnerability in the processing of media or image data that allows arbitrary code execution in the target process?"
+   },
+   "tier": "description"
+  },
+  {
+   "assertions": {
+    "min_records": 1,
+    "must_include_ids": [
+     "CAPEC-406"
+    ],
+    "must_include_related": [
+     "CAPEC-163",
+     "CAPEC-675"
+    ]
+   },
+   "card_gen": {
+    "anchor": "CAPEC-406",
+    "anchor_storage": "capec:attack-pattern:406",
+    "attempts": 1,
+    "decision": "grounding",
+    "gold_ids": [
+     "CAPEC-163",
+     "CAPEC-675"
+    ],
+    "kind": "answerable",
+    "slot": {
+     "dataset": "capec",
+     "direction": "out",
+     "label": "AttackPattern",
+     "rel": "CanPrecede",
+     "target": "AttackPattern"
+    },
+    "tier": "name"
+   },
+   "ex_gold": {
+    "expected": [
+     "CAPEC-163",
+     "CAPEC-675"
+    ],
+    "pool": "neighbors",
+    "scheme": "capec"
+   },
+   "id": "CG-e48e13a5b1f0",
+   "question": "Which AttackPatterns can occur after Dumpster Diving in an attack chain?",
+   "split": "heldout",
+   "task": {
+    "entities": [
+     "AttackPattern",
+     "CanPrecede",
+     "AttackPattern"
+    ],
+    "join_key": null,
+    "limits": {
+     "max_result_rows": 20000,
+     "max_traversal_depth": 3,
+     "query_timeout_ms": 5000
+    },
+    "rationale": "card_generator",
+    "seed_ids": [
+     "CAPEC-406"
+    ],
+    "source": "capec",
+    "sub_question_id": "CG-e48e13a5b1f0",
+    "text": "Which AttackPatterns can occur after Dumpster Diving in an attack chain?"
+   },
+   "tier": "name"
+  },
+  {
+   "assertions": {
+    "min_records": 1,
+    "must_include_ids": [
+     "CAPEC-23"
+    ],
+    "must_include_related": [
+     "CAPEC-165"
+    ]
+   },
+   "card_gen": {
+    "anchor": "CAPEC-23",
+    "anchor_storage": "capec:attack-pattern:23",
+    "attempts": 1,
+    "decision": "grounding",
+    "gold_ids": [
+     "CAPEC-165"
+    ],
+    "kind": "answerable",
+    "slot": {
+     "dataset": "capec",
+     "direction": "out",
+     "label": "AttackPattern",
+     "rel": "CanAlsoBe",
+     "target": "AttackPattern"
+    },
+    "tier": "name"
+   },
+   "ex_gold": {
+    "expected": [
+     "CAPEC-165"
+    ],
+    "pool": "neighbors",
+    "scheme": "capec"
+   },
+   "id": "CG-e5dcaedffe4b",
+   "question": "What AttackPattern can File Content Injection also be characterized as?",
+   "split": "heldout",
+   "task": {
+    "entities": [
+     "AttackPattern",
+     "CanAlsoBe",
+     "AttackPattern"
+    ],
+    "join_key": null,
+    "limits": {
+     "max_result_rows": 20000,
+     "max_traversal_depth": 3,
+     "query_timeout_ms": 5000
+    },
+    "rationale": "card_generator",
+    "seed_ids": [
+     "CAPEC-23"
+    ],
+    "source": "capec",
+    "sub_question_id": "CG-e5dcaedffe4b",
+    "text": "What AttackPattern can File Content Injection also be characterized as?"
+   },
+   "tier": "name"
+  },
+  {
+   "assertions": {
+    "min_records": 1,
+    "must_include_ids": [
+     "CAPEC-180"
+    ],
+    "must_include_related": [
+     "CAPEC-58",
+     "CAPEC-679",
+     "CAPEC-680",
+     "CAPEC-681",
+     "CAPEC-702"
+    ]
+   },
+   "card_gen": {
+    "anchor": "CAPEC-180",
+    "anchor_storage": "capec:attack-pattern:180",
+    "attempts": 1,
+    "decision": "grounding",
+    "gold_ids": [
+     "CAPEC-58",
+     "CAPEC-679",
+     "CAPEC-680",
+     "CAPEC-681",
+     "CAPEC-702"
+    ],
+    "kind": "answerable",
+    "slot": {
+     "dataset": "capec",
+     "direction": "in",
+     "label": "AttackPattern",
+     "rel": "ChildOf",
+     "target": "AttackPattern"
+    },
+    "tier": "reworded_name"
+   },
+   "ex_gold": {
+    "expected": [
+     "CAPEC-58",
+     "CAPEC-679",
+     "CAPEC-680",
+     "CAPEC-681",
+     "CAPEC-702"
+    ],
+    "pool": "neighbors",
+    "scheme": "capec"
+   },
+   "id": "CG-ea3763cbdba1",
+   "question": "What AttackPatterns is The abuse of wrongly set permission boundaries to reach protected resources a more specific variant of?",
+   "split": "heldout",
+   "task": {
+    "entities": [
+     "AttackPattern",
+     "ChildOf",
+     "AttackPattern"
+    ],
+    "join_key": null,
+    "limits": {
+     "max_result_rows": 20000,
+     "max_traversal_depth": 3,
+     "query_timeout_ms": 5000
+    },
+    "rationale": "card_generator",
+    "seed_ids": [
+     "CAPEC-180"
+    ],
+    "source": "capec",
+    "sub_question_id": "CG-ea3763cbdba1",
+    "text": "What AttackPatterns is The abuse of wrongly set permission boundaries to reach protected resources a more specific variant of?"
+   },
+   "tier": "reworded_name"
+  },
+  {
+   "assertions": {
+    "min_records": 1,
+    "must_include_ids": [
+     "CAPEC-703"
+    ],
+    "must_include_related": [
+     "CAPEC-1",
+     "CAPEC-125",
+     "CAPEC-130",
+     "CAPEC-131",
+     "CAPEC-141",
+     "CAPEC-148",
+     "CAPEC-158",
+     "CAPEC-163",
+     "CAPEC-165",
+     "CAPEC-169",
+     "CAPEC-177",
+     "CAPEC-180",
+     "CAPEC-184",
+     "CAPEC-191",
+     "CAPEC-227",
+     "CAPEC-268",
+     "CAPEC-292",
+     "CAPEC-309",
+     "CAPEC-312",
+     "CAPEC-313",
+     "CAPEC-438",
+     "CAPEC-439",
+     "CAPEC-441",
+     "CAPEC-457",
+     "CAPEC-473",
+     "CAPEC-504",
+     "CAPEC-540",
+     "CAPEC-547",
+     "CAPEC-552",
+     "CAPEC-555",
+     "CAPEC-560",
+     "CAPEC-57",
+     "CAPEC-573",
+     "CAPEC-580",
+     "CAPEC-603",
+     "CAPEC-607",
+     "CAPEC-635",
+     "CAPEC-648",
+     "CAPEC-649",
+     "CAPEC-65",
+     "CAPEC-690",
+     "CAPEC-691",
+     "CAPEC-692",
+     "CAPEC-70",
+     "CAPEC-94",
+     "CAPEC-98"
+    ]
+   },
+   "card_gen": {
+    "anchor": "CAPEC-703",
+    "anchor_storage": "capec:view:703",
+    "attempts": 1,
+    "decision": "grounding",
+    "gold_ids": [
+     "CAPEC-1",
+     "CAPEC-125",
+     "CAPEC-130",
+     "CAPEC-131",
+     "CAPEC-141",
+     "CAPEC-148",
+     "CAPEC-158",
+     "CAPEC-163",
+     "CAPEC-165",
+     "CAPEC-169",
+     "CAPEC-177",
+     "CAPEC-180",
+     "CAPEC-184",
+     "CAPEC-191",
+     "CAPEC-227",
+     "CAPEC-268",
+     "CAPEC-292",
+     "CAPEC-309",
+     "CAPEC-312",
+     "CAPEC-313",
+     "CAPEC-438",
+     "CAPEC-439",
+     "CAPEC-441",
+     "CAPEC-457",
+     "CAPEC-473",
+     "CAPEC-504",
+     "CAPEC-540",
+     "CAPEC-547",
+     "CAPEC-552",
+     "CAPEC-555",
+     "CAPEC-560",
+     "CAPEC-57",
+     "CAPEC-573",
+     "CAPEC-580",
+     "CAPEC-603",
+     "CAPEC-607",
+     "CAPEC-635",
+     "CAPEC-648",
+     "CAPEC-649",
+     "CAPEC-65",
+     "CAPEC-690",
+     "CAPEC-691",
+     "CAPEC-692",
+     "CAPEC-70",
+     "CAPEC-94",
+     "CAPEC-98"
+    ],
+    "kind": "answerable",
+    "slot": {
+     "dataset": "capec",
+     "direction": "in",
+     "label": "View",
+     "rel": "IN_VIEW",
+     "target": "AttackPattern"
+    },
+    "tier": "reworded_name"
+   },
+   "ex_gold": {
+    "expected": [
+     "CAPEC-1",
+     "CAPEC-125",
+     "CAPEC-130",
+     "CAPEC-131",
+     "CAPEC-141",
+     "CAPEC-148",
+     "CAPEC-158",
+     "CAPEC-163",
+     "CAPEC-165",
+     "CAPEC-169",
+     "CAPEC-177",
+     "CAPEC-180",
+     "CAPEC-184",
+     "CAPEC-191",
+     "CAPEC-227",
+     "CAPEC-268",
+     "CAPEC-292",
+     "CAPEC-309",
+     "CAPEC-312",
+     "CAPEC-313",
+     "CAPEC-438",
+     "CAPEC-439",
+     "CAPEC-441",
+     "CAPEC-457",
+     "CAPEC-473",
+     "CAPEC-504",
+     "CAPEC-540",
+     "CAPEC-547",
+     "CAPEC-552",
+     "CAPEC-555",
+     "CAPEC-560",
+     "CAPEC-57",
+     "CAPEC-573",
+     "CAPEC-580",
+     "CAPEC-603",
+     "CAPEC-607",
+     "CAPEC-635",
+     "CAPEC-648",
+     "CAPEC-649",
+     "CAPEC-65",
+     "CAPEC-690",
+     "CAPEC-691",
+     "CAPEC-692",
+     "CAPEC-70",
+     "CAPEC-94",
+     "CAPEC-98"
+    ],
+    "pool": "neighbors",
+    "scheme": "capec"
+   },
+   "id": "CG-ea44e02dbef2",
+   "question": "What attack patterns appear in the Recurring attack methodologies targeting plant automation and operational technology environments view?",
+   "split": "heldout",
+   "task": {
+    "entities": [
+     "View",
+     "IN_VIEW",
+     "AttackPattern"
+    ],
+    "join_key": null,
+    "limits": {
+     "max_result_rows": 20000,
+     "max_traversal_depth": 3,
+     "query_timeout_ms": 5000
+    },
+    "rationale": "card_generator",
+    "seed_ids": [
+     "CAPEC-703"
+    ],
+    "source": "capec",
+    "sub_question_id": "CG-ea44e02dbef2",
+    "text": "What attack patterns appear in the Recurring attack methodologies targeting plant automation and operational technology environments view?"
+   },
+   "tier": "reworded_name"
+  },
+  {
+   "assertions": {
+    "min_records": 1,
+    "must_include_ids": [
+     "CAPEC-437"
+    ],
+    "must_include_related": [
+     "CAPEC-116",
+     "CAPEC-154",
+     "CAPEC-176",
+     "CAPEC-184",
+     "CAPEC-438",
+     "CAPEC-439",
+     "CAPEC-440",
+     "CAPEC-690"
+    ]
+   },
+   "card_gen": {
+    "anchor": "CAPEC-437",
+    "anchor_storage": "capec:category:437",
+    "attempts": 1,
+    "decision": "grounding",
+    "gold_ids": [
+     "CAPEC-116",
+     "CAPEC-154",
+     "CAPEC-176",
+     "CAPEC-184",
+     "CAPEC-438",
+     "CAPEC-439",
+     "CAPEC-440",
+     "CAPEC-690"
+    ],
+    "kind": "answerable",
+    "slot": {
+     "dataset": "capec",
+     "direction": "in",
+     "label": "Category",
+     "rel": "MEMBER_OF",
+     "target": "AttackPattern"
+    },
+    "tier": "name"
+   },
+   "ex_gold": {
+    "expected": [
+     "CAPEC-116",
+     "CAPEC-154",
+     "CAPEC-176",
+     "CAPEC-184",
+     "CAPEC-438",
+     "CAPEC-439",
+     "CAPEC-440",
+     "CAPEC-690"
+    ],
+    "pool": "neighbors",
+    "scheme": "capec"
+   },
+   "id": "CG-eb0422900ea2",
+   "question": "What attack patterns are members of the Supply Chain category?",
+   "split": "heldout",
+   "task": {
+    "entities": [
+     "Category",
+     "MEMBER_OF",
+     "AttackPattern"
+    ],
+    "join_key": null,
+    "limits": {
+     "max_result_rows": 20000,
+     "max_traversal_depth": 3,
+     "query_timeout_ms": 5000
+    },
+    "rationale": "card_generator",
+    "seed_ids": [
+     "CAPEC-437"
+    ],
+    "source": "capec",
+    "sub_question_id": "CG-eb0422900ea2",
+    "text": "What attack patterns are members of the Supply Chain category?"
+   },
+   "tier": "name"
+  },
+  {
+   "assertions": {
+    "min_records": 1,
+    "must_include_ids": [
+     "CAPEC-272"
+    ],
+    "must_include_related": [
+     "CAPEC-210",
+     "CAPEC-512",
+     "CAPEC-513"
+    ]
+   },
+   "card_gen": {
+    "anchor": "CAPEC-272",
+    "anchor_storage": "capec:attack-pattern:272",
+    "attempts": 1,
+    "decision": "grounding",
+    "gold_ids": [
+     "CAPEC-210",
+     "CAPEC-512",
+     "CAPEC-513"
+    ],
+    "kind": "answerable",
+    "slot": {
+     "dataset": "capec",
+     "direction": "out",
+     "label": "AttackPattern",
+     "rel": "MEMBER_OF",
+     "target": "Category"
+    },
+    "tier": "name"
+   },
+   "ex_gold": {
+    "expected": [
+     "CAPEC-210",
+     "CAPEC-512",
+     "CAPEC-513"
+    ],
+    "pool": "neighbors",
+    "scheme": "capec"
+   },
+   "id": "CG-eb22c994a1db",
+   "question": "What category is Protocol Manipulation a member of?",
+   "split": "heldout",
+   "task": {
+    "entities": [
+     "AttackPattern",
+     "MEMBER_OF",
+     "Category"
+    ],
+    "join_key": null,
+    "limits": {
+     "max_result_rows": 20000,
+     "max_traversal_depth": 3,
+     "query_timeout_ms": 5000
+    },
+    "rationale": "card_generator",
+    "seed_ids": [
+     "CAPEC-272"
+    ],
+    "source": "capec",
+    "sub_question_id": "CG-eb22c994a1db",
+    "text": "What category is Protocol Manipulation a member of?"
+   },
+   "tier": "name"
+  },
+  {
+   "assertions": {
+    "min_records": 1,
+    "must_include_ids": [
+     "CAPEC-437"
+    ],
+    "must_include_related": [
+     "CAPEC-116",
+     "CAPEC-154",
+     "CAPEC-176",
+     "CAPEC-184",
+     "CAPEC-438",
+     "CAPEC-439",
+     "CAPEC-440",
+     "CAPEC-690"
+    ]
+   },
+   "card_gen": {
+    "anchor": "CAPEC-437",
+    "anchor_storage": "capec:category:437",
+    "attempts": 1,
+    "decision": "grounding",
+    "gold_ids": [
+     "CAPEC-116",
+     "CAPEC-154",
+     "CAPEC-176",
+     "CAPEC-184",
+     "CAPEC-438",
+     "CAPEC-439",
+     "CAPEC-440",
+     "CAPEC-690"
+    ],
+    "kind": "answerable",
+    "slot": {
+     "dataset": "capec",
+     "direction": "in",
+     "label": "Category",
+     "rel": "MEMBER_OF",
+     "target": "AttackPattern"
+    },
+    "tier": "identifier"
+   },
+   "ex_gold": {
+    "expected": [
+     "CAPEC-116",
+     "CAPEC-154",
+     "CAPEC-176",
+     "CAPEC-184",
+     "CAPEC-438",
+     "CAPEC-439",
+     "CAPEC-440",
+     "CAPEC-690"
+    ],
+    "pool": "neighbors",
+    "scheme": "capec"
+   },
+   "id": "CG-f0681b81bd35",
+   "question": "Which attack patterns are members of CAPEC-437?",
+   "split": "heldout",
+   "task": {
+    "entities": [
+     "Category",
+     "MEMBER_OF",
+     "AttackPattern"
+    ],
+    "join_key": null,
+    "limits": {
+     "max_result_rows": 20000,
+     "max_traversal_depth": 3,
+     "query_timeout_ms": 5000
+    },
+    "rationale": "card_generator",
+    "seed_ids": [
+     "CAPEC-437"
+    ],
+    "source": "capec",
+    "sub_question_id": "CG-f0681b81bd35",
+    "text": "Which attack patterns are members of CAPEC-437?"
+   },
+   "tier": "identifier"
+  },
+  {
+   "assertions": {
+    "min_records": 1,
+    "must_include_ids": [
+     "CAPEC-95"
+    ],
+    "must_include_related": [
+     "capec:attack-pattern:95:mitigation:1",
+     "capec:attack-pattern:95:mitigation:2",
+     "capec:attack-pattern:95:mitigation:3",
+     "capec:attack-pattern:95:mitigation:4",
+     "capec:attack-pattern:95:mitigation:5"
+    ]
+   },
+   "card_gen": {
+    "anchor": "CAPEC-95",
+    "anchor_storage": "capec:attack-pattern:95",
+    "attempts": 1,
+    "decision": "grounding",
+    "gold_ids": [
+     "capec:attack-pattern:95:mitigation:1",
+     "capec:attack-pattern:95:mitigation:2",
+     "capec:attack-pattern:95:mitigation:3",
+     "capec:attack-pattern:95:mitigation:4",
+     "capec:attack-pattern:95:mitigation:5"
+    ],
+    "kind": "answerable",
+    "slot": {
+     "dataset": "capec",
+     "direction": "out",
+     "label": "AttackPattern",
+     "rel": "HAS_MITIGATION",
+     "target": "Mitigation"
+    },
+    "tier": "name"
+   },
+   "ex_gold": {
+    "expected": [
+     "capec:attack-pattern:95:mitigation:1",
+     "capec:attack-pattern:95:mitigation:2",
+     "capec:attack-pattern:95:mitigation:3",
+     "capec:attack-pattern:95:mitigation:4",
+     "capec:attack-pattern:95:mitigation:5"
+    ],
+    "pool": "neighbors",
+    "scheme": "capec"
+   },
+   "id": "CG-f3d7c512b30d",
+   "question": "What mitigations address WSDL Scanning?",
+   "split": "heldout",
+   "task": {
+    "entities": [
+     "AttackPattern",
+     "HAS_MITIGATION",
+     "Mitigation"
+    ],
+    "join_key": null,
+    "limits": {
+     "max_result_rows": 20000,
+     "max_traversal_depth": 3,
+     "query_timeout_ms": 5000
+    },
+    "rationale": "card_generator",
+    "seed_ids": [
+     "CAPEC-95"
+    ],
+    "source": "capec",
+    "sub_question_id": "CG-f3d7c512b30d",
+    "text": "What mitigations address WSDL Scanning?"
+   },
+   "tier": "name"
+  }
+ ]
+}
