@@ -194,3 +194,37 @@ uv run python scripts/harness_attribution.py agree  --out docs/research/experime
   That is reported as such.
 - **If E6 fails badly** (κ < 0.4), the automatic codes are not a measurement. The analysis then
   reports flags only, not single causes.
+
+## Amendment A-1 (written 2026-11-16, before the run): the model half on Qwen 3.8 27B
+
+The operator retired Gemma as a basis for comparison, and this experiment's model half came from
+a saved Gemma 4 26B planner arm. This amendment reruns that half on the open model.
+
+**Runs.** All are on one commit and one tree, back to back, over the 284 dev questions, with
+`--workers 32` (the operator gave the server to this work):
+1. `generic_composed`, model-free;
+2. `generic_planned`, model-free;
+3. `generic_planned_llm` on Qwen 3.8 27B (`:9090 default-model`) at `reasoning_effort=medium`,
+   sent through the new opt-in `LLM_REASONING_EFFORT`. Its identity is verified by the
+   registry (token id plus default-rendering fingerprint) before and after.
+
+Runs 1 and 2 go under the socket guard. Run 3 cannot, because it calls the model.
+
+**Coding.** The same coder, rules and bands as the main protocol, over L_qwen: the questions
+`generic_planned_llm` retrieves nothing on and `generic_composed` retrieves records on.
+
+**Primary:** the downstream share of L_qwen under the pre-registered rules, read with the same
+bands (≥ 0.50 mostly harness; 0.25–0.50 mixed; < 0.25 mostly model).
+
+**Secondary, now named in advance:** the builder-walk reading (`recode_builder_walk`), which was
+post-hoc in the main run. Also reported:
+- coverage of the three arms;
+- the paired differences of each against `generic_composed`;
+- the cause table;
+- the overlap of L_qwen with the deterministic planner's lost set.
+
+**Expectation:** the "mixed" band, by both readings. Wrong relation choice stays the largest
+single cause.
+
+**No second annotator** is run for this amendment. The coder's agreement was measured in the
+main run (κ 0.71) and the rules are unchanged.

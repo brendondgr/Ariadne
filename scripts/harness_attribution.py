@@ -62,6 +62,84 @@ def _install_guard(record: Path) -> None:
     record.write_text(json.dumps({"attempts": attempts}))
 
 
+def _llm_arm(arm: str, root: str, workers: int) -> int:
+    """A-1: the LLM-planner arm, unguarded (it calls the model), at the registry's thinking level."""
+    from utils.evaluation import experiment_untruncated as exp
+
+    return exp.main(["--arm", arm, "--root", root, "--bank", BANK, "--workers", str(workers),
+                     "--llm-model", "default-model"])
+
+
+def rerun_qwen(root: str, workers: int) -> None:
+    """EXP-2026-11-009 A-1: composed, planned (guarded), then the Qwen planner arm, back to back."""
+    from utils.llm.registry import load, require_identity
+
+    spec = load().default
+    if spec.name != "qwen38-27b":
+        raise SystemExit(f"registry default is {spec.name}, not qwen38-27b")
+    before = require_identity(spec).as_dict()
+    env = {**os.environ, "ORCH_MAX_HOPS": "5"}
+    for arm in RERUN_ARMS[:1] + RERUN_ARMS[2:]:          # generic_composed, generic_planned
+        rc = subprocess.run([sys.executable, __file__, "_arm", "--arm", arm, "--root", root,
+                             "--workers", str(workers)], cwd=REPO, env=env).returncode
+        guard = json.loads((Path(root) / arm / "socket_guard.json").read_text())
+        print(f"{arm}: exit {rc}, model-port attempts {len(guard['attempts'])}")
+        if rc:
+            raise SystemExit(f"{arm} failed")
+    t = time.time()
+    effort = spec.reasoning_default or "medium"
+    rc = subprocess.run([sys.executable, __file__, "_llm_arm", "--arm", "generic_planned_llm", "--root", root,
+                         "--workers", str(workers)], cwd=REPO,
+                        env={**env, "LLM_REASONING_EFFORT": effort}).returncode
+    from utils.llm.registry import clear_identity_cache
+    clear_identity_cache()
+    after = require_identity(spec).as_dict()
+    (Path(root) / "generic_planned_llm" / "identity.json").write_text(json.dumps(
+        {"model": spec.name, "reasoning_effort": effort, "before": before, "after": after}, indent=1))
+    print(f"generic_planned_llm: exit {rc}, {time.time() - t:.0f}s, identity before/after verified")
+    if rc:
+        raise SystemExit("generic_planned_llm failed")
+
+
+def code_qwen(out: Path, root: Path) -> dict:
+    """A-1: code the Qwen planner's lost questions with the same coder and rules."""
+    authored, det = H.load_arm(root, H.AUTHORED), H.load_arm(root, H.DET)
+    llm = H.load_arm(root, H.LLM)
+    qs = H.lost(authored, llm)
+    cs = [H.code(q, authored[q], llm[q], arm=H.LLM) for q in qs]
+    rec = [H.recode_builder_walk(c, llm[c.qid]) for c in cs]
+    st, st2 = Counter(c.stage for c in cs), Counter(c.stage for c in rec)
+    cov = {a: H.coverage(x) for a, x in ((H.AUTHORED, authored), (H.DET, det), (H.LLM, llm))}
+    gen = [d for d in llm.values()]
+    res = {
+        "root": str(root.relative_to(REPO) if root.is_relative_to(REPO) else root),
+        "identity": json.loads((root / H.LLM / "identity.json").read_text()),
+        "counts": {a: len(x) for a, x in ((H.AUTHORED, authored), (H.DET, det), (H.LLM, llm))},
+        "coverage": {a: round(statistics.mean(c.values()), 4) for a, c in cov.items()},
+        "llm_minus_authored": H.paired(cov[H.AUTHORED], cov[H.LLM]),
+        "det_minus_authored": H.paired(cov[H.AUTHORED], cov[H.DET]),
+        "llm_minus_det": H.paired(cov[H.DET], cov[H.LLM]),
+        "llm_planner_used": dict(Counter((d.get("run_meta") or {}).get("planner") for d in gen)),
+        "n_lost": len(qs),
+        "causes": dict(Counter(c.cause for c in cs).most_common()),
+        "stages": dict(st), "downstream_share": round(st["downstream"] / len(cs), 4) if cs else None,
+        "mechanisms": dict(Counter(f"{c.cause}:{c.mechanism.split(':')[0]}" for c in cs).most_common()),
+        "builder_walk": {"recoded": sum(a.cause != b.cause for a, b in zip(cs, rec)),
+                         "causes": dict(Counter(c.cause for c in rec).most_common()), "stages": dict(st2),
+                         "downstream_share": round(st2["downstream"] / len(rec), 4) if rec else None},
+        "overlap_with_det_lost": len(set(qs) & set(H.lost(authored, det))),
+        "det_lost_today": len(H.lost(authored, det)),
+        "socket_guard_attempts": {a: len(json.loads((root / a / "socket_guard.json").read_text())["attempts"])
+                                  for a in (H.AUTHORED, H.DET)},
+    }
+    out.mkdir(parents=True, exist_ok=True)
+    (out / "attribution-qwen.json").write_text(json.dumps(res, indent=1))
+    with open(out / "codings-qwen.jsonl", "w") as fh:
+        for c in cs:
+            fh.write(json.dumps(c.as_dict(), ensure_ascii=False) + "\n")
+    return res
+
+
 def _guarded_arm(arm: str, root: str, workers: int) -> int:
     rec = Path(root) / arm / "socket_guard.json"
     rec.parent.mkdir(parents=True, exist_ok=True)
@@ -227,6 +305,16 @@ def main(argv: list[str] | None = None) -> int:
     r = sub.add_parser("rerun")
     r.add_argument("--root", required=True)
     r.add_argument("--workers", type=int, default=8)
+    rq = sub.add_parser("rerun-qwen")
+    rq.add_argument("--root", required=True)
+    rq.add_argument("--workers", type=int, default=32)
+    cq = sub.add_parser("code-qwen")
+    cq.add_argument("--root", required=True)
+    cq.add_argument("--out", required=True)
+    la = sub.add_parser("_llm_arm")
+    la.add_argument("--arm", required=True)
+    la.add_argument("--root", required=True)
+    la.add_argument("--workers", type=int, default=32)
     g = sub.add_parser("_arm")
     g.add_argument("--arm", required=True)
     g.add_argument("--root", required=True)
@@ -239,6 +327,12 @@ def main(argv: list[str] | None = None) -> int:
     args = ap.parse_args(argv)
     if args.cmd == "rerun":
         rerun(args.root, args.workers)
+    elif args.cmd == "rerun-qwen":
+        rerun_qwen(args.root, args.workers)
+    elif args.cmd == "code-qwen":
+        print(json.dumps(code_qwen(Path(args.out), REPO / args.root), indent=1)[:5000])
+    elif args.cmd == "_llm_arm":
+        return _llm_arm(args.arm, args.root, args.workers)
     elif args.cmd == "_arm":
         return _guarded_arm(args.arm, args.root, args.workers)
     elif args.cmd == "code":

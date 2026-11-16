@@ -27,6 +27,8 @@ as such in the EXP-2026-08-015 manifest.
 
 from __future__ import annotations
 
+import os
+
 from utils.config import env_int
 
 #: Fixed so a re-run varies as little as the serving stack allows. The value is
@@ -80,4 +82,11 @@ def sampling_params(
     if budget > 0:
         params["chat_template_kwargs"] = {"thinking_budget": budget}
         params["extra_body"] = {"thinking_budget": budget}
+    # The thinking level, for servers that take it as a request field rather
+    # than a token budget (Qwen 3.8 27B on :9090: xhigh by default, and the
+    # project runs it at medium). Opt-in: unset, nothing is sent, so no existing
+    # call changes. Era 2 Step 4's LLM-planner rerun sets it (EXP-2026-11-009 A-1).
+    effort = os.environ.get("LLM_REASONING_EFFORT", "").strip()
+    if effort:
+        params["reasoning_effort"] = effort
     return params
