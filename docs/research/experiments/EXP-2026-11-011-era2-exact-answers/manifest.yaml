@@ -5,9 +5,9 @@
 id: EXP-2026-11-011
 slug: era2-exact-answers
 title: "Era 2 Step 5: exact answers, result handles, and nothing cut silently"
-status: running            # planned | running | complete | failed | superseded
+status: complete           # planned | running | complete | failed | superseded
 date_started: 2026-11-16
-date_completed: null       # null until status is complete/failed
+date_completed: 2026-11-16      # null until status is complete/failed
 authors: ["brendondgr", "Claude Opus 5.5"]
 
 purpose: >
@@ -18,10 +18,10 @@ hypothesis: >
 
 # --- Reproducibility block (all fields mandatory) ---
 code:
-  commit: 38e803e5940c4027788b346217a7f0d2a67dcd60          # 40-char sha, or "unknown" for a back-filled experiment
+  commit: ef2e80c0be13869283d531a63c88e75266fbdd40          # 40-char sha, or "unknown" for a back-filled experiment
   branch: main
   entrypoint: "uv run python scripts/era2_hub_bench.py bench --out docs/research/experiments/EXP-2026-11-011-era2-exact-answers/data; uv run python scripts/era2_exact_check.py --out docs/research/experiments/EXP-2026-11-011-era2-exact-answers/data"
-  dirty: true             # uncommitted changes at run time? if true, explain in ISSUES.md
+  dirty: false            # uncommitted changes at run time? if true, explain in ISSUES.md
 config:
   path: null               # repo-relative path, or null if the run takes no config file
   hash: null               # sha256:... of that file
@@ -40,7 +40,7 @@ environment:
   container: null
 compute:
   hardware: "32-core x86_64 host, 121 GB RAM; scratch containers era2-hub-neo4j (neo4j:5.26) and era2-hub-gremlin (gremlin-server 3.8.0)"
-  wall_clock_hours: 0.0
+  wall_clock_hours: 0.2
   estimated_cost_usd: 0.0
 
 # --- LLM / agentic block (delete entirely if no model was in the loop) ---
@@ -60,10 +60,18 @@ llm:
 
 # --- Results block ---
 metrics:
-  primary: <metric name>
-  values: {}               # {metric: {mean: 0.0, std: 0.0, n: 1}} — must be non-empty when status: complete
+  primary: g4_mismatches
+  values:
+    g4_mismatches: {mean: 0, std: 0.0, n: 516}
+    cypher_h1e6_p95_s: {mean: 1.538, std: 0.0, n: 20}
+    gremlin_h1e6_p95_s: {mean: 3.47, std: 0.0, n: 20}
+    cypher_h1e5_p95_s: {mean: 0.455, std: 0.0, n: 20}
+    gremlin_h1e5_p95_s: {mean: 0.795, std: 0.0, n: 20}
+    census_20000_hits: {mean: 0, std: 0.0, n: 284}
+    census_1000_hits: {mean: 1, std: 0.0, n: 284}
+    regression_dev_same: {mean: 284, std: 0.0, n: 284}
   withdrawn: {}            # values later retracted by amendment: {metric: {mean, std, n, withdrawn_on, reason, replaced_by}}
-baselines_compared: []
+baselines_compared: ["the same arms run on the tree before Step 5 (38e803e5)", "database-side counts and intersections"]
 statistical_test: null
 
 # --- Linkage ---

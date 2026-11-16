@@ -124,5 +124,6 @@ this file says which number is *current*.
 | [`EXP-2026-11-008`](experiments/EXP-2026-11-008-era2-run-log/) | 2026-11-15 | `crash_points_equal` | 12.0000 ± 0.0000 (n=12) | — | — |
 | [`EXP-2026-11-009`](experiments/EXP-2026-11-009-harness-attribution/) | 2026-11-15 | `llm_downstream_share` | 0.1619 ± 0.0000 (n=105) | — | — |
 | [`EXP-2026-11-010`](experiments/EXP-2026-11-010-minicpm-vs-qwen-cypherbench/) | 2026-11-15 | `on_typed3_3shot_cypher_minus_qwen` | -0.2200 ± 0.0000 (n=200) | — | — |
+| [`EXP-2026-11-011`](experiments/EXP-2026-11-011-era2-exact-answers/) | 2026-11-16 | `g4_mismatches` | 0.0000 ± 0.0000 (n=516) | — | — |
 
-**24 withdrawn figure(s), 6 superseded experiment(s), 66 current headline(s).**
+**24 withdrawn figure(s), 6 superseded experiment(s), 67 current headline(s).**

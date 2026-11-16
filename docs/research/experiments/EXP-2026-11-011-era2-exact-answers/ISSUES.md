@@ -13,3 +13,8 @@ tree at run time. An empty file is fine; a missing one is not.
 **Paper implication:** what must be stated in the paper because of this.
 
 -->
+
+## 2026-11-16 — Built and tuned before pre-registration (disclosed)
+**Impact:** None on the recorded figures, which come from a run at ef2e80c0.
+**Cause:** The code and tests were written first. A dry run of the hub benchmark then showed Neo4j's 10⁶ fetch at 8.3 s, and the fetch was changed twice before the protocol was written: no server-side sort and a 10,000-record fetch size (6.5 s), then one collected list (1.5 s).
+**Resolution:** Disclosed in PROTOCOL.md. G4 was amended before any run, because the dev answers use the "X has N" enumeration form, not "N result(s)".
