@@ -34,3 +34,8 @@ tree at run time. An empty file is fine; a missing one is not.
 **Resolution:**
 - The three reruns ran at 8b1e6e8f, the manifest's `code.commit`, on a clean tree.
 - The coding, the packets, the agreement and the post-hoc correction were computed from those saved outputs. They used code committed together with these results; that code is pure and reads saved files only.
+
+## 2026-11-16 — A-1's first attempt was stopped: the CAPEC Gremlin graph was empty
+**Impact:** None on reported figures. The first A-1 attempt was stopped part-way through the LLM arm, and its folder was deleted before the rerun.
+**Cause:** `ariadne-gremlin` restarted about an hour earlier with 0 vertices (an in-memory graph). Every CAPEC question would have retrieved nothing in all three arms.
+**Resolution:** CAPEC was reloaded (`main.py --dataset capec --graph gremlin`, verified), and ATT&CK was reloaded into Neo4j to clear a stale-manifest warning (verified). All three arms then reran from scratch, back to back, at the same commit.

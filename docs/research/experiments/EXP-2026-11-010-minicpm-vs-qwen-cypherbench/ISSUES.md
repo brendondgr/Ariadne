@@ -22,3 +22,9 @@ tree at run time. An empty file is fine; a missing one is not.
 ## 2026-11-15 — Code run commit
 **Impact:** None on the figures.
 **Resolution:** The three pre-registered runs (replay, on, off) used the code at 71fcfb7f. The `recover` subcommand and the third column of `compare` were added afterwards for the post-hoc analysis, and are committed with these results.
+
+## 2026-11-16 — The Gremlin servers came back empty after a restart; A-1's first execution was void
+**Impact:** The first execution of A-1 scored every Gremlin arm 0.000, typed ones included. The figures in RESULTS A-1 come from re-executing the saved generations after a reload. The Cypher side was unaffected.
+**Cause:** `killtests-gremlin` (:6470) and `ariadne-gremlin` (:6455) hold their graphs in memory, and both restarted about an hour before the run with 0 vertices. `docker ps` still showed them Up.
+**Resolution:** Reloaded with `python -m utils.killtests.t1.load` (only into an empty store; parity ok, 0 mismatches in 50 sampled nodes; report in `logs/killtests-2026-11/reload-2026-11-16/`) and `main.py --dataset capec --graph gremlin` (verified). Then only A-1's execute and score stages were re-run.
+**Paper implication:** After any restart, check vertex counts before a run. A 0.000 on a compiled backend means an empty store, not a model result.

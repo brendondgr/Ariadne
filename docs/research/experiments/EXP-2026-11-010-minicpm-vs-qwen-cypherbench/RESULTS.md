@@ -129,3 +129,26 @@ uv run python scripts/minicpm_vs_qwen.py run --condition off
 uv run python scripts/minicpm_vs_qwen.py recover        # post-hoc
 uv run python scripts/minicpm_vs_qwen.py compare --out docs/research/experiments/EXP-2026-11-010-minicpm-vs-qwen-cypherbench/data
 ```
+
+## Amendment A-1 (2026-11-16): today's Qwen is the same model, behaving the same
+
+The operator restored Qwen 3.8 27B. Part A was run again on it at `reasoning_effort=medium`,
+8 requests at a time, with the same code, in `logs/killtests-2026-11/exp010-qwen-today/`.
+
+| Arm | Qwen, 2026-11-14 | Qwen, today | Δ (95% CI) |
+|---|---:|---:|---|
+| free Cypher | 0.860 | 0.865 | +0.005 [0.000, +0.015] |
+| free Gremlin | 0.635 | 0.650 | +0.015 [−0.015, +0.045] |
+| typed2, both backends | 0.945 | 0.945 | 0.000 |
+| typed3, both backends | 0.950 | 0.945 | −0.005 [−0.015, 0.000] |
+
+- **The pre-registered check passes:** both primary arms are within 0.03 of the saved figures.
+- **Six replies were cut off at the 8,192-token cap** while still thinking (Qwen had 2 on
+  2026-11-14). None had a closed think block with misfiled content.
+- **Median latency was 4.8 s and median completion length 324 tokens.**
+- **Conclusion:** the comparison above stands against today's Qwen.
+
+**A first execution of this run scored every Gremlin arm 0.000.** Both Gremlin servers had come
+back empty after the machine restarted (ISSUES). The saved generations were re-executed after
+the graphs were reloaded, so no model call was repeated. The Cypher figures were the same both
+times.
