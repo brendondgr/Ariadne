@@ -222,3 +222,45 @@ workers. Data: `data/attribution-qwen.json` and `data/codings-qwen.jsonl`.
   verified before and after (token id plus default-rendering fingerprint). The model-free arms
   reproduce yesterday's reruns exactly (0.8526 and 0.5173).
 - **The first A-1 attempt was void**, because the CAPEC Gremlin graph was empty (ISSUES).
+
+## Amendment A-2 (2026-11-16): the builder-walk fix, measured
+
+**The fix** (5d1b93e2): the Gremlin generic walk now uses the plan's `max_traversal_depth`, still
+capped at 3, instead of a fixed `repeat(...).times(3)` with 3-hop branches.
+
+**Regression:** the baselines do not move.
+- The deterministic arm on both banks: 30 of 30 byte-identical, before against after.
+- `generic_composed` on dev: 284 of 284 identical, and 0.8526 again here.
+
+**The run:** all three arms, back to back at 5d1b93e2, with 32 workers. Zero model-port
+connections in the guarded arms, and Qwen's identity was verified before and after. Data:
+`data/attribution-qwen-walkfix.json` and `data/codings-qwen-walkfix.jsonl`.
+
+| | A-1 (before the fix) | A-2 (after) |
+|---|---:|---:|
+| Qwen-planner coverage | 0.5811 | **0.6581** |
+| … paired change | | **+0.077 (SE 0.021)** |
+| questions lost | 71 | **45** |
+| wrong relation (first cause) | 44 | 18 |
+| builder-walk losses | 19 | **0** |
+| downstream share (pre-registered rules) | 0.169 | 0.200 |
+| deterministic planner | 0.5173 | 0.5173 (it always uses depth 3) |
+
+**What moved:**
+- 36 questions were recovered and 10 newly lost. The newly lost ones are the LLM planner's
+  run-to-run variation: its plans differ slightly between reruns even at temperature 0.
+- 14 of the 19 builder-walk losses are now answered.
+- Another 12 recovered questions had been coded `relation: missing`. Their new plans (or
+  shallower path searches) now reach the gold.
+- Per question: 46 improved and 14 got worse.
+
+**Expectations against outcomes:**
+- `generic_composed` unchanged: **met**.
+- Lost set about 52 or fewer: **met (45)**.
+- Coverage about +0.05: **exceeded (+0.077)**.
+- No builder-walk losses left: **met**.
+
+**Reading.** One harness defect was worth about 0.08 coverage for the model planner. The gap to
+the authored plan narrows from −0.27 to **−0.19**. Wrong relation choice remains the largest
+single cause (18 of 45), followed by plans of the wrong shape (8) and the remaining harness
+losses: seeds dropped, schema changed, direction (9).
