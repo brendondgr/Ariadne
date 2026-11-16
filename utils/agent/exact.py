@@ -184,6 +184,21 @@ class CypherBackend:
         q = f"MATCH (a) WHERE {self._id('a')} IN $seeds RETURN DISTINCT {self._id('a')} AS id"
         return [str(r["id"]) for r in self._rows(q, {"seeds": list(seeds)})]
 
+    # -- for the card question generator (Step 6) ----------------------------
+
+    def nodes(self, label: str) -> list[dict[str, Any]]:
+        """Every node of ``label``: id, name, description."""
+        q = (f"MATCH (n:{_ident(label, 'label')}) RETURN {self._id('n')} AS id, n.name AS name, "
+             "n.description AS description")
+        return [dict(r) for r in self._rows(q, {}) if r["id"] is not None]
+
+    def degrees(self, label: str, rel: str, direction: str, target_label: str | None) -> dict[str, int]:
+        """id -> distinct neighbours over (rel, direction, target_label), zeros included."""
+        spec = SetSpec(("x",), rel, direction, target_label, label)
+        q = (f"MATCH (a:{_ident(label, 'label')}) OPTIONAL MATCH {self._pattern(spec)} "
+             f"RETURN {self._id('a')} AS id, count(DISTINCT b) AS n")
+        return {str(r["id"]): int(r["n"]) for r in self._rows(q, {}) if r["id"] is not None}
+
 
 # --------------------------------------------------------------------------- #
 # Gremlin
@@ -271,6 +286,23 @@ class GremlinBackend:
     def anchors_found(self, seeds: tuple[str, ...]) -> list[str]:
         return [str(x) for x in self._submit(f"g.V().{self._seed_filter()}.{self._id()}.dedup()",
                                              {"seeds": list(seeds)})]
+
+    # -- for the card question generator (Step 6) ----------------------------
+
+    def nodes(self, label: str) -> list[dict[str, Any]]:
+        q = (f"g.V().hasLabel('{_ident(label, 'label')}').project('id', 'name', 'description')"
+             f".by({self._id()}).by(coalesce(__.values('name'), __.constant('')))"
+             ".by(coalesce(__.values('description'), __.constant('')))")
+        return [dict(r) for r in self._submit(q, {})]
+
+    def degrees(self, label: str, rel: str, direction: str, target_label: str | None) -> dict[str, int]:
+        step = {"out": "out", "in": "in", "both": "both"}[direction]
+        hop = f"__.{step}('{_ident(rel, 'relationship')}')"
+        if target_label:
+            hop += f".hasLabel('{_ident(target_label, 'label')}')"
+        q = (f"g.V().hasLabel('{_ident(label, 'label')}').project('id', 'n')"
+             f".by({self._id()}).by({hop}.dedup().count())")
+        return {str(r["id"]): int(r["n"]) for r in self._submit(q, {})}
 
 
 Backend = CypherBackend | GremlinBackend

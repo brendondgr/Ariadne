@@ -1,0 +1,74 @@
+# Filled by scripts/new_experiment.py. Every field below is required unless
+# marked optional. Do not delete a field you do not know — record it as null or
+# "unknown" and explain in ISSUES.md. Inventing a value is worse than admitting
+# a gap.
+id: EXP-2026-11-012
+slug: era2-card-questions
+title: "Era 2 Step 6: questions with gold answers generated from the ATT&CK and CAPEC cards alone"
+status: running            # planned | running | complete | failed | superseded
+date_started: 2026-11-16
+date_completed: null       # null until status is complete/failed
+authors: ["brendondgr", "Claude Opus 5.5"]
+
+purpose: >
+  Step 6 generates evaluation questions from a source card alone: slots from the card's schema, anchors from the graph, gold by executing each question's own typed request (Step 5's exact fetch), six rewording tiers (identifier, name, reworded name, description, synonym relation, paraphrased schema) written by Qwen 3.8 27B with automatic leak checks, and three new kinds (ambiguous with a gold clarification, out of coverage, insufficient), split into sealed tuning and held-out banks per decision step with no shared anchor.
+
+hypothesis: >
+  Gates: every question's gold re-executes identically (G1); tuning and held-out share no anchor (G2); 0 leaks in the synonym and paraphrased-schema tiers (G3); fixture tests pass (G4). Expectations: yield above 0.8 outside the synonym tier (E1); reader fluency at least 0.9 on identifier and name tiers, 70-90% of ambiguous questions truly ambiguous (E2; a person's read pending, a blind proxy recorded); about 450 ATT&CK and 220 CAPEC questions (E3).
+
+# --- Reproducibility block (all fields mandatory) ---
+code:
+  commit: b5ac799e05055bcfeaf2985e6c7a417c0c93f4bd          # 40-char sha, or "unknown" for a back-filled experiment
+  branch: main
+  entrypoint: "uv run python scripts/era2_card_bank.py --out docs/research/experiments/EXP-2026-11-012-era2-card-questions/data --banks docs/evaluation/banks"
+  dirty: true             # uncommitted changes at run time? if true, explain in ISSUES.md
+config:
+  path: null               # repo-relative path, or null if the run takes no config file
+  hash: null               # sha256:... of that file
+data:
+  name: "Generated from data/source_cards/{attack,capec}.json over the live ATT&CK (Neo4j) and CAPEC (Gremlin) graphs"
+  version: "card-2026-11-16"
+  split: "tuning + heldout"
+  n_examples: 0
+  dvc_path: null           # this repository does not use DVC; leave null
+  hash: null               # md5:... or sha256:... of the dataset artifact
+seeds: []                  # [] means seeds were not recorded — say so in ISSUES.md
+n_runs: 1                  # SYSTEM runs over the question set — grading passes are not runs
+environment:
+  python: "3.13"
+  lockfile: env/requirements.lock
+  container: null
+compute:
+  hardware: "32-core x86_64 host, 121 GB RAM; ariadne-neo4j, ariadne-gremlin; relay :9090"
+  wall_clock_hours: 0.0
+  estimated_cost_usd: 0.0
+
+# --- LLM / agentic block (delete entirely if no model was in the loop) ---
+llm:
+  model: "relay/qwen38-27b@2026-11-16 (alias default-model, reasoning_effort=medium, temperature 0.7) as the question writer; proxy reader claude-sonnet-5-5"
+  temperature: 0.7
+  top_p: 1.0
+  max_tokens: 2048
+  prompt_files: []
+  prompt_hash: null
+  tool_schema_hash: null
+  total_input_tokens: null
+  total_output_tokens: null
+  nondeterminism_note: >
+    Provider-side nondeterminism remains even at temperature 0; results
+    are reported as mean ± std over n_runs.
+
+# --- Results block ---
+metrics:
+  primary: <metric name>
+  values: {}               # {metric: {mean: 0.0, std: 0.0, n: 1}} — must be non-empty when status: complete
+  withdrawn: {}            # values later retracted by amendment: {metric: {mean, std, n, withdrawn_on, reason, replaced_by}}
+baselines_compared: []
+statistical_test: null
+
+# --- Linkage ---
+supports_claims: []        # every ID here must exist in ../../CLAIMS.md
+figures: []                # every name here must have a file in figures/ and vice versa
+supersedes: null           # set in BOTH manifests or in neither; the validator checks symmetry
+superseded_by: null
+related: []
