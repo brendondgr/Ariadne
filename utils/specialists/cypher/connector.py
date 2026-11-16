@@ -17,6 +17,7 @@ from neo4j import GraphDatabase, Query
 
 from ..config import SpecialistConfig
 from ..errors import ExecutionError
+from ..rows import Rows
 
 logger = logging.getLogger("ariadne.specialists.cypher")
 
@@ -67,8 +68,13 @@ class CypherConnector:
 
     def run(
         self, query: str, params: dict[str, Any], limits: dict[str, int]
-    ) -> list[dict[str, Any]]:
+    ) -> Rows:
         """Execute ``query`` with ``params`` and return at most ``max_result_rows`` rows.
+
+        Never silently: the returned :class:`~utils.specialists.rows.Rows` says
+        whether the database had more (one extra record is read to find out).
+        If the query's own LIMIT equals the cap, ``truncated`` is None (unknown)
+        when the cap is reached, and the scaffold probes.
 
         Raises:
             ExecutionError: wraps any Neo4j or network exception.
@@ -85,10 +91,13 @@ class CypherConnector:
             ) as session:
                 result = session.run(Query(query, timeout=timeout_s), params)
                 rows: list[dict[str, Any]] = []
+                more = False
                 for record in result:
-                    rows.append(dict(record))
                     if len(rows) >= max_rows:
+                        more = True          # a record beyond the cap exists
                         break
-                return rows
+                    rows.append(dict(record))
+                truncated: bool | None = True if more else (None if len(rows) >= max_rows else False)
+                return Rows(rows, truncated=truncated, ceiling=max_rows)
         except Exception as exc:
             raise ExecutionError(str(exc)) from exc

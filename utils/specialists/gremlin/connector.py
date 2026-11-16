@@ -20,6 +20,7 @@ from concurrent.futures import ThreadPoolExecutor
 from typing import Any
 
 from utils.specialists.errors import ExecutionError
+from utils.specialists.rows import Rows
 
 logger = logging.getLogger("ariadne.specialists.gremlin")
 
@@ -82,8 +83,12 @@ class GremlinConnector:
         query: str,
         params: dict[str, Any],
         limits: dict[str, int],
-    ) -> list[dict[str, Any]]:
+    ) -> Rows:
         """Submit *query* with *params* and return up to max_result_rows rows.
+
+        Never silently: ``truncated`` is True when the server returned more rows
+        than the cap, None when exactly the cap came back (the scaffold probes),
+        False otherwise.
 
         Raises ExecutionError on any backend failure.
         """
@@ -111,7 +116,8 @@ class GremlinConnector:
                 # elementMap() always returns dict; keep unexpected shapes so the
                 # normalizer can inspect them.
                 capped.append({"_raw": row})
-        return capped
+        truncated: bool | None = True if len(rows) > max_rows else (None if len(rows) == max_rows else False)
+        return Rows(capped, truncated=truncated, ceiling=max_rows)
 
     def _submit_in_worker(
         self, query: str, params: dict[str, Any], timeout_s: float

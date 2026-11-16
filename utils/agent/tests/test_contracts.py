@@ -135,3 +135,30 @@ def test_an_envelope_dumps_to_json_and_back():
     env = AnswerEnvelope(run_id="r", status="not_expressible", path="loop",
                          reason="'trend over time' needs a time-series operator")
     assert validate_envelope(json.loads(env.model_dump_json())) == env
+
+
+# --------------------------------------------------------------------------- #
+# Step 5: the fast path carries full result sets, and a cut set makes it partial
+# --------------------------------------------------------------------------- #
+
+
+def test_fast_path_envelope_carries_full_sets_and_handles(tmp_path):
+    from utils.agent.contracts import envelope_from_synthesis
+    from utils.agent.handles import HandleStore
+    from utils.specialists.contracts import EvaluatorTrace
+    from utils.synthesis.composer import DeterministicComposer
+    from utils.synthesis.tests._fixtures import make_evidence, make_record, make_result
+
+    full = make_result(sub_question_id="q1", records=[make_record(f"T{1000 + i}") for i in range(30)])
+    cut = make_result(sub_question_id="q2", records=[make_record(f"M{1000 + i}", label="Mitigation") for i in range(4)])
+    cut.traces.append(EvaluatorTrace("ceiling", ok=False, detail={"row_ceiling": 4}))
+    ev = make_evidence([full, cut])
+    answer = DeterministicComposer().compose(ev)
+    store = HandleStore(tmp_path / "h.sqlite", "r_fast")
+    env = envelope_from_synthesis(answer, "r_fast", evidence=ev, store=store)
+    assert env.status == "partial" and [s.handle for s in env.answer.sets] == ["set:1", "set:2"]
+    first, second = env.answer.sets
+    assert first.total == 30 and len(first.ids) == 30 and first.complete and first.kind == "Technique"
+    assert not second.complete and second.kind == "Mitigation"
+    assert list(store.get("set:1").ids) == first.ids          # the stored set is the full set
+    store.close()

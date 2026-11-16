@@ -1511,6 +1511,14 @@ def _enumeration_claim(
     )
 
 
+def _row_ceiling(result: SpecialistResult) -> int | None:
+    """The row ceiling a result was cut at, from its ``ceiling`` trace (Era 2 Step 5), else None."""
+    for trace in getattr(result, "traces", None) or []:
+        if getattr(trace, "step", None) == "ceiling":
+            return int((trace.detail or {}).get("row_ceiling") or 0) or None
+    return None
+
+
 def _primary_enumeration_claim(result: SpecialistResult) -> Claim:
     """A claim naming *every* primary id a multi-record result returned.
 
@@ -1519,9 +1527,8 @@ def _primary_enumeration_claim(result: SpecialistResult) -> Claim:
     the fact claim cites only the first ``cap``. This lists them all, each cited
     to its own record so every id is grounded."""
     records = [r for r in result.records if r.primary_id]
-    ids: list[str] = list(dict.fromkeys(r.primary_id for r in records))[
-        : _enum_bound("MAX_ENUMERATION_IDS", _MAX_ENUMERATION_IDS)
-    ]
+    every: list[str] = list(dict.fromkeys(r.primary_id for r in records))
+    ids: list[str] = every[: _enum_bound("MAX_ENUMERATION_IDS", _MAX_ENUMERATION_IDS)]
     idset = set(ids)
     citations: list[Citation] = []
     seen: set[str] = set()
@@ -1536,8 +1543,19 @@ def _primary_enumeration_claim(result: SpecialistResult) -> Claim:
                 )
             )
     listed = _summarize_ids(ids, cap=len(ids))
+    # Never "All N" for a list that was cut (Era 2 Step 5). Two different cuts:
+    # the listing bound (this composer), and the row ceiling (the database query).
+    ceiling = _row_ceiling(result)
+    if ceiling:
+        lead = (f"At least {len(every)} result(s) for this question (the query stopped at its row "
+                f"ceiling of {ceiling}; more exist)")
+    elif len(every) > len(ids):
+        lead = f"{len(every)} result(s) for this question"
+    else:
+        lead = f"All {len(ids)} result(s) for this question"
+    shown = f"; the first {len(ids)} are listed: " if len(every) > len(ids) else ": "
     return Claim(
-        text=f"All {len(ids)} result(s) for this question: {listed}.",
+        text=f"{lead}{shown}{listed}.",
         citations=tuple(citations),
         entity_ids=tuple(ids),
         kind="enumeration",
@@ -1671,6 +1689,13 @@ class DeterministicComposer:
                 notes.append(
                     f"The {result.task.source} specialist failed and contributed "
                     f"no evidence: {result.error or 'unknown error'}"
+                )
+            ceiling = _row_ceiling(result)
+            if ceiling and result.records:
+                notes.append(
+                    f"The {result.task.source} result for {result.task.sub_question_id} was cut at the "
+                    f"row ceiling of {ceiling}: more matching rows exist than were retrieved, so this "
+                    "answer is partial."
                 )
 
         join_index = evidence.join_index()

@@ -282,6 +282,12 @@ class GremlinValidator(BaseValidator):
             )
         return reasons
 
+    def cap_at(self, query: str, rows: int) -> str:
+        """``query`` with its trailing ``.limit(n)`` set to ``rows`` (the scaffold's probe, Step 5)."""
+        if _LIMIT_TRAILING_RE.search(query) is None:
+            return query.rstrip() + f".limit({rows})"
+        return _LIMIT_TRAILING_RE.sub(f".limit({rows})", query)
+
     def inject_caps(
         self, query: str, limits: dict[str, int], card: Any
     ) -> tuple[str, list[str]]:

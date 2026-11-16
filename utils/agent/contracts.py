@@ -183,14 +183,46 @@ def validate_envelope(data: dict[str, Any]) -> AnswerEnvelope:
     return AnswerEnvelope.model_validate(data)
 
 
+def sets_from_evidence(evidence: Any, store: Any = None) -> list[AnswerSet]:
+    """One set per specialist result that returned records (Era 2 Step 5).
+
+    Each set holds every distinct primary id the result returned -- the full
+    result, not what the composer chose to list -- and is stored under a handle
+    when a :class:`~utils.agent.handles.HandleStore` is given. A result cut at
+    the row ceiling is ``complete=False``, and its ``total`` is then a lower
+    bound (the ids retrieved), never presented as the true size.
+    """
+    from collections import Counter
+
+    results = getattr(evidence, "results", None)
+    if results is None and isinstance(evidence, dict):
+        results = evidence.get("results") or []
+    out: list[AnswerSet] = []
+    for i, r in enumerate(results or []):
+        records = getattr(r, "records", None) or []
+        ids = list(dict.fromkeys(str(x.primary_id) for x in records if getattr(x, "primary_id", None)))
+        if not ids:
+            continue
+        kind = Counter(getattr(x, "label", "") or "" for x in records).most_common(1)[0][0] or "unknown"
+        complete = not any(getattr(t, "step", None) == "ceiling" for t in getattr(r, "traces", None) or [])
+        handle = f"result:{getattr(getattr(r, 'task', None), 'sub_question_id', None) or i + 1}"
+        if store is not None:
+            handle = store.put(kind, ids, total=len(ids), complete=complete, query=getattr(r, "query", "") or "",
+                               origin={"path": "fast", "sub_question_id": handle[7:]}).handle
+        out.append(AnswerSet(handle=handle, kind=kind, total=len(ids), complete=complete, ids=sorted(ids)))
+    return out
+
+
 def envelope_from_synthesis(answer: Any, run_id: str, *, served_model: str | None = None,
-                            seconds: float = 0.0) -> AnswerEnvelope:
+                            seconds: float = 0.0, evidence: Any = None, store: Any = None) -> AnswerEnvelope:
     """The fast path's envelope: today's pipeline answer (``SynthesizedAnswer`` or its dict).
 
     Only claims the verifier supported are shown (a dict without verdicts, as in
-    the recorded answers, is taken as already rendered). The era-1 pipeline has
-    no server-side handles, so ``answer.sets`` is empty until Step 5 adds them;
-    the claims' citations carry the identifiers instead.
+    the recorded answers, is taken as already rendered). With ``evidence``, the
+    answer carries the full result sets (:func:`sets_from_evidence`), stored as
+    handles when ``store`` is given, and an answer resting on a cut set is
+    ``partial``. Without it (the recorded answers), ``answer.sets`` is empty and
+    the claims' citations carry the identifiers.
     """
     d = answer.to_dict() if hasattr(answer, "to_dict") else dict(answer)
     claims = [c for c in d.get("claims") or []
@@ -204,10 +236,12 @@ def envelope_from_synthesis(answer: Any, run_id: str, *, served_model: str | Non
                 seen.add(key)
                 cites.append(CitationRef(id=key[0], source=key[1]))
     trace = Trace(steps=0, served_model=served_model, seconds=seconds)
+    sets = sets_from_evidence(evidence, store) if evidence is not None else []
     if claims:
         text = (d.get("narrative") or d.get("headline") or " ".join(c.get("text", "") for c in claims)).strip()
-        return AnswerEnvelope(run_id=run_id, status="answered", path="fast",
-                              answer=Answer(text=text or claims[0].get("text", "")),
+        status = "partial" if any(not s.complete for s in sets) else "answered"
+        return AnswerEnvelope(run_id=run_id, status=status, path="fast",
+                              answer=Answer(text=text or claims[0].get("text", ""), sets=sets),
                               citations=cites, trace=trace)
     statements = [a.get("statement", "") for a in d.get("abstentions") or [] if a.get("statement")]
     reason = "; ".join(statements) or d.get("fallback_reason") or "no verified claims"
@@ -248,6 +282,7 @@ __all__ = [
     "Confidence",
     "Trace",
     "envelope_from_synthesis",
+    "sets_from_evidence",
     "strip_clock",
     "validate_envelope",
     "write_schemas",

@@ -288,6 +288,28 @@ class QuerySpecialist:
             )
         return None
 
+    def _truncated(self, rows: Any, query: str, params: dict[str, Any], limits: dict[str, int]) -> bool:
+        """Whether ``rows`` were cut at the row ceiling (Era 2 Step 5: never silently).
+
+        The connector says so when it saw a row beyond the cap. When the query's
+        own LIMIT equalled the cap and the result filled it exactly, the query is
+        run once more with one extra row allowed; a row there means more exist.
+        A validator that cannot raise its cap leaves the result unprovable, and
+        an unprovable result is treated as cut.
+        """
+        flag = getattr(rows, "truncated", None)
+        if flag is not None:
+            return bool(flag)
+        ceiling = int(limits.get("max_result_rows") or 0)
+        if not ceiling or len(rows) < ceiling:
+            return False
+        cap_at = getattr(self.validator, "cap_at", None)
+        if cap_at is None:
+            return True
+        probe = self.connector.run(cap_at(query, ceiling + 1), params,
+                                   {**limits, "max_result_rows": ceiling + 1})
+        return len(probe) > ceiling
+
     def _effective_limits(self, task: SpecialistTask) -> dict[str, int]:
         return {
             "max_traversal_depth": task.max_depth(),
@@ -354,12 +376,24 @@ class QuerySpecialist:
                         ok=False, partial=True, error=str(exc),
                     )
                 elapsed_ms = round((time.perf_counter() - started) * 1000, 1)
+                truncated = self._truncated(rows, result.query, result.params, limits)
                 traces.append(
                     EvaluatorTrace(
                         "execute", ok=True, reasons=[],
-                        detail={"row_count": len(rows), "timing_ms": elapsed_ms},
+                        detail={"row_count": len(rows), "timing_ms": elapsed_ms,
+                                "row_ceiling": limits.get("max_result_rows"), "truncated": truncated},
                     )
                 )
+                if truncated:
+                    # Never silently (Era 2 Step 5): the answer is explicitly partial.
+                    traces.append(
+                        EvaluatorTrace(
+                            "ceiling", ok=False,
+                            reasons=[f"result cut at the row ceiling of {limits.get('max_result_rows')}; "
+                                     "more rows exist"],
+                            detail={"row_ceiling": limits.get("max_result_rows"), "rows_returned": len(rows)},
+                        )
+                    )
 
                 # Both engines, unioned. The primary draft has already run;
                 # this drafts and runs the OTHER one and folds in the rows it
@@ -453,7 +487,7 @@ class QuerySpecialist:
                     )
                 summary = self.normalizer.summarize(records, resolved)
                 ok = not contract
-                partial = bool(join_problems) or assessment.partial
+                partial = bool(join_problems) or assessment.partial or truncated
                 return SpecialistResult(
                     task=task,
                     query=result.query,

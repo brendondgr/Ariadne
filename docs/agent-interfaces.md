@@ -188,7 +188,12 @@ producer yielded no join values;
 observation trace — `"anchor"` (the question named more than one entity and the
 specialist declined to choose; `detail.ambiguous_candidates` carries the
 `(id, name)` pairs, which `synthesis/composer.py::abstention_for` renders as
-*"did you mean …?"* rather than guessing). The `"gate"`
+*"did you mean …?"* rather than guessing), and one truncation trace —
+`"ceiling"` (Era 2 Step 5: the result was cut at `max_result_rows` and more rows
+exist; `ok` is false, `detail` carries `row_ceiling` and `rows_returned`, and the
+result is `partial`. The `"execute"` trace's `detail` always carries
+`row_ceiling` and `truncated`, so a full result is distinguishable from a cut
+one). The `"gate"`
 trace repeats per retry attempt, carrying the attempt number, template name,
 validated query, and injected caps in `detail`. Per-step timing (`timing_ms`)
 rides `detail` on the gate/execute/assess/normalize traces.

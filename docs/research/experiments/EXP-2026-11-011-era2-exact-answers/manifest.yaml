@@ -1,0 +1,74 @@
+# Filled by scripts/new_experiment.py. Every field below is required unless
+# marked optional. Do not delete a field you do not know — record it as null or
+# "unknown" and explain in ISSUES.md. Inventing a value is worse than admitting
+# a gap.
+id: EXP-2026-11-011
+slug: era2-exact-answers
+title: "Era 2 Step 5: exact answers, result handles, and nothing cut silently"
+status: running            # planned | running | complete | failed | superseded
+date_started: 2026-11-16
+date_completed: null       # null until status is complete/failed
+authors: ["brendondgr", "Claude Opus 5.5"]
+
+purpose: >
+  Step 5 makes every result exact and every cut explicit: connectors and the scaffold detect a result cut at its row ceiling (partial, with a ceiling trace), the composer never writes All N for a cut list, the agent layer fetches full sets with exact totals in Neo4j and Gremlin (stream or keyset), keeps them as set handles in the run log with set operations, and shows the agent a lossless view with an empty-result diagnosis; the fast-path envelope carries the full sets. This records the gates and the hub, regression and ceiling measurements.
+
+hypothesis: >
+  Gates: zero silent truncations (G1); paged equals unpaged and totals equal the database count on the fixture graphs, both backends identical (G2); set_op intersect equals the database-side intersection (G3); every enumeration claim's N equals what it lists plus what it withholds, with no ceiling hit, on 284 dev answers (G4). Expectations: 10^5 and 10^6 hubs exact within the 5 s card timeout at p95 (E1); regression answers unchanged (E2); 0 of 284 dev questions hit the 20,000-row ceiling (E3).
+
+# --- Reproducibility block (all fields mandatory) ---
+code:
+  commit: 38e803e5940c4027788b346217a7f0d2a67dcd60          # 40-char sha, or "unknown" for a back-filled experiment
+  branch: main
+  entrypoint: "uv run python scripts/era2_hub_bench.py bench --out docs/research/experiments/EXP-2026-11-011-era2-exact-answers/data; uv run python scripts/era2_exact_check.py --out docs/research/experiments/EXP-2026-11-011-era2-exact-answers/data"
+  dirty: true             # uncommitted changes at run time? if true, explain in ISSUES.md
+config:
+  path: null               # repo-relative path, or null if the run takes no config file
+  hash: null               # sha256:... of that file
+data:
+  name: "Kill-test CypherBench graphs (Neo4j :5470, Gremlin :6470); synthetic hubs of 10^5 and 10^6 edges (scratch containers); dev bank (284) and banks 2026-08-19/20"
+  version: "2026-11-16"
+  split: "dev"
+  n_examples: 344
+  dvc_path: null           # this repository does not use DVC; leave null
+  hash: null               # md5:... or sha256:... of the dataset artifact
+seeds: []                  # [] means seeds were not recorded — say so in ISSUES.md
+n_runs: 1                  # SYSTEM runs over the question set — grading passes are not runs
+environment:
+  python: "3.13"
+  lockfile: env/requirements.lock
+  container: null
+compute:
+  hardware: "32-core x86_64 host, 121 GB RAM; scratch containers era2-hub-neo4j (neo4j:5.26) and era2-hub-gremlin (gremlin-server 3.8.0)"
+  wall_clock_hours: 0.0
+  estimated_cost_usd: 0.0
+
+# --- LLM / agentic block (delete entirely if no model was in the loop) ---
+llm:
+  model: "none (model-free)"
+  temperature: 0.0
+  top_p: 1.0
+  max_tokens: 2048
+  prompt_files: []
+  prompt_hash: null
+  tool_schema_hash: null
+  total_input_tokens: null
+  total_output_tokens: null
+  nondeterminism_note: >
+    Provider-side nondeterminism remains even at temperature 0; results
+    are reported as mean ± std over n_runs.
+
+# --- Results block ---
+metrics:
+  primary: <metric name>
+  values: {}               # {metric: {mean: 0.0, std: 0.0, n: 1}} — must be non-empty when status: complete
+  withdrawn: {}            # values later retracted by amendment: {metric: {mean, std, n, withdrawn_on, reason, replaced_by}}
+baselines_compared: []
+statistical_test: null
+
+# --- Linkage ---
+supports_claims: []        # every ID here must exist in ../../CLAIMS.md
+figures: []                # every name here must have a file in figures/ and vice versa
+supersedes: null           # set in BOTH manifests or in neither; the validator checks symmetry
+superseded_by: null
+related: []

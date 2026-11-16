@@ -208,6 +208,16 @@ class CypherValidator(BaseValidator):
                 )
         return reasons
 
+    def cap_at(self, query: str, rows: int) -> str:
+        """``query`` with its row cap (the LIMIT ``inject_caps`` governs) set to ``rows``.
+
+        Used once, by the scaffold, to probe whether a result that filled the
+        ceiling exactly was complete (Era 2 Step 5).
+        """
+        if _LIMIT_RE.search(query) is None:
+            return query.rstrip().rstrip(";") + f" LIMIT {rows}"
+        return _LIMIT_RE.sub(f"LIMIT {rows}", query, count=1)
+
     def inject_caps(
         self, query: str, limits: dict[str, int], card: Any
     ) -> tuple[str, list[str]]:
