@@ -228,3 +228,35 @@ single cause.
 
 **No second annotator** is run for this amendment. The coder's agreement was measured in the
 main run (κ 0.71) and the rules are unchanged.
+
+## Amendment A-2 (written 2026-11-16, before the run): fixing the builder walk
+
+**The fix.** `GremlinQueryBuilder` capped its generic walk at a fixed 3 hops: `repeat(...).times(3)`
+and 3-hop path branches, whatever depth the plan set. It now uses the plan's
+`max_traversal_depth`, still capped at 3.
+
+**The regressions, already run before this amendment:**
+- the deterministic arm on bank-2026-08-19 and bank-2026-08-20, before against after the fix:
+  30 of 30 byte-identical on each;
+- `generic_composed` on the 284 dev questions, against A-1's answers: 284 of 284 byte-identical.
+
+So the baselines do not move.
+
+**The run.** All three arms again, back to back at the fix's commit, with 32 workers, the same
+way as A-1:
+- `generic_composed` and `generic_planned`, socket-guarded;
+- `generic_planned_llm` on Qwen 3.8 27B at `reasoning_effort=medium`.
+
+The same coder then codes the losses.
+
+**Expectations:**
+- `generic_composed` stays at 0.8526.
+- The Qwen planner's lost set shrinks by about the 19 builder-walk cases, so 71 becomes about 52
+  or fewer.
+- Its coverage rises by about +0.05.
+- No builder-walk mechanism remains among its losses.
+- The deterministic planner may also gain a little, because its depth is 3 and the walk could
+  only have changed below depth 3.
+
+**Caveat:** the LLM planner reruns, so its plans may differ slightly from A-1's. The paired
+comparison is against A-1's arm, and per-question changes are reported.

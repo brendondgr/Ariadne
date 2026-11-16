@@ -844,3 +844,38 @@ def test_a_label_anchors_the_next_step_only(generic_only: None) -> None:
         ("in", "MEMBER_OF", "Category"),
         ("out", "HAS_EXECUTION_STEP", ""),
     ]
+
+
+# --------------------------------------------------------------------------- #
+# Era 2 Step 4 (EXP-2026-11-009): the walk honours the plan's depth
+# --------------------------------------------------------------------------- #
+
+
+@pytest.mark.parametrize("depth, times", [(1, 1), (2, 2), (3, 3), (5, 3), (None, 3)])
+def test_the_hierarchy_walk_never_exceeds_the_plans_depth(generic_only: None, depth, times) -> None:
+    """A fixed times(3) under a depth-1 plan was rejected by the validator before it ran.
+
+    That cost 19 of the Qwen planner's 71 lost questions, in plans that named
+    every right relation (EXP-2026-11-009 A-1). The walk now goes as deep as the
+    plan allows, capped at 3; an authored plan (depth 3) is unchanged.
+    """
+    limits = {} if depth is None else {"max_traversal_depth": depth}
+    resolved = _capec(
+        "Which CAPEC attack patterns can CAPEC-174 also be carried out as?",
+        ("AttackPattern", "ChildOf"), limits=limits,
+    )
+    draft = GremlinQueryBuilder().build(resolved)
+    assert draft.template == "generic_walk"
+    assert f".times({times}).emit()" in draft.query
+    assert ".times(3)" not in draft.query or times == 3
+
+
+def test_a_depth_one_walk_passes_the_validator(generic_only: None) -> None:
+    from utils.specialists.gremlin.validator import GremlinValidator
+
+    resolved = _capec(
+        "Which CAPEC attack patterns can CAPEC-174 also be carried out as?",
+        ("AttackPattern", "ChildOf"), limits={"max_traversal_depth": 1},
+    )
+    draft = GremlinQueryBuilder().build(resolved)
+    assert GremlinValidator().cap_reasons(draft.query, fixture_card("capec"), {"max_traversal_depth": 1}) == []

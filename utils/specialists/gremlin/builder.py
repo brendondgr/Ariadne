@@ -102,6 +102,24 @@ _REL_TARGET_LABEL: dict[str, str] = {
 # builder's cap; the traversal-depth limit is the operative bound above it.
 _MAX_WALK_HOPS = 3
 
+
+def _walk_hops(resolved: Any) -> int:
+    """How far a generic walk may go: the plan's own depth, never more than 3.
+
+    Era 2 Step 4 (EXP-2026-11-009) found the walk emitting a fixed
+    ``repeat(...).times(3)`` and 3-hop path branches whatever depth the plan set,
+    and the validator then rejecting the builder's own query against that depth
+    (``times(3) exceeds max_traversal_depth 1``): 19 of 71 of the Qwen planner's
+    lost questions, in plans that named every right relation. Authored plans use
+    depth 3, so their queries are unchanged.
+    """
+    limits = getattr(getattr(resolved, "task", None), "limits", None) or {}
+    try:
+        depth = int(limits.get("max_traversal_depth") or _MAX_WALK_HOPS)
+    except (TypeError, ValueError):
+        depth = _MAX_WALK_HOPS
+    return max(1, min(_MAX_WALK_HOPS, depth))
+
 _CAPEC_NUM_RE = re.compile(r"CAPEC-(\d+)", re.IGNORECASE)
 _CWE_NUM_RE = re.compile(r"^CWE-(\d+)$", re.IGNORECASE)
 _ATTACK_ENTRY_RE = re.compile(r"^T(\d{4}(?:\.\d{3})?)$", re.IGNORECASE)
@@ -1144,7 +1162,7 @@ class GremlinQueryBuilder:
             if not wanted:
                 continue
             paths = shortest_paths(
-                registry, resolved.dataset, anchor, max_hops=_MAX_WALK_HOPS
+                registry, resolved.dataset, anchor, max_hops=_walk_hops(resolved)
             )
             for prefix in edge_prefixes(paths, wanted):
                 merged.setdefault((anchor, prefix), None)
@@ -1208,7 +1226,7 @@ class GremlinQueryBuilder:
                 (
                     1,
                     f'{_guard(root)}.repeat(__.{step}("{_edge(rel)}"))'
-                    f".times({_MAX_WALK_HOPS}).emit()",
+                    f".times({_walk_hops(resolved)}).emit()",
                 )
             )
         for root, path in prefixes:
