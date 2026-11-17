@@ -1072,3 +1072,36 @@ still restores the pre-2026-09-15 behaviour byte-for-byte.
   done.
 
 **Reversible.** All are one flag; all are recorded with their falsifiers.
+
+## D-039 — One decision model at a time: pplx-decider by default, d3-lite as the fallback, never both (2026-11-17)
+
+**Operator, 2026-11-17.** pplx-decider and d3-lite will not run at the same time. Most users
+will have only one of them, and so will the project most of the time. The agent is
+configured with one decision model.
+- **pplx-decider is the default.** It has better ratings and is about four to five times
+  larger than d3-lite (0.85B).
+- **d3-lite is the fallback.**
+
+**What the data says** (`EXP-2026-11-014`, single-model setups only):
+
+| Model | Relation choice (D4) | Grounding (D2+D3) |
+|---|---|---|
+| pplx | 0.7306 accuracy (plain readings, two option orders averaged); a 0.3125 gate when choosing from its own readings shortlist (not pre-registered) | 0.6952 accuracy; a 0.2091 gate with two orders |
+| d3 | 0.6315 accuracy; a 0.222 gate with readings and two orders | 0.6776 accuracy; a 0.2796 gate with two orders |
+
+So pplx leads clearly on relation choice, and the two are close on grounding.
+
+**Not deployable**, though kept in the record as measurements: every cell that needs both
+models.
+- the pplx + d3 average, including the 0.4131 grounding gate;
+- shortlists made by one model and chosen from by the other;
+- agreement votes.
+
+**The single-model recipe for every fast decision in Step 8 onward:**
+1. Plain one-line readings as relation option text.
+2. Every decision asked in two option orders, with the probabilities averaged.
+3. For relation choice with pplx, a pplx shortlist and then a pplx choice from it. This is
+   to be confirmed on held-out data.
+
+**Reversible.** The decision model is one setting. If both servers become reliably available
+together, the combined cells can be reconsidered.

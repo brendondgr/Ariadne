@@ -2,6 +2,21 @@
 
 ## 1. Headline
 
+### Operator decision after round 2 (2026-11-17, D-039): one decision model at a time
+
+Only one decision model will be available at a time, so **every result below that needs both
+pplx and d3 is not deployable.** That covers the two-model average and its 0.4131 grounding
+gate, and the cross-model shortlists. pplx-decider is the default, and d3-lite the fallback.
+
+**The best single-model setups:**
+- **Relation choice:** pplx with readings and two orders averaged (0.7306). The best gate is
+  pplx choosing from its own readings shortlist (0.3125). d3 with readings and two orders is
+  0.6315, with a 0.222 gate.
+- **Grounding:** pplx (0.6952, or a 0.2091 gate with two orders). d3 with two orders gives a
+  0.2796 gate at 0.6776.
+
+The sections below are kept as measured.
+
 ### Round 2 (amendment 2): averaging makes the fast models gates
 
 **Averaging each model over two option orders fixes the order instability that kept fast
@@ -353,10 +368,12 @@ and that interval also includes 0.
 
 ### What it means for the agent (Step 8 onward)
 
-**Round 2 adds three things:**
+**Round 2 adds three things** (the second is superseded by D-039: one decision model only):
 - **Always average a fast model over two option orders** before using its confidence as a
   gate. That costs one extra request, of about 0.2–0.3 s.
-- **On grounding, average pplx and d3:** it has the largest fast-gate coverage.
+- ~~**On grounding, average pplx and d3:** it has the largest fast-gate coverage.~~ Not
+  deployable under D-039. Use pplx with two orders (0.2091 gate), or d3 with two orders
+  (0.2796) where d3 is the model on hand.
 - **On relation choice there are two candidate gates.** One is d3 with readings, averaged;
   the other is pplx on its readings shortlist. Each gates about a fifth to a third of items.
 
