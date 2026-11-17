@@ -46,6 +46,8 @@ kind; their detail is kept privately with the rest of the positioning material (
 | Q59 | An entity name is never looked up unless the router first picks a dataset, so a question naming a thing in ordinary words binds nothing | EXP-2026-09-021 A-1; EXP-2026-09-023 H2 | lookup order fixed behind `ARIADNE_ANCHOR_BEFORE_ROUTING`: unresolved T3 anchors 37 → 4 of 101; the remaining T3 loss is the rung's rendering, not the bind *(amended)* |
 | Q60 | Can portable candidate discovery become accurate open-question answers through role-aware selection, reranking, and evidence completion? | EXP-2026-09-022; EXP-2026-09-023 Step 0; EXP-2026-09-028 | the shipped index beats the prototype at every budget ≥ 5; a reranked, disclosed closed choice reaches 0.125/0.20 exact at wrong-entity 0.10/0.15 on the sealed bank and 0.35 wrong at T4 on the exposed bank — a clarification, not an answer *(amended)* |
 | Q61 | The card banks are written by the same model (Qwen 3.8 27B) that era 2's agent will plan with | EXP-2026-11-012 | every era-2 figure scored on the card-2026-11-16 banks *(partly answered: scored banks re-worded by Sonnet; the gap is measured when the agent is first scored)* |
+| Q62 | No model, the reasoning baseline included, reliably says "none of these" when the right entity or relation is not offered | EXP-2026-11-013 | the grounding and relation-choice gates in era 2's agent *(open)* |
+| Q63 | The exit decision cannot be left to a model: even the reasoning baseline misses most ambiguity and path-search or similarity requests | EXP-2026-11-013 | the agent's four exits (plan v2 Steps 8 onward) *(open)* |
 
 ---
 
@@ -1102,3 +1104,48 @@ chose to re-word every question, not a sample.
   verbatim ("Which DetectionStrategy entries ..."); none of Sonnet's do. Part of any gap may
   be that easier phrasing, not authorship.
 
+### Q62 — Nothing reliably says "none of these"
+
+**Opened 2026-11-17** by `EXP-2026-11-013`. Step 7 tested grounding (D2/D3) and relation
+choice (D4) with a "none of these" option.
+
+- **Grounding.** When the right entity was missing from the candidates, the share that said
+  "none of these" was:
+  - Qwen 3.8 27B with reasoning: 56%;
+  - the same model read through its option probabilities: 40%;
+  - pplx-decider: 33%;
+  - d3-lite: 26%.
+- **Relation choice.** "None" recall ran from 0.12 to 0.33, the baseline at 0.33.
+- **When the answer is offered, the models do well.** Qwen without reasoning picks the right
+  entity on 94% of items, the same as with reasoning.
+
+- **Why it matters:** a gate built on a model's top option accepts a confident wrong entity
+  or relation whenever the right one was never retrieved. That is the loss era 1 attributed
+  to wrong relation choice (Q57).
+
+**To settle:** on the Step 7 items, test two signals as a gate in front of the choice:
+- a separate yes/no question ("is the thing the question means among these?");
+- the name index's score gap between the top candidates.
+
+Report "none" recall and the wrong rate on the positive items.
+
+### Q63 — The exit decision needs rules before a model
+
+**Opened 2026-11-17** by `EXP-2026-11-013`. On the 189 exit items:
+- **The baseline.** Qwen with reasoning scores 0.69. It sends 33 of 51 ambiguous items and 17
+  of 53 out-of-coverage items to "answerable". It catches 2 of 10 path-search and 1 of 10
+  similarity requests.
+- **The fast models:** no fast model holds a gate. d3-lite answers "out of coverage" for 59
+  of 85 answerable items.
+
+- **Why it matters:** the agent's four exits (answer, ask, out of coverage, insufficient)
+  depend on this decision. An agent that answers an ambiguous question picks one reading
+  silently.
+
+**To settle:** build the two rules, then re-run the exit items and measure what is left for
+a model:
+- out of coverage: match the asked operation against the card's operator catalogue;
+- ambiguity: count the non-empty readings in the data.
+
+Also check whether the catalogue note's "repeat along further named relations" invites the
+path-search reading (EXP-2026-11-013 RESULTS §5).

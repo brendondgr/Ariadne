@@ -5,9 +5,9 @@
 id: EXP-2026-11-013
 slug: era2-decision-models
 title: "Era 2 Step 7: which closed decisions can small decision models own, by role"
-status: running            # planned | running | complete | failed | superseded
+status: complete           # planned | running | complete | failed | superseded
 date_started: 2026-11-16
-date_completed: null       # null until status is complete/failed
+date_completed: 2026-11-17
 authors: ["brendondgr", "Claude Opus 5.5"]
 
 purpose: >
@@ -18,10 +18,10 @@ hypothesis: >
 
 # --- Reproducibility block (all fields mandatory) ---
 code:
-  commit: 9884d451e393ddaceb5a4739ddf5bf7ddabd406a          # 40-char sha, or "unknown" for a back-filled experiment
+  commit: f68d934cd84db5d49fc8229b48efe95f68b1bd82          # 40-char sha, or "unknown" for a back-filled experiment
   branch: main
   entrypoint: "uv run python scripts/era2_decisions.py build --phase A --out docs/research/experiments/EXP-2026-11-013-era2-decision-models/data; ... run --arms qwen_prob,pplx,d3,qwen_reason; ... score"
-  dirty: false            # uncommitted changes at run time? if true, explain in ISSUES.md
+  dirty: true             # score/latency edits only, never the run path; see ISSUES 2026-11-17
 config:
   path: null               # repo-relative path, or null if the run takes no config file
   hash: null               # sha256:... of that file
@@ -29,9 +29,9 @@ data:
   name: "Decision items built from the Sonnet-worded card banks (tuning split only) and the ATT&CK/CAPEC graphs"
   version: "card-sonnet-2026-11-16 tuning"
   split: "tuning (split by anchor for thresholds; sealed held-out unread)"
-  n_examples: 0
+  n_examples: 1883
   dvc_path: null           # this repository does not use DVC; leave null
-  hash: null               # md5:... or sha256:... of the dataset artifact
+  hash: sha256:5e5be419b99d2f3825d0a27c67bad52dd696f31d09be2147b0169da684d07680
 seeds: [20261116]          # [] means seeds were not recorded — say so in ISSUES.md
 n_runs: 1                  # SYSTEM runs over the question set — grading passes are not runs
 environment:
@@ -40,7 +40,7 @@ environment:
   container: null
 compute:
   hardware: "32-core x86_64 host, 121 GB RAM; relay :9090 (Qwen 3.8 27B), pplx-decider :7500, d3-lite :5107"
-  wall_clock_hours: 0.0
+  wall_clock_hours: 3.5
   estimated_cost_usd: 0.0
 
 # --- LLM / agentic block (delete entirely if no model was in the loop) ---
@@ -55,15 +55,36 @@ llm:
   total_input_tokens: null
   total_output_tokens: null
   nondeterminism_note: >
-    Provider-side nondeterminism remains even at temperature 0; results
-    are reported as mean ± std over n_runs.
+    One run. Qwen arms at temperature 0, pplx-decider at its explicit 1.0, d3-lite at its default;
+    provider-side nondeterminism is not measured here. The option-order flip rate is the
+    reported stability figure.
 
 # --- Results block ---
 metrics:
-  primary: role_per_decision_and_model
-  values: {}               # {metric: {mean: 0.0, std: 0.0, n: 1}} — must be non-empty when status: complete
+  primary: d2d3_qwen_prob_gate_coverage
+  values:
+    d4_accuracy_qwen_reason: {mean: 0.8054, std: 0.0, n: 483}
+    d4_accuracy_qwen_prob: {mean: 0.6687, std: 0.0, n: 483}
+    d4_accuracy_pplx: {mean: 0.5942, std: 0.0, n: 483}
+    d4_accuracy_d3: {mean: 0.5093, std: 0.0, n: 483}
+    d4_qwen_prob_transfer_coverage: {mean: 0.2818, std: 0.0, n: 200}
+    d4_qwen_prob_transfer_wrong: {mean: 0.0625, std: 0.0, n: 200}
+    d2d3_accuracy_qwen_reason: {mean: 0.8161, std: 0.0, n: 397}
+    d2d3_accuracy_qwen_prob: {mean: 0.7683, std: 0.0, n: 397}
+    d2d3_accuracy_pplx: {mean: 0.6952, std: 0.0, n: 397}
+    d2d3_accuracy_d3: {mean: 0.6851, std: 0.0, n: 397}
+    d2d3_qwen_prob_gate_coverage: {mean: 0.5598, std: 0.0, n: 200}
+    d2d3_qwen_prob_gate_wrong: {mean: 0.0437, std: 0.0, n: 200}
+    d2d3_none_recall_qwen_reason: {mean: 0.5581, std: 0.0, n: 129}
+    exit_accuracy_qwen_reason: {mean: 0.6931, std: 0.0, n: 189}
+    exit_accuracy_pplx: {mean: 0.5132, std: 0.0, n: 189}
+    agreement_gate_d4_wrong: {mean: 0.2261, std: 0.0, n: 483}
+    agreement_gate_d2d3_coverage: {mean: 0.6599, std: 0.0, n: 397}
+    agreement_gate_d2d3_wrong: {mean: 0.0916, std: 0.0, n: 397}
+    d1_pplx_transfer_coverage: {mean: 0.9818, std: 0.0, n: 200}
+    d12_pplx_transfer_coverage: {mean: 1.0, std: 0.0, n: 200}
   withdrawn: {}            # values later retracted by amendment: {metric: {mean, std, n, withdrawn_on, reason, replaced_by}}
-baselines_compared: []
+baselines_compared: ["qwen_reason: Qwen 3.8 27B with reasoning (reference)", "agreement gate: accept only when qwen_prob, pplx and d3 agree (size-matched control)"]
 statistical_test: null
 
 # --- Linkage ---

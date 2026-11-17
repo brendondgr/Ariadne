@@ -187,7 +187,9 @@ ROLE_POPULATION = {
 
 
 def cmd_score(data: Path) -> None:
-    items = load_items(data)
+    # An item with a single option decides nothing (D4 "none" variants of one-relation labels): dropped
+    # for every arm alike (ISSUES 2026-11-16).
+    items = [it for it in load_items(data) if len(it.options) >= 2]
     recs = _records(data)
     by_dec: dict[str, list[Item]] = defaultdict(list)
     for it in items:
@@ -212,8 +214,11 @@ def cmd_score(data: Path) -> None:
             r = recs.get(arm)
             if not r:
                 continue
+            if not any((it.id, 0) in r for it in pop):
+                continue                      # this arm has not answered this decision
             rows_all = []
             by_stratum: dict[str, list] = defaultdict(list)
+            strat_groups: dict[str, dict[str, list]] = defaultdict(lambda: defaultdict(list))
             groups: dict[str, list] = defaultdict(list)
             for it in pop:
                 rec = r.get((it.id, 0))
@@ -223,6 +228,7 @@ def cmd_score(data: Path) -> None:
                 row = (p, c, it.gold)
                 rows_all.append(row)
                 by_stratum[it.stratum].append(row)
+                strat_groups[it.stratum][it.group].append(row)
                 if rule(it):
                     groups[it.group].append(row)
             role_rows = [x for g in groups.values() for x in g]
@@ -245,7 +251,8 @@ def cmd_score(data: Path) -> None:
                 am.update({"ece": S.ece(role_rows), "auroc": au, "flip": flip,
                            "wrong_at": {str(c): S.wrong_at_coverage(role_rows, c) for c in (0.9, 0.7, 0.5)},
                            "transfer": t,
-                           "transfer_by_stratum": {k: S.transfer({f"{i}": [x] for i, x in enumerate(v)}, splits=200)
+                           # split by anchor within the stratum, as for the whole population
+                           "transfer_by_stratum": {k: S.transfer(dict(strat_groups[k]), splits=200)
                                                    for k, v in sorted(by_stratum.items()) if len(v) >= 20},
                            "role": S.role(t, flip, au, am["accuracy_role_population"], base_acc,
                                           cap=CAP.get(rname))})
@@ -271,6 +278,8 @@ def cmd_score(data: Path) -> None:
             dm["agreement_gate"] = {"coverage": round(acc_n / len(role_pop), 4) if role_pop else None,
                                     "wrong": round(wrong_n / acc_n, 4) if acc_n else None}
         metrics["decisions"][rname] = dm
+    if (data / "latency.json").is_file():          # the sequential probe (cmd_latency), when taken
+        metrics["latency_sequential"] = json.loads((data / "latency.json").read_text())
     (data / "metrics.json").write_text(json.dumps(metrics, indent=1))
     tdir = data.parent / "tables"
     tdir.mkdir(exist_ok=True)
@@ -281,9 +290,33 @@ def cmd_score(data: Path) -> None:
             print(k, "agreement gate", v["agreement_gate"])
 
 
+def cmd_latency(data: Path, arms: list[str], n: int = 40) -> None:
+    """Single, sequential calls on a seeded sample of items (the protocol's latency measure)."""
+    from utils.decision.items import _h
+
+    items = sorted(load_items(data), key=lambda it: _h(20261116, "latency", it.id))
+    items = [it for it in items if len(it.options) >= 2][:n]
+    out = {}
+    for name in arms:
+        arm, ident = make_arm(name)
+        ms = []
+        for it in items[: (n // 2 if name == "qwen_reason" else n)]:
+            try:
+                ms.append(arm(it, it.orders()[0]).ms)
+            except Exception:  # noqa: BLE001 - a failed call has no latency
+                continue
+        out[name] = {**S.latency(ms), "n": len(ms), "identity": ident}
+        print(name, out[name], flush=True)
+        if name == "d3":
+            from utils.decision.clients import unload_d3
+
+            unload_d3()
+    (data / "latency.json").write_text(json.dumps(out, indent=1))
+
+
 def main(argv: list[str] | None = None) -> int:
     ap = argparse.ArgumentParser()
-    ap.add_argument("cmd", choices=["build", "run", "score"])
+    ap.add_argument("cmd", choices=["build", "run", "score", "latency"])
     ap.add_argument("--out", type=Path)
     ap.add_argument("--data", type=Path)
     ap.add_argument("--phase", default="A")
@@ -294,6 +327,8 @@ def main(argv: list[str] | None = None) -> int:
         cmd_build(a.out, a.phase)
     elif a.cmd == "run":
         cmd_run(a.data, a.arms.split(","), set(filter(None, a.decisions.split(","))) or None)
+    elif a.cmd == "latency":
+        cmd_latency(a.data, a.arms.split(","))
     else:
         cmd_score(a.data)
     return 0

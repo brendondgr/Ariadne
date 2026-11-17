@@ -126,5 +126,6 @@ this file says which number is *current*.
 | [`EXP-2026-11-010`](experiments/EXP-2026-11-010-minicpm-vs-qwen-cypherbench/) | 2026-11-15 | `on_typed3_3shot_cypher_minus_qwen` | -0.2200 ± 0.0000 (n=200) | — | — |
 | [`EXP-2026-11-011`](experiments/EXP-2026-11-011-era2-exact-answers/) | 2026-11-16 | `g4_mismatches` | 0.0000 ± 0.0000 (n=516) | — | — |
 | [`EXP-2026-11-012`](experiments/EXP-2026-11-012-era2-card-questions/) | 2026-11-16 | `g1_gold_reexecuted_fraction` | 1.0000 ± 0.0000 (n=837) | — | — |
+| [`EXP-2026-11-013`](experiments/EXP-2026-11-013-era2-decision-models/) | 2026-11-17 | `d2d3_qwen_prob_gate_coverage` | 0.5598 ± 0.0000 (n=200) | — | — |
 
-**24 withdrawn figure(s), 6 superseded experiment(s), 68 current headline(s).**
+**24 withdrawn figure(s), 6 superseded experiment(s), 69 current headline(s).**
