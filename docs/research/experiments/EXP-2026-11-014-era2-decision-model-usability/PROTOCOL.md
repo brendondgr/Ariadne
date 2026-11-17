@@ -313,3 +313,64 @@ uv run python scripts/era2_usability.py score --control $S/data --data $E/data
   - the call budget: 624 calls per model, not 730.
 - **Not changed:** the rule, the hypotheses and the falsifiers.
 
+
+## Amendment 1, 2026-11-17, before any model call: decision servers only
+
+**Operator, 2026-11-17:** no general language model is called in this experiment; only the
+two decision servers are used, pplx-decider on `:7500` and d3-lite on `:5107`. A general
+model is not trained for these decisions.
+
+**What changes:**
+
+- **No `qwen_prob` or `qwen_reason` calls.** Every row naming `qwen_prob` as a model is
+  dropped, and so is the Qwen column of the call table. The models are `pplx` and `d3`.
+- **Shortlist: decision models choose from the shortlist.**
+  - Each of `pplx` and `d3` shortlists from its own Step 7 records, with `q` fitted and
+    cross-fitted as before.
+  - Each shortlist is then put to both `pplx` and `d3` as a new choice item, in two orders.
+    That gives four cells (shortlister × chooser) on D4 and D2+D3.
+  - **The comparison is the chooser on the shortlist against the same chooser on the full
+    menu.** The full menu is the chooser's Step 7 record, kept as the control by the drift
+    check.
+- **Verifier: the decision models check each other's picks, and their own.**
+  - **Picks:** the first-order real picks in Step 7's records of `pplx` and of `d3`.
+  - **Verifiers:** `pplx` and `d3`, in two orders.
+  - **The gate comparison:** the verifier's probability of `yes` against the picker's own
+    top probability, on the same picks.
+- **End-to-end accuracy** still sends items that are not accepted to `qwen_reason`'s
+  *saved* Step 7 answers. This is a reference figure computed from committed records, with
+  no new call. It stands for "the controller", whatever model that turns out to be.
+
+**Hypotheses H4 and H6 are restated; H1, H2, H3 and H5 are unchanged except that `qwen_prob`
+is gone.**
+
+| | Hypothesis | Falsified if |
+|---|---|---|
+| **H4** shortlist | some fast model keeps the gold at ≥ 0.95 test recall with a median of ≤ 3 real options, on D4 and on D2+D3; and in at least one cell, the chooser on the shortlist is not worse than on the full menu by more than 0.02 | no model meets the recall and size bound, or every cell's lower bound on the accuracy difference is below −0.02 |
+| **H6** verifier | on D2+D3, a verifier's probability of `yes` gives a picker higher median gate coverage than its own confidence, at ≤ 0.05 median wrong, for at least one picker–verifier pair; on D4, some pair gives a gate where the picker's own confidence gives none | neither part holds |
+
+**Calls, revised** (pplx and d3 each):
+
+| Treatment | Requests per server |
+|---|---:|
+| Drift check | 200 |
+| Wording | 976 |
+| Yes/no | 1,770 |
+| Wording × yes/no | 976 |
+| Rule filter | 624 |
+| Shortlist, chooser | 3,540 |
+| Verifier | about 3,200 |
+
+**Server state at the time of writing.** `:7500` is an SSH tunnel whose far end resets the
+connection. The pplx runs wait until the server is back, and the drift check runs first
+when it is.
+
+**Counts from the builder** (`data/build.json`), before any call:
+- **The relation role population is 464 items:** 458 with two or more real options, plus 6
+  "none" items that keep one real option. Erratum 1's "312 of the 458" should read "312 of
+  the 464".
+- **Grounding:** 397 items.
+- **Rule filter:** 312 narrowed items, of which 197 are left with one real option.
+- **Verifier:** 739 pplx picks and 746 d3 picks.
+- **Shortlist:** 1,722 items.
+- **Fitted `q`:** pplx 0.96 on D4 and 0.82 on D2+D3; d3 0.78 and 0.57. Both folds agree.

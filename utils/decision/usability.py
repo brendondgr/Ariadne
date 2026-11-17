@@ -212,3 +212,52 @@ def load_readings(path: Path) -> dict[str, str]:
 __all__ = ["check_readings", "item_label", "load_readings", "named_targets", "reading_key", "readings_brief",
            "relation_keys", "rulefilter_item", "shortlist_item", "shortlist_keys", "verifier_item",
            "wording_item", "yesno_binary", "yesno_prompt"]
+
+
+# --------------------------------------------------------------------------- #
+# Yes/no, batched: all of an item's option questions in one request
+# --------------------------------------------------------------------------- #
+
+def yesno_batch(server: str, item: Item, order: list[str], *, yes_first: bool,
+                base: str | None = None) -> tuple[dict[str, float], float]:
+    """P(yes) for every real option of ``item``, asked in one request.
+
+    ``order`` fixes the question order; ``yes_first`` the order of the two answers.
+    Returns ({option key: P(yes)}, milliseconds).
+    """
+    import time
+
+    from utils.decision.clients import _post
+
+    keys = [k for k in order if k != NONE]
+    state = item.context.strip() + "\n\nQuestion: " + item.question.strip()
+    ans = ["yes", "no"] if yes_first else ["no", "yes"]
+    t = time.time()
+    if server == "pplx":
+        url = (base or "http://127.0.0.1:7500").rstrip("/") + "/v1/decisions"
+        qs = {f"q{i}": {"type": "choice", "question": yesno_prompt(item, k),
+                        "criteria": {f"c{j + 1}": a for j, a in enumerate(ans)}} for i, k in enumerate(keys)}
+        r = _post(url, {"state": state, "temperature": 1.0, "questions": qs})
+        out = {}
+        for i, k in enumerate(keys):
+            p = r["answers"][f"q{i}"]["probabilities"]
+            out[k] = float(p.get(f"c{ans.index('yes') + 1}", 0.0))
+    elif server == "d3":
+        url = (base or "http://127.0.0.1:5107").rstrip("/") + "/v1/decide"
+        labels = [f"{'AB'[j]}) {a}" for j, a in enumerate(ans)]
+        qs = [{"id": f"q{i}", "type": "choice", "question": yesno_prompt(item, k), "options": labels}
+              for i, k in enumerate(keys)]
+        r = _post(url, {"input": state, "questions": qs})
+        yes_label = labels[ans.index("yes")]
+        out = {k: float(r["answers"][f"q{i}"]["probs"].get(yes_label, 0.0)) for i, k in enumerate(keys)}
+    else:
+        raise ValueError(server)
+    return out, (time.time() - t) * 1000
+
+
+def yesno_decide(s: dict[str, float], theta: float) -> tuple[str, float]:
+    """The pick and its confidence from P(yes) per option: "none" when nothing reaches ``theta``."""
+    if not s:
+        return NONE, 0.0
+    k = max(s, key=lambda x: (s[x], x))
+    return (k, s[k]) if s[k] >= theta else (NONE, 1.0 - s[k])

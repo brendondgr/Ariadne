@@ -10,7 +10,6 @@ that a dead end is walked into once rather than twice.
 
 | ID | Date | Title | Status | Primary metric | Claims | Link |
 |---|---|---|---|---|---|---|
-| `EXP-2026-11-014` | 2026-11-17 | Era 2, after Step 7: what makes the fast decision models usable, one change at a time | planned | d4_pplx_wording_accuracy_gain (not recorded) | — | [era2-decision-model-usability](experiments/EXP-2026-11-014-era2-decision-model-usability/) |
 | `EXP-2026-07-001` | 2026-07-26 | Arm A — fully deterministic pipeline (planning, extraction, synthesis) | complete | correctness 0.9972 (n=1) | C-001, C-004 | [arm-a-deterministic](experiments/EXP-2026-07-001-arm-a-deterministic/) |
 | `EXP-2026-07-002` | 2026-07-26 | Arm B — LLM planning with deterministic extraction and an LLM writer | complete | correctness 0.8505 (n=1) | C-002, C-003, C-016 | [arm-b-llm-planned](experiments/EXP-2026-07-002-arm-b-llm-planned/) |
 | `EXP-2026-07-003` | 2026-07-26 | Arm C — authored plan with an LLM writer reading raw evidence | complete | correctness 0.9690 (n=1) | C-002, C-005 | [arm-c-llm-writer-evidence](experiments/EXP-2026-07-003-arm-c-llm-writer-evidence/) |
@@ -80,6 +79,7 @@ that a dead end is walked into once rather than twice.
 | `EXP-2026-11-011` | 2026-11-16 | Era 2 Step 5: exact answers, result handles, and nothing cut silently | complete | g4_mismatches 0.0000 ± 0.0000 (n=516) | — | [era2-exact-answers](experiments/EXP-2026-11-011-era2-exact-answers/) |
 | `EXP-2026-11-012` | 2026-11-16 | Era 2 Step 6: questions with gold answers generated from the ATT&CK and CAPEC cards alone | complete | g1_gold_reexecuted_fraction 1.0000 ± 0.0000 (n=837) | — | [era2-card-questions](experiments/EXP-2026-11-012-era2-card-questions/) |
 | `EXP-2026-11-013` | 2026-11-17 | Era 2 Step 7: which closed decisions can small decision models own, by role | complete | d2d3_qwen_prob_gate_coverage 0.5598 ± 0.0000 (n=200) | — | [era2-decision-models](experiments/EXP-2026-11-013-era2-decision-models/) |
+| `EXP-2026-11-014` | 2026-11-17 | Era 2, after Step 7: what makes the fast decision models usable, one change at a time | complete | d4_pplx_wording_accuracy_gain 0.1487 ± 0.0000 (n=464) | — | [era2-decision-model-usability](experiments/EXP-2026-11-014-era2-decision-model-usability/) |
 | `EXP-2026-07-007` | 2026-07-26 | Arm G — generic primitives only, every hand-written template disabled | superseded → EXP-2026-08-001 | correctness 0.6388 (n=1) | C-003 | [arm-g-templates-disabled](experiments/EXP-2026-07-007-arm-g-templates-disabled/) |
 | `EXP-2026-07-010` | 2026-07-20 | First independent cross-model grading pass (the pre-fix committed baseline) | superseded → EXP-2026-07-001 | correctness 0.8946 (n=1) | C-009 | [independent-eval-baseline](experiments/EXP-2026-07-010-independent-eval-baseline/) |
 | `EXP-2026-07-011` | 2026-07-26 | Portability audit — what survives a dataset that is not MITRE | superseded → EXP-2026-08-011 | — | C-010 | [portability-audit](experiments/EXP-2026-07-011-portability-audit/) |

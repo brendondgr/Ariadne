@@ -48,6 +48,7 @@ kind; their detail is kept privately with the rest of the positioning material (
 | Q61 | The card banks are written by the same model (Qwen 3.8 27B) that era 2's agent will plan with | EXP-2026-11-012 | every era-2 figure scored on the card-2026-11-16 banks *(partly answered: scored banks re-worded by Sonnet; the gap is measured when the agent is first scored)* |
 | Q62 | No model, the reasoning baseline included, reliably says "none of these" when the right entity or relation is not offered | EXP-2026-11-013 | the grounding and relation-choice gates in era 2's agent *(open)* |
 | Q63 | The exit decision cannot be left to a model: even the reasoning baseline misses most ambiguity and path-search or similarity requests | EXP-2026-11-013 | the agent's four exits (plan v2 Steps 8 onward) *(open)* |
+| Q64 | The fast decision models' D4 picks move when the options are shuffled; d3 with plain readings misses a relation-choice gate on its flip rate alone | EXP-2026-11-014 | whether any fast model gates relation choice in era 2's agent *(open)* |
 
 ---
 
@@ -1129,6 +1130,11 @@ choice (D4) with a "none of these" option.
 
 Report "none" recall and the wrong rate on the positive items.
 
+**Update 2026-11-17** (`EXP-2026-11-014`). The per-option yes/no form of the first signal was
+tested on pplx-decider and d3-lite and failed. pplx's P(yes) follows the answer order, not the
+option. d3's yes/no ranks options worse than its own forced choice. Plain relation readings
+lower "none" recall. Still open; the name-index score gap is untested.
+
 ### Q63 — The exit decision needs rules before a model
 
 **Opened 2026-11-17** by `EXP-2026-11-013`. On the 189 exit items:
@@ -1149,3 +1155,19 @@ a model:
 
 Also check whether the catalogue note's "repeat along further named relations" invites the
 path-search reading (EXP-2026-11-013 RESULTS §5).
+
+### Q64 — Order stability is the binding constraint on a fast relation-choice gate
+
+**Opened 2026-11-17** by `EXP-2026-11-014`. With plain per-relation readings as option text:
+- **d3-lite** covers 0.2198 of D4 items at 0.049 wrong in transfer, which meets a gate's
+  coverage and error bounds. But 0.1336 of its picks change when the options are shuffled,
+  against a bound of 0.10.
+- **pplx-decider** flips less (0.0668) but covers only 0.1293.
+
+- **Why it matters:** the gated items are ones Qwen already answers the same way, so a gate
+  would save calls without adding errors.
+
+**To settle:** average each model's probabilities over two option orders (one extra request)
+and re-score coverage, wrong rate and flips on the same items. Do it as a round-2 amendment
+to EXP-2026-11-014, before any call.
+
