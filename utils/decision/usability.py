@@ -15,6 +15,7 @@ control is Step 7's run records on the same items:
 from __future__ import annotations
 
 import json
+import random
 import re
 from dataclasses import replace
 from pathlib import Path
@@ -205,11 +206,24 @@ def shortlist_item(item: Item, keep: list[str], first_order: list[str]) -> Item:
     return replace(item, id="S:" + item.id, options=opts, tags={**item.tags, "shortlist": len(keep)})
 
 
+def extra_orders(item: Item, seed: int = 20261116) -> list[list[str]]:
+    """Orders 2 and 3 (round 2, amendment 2): seeded like ``Item.orders``; "none" last; 3 rotated if equal to 2."""
+    keys = [k for k in item.options if k != NONE]
+    out: list[list[str]] = []
+    for i in (2, 3):
+        k = keys[:]
+        random.Random(f"{seed}|{item.id}|{i}").shuffle(k)
+        if i == 3 and len(k) > 1 and k == out[0][: len(k)]:
+            k = k[1:] + k[:1]
+        out.append(k + ([NONE] if NONE in item.options else []))
+    return out
+
+
 def load_readings(path: Path) -> dict[str, str]:
     return json.loads(path.read_text())
 
 
-__all__ = ["check_readings", "item_label", "load_readings", "named_targets", "reading_key", "readings_brief",
+__all__ = ["check_readings", "extra_orders", "item_label", "load_readings", "named_targets", "reading_key", "readings_brief",
            "relation_keys", "rulefilter_item", "shortlist_item", "shortlist_keys", "verifier_item",
            "wording_item", "yesno_binary", "yesno_prompt"]
 

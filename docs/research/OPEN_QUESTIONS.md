@@ -48,7 +48,7 @@ kind; their detail is kept privately with the rest of the positioning material (
 | Q61 | The card banks are written by the same model (Qwen 3.8 27B) that era 2's agent will plan with | EXP-2026-11-012 | every era-2 figure scored on the card-2026-11-16 banks *(partly answered: scored banks re-worded by Sonnet; the gap is measured when the agent is first scored)* |
 | Q62 | No model, the reasoning baseline included, reliably says "none of these" when the right entity or relation is not offered | EXP-2026-11-013 | the grounding and relation-choice gates in era 2's agent *(open)* |
 | Q63 | The exit decision cannot be left to a model: even the reasoning baseline misses most ambiguity and path-search or similarity requests | EXP-2026-11-013 | the agent's four exits (plan v2 Steps 8 onward) *(open)* |
-| Q64 | The fast decision models' D4 picks move when the options are shuffled; d3 with plain readings misses a relation-choice gate on its flip rate alone | EXP-2026-11-014 | whether any fast model gates relation choice in era 2's agent *(open)* |
+| Q64 | The fast decision models' D4 picks move when the options are shuffled; d3 with plain readings misses a relation-choice gate on its flip rate alone | EXP-2026-11-014 | whether any fast model gates relation choice in era 2's agent *(answered by EXP-2026-11-014 round 2: averaging over two orders makes d3 with readings a D4 gate)* |
 
 ---
 
@@ -1170,4 +1170,14 @@ path-search reading (EXP-2026-11-013 RESULTS §5).
 **To settle:** average each model's probabilities over two option orders (one extra request)
 and re-score coverage, wrong rate and flips on the same items. Do it as a round-2 amendment
 to EXP-2026-11-014, before any call.
+
+**Answered 2026-11-17** (`EXP-2026-11-014` amendment 2, H7a and H7b).
+- **d3 with readings, averaged over two orders,** is a D4 gate: 0.222 coverage at 0.0485
+  wrong, flip 0.0754.
+- **On grounding, both models averaged are gates.** pplx reaches 0.2091 and d3 0.2796.
+- **The two-model average** reaches 0.4131.
+
+The gated items are ones Qwen already answers the same way, so these gates save calls. The
+two results that were not pre-registered (the grounding two-model gate and pplx on its
+readings shortlist as a D4 gate) still need confirming on held-out data.
 

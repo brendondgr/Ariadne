@@ -65,3 +65,15 @@ def test_verifier_gold_is_whether_the_pick_is_right():
     it = _d4("q")
     assert U.verifier_item(it, "USES|out|SubTechnique").gold == "yes"
     assert U.verifier_item(it, "USES|in|Group").gold == "no"
+
+
+def test_extra_orders_seeded_none_last_and_distinct():
+    from utils.decision.items import NONE, Item
+    from utils.decision.usability import extra_orders
+
+    it = Item(id="D4:x", decision="D4", group="g", stratum="s", context="c", question="q", prompt="p",
+              options={"a": "A", "b": "B", "c": "C", NONE: "none"}, gold="a")
+    o2, o3 = extra_orders(it)
+    assert o2[-1] == NONE and o3[-1] == NONE
+    assert sorted(o2[:-1]) == ["a", "b", "c"] and o2 != o3
+    assert extra_orders(it) == [o2, o3]                       # seeded: the same on every call

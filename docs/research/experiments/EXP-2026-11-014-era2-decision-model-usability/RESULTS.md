@@ -2,6 +2,35 @@
 
 ## 1. Headline
 
+### Round 2 (amendment 2): averaging makes the fast models gates
+
+**Averaging each model over two option orders fixes the order instability that kept fast
+models from gating.**
+- **D4:** d3 with plain readings, averaged, is a relation-choice **gate**. It covers 0.222
+  at 0.0485 wrong, and its flip falls from 0.1336 to 0.0754.
+- **D2 + D3:** pplx (0.2091 at 0.0488) and d3 (0.2796 at 0.0455), each averaged, are
+  grounding **gates**.
+
+**Averaging the two models adds little on relation choice, but a lot on grounding.**
+- **D4:** +0.004 [−0.007, +0.017] over pplx with readings (H8 falsified).
+- **D2 + D3:** accuracy rises by +0.040 [+0.015, +0.068], and gate coverage doubles to
+  0.4131 at 0.0491 wrong. This was not a pre-registered hypothesis.
+
+**pplx's readings shortlist** keeps 0.95 of gold answers in about 1.4 options. pplx choosing
+from it is just outside the non-inferiority margin: −0.017 [−0.040, +0.007] (H9 falsified).
+But on that short menu, pplx is a D4 gate covering 0.3125 at 0.0483 wrong (not
+pre-registered).
+
+**Still true:** the items a fast gate accepts are ones Qwen already answers the same way
+(0.96–1.0). So these gates save calls rather than errors.
+
+| | Verdict |
+|---|---|
+| H7a, H7b | hold |
+| H8, H9 | falsified |
+
+### Round 1
+
 **Wording is the one change that works.** Giving each relation option a plain one-line reading
 raises pplx-decider's relation-choice (D4) accuracy from 0.5797 to 0.7284: +0.149, 95%
 interval [+0.074, +0.224]. It raises d3-lite's by +0.116 [+0.050, +0.179]. Nine tenths of
@@ -177,6 +206,62 @@ Sequential medians, from 40 seeded items (`data/latency.json`):
 
 **The batch costs about the same as one choice request**, so yes/no did not fail on cost.
 
+### 2.8 Round 2: order averaging and the two-model average
+
+**Source:** `tables/round2.md` and `data/metrics.json` → `round2`.
+
+**What each treatment uses:**
+- **Orders 0 and 1** are round 1's records: wording on D4, and Step 7's control on D2 + D3.
+- **Orders 2 and 3** are new.
+- **"single"** is the order-0 pick, which is round 1's treatment.
+- **"avg2"** is the mean over orders 0 and 1, and its flip compares it with the mean over
+  orders 2 and 3.
+- **"duo"** is the mean of pplx and d3 on one order.
+- **"duo_avg2"** is the mean over both models and both orders.
+
+| Decision | Treatment | Accuracy | Against | Δ accuracy | Gate: coverage, wrong (p90) | Δ gate coverage | Flip | Gated = Qwen | Role |
+|---|---|---:|---|---|---|---|---:|---:|---|
+| D4 | pplx single | 0.7284 | — | — | 0.1293, 0.05 (0.0517) | — | 0.0668 | 1.0 | second opinion |
+| D4 | pplx avg2 | 0.7306 | pplx single | +0.002 [−0.009, +0.013] | 0.1358, 0.0476 (0.0492) | +0.006 [−0.011, +0.011] | 0.0474 | 1.0 | second opinion |
+| D4 | d3 single | 0.6336 | — | — | 0.2198, 0.049 (0.051) | — | 0.1336 | 0.9804 | not used |
+| D4 | **d3 avg2** | 0.6315 | d3 single | −0.002 [−0.024, +0.019] | **0.222, 0.0485 (0.0505)** | +0.002 [+0.000, +0.041] | **0.0754** | 0.9806 | **gate** |
+| D4 | duo | 0.7328 | pplx single | +0.004 [−0.007, +0.017] | 0.181, 0.0476 (0.0494) | +0.052 [+0.046, +0.060] | 0.0711 | 0.9881 | second opinion |
+| D4 | duo avg2 | 0.7457 | pplx avg2 | +0.015 [−0.004, +0.035] | 0.1509, 0.0429 (0.0448) | +0.015 [+0.009, +0.045] | 0.0323 | 0.9714 | second opinion |
+| D2 + D3 | pplx single | 0.6952 | — | — | 0.2015, 0.0494 (0.0533) | — | 0.1234 | 1.0 | second opinion |
+| D2 + D3 | **pplx avg2** | 0.6826 | pplx single | −0.013 [−0.030, +0.003] | **0.2091, 0.0488 (0.055)** | +0.009 [+0.003, +0.063] | **0.0856** | 1.0 | **gate** |
+| D2 + D3 | d3 single | 0.6851 | — | — | 0.262, 0.0485 (0.0515) | — | 0.1108 | 0.9615 | second opinion |
+| D2 + D3 | **d3 avg2** | 0.6776 | d3 single | −0.008 [−0.028, +0.013] | **0.2796, 0.0455 (0.0476)** | +0.018 [+0.013, +0.060] | **0.0756** | 0.973 | **gate** |
+| D2 + D3 | **duo** | **0.7355** | pplx single | **+0.040 [+0.015, +0.068]** | **0.4131, 0.0491 (0.0519)** | **+0.209 [+0.163, +0.247]** | 0.063 | 0.9695 | **gate** |
+| D2 + D3 | duo avg2 | 0.733 | pplx avg2 | +0.050 [+0.023, +0.080] | 0.4184, 0.0485 (0.0513) | +0.209 [+0.144, +0.235] | 0.0529 | 0.9699 | gate |
+
+**Samples.** D4 has 464 items and D2 + D3 has 397.
+
+**Items with two real options.** An item with only two real options has just two orderings,
+so its averaged flip measures server noise only. There are 28 such items on D4 and 2 on
+D2 + D3.
+
+**"Gated = Qwen"** is the share of items accepted by a full-set threshold on which Qwen's
+saved Step 7 pick is the same.
+
+**End-to-end accuracy against the single-order treatment** has a median difference of 0.0
+in every row except one: the D2 + D3 two-model average, at +0.0051 [+0.0025, +0.0053].
+
+### 2.9 Round 2: the readings shortlist (pplx shortlists from its wording records)
+
+| Test recall (median; p10) | List size (median) | Chooser | Gold kept | Accuracy | Δ vs same chooser, full readings menu | Δ "none" recall | Gate: coverage, wrong (p90) | Flip | Gated = Qwen | Role |
+|---|---:|---|---:|---:|---|---|---|---:|---:|---|
+| 0.9534; 0.9522 | 1.403 | **pplx** | 0.9634 | 0.7112 | −0.017 [−0.040, +0.007] | −0.040 [−0.086, +0.000] | **0.3125, 0.0483 (0.0496)** | 0.0603 | 0.9862 | **gate** |
+| 0.9534; 0.9522 | 1.403 | d3 | 0.9634 | 0.6509 | +0.017 [−0.030, +0.067] | +0.343 [+0.227, +0.468] | 0.0108, 0.0 (0.0) | 0.0603 | 1.0 | not used |
+
+**How the list was built.** `q` was cross-fitted at 0.91 in both folds, giving a mean of
+1.526 real options per list.
+
+**The two flip figures are equal by coincidence.** Each chooser flips 28 of 464 items, and
+the two sets share only 7.
+
+**Round-2 calls** were 2,650 requests per server. The drift check, re-run first, gave pplx
+1.0 and d3 0.98 (`data/drift2.json`).
+
 ## 3. Figures
 
 None. The tables are the result.
@@ -234,7 +319,51 @@ The filter's pre-registered rule also over-matches hyphenated kinds (ISSUES).
   (−0.17 to −0.29).
 - **D4:** the best pair (d3 verifying pplx) reaches 0.0155 coverage, far below a gate's 0.20.
 
+### Round 2's hypotheses
+
+**H7a (order averaging, D4) holds, through d3.**
+- **d3 with readings, averaged over two orders,** keeps its coverage (0.222) and error
+  (0.0485). Its flip falls to 0.0754, under the 0.10 bound.
+- **pplx averaged** still covers only 0.1358.
+
+**H7b (order averaging, D2 + D3) holds, through both models.**
+- **pplx** reaches 0.2091 coverage at 0.0488 wrong, with flip 0.0856.
+- **d3** reaches 0.2796 at 0.0455, with flip 0.0756.
+- **Accuracy** does not change (−0.013 and −0.008, both with intervals that include 0).
+
+Averaging buys order stability, not accuracy.
+
+**H8 (two-model average, D4) is falsified.** It moves +0.004 [−0.007, +0.017] over pplx with
+readings. Averaging both models over both orders reaches 0.7457, +0.015 over pplx averaged,
+and that interval also includes 0.
+
+**H9 (readings shortlist) is falsified on non-inferiority.**
+- **The recall and size bound holds:** 0.9534 recall with 1.403 options.
+- **Non-inferiority fails:** pplx on the list is −0.017 [−0.040, +0.007], so the lower end is
+  past −0.02.
+
+**Not pre-registered, so to be confirmed before it is relied on:**
+- **The two-model average on grounding is the strongest fast gate measured.** It covers
+  0.4131 at 0.0491 wrong, with flip 0.063, against 0.2015 for pplx alone, and its accuracy
+  rises by +0.040. That is still below Step 7's Qwen-by-probabilities gate (0.5598 at
+  0.0437), but it uses no general model.
+- **pplx choosing from its own readings shortlist is a D4 gate**: 0.3125 at 0.0483 wrong,
+  flip 0.0603. On a menu of one or two options its top probability separates right from
+  wrong far better, at a cost of −0.017 accuracy.
+
 ### What it means for the agent (Step 8 onward)
+
+**Round 2 adds three things:**
+- **Always average a fast model over two option orders** before using its confidence as a
+  gate. That costs one extra request, of about 0.2–0.3 s.
+- **On grounding, average pplx and d3:** it has the largest fast-gate coverage.
+- **On relation choice there are two candidate gates.** One is d3 with readings, averaged;
+  the other is pplx on its readings shortlist. Each gates about a fifth to a third of items.
+
+Every gate accepts items that Qwen also gets right (0.96–1.0), so each one buys latency and
+cost, not accuracy. The items left over still go to the controller.
+
+**From round 1:**
 
 1. **Ship plain readings as relation option text.** This is the one cheap, measured win.
    Step 8's tool catalog generates option text from the card; it should carry one plain
@@ -273,8 +402,16 @@ the treatments that raise it do so by saying "none" indiscriminately.
   might move d3, but it cannot fix pplx's position-driven answers (§2.4).
 - **End-to-end figures** use Qwen's saved Step 7 answers as the fallback, not a fresh call.
 
+- **Round 2 adds cells.** The two results that were not pre-registered (the D2 + D3
+  two-model gate and the D4 shortlist gate) come from a scoreboard with many cells. They
+  need confirming on the sealed held-out banks before Step 8 relies on them.
+- **Orders 2 and 3 were asked some hours after orders 0 and 1.** The drift re-check (1.0 and
+  0.98) shows the servers did not change in between.
+
 ## 6. What surprised us
 
+- **Averaging over two orders cuts flips by about a third to a half, at no accuracy cost.**
+  The order instability was noise around stable preferences, not a different answer.
 - **pplx-decider is not a yes/no model.** Its choice probabilities carry real information,
   with AUROC 0.76–0.81 on its own picks. Asked "yes or no" about one option at a time,
   though, it gives every option about the same answer and follows the answer order. That
@@ -286,7 +423,7 @@ the treatments that raise it do so by saying "none" indiscriminately.
   coverage. But the gated items are exactly those Qwen already gets right, so the
   end-to-end accuracy is unchanged.
 - **d3 with wording misses a D4 gate only on its flip rate (0.13).** That makes order
-  stability, not accuracy, the binding constraint for d3.
+  stability, not accuracy, the binding constraint for d3. Round 2's averaging removed it.
 
 ## 7. Follow-ups
 
@@ -300,6 +437,13 @@ the treatments that raise it do so by saying "none" indiscriminately.
 - **A fine-tune** of either decision model on yes/no and "none" items. This is only if the
   operator controls the weights, which has not been asked.
 
+**After round 2:**
+- **Q64 is answered by H7a and H7b:** averaging over two orders brings the flips under the
+  bound.
+- **Confirm the two results that were not pre-registered on the sealed held-out banks:** the
+  D2 + D3 two-model gate and the D4 readings-shortlist gate. This needs operator agreement,
+  because it opens the sealed banks.
+
 ## 8. Reproduction
 
 ```bash
@@ -311,6 +455,16 @@ uv run python scripts/era2_usability.py run --control $S --data $E --arms pplx,d
     --treatments wording,rulefilter,yesno,wording_yesno,shortlist,verifier
 uv run python scripts/era2_usability.py latency --control $S --data $E --arms pplx,d3
 uv run python scripts/era2_usability.py score --control $S --data $E
+```
+
+**Round 2 (amendment 2).** Re-run the drift check first, and keep its output as
+`drift2.json`:
+
+```bash
+uv run python scripts/era2_usability.py build2 --control $S --out $E
+uv run python scripts/era2_usability.py run --control $S --data $E --arms pplx,d3 \
+    --treatments wording_o23,control_o23,wording_shortlist
+uv run python scripts/era2_usability.py score --control $S --data $E   # also writes tables/round2.md
 ```
 
 **What each run needs.** pplx-decider must be on :7500 and d3-lite on :5107. Unload d3

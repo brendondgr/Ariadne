@@ -14,6 +14,28 @@ tree at run time. An empty file is fine; a missing one is not.
 
 -->
 
+## 2026-11-17 — Round 2: the tree was dirty again, and the drift check was re-run
+**Impact:** none on any figure.
+- **What was uncommitted.** The round-2 code (`build2`, `run_orders`, `extra_orders` and the
+  round-2 scorer) was uncommitted while round 2 ran. Amendment 2 itself was committed first
+  (154c9113).
+- **The re-check.** pplx's `/health` reported a server temperature of 1.55 before round 2.
+  The client sends 1.0 on every request, so this is the server default. The drift check was
+  re-run as amendment 2 requires: pplx agreed on 1.0 and d3 on 0.98 (`data/drift2.json`).
+  Round 1's `drift.json` is unchanged.
+- **Added after the first round-2 score:** agreement with Qwen on gated items, in the
+  shortlist cells. It is computed from the saved records.
+
+**Cause:** the code was written and run in one sitting.
+**Resolution:** committed together with the results.
+**Paper implication:** none.
+
+## 2026-11-17 — Round 2: equal flip rates for the two shortlist choosers
+**Impact:** none. Both choosers flip 28 of 464 items, but the two sets share only 7. It was
+checked as a suspected scoring bug and is a coincidence.
+**Resolution:** reported in RESULTS §2.9.
+**Paper implication:** none.
+
 ## 2026-11-17 — The tree was dirty during the runs, in the experiment's own uncommitted code
 **Impact:** none on any figure.
 - **What was uncommitted.** `scripts/era2_usability.py`, `scripts/era2_usability_score.py`,

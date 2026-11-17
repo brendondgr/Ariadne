@@ -20,7 +20,7 @@ hypothesis: >
 code:
   commit: 786eb82dd3bcd917f49fa4693e81d214adad1c07          # 40-char sha, or "unknown" for a back-filled experiment
   branch: main
-  entrypoint: "uv run python scripts/era2_usability.py build|drift|run|latency|score (see RESULTS §8)"
+  entrypoint: "uv run python scripts/era2_usability.py build|build2|drift|run|latency|score (see RESULTS §8)"
   dirty: true             # experiment code uncommitted at run time; committed with the results (ISSUES)
 config:
   path: null               # repo-relative path, or null if the run takes no config file
@@ -40,7 +40,7 @@ environment:
   container: null
 compute:
   hardware: "32-core x86_64 host, 121 GB RAM; pplx-decider :7500 (SSH tunnel), d3-lite :5107 (decision servers only, amendment 1)"
-  wall_clock_hours: 0.6
+  wall_clock_hours: 1.0
   estimated_cost_usd: 0.0
 
 # --- LLM / agentic block (delete entirely if no model was in the loop) ---
@@ -79,6 +79,17 @@ metrics:
     d2d3_d3_shortlist_pplx_chooser_accuracy_change: {mean: 0.0277, std: 0.0, n: 397}
     pplx_yesno_within_item_spread: {mean: 0.104, std: 0.0, n: 1672}
     d3_yesno_within_item_spread: {mean: 0.4047, std: 0.0, n: 1672}
+    r2_d4_d3_avg2_gate_coverage: {mean: 0.222, std: 0.0, n: 200}
+    r2_d4_d3_avg2_gate_wrong: {mean: 0.0485, std: 0.0, n: 200}
+    r2_d4_d3_avg2_flip: {mean: 0.0754, std: 0.0, n: 464}
+    r2_d2d3_pplx_avg2_gate_coverage: {mean: 0.2091, std: 0.0, n: 200}
+    r2_d2d3_d3_avg2_gate_coverage: {mean: 0.2796, std: 0.0, n: 200}
+    r2_d2d3_duo_gate_coverage: {mean: 0.4131, std: 0.0, n: 200}
+    r2_d2d3_duo_gate_wrong: {mean: 0.0491, std: 0.0, n: 200}
+    r2_d2d3_duo_accuracy_gain: {mean: 0.0403, std: 0.0, n: 397}
+    r2_d4_duo_accuracy_gain: {mean: 0.0043, std: 0.0, n: 464}
+    r2_d4_pplx_readings_shortlist_gate_coverage: {mean: 0.3125, std: 0.0, n: 200}
+    r2_d4_pplx_readings_shortlist_accuracy_change: {mean: -0.0172, std: 0.0, n: 464}
   withdrawn: {}            # values later retracted by amendment: {metric: {mean, std, n, withdrawn_on, reason, replaced_by}}
 baselines_compared: ["control: EXP-2026-11-013 run records, same model, same items", "picker own-confidence gate (for the verifier)", "chooser on the full menu, Step 7 record (for the shortlist)"]
 statistical_test: "paired: 2,000 bootstrap resamples over anchors for accuracy/recall differences; per-split differences over the 200 anchor splits for gate figures"

@@ -383,8 +383,12 @@ def cmd_score(control: Path, data: Path) -> None:
                          "mean_p_yes_no_first": round(sum(by_order[1]) / len(by_order[1]), 4),
                          "median_within_item_spread": round(median(spread), 4), "n_requests": len(spread)}
     M["yesno_diagnostics"] = diag
+    if (runs / "wording_o23").is_dir() or (runs / "wording_shortlist").is_dir():
+        M["round2"] = score_round2(control, data, by_dec, fallback, base_acc)
     (data / "metrics.json").write_text(json.dumps(M, indent=1))
     write_tables(M, data.parent / "tables")
+    if "round2" in M:
+        write_round2_table(M["round2"], data.parent / "tables")
     print((data.parent / "tables" / "scoreboard.md").read_text())
 
 
@@ -457,6 +461,131 @@ def write_tables(M: dict, tdir: Path) -> None:
                          f"{b.get('wrong_median')} ({b.get('wrong_p90')}) | {_sci(b['coverage_vs_own'])} | "
                          f"{b['catches_wrong']} | {b['rejects_right']} | {o.get('auroc')} / {b['auroc']} |")
     (tdir / "scoreboard.md").write_text("\n".join(L) + "\n")
+
+
+# --------------------------------------------------------------------------- #
+# Round 2 (amendment 2): order averaging, two-model average, readings shortlist
+# --------------------------------------------------------------------------- #
+
+def mean_probs(ds: list[dict[str, float]]) -> dict[str, float]:
+    keys = sorted({k for d in ds for k in d})
+    return {k: sum(d.get(k, 0.0) for d in ds) / len(ds) for k in keys}
+
+
+def score_round2(control: Path, data: Path, by_dec: dict[str, list[Item]],
+                 fallback: dict[str, str | None], base_acc: dict[str, float | None]) -> dict[str, Any]:
+    runs = data / "runs"
+    out: dict[str, Any] = {}
+    for dec, its in by_dec.items():
+        prefix = "W:" if dec == "D4" else ""
+        P: dict[str, dict[int, dict[str, dict]]] = {}           # arm -> order -> item id -> probs
+        for arm in ARMS:
+            first = records(runs / "wording" / f"{arm}.jsonl") if dec == "D4" else control_records(control, arm)
+            more = records(runs / ("wording_o23" if dec == "D4" else "control_o23") / f"{arm}.jsonl")
+            P[arm] = {o: {it.id: r["probs"] for it in its
+                          if (r := (first if o < 2 else more).get((prefix + it.id, o))) and r.get("probs")}
+                      for o in range(4)}
+        full = [it for it in its if all(it.id in P[a][o] for a in ARMS for o in range(4))]
+
+        def make(fn_first, fn_second) -> tuple[dict[str, Row], dict[str, str | None]]:
+            rows, second = {}, {}
+            for it in full:
+                p, c = S.top_of(fn_first(it.id))
+                rows[it.id] = (p, c, it.gold)
+                second[it.id] = S.top_of(fn_second(it.id))[0]
+            return rows, second
+
+        T: dict[str, tuple[dict, dict]] = {}
+        for arm in ARMS:
+            T[f"{arm}_single"] = make(lambda i, a=arm: P[a][0][i], lambda i, a=arm: P[a][1][i])
+            T[f"{arm}_avg2"] = make(lambda i, a=arm: mean_probs([P[a][0][i], P[a][1][i]]),
+                                    lambda i, a=arm: mean_probs([P[a][2][i], P[a][3][i]]))
+        T["duo"] = make(lambda i: mean_probs([P["pplx"][0][i], P["d3"][0][i]]),
+                        lambda i: mean_probs([P["pplx"][1][i], P["d3"][1][i]]))
+        T["duo_avg2"] = make(lambda i: mean_probs([P[a][o][i] for a in ARMS for o in (0, 1)]),
+                             lambda i: mean_probs([P[a][o][i] for a in ARMS for o in (2, 3)]))
+        blocks: dict[str, Any] = {}
+        for name, (rows, second) in T.items():
+            sp = gate_splits(full, lambda _g, r=rows: r, fallback)
+            b = block(full, rows, second, base_acc[dec], sp)
+            b["_splits"] = sp
+            tau = S.threshold_for(list(rows.values()))
+            g = [it for it in full if rows[it.id][1] >= tau]
+            b["gated_full_set"] = {"n": len(g), "same_as_controller": round(
+                sum(rows[it.id][0] == fallback[it.id] for it in g) / len(g), 4) if g else None}
+            blocks[name] = b
+        best_avg = max(ARMS, key=lambda a: blocks[f"{a}_avg2"]["accuracy"] or 0)
+        pairs = {f"{a}_avg2": f"{a}_single" for a in ARMS}
+        pairs.update({"duo": "pplx_single", "duo_avg2": f"{best_avg}_avg2"})
+        for t, c in pairs.items():
+            blocks[t]["vs"] = {"against": c,
+                               "accuracy": boot_diff(full, T[t][0], T[c][0]),
+                               "none_recall": boot_diff(full, T[t][0], T[c][0], lambda it: it.gold == NONE),
+                               "gate_coverage": split_diff(blocks[t]["_splits"], blocks[c]["_splits"], "coverage"),
+                               "e2e": split_diff(blocks[t]["_splits"], blocks[c]["_splits"], "e2e")}
+        for b in blocks.values():
+            del b["_splits"]
+        two = sum(sum(k != NONE for k in it.options) == 2 for it in full)
+        out[dec] = {"n": len(full), "two_real_options": two, "treatments": blocks}
+
+        if dec == "D4":                                      # the readings shortlist (pplx shortlists)
+            w_p = records(runs / "wording" / "pplx.jsonl")
+            remap = {(k[0][2:], k[1]): v for k, v in w_p.items() if k[0].startswith("W:")}
+            sw = {"transfer": shortlist_transfer(its, remap), "cells": {}}
+            s_items = load_cache(data, "wording_shortlist")
+            for chooser in ARMS:
+                recs = records(runs / "wording_shortlist" / f"{chooser}.jsonl")
+                if not recs:
+                    continue
+                c_rows = choice_rows(records(runs / "wording" / f"{chooser}.jsonl"), "W:", its)
+                rows = choice_rows(recs, "SW:pplx:W:", its)
+                second = choice_tops(recs, "SW:pplx:W:", its, 1)
+                sp = gate_splits(its, lambda _g, r=rows: r, fallback)
+                b = block(its, rows, second, base_acc[dec], sp)
+                b["vs_full_menu"] = {"accuracy": boot_diff(its, rows, c_rows),
+                                     "none_recall": boot_diff(its, rows, c_rows, lambda it: it.gold == NONE)}
+                sizes = [sum(k != NONE for k in s_items[f"SW:pplx:W:{i}"].options) for i in rows]
+                b["gold_kept"] = round(sum(r[2] in s_items[f"SW:pplx:W:{i}"].options for i, r in rows.items())
+                                       / len(rows), 4) if rows else None
+                b["mean_list_size"] = round(sum(sizes) / len(sizes), 3) if sizes else None
+                tau = S.threshold_for(list(rows.values()))
+                g = [i for i in rows if rows[i][1] >= tau]
+                b["gated_full_set"] = {"n": len(g), "same_as_controller": round(
+                    sum(rows[i][0] == fallback[i] for i in g) / len(g), 4) if g else None}
+                sw["cells"][chooser] = b
+            out[dec]["wording_shortlist"] = sw
+    return out
+
+
+def write_round2_table(R: dict, tdir: Path) -> None:
+    L = ["# Round 2 (EXP-2026-11-014, amendment 2)", "",
+         "Each treatment against the named comparison, same items: accuracy with a 95% interval over anchors;",
+         "gate coverage as the median per-split difference. Flip for averaged treatments compares the pick from",
+         "orders 0+1 with the pick from orders 2+3.", "",
+         "| Decision | Treatment | n | Accuracy | Against | Δ accuracy | Δ none recall | Gate: coverage, wrong (p90) | Δ gate coverage | Flip | Gated = Qwen | Role |",
+         "|---|---|---:|---:|---|---|---|---|---|---:|---:|---|"]
+    for dec, D in R.items():
+        for t, b in D["treatments"].items():
+            v, tr = b.get("vs", {}), b["transfer"]
+            L.append(f"| {dec} | {t} | {b['n']} | {b['accuracy']} | {v.get('against', '—')} | {_ci(v.get('accuracy'))} | "
+                     f"{_ci(v.get('none_recall'))} | {tr.get('coverage_median')}, {tr.get('wrong_median')} "
+                     f"({tr.get('wrong_p90')}) | {_sci(v.get('gate_coverage'))} | {b['flip']} | "
+                     f"{b['gated_full_set']['same_as_controller']} | {b['role']} |")
+    L += ["", "Items with only two real options (their averaged flip measures server noise only): " +
+          ", ".join(f"{d} {D['two_real_options']} of {D['n']}" for d, D in R.items()), "",
+          "## Readings shortlist (pplx shortlists from its wording records)", "",
+          "| Test recall (median; p10) | List size (median) | Chooser | Gold kept | Accuracy | Δ vs same chooser, full readings menu | Δ none recall | Gate: coverage, wrong (p90) | Flip | Gated = Qwen | Role |",
+          "|---|---:|---|---:|---:|---|---|---|---:|---:|---|"]
+    sw = R.get("D4", {}).get("wording_shortlist")
+    if sw:
+        tr = sw["transfer"]
+        for c, b in sw["cells"].items():
+            t = b["transfer"]
+            L.append(f"| {tr['recall_median']}; {tr['recall_p10']} | {tr['size_median']} | {c} | {b['gold_kept']} | "
+                     f"{b['accuracy']} | {_ci(b['vs_full_menu']['accuracy'])} | {_ci(b['vs_full_menu']['none_recall'])} | "
+                     f"{t.get('coverage_median')}, {t.get('wrong_median')} ({t.get('wrong_p90')}) | {b['flip']} | "
+                     f"{b['gated_full_set']['same_as_controller']} | {b['role']} |")
+    (tdir / "round2.md").write_text("\n".join(L) + "\n")
 
 
 __all__ = ["cmd_score"]

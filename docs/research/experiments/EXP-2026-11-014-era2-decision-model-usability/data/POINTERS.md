@@ -36,3 +36,18 @@ Opus 5.5 subagent at medium effort.
 | runs/wording_yesno/pplx.jsonl | docs/research/experiments/EXP-2026-11-014-era2-decision-model-usability/data/runs/wording_yesno/pplx.jsonl | 744101 | sha256:8f479208c6fb9d65f9026b5e6db12cd19fafcc11039a23dbb60b787d48c47459 | 928 records, two orders |
 | runs/yesno/d3.jsonl | docs/research/experiments/EXP-2026-11-014-era2-decision-model-usability/data/runs/yesno/d3.jsonl | 803647 | sha256:6349cbcc24759db8f527c083df5de95dca3e801f7e883b27d99035775215e4f0 | 1722 records, two orders |
 | runs/yesno/pplx.jsonl | docs/research/experiments/EXP-2026-11-014-era2-decision-model-usability/data/runs/yesno/pplx.jsonl | 1051576 | sha256:6f56030405105e83f680cc8b9e8e480dd350d69754ee3386da769d95f69c8b83 | 1722 records, two orders |
+
+**Round 2 (amendment 2), 2026-11-17.** Written by `build2` and `run`, on the decision servers only.
+
+| Artifact | Path (repo-relative) | Bytes | SHA-256 | What it is |
+|---|---|---|---|---|
+| build2.json | docs/research/experiments/EXP-2026-11-014-era2-decision-model-usability/data/build2.json | 277 | sha256:a59b2907481e1ab59ddb95827c77e51d2b1d9837bdb3378b60255ec62fd811d4 | summary |
+| drift2.json | docs/research/experiments/EXP-2026-11-014-era2-decision-model-usability/data/drift2.json | 43223 | sha256:23273f5e85ddafa9d0f2bf5cef64da11236058facd773b3bc1ba838145575594 | summary |
+| wording_shortlist.jsonl | docs/research/experiments/EXP-2026-11-014-era2-decision-model-usability/data/wording_shortlist.jsonl | 350838 | sha256:b1f39f5306697ecba05a831b2ad7ac2d26e0c88a3f39cb3c9de1c97dca3b49bf | 464 built items |
+| control_d23.jsonl | docs/research/experiments/EXP-2026-11-014-era2-decision-model-usability/data/control_d23.jsonl | 771486 | sha256:64e42adb62169ca44ba075b05a7294ed77f452befac095d7c4052914e7062d0a | 397 built items |
+| runs/control_o23/d3.jsonl | docs/research/experiments/EXP-2026-11-014-era2-decision-model-usability/data/runs/control_o23/d3.jsonl | 316840 | sha256:a8967671a86b4e505649d0d6da97c7ea55afdeb997a2a331c69085bc9a81488d | 794 records, orders 2 and 3 or two orders |
+| runs/control_o23/pplx.jsonl | docs/research/experiments/EXP-2026-11-014-era2-decision-model-usability/data/runs/control_o23/pplx.jsonl | 388410 | sha256:30badbbba3b56af4c4d771dc38c80a93b1112cff46d4a22f78c6eff9b0084f7f | 794 records, orders 2 and 3 or two orders |
+| runs/wording_o23/d3.jsonl | docs/research/experiments/EXP-2026-11-014-era2-decision-model-usability/data/runs/wording_o23/d3.jsonl | 715684 | sha256:c97301eeae14132787d3b9517275b5258a18a6541973eb0cdfd8e6775214e415 | 928 records, orders 2 and 3 or two orders |
+| runs/wording_o23/pplx.jsonl | docs/research/experiments/EXP-2026-11-014-era2-decision-model-usability/data/runs/wording_o23/pplx.jsonl | 868790 | sha256:529d4cc0e4b0bcd2e66aefc825562d5e35dec11be472f11c439933c8016c5c54 | 928 records, orders 2 and 3 or two orders |
+| runs/wording_shortlist/d3.jsonl | docs/research/experiments/EXP-2026-11-014-era2-decision-model-usability/data/runs/wording_shortlist/d3.jsonl | 290143 | sha256:cf7dc8c6082cb48b4c7a2cf642e50017028e88ab0f8938fc7c31cb9d199b0b28 | 928 records, orders 2 and 3 or two orders |
+| runs/wording_shortlist/pplx.jsonl | docs/research/experiments/EXP-2026-11-014-era2-decision-model-usability/data/runs/wording_shortlist/pplx.jsonl | 304771 | sha256:79d2d738463363fc4c9ed761a606e3c29bb1786829d04704e02d042f2756b52d | 928 records, orders 2 and 3 or two orders |

@@ -34,7 +34,9 @@ from utils.decision.items import NONE, Item, _h  # noqa: E402
 SEED = 20261116
 ARMS = ("pplx", "d3")
 CONCURRENCY = {"pplx": 8, "d3": 4}
-CHOICE_TREATMENTS = ("wording", "rulefilter", "shortlist", "verifier")
+CHOICE_TREATMENTS = ("wording", "rulefilter", "shortlist", "verifier", "wording_shortlist")
+# round 2 (amendment 2): orders 2 and 3 on an existing item set
+ORDER_TREATMENTS = {"wording_o23": "wording.jsonl", "control_o23": "control_d23.jsonl"}
 YESNO_TREATMENTS = ("yesno", "wording_yesno")
 Q_GRID = [round(0.50 + 0.01 * i, 2) for i in range(50)]          # 0.50 .. 0.99
 SHORTLIST_RECALL = 0.95
@@ -101,7 +103,8 @@ def two_folds(groups: list[str], tag: str) -> tuple[set[str], set[str]]:
     return set(g[: len(g) // 2]), set(g[len(g) // 2:])
 
 
-def shortlist_items(items: list[Item], recs: dict, shortlister: str) -> tuple[list[Item], dict]:
+def shortlist_items(items: list[Item], recs: dict, shortlister: str,
+                    id_prefix: str = "S") -> tuple[list[Item], dict]:
     out, info = [], {}
     by_dec: dict[str, list[Item]] = defaultdict(list)
     for it in items:
@@ -117,7 +120,7 @@ def shortlist_items(items: list[Item], recs: dict, shortlister: str) -> tuple[li
             q = qb if it.group in a else qa                 # fitted on the other fold
             keep = U.shortlist_keys(rows[it.id][0], q)
             s = U.shortlist_item(it, keep, it.orders()[0])
-            out.append(Item(**{**s.to_json(), "id": f"S:{shortlister}:{it.id}",
+            out.append(Item(**{**s.to_json(), "id": f"{id_prefix}:{shortlister}:{it.id}",
                                "tags": {**s.tags, "shortlister": shortlister, "parent": it.id, "q": q}}))
     return out, info
 
@@ -160,6 +163,23 @@ def cmd_build(control: Path, out: Path) -> None:
         "yesno_option_questions": sum(len(it.options) - 1 for it in items),
     }
     (out / "build.json").write_text(json.dumps(summary, indent=1))
+    print(json.dumps(summary, indent=1))
+
+
+def cmd_build2(control: Path, out: Path) -> None:
+    """Round 2 (amendment 2): the readings shortlist from pplx's wording records, and the D2+D3 items."""
+    wording = load_items(out / "wording.jsonl")
+    recs = records(out / "runs" / "wording" / "pplx.jsonl")
+    sl, info = shortlist_items(wording, recs, "pplx", id_prefix="SW")
+    write_items(out / "wording_shortlist.jsonl", sl)
+    d23 = [it for it in control_items(control) if decision_group(it) == "D2+D3"]
+    write_items(out / "control_d23.jsonl", d23)
+    two = lambda its: sum(sum(k != NONE for k in it.options) == 2 for it in its)  # noqa: E731
+    summary = {"wording_shortlist": len(sl), "wording_shortlist_q": info,
+               "wording_shortlist_size_mean": round(sum(sum(k != NONE for k in it.options) for it in sl) / len(sl), 3),
+               "order_items": {"wording": len(wording), "control_d23": len(d23)},
+               "two_real_options": {"wording": two(wording), "control_d23": two(d23)}}
+    (out / "build2.json").write_text(json.dumps(summary, indent=1))
     print(json.dumps(summary, indent=1))
 
 
@@ -222,6 +242,28 @@ def run_choice(data: Path, treatment: str, name: str) -> None:
     _run_jobs(path, jobs, one, CONCURRENCY[name], f"{treatment}/{name}")
 
 
+def run_orders(data: Path, treatment: str, name: str) -> None:
+    """Orders 2 and 3 on an existing item set (round 2), recorded as order 2 and 3."""
+    arm, ident = make_arm(name)
+    items = load_items(data / ORDER_TREATMENTS[treatment])
+    path = data / "runs" / treatment / f"{name}.jsonl"
+    path.parent.mkdir(parents=True, exist_ok=True)
+    done = _done(path)
+    jobs = [(it, oi, order) for it in items for oi, order in zip((2, 3), U.extra_orders(it)) if (it.id, oi) not in done]
+
+    def one(job):
+        it, oi, order = job
+        try:
+            d = arm(it, order)
+            return {"item": it.id, "arm": name, "order": oi, "probs": d.probs, "top": d.top, "ms": round(d.ms, 1),
+                    "meta": d.meta, "identity": ident}
+        except Exception as exc:  # noqa: BLE001
+            return {"item": it.id, "arm": name, "order": oi, "probs": {}, "top": None, "ms": None,
+                    "error": f"{type(exc).__name__}: {exc}"[:300], "identity": ident}
+
+    _run_jobs(path, jobs, one, CONCURRENCY[name], f"{treatment}/{name}")
+
+
 def run_yesno(data: Path, control: Path, treatment: str, name: str) -> None:
     _, ident = make_arm(name)
     items = control_items(control) if treatment == "yesno" else load_items(data / "wording.jsonl")
@@ -249,6 +291,8 @@ def cmd_run(data: Path, control: Path, treatments: list[str], arms: list[str]) -
                 run_choice(data, t, name)
             elif t in YESNO_TREATMENTS:
                 run_yesno(data, control, t, name)
+            elif t in ORDER_TREATMENTS:
+                run_orders(data, t, name)
             else:
                 raise ValueError(t)
         if name == "d3":
@@ -311,7 +355,7 @@ def cmd_latency(data: Path, control: Path, arms: list[str], n: int = 40) -> None
 
 def main(argv: list[str] | None = None) -> int:
     ap = argparse.ArgumentParser()
-    ap.add_argument("cmd", choices=["build", "drift", "run", "latency", "score"])
+    ap.add_argument("cmd", choices=["build", "build2", "drift", "run", "latency", "score"])
     ap.add_argument("--control", type=Path, required=True)
     ap.add_argument("--data", type=Path)
     ap.add_argument("--out", type=Path)
@@ -320,6 +364,8 @@ def main(argv: list[str] | None = None) -> int:
     a = ap.parse_args(argv)
     if a.cmd == "build":
         cmd_build(a.control, a.out)
+    elif a.cmd == "build2":
+        cmd_build2(a.control, a.out)
     elif a.cmd == "drift":
         cmd_drift(a.data, a.control, a.arms.split(","))
     elif a.cmd == "latency":
