@@ -15,7 +15,8 @@ no model was called.
    - pplx-decider's relation-choice accuracy, split by whether the right option's description
      is shared with another option (0.51 on 203 items) or unique (0.86 on 162).
 2. **The rule filter below was dry-run on Step 7's relation items, gold included.**
-   - It narrows 365 of the 458 relation items that have two or more options.
+   - It narrows 312 of the 458 items in the relation role population (erratum 1). These are
+     285 items whose gold is a real relation and 27 "none" items.
    - On 188 items whose gold is a real relation, it leaves one option, and that option is
      the gold every time.
    - On 9 "none" items, it leaves one option, which is wrong.
@@ -158,7 +159,8 @@ help are combined in a later round.
   - If the question names at least one option's target, but not every option's, only the
     named options and "none" are kept.
   - Otherwise the item is unchanged.
-- **New calls only for narrowed items:** 365 items, in both orders, for all three models.
+- **New calls only for narrowed items:** 312 items (erratum 1), in both orders, for all three
+  models.
   Unchanged items use the control records.
 - **Items left with one real option are still asked.** The choice is then between that
   option and "none", which tests "none" directly.
@@ -237,8 +239,8 @@ exploratory and labelled so in RESULTS.
   - Treatments that pass are leads. Before the agent uses them on held-out banks, their
     thresholds are re-fitted and their effects checked on held-out items.
 - **The questions name target types.** The banks came from templates and were then
-  re-worded by experts' standards, and the rule filter's reach (365 of 458) depends on
-  that. The rule filter's and the readings' effects may shrink on novice or terse
+  re-worded; the operator judged the phrasing expert-like. The rule filter's reach (312 of
+  458, erratum 1) depends on that. The rule filter's and the readings' effects may shrink on novice or terse
   wording, which no bank tests (EXP-2026-11-012, operator's read).
 - **Readings are written, not given.**
   - The card does not hold per-direction readings today; a model wrote them.
@@ -260,7 +262,7 @@ exploratory and labelled so in RESULTS.
 | Wording | 976 | 976 | 976 (qwen_prob) |
 | Yes/no | 1,770 | 1,770 | up to about 9,100 (qwen_prob, one token each) |
 | Wording × yes/no | 976 | 976 | up to about 6,100 (qwen_prob) |
-| Rule filter | 730 | 730 | 730 (qwen_prob) |
+| Rule filter | 624 | 624 | 624 (qwen_prob) |
 | Verifier | 1,624 | 1,624 | 0 |
 | Shortlist controller | 0 | 0 | about 1,770 (`qwen_reason`, paired) |
 
@@ -299,3 +301,15 @@ uv run python scripts/era2_usability.py score --control $S/data --data $E/data
 - **Runs** append to `data/runs/<treatment>/<arm>.jsonl` and resume where they stopped.
 - **Before building,** the Gremlin vertex counts are checked.
 - **d3-lite** is unloaded after its runs.
+
+## Erratum 1, 2026-11-17, before any model call
+
+- **The rule filter narrows 312 of the 458 items in the relation role population, not 365.**
+  The first version gave 365, which is the number of items whose gold is a real relation
+  (285 of them are narrowed). The count was re-taken when the builder was written.
+- **Changed by this:**
+  - the item count in "What was looked at before writing" and in "Rule filter";
+  - the reach in "Threats";
+  - the call budget: 624 calls per model, not 730.
+- **Not changed:** the rule, the hypotheses and the falsifiers.
+
