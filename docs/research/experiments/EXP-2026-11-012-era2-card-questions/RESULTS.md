@@ -77,14 +77,14 @@ held-out banks are sealed.
 - **E1, yield: met.** The identifier, name and schema tiers keep everything (1.00), and the
   synonym tier is lower. CAPEC's synonym yield is lowest (0.63), as the dry run predicted: its
   relations carry long paraphrase lists, which forbid most everyday verbs.
-- **E2, fluency: met by the proxy; the person's read is pending.** The blind proxy reader
+- **E2, fluency (Qwen-worded sheet): met by the proxy.** The blind proxy reader
   (Claude Sonnet 5.5, not a person) found:
   - 50 of 50 sampled questions fluent;
   - 10 of 10 ambiguous ones truly ambiguous.
 
   That is above the 70–90% band expected, on a sample of 10. No ambiguous question was
-  rejected, so none was dropped from the clarification sets. The person's read of the same
-  sheet, `data/review-sheet.md`, is still pending.
+  rejected, so none was dropped from the clarification sets. The person read the scored,
+  Sonnet-worded sheet instead (§8).
 - **E3, sizes: ATT&CK met (483 against about 450); CAPEC above (354 against about 220).** The
   CAPEC estimate came from the dry run, which carried the relation-name defect: there, every
   hierarchy slot was empty. Ambiguous questions fell short of the 16 budgeted, at 14 and 8:
@@ -122,8 +122,11 @@ every CAPEC hierarchy question comes back empty, and with an honest-looking "not
   agent will plan with. Rewording difficulty may be understated.
 - **Small gold sets.** 383 of 743 answerable questions have one answer, and the largest has 46.
   Large-set enumeration is covered by Step 5's hubs, not by these banks.
-- **The proxy reader is a model, and it read only 50 questions.** Its 10 of 10 on ambiguity is a
-  small sample; the person's read is the plan's check.
+- **Fifty questions were read, 10 of them ambiguous.** Both the person's read and the proxies'
+  reads cover the same small samples.
+- **The phrasing is expert phrasing.** In the operator's judgement, the questions read like those
+  of a seasoned cybersecurity specialist. The banks therefore test expert-style wording, not a
+  novice's loose or misspelled questions.
 - **Out-of-coverage assumes Step 9's catalogue.** The four missing operators (path search,
   temporal trend, median, similarity) are assumed absent from Step 9's retrieval operators. If
   Step 9 adds one, its questions must move to answerable.
@@ -145,8 +148,8 @@ every CAPEC hierarchy question comes back empty, and with an honest-looking "not
 ## 7. Follow-ups
 
 - **Q61:** re-word a held-out sample with a different writer and report the gap.
-- **The person's read** of `data/sonnet/review-sheet.md` (the scored, Sonnet-worded banks): fluency, and whether each ambiguous question
-  really is ambiguous. Questions it rejects come out of the clarification sets.
+- **The person's read: done** (§8). It rejected nothing, so the clarification sets keep all 10
+  sampled ambiguous questions.
 
 ## 8. The second writer: Sonnet-worded banks (amendments 5–7)
 
@@ -177,6 +180,13 @@ From `data/sonnet/metrics.json` and `data/sonnet/card_bank.json`.
   - a garbled description reference;
   - a reworded name whose long clause strands "a member of";
   - a stilted schema paraphrase.
+
+**E2, the person's read (the operator, via the review-sheet artifact; `data/sonnet/person-read.json`):**
+- 50 of 50 fluent; 10 of 10 ambiguous questions truly ambiguous. Nothing is dropped.
+- It accepts the three questions the Opus proxy rejected.
+- The operator's remark: the phrasing reads like that of a seasoned cybersecurity specialist.
+- The read was not blind to the study, and the proxy reads had been summarised in conversation
+  beforehand.
 
 **E4, yield: met, with a caveat.** Sonnet kept all 805 questions it was given, 10 of them after
 a retry. Its yield is measured over Qwen's survivors, not over every attempt, so it is not

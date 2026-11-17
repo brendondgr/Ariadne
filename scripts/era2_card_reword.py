@@ -300,6 +300,16 @@ def cmd_metrics(data: Path) -> None:
                          "rejected": [{"n": i["n"], "id": i["id"], "kind": i["kind"], "tier": i["tier"],
                                        "note": i["note"]} for i in items
                                       if not i["fluent"] or (i["kind"] == "ambiguous" and not i["truly_ambiguous"])]}
+    pe = d / "person-read.json"
+    if pe.exists():
+        p = json.loads(pe.read_text())
+        items = p["items"]
+        amb = [i for i in items if i["kind"] == "ambiguous"]
+        m["E2_person"] = {"reader": p["reader"], "n": len(items), "fluent": sum(bool(i["fluent"]) for i in items),
+                          "fluent_fraction": round(sum(bool(i["fluent"]) for i in items) / len(items), 4),
+                          "ambiguous_truly": f"{sum(bool(i['truly_ambiguous']) for i in amb)}/{len(amb)}",
+                          "rejected": [i["id"] for i in items
+                                       if not i["fluent"] or (i["kind"] == "ambiguous" and not i["truly_ambiguous"])]}
     if "E2_proxy" in m:
         m["E2_proxy"]["fluent_fraction"] = round(m["E2_proxy"]["fluent"] / m["E2_proxy"]["n"], 4)
     (d / "metrics.json").write_text(json.dumps(m, indent=1))
