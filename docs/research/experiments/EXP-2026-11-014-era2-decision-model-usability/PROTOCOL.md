@@ -374,3 +374,91 @@ when it is.
 - **Verifier:** 739 pplx picks and 746 d3 picks.
 - **Shortlist:** 1,722 items.
 - **Fitted `q`:** pplx 0.96 on D4 and 0.82 on D2+D3; d3 0.78 and 0.57. Both folds agree.
+
+
+## Amendment 2, 2026-11-17, before any round-2 call: round 2
+
+**Operator, 2026-11-17:** run round 2 before Step 8. Decision servers only, as in
+amendment 1.
+
+### What was looked at before writing
+
+All of round 1 (RESULTS, committed in a5828e0a):
+- **Wording is the one change that helps.**
+- **The only gate a fast model misses on flips alone** is d3 with wording on D4: coverage
+  0.2198 at 0.049 wrong, flip 0.1336.
+- **On D2+D3, both models' Step 7 controls are second opinions with flips just over the
+  bound:** pplx is at 0.2015 coverage, 0.0494 wrong and 0.1234 flip; d3 at 0.262, 0.0485 and
+  0.1108.
+- **pplx's wording shortlist and the two-model average have not been computed.** Both are
+  computable from saved records, and neither will be computed before this amendment is
+  committed.
+
+### Round-2 treatments
+
+| Treatment | What changes | Decisions | Models | New calls |
+|---|---|---|---|---|
+| **Order averaging** (Q64) | the pick and its confidence come from the mean of the probabilities over two option orders | D4 with wording; D2+D3 control | pplx, d3 | two more orders per item (below) |
+| **Two-model average** | the mean of pplx's and d3's probabilities, per option order | D4 with wording; D2+D3 control | pplx + d3 | none |
+| **Both** | the mean over both models and both orders | as above | pplx + d3 | none beyond order averaging |
+| **Wording shortlist** | pplx shortlists from its *wording* records, then a model chooses from the list with the readings as option text | D4 | shortlister pplx; choosers pplx and d3 | two orders per item |
+
+**Why the pre-registered combiner is replaced.** It was a logistic layer over model
+probabilities plus name-index signals. The saved items carry no index scores (D2 has only a
+BM25-hit flag), and re-querying the index is not a decision-server call. A combiner over
+model probabilities alone is the two-model average. The index-signal combiner moves to a
+later amendment, if it is wanted.
+
+**Order averaging, in detail.**
+- **Two new orders per item** (orders 2 and 3). They are seeded the way Step 7 seeds its
+  orders (`f"{seed}|{id}|{i}"`, for i = 2 and 3), with "none" kept last. Order 3 is rotated
+  if it equals order 2.
+- **Accuracy, AUROC and the gate** are computed on the mean of orders 0 and 1.
+- **Flip** is whether the top pick of mean(orders 0, 1) differs from the top pick of
+  mean(orders 2, 3). This is the same question as round 1's flip, asked of the averaged pick.
+- **A limitation.** An item with two real options has only two orderings, so its averaged
+  pick sees the same pair twice. Its flip then measures server nondeterminism only. RESULTS
+  will report the share of such items.
+
+**The wording shortlist, in detail.**
+- **Same rule as round 1's shortlist:** order-0 probabilities, with `q` cross-fitted over two
+  anchor folds to keep 0.95 of gold answers.
+- **Built from** `runs/wording/pplx.jsonl` in place of Step 7's records.
+- **Each list item keeps the readings as option text**, and is asked in two orders.
+- **The comparison** is the chooser on the list against the same chooser on the full
+  wording menu (round 1's wording record).
+
+### Hypotheses
+
+| | Hypothesis | Falsified if |
+|---|---|---|
+| **H7a** order averaging, D4 | with wording, pplx or d3 averaged over two orders holds a D4 gate by Step 7's rule: median coverage ≥ 0.20, median wrong ≤ 0.05, flip ≤ 0.10 | neither model holds a gate |
+| **H7b** order averaging, D2+D3 | pplx or d3 averaged over two orders holds a D2+D3 gate by the same rule | neither does |
+| **H8** two-model average | on D4 with wording, the two-model average's accuracy exceeds pplx-with-wording's by ≥ 0.02, with the paired interval above 0 | the gain is below 0.02 or the interval includes 0 |
+| **H9** wording shortlist | pplx's wording shortlist keeps the gold at ≥ 0.95 test recall with a median of ≤ 3 real options; and pplx choosing from it is not worse than pplx with wording on the full menu by more than 0.02 (lower bound ≥ −0.02) | the recall or size bound fails, or the lower bound is below −0.02 |
+
+**The scoreboard is round 1's:**
+- accuracy and its paired difference, over anchors;
+- "none" recall;
+- gate coverage and wrong rate over the same 200 anchor splits;
+- end-to-end accuracy with Qwen's saved answers as the fallback;
+- agreement with that fallback on gated items;
+- flip;
+- role.
+
+**The comparisons:**
+- order averaging, against the single-order version of the same treatment (wording, or the
+  Step 7 control);
+- the two-model average, against pplx with wording;
+- "both", against the better of the two.
+
+### Calls (pplx and d3 each)
+
+| Treatment | Requests per server |
+|---|---:|
+| Orders 2 and 3 on the wording items | 928 |
+| Orders 2 and 3 on the D2+D3 control items | 794 |
+| Wording shortlist, as chooser | about 928 |
+
+Drift needs no new check: both servers were checked earlier on 2026-11-17. If a server has
+restarted, the drift check is re-run first.
