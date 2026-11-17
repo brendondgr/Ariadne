@@ -24,12 +24,37 @@ from pathlib import Path
 
 REPO = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(REPO))
+sys.path.insert(0, str(REPO / "scripts"))
 
 from utils.decision import score as S  # noqa: E402
 from utils.decision.items import Item  # noqa: E402
 
 CONCURRENCY = {"qwen_reason": 8, "qwen_prob": 8, "pplx": 8, "d3": 4}
-CAP = {}            # decision -> role cap ("gate" for the Phase C small tests)
+# decision -> role cap: the Phase C small tests can earn at most "gate" (PROTOCOL, role rule)
+CAP = {d: "gate" for d in ("D1", "D5", "D6", "D7", "D8", "D9", "D10", "D12")}
+
+
+def backend_for_factory():
+    import era2_card_bank as B
+    from utils.specialists.gremlin.normalizer import public_member_id
+
+    bes, closers = B.backends()
+    pub = {"attack": (lambda i: i), "capec": public_member_id}
+    return (lambda ds: (bes[ds], pub[ds])), closers
+
+
+def used_anchors() -> set[str]:
+    from utils.killtests.t3.generate import excluded_anchors
+
+    out = set(excluded_anchors())
+    for p in (REPO / "docs/evaluation/banks").glob("card-*/bank.json"):
+        for q in json.loads(p.read_text())["questions"]:
+            cg = q["card_gen"]
+            out |= {cg.get("anchor")} | set((cg.get("readings") or {}) if cg.get("ambiguity") == "entity" else ())
+            if cg.get("other_anchor"):
+                out.add(cg["other_anchor"])
+    out.discard(None)
+    return out
 
 
 def load_items(data: Path) -> list[Item]:
@@ -49,6 +74,22 @@ def cmd_build(out: Path, phase: str) -> None:
         g, recall = grounding_items(qs)
         items = d4 + g
         report["bm25_recall_at_8"] = recall
+    elif phase in ("B", "C"):
+        from utils.decision import items_bc as BC
+
+        sys.path.insert(0, str(REPO / "scripts"))
+        backend_for, (drv, cli) = backend_for_factory()
+        try:
+            reg = get_registry()
+            if phase == "B":
+                items = BC.exit_items(qs, reg, backend_for, used_anchors())
+            else:
+                items = (BC.d1_items(qs) + BC.d7_items(qs, reg, backend_for) + BC.d9_items(qs, reg, backend_for)
+                         + BC.d8_items(qs, reg) + BC.d10_items(backend_for) + BC.d6_items(qs) + BC.d12_items()
+                         + BC.d5_items())
+        finally:
+            cli.close()
+            drv.close()
     path = out / "items.jsonl"
     old = [json.loads(line) for line in path.open()] if path.exists() else []
     keep = [o for o in old if o["decision"] not in {i.decision for i in items}]

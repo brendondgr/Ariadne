@@ -153,6 +153,52 @@ uv run python scripts/era2_decisions.py score --data <same>
   - D12, untrusted-text screening;
   - D5, question shape, from era-1 gold plans.
 
+## Amendment 1, 2026-11-16, while Phase A runs: Phases B and C specified
+
+The test sets were dry-built into a scratch folder to fix their sizes. No model has seen them.
+Builders: `utils/decision/items_bc.py`, `scripts/era2_decisions.py build --phase B|C`.
+
+**Phase B, the exit decision: 189 items.**
+
+- **Options:** answerable / ambiguous, ask first / out of coverage.
+- **Context:**
+  - the catalogue's list of operations, positives only (look up, read properties, list along
+    a named relation, repeat along further named relations, filter or count);
+  - the dataset's entity types;
+  - the top 5 name-index matches for the question;
+  - the relations from the anchor's label, when there is one.
+
+| Source | Gold | n |
+|---|---|---:|
+| tuning bank, answerable (a seeded sample across tiers) | answerable | 60 |
+| tuning bank, insufficient (before retrieval it is a valid ask) | answerable | 25 |
+| tuning bank, out of coverage | out of coverage | 13 |
+| tuning bank, ambiguous (7 entity, 4 relation) | ambiguous | 11 |
+| new out of coverage, 4 operations × 3–4 template wordings, fresh tuning-split anchors | out of coverage | 40 |
+| new relation ambiguity, CAPEC AttackPatterns with ≥2 non-empty readings, 5 neutral frames | ambiguous | 40 |
+
+New anchors hash to the tuning split and are used by no bank. The new ambiguous items are all
+CAPEC relation ambiguity, because no more entity ambiguity exists in the tuning split.
+
+**Phase C, the seven small tests: 809 items.**
+- **Roles are capped at "gate".**
+- **Binary items** offer `yes` and `no`. For these, the threshold rule acts on the probability
+  of the chosen side.
+
+| Decision | Items | Gold split |
+|---|---|---|
+| D1, which graph | 40 ATT&CK + 40 CAPEC tuning questions, 20 off-topic questions (written by hand, 10 far, 10 near-domain such as CVEs or NIST controls) | attack / capec / none |
+| D7, right kind of node | 75 questions × {the asked label with gold names, another relation's label with its names} | 75 yes / 75 no |
+| D9, sufficiency | 40 questions × {the gold set, another relation's set, empty} | 40 yes / 80 no |
+| D8, plan check | 30 questions × {gold plan, another relation, reversed direction, another anchor of the same label} | 30 yes / 90 no |
+| D10, membership by meaning | 5 ATT&CK tactics × up to 10 member and 10 non-member techniques (tuning-split techniques only); the tactic is given by its description | 85 items |
+| D6, property filter | 30 template-filtered questions (ATT&CK platforms; CAPEC severity, likelihood, abstraction), 30 unfiltered | the property / none |
+| D12, untrusted-text screening | 100 descriptions of tuning-split entities, half with one of 12 planted agent-directed instructions | 50 yes / 50 no |
+| D5, question shape | 74 unique era-1 bank questions, shape from their template | lookup 20, enumeration 30, chain 20, scan 2, other 2 |
+
+**No Step 7 item touches an entity that hashes to the held-out split**; this is checked at build time. **Known thin cells, not padded:** D5 has only 2 scan and 2 other questions, because era 1's
+banks hold no more unique ones. D6 has 5 or fewer per CAPEC property.
+
 ## What would falsify the hypotheses
 
 - **D4:** a decision model reaches "alone" on the synonym tier, or fails "gate" on the
