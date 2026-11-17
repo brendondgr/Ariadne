@@ -1,0 +1,639 @@
+[
+ {
+  "id": "CG-97ff29f0743a",
+  "dataset": "attack",
+  "kind": "answerable",
+  "tier": "synonym_relation",
+  "reference": "AN0203",
+  "question_instructions": "You write one natural question a cybersecurity analyst might ask a knowledge graph. Follow the constraints exactly. Reply with the question only, on one line.",
+  "rules": [
+   "Refer to the known entity exactly as: AN0203",
+   "Relation MONITORS: An Analytic monitors a DataComponent's log sources (Analytic -> DataComponent, from x_mitre_log_source_references). In this question the known entity (a Analytic) is the source of the relation, and the question asks for the DataComponent entries on the other side.",
+   "Say the relation in your own everyday words. Do NOT use any of these words or any form of them: alert, analyz, audit, collect, event, feed, ingest, inspect, log, monitor, query, search, sourc, stream, watch.",
+   "You may name the asked-for kind as 'DataComponent'."
+  ]
+ },
+ {
+  "id": "CG-aa64e8ad35cd",
+  "dataset": "attack",
+  "kind": "answerable",
+  "tier": "identifier",
+  "reference": "C0012",
+  "question_instructions": "You write one natural question a cybersecurity analyst might ask a knowledge graph. Follow the constraints exactly. Reply with the question only, on one line.",
+  "rules": [
+   "Refer to the known entity exactly as: C0012",
+   "Relation USES: A Group or Software uses a Technique/SubTechnique; a Technique uses Software. In this question the known entity (a Campaign) is the source of the relation, and the question asks for the Software entries on the other side.",
+   "You may use the relation's own words and name the asked-for kind directly."
+  ]
+ },
+ {
+  "id": "CG-121d90f067af",
+  "dataset": "attack",
+  "kind": "answerable",
+  "tier": "reworded_name",
+  "reference_task": {
+   "instructions": "You rename things without naming them. Given a cybersecurity catalogue entry, write a short noun phrase (at most 15 words) that refers to it WITHOUT using its name, any word from its name, any alias, or its identifier. Re-say the name's meaning conceptually. Reply with the phrase only.",
+   "entry": "Entry type: Campaign\nName: HomeLand Justice\nIdentifier: C0038\nDescription: [HomeLand Justice](https://attack.mitre.org/campaigns/C0038) was a disruptive cyber campaign conducted by Iranian state-affiliated actors against Albanian government networks in July and September 2022. The activity combined ransomware, wiper malware, and data leak operations. Initial access for [HomeLand Justice](https://attack.mitre.org/campaigns/C0038) was established as early as May 2021, and threat actors moved laterally, exfiltrated sensitive information, and maintained persistence for approximately 14 months prior to the destructive phase of the operation. Responsibility was claimed by the \"HomeLand Justice\" front, which framed the campaign as retaliation against the Mujahedeen-e Khalq (MEK), an Iranian opposition group with a presence in Albania. Multiple Iran-nexus groups are assessed to have participated in the campaign, including [HEXANE](https://attack.mitre.org/groups/G1001) who probed victim infrastructure.(Citation: Mandiant ROADSWEEP August 2022)(Citation: Microsoft Albanian Government Attacks September 2022)(Citation: CISA Iran Albanian Attacks September 2022) A second wave of attacks was launched in September 2022 using similar tactics following public attribution",
+   "forbidden": [
+    "C0038",
+    "HomeLand Justice",
+    "homeland",
+    "justice"
+   ]
+  },
+  "reference": null,
+  "question_instructions": "You write one natural question a cybersecurity analyst might ask a knowledge graph. Follow the constraints exactly. Reply with the question only, on one line.",
+  "rules": [
+   "Refer to the known entity exactly as: {REFERENCE}",
+   "Relation USES: A Group or Software uses a Technique/SubTechnique; a Technique uses Software. In this question the known entity (a Campaign) is the source of the relation, and the question asks for the SubTechnique entries on the other side.",
+   "You may use the relation's own words and name the asked-for kind directly."
+  ]
+ },
+ {
+  "id": "CG-d37d8f7d5582",
+  "dataset": "attack",
+  "kind": "answerable",
+  "tier": "synonym_relation",
+  "reference": "DC0098",
+  "question_instructions": "You write one natural question a cybersecurity analyst might ask a knowledge graph. Follow the constraints exactly. Reply with the question only, on one line.",
+  "rules": [
+   "Refer to the known entity exactly as: DC0098",
+   "Relation MONITORS: An Analytic monitors a DataComponent's log sources (Analytic -> DataComponent, from x_mitre_log_source_references). In this question the known entity (a DataComponent) is the target of the relation, and the question asks for the Analytic entries on the other side.",
+   "Say the relation in your own everyday words. Do NOT use any of these words or any form of them: alert, analyz, audit, collect, event, feed, ingest, inspect, log, monitor, query, search, sourc, stream, watch.",
+   "You may name the asked-for kind as 'Analytic'."
+  ]
+ },
+ {
+  "id": "CG-7b0d6ef1f1f8",
+  "dataset": "attack",
+  "kind": "answerable",
+  "tier": "reworded_name",
+  "reference_task": {
+   "instructions": "You rename things without naming them. Given a cybersecurity catalogue entry, write a short noun phrase (at most 15 words) that refers to it WITHOUT using its name, any word from its name, any alias, or its identifier. Re-say the name's meaning conceptually. Reply with the phrase only.",
+   "entry": "Entry type: DetectionStrategy\nName: Detect Adversary Deobfuscation or Decoding of Files and Payloads\nIdentifier: DET0275\nDescription: ",
+   "forbidden": [
+    "DET0275",
+    "Detect Adversary Deobfuscation or Decoding of Files and Payloads",
+    "deobfuscation",
+    "decoding",
+    "and"
+   ]
+  },
+  "reference": null,
+  "question_instructions": "You write one natural question a cybersecurity analyst might ask a knowledge graph. Follow the constraints exactly. Reply with the question only, on one line.",
+  "rules": [
+   "Refer to the known entity exactly as: {REFERENCE}",
+   "Relation DETECTS: A DetectionStrategy detects a Technique or SubTechnique. In this question the known entity (a DetectionStrategy) is the source of the relation, and the question asks for the Technique entries on the other side.",
+   "You may use the relation's own words and name the asked-for kind directly."
+  ]
+ },
+ {
+  "id": "CG-50e08b8ad2f0",
+  "dataset": "attack",
+  "kind": "answerable",
+  "tier": "synonym_relation",
+  "reference": "G1048",
+  "question_instructions": "You write one natural question a cybersecurity analyst might ask a knowledge graph. Follow the constraints exactly. Reply with the question only, on one line.",
+  "rules": [
+   "Refer to the known entity exactly as: G1048",
+   "Relation ATTRIBUTED_TO: A Campaign is attributed to a Group. In this question the known entity (a Group) is the target of the relation, and the question asks for the Campaign entries on the other side.",
+   "Say the relation in your own everyday words. Do NOT use any of these words or any form of them: actor, agency, attribut, authority, body, branch, bureau, cell, department, divis, entity, forc, network, offic, organizat, party, player, responsibl, side, team, unit.",
+   "You may name the asked-for kind as 'Campaign'."
+  ]
+ },
+ {
+  "id": "CG-ea0f77430ac7",
+  "dataset": "attack",
+  "kind": "answerable",
+  "tier": "identifier",
+  "reference": "G0084",
+  "question_instructions": "You write one natural question a cybersecurity analyst might ask a knowledge graph. Follow the constraints exactly. Reply with the question only, on one line.",
+  "rules": [
+   "Refer to the known entity exactly as: G0084",
+   "Relation USES: A Group or Software uses a Technique/SubTechnique; a Technique uses Software. In this question the known entity (a Group) is the source of the relation, and the question asks for the SubTechnique entries on the other side.",
+   "You may use the relation's own words and name the asked-for kind directly."
+  ]
+ },
+ {
+  "id": "CG-f7ca54479e6b",
+  "dataset": "attack",
+  "kind": "answerable",
+  "tier": "reworded_name",
+  "reference_task": {
+   "instructions": "You rename things without naming them. Given a cybersecurity catalogue entry, write a short noun phrase (at most 15 words) that refers to it WITHOUT using its name, any word from its name, any alias, or its identifier. Re-say the name's meaning conceptually. Reply with the phrase only.",
+   "entry": "Entry type: Group\nName: Wizard Spider\nIdentifier: G0102\nDescription: [Wizard Spider](https://attack.mitre.org/groups/G0102) is a Russia-based financially motivated threat group originally known for the creation and deployment of [TrickBot](https://attack.mitre.org/software/S0266) since at least 2016. [Wizard Spider](https://attack.mitre.org/groups/G0102) possesses a diverse arsenal of tools and has conducted ransomware campaigns against a variety of organizations, ranging from major corporations to hospitals.(Citation: CrowdStrike Ryuk January 2019)(Citation: DHS/CISA Ransomware Targeting Healthcare October 2020)(Citation: CrowdStrike Wizard Spider October 2020)",
+   "forbidden": [
+    "G0102",
+    "Wizard Spider",
+    "wizard",
+    "spider"
+   ]
+  },
+  "reference": null,
+  "question_instructions": "You write one natural question a cybersecurity analyst might ask a knowledge graph. Follow the constraints exactly. Reply with the question only, on one line.",
+  "rules": [
+   "Refer to the known entity exactly as: {REFERENCE}",
+   "Relation USES: A Group or Software uses a Technique/SubTechnique; a Technique uses Software. In this question the known entity (a Group) is the source of the relation, and the question asks for the Technique entries on the other side.",
+   "You may use the relation's own words and name the asked-for kind directly."
+  ]
+ },
+ {
+  "id": "CG-b88b0f128751",
+  "dataset": "attack",
+  "kind": "answerable",
+  "tier": "paraphrased_schema",
+  "reference": "M1037",
+  "question_instructions": "You write one natural question a cybersecurity analyst might ask a knowledge graph. Follow the constraints exactly. Reply with the question only, on one line.",
+  "rules": [
+   "Refer to the known entity exactly as: M1037",
+   "Relation MITIGATES: A Mitigation reduces risk for a Technique. In this question the known entity (a Mitigation) is the source of the relation, and the question asks for the SubTechnique entries on the other side.",
+   "Name the asked-for kind (SubTechnique: A more specific variant of a parent Technique (T-ID.NNN).) by what it means, NOT by the words sub, techniqu or any form of them.",
+   "Do not copy identifier formats or version tags from that description (such as 'X-ID', 'NNN' or 'v19')."
+  ]
+ },
+ {
+  "id": "CG-8f90e9b5461a",
+  "dataset": "attack",
+  "kind": "answerable",
+  "tier": "name",
+  "reference": "ROAMINGHOUSE",
+  "question_instructions": "You write one natural question a cybersecurity analyst might ask a knowledge graph. Follow the constraints exactly. Reply with the question only, on one line.",
+  "rules": [
+   "Refer to the known entity exactly as: ROAMINGHOUSE",
+   "Relation USES: A Group or Software uses a Technique/SubTechnique; a Technique uses Software. In this question the known entity (a Software) is the target of the relation, and the question asks for the Campaign entries on the other side.",
+   "You may use the relation's own words and name the asked-for kind directly."
+  ]
+ },
+ {
+  "id": "CG-543919221fed",
+  "dataset": "attack",
+  "kind": "answerable",
+  "tier": "description",
+  "reference_task": {
+   "instructions": "You describe things without naming them. Given a cybersecurity catalogue entry, write a one-line reference (at most 25 words) built only from what its description says it is or does, WITHOUT using its name, any word from its name, any alias, or its identifier. Reply with the reference only, as a noun phrase.",
+   "entry": "Entry type: Software\nName: Trojan.Mebromi\nIdentifier: S0001\nDescription: [Trojan.Mebromi](https://attack.mitre.org/software/S0001) is BIOS-level malware that takes control of the victim before MBR. (Citation: Ge 2011)",
+   "forbidden": [
+    "S0001",
+    "Trojan.Mebromi",
+    "mebromi"
+   ]
+  },
+  "reference": null,
+  "question_instructions": "You write one natural question a cybersecurity analyst might ask a knowledge graph. Follow the constraints exactly. Reply with the question only, on one line.",
+  "rules": [
+   "Refer to the known entity exactly as: {REFERENCE}",
+   "Relation USES: A Group or Software uses a Technique/SubTechnique; a Technique uses Software. In this question the known entity (a Software) is the source of the relation, and the question asks for the SubTechnique entries on the other side.",
+   "You may use the relation's own words and name the asked-for kind directly."
+  ]
+ },
+ {
+  "id": "CG-9da7933bfcc8",
+  "dataset": "attack",
+  "kind": "answerable",
+  "tier": "paraphrased_schema",
+  "reference": "S0438",
+  "question_instructions": "You write one natural question a cybersecurity analyst might ask a knowledge graph. Follow the constraints exactly. Reply with the question only, on one line.",
+  "rules": [
+   "Refer to the known entity exactly as: S0438",
+   "Relation USES: A Group or Software uses a Technique/SubTechnique; a Technique uses Software. In this question the known entity (a Software) is the source of the relation, and the question asks for the Technique entries on the other side.",
+   "Name the asked-for kind (Technique: An adversary action or behavior at the atomic level (T-ID); may have sub-techniques.) by what it means, NOT by the words techniqu or any form of them.",
+   "Do not copy identifier formats or version tags from that description (such as 'X-ID', 'NNN' or 'v19')."
+  ]
+ },
+ {
+  "id": "CG-27e4f613f6ca",
+  "dataset": "attack",
+  "kind": "answerable",
+  "tier": "name",
+  "reference": "Vulnerabilities",
+  "question_instructions": "You write one natural question a cybersecurity analyst might ask a knowledge graph. Follow the constraints exactly. Reply with the question only, on one line.",
+  "rules": [
+   "Refer to the known entity exactly as: Vulnerabilities",
+   "Relation HAS_SUBTECHNIQUE: A Technique contains a SubTechnique. In this question the known entity (a SubTechnique) is the target of the relation, and the question asks for the Technique entries on the other side.",
+   "You may use the relation's own words and name the asked-for kind directly."
+  ]
+ },
+ {
+  "id": "CG-c6f03683c510",
+  "dataset": "attack",
+  "kind": "answerable",
+  "tier": "description",
+  "reference_task": {
+   "instructions": "You describe things without naming them. Given a cybersecurity catalogue entry, write a one-line reference (at most 25 words) built only from what its description says it is or does, WITHOUT using its name, any word from its name, any alias, or its identifier. Reply with the reference only, as a noun phrase.",
+   "entry": "Entry type: SubTechnique\nName: Reflection Amplification\nIdentifier: T1498.002\nDescription: Adversaries may attempt to cause a denial of service (DoS) by reflecting a high-volume of network traffic to a target. This type of Network DoS takes advantage of a third-party server intermediary that hosts and will respond to a given spoofed source IP address. This third-party server is commonly termed a reflector. An adversary accomplishes a reflection attack by sending packets to reflectors with the spoofed address of the victim. Similar to Direct Network Floods, more than one system may be used to conduct the attack, or a botnet may be used. Likewise, one or more reflectors may be used to focus traffic on the target.(Citation: Cloudflare ReflectionDoS May 2017) This Network DoS attack may also reduce the availability and functionality of the targeted system(s) and network. Reflection attacks often take advantage of protocols with larger responses than requests in order to amplify their traffic, commonly known as a Reflection Amplification attack. Adversaries may be able to generate an increase in volume of attack traffic that is several orders of magnitude greater than the requests sent to the amplifiers. The extent of this increase will depending upon many variables, such as ",
+   "forbidden": [
+    "T1498.002",
+    "Reflection Amplification",
+    "reflection",
+    "amplification"
+   ]
+  },
+  "reference": null,
+  "question_instructions": "You write one natural question a cybersecurity analyst might ask a knowledge graph. Follow the constraints exactly. Reply with the question only, on one line.",
+  "rules": [
+   "Refer to the known entity exactly as: {REFERENCE}",
+   "Relation MITIGATES: A Mitigation reduces risk for a Technique. In this question the known entity (a SubTechnique) is the target of the relation, and the question asks for the Mitigation entries on the other side.",
+   "You may use the relation's own words and name the asked-for kind directly."
+  ]
+ },
+ {
+  "id": "CG-77ee4efa0ba3",
+  "dataset": "attack",
+  "kind": "answerable",
+  "tier": "name",
+  "reference": "RDP Hijacking",
+  "question_instructions": "You write one natural question a cybersecurity analyst might ask a knowledge graph. Follow the constraints exactly. Reply with the question only, on one line.",
+  "rules": [
+   "Refer to the known entity exactly as: RDP Hijacking",
+   "Relation USES: A Group or Software uses a Technique/SubTechnique; a Technique uses Software. In this question the known entity (a SubTechnique) is the target of the relation, and the question asks for the Group entries on the other side.",
+   "You may use the relation's own words and name the asked-for kind directly."
+  ]
+ },
+ {
+  "id": "CG-96bf1e0255e5",
+  "dataset": "attack",
+  "kind": "answerable",
+  "tier": "description",
+  "reference_task": {
+   "instructions": "You describe things without naming them. Given a cybersecurity catalogue entry, write a one-line reference (at most 25 words) built only from what its description says it is or does, WITHOUT using its name, any word from its name, any alias, or its identifier. Reply with the reference only, as a noun phrase.",
+   "entry": "Entry type: SubTechnique\nName: Exfiltration over USB\nIdentifier: T1052.001\nDescription: Adversaries may attempt to exfiltrate data over a USB connected physical device. In certain circumstances, such as an air-gapped network compromise, exfiltration could occur via a USB device introduced by a user. The USB device could be used as the final exfiltration point or to hop between otherwise disconnected systems.",
+   "forbidden": [
+    "T1052.001",
+    "Exfiltration over USB",
+    "usb"
+   ]
+  },
+  "reference": null,
+  "question_instructions": "You write one natural question a cybersecurity analyst might ask a knowledge graph. Follow the constraints exactly. Reply with the question only, on one line.",
+  "rules": [
+   "Refer to the known entity exactly as: {REFERENCE}",
+   "Relation USES: A Group or Software uses a Technique/SubTechnique; a Technique uses Software. In this question the known entity (a SubTechnique) is the target of the relation, and the question asks for the Software entries on the other side.",
+   "You may use the relation's own words and name the asked-for kind directly."
+  ]
+ },
+ {
+  "id": "CG-e7a6d920ba39",
+  "dataset": "attack",
+  "kind": "answerable",
+  "tier": "paraphrased_schema",
+  "reference": "TA0009",
+  "question_instructions": "You write one natural question a cybersecurity analyst might ask a knowledge graph. Follow the constraints exactly. Reply with the question only, on one line.",
+  "rules": [
+   "Refer to the known entity exactly as: TA0009",
+   "Relation HAS_TECHNIQUE: A Tactic contains a Technique. In this question the known entity (a Tactic) is the source of the relation, and the question asks for the SubTechnique entries on the other side.",
+   "Name the asked-for kind (SubTechnique: A more specific variant of a parent Technique (T-ID.NNN).) by what it means, NOT by the words sub, techniqu or any form of them.",
+   "Do not copy identifier formats or version tags from that description (such as 'X-ID', 'NNN' or 'v19')."
+  ]
+ },
+ {
+  "id": "CG-b7ded8fd0273",
+  "dataset": "attack",
+  "kind": "answerable",
+  "tier": "description",
+  "reference_task": {
+   "instructions": "You describe things without naming them. Given a cybersecurity catalogue entry, write a one-line reference (at most 25 words) built only from what its description says it is or does, WITHOUT using its name, any word from its name, any alias, or its identifier. Reply with the reference only, as a noun phrase.",
+   "entry": "Entry type: Technique\nName: Password Policy Discovery\nIdentifier: T1201\nDescription: Adversaries may attempt to access detailed information about the password policy used within an enterprise network or cloud environment. Password policies are a way to enforce complex passwords that are difficult to guess or crack through [Brute Force](https://attack.mitre.org/techniques/T1110). This information may help the adversary to create a list of common passwords and launch dictionary and/or brute force attacks which adheres to the policy (e.g. if the minimum password length should be 8, then not trying passwords such as 'pass123'; not checking for more than 3-4 passwords per account if the lockout is set to 6 as to not lock out accounts). Password policies can be set and discovered on Windows, Linux, and macOS systems via various command shell utilities such as <code>net accounts (/domain)</code>, <code>Get-ADDefaultDomainPasswordPolicy</code>, <code>chage -l <username></code>, <code>cat /etc/pam.d/common-password</code>, and <code>pwpolicy getaccountpolicies</code> (Citation: Superuser Linux Password Policies) (Citation: Jamf User Password Policies). Adversaries may also leverage a [Network Device CLI](https://attack.mitre.org/techniques/T1059/008) on network devices to d",
+   "forbidden": [
+    "T1201",
+    "Password Policy Discovery"
+   ]
+  },
+  "reference": null,
+  "question_instructions": "You write one natural question a cybersecurity analyst might ask a knowledge graph. Follow the constraints exactly. Reply with the question only, on one line.",
+  "rules": [
+   "Refer to the known entity exactly as: {REFERENCE}",
+   "Relation DETECTS: A DetectionStrategy detects a Technique or SubTechnique. In this question the known entity (a Technique) is the target of the relation, and the question asks for the DetectionStrategy entries on the other side.",
+   "You may use the relation's own words and name the asked-for kind directly."
+  ]
+ },
+ {
+  "id": "CG-8c2b20da4c97",
+  "dataset": "attack",
+  "kind": "answerable",
+  "tier": "name",
+  "reference": "Ingress Tool Transfer",
+  "question_instructions": "You write one natural question a cybersecurity analyst might ask a knowledge graph. Follow the constraints exactly. Reply with the question only, on one line.",
+  "rules": [
+   "Refer to the known entity exactly as: Ingress Tool Transfer",
+   "Relation HAS_TECHNIQUE: A Tactic contains a Technique. In this question the known entity (a Technique) is the target of the relation, and the question asks for the Tactic entries on the other side.",
+   "You may use the relation's own words and name the asked-for kind directly."
+  ]
+ },
+ {
+  "id": "CG-df7015d67230",
+  "dataset": "attack",
+  "kind": "answerable",
+  "tier": "paraphrased_schema",
+  "reference": "T1564",
+  "question_instructions": "You write one natural question a cybersecurity analyst might ask a knowledge graph. Follow the constraints exactly. Reply with the question only, on one line.",
+  "rules": [
+   "Refer to the known entity exactly as: T1564",
+   "Relation MITIGATES: A Mitigation reduces risk for a Technique. In this question the known entity (a Technique) is the target of the relation, and the question asks for the Mitigation entries on the other side.",
+   "Name the asked-for kind (Mitigation: A defensive measure that reduces technique risk (M-ID).) by what it means, NOT by the words mitigat or any form of them.",
+   "Do not copy identifier formats or version tags from that description (such as 'X-ID', 'NNN' or 'v19')."
+  ]
+ },
+ {
+  "id": "CG-a52f78d10e04",
+  "dataset": "attack",
+  "kind": "answerable",
+  "tier": "name",
+  "reference": "Log Enumeration",
+  "question_instructions": "You write one natural question a cybersecurity analyst might ask a knowledge graph. Follow the constraints exactly. Reply with the question only, on one line.",
+  "rules": [
+   "Refer to the known entity exactly as: Log Enumeration",
+   "Relation USES: A Group or Software uses a Technique/SubTechnique; a Technique uses Software. In this question the known entity (a Technique) is the target of the relation, and the question asks for the Group entries on the other side.",
+   "You may use the relation's own words and name the asked-for kind directly."
+  ]
+ },
+ {
+  "id": "CG-84aad87c441c",
+  "dataset": "attack",
+  "kind": "insufficient",
+  "tier": "identifier",
+  "reference": "T1069",
+  "question_instructions": "You write one natural question a cybersecurity analyst might ask a knowledge graph. Follow the constraints exactly. Reply with the question only, on one line.",
+  "rules": [
+   "Refer to the known entity exactly as: T1069",
+   "Relation MITIGATES: A Mitigation reduces risk for a Technique. In this question the known entity (a Technique) is the target of the relation, and the question asks for the Mitigation entries on the other side.",
+   "You may use the relation's own words and name the asked-for kind directly."
+  ]
+ },
+ {
+  "id": "CG-d12429447173",
+  "dataset": "attack",
+  "kind": "insufficient",
+  "tier": "identifier",
+  "reference": "S0159",
+  "question_instructions": "You write one natural question a cybersecurity analyst might ask a knowledge graph. Follow the constraints exactly. Reply with the question only, on one line.",
+  "rules": [
+   "Refer to the known entity exactly as: S0159",
+   "Relation USES: A Group or Software uses a Technique/SubTechnique; a Technique uses Software. In this question the known entity (a Software) is the source of the relation, and the question asks for the Technique entries on the other side.",
+   "You may use the relation's own words and name the asked-for kind directly."
+  ]
+ },
+ {
+  "id": "CG-b1e811fbe962",
+  "dataset": "capec",
+  "kind": "answerable",
+  "tier": "paraphrased_schema",
+  "reference": "CAPEC-165",
+  "question_instructions": "You write one natural question a cybersecurity analyst might ask a knowledge graph. Follow the constraints exactly. Reply with the question only, on one line.",
+  "rules": [
+   "Refer to the known entity exactly as: CAPEC-165",
+   "Relation CanAlsoBe: An AttackPattern can also be characterized as another AttackPattern. In this question the known entity (a AttackPattern) is the target of the relation, and the question asks for the AttackPattern entries on the other side.",
+   "Name the asked-for kind (AttackPattern: A CAPEC attack pattern (CAPEC-ID) describing an adversarial technique at an abstract level.) by what it means, NOT by the words attack, pattern or any form of them.",
+   "Do not copy identifier formats or version tags from that description (such as 'X-ID', 'NNN' or 'v19')."
+  ]
+ },
+ {
+  "id": "CG-eedd2d894e4a",
+  "dataset": "capec",
+  "kind": "answerable",
+  "tier": "name",
+  "reference": "Code Inclusion",
+  "question_instructions": "You write one natural question a cybersecurity analyst might ask a knowledge graph. Follow the constraints exactly. Reply with the question only, on one line.",
+  "rules": [
+   "Refer to the known entity exactly as: Code Inclusion",
+   "Relation CanFollow: An AttackPattern can occur after another in an attack chain. In this question the known entity (a AttackPattern) is the target of the relation, and the question asks for the AttackPattern entries on the other side.",
+   "You may use the relation's own words and name the asked-for kind directly."
+  ]
+ },
+ {
+  "id": "CG-8d6cb8398ac3",
+  "dataset": "capec",
+  "kind": "answerable",
+  "tier": "description",
+  "reference_task": {
+   "instructions": "You describe things without naming them. Given a cybersecurity catalogue entry, write a one-line reference (at most 25 words) built only from what its description says it is or does, WITHOUT using its name, any word from its name, any alias, or its identifier. Reply with the reference only, as a noun phrase.",
+   "entry": "Entry type: AttackPattern\nName: Hijacking a privileged process\nIdentifier: CAPEC-234\nDescription: An adversary gains control of a process that is assigned elevated privileges in order to execute arbitrary code with those privileges. Some processes are assigned elevated privileges on an operating system, usually through association with a particular user, group, or role. If an attacker can hijack this process, they will be able to assume its level of privilege in order to execute their own code.",
+   "forbidden": [
+    "CAPEC-234",
+    "Hijacking a privileged process",
+    "capec:attack-pattern:234"
+   ]
+  },
+  "reference": null,
+  "question_instructions": "You write one natural question a cybersecurity analyst might ask a knowledge graph. Follow the constraints exactly. Reply with the question only, on one line.",
+  "rules": [
+   "Refer to the known entity exactly as: {REFERENCE}",
+   "Relation CanFollow: An AttackPattern can occur after another in an attack chain. In this question the known entity (a AttackPattern) is the source of the relation, and the question asks for the AttackPattern entries on the other side.",
+   "You may use the relation's own words and name the asked-for kind directly."
+  ]
+ },
+ {
+  "id": "CG-4242f2e5a8f3",
+  "dataset": "capec",
+  "kind": "answerable",
+  "tier": "paraphrased_schema",
+  "reference": "CAPEC-1",
+  "question_instructions": "You write one natural question a cybersecurity analyst might ask a knowledge graph. Follow the constraints exactly. Reply with the question only, on one line.",
+  "rules": [
+   "Refer to the known entity exactly as: CAPEC-1",
+   "Relation CanPrecede: An AttackPattern can occur before another in an attack chain. In this question the known entity (a AttackPattern) is the source of the relation, and the question asks for the AttackPattern entries on the other side.",
+   "Name the asked-for kind (AttackPattern: A CAPEC attack pattern (CAPEC-ID) describing an adversarial technique at an abstract level.) by what it means, NOT by the words attack, pattern or any form of them.",
+   "Do not copy identifier formats or version tags from that description (such as 'X-ID', 'NNN' or 'v19')."
+  ]
+ },
+ {
+  "id": "CG-ce60a4de0acf",
+  "dataset": "capec",
+  "kind": "answerable",
+  "tier": "name",
+  "reference": "Detect Unpublicized Web Pages",
+  "question_instructions": "You write one natural question a cybersecurity analyst might ask a knowledge graph. Follow the constraints exactly. Reply with the question only, on one line.",
+  "rules": [
+   "Refer to the known entity exactly as: Detect Unpublicized Web Pages",
+   "Relation ChildOf: An AttackPattern is a more specific variant of a parent AttackPattern. In this question the known entity (a AttackPattern) is the source of the relation, and the question asks for the AttackPattern entries on the other side.",
+   "You may use the relation's own words and name the asked-for kind directly."
+  ]
+ },
+ {
+  "id": "CG-4884a10ee18d",
+  "dataset": "capec",
+  "kind": "answerable",
+  "tier": "paraphrased_schema",
+  "reference": "CAPEC-97",
+  "question_instructions": "You write one natural question a cybersecurity analyst might ask a knowledge graph. Follow the constraints exactly. Reply with the question only, on one line.",
+  "rules": [
+   "Refer to the known entity exactly as: CAPEC-97",
+   "Relation EXPLOITS_WEAKNESS: An AttackPattern exploits a specific CWE Weakness. In this question the known entity (a AttackPattern) is the source of the relation, and the question asks for the Weakness entries on the other side.",
+   "Name the asked-for kind (Weakness: A CWE software weakness exploited by one or more attack patterns.) by what it means, NOT by the words weaknes or any form of them.",
+   "Do not copy identifier formats or version tags from that description (such as 'X-ID', 'NNN' or 'v19')."
+  ]
+ },
+ {
+  "id": "CG-1bd4784b7485",
+  "dataset": "capec",
+  "kind": "answerable",
+  "tier": "reworded_name",
+  "reference_task": {
+   "instructions": "You rename things without naming them. Given a cybersecurity catalogue entry, write a short noun phrase (at most 15 words) that refers to it WITHOUT using its name, any word from its name, any alias, or its identifier. Re-say the name's meaning conceptually. Reply with the phrase only.",
+   "entry": "Entry type: AttackPattern\nName: Command Line Execution through SQL Injection\nIdentifier: CAPEC-108\nDescription: An attacker uses standard SQL injection methods to inject data into the command line for execution. This could be done directly through misuse of directives such as MSSQL_xp_cmdshell or indirectly through injection of data into the database that would be interpreted as shell commands. Sometime later, an unscrupulous backend application (or could be part of the functionality of the same application) fetches the injected data stored in the database and uses this data as command line arguments without performing proper validation. The malicious data escapes that data plane by spawning new commands to be executed on the host.",
+   "forbidden": [
+    "CAPEC-108",
+    "Command Line Execution through SQL Injection",
+    "capec:attack-pattern:108"
+   ]
+  },
+  "reference": null,
+  "question_instructions": "You write one natural question a cybersecurity analyst might ask a knowledge graph. Follow the constraints exactly. Reply with the question only, on one line.",
+  "rules": [
+   "Refer to the known entity exactly as: {REFERENCE}",
+   "Relation HAS_CONSEQUENCE: An AttackPattern leads to a Consequence if successful. In this question the known entity (a AttackPattern) is the source of the relation, and the question asks for the Consequence entries on the other side.",
+   "You may use the relation's own words and name the asked-for kind directly."
+  ]
+ },
+ {
+  "id": "CG-43f52b6309da",
+  "dataset": "capec",
+  "kind": "answerable",
+  "tier": "name",
+  "reference": "Fuzzing for application mapping",
+  "question_instructions": "You write one natural question a cybersecurity analyst might ask a knowledge graph. Follow the constraints exactly. Reply with the question only, on one line.",
+  "rules": [
+   "Refer to the known entity exactly as: Fuzzing for application mapping",
+   "Relation HAS_EXECUTION_STEP: An AttackPattern contains an ordered ExecutionStep. In this question the known entity (a AttackPattern) is the source of the relation, and the question asks for the ExecutionStep entries on the other side.",
+   "You may use the relation's own words and name the asked-for kind directly."
+  ]
+ },
+ {
+  "id": "CG-9626705a820c",
+  "dataset": "capec",
+  "kind": "answerable",
+  "tier": "reworded_name",
+  "reference_task": {
+   "instructions": "You rename things without naming them. Given a cybersecurity catalogue entry, write a short noun phrase (at most 15 words) that refers to it WITHOUT using its name, any word from its name, any alias, or its identifier. Re-say the name's meaning conceptually. Reply with the phrase only.",
+   "entry": "Entry type: AttackPattern\nName: WSDL Scanning\nIdentifier: CAPEC-95\nDescription: This attack targets the WSDL interface made available by a web service. The attacker may scan the WSDL interface to reveal sensitive information about invocation patterns, underlying technology implementations and associated vulnerabilities. This type of probing is carried out to perform more serious attacks (e.g. parameter tampering, malicious content injection, command injection, etc.). WSDL files provide detailed information about the services ports and bindings available to consumers. For instance, the attacker can submit special characters or malicious content to the Web service and can cause a denial of service condition or illegal access to database records. In addition, the attacker may try to guess other private methods by using the information provided in the WSDL files.",
+   "forbidden": [
+    "CAPEC-95",
+    "WSDL Scanning",
+    "wsdl",
+    "capec:attack-pattern:95"
+   ]
+  },
+  "reference": null,
+  "question_instructions": "You write one natural question a cybersecurity analyst might ask a knowledge graph. Follow the constraints exactly. Reply with the question only, on one line.",
+  "rules": [
+   "Refer to the known entity exactly as: {REFERENCE}",
+   "Relation HAS_MITIGATION: An AttackPattern is addressed by a Mitigation. In this question the known entity (a AttackPattern) is the source of the relation, and the question asks for the Mitigation entries on the other side.",
+   "You may use the relation's own words and name the asked-for kind directly."
+  ]
+ },
+ {
+  "id": "CG-fd4146b30fbb",
+  "dataset": "capec",
+  "kind": "answerable",
+  "tier": "name",
+  "reference": "ICMP Echo Request Ping",
+  "question_instructions": "You write one natural question a cybersecurity analyst might ask a knowledge graph. Follow the constraints exactly. Reply with the question only, on one line.",
+  "rules": [
+   "Refer to the known entity exactly as: ICMP Echo Request Ping",
+   "Relation HAS_REFERENCE: An AttackPattern, Category, or View is documented by an ExternalReference. In this question the known entity (a AttackPattern) is the source of the relation, and the question asks for the ExternalReference entries on the other side.",
+   "You may use the relation's own words and name the asked-for kind directly."
+  ]
+ },
+ {
+  "id": "CG-b53bd8d33629",
+  "dataset": "capec",
+  "kind": "answerable",
+  "tier": "paraphrased_schema",
+  "reference": "CAPEC-122",
+  "question_instructions": "You write one natural question a cybersecurity analyst might ask a knowledge graph. Follow the constraints exactly. Reply with the question only, on one line.",
+  "rules": [
+   "Refer to the known entity exactly as: CAPEC-122",
+   "Relation MAPS_TO: An AttackPattern maps to an entry in an external taxonomy (TaxonomyEntry). In this question the known entity (a AttackPattern) is the source of the relation, and the question asks for the TaxonomyEntry entries on the other side.",
+   "Name the asked-for kind (TaxonomyEntry: A mapping between a CAPEC attack pattern and an external taxonomy (e.g., ATT&CK, WASC).) by what it means, NOT by the words entry, taxonomy or any form of them.",
+   "Do not copy identifier formats or version tags from that description (such as 'X-ID', 'NNN' or 'v19')."
+  ]
+ },
+ {
+  "id": "CG-d604c4be7ff1",
+  "dataset": "capec",
+  "kind": "answerable",
+  "tier": "name",
+  "reference": "HTTP Request Splitting",
+  "question_instructions": "You write one natural question a cybersecurity analyst might ask a knowledge graph. Follow the constraints exactly. Reply with the question only, on one line.",
+  "rules": [
+   "Refer to the known entity exactly as: HTTP Request Splitting",
+   "Relation PeerOf: Two AttackPatterns are related alternatives at the same abstraction level. In this question the known entity (a AttackPattern) is the target of the relation, and the question asks for the AttackPattern entries on the other side.",
+   "You may use the relation's own words and name the asked-for kind directly."
+  ]
+ },
+ {
+  "id": "CG-4082fb0e1b1f",
+  "dataset": "capec",
+  "kind": "answerable",
+  "tier": "description",
+  "reference_task": {
+   "instructions": "You describe things without naming them. Given a cybersecurity catalogue entry, write a one-line reference (at most 25 words) built only from what its description says it is or does, WITHOUT using its name, any word from its name, any alias, or its identifier. Reply with the reference only, as a noun phrase.",
+   "entry": "Entry type: AttackPattern\nName: Leverage Executable Code in Non-Executable Files\nIdentifier: CAPEC-35\nDescription: An attack of this type exploits a system's trust in configuration and resource files. When the executable loads the resource (such as an image file or configuration file) the attacker has modified the file to either execute malicious code directly or manipulate the target process (e.g. application server) to execute based on the malicious configuration parameters. Since systems are increasingly interrelated mashing up resources from local and remote sources the possibility of this attack occurring is high.",
+   "forbidden": [
+    "CAPEC-35",
+    "Leverage Executable Code in Non-Executable Files",
+    "capec:attack-pattern:35"
+   ]
+  },
+  "reference": null,
+  "question_instructions": "You write one natural question a cybersecurity analyst might ask a knowledge graph. Follow the constraints exactly. Reply with the question only, on one line.",
+  "rules": [
+   "Refer to the known entity exactly as: {REFERENCE}",
+   "Relation PeerOf: Two AttackPatterns are related alternatives at the same abstraction level. In this question the known entity (a AttackPattern) is the source of the relation, and the question asks for the AttackPattern entries on the other side.",
+   "You may use the relation's own words and name the asked-for kind directly."
+  ]
+ },
+ {
+  "id": "CG-7fd22a383fb1",
+  "dataset": "capec",
+  "kind": "answerable",
+  "tier": "name",
+  "reference": "Symlink Attack",
+  "question_instructions": "You write one natural question a cybersecurity analyst might ask a knowledge graph. Follow the constraints exactly. Reply with the question only, on one line.",
+  "rules": [
+   "Refer to the known entity exactly as: Symlink Attack",
+   "Relation REQUIRES_SKILL: An AttackPattern requires an attacker to possess a Skill. In this question the known entity (a AttackPattern) is the source of the relation, and the question asks for the Skill entries on the other side.",
+   "You may use the relation's own words and name the asked-for kind directly."
+  ]
+ },
+ {
+  "id": "CG-e0ec209ef8d7",
+  "dataset": "capec",
+  "kind": "answerable",
+  "tier": "synonym_relation",
+  "reference": "CAPEC-437",
+  "question_instructions": "You write one natural question a cybersecurity analyst might ask a knowledge graph. Follow the constraints exactly. Reply with the question only, on one line.",
+  "rules": [
+   "Refer to the known entity exactly as: CAPEC-437",
+   "Relation MEMBER_OF: An AttackPattern is a member of a Category. In this question the known entity (a Category) is the target of the relation, and the question asks for the AttackPattern entries on the other side.",
+   "Say the relation in your own everyday words. Do NOT use any of these words or any form of them: assign, belong, fall, filed, group, member, tagg, under.",
+   "You may name the asked-for kind as 'AttackPattern'."
+  ]
+ },
+ {
+  "id": "CG-088026c49f93",
+  "dataset": "capec",
+  "kind": "answerable",
+  "tier": "paraphrased_schema",
+  "reference": "CWE-1279",
+  "question_instructions": "You write one natural question a cybersecurity analyst might ask a knowledge graph. Follow the constraints exactly. Reply with the question only, on one line.",
+  "rules": [
+   "Refer to the known entity exactly as: CWE-1279",
+   "Relation EXPLOITS_WEAKNESS: An AttackPattern exploits a specific CWE Weakness. In this question the known entity (a Weakness) is the target of the relation, and the question asks for the AttackPattern entries on the other side.",
+   "Name the asked-for kind (AttackPattern: A CAPEC attack pattern (CAPEC-ID) describing an adversarial technique at an abstract level.) by what it means, NOT by the words attack, pattern or any form of them.",
+   "Do not copy identifier formats or version tags from that description (such as 'X-ID', 'NNN' or 'v19')."
+  ]
+ },
+ {
+  "id": "CG-5f021e951538",
+  "dataset": "capec",
+  "kind": "insufficient",
+  "tier": "identifier",
+  "reference": "CAPEC-576",
+  "question_instructions": "You write one natural question a cybersecurity analyst might ask a knowledge graph. Follow the constraints exactly. Reply with the question only, on one line.",
+  "rules": [
+   "Refer to the known entity exactly as: CAPEC-576",
+   "Relation CanFollow: An AttackPattern can occur after another in an attack chain. In this question the known entity (a AttackPattern) is the source of the relation, and the question asks for the AttackPattern entries on the other side.",
+   "You may use the relation's own words and name the asked-for kind directly."
+  ]
+ }
+]

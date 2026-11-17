@@ -205,5 +205,101 @@
    "n": 53,
    "sha256": "7cbdd6f87af7a4428344b9133657adb87a50946c57fac09c40d265e91a1a7f99"
   }
+ },
+ "sonnet": {
+  "writer": "claude-sonnet-5-5 (medium effort, Claude Code subagents)",
+  "total_questions": 837,
+  "rewritten": 805,
+  "templates_plain_rendered": 32,
+  "datasets": {
+   "attack": {
+    "questions": 483,
+    "gold_reexecuted_match": "483/483",
+    "by_kind": {
+     "answerable": 433,
+     "insufficient": 24,
+     "ambiguous": 14,
+     "out_of_coverage": 12
+    },
+    "by_split": {
+     "tuning": 228,
+     "heldout": 255
+    },
+    "by_decision": {
+     "grounding": 294,
+     "relation_choice": 139,
+     "exit": 50
+    },
+    "dropped": {},
+    "retried": 6,
+    "G2_split_overlap": 0,
+    "G3_leaks": 0
+   },
+   "capec": {
+    "questions": 354,
+    "gold_reexecuted_match": "354/354",
+    "by_kind": {
+     "answerable": 310,
+     "insufficient": 24,
+     "ambiguous": 8,
+     "out_of_coverage": 12
+    },
+    "by_split": {
+     "tuning": 205,
+     "heldout": 149
+    },
+    "by_decision": {
+     "grounding": 217,
+     "relation_choice": 93,
+     "exit": 44
+    },
+    "dropped": {},
+    "retried": 4,
+    "G2_split_overlap": 0,
+    "G3_leaks": 0
+   }
+  },
+  "G2_global_split_overlap": 0,
+  "paired_wording": {
+   "identical_text": 56,
+   "schema_label_verbatim": {
+    "qwen": 237,
+    "sonnet": 0
+   },
+   "median_words": {
+    "qwen": 9,
+    "sonnet": 8
+   }
+  },
+  "E2_proxy": {
+   "reader": "proxy: Claude Opus 5.5, medium effort, blind (not a person)",
+   "n": 50,
+   "fluent": 47,
+   "ambiguous_truly": "10/10",
+   "rejected": [
+    {
+     "n": 3,
+     "id": "CG-2142fff049b3",
+     "kind": "answerable",
+     "tier": "description",
+     "note": "Garbled description: 'modification of state information maintained by ... state transitions' does not parse as a coherent phrase."
+    },
+    {
+     "n": 27,
+     "id": "CG-36c7f893e093",
+     "kind": "answerable",
+     "tier": "reworded_name",
+     "note": "Long subject embedded before a stranded 'a member of'; hard to parse, not how an analyst would phrase it."
+    },
+    {
+     "n": 36,
+     "id": "CG-4d6040732eeb",
+     "kind": "answerable",
+     "tier": "paraphrased_schema",
+     "note": "Stilted schema paraphrase ('named monitoring plans for spotting adversary behaviors are put into practice by'); an analyst would say 'detection strategies'."
+    }
+   ],
+   "fluent_fraction": 0.94
+  }
  }
 }

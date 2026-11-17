@@ -22,6 +22,30 @@ committed, like earlier held-out sets (`docs/evaluation/variants-holdout-2026-09
 | `card-2026-11-16-capec-relation_choice-heldout` | `docs/evaluation/banks/card-2026-11-16-capec-relation_choice-heldout/bank.json` | 63,854 | `sha256:14d812eea034a5eb1eb71a9a7ae3bb360b7e4002ded3d627a19acb4da8693c93` | 40 questions, **sealed** held-out |
 | `card-2026-11-16-capec-relation_choice-tuning` | `docs/evaluation/banks/card-2026-11-16-capec-relation_choice-tuning/bank.json` | 75,372 | `sha256:7cbdd6f87af7a4428344b9133657adb87a50946c57fac09c40d265e91a1a7f99` | 53 questions, tuning |
 
+## Sonnet-worded banks (amendments 5–7): the banks later steps score on
+
+These have the same ids, anchors, gold and splits as the banks above. Only the text differs:
+- model-written questions were rewritten by Claude Sonnet 5.5 (`data/sonnet/`);
+- template questions are rendered in plain words (amendment 7).
+
+The Qwen-worded banks above stay as the paired comparison for Q61. Each hash matches
+`data/sonnet/card_bank.json["banks"]`.
+
+| Artifact | Path (repo-relative) | Bytes | SHA-256 | What it is |
+|---|---|---|---|---|
+| `card-sonnet-2026-11-16-attack-exit-heldout` | `docs/evaluation/banks/card-sonnet-2026-11-16-attack-exit-heldout/bank.json` | 37,431 | `sha256:1068d94c9e42643933ece061172639806581f07b44246eb2b35dd617b75d3fe9` | 23 questions, **sealed** held-out |
+| `card-sonnet-2026-11-16-attack-exit-tuning` | `docs/evaluation/banks/card-sonnet-2026-11-16-attack-exit-tuning/bank.json` | 39,653 | `sha256:16a3936c36df3ed5ba1ae9b82e7aa95213be547ebd09069dc1449a211fb11308` | 27 questions, tuning |
+| `card-sonnet-2026-11-16-attack-grounding-heldout` | `docs/evaluation/banks/card-sonnet-2026-11-16-attack-grounding-heldout/bank.json` | 271,112 | `sha256:29807ed7375b7a209c53be3fa429fe84686f83b3505ecc8d2ed0bfb9e2d8b1fc` | 156 questions, **sealed** held-out |
+| `card-sonnet-2026-11-16-attack-grounding-tuning` | `docs/evaluation/banks/card-sonnet-2026-11-16-attack-grounding-tuning/bank.json` | 241,302 | `sha256:b5008232999b23b7f97b9c17b88475e0ee99fb5bfbd412979a71f504786879b9` | 138 questions, tuning |
+| `card-sonnet-2026-11-16-attack-relation_choice-heldout` | `docs/evaluation/banks/card-sonnet-2026-11-16-attack-relation_choice-heldout/bank.json` | 123,150 | `sha256:18071ef3662edd88669282a0fcebcd0edc24eda872f29c0e5d3572d64ac50848` | 76 questions, **sealed** held-out |
+| `card-sonnet-2026-11-16-attack-relation_choice-tuning` | `docs/evaluation/banks/card-sonnet-2026-11-16-attack-relation_choice-tuning/bank.json` | 103,248 | `sha256:e1e570a9d6c3cb5658816270ad0147506ea624f023897029d8d4024adfafe7d7` | 63 questions, tuning |
+| `card-sonnet-2026-11-16-capec-exit-heldout` | `docs/evaluation/banks/card-sonnet-2026-11-16-capec-exit-heldout/bank.json` | 38,700 | `sha256:b47590a0b67f3c9d990996bdde0f77485ff96085138ecbaf77ea949b682505d2` | 22 questions, **sealed** held-out |
+| `card-sonnet-2026-11-16-capec-exit-tuning` | `docs/evaluation/banks/card-sonnet-2026-11-16-capec-exit-tuning/bank.json` | 38,719 | `sha256:a1ab0b5645804afca5bf75c8a1112809601ac14ad44baa96a740bc904fb2d763` | 22 questions, tuning |
+| `card-sonnet-2026-11-16-capec-grounding-heldout` | `docs/evaluation/banks/card-sonnet-2026-11-16-capec-grounding-heldout/bank.json` | 157,343 | `sha256:f5c332c363df2338b81c6b983f3f4e699e8d85ebb65b784f5778b0523ace9209` | 87 questions, **sealed** held-out |
+| `card-sonnet-2026-11-16-capec-grounding-tuning` | `docs/evaluation/banks/card-sonnet-2026-11-16-capec-grounding-tuning/bank.json` | 218,213 | `sha256:2c0e2bb1b546fcd04234e44837404d9757392f16cc7a3367f6d3bf888b1e7d90` | 130 questions, tuning |
+| `card-sonnet-2026-11-16-capec-relation_choice-heldout` | `docs/evaluation/banks/card-sonnet-2026-11-16-capec-relation_choice-heldout/bank.json` | 69,648 | `sha256:e7912664c72b2597af09bdaf460e9e8b937448d7d9d93500e9fb47be6d7dcc55` | 40 questions, **sealed** held-out |
+| `card-sonnet-2026-11-16-capec-relation_choice-tuning` | `docs/evaluation/banks/card-sonnet-2026-11-16-capec-relation_choice-tuning/bank.json` | 83,346 | `sha256:4fa337d65589f75742f617db789eb260894dfbce20688399cf2f594f83421f98` | 53 questions, tuning |
+
 Regenerate hashes with:
 
 ```bash

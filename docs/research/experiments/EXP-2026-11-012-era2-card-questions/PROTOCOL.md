@@ -68,6 +68,101 @@ name the label by its id scheme, which defeats the schema tier.
 
 The third run is superseded, and the proxy read is repeated on the fourth run's sheet.
 
+## Amendment 5, 2026-11-16, after the fourth run: a second writer (operator decision)
+
+The fourth run's questions are worded by Qwen 3.8 27B, the model era 2's agent will plan with
+(Q61). The operator decided that the scored banks are worded by a different, stronger writer,
+and that the Qwen wording is kept as a paired comparison. Nothing has read the held-out banks
+yet, so they can still be rewritten.
+
+- **What changes: only the text.** The anchors, gold answers, splits, kinds, tiers and ids of
+  the fourth run are kept. Every model-written question is rewritten: 805 of 837. This includes
+  the reworded-name and description references, which Qwen also wrote. The 32 template
+  questions (relation ambiguity and out of coverage) were never model-written, so they are
+  copied unchanged.
+- **The writer:** Claude Sonnet 5.5 at medium effort, run as 20 Claude Code subagents of about
+  40 jobs each (`scripts/era2_card_reword.py export`). Each job carries:
+  - the same system prompt, rules and forbidden lists the Qwen writer got
+    (`card_generator.question_rules` and the reference prompts);
+  - for the reference tiers, the entry's type, name, id and description.
+
+  No job contains the Qwen text. The writers are told to read only their own batch file.
+- **Checks:** `check` applies the generator's own checks, `question_problems` and
+  `reference_problems`. As with Qwen, a failing job gets **one retry** naming the problems, and
+  is then dropped and counted. The writers do not run the checks themselves.
+- **Gates:** G1–G4 are re-run on the rewritten set (`assemble`). Gold is unchanged by
+  construction, but it is re-executed anyway.
+- **Banks:** written as `card-sonnet-2026-11-16-*`, with the held-out banks sealed and hashed.
+  - These are the banks later steps score on.
+  - `card-2026-11-16-*` (Qwen-worded, same ids) stays as the paired comparison for Q61.
+  - A question dropped by either writer is left out of paired comparisons.
+- **The fluency proxy read moves to a different model.** It was done by Sonnet, which now wrote
+  the text, so a blind proxy read of the new 50-question sheet is done by Claude Opus 5.5 at
+  medium effort. The person's read remains the plan's check.
+- **Expectation E4 (new):**
+  - the synonym-tier yield is at least Qwen's (0.85 ATT&CK, 0.63 CAPEC);
+  - the other tiers keep at least 0.9.
+
+  If Sonnet's yield is lower, that is reported, not tuned away.
+
+## Amendment 6, 2026-11-16, before the second Sonnet round
+
+The first Sonnet round passed every check on the first attempt (805 of 805). Reading it showed
+two problems the checks did not define.
+
+- **The writer copied schema labels verbatim.**
+  - Example: "Which TaxonomyEntry entries does CAPEC-440 map to?"
+  - The exact target label appears in 98% of Sonnet's non-schema questions, against 25% of
+    Qwen's.
+  - The rule "name the asked-for kind directly", together with the direction sentence's
+    "the {target} entries", was read literally.
+  - A person would not type this, and it hands the agent the schema name.
+  - Qwen's run has the same defect in 192 questions.
+- **The leak check missed joined labels.** "SubTechnique" written as one word slipped past the
+  schema-tier audit, which split the label into "sub" and "technique". No question in either
+  run contains one, but planted tests showed the gap.
+
+**Changes, in `card_generator`:**
+
+- `forbidden_label_stems` adds the joined form.
+- Every tier's rules now ask for kinds in plain lower-case words ("detection strategy"),
+  without "entries" after a kind's name.
+- `question_problems` rejects a compound label written as one word in every tier but the
+  schema tier, which already forbids the label outright.
+- A fixture test covers this.
+
+**What happens to the rounds:**
+
+- The first Sonnet round is kept in `data/sonnet/v1/` for the record and is not used.
+- All 805 jobs are re-exported and rewritten from scratch by 20 new writers, with one retry
+  per failing job.
+- The Qwen-worded run is not rewritten. The paired comparison reports how many of its
+  questions carry the copied label.
+
+## Amendment 7, 2026-11-16, before the final assembly and proxy read
+
+The blind Opus read of the round-2 sheet found 38 of 50 fluent and 10 of 10 ambiguous
+questions truly ambiguous.
+
+- **Nine of the 12 rejects are template questions.** These are the relation-ambiguity and
+  out-of-coverage questions, which code writes and no model rewords. Their templates use the
+  schema label with "entries" ("Which AttackPattern entries are connected to CAPEC-17?"), the
+  same defect amendment 6 removed from the written questions.
+- **The other three are written questions.** One description reads as garbled, one reworded
+  name buries its meaning in a long clause, and one schema paraphrase is stilted. As
+  pre-registered, rejected answerable questions are reported, not dropped.
+
+**Change:** `plain_template_text` renders the templates in plain words ("Which attack patterns
+are connected to CAPEC-17?"). The relation-ambiguity clarification question is rendered the
+same way. A fixture test covers this.
+
+**Applied to:** the Sonnet-worded set's 32 template questions. The raw text is kept as
+`template_question_raw`. The sealed Qwen-worded banks are not touched. Template questions are
+identical in kind across the pair, and they are left out of the paired wording comparison.
+
+**Then:** the banks are re-assembled and re-hashed, and a fresh blind Opus read covers the new
+sheet. The earlier read is kept as `data/sonnet/v2-proxy-read-raw-templates.json`.
+
 ## Question
 
 Can era 2's evaluation questions be generated from a source card alone, with gold answers known

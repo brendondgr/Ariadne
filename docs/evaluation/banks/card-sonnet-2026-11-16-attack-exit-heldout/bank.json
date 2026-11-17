@@ -1,0 +1,1658 @@
+{
+ "meta": {
+  "count": 23,
+  "created": "2026-11-16",
+  "dataset": "attack",
+  "decision": "exit",
+  "generator": "utils/specialists/evalset/card_generator.py + scripts/era2_card_reword.py",
+  "model": "claude-sonnet-5-5 (medium effort, Claude Code subagents)",
+  "paired_with": "card-2026-11-16 (same ids, Qwen-worded)",
+  "sealed": true,
+  "seed": 20261116,
+  "split": "heldout"
+ },
+ "questions": [
+  {
+   "assertions": {
+    "min_records": 0,
+    "must_include_ids": [],
+    "must_include_related": []
+   },
+   "card_gen": {
+    "anchor": "DET0493",
+    "anchor_storage": "DET0493",
+    "attempts": 1,
+    "decision": "exit",
+    "diagnosis": "label_excludes_all",
+    "gold_ids": [],
+    "gold_status": "insufficient",
+    "kind": "insufficient",
+    "qwen_question": "What SubTechniques does DET0493 detect?",
+    "slot": {
+     "dataset": "attack",
+     "direction": "out",
+     "label": "DetectionStrategy",
+     "rel": "DETECTS",
+     "target": "SubTechnique"
+    },
+    "tier": "identifier",
+    "writer": "claude-sonnet-5-5 (medium effort, Claude Code subagents)"
+   },
+   "ex_gold": {
+    "expected": [],
+    "pool": "neighbors",
+    "scheme": "attack"
+   },
+   "id": "CG-128fc1d5ff8e",
+   "question": "Which sub techniques does DET0493 detect?",
+   "split": "heldout",
+   "task": {
+    "entities": [
+     "DetectionStrategy",
+     "DETECTS",
+     "SubTechnique"
+    ],
+    "join_key": null,
+    "limits": {
+     "max_result_rows": 20000,
+     "max_traversal_depth": 3,
+     "query_timeout_ms": 5000
+    },
+    "rationale": "card_generator",
+    "seed_ids": [
+     "DET0493"
+    ],
+    "source": "attack",
+    "sub_question_id": "CG-128fc1d5ff8e",
+    "text": "Which sub techniques does DET0493 detect?"
+   },
+   "tier": "identifier"
+  },
+  {
+   "assertions": {
+    "min_records": 0,
+    "must_include_ids": [],
+    "must_include_related": [
+     "T1584.001"
+    ]
+   },
+   "card_gen": {
+    "ambiguity": "entity",
+    "anchor": "DET0863",
+    "anchor_storage": "DET0863",
+    "attempts": 1,
+    "clarification": {
+     "answer": "DET0863 (DetectionStrategy)",
+     "options": [
+      {
+       "label": "DET0863 (DetectionStrategy)"
+      },
+      {
+       "label": "DET0892 (DetectionStrategy)"
+      }
+     ],
+     "question": "Which 'Detection of Domains' do you mean?"
+    },
+    "decision": "exit",
+    "gold_ids": [
+     "T1584.001"
+    ],
+    "kind": "ambiguous",
+    "qwen_question": "What SubTechniques are detected by Detection of Domains?",
+    "readings": {
+     "DET0863": [
+      "T1584.001"
+     ],
+     "DET0892": [
+      "T1583.001"
+     ]
+    },
+    "readings_storage": {
+     "DET0863": {
+      "label": "DetectionStrategy",
+      "storage": "DET0863"
+     },
+     "DET0892": {
+      "label": "DetectionStrategy",
+      "storage": "DET0892"
+     }
+    },
+    "slot": {
+     "dataset": "attack",
+     "direction": "out",
+     "label": "DetectionStrategy",
+     "rel": "DETECTS",
+     "target": "SubTechnique"
+    },
+    "tier": "name",
+    "writer": "claude-sonnet-5-5 (medium effort, Claude Code subagents)"
+   },
+   "ex_gold": {
+    "expected": [
+     "T1584.001"
+    ],
+    "pool": "neighbors",
+    "scheme": "attack"
+   },
+   "id": "CG-1ffb261f0133",
+   "question": "Which sub-techniques does Detection of Domains detect?",
+   "split": "heldout",
+   "task": {
+    "entities": [
+     "DetectionStrategy",
+     "DETECTS",
+     "SubTechnique"
+    ],
+    "join_key": null,
+    "limits": {
+     "max_result_rows": 20000,
+     "max_traversal_depth": 3,
+     "query_timeout_ms": 5000
+    },
+    "rationale": "card_generator",
+    "seed_ids": [
+     "DET0863"
+    ],
+    "source": "attack",
+    "sub_question_id": "CG-1ffb261f0133",
+    "text": "Which sub-techniques does Detection of Domains detect?"
+   },
+   "tier": "name"
+  },
+  {
+   "assertions": {
+    "min_records": 0,
+    "must_include_ids": [],
+    "must_include_related": []
+   },
+   "card_gen": {
+    "anchor": "C0057",
+    "decision": "exit",
+    "gold_ids": [],
+    "gold_status": "not_expressible",
+    "kind": "out_of_coverage",
+    "missing_operator": "similarity",
+    "other_anchor": null,
+    "slot": null,
+    "template_question_raw": "Which Campaign is most similar to C0057?",
+    "tier": "identifier",
+    "writer": "template"
+   },
+   "ex_gold": {
+    "expected": [],
+    "pool": "neighbors",
+    "scheme": "attack"
+   },
+   "id": "CG-2ba93a6e2d14",
+   "question": "Which campaign is most similar to C0057?",
+   "split": "heldout",
+   "task": {
+    "entities": [],
+    "join_key": null,
+    "limits": {
+     "max_result_rows": 20000,
+     "max_traversal_depth": 3,
+     "query_timeout_ms": 5000
+    },
+    "rationale": "card_generator",
+    "seed_ids": [
+     "C0057"
+    ],
+    "source": "attack",
+    "sub_question_id": "CG-2ba93a6e2d14",
+    "text": "Which campaign is most similar to C0057?"
+   },
+   "tier": "identifier"
+  },
+  {
+   "assertions": {
+    "min_records": 0,
+    "must_include_ids": [],
+    "must_include_related": []
+   },
+   "card_gen": {
+    "anchor": "DET0023",
+    "anchor_storage": "DET0023",
+    "attempts": 1,
+    "decision": "exit",
+    "diagnosis": "label_excludes_all",
+    "gold_ids": [],
+    "gold_status": "insufficient",
+    "kind": "insufficient",
+    "qwen_question": "What techniques does DET0023 detect?",
+    "slot": {
+     "dataset": "attack",
+     "direction": "out",
+     "label": "DetectionStrategy",
+     "rel": "DETECTS",
+     "target": "Technique"
+    },
+    "tier": "identifier",
+    "writer": "claude-sonnet-5-5 (medium effort, Claude Code subagents)"
+   },
+   "ex_gold": {
+    "expected": [],
+    "pool": "neighbors",
+    "scheme": "attack"
+   },
+   "id": "CG-309d8f69b1e3",
+   "question": "Which techniques does DET0023 detect?",
+   "split": "heldout",
+   "task": {
+    "entities": [
+     "DetectionStrategy",
+     "DETECTS",
+     "Technique"
+    ],
+    "join_key": null,
+    "limits": {
+     "max_result_rows": 20000,
+     "max_traversal_depth": 3,
+     "query_timeout_ms": 5000
+    },
+    "rationale": "card_generator",
+    "seed_ids": [
+     "DET0023"
+    ],
+    "source": "attack",
+    "sub_question_id": "CG-309d8f69b1e3",
+    "text": "Which techniques does DET0023 detect?"
+   },
+   "tier": "identifier"
+  },
+  {
+   "assertions": {
+    "min_records": 0,
+    "must_include_ids": [],
+    "must_include_related": []
+   },
+   "card_gen": {
+    "anchor": "S0279",
+    "anchor_storage": "S0279",
+    "attempts": 1,
+    "decision": "exit",
+    "diagnosis": "direction_reversed",
+    "gold_ids": [],
+    "gold_status": "insufficient",
+    "kind": "insufficient",
+    "qwen_question": "Which groups use S0279?",
+    "slot": {
+     "dataset": "attack",
+     "direction": "in",
+     "label": "Software",
+     "rel": "USES",
+     "target": "Group"
+    },
+    "tier": "identifier",
+    "writer": "claude-sonnet-5-5 (medium effort, Claude Code subagents)"
+   },
+   "ex_gold": {
+    "expected": [],
+    "pool": "neighbors",
+    "scheme": "attack"
+   },
+   "id": "CG-39d0c0facd67",
+   "question": "Which groups use S0279?",
+   "split": "heldout",
+   "task": {
+    "entities": [
+     "Software",
+     "USES",
+     "Group"
+    ],
+    "join_key": null,
+    "limits": {
+     "max_result_rows": 20000,
+     "max_traversal_depth": 3,
+     "query_timeout_ms": 5000
+    },
+    "rationale": "card_generator",
+    "seed_ids": [
+     "S0279"
+    ],
+    "source": "attack",
+    "sub_question_id": "CG-39d0c0facd67",
+    "text": "Which groups use S0279?"
+   },
+   "tier": "identifier"
+  },
+  {
+   "assertions": {
+    "min_records": 0,
+    "must_include_ids": [],
+    "must_include_related": []
+   },
+   "card_gen": {
+    "anchor": "S0201",
+    "anchor_storage": "S0201",
+    "attempts": 1,
+    "decision": "exit",
+    "diagnosis": "label_excludes_all",
+    "gold_ids": [],
+    "gold_status": "insufficient",
+    "kind": "insufficient",
+    "qwen_question": "Which campaigns use the software S0201?",
+    "slot": {
+     "dataset": "attack",
+     "direction": "in",
+     "label": "Software",
+     "rel": "USES",
+     "target": "Campaign"
+    },
+    "tier": "identifier",
+    "writer": "claude-sonnet-5-5 (medium effort, Claude Code subagents)"
+   },
+   "ex_gold": {
+    "expected": [],
+    "pool": "neighbors",
+    "scheme": "attack"
+   },
+   "id": "CG-39f7dab8bd94",
+   "question": "Which campaigns use S0201?",
+   "split": "heldout",
+   "task": {
+    "entities": [
+     "Software",
+     "USES",
+     "Campaign"
+    ],
+    "join_key": null,
+    "limits": {
+     "max_result_rows": 20000,
+     "max_traversal_depth": 3,
+     "query_timeout_ms": 5000
+    },
+    "rationale": "card_generator",
+    "seed_ids": [
+     "S0201"
+    ],
+    "source": "attack",
+    "sub_question_id": "CG-39f7dab8bd94",
+    "text": "Which campaigns use S0201?"
+   },
+   "tier": "identifier"
+  },
+  {
+   "assertions": {
+    "min_records": 0,
+    "must_include_ids": [],
+    "must_include_related": []
+   },
+   "card_gen": {
+    "anchor": "C0033",
+    "anchor_storage": "C0033",
+    "attempts": 1,
+    "decision": "exit",
+    "diagnosis": "label_excludes_all",
+    "gold_ids": [],
+    "gold_status": "insufficient",
+    "kind": "insufficient",
+    "qwen_question": "What SubTechniques does campaign C0033 use?",
+    "slot": {
+     "dataset": "attack",
+     "direction": "out",
+     "label": "Campaign",
+     "rel": "USES",
+     "target": "SubTechnique"
+    },
+    "tier": "identifier",
+    "writer": "claude-sonnet-5-5 (medium effort, Claude Code subagents)"
+   },
+   "ex_gold": {
+    "expected": [],
+    "pool": "neighbors",
+    "scheme": "attack"
+   },
+   "id": "CG-3bd3e383136e",
+   "question": "Which sub techniques does C0033 use?",
+   "split": "heldout",
+   "task": {
+    "entities": [
+     "Campaign",
+     "USES",
+     "SubTechnique"
+    ],
+    "join_key": null,
+    "limits": {
+     "max_result_rows": 20000,
+     "max_traversal_depth": 3,
+     "query_timeout_ms": 5000
+    },
+    "rationale": "card_generator",
+    "seed_ids": [
+     "C0033"
+    ],
+    "source": "attack",
+    "sub_question_id": "CG-3bd3e383136e",
+    "text": "Which sub techniques does C0033 use?"
+   },
+   "tier": "identifier"
+  },
+  {
+   "assertions": {
+    "min_records": 0,
+    "must_include_ids": [],
+    "must_include_related": []
+   },
+   "card_gen": {
+    "anchor": "AN1316",
+    "decision": "exit",
+    "gold_ids": [],
+    "gold_status": "not_expressible",
+    "kind": "out_of_coverage",
+    "missing_operator": "temporal_trend",
+    "other_anchor": null,
+    "slot": null,
+    "template_question_raw": "How has the number of DetectionStrategy entries linked to AN1316 changed from year to year?",
+    "tier": "identifier",
+    "writer": "template"
+   },
+   "ex_gold": {
+    "expected": [],
+    "pool": "neighbors",
+    "scheme": "attack"
+   },
+   "id": "CG-491810593556",
+   "question": "How has the number of detection strategies linked to AN1316 changed from year to year?",
+   "split": "heldout",
+   "task": {
+    "entities": [],
+    "join_key": null,
+    "limits": {
+     "max_result_rows": 20000,
+     "max_traversal_depth": 3,
+     "query_timeout_ms": 5000
+    },
+    "rationale": "card_generator",
+    "seed_ids": [
+     "AN1316"
+    ],
+    "source": "attack",
+    "sub_question_id": "CG-491810593556",
+    "text": "How has the number of detection strategies linked to AN1316 changed from year to year?"
+   },
+   "tier": "identifier"
+  },
+  {
+   "assertions": {
+    "min_records": 0,
+    "must_include_ids": [],
+    "must_include_related": [
+     "T1021.001",
+     "T1021.004",
+     "T1021.007",
+     "T1078.001",
+     "T1078.002",
+     "T1078.003",
+     "T1078.004",
+     "T1098.001",
+     "T1098.002",
+     "T1098.003",
+     "T1098.005",
+     "T1098.006",
+     "T1110.001",
+     "T1110.002",
+     "T1110.003",
+     "T1110.004",
+     "T1114.002",
+     "T1136.001",
+     "T1136.002",
+     "T1136.003",
+     "T1213.003",
+     "T1556.001",
+     "T1556.003",
+     "T1556.004",
+     "T1556.006",
+     "T1556.007",
+     "T1599.001",
+     "T1601.001",
+     "T1601.002"
+    ]
+   },
+   "card_gen": {
+    "ambiguity": "entity",
+    "anchor": "M1032",
+    "anchor_storage": "M1032",
+    "attempts": 1,
+    "clarification": {
+     "answer": "M1032 (Mitigation)",
+     "options": [
+      {
+       "label": "M1032 (Mitigation)"
+      },
+      {
+       "label": "T1556.006 (SubTechnique)"
+      }
+     ],
+     "question": "Which 'Multi-factor Authentication' do you mean?"
+    },
+    "decision": "exit",
+    "gold_ids": [
+     "T1021.001",
+     "T1021.004",
+     "T1021.007",
+     "T1078.001",
+     "T1078.002",
+     "T1078.003",
+     "T1078.004",
+     "T1098.001",
+     "T1098.002",
+     "T1098.003",
+     "T1098.005",
+     "T1098.006",
+     "T1110.001",
+     "T1110.002",
+     "T1110.003",
+     "T1110.004",
+     "T1114.002",
+     "T1136.001",
+     "T1136.002",
+     "T1136.003",
+     "T1213.003",
+     "T1556.001",
+     "T1556.003",
+     "T1556.004",
+     "T1556.006",
+     "T1556.007",
+     "T1599.001",
+     "T1601.001",
+     "T1601.002"
+    ],
+    "kind": "ambiguous",
+    "qwen_question": "Which SubTechniques are mitigated by Multi-factor Authentication?",
+    "readings": {
+     "M1032": [
+      "T1021.001",
+      "T1021.004",
+      "T1021.007",
+      "T1078.001",
+      "T1078.002",
+      "T1078.003",
+      "T1078.004",
+      "T1098.001",
+      "T1098.002",
+      "T1098.003",
+      "T1098.005",
+      "T1098.006",
+      "T1110.001",
+      "T1110.002",
+      "T1110.003",
+      "T1110.004",
+      "T1114.002",
+      "T1136.001",
+      "T1136.002",
+      "T1136.003",
+      "T1213.003",
+      "T1556.001",
+      "T1556.003",
+      "T1556.004",
+      "T1556.006",
+      "T1556.007",
+      "T1599.001",
+      "T1601.001",
+      "T1601.002"
+     ],
+     "T1556.006": []
+    },
+    "readings_storage": {
+     "M1032": {
+      "label": "Mitigation",
+      "storage": "M1032"
+     },
+     "T1556.006": {
+      "label": "SubTechnique",
+      "storage": "T1556.006"
+     }
+    },
+    "slot": {
+     "dataset": "attack",
+     "direction": "out",
+     "label": "Mitigation",
+     "rel": "MITIGATES",
+     "target": "SubTechnique"
+    },
+    "tier": "name",
+    "writer": "claude-sonnet-5-5 (medium effort, Claude Code subagents)"
+   },
+   "ex_gold": {
+    "expected": [
+     "T1021.001",
+     "T1021.004",
+     "T1021.007",
+     "T1078.001",
+     "T1078.002",
+     "T1078.003",
+     "T1078.004",
+     "T1098.001",
+     "T1098.002",
+     "T1098.003",
+     "T1098.005",
+     "T1098.006",
+     "T1110.001",
+     "T1110.002",
+     "T1110.003",
+     "T1110.004",
+     "T1114.002",
+     "T1136.001",
+     "T1136.002",
+     "T1136.003",
+     "T1213.003",
+     "T1556.001",
+     "T1556.003",
+     "T1556.004",
+     "T1556.006",
+     "T1556.007",
+     "T1599.001",
+     "T1601.001",
+     "T1601.002"
+    ],
+    "pool": "neighbors",
+    "scheme": "attack"
+   },
+   "id": "CG-6e14d9d54ebc",
+   "question": "Which sub techniques does Multi-factor Authentication mitigate?",
+   "split": "heldout",
+   "task": {
+    "entities": [
+     "Mitigation",
+     "MITIGATES",
+     "SubTechnique"
+    ],
+    "join_key": null,
+    "limits": {
+     "max_result_rows": 20000,
+     "max_traversal_depth": 3,
+     "query_timeout_ms": 5000
+    },
+    "rationale": "card_generator",
+    "seed_ids": [
+     "M1032"
+    ],
+    "source": "attack",
+    "sub_question_id": "CG-6e14d9d54ebc",
+    "text": "Which sub techniques does Multi-factor Authentication mitigate?"
+   },
+   "tier": "name"
+  },
+  {
+   "assertions": {
+    "min_records": 0,
+    "must_include_ids": [],
+    "must_include_related": [
+     "T1588.005"
+    ]
+   },
+   "card_gen": {
+    "ambiguity": "entity",
+    "anchor": "DET0827",
+    "anchor_storage": "DET0827",
+    "attempts": 1,
+    "clarification": {
+     "answer": "DET0827 (DetectionStrategy)",
+     "options": [
+      {
+       "label": "DET0827 (DetectionStrategy)"
+      },
+      {
+       "label": "DET0894 (DetectionStrategy)"
+      }
+     ],
+     "question": "Which 'Detection of Exploits' do you mean?"
+    },
+    "decision": "exit",
+    "gold_ids": [
+     "T1588.005"
+    ],
+    "kind": "ambiguous",
+    "qwen_question": "What SubTechniques are detected by Detection of Exploits?",
+    "readings": {
+     "DET0827": [
+      "T1588.005"
+     ],
+     "DET0894": [
+      "T1587.004"
+     ]
+    },
+    "readings_storage": {
+     "DET0827": {
+      "label": "DetectionStrategy",
+      "storage": "DET0827"
+     },
+     "DET0894": {
+      "label": "DetectionStrategy",
+      "storage": "DET0894"
+     }
+    },
+    "slot": {
+     "dataset": "attack",
+     "direction": "out",
+     "label": "DetectionStrategy",
+     "rel": "DETECTS",
+     "target": "SubTechnique"
+    },
+    "tier": "name",
+    "writer": "claude-sonnet-5-5 (medium effort, Claude Code subagents)"
+   },
+   "ex_gold": {
+    "expected": [
+     "T1588.005"
+    ],
+    "pool": "neighbors",
+    "scheme": "attack"
+   },
+   "id": "CG-7a02c0fa4bbe",
+   "question": "Which sub techniques does Detection of Exploits detect?",
+   "split": "heldout",
+   "task": {
+    "entities": [
+     "DetectionStrategy",
+     "DETECTS",
+     "SubTechnique"
+    ],
+    "join_key": null,
+    "limits": {
+     "max_result_rows": 20000,
+     "max_traversal_depth": 3,
+     "query_timeout_ms": 5000
+    },
+    "rationale": "card_generator",
+    "seed_ids": [
+     "DET0827"
+    ],
+    "source": "attack",
+    "sub_question_id": "CG-7a02c0fa4bbe",
+    "text": "Which sub techniques does Detection of Exploits detect?"
+   },
+   "tier": "name"
+  },
+  {
+   "assertions": {
+    "min_records": 0,
+    "must_include_ids": [],
+    "must_include_related": []
+   },
+   "card_gen": {
+    "anchor": "T1201",
+    "decision": "exit",
+    "gold_ids": [],
+    "gold_status": "not_expressible",
+    "kind": "out_of_coverage",
+    "missing_operator": "path_search",
+    "other_anchor": "TA0002",
+    "slot": null,
+    "template_question_raw": "What is the shortest chain of relationships that connects T1201 and TA0002?",
+    "tier": "identifier",
+    "writer": "template"
+   },
+   "ex_gold": {
+    "expected": [],
+    "pool": "neighbors",
+    "scheme": "attack"
+   },
+   "id": "CG-827daa32defb",
+   "question": "What is the shortest chain of relationships that connects T1201 and TA0002?",
+   "split": "heldout",
+   "task": {
+    "entities": [],
+    "join_key": null,
+    "limits": {
+     "max_result_rows": 20000,
+     "max_traversal_depth": 3,
+     "query_timeout_ms": 5000
+    },
+    "rationale": "card_generator",
+    "seed_ids": [
+     "T1201"
+    ],
+    "source": "attack",
+    "sub_question_id": "CG-827daa32defb",
+    "text": "What is the shortest chain of relationships that connects T1201 and TA0002?"
+   },
+   "tier": "identifier"
+  },
+  {
+   "assertions": {
+    "min_records": 0,
+    "must_include_ids": [],
+    "must_include_related": []
+   },
+   "card_gen": {
+    "anchor": "T1069",
+    "anchor_storage": "T1069",
+    "attempts": 1,
+    "decision": "exit",
+    "diagnosis": "relation_absent",
+    "gold_ids": [],
+    "gold_status": "insufficient",
+    "kind": "insufficient",
+    "qwen_question": "Which mitigations mitigate the technique T1069?",
+    "slot": {
+     "dataset": "attack",
+     "direction": "in",
+     "label": "Technique",
+     "rel": "MITIGATES",
+     "target": "Mitigation"
+    },
+    "tier": "identifier",
+    "writer": "claude-sonnet-5-5 (medium effort, Claude Code subagents)"
+   },
+   "ex_gold": {
+    "expected": [],
+    "pool": "neighbors",
+    "scheme": "attack"
+   },
+   "id": "CG-84aad87c441c",
+   "question": "Which mitigations address T1069?",
+   "split": "heldout",
+   "task": {
+    "entities": [
+     "Technique",
+     "MITIGATES",
+     "Mitigation"
+    ],
+    "join_key": null,
+    "limits": {
+     "max_result_rows": 20000,
+     "max_traversal_depth": 3,
+     "query_timeout_ms": 5000
+    },
+    "rationale": "card_generator",
+    "seed_ids": [
+     "T1069"
+    ],
+    "source": "attack",
+    "sub_question_id": "CG-84aad87c441c",
+    "text": "Which mitigations address T1069?"
+   },
+   "tier": "identifier"
+  },
+  {
+   "assertions": {
+    "min_records": 0,
+    "must_include_ids": [],
+    "must_include_related": [
+     "DET0837"
+    ]
+   },
+   "card_gen": {
+    "ambiguity": "entity",
+    "anchor": "T1583.005",
+    "anchor_storage": "T1583.005",
+    "attempts": 1,
+    "clarification": {
+     "answer": "T1583.005 (SubTechnique)",
+     "options": [
+      {
+       "label": "T1583.005 (SubTechnique)"
+      },
+      {
+       "label": "T1584.005 (SubTechnique)"
+      }
+     ],
+     "question": "Which 'Botnet' do you mean?"
+    },
+    "decision": "exit",
+    "gold_ids": [
+     "DET0837"
+    ],
+    "kind": "ambiguous",
+    "qwen_question": "Which DetectionStrategies detect Botnet?",
+    "readings": {
+     "T1583.005": [
+      "DET0837"
+     ],
+     "T1584.005": [
+      "DET0883"
+     ]
+    },
+    "readings_storage": {
+     "T1583.005": {
+      "label": "SubTechnique",
+      "storage": "T1583.005"
+     },
+     "T1584.005": {
+      "label": "SubTechnique",
+      "storage": "T1584.005"
+     }
+    },
+    "slot": {
+     "dataset": "attack",
+     "direction": "in",
+     "label": "SubTechnique",
+     "rel": "DETECTS",
+     "target": "DetectionStrategy"
+    },
+    "tier": "name",
+    "writer": "claude-sonnet-5-5 (medium effort, Claude Code subagents)"
+   },
+   "ex_gold": {
+    "expected": [
+     "DET0837"
+    ],
+    "pool": "neighbors",
+    "scheme": "attack"
+   },
+   "id": "CG-86e70d271114",
+   "question": "Which detection strategies detect Botnet?",
+   "split": "heldout",
+   "task": {
+    "entities": [
+     "SubTechnique",
+     "DETECTS",
+     "DetectionStrategy"
+    ],
+    "join_key": null,
+    "limits": {
+     "max_result_rows": 20000,
+     "max_traversal_depth": 3,
+     "query_timeout_ms": 5000
+    },
+    "rationale": "card_generator",
+    "seed_ids": [
+     "T1583.005"
+    ],
+    "source": "attack",
+    "sub_question_id": "CG-86e70d271114",
+    "text": "Which detection strategies detect Botnet?"
+   },
+   "tier": "name"
+  },
+  {
+   "assertions": {
+    "min_records": 0,
+    "must_include_ids": [],
+    "must_include_related": []
+   },
+   "card_gen": {
+    "anchor": "T1595",
+    "anchor_storage": "T1595",
+    "attempts": 1,
+    "decision": "exit",
+    "diagnosis": "label_excludes_all",
+    "gold_ids": [],
+    "gold_status": "insufficient",
+    "kind": "insufficient",
+    "qwen_question": "Which groups use the technique T1595?",
+    "slot": {
+     "dataset": "attack",
+     "direction": "in",
+     "label": "Technique",
+     "rel": "USES",
+     "target": "Group"
+    },
+    "tier": "identifier",
+    "writer": "claude-sonnet-5-5 (medium effort, Claude Code subagents)"
+   },
+   "ex_gold": {
+    "expected": [],
+    "pool": "neighbors",
+    "scheme": "attack"
+   },
+   "id": "CG-88eb6db48100",
+   "question": "Which groups use T1595?",
+   "split": "heldout",
+   "task": {
+    "entities": [
+     "Technique",
+     "USES",
+     "Group"
+    ],
+    "join_key": null,
+    "limits": {
+     "max_result_rows": 20000,
+     "max_traversal_depth": 3,
+     "query_timeout_ms": 5000
+    },
+    "rationale": "card_generator",
+    "seed_ids": [
+     "T1595"
+    ],
+    "source": "attack",
+    "sub_question_id": "CG-88eb6db48100",
+    "text": "Which groups use T1595?"
+   },
+   "tier": "identifier"
+  },
+  {
+   "assertions": {
+    "min_records": 0,
+    "must_include_ids": [],
+    "must_include_related": [
+     "DET0892"
+    ]
+   },
+   "card_gen": {
+    "ambiguity": "entity",
+    "anchor": "T1583.001",
+    "anchor_storage": "T1583.001",
+    "attempts": 1,
+    "clarification": {
+     "answer": "T1583.001 (SubTechnique)",
+     "options": [
+      {
+       "label": "T1583.001 (SubTechnique)"
+      },
+      {
+       "label": "T1584.001 (SubTechnique)"
+      }
+     ],
+     "question": "Which 'Domains' do you mean?"
+    },
+    "decision": "exit",
+    "gold_ids": [
+     "DET0892"
+    ],
+    "kind": "ambiguous",
+    "qwen_question": "Which DetectionStrategies detect Domains?",
+    "readings": {
+     "T1583.001": [
+      "DET0892"
+     ],
+     "T1584.001": [
+      "DET0863"
+     ]
+    },
+    "readings_storage": {
+     "T1583.001": {
+      "label": "SubTechnique",
+      "storage": "T1583.001"
+     },
+     "T1584.001": {
+      "label": "SubTechnique",
+      "storage": "T1584.001"
+     }
+    },
+    "slot": {
+     "dataset": "attack",
+     "direction": "in",
+     "label": "SubTechnique",
+     "rel": "DETECTS",
+     "target": "DetectionStrategy"
+    },
+    "tier": "name",
+    "writer": "claude-sonnet-5-5 (medium effort, Claude Code subagents)"
+   },
+   "ex_gold": {
+    "expected": [
+     "DET0892"
+    ],
+    "pool": "neighbors",
+    "scheme": "attack"
+   },
+   "id": "CG-9f44b03e309c",
+   "question": "Which detection strategies detect Domains?",
+   "split": "heldout",
+   "task": {
+    "entities": [
+     "SubTechnique",
+     "DETECTS",
+     "DetectionStrategy"
+    ],
+    "join_key": null,
+    "limits": {
+     "max_result_rows": 20000,
+     "max_traversal_depth": 3,
+     "query_timeout_ms": 5000
+    },
+    "rationale": "card_generator",
+    "seed_ids": [
+     "T1583.001"
+    ],
+    "source": "attack",
+    "sub_question_id": "CG-9f44b03e309c",
+    "text": "Which detection strategies detect Domains?"
+   },
+   "tier": "name"
+  },
+  {
+   "assertions": {
+    "min_records": 0,
+    "must_include_ids": [],
+    "must_include_related": []
+   },
+   "card_gen": {
+    "anchor": "TA0042",
+    "decision": "exit",
+    "gold_ids": [],
+    "gold_status": "not_expressible",
+    "kind": "out_of_coverage",
+    "missing_operator": "temporal_trend",
+    "other_anchor": null,
+    "slot": null,
+    "template_question_raw": "How has the number of Matrix entries linked to TA0042 changed from year to year?",
+    "tier": "identifier",
+    "writer": "template"
+   },
+   "ex_gold": {
+    "expected": [],
+    "pool": "neighbors",
+    "scheme": "attack"
+   },
+   "id": "CG-addbf8e1a67a",
+   "question": "How has the number of matrices linked to TA0042 changed from year to year?",
+   "split": "heldout",
+   "task": {
+    "entities": [],
+    "join_key": null,
+    "limits": {
+     "max_result_rows": 20000,
+     "max_traversal_depth": 3,
+     "query_timeout_ms": 5000
+    },
+    "rationale": "card_generator",
+    "seed_ids": [
+     "TA0042"
+    ],
+    "source": "attack",
+    "sub_question_id": "CG-addbf8e1a67a",
+    "text": "How has the number of matrices linked to TA0042 changed from year to year?"
+   },
+   "tier": "identifier"
+  },
+  {
+   "assertions": {
+    "min_records": 0,
+    "must_include_ids": [],
+    "must_include_related": []
+   },
+   "card_gen": {
+    "anchor": "C0033",
+    "anchor_storage": "C0033",
+    "attempts": 1,
+    "decision": "exit",
+    "diagnosis": "label_excludes_all",
+    "gold_ids": [],
+    "gold_status": "insufficient",
+    "kind": "insufficient",
+    "qwen_question": "What techniques does campaign C0033 use?",
+    "slot": {
+     "dataset": "attack",
+     "direction": "out",
+     "label": "Campaign",
+     "rel": "USES",
+     "target": "Technique"
+    },
+    "tier": "identifier",
+    "writer": "claude-sonnet-5-5 (medium effort, Claude Code subagents)"
+   },
+   "ex_gold": {
+    "expected": [],
+    "pool": "neighbors",
+    "scheme": "attack"
+   },
+   "id": "CG-b4c243d7c99e",
+   "question": "Which techniques does C0033 use?",
+   "split": "heldout",
+   "task": {
+    "entities": [
+     "Campaign",
+     "USES",
+     "Technique"
+    ],
+    "join_key": null,
+    "limits": {
+     "max_result_rows": 20000,
+     "max_traversal_depth": 3,
+     "query_timeout_ms": 5000
+    },
+    "rationale": "card_generator",
+    "seed_ids": [
+     "C0033"
+    ],
+    "source": "attack",
+    "sub_question_id": "CG-b4c243d7c99e",
+    "text": "Which techniques does C0033 use?"
+   },
+   "tier": "identifier"
+  },
+  {
+   "assertions": {
+    "min_records": 0,
+    "must_include_ids": [],
+    "must_include_related": []
+   },
+   "card_gen": {
+    "anchor": "G0126",
+    "anchor_storage": "G0126",
+    "attempts": 1,
+    "decision": "exit",
+    "diagnosis": "relation_absent",
+    "gold_ids": [],
+    "gold_status": "insufficient",
+    "kind": "insufficient",
+    "qwen_question": "Which campaigns are attributed to G0126?",
+    "slot": {
+     "dataset": "attack",
+     "direction": "in",
+     "label": "Group",
+     "rel": "ATTRIBUTED_TO",
+     "target": "Campaign"
+    },
+    "tier": "identifier",
+    "writer": "claude-sonnet-5-5 (medium effort, Claude Code subagents)"
+   },
+   "ex_gold": {
+    "expected": [],
+    "pool": "neighbors",
+    "scheme": "attack"
+   },
+   "id": "CG-b77d283d6eaa",
+   "question": "Which campaigns are attributed to G0126?",
+   "split": "heldout",
+   "task": {
+    "entities": [
+     "Group",
+     "ATTRIBUTED_TO",
+     "Campaign"
+    ],
+    "join_key": null,
+    "limits": {
+     "max_result_rows": 20000,
+     "max_traversal_depth": 3,
+     "query_timeout_ms": 5000
+    },
+    "rationale": "card_generator",
+    "seed_ids": [
+     "G0126"
+    ],
+    "source": "attack",
+    "sub_question_id": "CG-b77d283d6eaa",
+    "text": "Which campaigns are attributed to G0126?"
+   },
+   "tier": "identifier"
+  },
+  {
+   "assertions": {
+    "min_records": 0,
+    "must_include_ids": [],
+    "must_include_related": []
+   },
+   "card_gen": {
+    "anchor": "S0159",
+    "anchor_storage": "S0159",
+    "attempts": 1,
+    "decision": "exit",
+    "diagnosis": "label_excludes_all",
+    "gold_ids": [],
+    "gold_status": "insufficient",
+    "kind": "insufficient",
+    "qwen_question": "Which techniques does S0159 use?",
+    "slot": {
+     "dataset": "attack",
+     "direction": "out",
+     "label": "Software",
+     "rel": "USES",
+     "target": "Technique"
+    },
+    "tier": "identifier",
+    "writer": "claude-sonnet-5-5 (medium effort, Claude Code subagents)"
+   },
+   "ex_gold": {
+    "expected": [],
+    "pool": "neighbors",
+    "scheme": "attack"
+   },
+   "id": "CG-d12429447173",
+   "question": "Which techniques does S0159 use?",
+   "split": "heldout",
+   "task": {
+    "entities": [
+     "Software",
+     "USES",
+     "Technique"
+    ],
+    "join_key": null,
+    "limits": {
+     "max_result_rows": 20000,
+     "max_traversal_depth": 3,
+     "query_timeout_ms": 5000
+    },
+    "rationale": "card_generator",
+    "seed_ids": [
+     "S0159"
+    ],
+    "source": "attack",
+    "sub_question_id": "CG-d12429447173",
+    "text": "Which techniques does S0159 use?"
+   },
+   "tier": "identifier"
+  },
+  {
+   "assertions": {
+    "min_records": 0,
+    "must_include_ids": [],
+    "must_include_related": []
+   },
+   "card_gen": {
+    "anchor": "T1499.003",
+    "anchor_storage": "T1499.003",
+    "attempts": 1,
+    "decision": "exit",
+    "diagnosis": "relation_absent",
+    "gold_ids": [],
+    "gold_status": "insufficient",
+    "kind": "insufficient",
+    "qwen_question": "Which software uses T1499.003?",
+    "slot": {
+     "dataset": "attack",
+     "direction": "in",
+     "label": "SubTechnique",
+     "rel": "USES",
+     "target": "Software"
+    },
+    "tier": "identifier",
+    "writer": "claude-sonnet-5-5 (medium effort, Claude Code subagents)"
+   },
+   "ex_gold": {
+    "expected": [],
+    "pool": "neighbors",
+    "scheme": "attack"
+   },
+   "id": "CG-e7664d54b606",
+   "question": "Which software uses T1499.003?",
+   "split": "heldout",
+   "task": {
+    "entities": [
+     "SubTechnique",
+     "USES",
+     "Software"
+    ],
+    "join_key": null,
+    "limits": {
+     "max_result_rows": 20000,
+     "max_traversal_depth": 3,
+     "query_timeout_ms": 5000
+    },
+    "rationale": "card_generator",
+    "seed_ids": [
+     "T1499.003"
+    ],
+    "source": "attack",
+    "sub_question_id": "CG-e7664d54b606",
+    "text": "Which software uses T1499.003?"
+   },
+   "tier": "identifier"
+  },
+  {
+   "assertions": {
+    "min_records": 0,
+    "must_include_ids": [],
+    "must_include_related": [
+     "T1588.001"
+    ]
+   },
+   "card_gen": {
+    "ambiguity": "entity",
+    "anchor": "DET0845",
+    "anchor_storage": "DET0845",
+    "attempts": 1,
+    "clarification": {
+     "answer": "DET0845 (DetectionStrategy)",
+     "options": [
+      {
+       "label": "DET0845 (DetectionStrategy)"
+      },
+      {
+       "label": "DET0872 (DetectionStrategy)"
+      }
+     ],
+     "question": "Which 'Detection of Malware' do you mean?"
+    },
+    "decision": "exit",
+    "gold_ids": [
+     "T1588.001"
+    ],
+    "kind": "ambiguous",
+    "qwen_question": "What SubTechniques does Detection of Malware detect?",
+    "readings": {
+     "DET0845": [
+      "T1588.001"
+     ],
+     "DET0872": [
+      "T1587.001"
+     ]
+    },
+    "readings_storage": {
+     "DET0845": {
+      "label": "DetectionStrategy",
+      "storage": "DET0845"
+     },
+     "DET0872": {
+      "label": "DetectionStrategy",
+      "storage": "DET0872"
+     }
+    },
+    "slot": {
+     "dataset": "attack",
+     "direction": "out",
+     "label": "DetectionStrategy",
+     "rel": "DETECTS",
+     "target": "SubTechnique"
+    },
+    "tier": "name",
+    "writer": "claude-sonnet-5-5 (medium effort, Claude Code subagents)"
+   },
+   "ex_gold": {
+    "expected": [
+     "T1588.001"
+    ],
+    "pool": "neighbors",
+    "scheme": "attack"
+   },
+   "id": "CG-ebf17955e1af",
+   "question": "Which sub techniques does Detection of Malware detect?",
+   "split": "heldout",
+   "task": {
+    "entities": [
+     "DetectionStrategy",
+     "DETECTS",
+     "SubTechnique"
+    ],
+    "join_key": null,
+    "limits": {
+     "max_result_rows": 20000,
+     "max_traversal_depth": 3,
+     "query_timeout_ms": 5000
+    },
+    "rationale": "card_generator",
+    "seed_ids": [
+     "DET0845"
+    ],
+    "source": "attack",
+    "sub_question_id": "CG-ebf17955e1af",
+    "text": "Which sub techniques does Detection of Malware detect?"
+   },
+   "tier": "name"
+  },
+  {
+   "assertions": {
+    "min_records": 0,
+    "must_include_ids": [],
+    "must_include_related": [
+     "T1036.001",
+     "T1036.005",
+     "T1059.001",
+     "T1059.002",
+     "T1127.002",
+     "T1204.003",
+     "T1505.001",
+     "T1505.002",
+     "T1505.004",
+     "T1505.006",
+     "T1543.003",
+     "T1546.006",
+     "T1546.013",
+     "T1601.001",
+     "T1601.002"
+    ]
+   },
+   "card_gen": {
+    "ambiguity": "entity",
+    "anchor": "M1045",
+    "anchor_storage": "M1045",
+    "attempts": 1,
+    "clarification": {
+     "answer": "M1045 (Mitigation)",
+     "options": [
+      {
+       "label": "M1045 (Mitigation)"
+      },
+      {
+       "label": "T1553.002 (SubTechnique)"
+      }
+     ],
+     "question": "Which 'Code Signing' do you mean?"
+    },
+    "decision": "exit",
+    "gold_ids": [
+     "T1036.001",
+     "T1036.005",
+     "T1059.001",
+     "T1059.002",
+     "T1127.002",
+     "T1204.003",
+     "T1505.001",
+     "T1505.002",
+     "T1505.004",
+     "T1505.006",
+     "T1543.003",
+     "T1546.006",
+     "T1546.013",
+     "T1601.001",
+     "T1601.002"
+    ],
+    "kind": "ambiguous",
+    "qwen_question": "Which subtechniques does Code Signing mitigate?",
+    "readings": {
+     "M1045": [
+      "T1036.001",
+      "T1036.005",
+      "T1059.001",
+      "T1059.002",
+      "T1127.002",
+      "T1204.003",
+      "T1505.001",
+      "T1505.002",
+      "T1505.004",
+      "T1505.006",
+      "T1543.003",
+      "T1546.006",
+      "T1546.013",
+      "T1601.001",
+      "T1601.002"
+     ],
+     "T1553.002": []
+    },
+    "readings_storage": {
+     "M1045": {
+      "label": "Mitigation",
+      "storage": "M1045"
+     },
+     "T1553.002": {
+      "label": "SubTechnique",
+      "storage": "T1553.002"
+     }
+    },
+    "slot": {
+     "dataset": "attack",
+     "direction": "out",
+     "label": "Mitigation",
+     "rel": "MITIGATES",
+     "target": "SubTechnique"
+    },
+    "tier": "name",
+    "writer": "claude-sonnet-5-5 (medium effort, Claude Code subagents)"
+   },
+   "ex_gold": {
+    "expected": [
+     "T1036.001",
+     "T1036.005",
+     "T1059.001",
+     "T1059.002",
+     "T1127.002",
+     "T1204.003",
+     "T1505.001",
+     "T1505.002",
+     "T1505.004",
+     "T1505.006",
+     "T1543.003",
+     "T1546.006",
+     "T1546.013",
+     "T1601.001",
+     "T1601.002"
+    ],
+    "pool": "neighbors",
+    "scheme": "attack"
+   },
+   "id": "CG-f87fdba040d4",
+   "question": "Which sub techniques does the Code Signing mitigation address?",
+   "split": "heldout",
+   "task": {
+    "entities": [
+     "Mitigation",
+     "MITIGATES",
+     "SubTechnique"
+    ],
+    "join_key": null,
+    "limits": {
+     "max_result_rows": 20000,
+     "max_traversal_depth": 3,
+     "query_timeout_ms": 5000
+    },
+    "rationale": "card_generator",
+    "seed_ids": [
+     "M1045"
+    ],
+    "source": "attack",
+    "sub_question_id": "CG-f87fdba040d4",
+    "text": "Which sub techniques does the Code Signing mitigation address?"
+   },
+   "tier": "name"
+  },
+  {
+   "assertions": {
+    "min_records": 0,
+    "must_include_ids": [],
+    "must_include_related": []
+   },
+   "card_gen": {
+    "anchor": "TA0002",
+    "decision": "exit",
+    "gold_ids": [],
+    "gold_status": "not_expressible",
+    "kind": "out_of_coverage",
+    "missing_operator": "path_search",
+    "other_anchor": "TA0042",
+    "slot": null,
+    "template_question_raw": "What is the shortest chain of relationships that connects TA0002 and TA0042?",
+    "tier": "identifier",
+    "writer": "template"
+   },
+   "ex_gold": {
+    "expected": [],
+    "pool": "neighbors",
+    "scheme": "attack"
+   },
+   "id": "CG-fdef7941a085",
+   "question": "What is the shortest chain of relationships that connects TA0002 and TA0042?",
+   "split": "heldout",
+   "task": {
+    "entities": [],
+    "join_key": null,
+    "limits": {
+     "max_result_rows": 20000,
+     "max_traversal_depth": 3,
+     "query_timeout_ms": 5000
+    },
+    "rationale": "card_generator",
+    "seed_ids": [
+     "TA0002"
+    ],
+    "source": "attack",
+    "sub_question_id": "CG-fdef7941a085",
+    "text": "What is the shortest chain of relationships that connects TA0002 and TA0042?"
+   },
+   "tier": "identifier"
+  }
+ ]
+}

@@ -101,7 +101,57 @@ def forbidden_relation_stems(card: dict, rel: str) -> set[str]:
 
 
 def forbidden_label_stems(label: str) -> set[str]:
-    return {stem(w) for w in words_of(label) if w not in STOP and len(w) >= 3}
+    """Stems of the label's words, plus its joined form ("SubTechnique" -> "subtechnique")."""
+    words = words_of(label)
+    out = {stem(w) for w in words if w not in STOP and len(w) >= 3}
+    if len(words) >= 2:
+        out.add(stem("".join(words)))
+    return out
+
+
+def plain_label(label: str) -> str:
+    """How a person writes a schema label: ``DetectionStrategy`` -> ``detection strategy``,
+    ``SubTechnique`` -> ``sub-technique``."""
+    w = words_of(label)
+    if len(w) >= 2 and w[0] == "sub":
+        w = [f"sub-{w[1]}", *w[2:]]
+    return " ".join(w)
+
+
+_UNCOUNTED = {"software"}
+
+
+def plural(phrase: str) -> str:
+    """English plural of a plain label's last word (``taxonomy entry`` -> ``taxonomy entries``)."""
+    head, _, last = phrase.rpartition(" ")
+    if last in _UNCOUNTED:
+        out = last
+    elif last.endswith("ix"):
+        out = last[:-2] + "ices"
+    elif last.endswith("y") and last[-2:-1] not in set("aeiou"):
+        out = last[:-1] + "ies"
+    elif last.endswith(("s", "sh", "ch", "x")):
+        out = last + "es"
+    else:
+        out = last + "s"
+    return f"{head} {out}".strip()
+
+
+def plain_template_text(card: dict, text: str) -> str:
+    """Template questions in plain words: ``AttackPattern entries`` -> ``attack patterns``,
+    ``per Group`` -> ``per group`` (EXP-2026-11-012 amendment 7)."""
+    for label in sorted(card.get("node_labels") or [], key=len, reverse=True):
+        text = re.sub(rf"\b{re.escape(label)} entries\b", plural(plain_label(label)), text)
+        text = re.sub(rf"\b{re.escape(label)}\b", plain_label(label), text)
+    return text
+
+
+def schema_label_copied(label: str, text: str) -> list[str]:
+    """A compound label written verbatim as one word ("Which SubTechnique entries ..."): a person
+    would not type it, and it hands the agent the schema name (EXP-2026-11-012 amendment 6)."""
+    if len(words_of(label)) < 2:
+        return []
+    return [f"schema label '{label}' written as one word"] if re.search(rf"\b{re.escape(label)}s?\b", text or "", re.I) else []
 
 
 def leaked_stems(text: str, forbidden: set[str]) -> list[str]:
@@ -160,37 +210,61 @@ def _direction_sentence(card: dict, slot: Slot) -> str:
             f"relation, and the question asks for the {slot.target} entries on the other side.")
 
 
-def write_question(writer: Writer, card: dict, slot: Slot, ref: str, tier: str, *,
-                   name_forbidden: list[str] = ()) -> dict[str, Any]:
-    """One question for ``slot`` about the anchor referred to as ``ref``, at ``tier``. Leak-checked."""
+def question_rules(card: dict, slot: Slot, ref: str, tier: str) -> list[str]:
+    """The writer's constraints for one question (shared by every writer, model or agent)."""
     rel_forbidden = forbidden_relation_stems(card, slot.rel)
     lab_forbidden = forbidden_label_stems(slot.target)
     rules = [f"Refer to the known entity exactly as: {ref}", _direction_sentence(card, slot)]
+    plain = (f" Write kinds as an analyst would type them, in plain lower-case words ('{plain_label(slot.target)}')"
+             + (f", never as the one-word label '{slot.target}'" if len(words_of(slot.target)) >= 2 else "")
+             + ", and do not add the word 'entries' after a kind's name.")
     if tier == "synonym_relation":
         rules.append("Say the relation in your own everyday words. Do NOT use any of these words or any "
                      f"form of them: {', '.join(sorted(rel_forbidden))}.")
-        rules.append(f"You may name the asked-for kind as '{slot.target}'.")
+        clash = sorted({w for w in words_of(slot.target) if stem(w) in rel_forbidden})
+        if clash:   # the kind's own name uses a forbidden word: it must be described instead
+            rules.append(f"Name the asked-for kind ({slot.target}) in other plain words: its usual name uses "
+                         f"the forbidden {', '.join(clash)}.{plain}")
+        else:
+            rules.append(f"You may name the asked-for kind as '{plain_label(slot.target)}'.{plain}")
     elif tier == "paraphrased_schema":
         rules.append(f"Name the asked-for kind ({slot.target}: {label_gloss(card, slot.target)}) by what it "
                      f"means, NOT by the words {', '.join(sorted(lab_forbidden))} or any form of them.")
         rules.append("Do not copy identifier formats or version tags from that description (such as "
                      "'X-ID', 'NNN' or 'v19').")
     else:
-        rules.append("You may use the relation's own words and name the asked-for kind directly.")
-    user = "\n".join(f"- {r}" for r in rules)
+        rules.append(f"You may use the relation's own words and name the asked-for kind directly.{plain}")
+    return rules
+
+
+def question_problems(card: dict, slot: Slot, ref: str, tier: str, text: str, *,
+                      name_forbidden: list[str] = ()) -> list[str]:
+    """Why ``text`` breaks the rules for its tier (empty list: it passes)."""
+    problems: list[str] = []
+    if not text:
+        return ["empty"]
+    if ref.lower() not in text.lower():
+        problems.append(f"missing the exact reference '{ref}'")
+    if tier == "synonym_relation":
+        problems += leaked_stems(text, forbidden_relation_stems(card, slot.rel))
+    if tier == "paraphrased_schema":
+        problems += leaked_stems(text, forbidden_label_stems(slot.target))
+        problems += format_hints(text)
+    problems += [w for w in name_forbidden if w.lower() in text.lower().replace(ref.lower(), "")]
+    if tier != "paraphrased_schema":
+        problems += schema_label_copied(slot.target, text.replace(ref, ""))
+    return problems
+
+
+def write_question(writer: Writer, card: dict, slot: Slot, ref: str, tier: str, *,
+                   name_forbidden: list[str] = ()) -> dict[str, Any]:
+    """One question for ``slot`` about the anchor referred to as ``ref``, at ``tier``. Leak-checked."""
+    user = "\n".join(f"- {r}" for r in question_rules(card, slot, ref, tier))
     attempts = []
     msgs_user = user
     for _ in range(2):
         text = _one_line(writer(SYS_QUESTION, msgs_user))
-        problems: list[str] = []
-        if ref.lower() not in text.lower():
-            problems.append(f"missing the exact reference '{ref}'")
-        if tier == "synonym_relation":
-            problems += leaked_stems(text, rel_forbidden)
-        if tier == "paraphrased_schema":
-            problems += leaked_stems(text, lab_forbidden)
-            problems += format_hints(text)
-        problems += [w for w in name_forbidden if w.lower() in text.lower().replace(ref.lower(), "")]
+        problems = question_problems(card, slot, ref, tier, text, name_forbidden=name_forbidden)
         attempts.append({"text": text, "problems": problems})
         if text and not problems:
             return {"text": text, "ok": True, "attempts": attempts}
@@ -207,14 +281,23 @@ SYS_DESCRIBE = ("You describe things without naming them. Given a cybersecurity 
                 "with the reference only, as a noun phrase.")
 
 
+def reference_entry(node: dict, label: str) -> str:
+    """What a reference writer sees about the entry."""
+    return (f"Entry type: {label}\nName: {node.get('name')}\nIdentifier: {node.get('id')}\n"
+            f"Description: {' '.join(str(node.get('description') or '').split())[:1200]}")
+
+
+def reference_problems(text: str, forbidden: list[str]) -> list[str]:
+    return [w for w in forbidden if w and w.lower() in (text or "").lower()]
+
+
 def write_reference(writer: Writer, node: dict, label: str, tier: str, forbidden: list[str]) -> dict[str, Any]:
     system = SYS_REWORD if tier == "reworded_name" else SYS_DESCRIBE
-    user = (f"Entry type: {label}\nName: {node.get('name')}\nIdentifier: {node.get('id')}\n"
-            f"Description: {' '.join(str(node.get('description') or '').split())[:1200]}")
+    user = reference_entry(node, label)
     attempts = []
     for _ in range(2):
         text = _one_line(writer(system, user)).rstrip(".")
-        bad = [w for w in forbidden if w and w.lower() in text.lower()]
+        bad = reference_problems(text, forbidden)
         attempts.append({"text": text, "leaks": bad})
         if text and not bad:
             return {"text": text, "ok": True, "attempts": attempts}
@@ -420,15 +503,16 @@ def generate(card: dict, registry: Any, backend: Any, writer: Writer, cfg: GenCo
                 continue
             intended = rng.choice([sl for sl in group if readings[sl.key()]])
             pa = public(a)
-            text = rng.choice([f"Which {target} entries are connected to {pa}?",
-                               f"What {target} entries does the graph link with {pa}?",
-                               f"Show me the {target} entries associated with {pa}."])
+            text = plain_template_text(card, rng.choice([f"Which {target} entries are connected to {pa}?",
+                                                         f"What {target} entries does the graph link with {pa}?",
+                                                         f"Show me the {target} entries associated with {pa}."]))
             qid = "CG-" + hashlib.sha1(f"amb-rel|{label}|{target}|{a}".encode()).hexdigest()[:12]
             out.questions.append(_bank_entry(
                 ds, qid, text, intended, pa, readings[intended.key()], kind="ambiguous", tier="identifier",
                 split=split_of(ds, pa),
                 extra={"ambiguity": "relation", "readings": readings, "anchor_storage": a,
-                       "clarification": {"question": f"Which link between {pa} and {target} do you mean?",
+                       "clarification": {"question": plain_template_text(
+                           card, f"Which link between {pa} and {target} entries do you mean?"),
                                          "options": [{"label": f"{sl.rel} ({sl.direction})",
                                                       "detail": relation_gloss(card, sl.rel)} for sl in group],
                                          "answer": f"{intended.rel} ({intended.direction})"}}))
@@ -498,7 +582,7 @@ def generate(card: dict, registry: Any, backend: Any, writer: Writer, cfg: GenCo
             if not others:
                 continue
             b = others[0][1]
-        text = templates[op].format(a=a, b=b, target=target, label=label)
+        text = plain_template_text(card, templates[op].format(a=a, b=b, target=target, label=label))
         qid = "CG-" + hashlib.sha1(f"ooc|{op}|{a}|{b}".encode()).hexdigest()[:12]
         out.questions.append(_bank_entry(ds, qid, text, None, a, [], kind="out_of_coverage", tier="identifier",
                                          split=split_of(ds, a),
@@ -576,5 +660,7 @@ def write_banks(questions: list[dict], root: Any, name: str, meta: dict) -> dict
 
 __all__ = ["DECISION_OF_KIND", "DECISION_OF_TIER", "KINDS", "MISSING_OPERATORS", "TIERS", "GenConfig",
            "Generated", "Slot", "anchors_of", "card_slots", "forbidden_label_stems", "forbidden_relation_stems",
-           "generate", "is_public_id", "leak_audit", "leaked_stems", "split_of", "split_overlap", "words_of",
+           "generate", "is_public_id", "leak_audit", "leaked_stems", "plain_label", "plain_template_text",
+           "plural", "question_problems",
+           "question_rules", "reference_entry", "reference_problems", "schema_label_copied", "split_of", "split_overlap", "words_of",
            "write_banks", "write_question", "write_reference"]

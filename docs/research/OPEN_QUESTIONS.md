@@ -45,7 +45,7 @@ kind; their detail is kept privately with the rest of the positioning material (
 | Q58 | The planner arm's loss is not separated from the tighter per-plan bounds it inherits | EXP-2026-09-019 I-2; EXP-2026-11-009 | limits effect −0.001 (SE 0.001), decomposition −0.3342 (SE 0.026): the loss is the decomposition *(answered)* |
 | Q59 | An entity name is never looked up unless the router first picks a dataset, so a question naming a thing in ordinary words binds nothing | EXP-2026-09-021 A-1; EXP-2026-09-023 H2 | lookup order fixed behind `ARIADNE_ANCHOR_BEFORE_ROUTING`: unresolved T3 anchors 37 → 4 of 101; the remaining T3 loss is the rung's rendering, not the bind *(amended)* |
 | Q60 | Can portable candidate discovery become accurate open-question answers through role-aware selection, reranking, and evidence completion? | EXP-2026-09-022; EXP-2026-09-023 Step 0; EXP-2026-09-028 | the shipped index beats the prototype at every budget ≥ 5; a reranked, disclosed closed choice reaches 0.125/0.20 exact at wrong-entity 0.10/0.15 on the sealed bank and 0.35 wrong at T4 on the exposed bank — a clarification, not an answer *(amended)* |
-| Q61 | The card banks are written by the same model (Qwen 3.8 27B) that era 2's agent will plan with | EXP-2026-11-012 | every era-2 figure scored on the card-2026-11-16 banks *(open)* |
+| Q61 | The card banks are written by the same model (Qwen 3.8 27B) that era 2's agent will plan with | EXP-2026-11-012 | every era-2 figure scored on the card-2026-11-16 banks *(partly answered: scored banks re-worded by Sonnet; the gap is measured when the agent is first scored)* |
 
 ---
 
@@ -1088,4 +1088,17 @@ era 2's agent will plan with.
 **To settle:** before Step 9's held-out score is read, re-word a sample of the held-out
 questions with a different writer (a person, or a closed model with no part in the agent).
 Score the agent on both wordings, and report the gap next to the figure.
+
+**Partly answered 2026-11-16** (`EXP-2026-11-012`, PROTOCOL amendments 5 and 6). The operator
+chose to re-word every question, not a sample.
+- **The scored banks are now Sonnet-worded.** Claude Sonnet 5.5 re-worded all 805
+  model-written questions. These are the `card-sonnet-2026-11-16-*` banks, and they are the
+  ones later steps score on.
+- **The pair is ready.** Ids, anchors, gold and splits are shared, and the Qwen-worded
+  `card-2026-11-16-*` banks stay as the paired comparison.
+- **Still open:** the gap itself. Score the agent on both wordings the first time it is
+  scored, and report the difference next to the figure.
+- **A confound to report with it:** 237 of Qwen's 805 questions copy the schema label
+  verbatim ("Which DetectionStrategy entries ..."); none of Sonnet's do. Part of any gap may
+  be that easier phrasing, not authorship.
 

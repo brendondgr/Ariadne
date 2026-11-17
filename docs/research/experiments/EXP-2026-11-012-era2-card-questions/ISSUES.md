@@ -14,6 +14,29 @@ tree at run time. An empty file is fine; a missing one is not.
 
 -->
 
+## 2026-11-16 — Sonnet round 1 superseded: schema labels copied verbatim
+**Impact:** none on the recorded banks. Round 1 (805 of 805 passed the checks on the first try) is kept in `data/sonnet/v1/` and not used.
+- 98% of its non-schema questions named the asked-for kind by its exact label ("Which TaxonomyEntry entries does CAPEC-440 map to?").
+- Round 2 has 0 such questions. Qwen's run has 237 of 805.
+
+**Cause:** the shared rule said "name the asked-for kind directly", and the direction sentence says "the {target} entries". Sonnet read both literally; Qwen did so less often. The checks did not define the case.
+
+**Resolution:** PROTOCOL amendment 6.
+- Plain-wording rule in every tier.
+- `schema_label_copied` is a checked problem.
+- The joined-label stem is added to the schema-tier leak list.
+- Fixture tests cover all three.
+
+All 805 jobs were rewritten in round 2.
+
+**Paper implication:** a question generator's leak checks need a style check too. Label-literal phrasing is easier for any agent, not only the writer's own model.
+
+## 2026-11-16 — The plain-wording rule clashed with the synonym tier's forbidden words in 10 jobs
+**Impact:** 10 of round 2's synonym-tier questions failed their first check, then passed on the one retry. No question was dropped.
+**Cause:** amendment 6 told the writer it "may name the asked-for kind as 'detection strategy'". For 10 jobs, that kind's name shares a word with the relation's forbidden list ("detection", "techniques", "execution steps", "alternate terms", "references").
+**Resolution:** the retry named the clash. The rule now says to describe the kind in other words when its name uses a forbidden word. This change came after the run, so the job files record what the writers actually saw. A fixture test covers it.
+**Paper implication:** none.
+
 ## 2026-11-16 — An earlier test leaks Neo4j credentials into the live exact tests
 **Impact:** none on the recorded numbers. Run in one batch with `utils/specialists/evalset`, the kill-test live tests in `utils/agent/tests/test_exact_live.py` skip with "Unauthorized". Run alone, all 21 pass.
 **Cause:** an earlier test in the batch changes the Neo4j credentials in the process environment. This predates Step 6 and was not traced further.

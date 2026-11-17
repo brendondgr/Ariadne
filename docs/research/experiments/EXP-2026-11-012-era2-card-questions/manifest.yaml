@@ -20,7 +20,7 @@ hypothesis: >
 code:
   commit: f7daaf85f2203d9f27ca0112beee2c63be1366c5          # 40-char sha, or "unknown" for a back-filled experiment
   branch: main
-  entrypoint: "uv run python scripts/era2_card_bank.py --out docs/research/experiments/EXP-2026-11-012-era2-card-questions/data --banks docs/evaluation/banks"
+  entrypoint: "uv run python scripts/era2_card_bank.py --out docs/research/experiments/EXP-2026-11-012-era2-card-questions/data --banks docs/evaluation/banks; then scripts/era2_card_reword.py export|check|assemble|metrics (second writer, amendments 5-7)"
   dirty: true             # uncommitted changes at run time? if true, explain in ISSUES.md
 config:
   path: null               # repo-relative path, or null if the run takes no config file
@@ -40,12 +40,12 @@ environment:
   container: null
 compute:
   hardware: "32-core x86_64 host, 121 GB RAM; ariadne-neo4j, ariadne-gremlin; relay :9090"
-  wall_clock_hours: 0.52
+  wall_clock_hours: 1.3
   estimated_cost_usd: 0.0
 
 # --- LLM / agentic block (delete entirely if no model was in the loop) ---
 llm:
-  model: "relay/qwen38-27b@2026-11-16 (alias default-model, reasoning_effort=medium, temperature 0.7) as the question writer; proxy reader claude-sonnet-5-5"
+  model: "relay/qwen38-27b@2026-11-16 (alias default-model, reasoning_effort=medium, temperature 0.7) as the first question writer, proxy reader claude-sonnet-5-5; second writer claude-sonnet-5-5 (medium effort, 20 Claude Code subagents, the scored banks), proxy reader claude-opus-5-5 (medium effort)"
   temperature: 0.7
   top_p: 1.0
   max_tokens: 2048
@@ -73,6 +73,16 @@ metrics:
     synonym_yield_capec: {mean: 0.6316, std: 0.0, n: 57}
     proxy_fluency: {mean: 1.0, std: 0.0, n: 50}
     proxy_truly_ambiguous: {mean: 1.0, std: 0.0, n: 10}
+    sonnet_g1_gold_reexecuted_fraction: {mean: 1.0, std: 0.0, n: 837}
+    sonnet_g2_split_overlap_anchors: {mean: 0, std: 0.0, n: 837}
+    sonnet_g3_leaks: {mean: 0, std: 0.0, n: 232}
+    sonnet_rewritten: {mean: 805, std: 0.0, n: 1}
+    sonnet_dropped: {mean: 0, std: 0.0, n: 805}
+    sonnet_retried: {mean: 10, std: 0.0, n: 805}
+    schema_label_verbatim_qwen: {mean: 237, std: 0.0, n: 805}
+    schema_label_verbatim_sonnet: {mean: 0, std: 0.0, n: 805}
+    sonnet_proxy_fluency_opus: {mean: 0.94, std: 0.0, n: 50}
+    sonnet_proxy_truly_ambiguous_opus: {mean: 1.0, std: 0.0, n: 10}
   withdrawn: {}            # values later retracted by amendment: {metric: {mean, std, n, withdrawn_on, reason, replaced_by}}
 baselines_compared: ["a second fetch path (keyset pages of 50) for every gold answer and every ambiguous reading"]
 statistical_test: null

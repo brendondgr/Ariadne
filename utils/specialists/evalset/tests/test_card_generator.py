@@ -270,3 +270,40 @@ def test_schema_tier_rejects_id_format_hints_copied_from_the_label_description()
     q = {"id": "x", "question": "Which variants (T-ID.NNN) does G1 use?",
          "card_gen": {"tier": "paraphrased_schema", "slot": {"rel": "USES", "target": "Technique"}}}
     assert CG.leak_audit(CARD, [q]) == [{"id": "x", "tier": "paraphrased_schema", "leaks": ["NNN", "T-ID"]}]
+
+
+def test_compound_labels_are_caught_when_joined_and_must_be_written_plainly():
+    # schema tier: the joined label is a leak too ("SubTechnique" is not two words in the text)
+    assert "subtechniqu" in {s[:11] for s in CG.forbidden_label_stems("SubTechnique")}
+    assert CG.leaked_stems("Which SubTechniques does G1 use?", CG.forbidden_label_stems("SubTechnique"))
+    # other tiers: a compound label copied as one word is rejected; plain words pass
+    slot = CG.Slot("attack", "Group", "USES", "out", "SubTechnique")
+    assert CG.question_problems(CARD, slot, "G1", "identifier", "Which SubTechnique entries does G1 use?")
+    assert CG.question_problems(CARD, slot, "G1", "identifier", "Which sub-techniques does G1 use?") == []
+    assert CG.question_problems(CARD, slot, "G1", "identifier", "Which sub techniques does G1 use?") == []
+    one = CG.Slot("attack", "Group", "USES", "out", "Technique")
+    assert CG.question_problems(CARD, one, "G1", "identifier", "Which Technique entries does G1 use?") == []
+    assert any("plain lower-case words ('sub-technique')" in r for r in CG.question_rules(CARD, slot, "G1", "name"))
+
+
+def test_synonym_tier_never_invites_a_kind_name_that_uses_a_forbidden_relation_word():
+    card = {**CARD, "entity_descriptions": {"relationship_paraphrases": {"DETECTS": ["detection of"]}}}
+    slot = CG.Slot("attack", "Technique", "DETECTS", "in", "DetectionStrategy")
+    rules = CG.question_rules(card, slot, "T1", "synonym_relation")
+    assert not any("may name the asked-for kind as 'detection strategy'" in r for r in rules)
+    assert any("forbidden detection" in r for r in rules)
+
+
+def test_template_questions_are_written_in_plain_words():
+    card = {"node_labels": ["AttackPattern", "TaxonomyEntry", "Software", "Matrix", "Weakness", "Category",
+                            "SubTechnique", "Group"]}
+    t = CG.plain_template_text
+    assert t(card, "Which AttackPattern entries are connected to CAPEC-17?") == \
+        "Which attack patterns are connected to CAPEC-17?"
+    assert t(card, "What is the median number of TaxonomyEntry entries per AttackPattern in the catalogue?") == \
+        "What is the median number of taxonomy entries per attack pattern in the catalogue?"
+    assert t(card, "What is the median number of Software entries per Group in the catalogue?") == \
+        "What is the median number of software per group in the catalogue?"
+    assert t(card, "How many Matrix entries, Weakness entries, Category entries?") == \
+        "How many matrices, weaknesses, categories?"
+    assert t(card, "Which SubTechnique is most similar to T1557.001?") == "Which sub-technique is most similar to T1557.001?"
