@@ -1,0 +1,74 @@
+# Filled by scripts/new_experiment.py. Every field below is required unless
+# marked optional. Do not delete a field you do not know — record it as null or
+# "unknown" and explain in ISSUES.md. Inventing a value is worse than admitting
+# a gap.
+id: EXP-2026-11-014
+slug: era2-decision-model-usability
+title: "Era 2, after Step 7: what makes the fast decision models usable, one change at a time"
+status: planned            # planned | running | complete | failed | superseded
+date_started: 2026-11-17
+date_completed: null       # null until status is complete/failed
+authors: ["brendondgr", "Claude Opus 5.5"]
+
+purpose: >
+  Step 7 (EXP-2026-11-013) found the fast decision models pick wrong options, mostly through confusable option text and a forced choice that hides "none of these". This tests, each on its own against Step 7's records as the control, five changes on relation choice (D4) and grounding (D2/D3): plain per-relation readings as option text, one yes/no question per option, a shortlist role with Qwen choosing from the shortlist, a rule filter on target types, and a verifier on Qwen's picks. Every change is scored on one scoreboard (accuracy, none recall, threshold transfer, role, end-to-end accuracy, calls saved). Engineering measurement for the era-2 design; no paper claim.
+
+hypothesis: >
+  H1 wording raises pplx D4 accuracy by >=0.05, mostly on shared-description items. H2 yes/no raises none recall by >=0.15 for pplx and d3 at <=0.03 loss on offered items. H3 pplx or d3 holds a D4 gate in some cell of the wording x yes/no 2x2. H4 a fast model shortlists at >=0.95 gold recall with <=3 options and the controller is non-inferior (margin 0.02). H5 the rule filter raises pplx and d3 accuracy by >=0.10 on narrowed items without losing none recall. H6 a verifier on qwen_prob's picks beats its own confidence as a gate.
+
+# --- Reproducibility block (all fields mandatory) ---
+code:
+  commit: 786eb82dd3bcd917f49fa4693e81d214adad1c07          # 40-char sha, or "unknown" for a back-filled experiment
+  branch: main
+  entrypoint: "uv run python scripts/era2_usability.py readings|build|drift|run|shortlist|score (see PROTOCOL Procedure)"
+  dirty: false            # protocol stage; set at run time
+config:
+  path: null               # repo-relative path, or null if the run takes no config file
+  hash: null               # sha256:... of that file
+data:
+  name: "Step 7 Phase A decision items (D4, D2, D3) and Step 7 run records as control"
+  version: "EXP-2026-11-013 items.jsonl (card-sonnet-2026-11-16 tuning)"
+  split: "tuning (split by anchor for thresholds; sealed held-out unread)"
+  n_examples: 885
+  dvc_path: null           # this repository does not use DVC; leave null
+  hash: sha256:5e5be419b99d2f3825d0a27c67bad52dd696f31d09be2147b0169da684d07680
+seeds: [20261116]
+n_runs: 1                  # SYSTEM runs over the question set — grading passes are not runs
+environment:
+  python: "3.13"
+  lockfile: env/requirements.lock
+  container: null
+compute:
+  hardware: "32-core x86_64 host, 121 GB RAM; relay :9090 (Qwen 3.8 27B), pplx-decider :7500, d3-lite :5107"
+  wall_clock_hours: 0.0
+  estimated_cost_usd: 0.0
+
+# --- LLM / agentic block (delete entirely if no model was in the loop) ---
+llm:
+  model: "pplx-decider-flash-v1.2-fp8 (:7500, temperature 1.0); d3-lite 0.85B (:5107); relay/qwen38-27b (qwen_prob: reasoning none, logprobs; qwen_reason: reasoning medium); readings written by Claude Opus 5.5 (medium)"
+  temperature: 0.0
+  top_p: 1.0
+  max_tokens: 2048
+  prompt_files: []
+  prompt_hash: null
+  tool_schema_hash: null
+  total_input_tokens: null
+  total_output_tokens: null
+  nondeterminism_note: >
+    Provider-side nondeterminism remains even at temperature 0; results
+    are reported as mean ± std over n_runs.
+
+# --- Results block ---
+metrics:
+  primary: d4_pplx_wording_accuracy_gain
+  values: {}               # {metric: {mean: 0.0, std: 0.0, n: 1}} — must be non-empty when status: complete
+  withdrawn: {}            # values later retracted by amendment: {metric: {mean, std, n, withdrawn_on, reason, replaced_by}}
+baselines_compared: ["control: EXP-2026-11-013 run records, same model, same items", "qwen_prob own-confidence gate (for the verifier)", "qwen_reason on the full menu, paired back to back (for the shortlist)"]
+statistical_test: "paired: 2,000 bootstrap resamples over anchors for accuracy/recall differences; per-split differences over the 200 anchor splits for gate figures"
+
+# --- Linkage ---
+supports_claims: []        # every ID here must exist in ../../CLAIMS.md
+figures: []                # every name here must have a file in figures/ and vice versa
+supersedes: null           # set in BOTH manifests or in neither; the validator checks symmetry
+superseded_by: null
+related: ["EXP-2026-11-013"]
