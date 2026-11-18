@@ -19,9 +19,8 @@ the same day ("Agree, write protocol"). This protocol pins how each bar is measu
   - **Today's Qwen planner already loses 45** (EXP-2026-11-009 A-2, after the walk fix
     5d1b93e2).
   - **The agreed bar of ≤ 38 is therefore a cut of 7** from today's same-tree figure, not a
-    halving. The bar stands as agreed. The stronger reading (half of today's control) is
-    reported beside it, and the operator decides whether it gates (see "Open for the
-    operator").
+    halving. Amendment 1 tightens G2 to half of today's control, at the operator's
+    direction.
 - **"Confidently wrong" is not computed** in EXP-2026-09-019 or EXP-2026-11-009. It is defined
   below.
 - **Code survey** (2026-11-18):
@@ -168,7 +167,7 @@ From `variant_harness.score()`, per tier with no pooling, unless stated:
 | | Bar | Measured as | Falsified if |
 |---|---|---|---|
 | **G1** synonym tier | ≥ 0.80 | T-lazy `records_exact` on T1 (120) | below 0.80 |
-| **G2** empty retrievals | halve from 77, so ≤ 38 | T-lazy lost count on the dev bank (284) | above 38 |
+| **G2** empty retrievals | ~~halve from 77, so ≤ 38~~ at most half of E's same-tree count (amendment 1) | T-lazy lost count on the dev bank (284) | above ⌊E / 2⌋ |
 | **G3** original wording | ≥ 0.98 | T-lazy `records_exact` on T0 (120) | below 0.98 |
 | **G4** confidently wrong | does not rise | T-lazy against E, the variant (T0–T5) and dev counts each | either count above E's |
 
@@ -241,7 +240,19 @@ all.
 - **The repair turn and the 4 catalog calls make T-lazy a small loop.** It is reported as
   "typed plan with up to 5 planner turns", not as a single call.
 
-## Open for the operator
+## Amendment 1, 2026-11-18, before anything is built or run: G2 is tightened to half of the control
 
-- **G2's strength.** Should G2 gate on ≤ 38 (agreed), or on half of E's same-tree count
-  (stronger: about 22, if E repeats EXP-2026-11-009 A-2's 45)? It is written as agreed until told otherwise.
+**Operator, 2026-11-18:** G2 gates on half of the control arm's count on the same tree, not on
+≤ 38. The reason is that today's Qwen planner already loses only 45 (EXP-2026-11-009 A-2), so
+≤ 38 would ask for a cut of 7.
+
+| | Bar | Measured as | Falsified if |
+|---|---|---|---|
+| **G2** empty retrievals | at most half of E's | T-lazy's lost count on the dev bank (284), against arm E's lost count from the same commit and run session | T-lazy's count is above ⌊E / 2⌋ |
+
+- **The old reading becomes a report.** ≤ 38 (half of the historical 77) is reported, not gated.
+- **E is measured, not assumed.** If E's count is not 45, the bar follows the measured E.
+- **The paired interval** on T-lazy minus E (2,000 bootstrap resamples over the 284 cases) is
+  reported beside it.
+- **Nothing else changes.** G1, G3, G4, E1–E5 and the decision rules stand.
+
