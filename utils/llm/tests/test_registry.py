@@ -29,7 +29,9 @@ def _spec(base_url: str, stop: int | None = 106, **kw) -> R.ModelSpec:
 
 def test_shipped_registry_loads_and_names_identities():
     reg = R.load()
-    assert "gemma4-31b" not in reg and "gemma4-31b-remote" not in reg     # retired 2026-11-15
+    # Gemma 4 31B reopened 2026-11-18 on default-model (operator); the :4000 remote path stays out
+    assert reg["gemma4-31b"].alias == "default-model" and reg["gemma4-31b"].stop_token_id == 106
+    assert "gemma4-31b-remote" not in reg
     assert reg["qwen38-27b"].stop_token_id == 248046
     assert reg["qwen38-27b"].reasoning_extra() == {"reasoning_effort": "medium"}
     assert reg["pplx-decider"].kind == "decision"
@@ -149,13 +151,15 @@ def test_unreachable_endpoint_raises_unavailable():
         R.check_identity(_spec("http://127.0.0.1:9/v1", connect_timeout_s=0.5))
 
 
-def test_default_is_the_one_open_model():
+def test_default_is_qwen_and_two_llms_are_open():
     reg = R.load()
     assert reg.default.name == "qwen38-27b" and reg.default.status == "open"
-    # one open LLM; the two decision-model servers are open alongside it (2026-11-16)
-    assert [n for n in reg.open_models() if reg[n].kind == "llm"] == ["qwen38-27b"]
+    # two open LLMs from 2026-11-18 (operator): Qwen on default-model-2, Gemma on default-model;
+    # the two decision-model servers are open alongside them (2026-11-16)
+    assert sorted(n for n in reg.open_models() if reg[n].kind == "llm") == ["gemma4-31b", "qwen38-27b"]
+    assert reg.default.alias == "default-model-2" and reg["gemma4-31b"].alias == "default-model"
     assert {n for n in reg.open_models() if reg[n].kind == "decision"} == {"pplx-decider", "d3-lite"}
-    assert reg.default.think_close_token_id == 248069 and reg.default.max_concurrency == 8
+    assert reg.default.think_close_token_id == 248069 and reg.default.max_concurrency == 16
     # the two models share an end-of-turn id; their default renderings differ
     assert reg.default.prompt_fingerprint != reg["minicpm47-35b"].prompt_fingerprint
 
