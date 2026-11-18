@@ -10,9 +10,10 @@
 # tool call ends on another token, which is why identity is a separate probe
 # and not read off each row.
 #
-# Gemma 4 31B (token 106) served Era 2 Steps 2-3 and is retired (operator,
-# 2026-11-15): it is not a basis for any later comparison. Its entries were
-# removed; git history and the experiment manifests keep the record.
+# Gemma 4 31B (token 106) served Era 2 Steps 2-3, was retired 2026-11-15, and is
+# open again from 2026-11-18 (operator): :9090 default-model = Gemma 4 31B,
+# default-model-2 = Qwen 3.8 27B, 16 concurrent each. Qwen stays the default and
+# the planner of record; Gemma is a replication arm (EXP-2026-11-015).
 #
 # Unknown values are null, never guessed. Fill them from the operator.
 
@@ -21,9 +22,8 @@ defaults:
   # models; small caps truncate to an empty reply that looks like an outage.
   max_tokens: 16384
   long_max_tokens: 32768
-  # The one model the operator has open: :9090 default-model. MiniCPM 4.7 35B
-  # served 2026-11-15; Qwen 3.8 27B from 2026-11-16. Every era-2 step uses it
-  # unless told otherwise.
+  # Qwen 3.8 27B (:9090 default-model-2 from 2026-11-18) is the default. Every
+  # era-2 step uses it unless told otherwise.
   default_model: qwen38-27b
   # Off. When a caller turns it on, the reply records both models and every
   # experiment runner refuses rows that fell back.
@@ -82,7 +82,7 @@ models:
   qwen38-27b:
     kind: llm
     endpoint: http://localhost:9090/v1
-    alias: default-model           # default-model-2 until 2026-11-14
+    alias: default-model-2         # operator 2026-11-18 (default-model 2026-11-14 to 11-17)
     identity:
       stop_token_id: 248046
       family: qwen3.5
@@ -96,9 +96,24 @@ models:
     reasoning: {param: reasoning_effort, values: [xhigh, medium, low, none], default: medium, thinking_off: "none", think_close_token_id: 248069}
     tool_calls: {native: true, grammar_constrained: false}
     status: open
-    # Operator, 2026-11-16: 8 at a time today (other work shares the server).
-    max_concurrency: 8
+    # Operator, 2026-11-18: 16 at a time.
+    max_concurrency: 16
     notes: "Native tool calls through vLLM (checked 2026-11-15 under default-model-2)."
+
+  # Back on :9090 default-model from 2026-11-18 (operator), beside Qwen.
+  gemma4-31b:
+    kind: llm
+    endpoint: http://localhost:9090/v1
+    alias: default-model
+    identity: {stop_token_id: 106, family: gemma}
+    size: "31B dense"
+    licence: null
+    context_window: null
+    reasoning: {param: null, values: [], default: null}
+    tool_calls: {native: true, grammar_constrained: false}
+    status: open
+    max_concurrency: 16
+    notes: "Served Era 2 Steps 2-3; retired 2026-11-15; reopened 2026-11-18 as a replication arm."
 
   # Decision models answer multiple-choice, yes/no or score questions with a
   # probability per option and no generated text. Two servers (user, 2026-11-16).
