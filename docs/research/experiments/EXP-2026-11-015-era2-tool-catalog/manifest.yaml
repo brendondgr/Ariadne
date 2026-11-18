@@ -1,0 +1,74 @@
+# Filled by scripts/new_experiment.py. Every field below is required unless
+# marked optional. Do not delete a field you do not know — record it as null or
+# "unknown" and explain in ISSUES.md. Inventing a value is worse than admitting
+# a gap.
+id: EXP-2026-11-015
+slug: era2-tool-catalog
+title: "Era 2 Step 8: a tool catalog generated from the card, and a typed hand-off to the specialists"
+status: planned            # planned | running | complete | failed | superseded
+date_started: 2026-11-18
+date_completed: null       # null until status is complete/failed
+authors: ["brendondgr", "Claude Opus 5.5"]
+
+purpose: >
+  Step 8 of the era-2 plan v2. Generates a typed tool catalog (JSON Schema enums, option rules, plain relation readings, coercion, teaching errors) from any source card with no per-graph code, and moves every English read out of the specialists. Tests whether a Qwen 3.8 planner emitting typed plans through the catalog meets the four operator-agreed bars against today's English hand-off on one tree. Engineering measurement for the era-2 agent; no paper claim yet.
+
+hypothesis: >
+  G1 T1 synonym-tier records_exact >= 0.80; G2 dev-bank empty retrievals <= 38 of 284; G3 T0 original-wording records_exact >= 0.98; G4 confidently-wrong counts not above the English control. Judged on T-lazy (Qwen 3.8, names-only card, find_schema/describe) against arm E.
+
+# --- Reproducibility block (all fields mandatory) ---
+code:
+  commit: 736ad953967856e1a66598abd7f86860ac262907          # 40-char sha, or "unknown" for a back-filled experiment
+  branch: main
+  entrypoint: "uv run python scripts/variant_harness.py compare --arm ... ; uv run python -m utils.evaluation.experiment_untruncated --arm ... ; uv run python scripts/era2_catalog_score.py (see PROTOCOL Procedure)"
+  dirty: false            # protocol stage; set at run time
+config:
+  path: null               # repo-relative path, or null if the run takes no config file
+  hash: null               # sha256:... of that file
+data:
+  name: "variant set (T0 120 golden + 579 variants) and the 284-question dev bank"
+  version: "docs/evaluation/variants-2026-09-15/variants.json; docs/evaluation/composition/bank/bank-dev.json"
+  split: "dev and variant sets (sealed held-out banks unread)"
+  n_examples: 983
+  dvc_path: null           # this repository does not use DVC; leave null
+  hash: sha256:428a23467ecf8aed1f266186504d6f68d0a9d88173cc090149558d078bdea63c   # variants.json
+seeds: [20261118]
+n_runs: 1                  # SYSTEM runs over the question set — grading passes are not runs
+environment:
+  python: "3.13"
+  lockfile: env/requirements.lock
+  container: null
+compute:
+  hardware: "32-core x86_64 host, 121 GB RAM; relay :9090 (default-model = Gemma 4 31B, default-model-2 = Qwen 3.8 27B; 16 concurrent each)"
+  wall_clock_hours: 0.0
+  estimated_cost_usd: 0.0
+
+# --- LLM / agentic block (delete entirely if no model was in the loop) ---
+llm:
+  model: "Qwen 3.8 27B (:9090 default-model-2, reasoning_effort=medium) planner of record; Gemma 4 31B (:9090 default-model) replication arm; identity by token id"
+  temperature: 0.0
+  top_p: 1.0
+  max_tokens: 2048
+  prompt_files: []
+  prompt_hash: null
+  tool_schema_hash: null
+  total_input_tokens: null
+  total_output_tokens: null
+  nondeterminism_note: >
+    Provider-side nondeterminism remains even at temperature 0; results
+    are reported as mean ± std over n_runs.
+
+# --- Results block ---
+metrics:
+  primary: t1_records_exact_typed_lazy
+  values: {}               # {metric: {mean: 0.0, std: 0.0, n: 1}} — must be non-empty when status: complete
+  withdrawn: {}            # values later retracted by amendment: {metric: {mean, std, n, withdrawn_on, reason, replaced_by}}
+baselines_compared: ["arm E: Qwen planner, English hand-off, same tree", "arm R: rules-only pipeline re-captured today (historical T1 0.4667)"]
+statistical_test: "paired: 2,000 bootstrap resamples over cases (seed 20261118)"
+
+# --- Linkage ---
+supports_claims: []        # every ID here must exist in ../../CLAIMS.md
+figures: []                # every name here must have a file in figures/ and vice versa
+supersedes: null           # set in BOTH manifests or in neither; the validator checks symmetry
+superseded_by: null
+related: ["EXP-2026-08-020", "EXP-2026-09-021", "EXP-2026-09-019", "EXP-2026-11-009", "EXP-2026-11-011", "EXP-2026-11-014"]
