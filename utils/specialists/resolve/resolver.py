@@ -33,12 +33,8 @@ from . import (
     _ATTACK_ID_PATTERNS,
     anchor_dataset,
     _dedupe,
-    _extract_attack_seed_ids,
-    _extract_name_terms,
     _schema_word_set,
-    extract_attack_ids,
-    extract_capec_ids,
-    extract_cwe_ids,
+    name_terms_from_candidates,
 )
 
 # Anchor kinds.
@@ -103,14 +99,18 @@ def infer_label(id_value: str, dataset: str) -> str | None:
 
 
 def _native_ids(task: Any, dataset: str) -> tuple[str, ...]:
-    """Ids the text names, in the dataset's native priority (mirrors ``resolve``)."""
-    text = task.text or ""
+    """Ids the text names, in the dataset's native priority (mirrors ``resolve``).
+
+    Read off ``task.signals`` (derived from the text once, where the task was
+    made), never off the text itself.
+    """
+    signals = task.signals
     if dataset == "attack":
-        return _extract_attack_seed_ids(text)
+        return tuple(signals.attack_seed_ids)
     if dataset == "capec":
         # CAPEC ids first, else the CWE Weakness anchors, else ATT&CK ids
         # (TaxonomyEntry seeds for the reverse MAPS_TO join) — priority, not union.
-        return extract_capec_ids(text) or extract_cwe_ids(text) or extract_attack_ids(text)
+        return tuple(signals.capec_ids or signals.cwe_ids or signals.attack_ids)
     if dataset == "merged":
         # One store holding both catalogues, reached only when the task declares
         # no catalogue of its own (`anchor_dataset` resolves it to `attack` or
@@ -120,11 +120,7 @@ def _native_ids(task: Any, dataset: str) -> tuple[str, ...]:
         # single-anchor describe would resolve as ambiguous — and an ambiguous
         # anchor abstains, so the merged arm would decline exactly the
         # cross-source questions the counterfactual exists to test.
-        return (
-            _extract_attack_seed_ids(text)
-            or extract_capec_ids(text)
-            or extract_cwe_ids(text)
-        )
+        return tuple(signals.attack_seed_ids or signals.capec_ids or signals.cwe_ids)
     return ()
 
 
@@ -186,7 +182,7 @@ def resolve_anchor(
 
     # 3/4. Named entities. Prefer a known name/alias hit; else a fuzzy name anchor
     #      the describe compiler matches with a case-insensitive CONTAINS.
-    names = _extract_name_terms(task.text or "", _schema_word_set(card))
+    names = name_terms_from_candidates(task.signals.name_candidates, _schema_word_set(card))
     if names:
         if alias_index:
             canon = _dedupe(

@@ -212,11 +212,11 @@ class GremlinBackend:
                  timeout_s: float = 60.0, edge_label: Callable[[str], str] | None = None) -> None:
         """``edge_label`` maps a card relation name to the stored edge label.
 
-        Ariadne's loader stores every edge as SCREAMING_SNAKE (``CHILD_OF``) while cards
-        keep the source vocabulary (CAPEC's ``ChildOf``): pass
+        Ariadne's loader stores every edge as SCREAMING_SNAKE while cards keep the
+        source vocabulary (a CamelCase relation becomes CAMEL_CASE in the store): pass
         ``utils.graph_loader.stores.gremlin.gremlin_edge_label`` for such stores, or a
         card-named set over those relations is silently empty. Stores that keep the
-        source names (the kill-test loader's ``playsFor``) leave it unset.
+        source names (the kill-test loader's mirrors) leave it unset.
         """
         self.client = client
         self.id_props = tuple(_ident(p, "id property") for p in id_props)

@@ -243,7 +243,7 @@ def test_interfaces_doc_matches_specialist_wire_shapes() -> None:
     task = SpecialistTask(sub_question_id="q1", source="attack", text="x")
     assert set(task.to_dict()) == {
         "sub_question_id", "source", "text", "entities", "limits",
-        "join_key", "seed_ids", "rationale",
+        "join_key", "seed_ids", "rationale", "signals",
     }
     # Documented limit-accessor fallbacks (agent-interfaces.md, seam 1).
     assert task.max_rows() == 1000

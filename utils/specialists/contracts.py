@@ -14,7 +14,10 @@ both normalise into the *same* ``EvidenceRecord`` shape.
 from __future__ import annotations
 
 from dataclasses import dataclass, field
-from typing import Any
+from typing import TYPE_CHECKING, Any
+
+if TYPE_CHECKING:
+    from .signals import TaskSignals
 
 # The three traversal/result bounds every task carries, drawn from the card.
 _LIMIT_KEYS = ("max_traversal_depth", "max_result_rows", "query_timeout_ms")
@@ -28,6 +31,11 @@ class SpecialistTask:
     sub-question text, the graph entities it touches, the safety limits the
     planner already bounded, the optional cross-source join key, and any concrete
     identifiers (``seed_ids``) the resolver pulled out of the text.
+
+    ``signals`` is everything the specialists may know about the wording
+    (Era 2 Step 8, the text boundary). It is derived from ``text`` once, here,
+    when the task is made, unless the caller supplies it; the builders and the
+    resolver read only ``signals`` and never ``text``.
     """
 
     sub_question_id: str
@@ -38,6 +46,13 @@ class SpecialistTask:
     join_key: str | None = None
     seed_ids: tuple[str, ...] = ()
     rationale: str = ""
+    signals: "TaskSignals | None" = None
+
+    def __post_init__(self) -> None:
+        if self.signals is None:
+            from .signals import derive_signals
+
+            object.__setattr__(self, "signals", derive_signals(self.text))
 
     # -- limit accessors (default to conservative non-zero values) ----------
 
@@ -60,6 +75,7 @@ class SpecialistTask:
             "join_key": self.join_key,
             "seed_ids": list(self.seed_ids),
             "rationale": self.rationale,
+            "signals": self.signals.to_dict() if self.signals is not None else None,
         }
 
     @classmethod
@@ -73,6 +89,7 @@ class SpecialistTask:
             join_key=data.get("join_key"),
             seed_ids=tuple(str(s) for s in data.get("seed_ids", [])),
             rationale=str(data.get("rationale", "")),
+            signals=_signals_from(data.get("signals")),
         )
 
     @classmethod
@@ -93,7 +110,17 @@ class SpecialistTask:
             join_key=getattr(sq, "join_key", None),
             seed_ids=tuple(seed_ids),
             rationale=str(getattr(sq, "rationale", "")),
+            signals=getattr(sq, "signals", None),
         )
+
+
+def _signals_from(data: Any) -> "TaskSignals | None":
+    """A serialised ``signals`` block, or ``None`` (derived from the text) when absent."""
+    if not isinstance(data, dict):
+        return None
+    from .signals import TaskSignals
+
+    return TaskSignals.from_dict(data)
 
 
 @dataclass(frozen=True)

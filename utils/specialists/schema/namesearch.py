@@ -341,9 +341,19 @@ def index_for(dataset: str) -> NameIndex:
 
 
 def exact_name_matches(
-    dataset: str, text: str, *, labels: Iterable[str] | None = None
+    dataset: str,
+    text: str,
+    *,
+    labels: Iterable[str] | None = None,
+    proper_nouns: Iterable[str] | None = None,
 ) -> list[Candidate]:
     """Every entity whose **complete name** appears in ``text``.
+
+    ``proper_nouns``, when given, answers the ``struct`` distinctiveness test
+    (:func:`_standalone_proper_noun`) instead of ``text``: the set of one-word
+    names the original question writes as names. The specialists pass it with
+    ``text`` set to the question's rejoined word tokens (``TaskSignals``), which
+    is all the rest of this function reads.
 
     Separate from `resolve` on purpose, and the separation is the point.
 
@@ -392,7 +402,11 @@ def exact_name_matches(
             if distinct and len(name_toks) == 1:
                 if distinct == "df" and index.token_df(name_toks[0]) > DISTINCT_MAX_DF:
                     continue
-                if distinct == "struct" and not _standalone_proper_noun(name.strip(), text):
+                if distinct == "struct" and not (
+                    name.strip() in set(proper_nouns)
+                    if proper_nouns is not None
+                    else _standalone_proper_noun(name.strip(), text)
+                ):
                     continue
             out.append(Candidate(entity_id, label, name, float(len(name_toks))))
     out.sort(key=lambda c: (-c.score, c.entity_id))

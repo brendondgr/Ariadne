@@ -12,10 +12,6 @@ import os
 import re
 from typing import Any, NamedTuple
 
-from ...planner.intent import (
-    asks_for_bulk_scan,
-    is_definitional_request,
-)
 from ..primitives.expand import ExpandRequest
 from ..direction import anchor_expression, resolve_anchor
 from ..resolve import ResolvedTask
@@ -296,16 +292,24 @@ def _seed_from_name(resolved: ResolvedTask):
     # A bulk request names a category, not an entity. "List ATT&CK software
     # entries" matched a node called `enterprise-attack`, seeded it, and
     # returned 1 record against a gold of 821 (A-SCN-01, Arm 3).
-    if asks_for_bulk_scan(resolved.task.text):
+    if resolved.task.signals.bulk_scan:
         return None
     from dataclasses import replace
 
     from ..schema.namesearch import exact_name_matches, resolve_in
 
     labels = tuple(resolved.labels) or tuple(resolved.task.entities or ())
+    # The text boundary: the name lookups read the question's word tokens,
+    # derived once where the task was made, never the question text itself.
+    signals = resolved.task.signals
 
     if _exactname_on():
-        exact = exact_name_matches(resolved.dataset, resolved.task.text, labels=labels)
+        exact = exact_name_matches(
+            resolved.dataset,
+            signals.name_text,
+            labels=labels,
+            proper_nouns=signals.proper_nouns,
+        )
         if len(exact) == 1:
             return replace(resolved, seed_ids=(exact[0].entity_id,))
         if len(exact) > 1:
@@ -325,7 +329,7 @@ def _seed_from_name(resolved: ResolvedTask):
             return None
 
     if _namesearch_on():
-        hit = resolve_in(resolved.dataset, resolved.task.text, labels=labels)
+        hit = resolve_in(resolved.dataset, signals.name_text, labels=labels)
         if hit is not None:
             return replace(resolved, seed_ids=(hit.entity_id,))
     return None
@@ -465,7 +469,7 @@ class CypherQueryBuilder:
         # to branch 6/7 below — describe-by-name, or an honest empty result.
         anchored_or_scan = (
             bool(resolved.seed_ids)
-            or asks_for_bulk_scan(resolved.task.text)
+            or resolved.task.signals.bulk_scan
             or not _unanchored_relation_abstains()
         )
 
@@ -559,7 +563,7 @@ class CypherQueryBuilder:
             resolved.name_terms
             and not resolved.has_join
             and (
-                is_definitional_request(resolved.task.text)
+                resolved.task.signals.definitional
                 or _names_a_specific_entity(resolved)
             )
         ):
@@ -576,7 +580,7 @@ class CypherQueryBuilder:
         #    Scan the label only if a scan is what was asked for, and
         #    otherwise look for the anchor we do not have, find nothing, and let
         #    the enforced abstention carry that query as its proof.
-        if _unanchored_abstains() and not asks_for_bulk_scan(resolved.task.text):
+        if _unanchored_abstains() and not resolved.task.signals.bulk_scan:
             return self._unanchored(resolved)
         return self._label_scan(resolved)
 
@@ -933,7 +937,7 @@ class CypherQueryBuilder:
         # — which is how both of the catalogue's scan questions scored zero. The
         # default cascade already gates this; the generic branch did not.
         if resolved.name_terms and (
-            is_definitional_request(resolved.task.text)
+            resolved.task.signals.definitional
             or _names_a_specific_entity(resolved)
         ):
             return self._describe(resolved)
@@ -1058,15 +1062,15 @@ class CypherQueryBuilder:
         """
         try:
             from utils.planner.cards import load_source_cards
-            from utils.planner.canonical import requested_slots
+            from utils.planner.canonical import requested_slots_from_signals
             from utils.specialists.schema import get_registry
 
             card = load_source_cards().get(resolved.dataset)
             if card is None:
                 return None
             registry = get_registry()
-            slots = requested_slots(
-                resolved.task.text or "",
+            slots = requested_slots_from_signals(
+                resolved.task.signals,
                 resolved.task.entities or (),
                 card,
                 registry,

@@ -55,8 +55,8 @@ The planner emits a `Plan` whose `sub_questions` are `SubQuestion` objects.
 `SpecialistTask.from_sub_question()` (`utils/specialists/contracts.py`)
 adapts one `SubQuestion` into the shape a specialist consumes. The adapter is
 duck-typed — it reads `id`, `source`, `text`, `entities`, `limits.to_dict()`,
-`join_key`, `rationale` off anything exposing them via `getattr()`, without
-importing the planner package.
+`join_key`, `rationale` (and `signals`, when the plan supplies them) off
+anything exposing them via `getattr()`, without importing the planner package.
 
 ### Fields
 
@@ -70,6 +70,7 @@ importing the planner package.
 | `join_key` | `str \| None` | No (default `None`) | Always present, including when `None` |
 | `seed_ids` | `tuple[str, ...]` | No (default `()`) | Serialized as a list; always present, may be empty |
 | `rationale` | `str` | No (default `""`) | Always present |
+| `signals` | `TaskSignals \| None` | No (default `None`: derived from `text` once, at construction) | Serialized as a dict (`utils/specialists/signals.py`); always present. `from_dict` derives it from `text` when the key is absent. The builders and resolver read `signals`, never `text` (Era 2 Step 8, the text boundary) |
 
 No field is omitted when empty on this contract — every key is always
 present in `to_dict()`.

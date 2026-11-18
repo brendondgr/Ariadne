@@ -1,5 +1,11 @@
 # ISSUES — EXP-2026-07-011
 
+## 2026-11-18 — Both builder pointers re-hashed: the text reads moved out
+**Impact:** none on the 29 distinct / 20 exercised counts. `derive_templates.py` re-run today gives Cypher 20 and Gremlin 14 template literals, unchanged.
+**Cause:** era 2 Step 8 (EXP-2026-11-015) replaced the builders' 17 reads of `task.text` with reads of `task.signals`, computed once at task creation. No template literal was added or removed.
+**Resolution:** both rows re-hashed: Cypher 78252 bytes, `sha256:5e4ac15baf82…`; Gremlin 74600 bytes, `sha256:53e4f5a01c28…`.
+**Paper implication:** none.
+
 ## 2026-11-16 — The Gremlin builder pointer re-hashed (third time)
 **Impact:** none. The template-literal count is unchanged at 14, and no figure moves.
 **Cause:** 5d1b93e2, era 2 Step 4's walk fix, added a `_walk_hops` helper to `utils/specialists/gremlin/builder.py` and changed the interpolation inside one existing template literal (`.times(...)`).

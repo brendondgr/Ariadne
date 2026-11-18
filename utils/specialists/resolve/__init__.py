@@ -261,12 +261,39 @@ def _trim_edges(candidate: str) -> str:
     return " ".join(words)
 
 
+#: The keys of :func:`name_term_candidates`, one per extraction pass, in order.
+NAME_PASSES = ("quoted", "titlecase", "structured", "instance", "bare")
+
+
+def name_term_candidates(text: str) -> dict[str, tuple[str, ...]]:
+    """The raw strings each name-extraction pass finds in ``text``.
+
+    The card-free half of :func:`_extract_name_terms`: everything that reads the
+    question, nothing that reads the card. Computed once where the task is made
+    (``utils.specialists.signals``) so the resolver never reads English.
+    """
+    if not text:
+        return {key: () for key in NAME_PASSES}
+    return {
+        "quoted": tuple(m.group(1) for m in _QUOTED_NAME_RE.finditer(text)),
+        "titlecase": tuple(m.group(0) for m in _TITLECASE_RUN_RE.finditer(text)),
+        "structured": tuple(m.group(0) for m in _STRUCTURED_TOKEN_RE.finditer(text)),
+        "instance": tuple(m.group(0) for m in _INSTANCE_TOKEN_RE.finditer(text)),
+        "bare": tuple(re.findall(r"[A-Za-z][A-Za-z0-9]+", text)),
+    }
+
+
 def _extract_name_terms(
     text: str, schema_words: set[str], catalogue_ids: bool = True
 ) -> tuple[str, ...]:
     """Deterministic name anchors from ``text`` (see module note above)."""
-    if not text:
-        return ()
+    return name_terms_from_candidates(name_term_candidates(text), schema_words, catalogue_ids)
+
+
+def name_terms_from_candidates(
+    candidates: dict[str, tuple[str, ...]], schema_words: set[str], catalogue_ids: bool = True
+) -> tuple[str, ...]:
+    """The card half of :func:`_extract_name_terms`: filter and gate the candidates."""
     terms: list[str] = []
     seen: set[str] = set()
 
@@ -280,11 +307,11 @@ def _extract_name_terms(
         seen.add(low)
         terms.append(cand)
 
-    for m in _QUOTED_NAME_RE.finditer(text):
-        add(m.group(1))
+    for cand in candidates.get("quoted", ()):
+        add(cand)
     if not terms:
-        for m in _TITLECASE_RUN_RE.finditer(text):
-            add(m.group(0))
+        for cand in candidates.get("titlecase", ()):
+            add(cand)
     # Dotted and hyphenated tokens are single names, not several. A hostname
     # (`srv063.corp.example`), an FQDN, an OU (`OU-tier2-11`) and an ARN all
     # carry their structure inside the token, and the bare-word pass below --
@@ -294,8 +321,8 @@ def _extract_name_terms(
     # This runs before the bare-word pass and independently of it, because a
     # structured token is a much stronger name signal than a loose word and
     # should not be crowded out by the word cap.
-    for m in _STRUCTURED_TOKEN_RE.finditer(text):
-        add(m.group(0))
+    for cand in candidates.get("structured", ()):
+        add(cand)
     # Instance names, for the same reason and on the same unconditional footing.
     #
     # Unconditional is the point. Gating this behind ``if not terms`` -- the way
@@ -311,8 +338,7 @@ def _extract_name_terms(
     # the host name. Those junk terms were not merely wasted slots -- every one
     # of them goes into the ``CONTAINS`` predicate and pulls in records that
     # have nothing to do with what was asked.
-    for m in _INSTANCE_TOKEN_RE.finditer(text):
-        token = m.group(0)
+    for token in candidates.get("instance", ()):
         # Never re-anchor on a fragment of a name already taken. `srv063` is a
         # strict substring of the structured token `srv063.corp.example`, and
         # adding it as a second term only widens the CONTAINS predicate back out
@@ -321,7 +347,7 @@ def _extract_name_terms(
             continue
         add(token)
     if not terms:
-        for w in re.findall(r"[A-Za-z][A-Za-z0-9]+", text):
+        for w in candidates.get("bare", ()):
             add(w)
     return tuple(terms[:_MAX_NAME_TERMS])
 
@@ -375,13 +401,15 @@ def resolve(task: SpecialistTask, card: Any) -> ResolvedTask:
     relationships = [e for e in task.entities if card.has_relationship(e)]
     unknown = [e for e in task.entities if not card.has_label(e) and not card.has_relationship(e)]
 
-    text = task.text or ""
-    attack_ids = list(extract_attack_ids(text))
-    capec_ids = list(extract_capec_ids(text))
+    # The text boundary (Era 2 Step 8): the wording arrives as signals derived
+    # once, where the task was made. Nothing below reads the question text.
+    signals = task.signals
+    attack_ids = list(signals.attack_ids)
+    capec_ids = list(signals.capec_ids)
 
     anchors_as = anchor_dataset(task, card)
     if anchors_as == "attack":
-        native = list(_extract_attack_seed_ids(text))
+        native = list(signals.attack_seed_ids)
     elif anchors_as == "capec":
         # Prioritized CAPEC-native anchors: CAPEC ids first; else CWE ids (the
         # Weakness vertices seeding the CWE -> CAPEC -> ATT&CK chain); else
@@ -390,7 +418,7 @@ def resolve(task: SpecialistTask, card: Any) -> ResolvedTask:
         # and a technique anchors on the pattern.
         native = (
             list(capec_ids)
-            or list(extract_cwe_ids(text))
+            or list(signals.cwe_ids)
             or list(attack_ids)
         )
     else:
@@ -421,8 +449,10 @@ def resolve(task: SpecialistTask, card: Any) -> ResolvedTask:
         join_key=join_key,
         join_endpoint=join_endpoint,
         stix_types=card_stix_types(card),
-        concept_terms=concept_terms(text),
-        name_terms=_extract_name_terms(
-            text, _schema_word_set(card), catalogue_ids=anchors_as in ("attack", "capec")
+        concept_terms=tuple(signals.concept_terms),
+        name_terms=name_terms_from_candidates(
+            signals.name_candidates,
+            _schema_word_set(card),
+            catalogue_ids=anchors_as in ("attack", "capec"),
         ),
     )

@@ -82,7 +82,7 @@ def diagnose_empty(spec: SetSpec, backend: Any, *, options: int = 8) -> dict[str
     elif spec.target_label and not any(f["label"] == spec.target_label for f in same_rel):
         reason = "label_excludes_all"
         labels = sorted({f["label"] for f in same_rel})
-        fix = f"{spec.rel} leads to {labels}, not {spec.target_label}"
+        fix = f"{spec.rel} reaches {labels}, not {spec.target_label}"
     else:
         reason, fix = "no_match", "the edges exist but no neighbour matches every condition"
     return {"reason": reason, "anchors_found": found, "fix": fix, "nearest": nearest}

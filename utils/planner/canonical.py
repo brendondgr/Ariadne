@@ -592,8 +592,11 @@ def _ids_in(question: str, dataset: str) -> tuple[str, ...]:
     from types import SimpleNamespace
 
     from utils.specialists.resolve.resolver import _native_ids
+    from utils.specialists.signals import id_signals
 
-    return tuple(_native_ids(SimpleNamespace(text=question or "", seed_ids=()), dataset))
+    return tuple(
+        _native_ids(SimpleNamespace(signals=id_signals(question or ""), seed_ids=()), dataset)
+    )
 
 
 def _labels_for_id(value: str, dataset: str, *, registry: Any = None) -> tuple[str, ...]:
@@ -1546,8 +1549,52 @@ def requested_slots(
     tie by preference scored *worse* than not acting, because a confident wrong
     answer displaces a fallback that was sometimes right.
     """
+    return _bind_slots(
+        _question_words(text),
+        lambda value: _value_in_text(value, text),
+        entities,
+        card,
+        registry,
+        labels=labels,
+    )
+
+
+def requested_slots_from_signals(
+    signals: Any,
+    entities: Iterable[str],
+    card: SourceCardView,
+    registry: Any = None,
+    *,
+    labels: Iterable[str] = (),
+) -> RequestedSlots:
+    """:func:`requested_slots` for a specialist, which reads no English.
+
+    ``signals`` is a ``utils.specialists.signals.TaskSignals``: the question's
+    words and the registry values it writes, both read off the text once where
+    the task was made. Same binding, same answer.
+    """
+    mentioned = frozenset(signals.mentioned_values)
+    return _bind_slots(
+        frozenset(signals.question_words),
+        mentioned.__contains__,
+        entities,
+        card,
+        registry,
+        labels=labels,
+    )
+
+
+def _bind_slots(
+    words: frozenset[str],
+    value_in_text: Any,
+    entities: Iterable[str],
+    card: SourceCardView,
+    registry: Any = None,
+    *,
+    labels: Iterable[str] = (),
+) -> RequestedSlots:
+    """The binding behind both entry points; ``value_in_text(value) -> bool``."""
     entities = list(entities or ())
-    words = _question_words(text)
     label_list = [label for label in (labels or entities) if card.has_label(label)]
     relations = [rel for rel in entities if card.has_relationship(rel)]
 
@@ -1582,7 +1629,7 @@ def requested_slots(
                 for value in registry.observed_values(
                     label, candidate, dataset=card.dataset
                 ):
-                    if _value_in_text(value, text):
+                    if value_in_text(value):
                         matches.append((label, candidate, value))
         # A value that two properties share is ambiguous on its own — "Medium"
         # is both a `Typical_Severity` and a `Likelihood_Of_Attack`. The

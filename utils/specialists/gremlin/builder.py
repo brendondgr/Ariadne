@@ -16,11 +16,9 @@ from typing import NamedTuple
 from typing import Any
 
 from utils.graph_loader.stores.gremlin import gremlin_edge_label
-from utils.planner.intent import is_definitional_request
 from utils.specialists.primitives.expand import ExpandRequest
 from utils.specialists.resolve import ResolvedTask
 from utils.specialists.validation import QueryDraft
-from utils.planner.intent import asks_for_bulk_scan
 
 _SAFE_GREMLIN_IDENT = re.compile(r"^[A-Za-z][A-Za-z0-9_]*$")
 
@@ -416,16 +414,24 @@ def _seed_from_name(resolved: ResolvedTask):
     # A bulk request names a category, not an entity. "List ATT&CK software
     # entries" matched a node called `enterprise-attack`, seeded it, and
     # returned 1 record against a gold of 821 (A-SCN-01, Arm 3).
-    if asks_for_bulk_scan(resolved.task.text):
+    if resolved.task.signals.bulk_scan:
         return None
     from dataclasses import replace
 
     from ..schema.namesearch import exact_name_matches, resolve_in
 
     labels = tuple(resolved.labels) or tuple(resolved.task.entities or ())
+    # The text boundary: the name lookups read the question's word tokens,
+    # derived once where the task was made, never the question text itself.
+    signals = resolved.task.signals
 
     if _exactname_on_g():
-        exact = exact_name_matches(resolved.dataset, resolved.task.text, labels=labels)
+        exact = exact_name_matches(
+            resolved.dataset,
+            signals.name_text,
+            labels=labels,
+            proper_nouns=signals.proper_nouns,
+        )
         if len(exact) == 1:
             return replace(resolved, seed_ids=(exact[0].entity_id,))
         if len(exact) > 1:
@@ -445,7 +451,7 @@ def _seed_from_name(resolved: ResolvedTask):
             return None
 
     if _namesearch_on_g():
-        hit = resolve_in(resolved.dataset, resolved.task.text, labels=labels)
+        hit = resolve_in(resolved.dataset, signals.name_text, labels=labels)
         if hit is not None:
             return replace(resolved, seed_ids=(hit.entity_id,))
     return None
@@ -593,9 +599,9 @@ class GremlinQueryBuilder:
             # Only a *definitional* question is a name lookup; "Scan CAPEC attack
             # patterns" is an enumeration. Without the gate it becomes a regex
             # lookup for a node named that, and returns nothing.
-            if resolved.name_terms and is_definitional_request(resolved.task.text):
+            if resolved.name_terms and resolved.task.signals.definitional:
                 return self._describe(resolved)
-            if _unanchored_abstains() and not asks_for_bulk_scan(resolved.task.text):
+            if _unanchored_abstains() and not resolved.task.signals.bulk_scan:
                 return self._unanchored(resolved)
             return self._capec_scan(resolved)
 
@@ -635,7 +641,7 @@ class GremlinQueryBuilder:
                 not has_seeds
                 and not resolved.concept_terms
                 and _unanchored_relation_abstains()
-                and not asks_for_bulk_scan(resolved.task.text)
+                and not resolved.task.signals.bulk_scan
             ):
                 return self._unanchored(resolved)
             return self._capec_maps_to(resolved)
@@ -648,9 +654,9 @@ class GremlinQueryBuilder:
         # Seedless definitional question that names an entity ("What is
         # Phishing?") → describe by name. The definitional cue keeps a broad
         # enumeration ("scan attack patterns") on the label-scan path.
-        if resolved.name_terms and is_definitional_request(resolved.task.text):
+        if resolved.name_terms and resolved.task.signals.definitional:
             return self._describe(resolved)
-        if _unanchored_abstains() and not asks_for_bulk_scan(resolved.task.text):
+        if _unanchored_abstains() and not resolved.task.signals.bulk_scan:
             return self._unanchored(resolved)
         return self._capec_scan(resolved)
 
@@ -1004,15 +1010,15 @@ class GremlinQueryBuilder:
         """
         try:
             from utils.planner.cards import load_source_cards
-            from utils.planner.canonical import requested_slots
+            from utils.planner.canonical import requested_slots_from_signals
             from utils.specialists.schema import get_registry
 
             card = load_source_cards().get(resolved.dataset)
             if card is None:
                 return None
             registry = get_registry()
-            slots = requested_slots(
-                resolved.task.text or "",
+            slots = requested_slots_from_signals(
+                resolved.task.signals,
                 resolved.task.entities or (),
                 card,
                 registry,
