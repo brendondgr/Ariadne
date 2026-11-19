@@ -96,7 +96,8 @@ A plan is a list of steps. Each step names one graph and asks for one set:
 - "expand": the entities reached from an anchor over a path of hops;
 - "count": the same set, when the question asks how many;
 - "describe": the anchor entity itself and its properties (no path);
-- "scan": every entity of one label (no anchor; give the label as "anchor_label");
+- "scan": every entity of one label, only when the question asks for all of them (no \
+anchor; give the label as "anchor_label");
 - "common": the entities linked to EVERY one of two or more anchors (give the ids as a \
 list: "anchor": {"id": ["<id>", "<id>"]}; no path).
 
@@ -119,6 +120,9 @@ declared join key: "anchor": {"from_step": "<id>", "label": "<Label>"}.
 - An entity id of one graph may anchor a step on another graph that a declared join key \
 links to it; give the label it has there as "anchor_label". The engine bridges it.
 - On one graph, chain hops in one step's path rather than starting a step from another.
+- When the question writes an entity id, anchor on that id even if resolve_entity cannot \
+find it. The engine then answers that the entity is not in the graph, which is the right \
+answer. Never put a scan in place of an anchor you could not find.
 - If part of the question cannot be expressed this way, put it in "unsupported" with \
 a reason. Do not answer a different question instead.
 
@@ -205,7 +209,7 @@ class PlanContext:
     """The catalogs, their tools (no store attached) and the identifier lookup of one draft."""
 
     def __init__(self, cards: dict[str, SourceCardView], catalogs: dict[str, Any], workdir: Path,
-                 live: set[str] | None = None) -> None:
+                 live: set[str] | None = None, request: str = "") -> None:
         from utils.agent.handles import HandleStore
         from utils.agent.tools import Tools
 
@@ -214,6 +218,10 @@ class PlanContext:
         run_id = uuid.uuid4().hex[:12]
         self.handles = HandleStore(workdir / "handles.db", run_id)
         self.tools = {ds: Tools(cat, None, self.handles) for ds, cat in self.catalogs.items()}
+        self.request = request
+        #: id-shaped ``resolve_entity`` texts that no graph holds (set by ``_run_tool``)
+        self.failed_lookups: list[str] = []
+        self._written: list[str] | None = None
 
     def close(self) -> None:
         self.handles.close()
@@ -251,6 +259,24 @@ class PlanContext:
         for cand in [value, *_walk_candidate_ids([value])]:
             found |= set(schema.labels_for_id(cand))
         return sorted(found)
+
+    def written_ids(self) -> list[str]:
+        """Tokens of the request that have the form of an entity id of a live graph.
+
+        The planner reads the question (the specialists do not); this is only
+        used to refuse a whole-label scan that would stand in for a named entity.
+        """
+        if self._written is None:
+            import re
+
+            found: list[str] = []
+            for tok in re.findall(r"[A-Za-z][A-Za-z0-9]*(?:[-:][A-Za-z0-9]+)*(?:\.\d+)?", self.request or ""):
+                if not any(ch.isdigit() for ch in tok) or tok in found:
+                    continue
+                if any(self.id_labels(g, tok) for g in self.catalogs):
+                    found.append(tok)
+            self._written = found
+        return self._written
 
     def foreign_id(self, graph: str, value: str) -> str | None:
         """Another graph joined to ``graph`` whose ids admit ``value`` (a bridge anchor)."""
@@ -374,6 +400,16 @@ def check_step(raw: Any, index: int, ctx: PlanContext, earlier: dict[str, StepCh
                 raise Refused(_env("invalid_request", f"step {sid}: a scan needs the label to list",
                                    "anchor_label", None, cat.labels(), what="anchor_label"))
             lab = _label(target, "anchor_label")
+            named = ctx.written_ids()
+            if named or ctx.failed_lookups:
+                what = named or ctx.failed_lookups
+                raise Refused(E.refusal(
+                    "invalid_request",
+                    f"step {sid}: a scan lists every {lab}, but the question names {', '.join(what[:3])}",
+                    "anchor the step on the named entity instead: {\"id\": \"" + what[0] + "\"}. An id that "
+                    "is not in the graph is answered as not found; an id of another graph is bridged through "
+                    "the join key (give this graph's label as anchor_label)",
+                    [E.problem("kind", "scan", ["expand", "describe", "count"])]))
             out.step = TypedStep(kind="scan", anchor_label=lab)
             out.fixes = list(log.fixes)
             return out
@@ -479,8 +515,8 @@ def check_step(raw: Any, index: int, ctx: PlanContext, earlier: dict[str, StepCh
             log.add("anchor", {"name": anchor["name"]}, {"id": ids}, "resolve_entity")
         else:
             raise Refused(E.refusal("invalid_request", f"step {sid}: the step has no anchor",
-                                    "give anchor {\"id\": ...} or {\"name\": ..., \"label\": ...}, "
-                                    "or use kind \"scan\" for a whole label",
+                                    "give anchor {\"id\": ...} (the id the question writes, even if "
+                                    "resolve_entity did not find it) or {\"name\": ..., \"label\": ...}",
                                     [E.problem("anchor", raw.get("anchor"), ["id", "name", "from_step"])]))
 
         # -- common: what every anchor links to --------------------------------
@@ -660,11 +696,31 @@ def _run_tool(ctx: PlanContext, name: str, args: dict[str, Any]) -> dict[str, An
     if name == "resolve_entity" and isinstance(args.get("text"), str):
         # An identifier is not a name: the name search would rank it as words.
         # Answer it from the entity index, on the graph(s) that hold it.
-        hits = [(g, ctx.known_id(g, args["text"].strip())) for g in ([graph] if graph in graphs else graphs)]
+        text = args["text"].strip()
+        hits = [(g, ctx.known_id(g, text)) for g in ([graph] if graph in graphs else graphs)]
         hits = [(g, h) for g, h in hits if h is not None]
         if len(hits) == 1:
             g, (eid, lab) = hits[0]
             return {"ok": True, "status": "found", "graph": g, "ids": [eid], "kind": lab, "match": "id"}
+        if not hits and graph in graphs:
+            elsewhere = [(g, ctx.known_id(g, text)) for g in graphs if g != graph]
+            elsewhere = [(g, h) for g, h in elsewhere if h is not None]
+            if len(elsewhere) == 1:
+                g, (eid, lab) = elsewhere[0]
+                return {"ok": True, "status": "found", "graph": g, "ids": [eid], "kind": lab, "match": "id",
+                        "note": f"{eid} is an id of {g}, not of {graph}. It can still anchor a {graph} step "
+                                "through the join key: give the id and this graph's label as anchor_label."}
+        if not hits:
+            shaped = {g: ctx.id_labels(g, text) for g in ([graph] if graph in graphs else graphs)}
+            shaped = {g: labs for g, labs in shaped.items() if labs}
+            if shaped:
+                ctx.failed_lookups.append(text)
+                g, labs = next(iter(sorted(shaped.items())))
+                return {"ok": True, "status": "not_found", "graph": g, "ids": [], "kind": labs[0],
+                        "detail": f"{text} has the form of a {'/'.join(labs)} id of {g}, but no such entity "
+                                  "is in the graph",
+                        "fix": f"anchor the step on {{\"id\": \"{text}\"}} anyway: the engine answers that it "
+                               "is not in the graph. Do not replace it with a scan."}
     if graph is not None:
         try:
             graph = coerce_name(graph, graphs, "graph")
@@ -757,7 +813,7 @@ class TypedPlanner:
         log = TypedLog(mode=self.mode)
         catalogs = catalogs_for(cards)
         with tempfile.TemporaryDirectory(prefix="typed-plan-") as tmp:
-            ctx = PlanContext(cards, catalogs, Path(tmp), live)
+            ctx = PlanContext(cards, catalogs, Path(tmp), live, request=request)
             try:
                 if not ctx.catalogs:
                     raise DrafterUnavailable("no live graph to plan against")

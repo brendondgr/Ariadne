@@ -247,6 +247,87 @@ class TestValidation:
         assert got["ok"] and got["ids"] == [eid] and got["kind"] == lab and got["match"] == "id"
 
 
+class TestNoAnchorlessScan:
+    """EXP-2026-11-016: a named entity that does not resolve is never replaced by a whole-label scan."""
+
+    @staticmethod
+    def _ctx(cards, request):
+        import tempfile
+
+        from utils.planner.typed import PlanContext, catalogs_for
+
+        d = tempfile.mkdtemp(prefix="typed-test-")
+        return PlanContext(cards, catalogs_for(cards), Path(d), request=request)
+
+    def test_a_scan_is_refused_when_the_question_names_an_id(self, cards):
+        from utils.planner.typed import check_step
+
+        ctx = self._ctx(cards, "Look up nonexistent technique T9999 — must return empty, not invent.")
+        try:
+            c = check_step({"graph": "attack", "kind": "scan", "anchor_label": "Technique"}, 0, ctx, {})
+        finally:
+            ctx.close()
+        assert not c.ok and "T9999" in c.refusals[0]["detail"]
+        assert '{"id": "T9999"}' in c.refusals[0]["fix"]
+
+    def test_a_scan_with_no_named_entity_is_still_accepted(self, cards):
+        from utils.planner.typed import check_step
+
+        ctx = self._ctx(cards, "List ATT&CK software entries.")
+        try:
+            c = check_step({"graph": "attack", "kind": "scan", "anchor_label": "Software"}, 0, ctx, {})
+        finally:
+            ctx.close()
+        assert c.ok and c.step.kind == "scan"
+
+    def test_a_missing_id_is_reported_as_not_found_with_the_anchor_as_its_fix(self, cards):
+        from utils.planner.typed import _run_tool, check_step
+
+        ctx = self._ctx(cards, "which ones?")
+        try:
+            got = _run_tool(ctx, "resolve_entity", {"text": "T9999"})
+            scan = check_step({"graph": "attack", "kind": "scan", "anchor_label": "Technique"}, 0, ctx, {})
+            anchored = check_step({"graph": "attack", "kind": "describe", "anchor": {"id": "T9999"}}, 0, ctx, {})
+        finally:
+            ctx.close()
+        assert got["ok"] and got["status"] == "not_found" and got["ids"] == []
+        assert "anyway" in got["fix"] and "Do not replace it with a scan" in got["fix"]
+        assert not scan.ok, "a failed id lookup also blocks the scan"
+        assert anchored.ok and anchored.step.anchor_ids == ("T9999",)
+
+    def test_an_id_of_the_other_graph_is_found_there_with_a_bridge_note(self, cards):
+        from utils.planner.typed import _run_tool
+
+        tech = _entity(cards, "attack", "Technique")
+        ctx = self._ctx(cards, "x")
+        try:
+            got = _run_tool(ctx, "resolve_entity", {"text": tech, "graph": "capec"})
+        finally:
+            ctx.close()
+        assert got["status"] == "found" and got["graph"] == "attack" and "join key" in got["note"]
+
+    def test_the_no_anchor_refusal_no_longer_suggests_a_scan(self, cards):
+        from utils.planner.typed import check_step
+
+        ctx = self._ctx(cards, "x")
+        try:
+            c = check_step({"graph": "attack", "kind": "expand", "path": []}, 0, ctx, {})
+        finally:
+            ctx.close()
+        assert not c.ok and "scan" not in c.refusals[0]["fix"]
+
+    def test_the_planner_repairs_a_scan_into_the_named_anchor(self, cards):
+        from utils.planner.typed import TypedPlanner
+
+        scan = {"id": "q1", "graph": "attack", "kind": "scan", "anchor_label": "Technique"}
+        fixed = {"id": "q1", "graph": "attack", "kind": "describe", "anchor": {"id": "T9999"}}
+        model = ScriptedModel([_plan_json(scan), _plan_json(fixed)])
+        plan, log = TypedPlanner(model, "lazy").plan("Look up technique T9999.", cards, {"attack", "capec"})
+        assert log.repair_used and log.fixed_by_repair
+        assert plan.sub_questions[0].step["kind"] == "describe"
+        assert plan.sub_questions[0].step["anchor_ids"] == ["T9999"]
+
+
 class TestByteIdentityWhenTypedIsOff:
     def test_an_english_sub_question_serialises_exactly_as_before(self):
         sq = SubQuestion("q1", "attack", "What mitigates T1059?", ["Technique"], Limits(3, 1000, 5000))
