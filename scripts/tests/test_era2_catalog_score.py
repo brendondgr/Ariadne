@@ -131,3 +131,31 @@ def test_main_writes_metrics_and_the_scoreboard(tmp_path):
     assert m["dev"]["E"]["lost"] == 4 and m["dev"]["E"]["answered"] == 10
     board = (tmp_path / "tables" / "scoreboard.md").read_text()
     assert "G2 empty retrievals" in board and "| T-lazy |" in board
+
+
+class TestDiagnosis:
+    REF = {"entity_ids": ["G1", "T1", "T2"], "seed_ids": ["G1"]}
+
+    def _r(self, ids, **kw):
+        return {"records_exact": False, "abstained": False, "wrong_entity": False, "entity_ids": ids, **kw}
+
+    def test_each_outcome_class(self):
+        assert S.variant_class({"records_exact": True}, self.REF) == "exact"
+        assert S.variant_class(self._r([], abstained=True), self.REF) == "refused_or_empty"
+        assert S.variant_class(self._r(["T1", "T2"]), self.REF) == "anchor_only"
+        assert S.variant_class(self._r(["X9"]), self.REF) == "wrong"
+        assert S.variant_class(self._r(["G1", "T1", "T2", "T3"]), self.REF) == "superset"
+        assert S.variant_class(self._r(["G1", "T1"]), self.REF) == "subset"
+        assert S.variant_class(self._r(["G1", "T1", "T9"]), self.REF) == "mixed"
+
+    def test_anchorless_scan_on_both_sets(self):
+        scan = {"planner": {"plan": [{"step": {"kind": "scan", "anchor_ids": [], "hops": []}}]}}
+        anchored = {"planner": {"plan": [{"step": {"kind": "scan", "anchor_ids": ["T1"], "hops": []}}]}}
+        assert S.anchorless_scan_variant(scan) and not S.anchorless_scan_variant(anchored)
+        dev = {"logic_flow": {"results": [{"traces": [
+            {"step": "resolve", "detail": {"seed_ids": []}},
+            {"step": "gate", "detail": {"template": "capec_scan"}}]}]}}
+        seeded = {"logic_flow": {"results": [{"traces": [
+            {"step": "resolve", "detail": {"seed_ids": ["T1195"]}},
+            {"step": "gate", "detail": {"template": "capec_scan"}}]}]}}
+        assert S.anchorless_scan_dev(dev) and not S.anchorless_scan_dev(seeded)

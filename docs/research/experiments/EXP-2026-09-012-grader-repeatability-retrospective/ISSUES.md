@@ -4,6 +4,11 @@ Bugs, anomalies, aborted runs, and gotchas. Also the honest record of anything
 the manifest could not capture: unrecorded seeds, an unknown commit, a dirty
 tree at run time. An empty file is fine; a missing one is not.
 
+## 2026-11-18 — The judgment-tree pointer re-hashed (ninth time)
+**Impact:** none. EXP-2026-11-015 (era 2 Step 8) added `docs/evaluation/experiments/tool-catalog-2026-11-18/`. It holds variant-arm results and dev answers, and no judgment sidecars. The tree is now 1726164701 bytes, `sha256:4f8c291d2f16…`.
+**Resolution:** re-hashed. No sidecar this experiment reads was changed.
+**Paper implication:** none.
+
 ## 2026-11-16 — The judgment-tree pointer re-hashed (eighth time)
 **Impact:** none. No sidecar this experiment reads changed, and no figure moves.
 **Cause:** era 2 Steps 4–5 wrote new runs under `docs/evaluation/experiments`: EXP-2026-11-009 A-1 and A-2. The tree grows with every run.

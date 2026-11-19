@@ -18,6 +18,7 @@ this file says which number is *current*.
 
 | Experiment | Metric | Withdrawn value | Withdrawn on | Quote instead | Why |
 |---|---|---|---|---|---|
+| `EXP-2026-07-011` | `distinct_query_template_identifiers_2026_09_09` | 29.0000 (n=1) | 2026-11-18 | EXP-2026-07-011:distinct_query_template_identifiers_current | count of the tree before 67607f55; era 2 Step 8 (EXP-2026-11-015) added one generic literal, typed_step, to both builders (the typed hand-off executor; not graph-specific, not exercised by the banks) — the script now prints 30 (21 Cypher + 15 Gremlin, 6 shared) |
 | `EXP-2026-07-011` | `distinct_query_templates` | 25.0000 (n=1) | 2026-09-09 | EXP-2026-07-011:distinct_query_template_identifiers_current | count of the 2026-08-04 tree; four generic_* templates were added by EXP-2026-08-001 (2026-08-09) and derive_templates.py was corrected in b72eb23 (2026-08-31) — the script now prints 29 (RESULTS A-1) |
 | `EXP-2026-07-011` | `templates_exercised_by_the_bank` | 19.0000 (n=1) | 2026-09-09 | EXP-2026-07-011:templates_exercised_by_the_bank_current | the corrected script (b72eb23, 2026-08-31) counts 20 expected_template values across the three banks, of which boundary_refusal is not a builder template (RESULTS A-1) |
 | `EXP-2026-08-009` | `merged_minus_federated_bank20260819` | -0.0334 (n=30) | 2026-08-31 | EXP-2026-09-006:c022_margin_bank19_qwen | one grading pass by an unidentified model; the exact zero was an artifact (A-1) |
@@ -128,5 +129,6 @@ this file says which number is *current*.
 | [`EXP-2026-11-012`](experiments/EXP-2026-11-012-era2-card-questions/) | 2026-11-16 | `g1_gold_reexecuted_fraction` | 1.0000 ± 0.0000 (n=837) | — | — |
 | [`EXP-2026-11-013`](experiments/EXP-2026-11-013-era2-decision-models/) | 2026-11-17 | `d2d3_qwen_prob_gate_coverage` | 0.5598 ± 0.0000 (n=200) | — | — |
 | [`EXP-2026-11-014`](experiments/EXP-2026-11-014-era2-decision-model-usability/) | 2026-11-17 | `d4_pplx_wording_accuracy_gain` | 0.1487 ± 0.0000 (n=464) | — | — |
+| [`EXP-2026-11-015`](experiments/EXP-2026-11-015-era2-tool-catalog/) | 2026-11-18 | `t1_records_exact_typed_lazy` | 0.6167 ± 0.0000 (n=120) | — | — |
 
-**24 withdrawn figure(s), 6 superseded experiment(s), 70 current headline(s).**
+**25 withdrawn figure(s), 6 superseded experiment(s), 71 current headline(s).**

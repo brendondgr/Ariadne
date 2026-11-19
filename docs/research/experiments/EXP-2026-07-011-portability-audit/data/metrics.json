@@ -71,7 +71,7 @@
   },
   "manifest_metrics": {
     "distinct_query_template_identifiers_current": {
-      "mean": 29.0,
+      "mean": 30.0,
       "std": null,
       "n": 1
     },
@@ -90,6 +90,33 @@
     "distinct_query_templates": 25,
     "templates_exercised_by_the_bank": 19,
     "withdrawn_on": "2026-09-09",
-    "see": "manifest.yaml metrics.withdrawn; RESULTS A-1"
+    "see": "manifest.yaml metrics.withdrawn; RESULTS A-1",
+    "distinct_query_template_identifiers_2026_09_09": {
+      "mean": 29.0,
+      "std": null,
+      "n": 1,
+      "withdrawn_on": "2026-11-18",
+      "replaced_by": "distinct_query_template_identifiers_current"
+    }
+  },
+  "current_derivation_2026_11_18": {
+    "script": "docs/plans/robustness/_overnight/derive_templates.py (unchanged since b72eb23)",
+    "tree": "67607f55 (era 2 Step 8, EXP-2026-11-015)",
+    "cypher_template_literals": 21,
+    "gremlin_template_literals": 15,
+    "shared_names": [
+      "ambiguous-name",
+      "describe",
+      "describe_by_name",
+      "expand",
+      "typed_step",
+      "unanchored"
+    ],
+    "distinct_identifier_count": 30,
+    "exercised_count": 20,
+    "added_since_2026_09_09": [
+      "typed_step"
+    ],
+    "note": "typed_step executes a typed plan step ahead of the template ladder; generic, not exercised by the banks (ISSUES 2026-11-18)"
   }
 }

@@ -5,9 +5,9 @@
 id: EXP-2026-11-015
 slug: era2-tool-catalog
 title: "Era 2 Step 8: a tool catalog generated from the card, and a typed hand-off to the specialists"
-status: planned            # planned | running | complete | failed | superseded
+status: complete           # planned | running | complete | failed | superseded
 date_started: 2026-11-18
-date_completed: null       # null until status is complete/failed
+date_completed: 2026-11-18
 authors: ["brendondgr", "Claude Opus 5.5"]
 
 purpose: >
@@ -18,10 +18,10 @@ hypothesis: >
 
 # --- Reproducibility block (all fields mandatory) ---
 code:
-  commit: 736ad953967856e1a66598abd7f86860ac262907          # 40-char sha, or "unknown" for a back-filled experiment
+  commit: 67607f55f6905cbefc455a91d39c9ab92987de2c          # Phase 2 ran on this commit, all arms back to back
   branch: main
-  entrypoint: "uv run python scripts/variant_harness.py compare --arm ... ; uv run python -m utils.evaluation.experiment_untruncated --arm ... ; uv run python scripts/era2_catalog_score.py (see PROTOCOL Procedure)"
-  dirty: false            # protocol stage; set at run time
+  entrypoint: "bash docs/research/experiments/EXP-2026-11-015-era2-tool-catalog/logs/phase2.sh (variant_harness.py capture x2, compare --arm E|T-lazy|T-full|T-lazy-G; experiment_untruncated --arm planned_llm_english|planned_llm_typed_lazy|planned_llm_typed_full, and planned_llm_typed_lazy --model gemma4-31b), then scripts/era2_catalog_score.py --data docs/research/experiments/EXP-2026-11-015-era2-tool-catalog/data --runs docs/evaluation/experiments/tool-catalog-2026-11-18"
+  dirty: false            # 67607f55 clean at launch (logs/TREE); only untracked run output
 config:
   path: null               # repo-relative path, or null if the run takes no config file
   hash: null               # sha256:... of that file
@@ -40,7 +40,7 @@ environment:
   container: null
 compute:
   hardware: "32-core x86_64 host, 121 GB RAM; relay :9090 (default-model = Gemma 4 31B, default-model-2 = Qwen 3.8 27B; 16 concurrent each)"
-  wall_clock_hours: 0.0
+  wall_clock_hours: 2.77   # Phase 2, 20:56 to 23:42 EST 2026-11-18
   estimated_cost_usd: 0.0
 
 # --- LLM / agentic block (delete entirely if no model was in the loop) ---
@@ -48,7 +48,7 @@ llm:
   model: "Qwen 3.8 27B (:9090 default-model-2, reasoning_effort=medium) planner of record; Gemma 4 31B (:9090 default-model) replication arm; identity by token id"
   temperature: 0.0
   top_p: 1.0
-  max_tokens: 2048
+  max_tokens: 16384        # every planner arm, E included (amendment 2); thinking budget 0
   prompt_files: []
   prompt_hash: null
   tool_schema_hash: null
@@ -61,7 +61,30 @@ llm:
 # --- Results block ---
 metrics:
   primary: t1_records_exact_typed_lazy
-  values: {}               # {metric: {mean: 0.0, std: 0.0, n: 1}} — must be non-empty when status: complete
+  values:
+    t1_records_exact_typed_lazy: {mean: 0.6167, std: 0.0, n: 120}
+    t1_records_exact_english: {mean: 0.5500, std: 0.0, n: 120}
+    t1_records_exact_typed_full: {mean: 0.5750, std: 0.0, n: 120}
+    t1_records_exact_typed_lazy_gemma: {mean: 0.6000, std: 0.0, n: 120}
+    t1_records_exact_rules_only: {mean: 0.3917, std: 0.0, n: 120}
+    t0_records_exact_typed_lazy: {mean: 0.5167, std: 0.0, n: 120}
+    t0_records_exact_english: {mean: 0.6667, std: 0.0, n: 120}
+    t0_records_exact_typed_lazy_minus_english: {mean: -0.1500, std: 0.0, n: 120}
+    t4_records_exact_typed_lazy_minus_english: {mean: 0.0962, std: 0.0, n: 104}
+    t5_records_exact_typed_lazy_minus_english: {mean: 0.1635, std: 0.0, n: 104}
+    dev_lost_typed_lazy: {mean: 56, std: 0.0, n: 284}
+    dev_lost_english: {mean: 51, std: 0.0, n: 284}
+    dev_lost_typed_full: {mean: 49, std: 0.0, n: 284}
+    variants_confidently_wrong_typed_lazy: {mean: 61, std: 0.0, n: 669}
+    variants_confidently_wrong_english: {mean: 33, std: 0.0, n: 669}
+    variants_confidently_wrong_typed_lazy_gemma: {mean: 37, std: 0.0, n: 669}
+    dev_confidently_wrong_typed_lazy: {mean: 12, std: 0.0, n: 284}
+    dev_confidently_wrong_english: {mean: 1, std: 0.0, n: 284}
+    variants_confidently_wrong_typed_lazy_anchorless_scan: {mean: 16, std: 0.0, n: 61}
+    dev_confidently_wrong_typed_lazy_anchorless_scan: {mean: 11, std: 0.0, n: 12}
+    typed_lazy_valid_first_emission_variants: {mean: 0.6366, std: 0.0, n: 699}
+    typed_lazy_prompt_tokens_per_question_variants: {mean: 9446.6, std: 0.0, n: 699}
+    typed_full_prompt_tokens_per_question_variants: {mean: 27822.7, std: 0.0, n: 699}
   withdrawn: {}            # values later retracted by amendment: {metric: {mean, std, n, withdrawn_on, reason, replaced_by}}
 baselines_compared: ["arm E: Qwen planner, English hand-off, same tree", "arm R: rules-only pipeline re-captured today (historical T1 0.4667)"]
 statistical_test: "paired: 2,000 bootstrap resamples over cases (seed 20261118)"

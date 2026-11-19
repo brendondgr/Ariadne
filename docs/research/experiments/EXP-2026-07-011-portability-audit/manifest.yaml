@@ -49,11 +49,18 @@ compute:
 metrics:
   primary: null
   values:
-    # Current derivation, docs/plans/robustness/_overnight/derive_templates.py run 2026-09-09 (RESULTS A-1).
-    distinct_query_template_identifiers_current: {mean: 29.0, std: null, n: 1}   # 20 Cypher + 14 Gremlin literals, 5 shared; excludes the one f-string expression
+    # Current derivation, docs/plans/robustness/_overnight/derive_templates.py; run 2026-09-09 (RESULTS A-1), re-run 2026-11-18 at 67607f55 (ISSUES).
+    distinct_query_template_identifiers_current: {mean: 30.0, std: null, n: 1}   # 21 Cypher + 15 Gremlin literals, 6 shared (typed_step added by EXP-2026-11-015); excludes the one f-string expression
     templates_exercised_by_the_bank_current: {mean: 20.0, std: null, n: 1}       # 19 builder templates + boundary_refusal, which is a bank label and not a builder template
     mitre_specific_templates: {mean: 19.0, std: null, n: 1}   # the audit's manual classification (25 − 6 generic); see A-1 for what the same rule gives today
   withdrawn:
+    distinct_query_template_identifiers_2026_09_09:
+      mean: 29.0
+      std: null
+      n: 1
+      withdrawn_on: 2026-11-18
+      reason: "count of the tree before 67607f55; era 2 Step 8 (EXP-2026-11-015) added one generic literal, typed_step, to both builders (the typed hand-off executor; not graph-specific, not exercised by the banks) — the script now prints 30 (21 Cypher + 15 Gremlin, 6 shared)"
+      replaced_by: "EXP-2026-07-011:distinct_query_template_identifiers_current"
     distinct_query_templates:
       mean: 25.0
       std: null

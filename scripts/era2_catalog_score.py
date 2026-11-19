@@ -1,9 +1,10 @@
 #!/usr/bin/env python3
 """EXP-2026-11-015 scorer: the four gates (G1-G4), typed-path health, paired intervals.
 
-    uv run python scripts/era2_catalog_score.py --data <exp>/data
+    uv run python scripts/era2_catalog_score.py --data <exp>/data \
+        --runs docs/evaluation/experiments/tool-catalog-2026-11-18
 
-Reads, under ``--data``:
+Reads, under ``--runs`` (default ``--data``):
 
 * ``variants/<arm>.json`` -- ``scripts/variant_harness.py compare`` output for
   ``R`` (rules-only, ``--name R.json``), ``E``, ``T-lazy``, ``T-full`` and
@@ -267,8 +268,87 @@ def _last(logs: Any) -> dict[str, Any] | None:
 # --------------------------------------------------------------------------- #
 
 
+# --------------------------------------------------------------------------- #
+# post-hoc diagnosis (reported, not gated; RESULTS §4)
+# --------------------------------------------------------------------------- #
+
+OUTCOME_CLASSES = ("exact", "anchor_only", "refused_or_empty", "superset", "subset", "mixed", "wrong")
+
+
+def variant_class(row: dict[str, Any], ref: dict[str, Any] | None) -> str:
+    """One variant answer against the reference capture of its gold question.
+
+    ``anchor_only``: the sets differ only by the reference's own seed ids (the answer lists
+    the anchor beside its records, or leaves it out). ``wrong``: records and no overlap.
+    """
+    if row.get("records_exact"):
+        return "exact"
+    if row.get("abstained"):
+        return "refused_or_empty"
+    if ref is None:
+        return "wrong" if row.get("wrong_entity") else "mixed"
+    want, got = set(ref.get("entity_ids") or []), set(row.get("entity_ids") or [])
+    seeds = set(ref.get("seed_ids") or [])
+    if want - seeds == got - seeds:
+        return "anchor_only"
+    if not (want & got):
+        return "wrong"
+    if got > want:
+        return "superset"
+    if got < want:
+        return "subset"
+    return "mixed"
+
+
+def anchorless_scan_variant(row: dict[str, Any]) -> bool:
+    """The typed plan holds a ``scan`` step with no anchor ids (it reads a whole label)."""
+    for part in (row.get("planner") or {}).get("plan") or []:
+        step = part.get("step") or {}
+        if step.get("kind") == "scan" and not step.get("anchor_ids"):
+            return True
+    return False
+
+
+def anchorless_scan_dev(artifact: dict[str, Any]) -> bool:
+    """A result gated through a ``*_scan`` template with no seed ids."""
+    for res in (artifact.get("logic_flow") or {}).get("results") or []:
+        steps = res.get("traces") or res.get("steps") or []
+        seeded = None
+        for st in steps if isinstance(steps, list) else []:
+            det = st.get("detail") or {}
+            if st.get("step") == "resolve":
+                seeded = bool(det.get("seed_ids"))
+            if st.get("step") == "gate" and str(det.get("template", "")).endswith("_scan") and seeded is False:
+                return True
+    return False
+
+
+def diagnosis(variants: dict[str, list[dict[str, Any]]], dev: dict[str, dict[str, dict[str, Any]]],
+              cw_ids: dict[str, list[str]], reference: dict[str, dict[str, Any]]) -> dict[str, Any]:
+    out: dict[str, Any] = {}
+    for arm, rows in variants.items():
+        by_tier: dict[str, dict[str, int]] = {}
+        insensitive: dict[str, float] = {}
+        for t in sorted({str(r.get("tier")) for r in rows}):
+            g = [r for r in rows if str(r.get("tier")) == t]
+            cls = [variant_class(r, reference.get(str(r.get("case_id")))) for r in g]
+            by_tier[t] = {c: cls.count(c) for c in OUTCOME_CLASSES}
+            insensitive[t] = round(sum(c in ("exact", "anchor_only") for c in cls) / len(g), 4)
+        cw = [r for r in rows if str(r.get("tier")) in CW_TIERS and confidently_wrong_variant(r)]
+        out[arm] = {"classes_by_tier": by_tier, "records_exact_anchor_insensitive": insensitive,
+                    "cw_T0_T5": len(cw),
+                    "cw_T0_T5_anchorless_scan": sum(anchorless_scan_variant(r) for r in cw),
+                    "cw_T0_T5_catalogue_dump": sum(bool(r.get("catalogue_dump")) for r in cw)}
+    for arm, answers in dev.items():
+        ids = cw_ids.get(arm) or []
+        out.setdefault(arm, {})["dev_cw_anchorless_scan"] = sum(
+            anchorless_scan_dev(answers[i]) for i in ids if i in answers)
+    return out
+
+
 def score(variants: dict[str, list[dict[str, Any]]], dev: dict[str, dict[str, dict[str, Any]]],
-          authored: dict[str, dict[str, Any]]) -> dict[str, Any]:
+          authored: dict[str, dict[str, Any]],
+          reference: dict[str, dict[str, Any]] | None = None) -> dict[str, Any]:
     out: dict[str, Any] = {"variants": {}, "dev": {}, "health": {}, "paired_vs_E": {}, "gates": {}}
     for arm, rows in variants.items():
         out["variants"][arm] = {"tiers": tier_table(rows),
@@ -300,6 +380,9 @@ def score(variants: dict[str, list[dict[str, Any]]], dev: dict[str, dict[str, di
         if cell:
             out["paired_vs_E"][arm] = cell
     out["gates"] = gates(out)
+    if reference is not None:
+        out["diagnosis"] = diagnosis(variants, dev, {a: d["confidently_wrong_ids"] for a, d in out["dev"].items()},
+                                     reference)
     return out
 
 
@@ -356,6 +439,12 @@ def _ci(c: dict[str, Any] | None) -> str:
     return f"{c['estimate']:+.4f} [{c['lo']:+.4f}, {c['hi']:+.4f}]"
 
 
+def _le(part: dict[str, Any]) -> bool | None:
+    """One G4 part: T-lazy's count not above E's (``None`` if either is missing)."""
+    t, e = part.get("T-lazy"), part.get("E")
+    return None if t is None or e is None else t <= e
+
+
 def scoreboard(m: dict[str, Any]) -> str:
     g = m["gates"]
     lines = ["# EXP-2026-11-015 scoreboard", "", "Generated by `scripts/era2_catalog_score.py`. "
@@ -372,9 +461,10 @@ def scoreboard(m: dict[str, Any]) -> str:
              f"{_f(((m['variants'].get('E') or {}).get('tiers') or {}).get('T0', {}).get('records_exact'))} | "
              f"{_f(g['G3']['pass'])} |",
              f"| G4 confidently wrong, variants T0–T5 | ≤ E | {_f(g['G4']['variants']['T-lazy'])} | "
-             f"{_f(g['G4']['variants']['E'])} | |",
+             f"{_f(g['G4']['variants']['E'])} | {_f(_le(g['G4']['variants']))} |",
              f"| G4 confidently wrong, dev | ≤ E | {_f(g['G4']['dev']['T-lazy'])} | {_f(g['G4']['dev']['E'])} | "
-             f"{_f(g['G4']['pass'])} |", "", f"All four: **{_f(g['all_pass'])}**", "",
+             f"{_f(_le(g['G4']['dev']))} |",
+             f"| G4 (both parts) | | | | {_f(g['G4']['pass'])} |", "", f"All four: **{_f(g['all_pass'])}**", "",
              "## Variants, records_exact per tier", ""]
     tiers = sorted({t for a in m["variants"].values() for t in a["tiers"]})
     lines += ["| Arm | " + " | ".join(tiers) + " | CW T0–T5 |", "|---" * (len(tiers) + 2) + "|"]
@@ -409,25 +499,59 @@ def scoreboard(m: dict[str, Any]) -> str:
                              f"{_f(x['still_refused_questions'])} | "
                              f"{x['fallback_unavailable'] + x['fallback_floor']} | "
                              f"{x['catalog_calls_per_question']} | {x['prompt_tokens_per_question']} |")
+    dg = m.get("diagnosis")
+    if dg:
+        lines += ["", "## Diagnosis (post hoc; reported, not gated)", "",
+                  "Outcome classes on T0 and T1 against the reference capture. `anchor_only`: the "
+                  "sets differ only by the gold question's seed ids.", "",
+                  "| Arm | tier | " + " | ".join(OUTCOME_CLASSES) + " |", "|---" * (len(OUTCOME_CLASSES) + 2) + "|"]
+        for arm in VARIANT_ARMS:
+            x = dg.get(arm) or {}
+            for t in ("T0", "T1"):
+                c = (x.get("classes_by_tier") or {}).get(t)
+                if c:
+                    lines.append(f"| {arm} | {t} | " + " | ".join(str(c[k]) for k in OUTCOME_CLASSES) + " |")
+        tiers = sorted({t for x in dg.values() for t in (x.get("records_exact_anchor_insensitive") or {})})
+        lines += ["", "`records_exact` with the anchor ids ignored:", "",
+                  "| Arm | " + " | ".join(tiers) + " |", "|---" * (len(tiers) + 1) + "|"]
+        for arm in VARIANT_ARMS:
+            ai = (dg.get(arm) or {}).get("records_exact_anchor_insensitive")
+            if ai:
+                lines.append(f"| {arm} | " + " | ".join(_f(ai.get(t)) for t in tiers) + " |")
+        lines += ["", "Confidently wrong, by cause:", "",
+                  "| Arm | CW T0–T5 | of which anchorless scan | of which catalogue dump | dev CW | "
+                  "of which anchorless scan |", "|---|---|---|---|---|---|"]
+        for arm in VARIANT_ARMS:
+            x = dg.get(arm)
+            if x and "cw_T0_T5" in x:
+                lines.append(f"| {arm} | {x['cw_T0_T5']} | {x['cw_T0_T5_anchorless_scan']} | "
+                             f"{x['cw_T0_T5_catalogue_dump']} | {(m['dev'].get(arm) or {}).get('confidently_wrong', '—')} | "
+                             f"{x.get('dev_cw_anchorless_scan', '—')} |")
     return "\n".join(lines) + "\n"
 
 
 def main(argv: list[str] | None = None) -> int:
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    ap.add_argument("--data", required=True, help="the experiment's data directory")
+    ap.add_argument("--data", required=True, help="the experiment's data directory (metrics.json is written here)")
+    ap.add_argument("--runs", default=None,
+                    help="where the run outputs (variants/, dev/, dev-gemma/) live; default: --data")
     ap.add_argument("--authored", default=str(AUTHORED),
                     help="answers directory of the authored-plan baseline (generic_composed)")
     args = ap.parse_args(argv)
     data = Path(args.data)
-    variants = {arm: load_variant_rows(data / "variants" / f"{arm}.json")
-                for arm in VARIANT_ARMS if (data / "variants" / f"{arm}.json").exists()}
-    dev = {arm: load_dev(data / sub / "answers") for arm, sub in DEV_ARMS.items()
-           if (data / sub / "answers").is_dir()}
+    runs = Path(args.runs) if args.runs else data
+    variants = {arm: load_variant_rows(runs / "variants" / f"{arm}.json")
+                for arm in VARIANT_ARMS if (runs / "variants" / f"{arm}.json").exists()}
+    dev = {arm: load_dev(runs / sub / "answers") for arm, sub in DEV_ARMS.items()
+           if (runs / sub / "answers").is_dir()}
     authored = load_dev(Path(args.authored))
     if not authored:
         print(f"no authored answers under {args.authored}", file=sys.stderr)
         return 2
-    m = score(variants, dev, authored)
+    ref_path = runs / "variants" / "reference.json"
+    reference = ({str(r["case_id"]): r for r in json.loads(ref_path.read_text())}
+                 if ref_path.exists() else None)
+    m = score(variants, dev, authored, reference)
     m["inputs"] = {"variants": sorted(variants), "dev": {a: DEV_ARMS[a] for a in sorted(dev)},
                    "authored": str(Path(args.authored).resolve().relative_to(REPO))
                    if Path(args.authored).resolve().is_relative_to(REPO) else str(args.authored)}

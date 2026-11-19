@@ -1,5 +1,11 @@
 # ISSUES — EXP-2026-07-011
 
+## 2026-11-18 — Both builder pointers re-hashed again: `typed_step` adds one template identifier (29 → 30)
+**Impact:** the distinct count moves from 29 to 30 (Cypher 20 → 21 literals, Gremlin 14 → 15, shared 5 → 6). Exercised by the banks: 20, unchanged. `distinct_query_template_identifiers_current` is now 30, and 29 is moved to `withdrawn`.
+**Cause:** era 2 Step 8, part 2 (67607f55, EXP-2026-11-015) added `_typed_step` to both builders. It executes a typed plan step (anchor ids, relation, direction, target) ahead of the template ladder and runs only when a step is present. It is generic: it names no graph, label or relation. The entry below was written at a695b869, before this commit. Its "no template literal added" held then, but not after 67607f55, and the pointers were not re-hashed at that commit.
+**Resolution:** both rows re-hashed (Cypher 83363 bytes, `sha256:5d8dccb9c1eb…`; Gremlin 79433 bytes, `sha256:5eb0944635c4…`). `derive_templates.py` was re-run today.
+**Paper implication:** C-010's "the dataset-specific surface is bounded" is unchanged, because the new identifier is not dataset-specific. Any count of template identifiers quoted from this audit is 30 on the tree from 67607f55 on.
+
 ## 2026-11-18 — Both builder pointers re-hashed: the text reads moved out
 **Impact:** none on the 29 distinct / 20 exercised counts. `derive_templates.py` re-run today gives Cypher 20 and Gremlin 14 template literals, unchanged.
 **Cause:** era 2 Step 8 (EXP-2026-11-015) replaced the builders' 17 reads of `task.text` with reads of `task.signals`, computed once at task creation. No template literal was added or removed.
