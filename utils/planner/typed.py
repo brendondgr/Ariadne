@@ -221,6 +221,8 @@ class PlanContext:
         self.request = request
         #: id-shaped ``resolve_entity`` texts that no graph holds (set by ``_run_tool``)
         self.failed_lookups: list[str] = []
+        #: ``(graph, id, label, text)`` of every entity ``resolve_entity`` found during this draft
+        self.found_lookups: list[tuple[str, str, str, str]] = []
         self._written: list[str] | None = None
 
     def close(self) -> None:
@@ -426,19 +428,24 @@ def check_step(raw: Any, index: int, ctx: PlanContext, earlier: dict[str, StepCh
                                    [k for k, v in earlier.items() if v.ok] or ["an anchor id or name"],
                                    what="from_step"))
             if prod.graph == graph:
+                fix = (f"on one graph, add this step's hops to the path of step {from_step} (a path may have "
+                       "several hops) instead of starting a new step from it")
+                bridge = _bridge_hint(ctx, graph, label_raw, [v for v in earlier.values() if v.ok])
+                if bridge:
+                    fix += ". " + bridge
                 raise Refused(E.refusal(
-                    "invalid_request", f"step {sid}: from_step {from_step!r} is on the same graph",
-                    f"on one graph, add this step's hops to the path of step {from_step} (a path may have "
-                    "several hops) instead of starting a new step from it",
+                    "invalid_request", f"step {sid}: from_step {from_step!r} is on the same graph", fix,
                     [E.problem("from_step", from_step, [f"{from_step}.path"])]))
             key = resolve_join_key(ctx.cards[prod.graph], ctx.cards[graph])
             producer_ok = key is not None and any(e.dataset == prod.graph and e.produces for e in key.endpoints)
             if not producer_ok:
+                bridge = _bridge_hint(ctx, graph, label_raw, [prod, *(v for v in earlier.values() if v.ok)])
                 raise Refused(E.refusal(
                     "invalid_request",
                     f"step {sid}: no declared join key carries values from {prod.graph} to {graph}",
-                    "anchor this step on entity ids directly (an id of the other graph is bridged through "
-                    "the join key), or use one graph", [E.problem("from_step", from_step, ["anchor.id"])]))
+                    bridge or ("anchor this step on entity ids directly (an id of the other graph is bridged "
+                               "through the join key), or use one graph"),
+                    [E.problem("from_step", from_step, ["anchor.id"])]))
             out.from_step, out.join_key = str(from_step), key.name
             if not label_raw:
                 raise Refused(_env("invalid_request", f"step {sid}: from_step needs the label its values are",
@@ -642,7 +649,96 @@ def check_plan(data: Any, ctx: PlanContext) -> tuple[list[StepCheck], list[str]]
             c.id = f"{c.id}_{i + 1}"
         earlier[c.id] = c
         checks.append(c)
+    _refuse_unlinked_scans(checks, ctx)
     return checks, problems
+
+
+def _bridge_hint(ctx: PlanContext, graph: str, label: Any, steps: list[StepCheck]) -> str:
+    """How to carry the entity an anchored step on another, joined graph found into ``graph``.
+
+    Empty when no such step exists. The id form is the one the engine bridges
+    (an id of the other graph plus this graph's label as ``anchor_label``).
+    """
+    for a in steps:
+        if a.graph == graph or a.step is None or not a.step.anchor_ids:
+            continue
+        if a.graph not in ctx.cards or graph not in ctx.cards:
+            continue
+        if resolve_join_key(ctx.cards[a.graph], ctx.cards[graph]) is None:
+            continue
+        ids = list(a.step.anchor_ids)
+        lab = str(label or "<the " + graph + " label that stores " + a.graph + " ids>")
+        shown = ids[0] if len(ids) == 1 else ids[:5]
+        return (f"To reach {graph} from what step {a.id} found on {a.graph}, anchor the {graph} step on "
+                f"that id: \"anchor\": {{\"id\": {json.dumps(shown)}}}, \"anchor_label\": \"{lab}\". The engine "
+                f"bridges it through the join key; then add the hops from {lab} to what the question asks for")
+    return _found_hint(ctx, graph, label, steps)
+
+
+def _found_hint(ctx: PlanContext, graph: str, label: Any, steps: list[StepCheck]) -> str:
+    """The fix for a plan that does not use an entity ``resolve_entity`` found during this draft.
+
+    Empty when every found entity anchors a step (or none was found), or when
+    the found entity is on another graph that no join key links to ``graph``.
+    """
+    used = {i for a in steps if a.step is not None for i in a.step.anchor_ids}
+    for g, eid, lab_found, text in ctx.found_lookups:
+        if eid in used:
+            continue
+        if g == graph:
+            return (f"resolve_entity found {text!r} as {eid} ({lab_found}). Anchor the step on it: "
+                    f"\"anchor\": {{\"id\": \"{eid}\"}}, then add the hops from {lab_found} to what the "
+                    "question asks for")
+        if g in ctx.cards and graph in ctx.cards and resolve_join_key(ctx.cards[g], ctx.cards[graph]) is not None:
+            lab = str(label or "<the " + graph + " label that stores " + g + " ids>")
+            return (f"resolve_entity found {text!r} as {eid} on {g}. To reach {graph} from it, anchor the "
+                    f"{graph} step on that id: \"anchor\": {{\"id\": \"{eid}\"}}, \"anchor_label\": \"{lab}\". "
+                    f"The engine bridges it through the join key; then add the hops from {lab} to what the "
+                    "question asks for")
+    return ""
+
+
+def _refuse_unlinked_scans(checks: list[StepCheck], ctx: PlanContext) -> None:
+    """Refuse a whole-label scan beside an anchored step on another, joined graph.
+
+    EXP-2026-11-016 follow-up: a plan that has found an entity on one graph and
+    lists every member of a label on the other is a failed bridge (F-REV-06 T5:
+    262 taxonomy entries for the 2 linked to one technique). The question asked
+    about the found entity, so the scan stands in for the link. Steps that start
+    from a refused step are refused with it.
+    """
+    from utils.agent import errors as E
+
+    for c in checks:
+        if not c.ok or c.step.kind != "scan":
+            continue
+        hint = _bridge_hint(ctx, c.graph, c.step.anchor_label, [a for a in checks if a is not c and a.ok])
+        if not hint:
+            # A step that tried to anchor on an id or a name was refused: the scan
+            # would be all that is left of the plan (F-REV-06 T5, T-full, spot-check).
+            tried = [a for a in checks if a is not c and not a.ok and isinstance(a.raw, dict)
+                     and isinstance(a.raw.get("anchor"), (dict, str))
+                     and (isinstance(a.raw["anchor"], str) or a.raw["anchor"].get("id") or a.raw["anchor"].get("name"))]
+            if tried:
+                a = tried[0]
+                hint = (f"step {a.id}, which anchors the entity the question is about, was refused; fix that "
+                        f"step as its refusal says instead of listing every {c.step.anchor_label}")
+        if not hint:
+            continue
+        c.refusals.append(E.refusal(
+            "invalid_request",
+            f"step {c.id}: a scan lists every {c.step.anchor_label}, but this plan already found the entity "
+            f"the question is about",
+            hint + f". Scan only when the question asks for every {c.step.anchor_label}",
+            [E.problem("kind", "scan", ["expand", "describe", "count"])]))
+    refused = {c.id for c in checks if not c.ok}
+    for c in checks:
+        if c.ok and c.from_step in refused:
+            c.refusals.append(E.refusal(
+                "invalid_request", f"step {c.id}: from_step {c.from_step!r} was refused",
+                f"fix step {c.from_step} first, then start this step from it",
+                [E.problem("from_step", c.from_step, [c.from_step])]))
+            refused.add(c.id)
 
 
 def to_plan(request: str, checks: list[StepCheck], data: dict[str, Any], cards: dict[str, SourceCardView],
@@ -686,6 +782,18 @@ def to_plan(request: str, checks: list[StepCheck], data: dict[str, Any], cards: 
 
 
 def _run_tool(ctx: PlanContext, name: str, args: dict[str, Any]) -> dict[str, Any]:
+    """One catalog call (see :func:`_run_tool_inner`); records what ``resolve_entity`` found."""
+    res = _run_tool_inner(ctx, name, args)
+    if name == "resolve_entity" and isinstance(res, dict):
+        text = str((args or {}).get("text") or "")
+        for r in [res, *(res.get("results") or [])]:
+            if isinstance(r, dict) and r.get("status") == "found" and r.get("graph"):
+                for eid in r.get("ids") or []:
+                    ctx.found_lookups.append((str(r["graph"]), str(eid), str(r.get("kind") or ""), text))
+    return res
+
+
+def _run_tool_inner(ctx: PlanContext, name: str, args: dict[str, Any]) -> dict[str, Any]:
     """One catalog call; ``graph`` picks a catalog, else every catalog answers, tagged."""
     from utils.agent import errors as E
     from utils.agent.coerce import Ambiguous, NoMatch, coerce_name

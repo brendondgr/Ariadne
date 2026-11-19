@@ -328,6 +328,166 @@ class TestNoAnchorlessScan:
         assert plan.sub_questions[0].step["anchor_ids"] == ["T9999"]
 
 
+class TestNoUnlinkedScan:
+    """EXP-2026-11-016 follow-up: the bridge route (F-REV-06 T5) — an entity found on one graph, then
+    every member of a label listed on the other — is refused with the bridged anchor as its fix."""
+
+    @staticmethod
+    def _ctx(cards, request="How do CAPEC items relate to the method where intruders pull mail from a "
+                            "hosted mail server, and what is this method?"):
+        return TestNoAnchorlessScan._ctx(cards, request)
+
+    def test_a_scan_beside_an_anchored_step_on_the_joined_graph_is_refused(self, cards):
+        from utils.planner.typed import check_plan
+
+        tech = _entity(cards, "attack", "Technique")
+        ctx = self._ctx(cards)
+        try:
+            checks, _ = check_plan({"steps": [
+                {"id": "q1", "graph": "attack", "kind": "describe", "anchor": {"id": tech}},
+                {"id": "q2", "graph": "capec", "kind": "scan", "anchor_label": "TaxonomyEntry"}]}, ctx)
+        finally:
+            ctx.close()
+        assert checks[0].ok and not checks[1].ok
+        env = checks[1].refusals[0]
+        assert "a scan lists every TaxonomyEntry" in env["detail"]
+        assert f'"anchor": {{"id": "{tech}"}}' in env["fix"] and '"anchor_label": "TaxonomyEntry"' in env["fix"]
+
+    def test_the_order_of_the_steps_does_not_matter(self, cards):
+        from utils.planner.typed import check_plan
+
+        tech = _entity(cards, "attack", "Technique")
+        ctx = self._ctx(cards)
+        try:
+            checks, _ = check_plan({"steps": [
+                {"id": "q1", "graph": "capec", "kind": "scan", "anchor_label": "TaxonomyEntry"},
+                {"id": "q2", "graph": "attack", "kind": "describe", "anchor": {"id": tech}}]}, ctx)
+        finally:
+            ctx.close()
+        assert not checks[0].ok and checks[1].ok
+
+    def test_the_bridged_fix_is_itself_accepted(self, cards):
+        from utils.planner.typed import check_plan
+
+        tech = _entity(cards, "attack", "Technique")
+        ctx = self._ctx(cards)
+        try:
+            checks, _ = check_plan({"steps": [
+                {"id": "q1", "graph": "attack", "kind": "describe", "anchor": {"id": tech}},
+                {"id": "q2", "graph": "capec", "kind": "describe", "anchor": {"id": tech},
+                 "anchor_label": "TaxonomyEntry"}]}, ctx)
+        finally:
+            ctx.close()
+        assert all(c.ok for c in checks), [c.refusals for c in checks]
+        assert checks[1].join_key
+
+    def test_a_scan_alone_or_beside_a_same_graph_anchor_is_still_accepted(self, cards):
+        from utils.planner.typed import check_plan
+
+        tech = _entity(cards, "attack", "Technique")
+        ctx = self._ctx(cards, "List every ATT&CK tactic.")
+        try:
+            alone, _ = check_plan({"steps": [{"id": "q1", "graph": "attack", "kind": "scan",
+                                              "anchor_label": "Tactic"}]}, ctx)
+            same, _ = check_plan({"steps": [
+                {"id": "q1", "graph": "attack", "kind": "describe", "anchor": {"id": tech}},
+                {"id": "q2", "graph": "attack", "kind": "scan", "anchor_label": "Tactic"}]}, ctx)
+        finally:
+            ctx.close()
+        assert alone[0].ok and all(c.ok for c in same)
+
+    def test_a_step_started_from_a_refused_scan_is_refused_with_it(self, cards):
+        from utils.planner.typed import check_plan
+
+        tech = _entity(cards, "attack", "Technique")
+        ctx = self._ctx(cards)
+        try:
+            checks, _ = check_plan({"steps": [
+                {"id": "q1", "graph": "attack", "kind": "describe", "anchor": {"id": tech}},
+                {"id": "q2", "graph": "capec", "kind": "scan", "anchor_label": "TaxonomyEntry"},
+                {"id": "q3", "graph": "attack", "kind": "describe", "anchor": {"from_step": "q2", "label": "Technique"}}]},
+                ctx)
+        finally:
+            ctx.close()
+        assert checks[0].ok and not checks[1].ok
+        assert not checks[2].ok or checks[2].from_step is None  # refused with q2, or never a from_step at all
+
+    def test_the_same_graph_from_step_refusal_now_says_how_to_bridge(self, cards):
+        from utils.planner.typed import check_plan
+
+        tech = _entity(cards, "attack", "Technique")
+        ctx = self._ctx(cards)
+        try:
+            checks, _ = check_plan({"steps": [
+                {"id": "q1", "graph": "attack", "kind": "describe", "anchor": {"id": tech}},
+                {"id": "q2", "graph": "capec", "kind": "describe", "anchor": {"id": tech},
+                 "anchor_label": "TaxonomyEntry"},
+                {"id": "q3", "graph": "capec", "kind": "describe",
+                 "anchor": {"from_step": "q2", "label": "AttackPattern"}}]}, ctx)
+        finally:
+            ctx.close()
+        env = checks[2].refusals[0]
+        assert "is on the same graph" in env["detail"]
+        assert f'"anchor": {{"id": "{tech}"}}' in env["fix"] and "join key" in env["fix"]
+
+    def test_a_scan_that_drops_a_found_entity_is_refused(self, cards):
+        """F-REV-06 T3 (T-full, spot-check): resolve_entity found the technique, the plan only scans CAPEC."""
+        from utils.planner.typed import _run_tool, check_plan
+
+        ctx = self._ctx(cards, "Which CAPEC items correspond to Remote Email Collection, and what does that cover?")
+        try:
+            got = _run_tool(ctx, "resolve_entity", {"text": "Remote Email Collection", "graph": "attack"})
+            if got.get("status") != "found":
+                pytest.skip("the name index does not resolve 'Remote Email Collection'")
+            eid = got["ids"][0]
+            scan, _ = check_plan({"steps": [{"id": "q1", "graph": "capec", "kind": "scan",
+                                             "anchor_label": "TaxonomyEntry"}]}, ctx)
+            used, _ = check_plan({"steps": [
+                {"id": "q1", "graph": "attack", "kind": "describe", "anchor": {"id": eid}},
+                {"id": "q2", "graph": "capec", "kind": "describe", "anchor": {"id": eid},
+                 "anchor_label": "TaxonomyEntry"}]}, ctx)
+        finally:
+            ctx.close()
+        assert not scan[0].ok
+        env = scan[0].refusals[0]
+        assert "a scan lists every TaxonomyEntry" in env["detail"]
+        assert f'"anchor": {{"id": "{eid}"}}' in env["fix"] and "Remote Email Collection" in env["fix"]
+        assert all(c.ok for c in used), [c.refusals for c in used]
+
+    def test_a_scan_left_beside_a_refused_anchor_is_refused(self, cards):
+        """F-REV-06 T5 (T-full, confirmation): the name anchor was ambiguous, the CAPEC scan was all that was left."""
+        from utils.planner.typed import check_plan
+
+        ctx = self._ctx(cards)
+        try:
+            checks, _ = check_plan({"steps": [
+                {"id": "q1", "graph": "attack", "kind": "describe",
+                 "anchor": {"name": "zzzz no such technique qqqq", "label": "Technique"}},
+                {"id": "q2", "graph": "capec", "kind": "scan", "anchor_label": "TaxonomyEntry"}]}, ctx)
+        finally:
+            ctx.close()
+        assert not checks[0].ok and not checks[1].ok
+        assert "step q1" in checks[1].refusals[0]["fix"] and "was refused" in checks[1].refusals[0]["fix"]
+
+    def test_the_no_join_key_refusal_names_the_bridged_anchor(self, cards):
+        """F-REV-05 T1 in the spot-check: a from_step from ATT&CK into CAPEC, repaired by dropping the step."""
+        from utils.planner.typed import check_plan
+
+        tech = _entity(cards, "attack", "Technique")
+        ctx = self._ctx(cards)
+        try:
+            checks, _ = check_plan({"steps": [
+                {"id": "q1", "graph": "attack", "kind": "describe", "anchor": {"id": tech}},
+                {"id": "q2", "graph": "capec", "kind": "describe",
+                 "anchor": {"from_step": "q1", "label": "TaxonomyEntry"}}]}, ctx)
+        finally:
+            ctx.close()
+        env = checks[1].refusals[0]
+        if "no declared join key" not in env["detail"]:
+            pytest.skip("the cards declare an ATT&CK -> CAPEC producer; the refusal does not arise")
+        assert f'"anchor": {{"id": "{tech}"}}' in env["fix"] and '"anchor_label": "TaxonomyEntry"' in env["fix"]
+
+
 class TestByteIdentityWhenTypedIsOff:
     def test_an_english_sub_question_serialises_exactly_as_before(self):
         sq = SubQuestion("q1", "attack", "What mitigates T1059?", ["Technique"], Limits(3, 1000, 5000))
