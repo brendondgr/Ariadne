@@ -5,9 +5,9 @@
 id: EXP-2026-11-016
 slug: era2-scan-fix
 title: "Era 2 Step 8 follow-up: the anchorless-scan fix in the typed planner, re-run on EXP-2026-11-015's arms and gates"
-status: planned            # planned | running | complete | failed | superseded
+status: complete           # planned | running | complete | failed | superseded
 date_started: 2026-11-19
-date_completed: null
+date_completed: 2026-11-19
 authors: ["brendondgr", "Claude Opus 5.5"]
 
 purpose: >
@@ -18,10 +18,10 @@ hypothesis: >
 
 # --- Reproducibility block (all fields mandatory) ---
 code:
-  commit: unknown          # set at launch: the commit this protocol and the fix are in
+  commit: 458a2841d50577c2475d4655c525e1368f7a9e18
   branch: main
   entrypoint: "bash docs/research/experiments/EXP-2026-11-016-era2-scan-fix/data/run.sh, then scripts/era2_catalog_score.py --data docs/research/experiments/EXP-2026-11-016-era2-scan-fix/data --runs docs/evaluation/experiments/scan-fix-2026-11-19 and scripts/era2_scanfix_compare.py"
-  dirty: false            # protocol stage; set at run time
+  dirty: false            # tracked tree clean in all three sittings (logs/STATUS, STATUS3, STATUS4 list only the untracked output dir)
 config:
   path: null               # repo-relative path, or null if the run takes no config file
   hash: null               # sha256:... of that file
@@ -40,7 +40,7 @@ environment:
   container: null
 compute:
   hardware: "32-core x86_64 host, 121 GB RAM; relay :9090 (default-model = Gemma 4 31B, default-model-2 = Qwen 3.8 27B; 16 concurrent each)"
-  wall_clock_hours: 0.0
+  wall_clock_hours: 3.9    # three sittings: 10:27-10:59, 11:00-13:11, 13:12-14:21 (ISSUES)
   estimated_cost_usd: 0.0
 
 # --- LLM / agentic block (delete entirely if no model was in the loop) ---
@@ -61,7 +61,27 @@ llm:
 # --- Results block ---
 metrics:
   primary: f1_anchorless_scan_cw_dev_typed_lazy
-  values: {}
+  values:
+    f1_anchorless_scan_cw_dev_typed_lazy: {mean: 0, std: 0.0, n: 284}
+    f1_anchorless_scan_cw_variants_typed_lazy: {mean: 1, std: 0.0, n: 669}
+    t1_records_exact_typed_lazy: {mean: 0.6250, std: 0.0, n: 120}
+    t1_records_exact_english: {mean: 0.5500, std: 0.0, n: 120}
+    t0_records_exact_typed_lazy: {mean: 0.6083, std: 0.0, n: 120}
+    t0_records_exact_english: {mean: 0.6583, std: 0.0, n: 120}
+    t4_records_exact_typed_lazy_minus_english: {mean: 0.0577, std: 0.0, n: 104}
+    t5_records_exact_typed_lazy_minus_english: {mean: 0.1923, std: 0.0, n: 104}
+    dev_lost_typed_lazy: {mean: 52, std: 0.0, n: 284}
+    dev_lost_english: {mean: 50, std: 0.0, n: 284}
+    variants_confidently_wrong_typed_lazy: {mean: 51, std: 0.0, n: 669}
+    variants_confidently_wrong_english: {mean: 36, std: 0.0, n: 669}
+    variants_confidently_wrong_typed_full: {mean: 44, std: 0.0, n: 669}
+    variants_confidently_wrong_typed_lazy_gemma: {mean: 38, std: 0.0, n: 669}
+    dev_confidently_wrong_typed_lazy: {mean: 0, std: 0.0, n: 284}
+    dev_confidently_wrong_english: {mean: 4, std: 0.0, n: 284}
+    dev_confidently_wrong_typed_lazy_minus_exp_2026_11_015: {mean: -12.0, std: 0.0, n: 284}
+    dev_confidently_wrong_english_minus_exp_2026_11_015: {mean: 3.0, std: 0.0, n: 284}
+    t0_records_exact_typed_lazy_minus_exp_2026_11_015: {mean: 0.0917, std: 0.0, n: 120}
+    variants_confidently_wrong_typed_lazy_minus_exp_2026_11_015: {mean: -10.0, std: 0.0, n: 669}
   withdrawn: {}            # values later retracted by amendment: {metric: {mean, std, n, withdrawn_on, reason, replaced_by}}
 baselines_compared: ["arm E: Qwen planner, English hand-off, same tree", "EXP-2026-11-015 T-lazy and E (paired, same items)", "arm R: rules-only reference re-captured"]
 statistical_test: "paired: 2,000 bootstrap resamples over cases (seed 20261118)"

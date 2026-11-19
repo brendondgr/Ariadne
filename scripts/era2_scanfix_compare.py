@@ -12,7 +12,9 @@ Reported, not gated (PROTOCOL "Reported"):
   and how many legitimate scans it blocked (a refusal that stayed on a question whose reference
   capture is a scan template).
 
-Writes ``<new data>/compare.json`` and ``<new exp>/tables/compare.md``.
+Writes ``<new data>/compare.json`` and ``<new exp>/tables/compare.md``, and merges the same
+object into ``<new data>/metrics.json`` under ``vs_exp_2026_11_015`` (run it after
+``era2_catalog_score.py``, which rewrites that file).
 """
 
 from __future__ import annotations
@@ -124,6 +126,11 @@ def main(argv: list[str] | None = None) -> int:
     c = compare(Path(args.old_runs), Path(args.new_runs), Path(args.authored))
     data = Path(args.data)
     (data / "compare.json").write_text(json.dumps(c, indent=2, sort_keys=True) + "\n")
+    metrics = data / "metrics.json"
+    if metrics.exists():
+        m = json.loads(metrics.read_text())
+        m["vs_exp_2026_11_015"] = c
+        metrics.write_text(json.dumps(m, indent=2, sort_keys=True) + "\n")
     tables = data.parent / "tables"
     tables.mkdir(parents=True, exist_ok=True)
     (tables / "compare.md").write_text(table(c))
