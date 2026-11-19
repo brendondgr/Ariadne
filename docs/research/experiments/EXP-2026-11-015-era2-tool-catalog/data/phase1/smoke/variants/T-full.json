@@ -1,0 +1,1795 @@
+[
+  {
+    "abstained": false,
+    "abstentions": [],
+    "bank": "attack",
+    "cache_hit": false,
+    "canonical_question": "",
+    "case_id": "A-MIT-01",
+    "catalogue_dump": false,
+    "claims": [
+      "Found 4 item(s) related to T1047 (e.g. M1038, M1040, M1018) in MITRE ATT&CK.",
+      "T1047 (Windows Management Instrumentation) has 4 mitigations: M1038, M1040, M1018, M1026."
+    ],
+    "claims_exact": false,
+    "entity_ids": [
+      "M1018",
+      "M1026",
+      "M1038",
+      "M1040",
+      "T1047"
+    ],
+    "entity_ids_by_source": {
+      "attack": [
+        "M1018",
+        "M1026",
+        "M1038",
+        "M1040",
+        "T1047"
+      ]
+    },
+    "form_exact": null,
+    "gold_n": 5,
+    "gold_question": "What mitigations does ATT&CK list for T1047 (Windows Management Instrumentation)?",
+    "model_consulted": false,
+    "note": "kept id, swapped 'mitigations' for 'defend against'",
+    "planner": {
+      "drafter": "TypedDrafter",
+      "plan": [
+        {
+          "entities": [
+            "Technique",
+            "MITIGATES",
+            "Mitigation"
+          ],
+          "source": "attack",
+          "step": {
+            "anchor_ids": [
+              "T1047"
+            ],
+            "anchor_label": "Technique",
+            "depth": 1,
+            "hops": [
+              {
+                "direction": "in",
+                "relation": "MITIGATES",
+                "target_label": "Mitigation"
+              }
+            ],
+            "kind": "expand"
+          }
+        }
+      ],
+      "unsupported": 0
+    },
+    "queries": [
+      "MATCH (n) WHERE coalesce(n.attack_id, n.id) IN $ids OPTIONAL MATCH (n)<-[:MITIGATES]-(t0:Mitigation) WITH n, collect(DISTINCT {m: t0, r: 'MITIGATES'}) AS k0 WITH n, [x IN k0 WHERE x.m IS NOT NULL] AS hops UNWIND (CASE WHEN size(hops) = 0 THEN [{m: null, r: null}] ELSE hops END) AS hop RETURN coalesce(n.attack_id, n.id) AS anchor_id, n.name AS anchor_name, labels(n)[0] AS anchor_label, coalesce(hop.m.attack_id, hop.m.id) AS neighbour_id, hop.m.name AS neighbour_name, labels(hop.m)[0] AS neighbour_label, hop.r AS rel_type LIMIT 1000"
+    ],
+    "queries_exact": false,
+    "question": "How do I defend against T1047?",
+    "record_count": 1,
+    "records_exact": true,
+    "records_jaccard": 1.0,
+    "records_recall": 1.0,
+    "run_index": 0,
+    "rung": "off",
+    "served_model": "",
+    "slot_anchor": null,
+    "slot_anchor_label": null,
+    "slot_relation": null,
+    "slot_target_label": null,
+    "slots_scored": 0,
+    "sources": [
+      "attack"
+    ],
+    "tier": "T1",
+    "timing": {
+      "latency_s": 28.95
+    },
+    "typed": [
+      {
+        "catalog_calls": [
+          {
+            "args": {
+              "graph": "attack",
+              "label": "Technique",
+              "text": "T1047"
+            },
+            "name": "resolve_entity",
+            "ok": true
+          },
+          {
+            "args": {
+              "graph": "attack",
+              "target": "T1047"
+            },
+            "name": "describe",
+            "ok": false
+          },
+          {
+            "args": {
+              "graph": "attack",
+              "label": "Technique",
+              "text": "T1047"
+            },
+            "name": "resolve_entity",
+            "ok": true
+          },
+          {
+            "args": {
+              "graph": "attack",
+              "label": "Technique",
+              "text": "T1047"
+            },
+            "name": "resolve_entity",
+            "ok": true
+          }
+        ],
+        "coercions": [],
+        "completion_tokens": 825,
+        "emitted": true,
+        "error": null,
+        "fallback": null,
+        "final_steps": 1,
+        "first_fixes": 0,
+        "first_refused": 0,
+        "first_steps": 1,
+        "fixed_by_coercion": false,
+        "fixed_by_repair": false,
+        "mode": "full",
+        "model_calls": 5,
+        "n_catalog_calls": 4,
+        "parse_error": null,
+        "plan_problems": [],
+        "prompt_tokens": 30958,
+        "refusals": [],
+        "repair_used": false,
+        "replies": [
+          {
+            "calls": [
+              "resolve_entity"
+            ],
+            "finish_reason": "tool_calls",
+            "repairs": [],
+            "status": "ok",
+            "text_chars": 0
+          },
+          {
+            "calls": [
+              "describe"
+            ],
+            "finish_reason": "tool_calls",
+            "repairs": [],
+            "status": "ok",
+            "text_chars": 0
+          },
+          {
+            "calls": [
+              "resolve_entity"
+            ],
+            "finish_reason": "tool_calls",
+            "repairs": [],
+            "status": "ok",
+            "text_chars": 239
+          },
+          {
+            "calls": [
+              "resolve_entity"
+            ],
+            "finish_reason": "tool_calls",
+            "repairs": [],
+            "status": "ok",
+            "text_chars": 0
+          },
+          {
+            "calls": [],
+            "finish_reason": "stop",
+            "repairs": [],
+            "status": "ok",
+            "text_chars": 354
+          }
+        ],
+        "seconds": 28.337,
+        "served_model": "qwen38-27b/248046",
+        "still_refused": 0,
+        "valid_first": true,
+        "valid_first_raw": true
+      }
+    ],
+    "unsupported": 0,
+    "variant_n": 5,
+    "wrong_entity": false
+  },
+  {
+    "abstained": false,
+    "abstentions": [],
+    "bank": "attack",
+    "cache_hit": false,
+    "canonical_question": "",
+    "case_id": "A-MC-01",
+    "catalogue_dump": false,
+    "claims": [
+      "Found 29 record(s) in MITRE ATT&CK including T1556, T1003.006, T1558.003 and more.",
+      "T1003.003 (NTDS) has 1 mitigation: M1027.",
+      "T1003.003 (NTDS) has 1 tactic: TA0006.",
+      "T1003.005 (Cached Domain Credentials) has 1 mitigation: M1027.",
+      "T1003.005 (Cached Domain Credentials) has 1 tactic: TA0006.",
+      "T1003.006 (DCSync) has 1 mitigation: M1027.",
+      "T1003.006 (DCSync) has 1 tactic: TA0006.",
+      "T1003.008 (/etc/passwd and /etc/shadow) has 1 mitigation: M1027.",
+      "T1003.008 (/etc/passwd and /etc/shadow) has 1 tactic: TA0006.",
+      "T1110 (Brute Force) has 1 mitigation: M1027.",
+      "T1110 (Brute Force) has 1 tactic: TA0006.",
+      "T1110.003 (Password Spraying) has 1 mitigation: M1027.",
+      "T1110.004 (Credential Stuffing) has 1 mitigation: M1027.",
+      "T1110.004 (Credential Stuffing) has 1 tactic: TA0006.",
+      "T1187 (Forced Authentication) has 1 mitigation: M1027.",
+      "T1187 (Forced Authentication) has 1 tactic: TA0006.",
+      "T1552.001 (Credentials In Files) has 1 mitigation: M1027.",
+      "T1552.001 (Credentials In Files) has 1 tactic: TA0006.",
+      "T1556 (Modify Authentication Process) has 1 mitigation: M1027.",
+      "T1556 (Modify Authentication Process) has 1 tactic: TA0006.",
+      "T1556.005 (Reversible Encryption) has 1 mitigation: M1027.",
+      "T1556.005 (Reversible Encryption) has 1 tactic: TA0006.",
+      "T1558.002 (Silver Ticket) has 1 mitigation: M1027.",
+      "T1558.002 (Silver Ticket) has 1 tactic: TA0006.",
+      "T1558.003 (Kerberoasting) has 1 mitigation: M1027.",
+      "T1558.003 (Kerberoasting) has 1 tactic: TA0006."
+    ],
+    "claims_exact": false,
+    "entity_ids": [
+      "M1027",
+      "T1003",
+      "T1003.001",
+      "T1003.002",
+      "T1003.003",
+      "T1003.004",
+      "T1003.005",
+      "T1003.006",
+      "T1003.007",
+      "T1003.008",
+      "T1110",
+      "T1110.001",
+      "T1110.002",
+      "T1110.003",
+      "T1110.004",
+      "T1187",
+      "T1552",
+      "T1552.001",
+      "T1552.002",
+      "T1552.004",
+      "T1555",
+      "T1555.001",
+      "T1555.003",
+      "T1555.005",
+      "T1556",
+      "T1556.005",
+      "T1558",
+      "T1558.002",
+      "T1558.003",
+      "T1558.004",
+      "TA0006"
+    ],
+    "entity_ids_by_source": {
+      "attack": [
+        "M1027",
+        "T1003",
+        "T1003.001",
+        "T1003.002",
+        "T1003.003",
+        "T1003.004",
+        "T1003.005",
+        "T1003.006",
+        "T1003.007",
+        "T1003.008",
+        "T1110",
+        "T1110.001",
+        "T1110.002",
+        "T1110.003",
+        "T1110.004",
+        "T1187",
+        "T1552",
+        "T1552.001",
+        "T1552.002",
+        "T1552.004",
+        "T1555",
+        "T1555.001",
+        "T1555.003",
+        "T1555.005",
+        "T1556",
+        "T1556.005",
+        "T1558",
+        "T1558.002",
+        "T1558.003",
+        "T1558.004",
+        "TA0006"
+      ]
+    },
+    "form_exact": null,
+    "gold_n": 9,
+    "gold_question": "Which techniques in tactic TA0006 are mitigated by M1027?",
+    "model_consulted": false,
+    "note": "swapped 'mitigated by' for 'defend against', kept identifiers",
+    "planner": {
+      "drafter": "TypedDrafter",
+      "plan": [
+        {
+          "entities": [
+            "Mitigation"
+          ],
+          "source": "attack",
+          "step": {
+            "anchor_ids": [
+              "TA0006",
+              "M1027"
+            ],
+            "anchor_label": "Mitigation",
+            "depth": 1,
+            "hops": [],
+            "kind": "common"
+          }
+        }
+      ],
+      "unsupported": 0
+    },
+    "queries": [
+      "MATCH (n) WHERE coalesce(n.attack_id, n.id) IN $ids MATCH (n)-[r]-(m) WITH m, collect(DISTINCT coalesce(n.attack_id, n.id)) AS anchors, collect(DISTINCT {id: coalesce(n.attack_id, n.id), name: n.name, label: labels(n)[0], rel: type(r)}) AS sources WHERE size(anchors) = $anchorCount UNWIND sources AS source RETURN coalesce(m.attack_id, m.id) AS anchor_id, m.name AS anchor_name, labels(m)[0] AS anchor_label, source.id AS neighbour_id, source.name AS neighbour_name, source.label AS neighbour_label, source.rel AS rel_type LIMIT 1000"
+    ],
+    "queries_exact": false,
+    "question": "Which techniques under TA0006 does M1027 defend against?",
+    "record_count": 29,
+    "records_exact": false,
+    "records_jaccard": 0.2903,
+    "records_recall": 1.0,
+    "run_index": 0,
+    "rung": "off",
+    "served_model": "",
+    "slot_anchor": null,
+    "slot_anchor_label": null,
+    "slot_relation": null,
+    "slot_target_label": null,
+    "slots_scored": 0,
+    "sources": [
+      "attack"
+    ],
+    "tier": "T1",
+    "timing": {
+      "latency_s": 57.321
+    },
+    "typed": [
+      {
+        "catalog_calls": [
+          {
+            "args": {
+              "graph": "attack",
+              "label": "Tactic",
+              "text": "TA0006"
+            },
+            "name": "resolve_entity",
+            "ok": true
+          },
+          {
+            "args": {
+              "graph": "attack",
+              "label": "Mitigation",
+              "text": "M1027"
+            },
+            "name": "resolve_entity",
+            "ok": true
+          },
+          {
+            "args": {
+              "graph": "attack",
+              "target": "M1027"
+            },
+            "name": "describe",
+            "ok": false
+          },
+          {
+            "args": {
+              "graph": "attack",
+              "target": "TA0006"
+            },
+            "name": "describe",
+            "ok": false
+          }
+        ],
+        "coercions": [],
+        "completion_tokens": 2675,
+        "emitted": true,
+        "error": null,
+        "fallback": null,
+        "final_steps": 1,
+        "first_fixes": 0,
+        "first_refused": 0,
+        "first_steps": 1,
+        "fixed_by_coercion": false,
+        "fixed_by_repair": false,
+        "mode": "full",
+        "model_calls": 4,
+        "n_catalog_calls": 4,
+        "parse_error": null,
+        "plan_problems": [],
+        "prompt_tokens": 24875,
+        "refusals": [],
+        "repair_used": false,
+        "replies": [
+          {
+            "calls": [
+              "resolve_entity",
+              "resolve_entity"
+            ],
+            "finish_reason": "tool_calls",
+            "repairs": [],
+            "status": "ok",
+            "text_chars": 0
+          },
+          {
+            "calls": [
+              "describe"
+            ],
+            "finish_reason": "tool_calls",
+            "repairs": [],
+            "status": "ok",
+            "text_chars": 136
+          },
+          {
+            "calls": [
+              "describe"
+            ],
+            "finish_reason": "tool_calls",
+            "repairs": [],
+            "status": "ok",
+            "text_chars": 170
+          },
+          {
+            "calls": [],
+            "finish_reason": "stop",
+            "repairs": [],
+            "status": "ok",
+            "text_chars": 363
+          }
+        ],
+        "seconds": 56.72,
+        "served_model": "qwen38-27b/248046",
+        "still_refused": 0,
+        "valid_first": true,
+        "valid_first_raw": true
+      }
+    ],
+    "unsupported": 0,
+    "variant_n": 31,
+    "wrong_entity": false
+  },
+  {
+    "abstained": true,
+    "abstentions": [
+      "Abstention(sub_question_id='q2', source='attack', statement=\"The attack source doesn't establish this \u2014 the executed query ran cleanly and returned no matching records for: \", query='MATCH (n:Technique) WHERE coalesce(n.attack_id, n.id) IN $ids RETURN coalesce(n.attack_id, n.id) AS id, n.name AS name LIMIT 1000')"
+    ],
+    "bank": "federated",
+    "cache_hit": false,
+    "canonical_question": "",
+    "case_id": "F-CTM-01",
+    "catalogue_dump": false,
+    "claims": [
+      "CAPEC-150 (Collect Data from Common Resource Locations) has 6 ATT&CK mappings: T1602, T1003, T1119, T1213, T1530, T1555.",
+      "CAPEC-150 (Collect Data from Common Resource Locations) has Abstraction: Standard; Status: Draft; Typical_Severity: Medium.",
+      "CAPEC-150 (Collect Data from Common Resource Locations): An adversary exploits well-known locations for resources for the purposes of undermining the security of the target. In many, if not most systems, files and resources are organized in a default tree structure. This can be useful for adversaries because they often know where to look for resources or files that are necessary for attacks. Even when the precise location of a targeted resource may not be known, naming conventions may indicate a small area of the target machine's file tree where the resources are typically located. For example, configuration files are normally stored in the /etc director on Unix systems. Adversaries can take advantage of this to commit other types of attacks.",
+      "Found 1 CAPEC record(s) for CAPEC-150; ATT&CK mappings: T1003, T1119, T1213, T1530, T1555.",
+      "Found 6 record(s) in MITRE ATT&CK including T1003, T1602, T1119 and more.",
+      "T1003 (OS Credential Dumping) has 9 mitigations: M1041, M1015, M1026, M1040, M1027, M1025, M1043, M1028, M1017.",
+      "T1119 (Automated Collection) has 2 mitigations: M1029, M1041.",
+      "T1213 (Data from Information Repositories) has 7 mitigations: M1041, M1047, M1054, M1032, M1018, M1060, M1017.",
+      "T1530 (Data from Cloud Storage) has 6 mitigations: M1041, M1047, M1032, M1022, M1018, M1037.",
+      "T1555 (Credentials from Password Stores) has 3 mitigations: M1051, M1026, M1027.",
+      "T1602 (Data from Configuration Repository) has 6 mitigations: M1041, M1051, M1054, M1030, M1037, M1031.",
+      "The identifier T1003 is corroborated across attack and capec (2 record(s) share it).",
+      "The identifier T1119 is corroborated across attack and capec (2 record(s) share it).",
+      "The identifier T1213 is corroborated across attack and capec (2 record(s) share it).",
+      "The identifier T1530 is corroborated across attack and capec (2 record(s) share it).",
+      "The identifier T1555 is corroborated across attack and capec (2 record(s) share it).",
+      "The identifier T1602 is corroborated across attack and capec (2 record(s) share it)."
+    ],
+    "claims_exact": false,
+    "entity_ids": [
+      "CAPEC-150",
+      "M1015",
+      "M1017",
+      "M1018",
+      "M1022",
+      "M1025",
+      "M1026",
+      "M1027",
+      "M1028",
+      "M1029",
+      "M1030",
+      "M1031",
+      "M1032",
+      "M1037",
+      "M1040",
+      "M1041",
+      "M1043",
+      "M1047",
+      "M1051",
+      "M1054",
+      "M1060",
+      "T1003",
+      "T1119",
+      "T1213",
+      "T1530",
+      "T1555",
+      "T1602"
+    ],
+    "entity_ids_by_source": {
+      "attack": [
+        "M1015",
+        "M1017",
+        "M1018",
+        "M1022",
+        "M1025",
+        "M1026",
+        "M1027",
+        "M1028",
+        "M1029",
+        "M1030",
+        "M1031",
+        "M1032",
+        "M1037",
+        "M1040",
+        "M1041",
+        "M1043",
+        "M1047",
+        "M1051",
+        "M1054",
+        "M1060",
+        "T1003",
+        "T1119",
+        "T1213",
+        "T1530",
+        "T1555",
+        "T1602"
+      ],
+      "capec": [
+        "CAPEC-150",
+        "T1003",
+        "T1119",
+        "T1213",
+        "T1530",
+        "T1555",
+        "T1602"
+      ]
+    },
+    "form_exact": null,
+    "gold_n": 27,
+    "gold_question": "Which ATT&CK techniques does CAPEC-150 (Collect Data from Common Resource Locations) map to, and what mitigations apply to those techniques?",
+    "model_consulted": false,
+    "note": "kept identifier, swapped 'map to'/'mitigations' for plainer verbs",
+    "planner": {
+      "drafter": "TypedDrafter",
+      "plan": [
+        {
+          "entities": [
+            "AttackPattern",
+            "MAPS_TO",
+            "TaxonomyEntry"
+          ],
+          "source": "capec",
+          "step": {
+            "anchor_ids": [
+              "CAPEC-150"
+            ],
+            "anchor_label": "AttackPattern",
+            "depth": 1,
+            "filter": {
+              "property": "taxonomy_name",
+              "value": "ATTACK"
+            },
+            "hops": [
+              {
+                "direction": "out",
+                "relation": "MAPS_TO",
+                "target_label": "TaxonomyEntry"
+              }
+            ],
+            "kind": "expand"
+          }
+        },
+        {
+          "entities": [
+            "Technique",
+            "MITIGATES",
+            "Mitigation"
+          ],
+          "source": "attack",
+          "step": {
+            "anchor_ids": [],
+            "anchor_label": "Technique",
+            "depth": 1,
+            "hops": [
+              {
+                "direction": "in",
+                "relation": "MITIGATES",
+                "target_label": "Mitigation"
+              }
+            ],
+            "kind": "expand"
+          }
+        },
+        {
+          "entities": [
+            "SubTechnique",
+            "MITIGATES",
+            "Mitigation"
+          ],
+          "source": "attack",
+          "step": {
+            "anchor_ids": [],
+            "anchor_label": "SubTechnique",
+            "depth": 1,
+            "hops": [
+              {
+                "direction": "in",
+                "relation": "MITIGATES",
+                "target_label": "Mitigation"
+              }
+            ],
+            "kind": "expand"
+          }
+        }
+      ],
+      "unsupported": 0
+    },
+    "queries": [
+      "MATCH (n) WHERE coalesce(n.attack_id, n.id) IN $ids OPTIONAL MATCH (n)<-[:MITIGATES]-(t0:Mitigation) WITH n, collect(DISTINCT {m: t0, r: 'MITIGATES'}) AS k0 WITH n, [x IN k0 WHERE x.m IS NOT NULL] AS hops UNWIND (CASE WHEN size(hops) = 0 THEN [{m: null, r: null}] ELSE hops END) AS hop RETURN coalesce(n.attack_id, n.id) AS anchor_id, n.name AS anchor_name, labels(n)[0] AS anchor_label, coalesce(hop.m.attack_id, hop.m.id) AS neighbour_id, hop.m.name AS neighbour_name, labels(hop.m)[0] AS neighbour_label, hop.r AS rel_type LIMIT 1000",
+      "MATCH (n:Technique) WHERE coalesce(n.attack_id, n.id) IN $ids RETURN coalesce(n.attack_id, n.id) AS id, n.name AS name LIMIT 1000",
+      "g.V().has(\"id\", within(ids)).project(\"ap\",\"tax\").by(elementMap()).by(__.out(\"MAPS_TO\").hasLabel(\"TaxonomyEntry\").has(\"taxonomy_name\",\"ATTACK\").elementMap().fold()).limit(1000)"
+    ],
+    "queries_exact": false,
+    "question": "For CAPEC-150, which ATT&CK techniques does it correspond to, and how would you defend against each of those techniques?",
+    "record_count": 7,
+    "records_exact": true,
+    "records_jaccard": 1.0,
+    "records_recall": 1.0,
+    "run_index": 0,
+    "rung": "off",
+    "served_model": "",
+    "slot_anchor": null,
+    "slot_anchor_label": null,
+    "slot_relation": null,
+    "slot_target_label": null,
+    "slots_scored": 0,
+    "sources": [
+      "attack",
+      "capec"
+    ],
+    "tier": "T1",
+    "timing": {
+      "latency_s": 68.392
+    },
+    "typed": [
+      {
+        "catalog_calls": [
+          {
+            "args": {
+              "graph": "capec",
+              "label": "AttackPattern",
+              "text": "CAPEC-150"
+            },
+            "name": "resolve_entity",
+            "ok": true
+          },
+          {
+            "args": {
+              "graph": "capec",
+              "text": "ATTACK taxonomy"
+            },
+            "name": "find_schema",
+            "ok": true
+          },
+          {
+            "args": {
+              "graph": "capec",
+              "target": "TaxonomyEntry"
+            },
+            "name": "describe",
+            "ok": true
+          },
+          {
+            "args": {
+              "graph": "capec",
+              "target": "CAPEC-150"
+            },
+            "name": "describe",
+            "ok": false
+          }
+        ],
+        "coercions": [],
+        "completion_tokens": 4331,
+        "emitted": true,
+        "error": null,
+        "fallback": null,
+        "final_steps": 3,
+        "first_fixes": 0,
+        "first_refused": 0,
+        "first_steps": 3,
+        "fixed_by_coercion": false,
+        "fixed_by_repair": false,
+        "mode": "full",
+        "model_calls": 4,
+        "n_catalog_calls": 4,
+        "parse_error": null,
+        "plan_problems": [],
+        "prompt_tokens": 25959,
+        "refusals": [],
+        "repair_used": false,
+        "replies": [
+          {
+            "calls": [
+              "resolve_entity",
+              "find_schema"
+            ],
+            "finish_reason": "tool_calls",
+            "repairs": [],
+            "status": "ok",
+            "text_chars": 0
+          },
+          {
+            "calls": [
+              "describe"
+            ],
+            "finish_reason": "tool_calls",
+            "repairs": [],
+            "status": "ok",
+            "text_chars": 0
+          },
+          {
+            "calls": [
+              "describe"
+            ],
+            "finish_reason": "tool_calls",
+            "repairs": [],
+            "status": "ok",
+            "text_chars": 0
+          },
+          {
+            "calls": [],
+            "finish_reason": "stop",
+            "repairs": [],
+            "status": "ok",
+            "text_chars": 1284
+          }
+        ],
+        "seconds": 67.792,
+        "served_model": "qwen38-27b/248046",
+        "still_refused": 0,
+        "valid_first": true,
+        "valid_first_raw": true
+      }
+    ],
+    "unsupported": 0,
+    "variant_n": 27,
+    "wrong_entity": false
+  },
+  {
+    "abstained": false,
+    "abstentions": [],
+    "bank": "federated",
+    "cache_hit": false,
+    "canonical_question": "",
+    "case_id": "F-REV-05",
+    "catalogue_dump": true,
+    "claims": [
+      "261 result(s) for this question; the first 200 are listed: capec:taxonomy:ATTACK:1001.002, capec:taxonomy:ATTACK:1003, capec:taxonomy:ATTACK:1005, capec:taxonomy:ATTACK:1007, capec:taxonomy:ATTACK:1012, capec:taxonomy:ATTACK:1014, capec:taxonomy:ATTACK:1016, capec:taxonomy:ATTACK:1018, capec:taxonomy:ATTACK:1021, capec:taxonomy:ATTACK:1021.002, capec:taxonomy:ATTACK:1027, capec:taxonomy:ATTACK:1027.001, capec:taxonomy:ATTACK:1027.003, capec:taxonomy:ATTACK:1027.004, capec:taxonomy:ATTACK:1027.006, capec:taxonomy:ATTACK:1027.009, capec:taxonomy:ATTACK:1033, capec:taxonomy:ATTACK:1036, capec:taxonomy:ATTACK:1036.001, capec:taxonomy:ATTACK:1036.003, capec:taxonomy:ATTACK:1036.004, capec:taxonomy:ATTACK:1036.005, capec:taxonomy:ATTACK:1036.006, capec:taxonomy:ATTACK:1036.007, capec:taxonomy:ATTACK:1037, capec:taxonomy:ATTACK:1039, capec:taxonomy:ATTACK:1040, capec:taxonomy:ATTACK:1046, capec:taxonomy:ATTACK:1049, capec:taxonomy:ATTACK:1052, capec:taxonomy:ATTACK:1055, capec:taxonomy:ATTACK:1055.003, capec:taxonomy:ATTACK:1056, capec:taxonomy:ATTACK:1056.001, capec:taxonomy:ATTACK:1056.004, capec:taxonomy:ATTACK:1057, capec:taxonomy:ATTACK:1069, capec:taxonomy:ATTACK:1070, capec:taxonomy:ATTACK:1072, capec:taxonomy:ATTACK:1078, capec:taxonomy:ATTACK:1078.001, capec:taxonomy:ATTACK:1080, capec:taxonomy:ATTACK:1082, capec:taxonomy:ATTACK:1083, capec:taxonomy:ATTACK:1087, capec:taxonomy:ATTACK:1090.001, capec:taxonomy:ATTACK:1090.004, capec:taxonomy:ATTACK:1091, capec:taxonomy:ATTACK:1092, capec:taxonomy:ATTACK:1110, capec:taxonomy:ATTACK:1110.001, capec:taxonomy:ATTACK:1110.002, capec:taxonomy:ATTACK:1110.003, capec:taxonomy:ATTACK:1110.004, capec:taxonomy:ATTACK:1111, capec:taxonomy:ATTACK:1112, capec:taxonomy:ATTACK:1113, capec:taxonomy:ATTACK:1114.002, capec:taxonomy:ATTACK:1115, capec:taxonomy:ATTACK:1119, capec:taxonomy:ATTACK:1120, capec:taxonomy:ATTACK:1123, capec:taxonomy:ATTACK:1124, capec:taxonomy:ATTACK:1125, capec:taxonomy:ATTACK:1127, capec:taxonomy:ATTACK:1133, capec:taxonomy:ATTACK:1134, capec:taxonomy:ATTACK:1134.001, capec:taxonomy:ATTACK:1134.002, capec:taxonomy:ATTACK:1134.003, capec:taxonomy:ATTACK:1135, capec:taxonomy:ATTACK:1176, capec:taxonomy:ATTACK:1185, capec:taxonomy:ATTACK:1195, capec:taxonomy:ATTACK:1195.001, capec:taxonomy:ATTACK:1195.002, capec:taxonomy:ATTACK:1195.003, capec:taxonomy:ATTACK:1200, capec:taxonomy:ATTACK:1211, capec:taxonomy:ATTACK:1213, capec:taxonomy:ATTACK:1217, capec:taxonomy:ATTACK:1218.001, capec:taxonomy:ATTACK:1221, capec:taxonomy:ATTACK:1491, capec:taxonomy:ATTACK:1495, capec:taxonomy:ATTACK:1498.001, capec:taxonomy:ATTACK:1498.002, capec:taxonomy:ATTACK:1499, capec:taxonomy:ATTACK:1499.001, capec:taxonomy:ATTACK:1499.002, capec:taxonomy:ATTACK:1499.003, capec:taxonomy:ATTACK:1499.004, capec:taxonomy:ATTACK:1505.003, capec:taxonomy:ATTACK:1505.004, capec:taxonomy:ATTACK:1505.005, capec:taxonomy:ATTACK:1513, capec:taxonomy:ATTACK:1518.001, capec:taxonomy:ATTACK:1528, capec:taxonomy:ATTACK:1530, capec:taxonomy:ATTACK:1531, capec:taxonomy:ATTACK:1534, capec:taxonomy:ATTACK:1539, capec:taxonomy:ATTACK:1542.001, capec:taxonomy:ATTACK:1542.002, capec:taxonomy:ATTACK:1542.003, capec:taxonomy:ATTACK:1543, capec:taxonomy:ATTACK:1543.001, capec:taxonomy:ATTACK:1543.003, capec:taxonomy:ATTACK:1543.004, capec:taxonomy:ATTACK:1546.001, capec:taxonomy:ATTACK:1546.004, capec:taxonomy:ATTACK:1546.008, capec:taxonomy:ATTACK:1546.016, capec:taxonomy:ATTACK:1547, capec:taxonomy:ATTACK:1547.001, capec:taxonomy:ATTACK:1547.004, capec:taxonomy:ATTACK:1547.006, capec:taxonomy:ATTACK:1547.009, capec:taxonomy:ATTACK:1547.014, capec:taxonomy:ATTACK:1548, capec:taxonomy:ATTACK:1548.004, capec:taxonomy:ATTACK:1550.001, capec:taxonomy:ATTACK:1550.002, capec:taxonomy:ATTACK:1550.003, capec:taxonomy:ATTACK:1550.004, capec:taxonomy:ATTACK:1552.001, capec:taxonomy:ATTACK:1552.002, capec:taxonomy:ATTACK:1552.003, capec:taxonomy:ATTACK:1552.004, capec:taxonomy:ATTACK:1552.006, capec:taxonomy:ATTACK:1553.002, capec:taxonomy:ATTACK:1553.004, capec:taxonomy:ATTACK:1554, capec:taxonomy:ATTACK:1555, capec:taxonomy:ATTACK:1555.001, capec:taxonomy:ATTACK:1556, capec:taxonomy:ATTACK:1556.006, capec:taxonomy:ATTACK:1557, capec:taxonomy:ATTACK:1557.002, capec:taxonomy:ATTACK:1557.003, capec:taxonomy:ATTACK:1558, capec:taxonomy:ATTACK:1558.003, capec:taxonomy:ATTACK:1562.001, capec:taxonomy:ATTACK:1562.002, capec:taxonomy:ATTACK:1562.003, capec:taxonomy:ATTACK:1562.004, capec:taxonomy:ATTACK:1562.006, capec:taxonomy:ATTACK:1562.007, capec:taxonomy:ATTACK:1562.008, capec:taxonomy:ATTACK:1562.009, capec:taxonomy:ATTACK:1563, capec:taxonomy:ATTACK:1564.009, capec:taxonomy:ATTACK:1565.002, capec:taxonomy:ATTACK:1566, capec:taxonomy:ATTACK:1566.001, capec:taxonomy:ATTACK:1566.002, capec:taxonomy:ATTACK:1566.003, capec:taxonomy:ATTACK:1574.001, capec:taxonomy:ATTACK:1574.002, capec:taxonomy:ATTACK:1574.004, capec:taxonomy:ATTACK:1574.005, capec:taxonomy:ATTACK:1574.006, capec:taxonomy:ATTACK:1574.007, capec:taxonomy:ATTACK:1574.008, capec:taxonomy:ATTACK:1574.009, capec:taxonomy:ATTACK:1574.010, capec:taxonomy:ATTACK:1574.011, capec:taxonomy:ATTACK:1574.013, capec:taxonomy:ATTACK:1584.002, capec:taxonomy:ATTACK:1587.001, capec:taxonomy:ATTACK:1589, capec:taxonomy:ATTACK:1590, capec:taxonomy:ATTACK:1592, capec:taxonomy:ATTACK:1592.002, capec:taxonomy:ATTACK:1595, capec:taxonomy:ATTACK:1598, capec:taxonomy:ATTACK:1598.001, capec:taxonomy:ATTACK:1598.002, capec:taxonomy:ATTACK:1598.003, capec:taxonomy:ATTACK:1599, capec:taxonomy:ATTACK:1600, capec:taxonomy:ATTACK:1602, capec:taxonomy:ATTACK:1606, capec:taxonomy:ATTACK:1606.001, capec:taxonomy:ATTACK:1611, capec:taxonomy:ATTACK:1614, capec:taxonomy:ATTACK:1615, capec:taxonomy:ATTACK:1620, capec:taxonomy:ATTACK:1647, capec:taxonomy:OWASP_Attacks:Binary_planting, capec:taxonomy:OWASP_Attacks:Blind_SQL_Injection, capec:taxonomy:OWASP_Attacks:Blind_XPath_Injection, capec:taxonomy:OWASP_Attacks:Brute_force_attack, capec:taxonomy:OWASP_Attacks:Buffer_Overflow_via_Environment_Variables, capec:taxonomy:OWASP_Attacks:Buffer_overflow_attack, capec:taxonomy:OWASP_Attacks:Cache_Poisoning, capec:taxonomy:OWASP_Attacks:Clickjacking, capec:taxonomy:OWASP_Attacks:Code_Injection, capec:taxonomy:OWASP_Attacks:Command_Injection, capec:taxonomy:OWASP_Attacks:Content_Spoofing.",
+      "Found 1 record in MITRE ATT&CK: External Remote Services (T1133).",
+      "Found 261 CAPEC record(s): capec:taxonomy:ATTACK:1001.002, capec:taxonomy:ATTACK:1003, capec:taxonomy:ATTACK:1005, capec:taxonomy:ATTACK:1007, capec:taxonomy:ATTACK:1012 \u2026 (+256 more).",
+      "T1133 (External Remote Services) has revoked: False; stix_type: attack-pattern; x_mitre_deprecated: False; x_mitre_is_subtechnique: False; x_mitre_version: 2.5; x_mitre_domains: enterprise-attack; x_mitre_platforms: Containers Linux macOS Windows.",
+      "T1133 (External Remote Services): Adversaries may leverage external-facing remote services to initially access and/or persist within a network. Remote services such as VPNs, Citrix, and other access mechanisms allow users to connect to internal enterprise network resources from external locations. There are often remote service gateways that manage connections and credential authentication for these services."
+    ],
+    "claims_exact": false,
+    "entity_ids": [
+      "T1133",
+      "capec:taxonomy:ATTACK:1001.002",
+      "capec:taxonomy:ATTACK:1003",
+      "capec:taxonomy:ATTACK:1005",
+      "capec:taxonomy:ATTACK:1007",
+      "capec:taxonomy:ATTACK:1012",
+      "capec:taxonomy:ATTACK:1014",
+      "capec:taxonomy:ATTACK:1016",
+      "capec:taxonomy:ATTACK:1018",
+      "capec:taxonomy:ATTACK:1021",
+      "capec:taxonomy:ATTACK:1021.002",
+      "capec:taxonomy:ATTACK:1027",
+      "capec:taxonomy:ATTACK:1027.001",
+      "capec:taxonomy:ATTACK:1027.003",
+      "capec:taxonomy:ATTACK:1027.004",
+      "capec:taxonomy:ATTACK:1027.006",
+      "capec:taxonomy:ATTACK:1027.009",
+      "capec:taxonomy:ATTACK:1033",
+      "capec:taxonomy:ATTACK:1036",
+      "capec:taxonomy:ATTACK:1036.001",
+      "capec:taxonomy:ATTACK:1036.003",
+      "capec:taxonomy:ATTACK:1036.004",
+      "capec:taxonomy:ATTACK:1036.005",
+      "capec:taxonomy:ATTACK:1036.006",
+      "capec:taxonomy:ATTACK:1036.007",
+      "capec:taxonomy:ATTACK:1037",
+      "capec:taxonomy:ATTACK:1039",
+      "capec:taxonomy:ATTACK:1040",
+      "capec:taxonomy:ATTACK:1046",
+      "capec:taxonomy:ATTACK:1049",
+      "capec:taxonomy:ATTACK:1052",
+      "capec:taxonomy:ATTACK:1055",
+      "capec:taxonomy:ATTACK:1055.003",
+      "capec:taxonomy:ATTACK:1056",
+      "capec:taxonomy:ATTACK:1056.001",
+      "capec:taxonomy:ATTACK:1056.004",
+      "capec:taxonomy:ATTACK:1057",
+      "capec:taxonomy:ATTACK:1069",
+      "capec:taxonomy:ATTACK:1070",
+      "capec:taxonomy:ATTACK:1072",
+      "capec:taxonomy:ATTACK:1078",
+      "capec:taxonomy:ATTACK:1078.001",
+      "capec:taxonomy:ATTACK:1080",
+      "capec:taxonomy:ATTACK:1082",
+      "capec:taxonomy:ATTACK:1083",
+      "capec:taxonomy:ATTACK:1087",
+      "capec:taxonomy:ATTACK:1090.001",
+      "capec:taxonomy:ATTACK:1090.004",
+      "capec:taxonomy:ATTACK:1091",
+      "capec:taxonomy:ATTACK:1092",
+      "capec:taxonomy:ATTACK:1110",
+      "capec:taxonomy:ATTACK:1110.001",
+      "capec:taxonomy:ATTACK:1110.002",
+      "capec:taxonomy:ATTACK:1110.003",
+      "capec:taxonomy:ATTACK:1110.004",
+      "capec:taxonomy:ATTACK:1111",
+      "capec:taxonomy:ATTACK:1112",
+      "capec:taxonomy:ATTACK:1113",
+      "capec:taxonomy:ATTACK:1114.002",
+      "capec:taxonomy:ATTACK:1115",
+      "capec:taxonomy:ATTACK:1119",
+      "capec:taxonomy:ATTACK:1120",
+      "capec:taxonomy:ATTACK:1123",
+      "capec:taxonomy:ATTACK:1124",
+      "capec:taxonomy:ATTACK:1125",
+      "capec:taxonomy:ATTACK:1127",
+      "capec:taxonomy:ATTACK:1133",
+      "capec:taxonomy:ATTACK:1134",
+      "capec:taxonomy:ATTACK:1134.001",
+      "capec:taxonomy:ATTACK:1134.002",
+      "capec:taxonomy:ATTACK:1134.003",
+      "capec:taxonomy:ATTACK:1135",
+      "capec:taxonomy:ATTACK:1176",
+      "capec:taxonomy:ATTACK:1185",
+      "capec:taxonomy:ATTACK:1195",
+      "capec:taxonomy:ATTACK:1195.001",
+      "capec:taxonomy:ATTACK:1195.002",
+      "capec:taxonomy:ATTACK:1195.003",
+      "capec:taxonomy:ATTACK:1200",
+      "capec:taxonomy:ATTACK:1211",
+      "capec:taxonomy:ATTACK:1213",
+      "capec:taxonomy:ATTACK:1217",
+      "capec:taxonomy:ATTACK:1218.001",
+      "capec:taxonomy:ATTACK:1221",
+      "capec:taxonomy:ATTACK:1491",
+      "capec:taxonomy:ATTACK:1495",
+      "capec:taxonomy:ATTACK:1498.001",
+      "capec:taxonomy:ATTACK:1498.002",
+      "capec:taxonomy:ATTACK:1499",
+      "capec:taxonomy:ATTACK:1499.001",
+      "capec:taxonomy:ATTACK:1499.002",
+      "capec:taxonomy:ATTACK:1499.003",
+      "capec:taxonomy:ATTACK:1499.004",
+      "capec:taxonomy:ATTACK:1505.003",
+      "capec:taxonomy:ATTACK:1505.004",
+      "capec:taxonomy:ATTACK:1505.005",
+      "capec:taxonomy:ATTACK:1513",
+      "capec:taxonomy:ATTACK:1518.001",
+      "capec:taxonomy:ATTACK:1528",
+      "capec:taxonomy:ATTACK:1530",
+      "capec:taxonomy:ATTACK:1531",
+      "capec:taxonomy:ATTACK:1534",
+      "capec:taxonomy:ATTACK:1539",
+      "capec:taxonomy:ATTACK:1542.001",
+      "capec:taxonomy:ATTACK:1542.002",
+      "capec:taxonomy:ATTACK:1542.003",
+      "capec:taxonomy:ATTACK:1543",
+      "capec:taxonomy:ATTACK:1543.001",
+      "capec:taxonomy:ATTACK:1543.003",
+      "capec:taxonomy:ATTACK:1543.004",
+      "capec:taxonomy:ATTACK:1546.001",
+      "capec:taxonomy:ATTACK:1546.004",
+      "capec:taxonomy:ATTACK:1546.008",
+      "capec:taxonomy:ATTACK:1546.016",
+      "capec:taxonomy:ATTACK:1547",
+      "capec:taxonomy:ATTACK:1547.001",
+      "capec:taxonomy:ATTACK:1547.004",
+      "capec:taxonomy:ATTACK:1547.006",
+      "capec:taxonomy:ATTACK:1547.009",
+      "capec:taxonomy:ATTACK:1547.014",
+      "capec:taxonomy:ATTACK:1548",
+      "capec:taxonomy:ATTACK:1548.004",
+      "capec:taxonomy:ATTACK:1550.001",
+      "capec:taxonomy:ATTACK:1550.002",
+      "capec:taxonomy:ATTACK:1550.003",
+      "capec:taxonomy:ATTACK:1550.004",
+      "capec:taxonomy:ATTACK:1552.001",
+      "capec:taxonomy:ATTACK:1552.002",
+      "capec:taxonomy:ATTACK:1552.003",
+      "capec:taxonomy:ATTACK:1552.004",
+      "capec:taxonomy:ATTACK:1552.006",
+      "capec:taxonomy:ATTACK:1553.002",
+      "capec:taxonomy:ATTACK:1553.004",
+      "capec:taxonomy:ATTACK:1554",
+      "capec:taxonomy:ATTACK:1555",
+      "capec:taxonomy:ATTACK:1555.001",
+      "capec:taxonomy:ATTACK:1556",
+      "capec:taxonomy:ATTACK:1556.006",
+      "capec:taxonomy:ATTACK:1557",
+      "capec:taxonomy:ATTACK:1557.002",
+      "capec:taxonomy:ATTACK:1557.003",
+      "capec:taxonomy:ATTACK:1558",
+      "capec:taxonomy:ATTACK:1558.003",
+      "capec:taxonomy:ATTACK:1562.001",
+      "capec:taxonomy:ATTACK:1562.002",
+      "capec:taxonomy:ATTACK:1562.003",
+      "capec:taxonomy:ATTACK:1562.004",
+      "capec:taxonomy:ATTACK:1562.006",
+      "capec:taxonomy:ATTACK:1562.007",
+      "capec:taxonomy:ATTACK:1562.008",
+      "capec:taxonomy:ATTACK:1562.009",
+      "capec:taxonomy:ATTACK:1563",
+      "capec:taxonomy:ATTACK:1564.009",
+      "capec:taxonomy:ATTACK:1565.002",
+      "capec:taxonomy:ATTACK:1566",
+      "capec:taxonomy:ATTACK:1566.001",
+      "capec:taxonomy:ATTACK:1566.002",
+      "capec:taxonomy:ATTACK:1566.003",
+      "capec:taxonomy:ATTACK:1574.001",
+      "capec:taxonomy:ATTACK:1574.002",
+      "capec:taxonomy:ATTACK:1574.004",
+      "capec:taxonomy:ATTACK:1574.005",
+      "capec:taxonomy:ATTACK:1574.006",
+      "capec:taxonomy:ATTACK:1574.007",
+      "capec:taxonomy:ATTACK:1574.008",
+      "capec:taxonomy:ATTACK:1574.009",
+      "capec:taxonomy:ATTACK:1574.010",
+      "capec:taxonomy:ATTACK:1574.011",
+      "capec:taxonomy:ATTACK:1574.013",
+      "capec:taxonomy:ATTACK:1584.002",
+      "capec:taxonomy:ATTACK:1587.001",
+      "capec:taxonomy:ATTACK:1589",
+      "capec:taxonomy:ATTACK:1590",
+      "capec:taxonomy:ATTACK:1592",
+      "capec:taxonomy:ATTACK:1592.002",
+      "capec:taxonomy:ATTACK:1595",
+      "capec:taxonomy:ATTACK:1598",
+      "capec:taxonomy:ATTACK:1598.001",
+      "capec:taxonomy:ATTACK:1598.002",
+      "capec:taxonomy:ATTACK:1598.003",
+      "capec:taxonomy:ATTACK:1599",
+      "capec:taxonomy:ATTACK:1600",
+      "capec:taxonomy:ATTACK:1602",
+      "capec:taxonomy:ATTACK:1606",
+      "capec:taxonomy:ATTACK:1606.001",
+      "capec:taxonomy:ATTACK:1611",
+      "capec:taxonomy:ATTACK:1614",
+      "capec:taxonomy:ATTACK:1615",
+      "capec:taxonomy:ATTACK:1620",
+      "capec:taxonomy:ATTACK:1647",
+      "capec:taxonomy:OWASP_Attacks:Binary_planting",
+      "capec:taxonomy:OWASP_Attacks:Blind_SQL_Injection",
+      "capec:taxonomy:OWASP_Attacks:Blind_XPath_Injection",
+      "capec:taxonomy:OWASP_Attacks:Brute_force_attack",
+      "capec:taxonomy:OWASP_Attacks:Buffer_Overflow_via_Environment_Variables",
+      "capec:taxonomy:OWASP_Attacks:Buffer_overflow_attack",
+      "capec:taxonomy:OWASP_Attacks:Cache_Poisoning",
+      "capec:taxonomy:OWASP_Attacks:Clickjacking",
+      "capec:taxonomy:OWASP_Attacks:Code_Injection",
+      "capec:taxonomy:OWASP_Attacks:Command_Injection",
+      "capec:taxonomy:OWASP_Attacks:Content_Spoofing",
+      "capec:taxonomy:OWASP_Attacks:Credential_stuffing",
+      "capec:taxonomy:OWASP_Attacks:Cross_Frame_Scripting",
+      "capec:taxonomy:OWASP_Attacks:Cross_Site_Request_Forgery_CSRF_",
+      "capec:taxonomy:OWASP_Attacks:Cross_Site_Scripting_XSS_",
+      "capec:taxonomy:OWASP_Attacks:Cross_Site_Tracing",
+      "capec:taxonomy:OWASP_Attacks:Cryptanalysis",
+      "capec:taxonomy:OWASP_Attacks:Embedding_Null_Code",
+      "capec:taxonomy:OWASP_Attacks:Forced_browsing",
+      "capec:taxonomy:OWASP_Attacks:Format_string_attack",
+      "capec:taxonomy:OWASP_Attacks:LDAP_Injection",
+      "capec:taxonomy:OWASP_Attacks:Log_Injection",
+      "capec:taxonomy:OWASP_Attacks:Man-in-the-browser_attack",
+      "capec:taxonomy:OWASP_Attacks:Man-in-the-middle_attack",
+      "capec:taxonomy:OWASP_Attacks:Path_Traversal",
+      "capec:taxonomy:OWASP_Attacks:Reflected_DOM_Injection",
+      "capec:taxonomy:OWASP_Attacks:Regular_expression_Denial_of_Service_-_ReDoS",
+      "capec:taxonomy:OWASP_Attacks:Resource_Injection",
+      "capec:taxonomy:OWASP_Attacks:SQL_Injection",
+      "capec:taxonomy:OWASP_Attacks:Server-Side_Includes_SSI_Injection",
+      "capec:taxonomy:OWASP_Attacks:Session_Prediction",
+      "capec:taxonomy:OWASP_Attacks:Session_fixation",
+      "capec:taxonomy:OWASP_Attacks:Session_hijacking_attack",
+      "capec:taxonomy:OWASP_Attacks:Setting_Manipulation",
+      "capec:taxonomy:OWASP_Attacks:Traffic_flood",
+      "capec:taxonomy:OWASP_Attacks:Unicode_Encoding",
+      "capec:taxonomy:OWASP_Attacks:Web_Parameter_Tampering",
+      "capec:taxonomy:OWASP_Attacks:Windows_alternate_data_stream",
+      "capec:taxonomy:OWASP_Attacks:XPATH_Injection",
+      "capec:taxonomy:WASC:03",
+      "capec:taxonomy:WASC:05",
+      "capec:taxonomy:WASC:06",
+      "capec:taxonomy:WASC:07",
+      "capec:taxonomy:WASC:08",
+      "capec:taxonomy:WASC:09",
+      "capec:taxonomy:WASC:10",
+      "capec:taxonomy:WASC:11",
+      "capec:taxonomy:WASC:12",
+      "capec:taxonomy:WASC:18",
+      "capec:taxonomy:WASC:19",
+      "capec:taxonomy:WASC:23",
+      "capec:taxonomy:WASC:24",
+      "capec:taxonomy:WASC:25",
+      "capec:taxonomy:WASC:26",
+      "capec:taxonomy:WASC:27",
+      "capec:taxonomy:WASC:28",
+      "capec:taxonomy:WASC:29",
+      "capec:taxonomy:WASC:30",
+      "capec:taxonomy:WASC:31",
+      "capec:taxonomy:WASC:32",
+      "capec:taxonomy:WASC:33",
+      "capec:taxonomy:WASC:34",
+      "capec:taxonomy:WASC:35",
+      "capec:taxonomy:WASC:36",
+      "capec:taxonomy:WASC:37",
+      "capec:taxonomy:WASC:38",
+      "capec:taxonomy:WASC:39",
+      "capec:taxonomy:WASC:41",
+      "capec:taxonomy:WASC:43",
+      "capec:taxonomy:WASC:44",
+      "capec:taxonomy:WASC:45",
+      "capec:taxonomy:WASC:46"
+    ],
+    "entity_ids_by_source": {
+      "attack": [
+        "T1133"
+      ],
+      "capec": [
+        "capec:taxonomy:ATTACK:1001.002",
+        "capec:taxonomy:ATTACK:1003",
+        "capec:taxonomy:ATTACK:1005",
+        "capec:taxonomy:ATTACK:1007",
+        "capec:taxonomy:ATTACK:1012",
+        "capec:taxonomy:ATTACK:1014",
+        "capec:taxonomy:ATTACK:1016",
+        "capec:taxonomy:ATTACK:1018",
+        "capec:taxonomy:ATTACK:1021",
+        "capec:taxonomy:ATTACK:1021.002",
+        "capec:taxonomy:ATTACK:1027",
+        "capec:taxonomy:ATTACK:1027.001",
+        "capec:taxonomy:ATTACK:1027.003",
+        "capec:taxonomy:ATTACK:1027.004",
+        "capec:taxonomy:ATTACK:1027.006",
+        "capec:taxonomy:ATTACK:1027.009",
+        "capec:taxonomy:ATTACK:1033",
+        "capec:taxonomy:ATTACK:1036",
+        "capec:taxonomy:ATTACK:1036.001",
+        "capec:taxonomy:ATTACK:1036.003",
+        "capec:taxonomy:ATTACK:1036.004",
+        "capec:taxonomy:ATTACK:1036.005",
+        "capec:taxonomy:ATTACK:1036.006",
+        "capec:taxonomy:ATTACK:1036.007",
+        "capec:taxonomy:ATTACK:1037",
+        "capec:taxonomy:ATTACK:1039",
+        "capec:taxonomy:ATTACK:1040",
+        "capec:taxonomy:ATTACK:1046",
+        "capec:taxonomy:ATTACK:1049",
+        "capec:taxonomy:ATTACK:1052",
+        "capec:taxonomy:ATTACK:1055",
+        "capec:taxonomy:ATTACK:1055.003",
+        "capec:taxonomy:ATTACK:1056",
+        "capec:taxonomy:ATTACK:1056.001",
+        "capec:taxonomy:ATTACK:1056.004",
+        "capec:taxonomy:ATTACK:1057",
+        "capec:taxonomy:ATTACK:1069",
+        "capec:taxonomy:ATTACK:1070",
+        "capec:taxonomy:ATTACK:1072",
+        "capec:taxonomy:ATTACK:1078",
+        "capec:taxonomy:ATTACK:1078.001",
+        "capec:taxonomy:ATTACK:1080",
+        "capec:taxonomy:ATTACK:1082",
+        "capec:taxonomy:ATTACK:1083",
+        "capec:taxonomy:ATTACK:1087",
+        "capec:taxonomy:ATTACK:1090.001",
+        "capec:taxonomy:ATTACK:1090.004",
+        "capec:taxonomy:ATTACK:1091",
+        "capec:taxonomy:ATTACK:1092",
+        "capec:taxonomy:ATTACK:1110",
+        "capec:taxonomy:ATTACK:1110.001",
+        "capec:taxonomy:ATTACK:1110.002",
+        "capec:taxonomy:ATTACK:1110.003",
+        "capec:taxonomy:ATTACK:1110.004",
+        "capec:taxonomy:ATTACK:1111",
+        "capec:taxonomy:ATTACK:1112",
+        "capec:taxonomy:ATTACK:1113",
+        "capec:taxonomy:ATTACK:1114.002",
+        "capec:taxonomy:ATTACK:1115",
+        "capec:taxonomy:ATTACK:1119",
+        "capec:taxonomy:ATTACK:1120",
+        "capec:taxonomy:ATTACK:1123",
+        "capec:taxonomy:ATTACK:1124",
+        "capec:taxonomy:ATTACK:1125",
+        "capec:taxonomy:ATTACK:1127",
+        "capec:taxonomy:ATTACK:1133",
+        "capec:taxonomy:ATTACK:1134",
+        "capec:taxonomy:ATTACK:1134.001",
+        "capec:taxonomy:ATTACK:1134.002",
+        "capec:taxonomy:ATTACK:1134.003",
+        "capec:taxonomy:ATTACK:1135",
+        "capec:taxonomy:ATTACK:1176",
+        "capec:taxonomy:ATTACK:1185",
+        "capec:taxonomy:ATTACK:1195",
+        "capec:taxonomy:ATTACK:1195.001",
+        "capec:taxonomy:ATTACK:1195.002",
+        "capec:taxonomy:ATTACK:1195.003",
+        "capec:taxonomy:ATTACK:1200",
+        "capec:taxonomy:ATTACK:1211",
+        "capec:taxonomy:ATTACK:1213",
+        "capec:taxonomy:ATTACK:1217",
+        "capec:taxonomy:ATTACK:1218.001",
+        "capec:taxonomy:ATTACK:1221",
+        "capec:taxonomy:ATTACK:1491",
+        "capec:taxonomy:ATTACK:1495",
+        "capec:taxonomy:ATTACK:1498.001",
+        "capec:taxonomy:ATTACK:1498.002",
+        "capec:taxonomy:ATTACK:1499",
+        "capec:taxonomy:ATTACK:1499.001",
+        "capec:taxonomy:ATTACK:1499.002",
+        "capec:taxonomy:ATTACK:1499.003",
+        "capec:taxonomy:ATTACK:1499.004",
+        "capec:taxonomy:ATTACK:1505.003",
+        "capec:taxonomy:ATTACK:1505.004",
+        "capec:taxonomy:ATTACK:1505.005",
+        "capec:taxonomy:ATTACK:1513",
+        "capec:taxonomy:ATTACK:1518.001",
+        "capec:taxonomy:ATTACK:1528",
+        "capec:taxonomy:ATTACK:1530",
+        "capec:taxonomy:ATTACK:1531",
+        "capec:taxonomy:ATTACK:1534",
+        "capec:taxonomy:ATTACK:1539",
+        "capec:taxonomy:ATTACK:1542.001",
+        "capec:taxonomy:ATTACK:1542.002",
+        "capec:taxonomy:ATTACK:1542.003",
+        "capec:taxonomy:ATTACK:1543",
+        "capec:taxonomy:ATTACK:1543.001",
+        "capec:taxonomy:ATTACK:1543.003",
+        "capec:taxonomy:ATTACK:1543.004",
+        "capec:taxonomy:ATTACK:1546.001",
+        "capec:taxonomy:ATTACK:1546.004",
+        "capec:taxonomy:ATTACK:1546.008",
+        "capec:taxonomy:ATTACK:1546.016",
+        "capec:taxonomy:ATTACK:1547",
+        "capec:taxonomy:ATTACK:1547.001",
+        "capec:taxonomy:ATTACK:1547.004",
+        "capec:taxonomy:ATTACK:1547.006",
+        "capec:taxonomy:ATTACK:1547.009",
+        "capec:taxonomy:ATTACK:1547.014",
+        "capec:taxonomy:ATTACK:1548",
+        "capec:taxonomy:ATTACK:1548.004",
+        "capec:taxonomy:ATTACK:1550.001",
+        "capec:taxonomy:ATTACK:1550.002",
+        "capec:taxonomy:ATTACK:1550.003",
+        "capec:taxonomy:ATTACK:1550.004",
+        "capec:taxonomy:ATTACK:1552.001",
+        "capec:taxonomy:ATTACK:1552.002",
+        "capec:taxonomy:ATTACK:1552.003",
+        "capec:taxonomy:ATTACK:1552.004",
+        "capec:taxonomy:ATTACK:1552.006",
+        "capec:taxonomy:ATTACK:1553.002",
+        "capec:taxonomy:ATTACK:1553.004",
+        "capec:taxonomy:ATTACK:1554",
+        "capec:taxonomy:ATTACK:1555",
+        "capec:taxonomy:ATTACK:1555.001",
+        "capec:taxonomy:ATTACK:1556",
+        "capec:taxonomy:ATTACK:1556.006",
+        "capec:taxonomy:ATTACK:1557",
+        "capec:taxonomy:ATTACK:1557.002",
+        "capec:taxonomy:ATTACK:1557.003",
+        "capec:taxonomy:ATTACK:1558",
+        "capec:taxonomy:ATTACK:1558.003",
+        "capec:taxonomy:ATTACK:1562.001",
+        "capec:taxonomy:ATTACK:1562.002",
+        "capec:taxonomy:ATTACK:1562.003",
+        "capec:taxonomy:ATTACK:1562.004",
+        "capec:taxonomy:ATTACK:1562.006",
+        "capec:taxonomy:ATTACK:1562.007",
+        "capec:taxonomy:ATTACK:1562.008",
+        "capec:taxonomy:ATTACK:1562.009",
+        "capec:taxonomy:ATTACK:1563",
+        "capec:taxonomy:ATTACK:1564.009",
+        "capec:taxonomy:ATTACK:1565.002",
+        "capec:taxonomy:ATTACK:1566",
+        "capec:taxonomy:ATTACK:1566.001",
+        "capec:taxonomy:ATTACK:1566.002",
+        "capec:taxonomy:ATTACK:1566.003",
+        "capec:taxonomy:ATTACK:1574.001",
+        "capec:taxonomy:ATTACK:1574.002",
+        "capec:taxonomy:ATTACK:1574.004",
+        "capec:taxonomy:ATTACK:1574.005",
+        "capec:taxonomy:ATTACK:1574.006",
+        "capec:taxonomy:ATTACK:1574.007",
+        "capec:taxonomy:ATTACK:1574.008",
+        "capec:taxonomy:ATTACK:1574.009",
+        "capec:taxonomy:ATTACK:1574.010",
+        "capec:taxonomy:ATTACK:1574.011",
+        "capec:taxonomy:ATTACK:1574.013",
+        "capec:taxonomy:ATTACK:1584.002",
+        "capec:taxonomy:ATTACK:1587.001",
+        "capec:taxonomy:ATTACK:1589",
+        "capec:taxonomy:ATTACK:1590",
+        "capec:taxonomy:ATTACK:1592",
+        "capec:taxonomy:ATTACK:1592.002",
+        "capec:taxonomy:ATTACK:1595",
+        "capec:taxonomy:ATTACK:1598",
+        "capec:taxonomy:ATTACK:1598.001",
+        "capec:taxonomy:ATTACK:1598.002",
+        "capec:taxonomy:ATTACK:1598.003",
+        "capec:taxonomy:ATTACK:1599",
+        "capec:taxonomy:ATTACK:1600",
+        "capec:taxonomy:ATTACK:1602",
+        "capec:taxonomy:ATTACK:1606",
+        "capec:taxonomy:ATTACK:1606.001",
+        "capec:taxonomy:ATTACK:1611",
+        "capec:taxonomy:ATTACK:1614",
+        "capec:taxonomy:ATTACK:1615",
+        "capec:taxonomy:ATTACK:1620",
+        "capec:taxonomy:ATTACK:1647",
+        "capec:taxonomy:OWASP_Attacks:Binary_planting",
+        "capec:taxonomy:OWASP_Attacks:Blind_SQL_Injection",
+        "capec:taxonomy:OWASP_Attacks:Blind_XPath_Injection",
+        "capec:taxonomy:OWASP_Attacks:Brute_force_attack",
+        "capec:taxonomy:OWASP_Attacks:Buffer_Overflow_via_Environment_Variables",
+        "capec:taxonomy:OWASP_Attacks:Buffer_overflow_attack",
+        "capec:taxonomy:OWASP_Attacks:Cache_Poisoning",
+        "capec:taxonomy:OWASP_Attacks:Clickjacking",
+        "capec:taxonomy:OWASP_Attacks:Code_Injection",
+        "capec:taxonomy:OWASP_Attacks:Command_Injection",
+        "capec:taxonomy:OWASP_Attacks:Content_Spoofing",
+        "capec:taxonomy:OWASP_Attacks:Credential_stuffing",
+        "capec:taxonomy:OWASP_Attacks:Cross_Frame_Scripting",
+        "capec:taxonomy:OWASP_Attacks:Cross_Site_Request_Forgery_CSRF_",
+        "capec:taxonomy:OWASP_Attacks:Cross_Site_Scripting_XSS_",
+        "capec:taxonomy:OWASP_Attacks:Cross_Site_Tracing",
+        "capec:taxonomy:OWASP_Attacks:Cryptanalysis",
+        "capec:taxonomy:OWASP_Attacks:Embedding_Null_Code",
+        "capec:taxonomy:OWASP_Attacks:Forced_browsing",
+        "capec:taxonomy:OWASP_Attacks:Format_string_attack",
+        "capec:taxonomy:OWASP_Attacks:LDAP_Injection",
+        "capec:taxonomy:OWASP_Attacks:Log_Injection",
+        "capec:taxonomy:OWASP_Attacks:Man-in-the-browser_attack",
+        "capec:taxonomy:OWASP_Attacks:Man-in-the-middle_attack",
+        "capec:taxonomy:OWASP_Attacks:Path_Traversal",
+        "capec:taxonomy:OWASP_Attacks:Reflected_DOM_Injection",
+        "capec:taxonomy:OWASP_Attacks:Regular_expression_Denial_of_Service_-_ReDoS",
+        "capec:taxonomy:OWASP_Attacks:Resource_Injection",
+        "capec:taxonomy:OWASP_Attacks:SQL_Injection",
+        "capec:taxonomy:OWASP_Attacks:Server-Side_Includes_SSI_Injection",
+        "capec:taxonomy:OWASP_Attacks:Session_Prediction",
+        "capec:taxonomy:OWASP_Attacks:Session_fixation",
+        "capec:taxonomy:OWASP_Attacks:Session_hijacking_attack",
+        "capec:taxonomy:OWASP_Attacks:Setting_Manipulation",
+        "capec:taxonomy:OWASP_Attacks:Traffic_flood",
+        "capec:taxonomy:OWASP_Attacks:Unicode_Encoding",
+        "capec:taxonomy:OWASP_Attacks:Web_Parameter_Tampering",
+        "capec:taxonomy:OWASP_Attacks:Windows_alternate_data_stream",
+        "capec:taxonomy:OWASP_Attacks:XPATH_Injection",
+        "capec:taxonomy:WASC:03",
+        "capec:taxonomy:WASC:05",
+        "capec:taxonomy:WASC:06",
+        "capec:taxonomy:WASC:07",
+        "capec:taxonomy:WASC:08",
+        "capec:taxonomy:WASC:09",
+        "capec:taxonomy:WASC:10",
+        "capec:taxonomy:WASC:11",
+        "capec:taxonomy:WASC:12",
+        "capec:taxonomy:WASC:18",
+        "capec:taxonomy:WASC:19",
+        "capec:taxonomy:WASC:23",
+        "capec:taxonomy:WASC:24",
+        "capec:taxonomy:WASC:25",
+        "capec:taxonomy:WASC:26",
+        "capec:taxonomy:WASC:27",
+        "capec:taxonomy:WASC:28",
+        "capec:taxonomy:WASC:29",
+        "capec:taxonomy:WASC:30",
+        "capec:taxonomy:WASC:31",
+        "capec:taxonomy:WASC:32",
+        "capec:taxonomy:WASC:33",
+        "capec:taxonomy:WASC:34",
+        "capec:taxonomy:WASC:35",
+        "capec:taxonomy:WASC:36",
+        "capec:taxonomy:WASC:37",
+        "capec:taxonomy:WASC:38",
+        "capec:taxonomy:WASC:39",
+        "capec:taxonomy:WASC:41",
+        "capec:taxonomy:WASC:43",
+        "capec:taxonomy:WASC:44",
+        "capec:taxonomy:WASC:45",
+        "capec:taxonomy:WASC:46"
+      ]
+    },
+    "form_exact": null,
+    "gold_n": 2,
+    "gold_question": "Which CAPEC patterns map to ATT&CK technique T1133 (External Remote Services), and what is that technique?",
+    "model_consulted": false,
+    "note": "schema words 'map'/'technique' replaced with plain phrasing",
+    "planner": {
+      "drafter": "TypedDrafter",
+      "plan": [
+        {
+          "entities": [
+            "TaxonomyEntry"
+          ],
+          "source": "capec",
+          "step": {
+            "anchor_ids": [],
+            "anchor_label": "TaxonomyEntry",
+            "depth": 1,
+            "hops": [],
+            "kind": "scan"
+          }
+        },
+        {
+          "entities": [
+            "Technique"
+          ],
+          "source": "attack",
+          "step": {
+            "anchor_ids": [
+              "T1133"
+            ],
+            "anchor_label": "Technique",
+            "depth": 1,
+            "hops": [],
+            "kind": "describe"
+          }
+        }
+      ],
+      "unsupported": 0
+    },
+    "queries": [
+      "MATCH (n:Technique) WHERE coalesce(n.attack_id, n.id) IN $ids OPTIONAL MATCH (n)-[r]-(m) WITH n, CASE WHEN m IS NULL THEN NULL ELSE type(r) END AS rel, CASE WHEN m IS NULL THEN NULL ELSE startNode(r) = n END AS outgoing, CASE WHEN m IS NULL THEN NULL ELSE head(labels(m)) END AS neighbour_label, count(m) AS cnt WITH n, collect(CASE WHEN rel IS NULL THEN NULL ELSE {rel: rel, outgoing: outgoing, label: neighbour_label, count: cnt} END) AS raw WITH n, [f IN raw WHERE f IS NOT NULL] AS facets RETURN coalesce(n.attack_id, n.id) AS id, n.name AS name, n.properties_json AS properties_json, facets AS facets LIMIT 1000",
+      "g.V().hasLabel(\"TaxonomyEntry\").elementMap().limit(1000)"
+    ],
+    "queries_exact": false,
+    "question": "Which CAPEC items correspond to T1133, and what does T1133 cover?",
+    "record_count": 262,
+    "records_exact": false,
+    "records_jaccard": 0.0038,
+    "records_recall": 0.5,
+    "run_index": 0,
+    "rung": "off",
+    "served_model": "",
+    "slot_anchor": null,
+    "slot_anchor_label": null,
+    "slot_relation": null,
+    "slot_target_label": null,
+    "slots_scored": 0,
+    "sources": [
+      "attack",
+      "capec"
+    ],
+    "tier": "T1",
+    "timing": {
+      "latency_s": 69.989
+    },
+    "typed": [
+      {
+        "catalog_calls": [
+          {
+            "args": {
+              "graph": "attack",
+              "label": "Technique",
+              "text": "T1133"
+            },
+            "name": "resolve_entity",
+            "ok": true
+          },
+          {
+            "args": {
+              "graph": "capec",
+              "text": "T1133"
+            },
+            "name": "find_schema",
+            "ok": false
+          },
+          {
+            "args": {
+              "graph": "attack",
+              "target": "T1133"
+            },
+            "name": "describe",
+            "ok": false
+          },
+          {
+            "args": {
+              "graph": "attack",
+              "label": "Technique",
+              "text": "External Remote Services"
+            },
+            "name": "resolve_entity",
+            "ok": true
+          }
+        ],
+        "coercions": [],
+        "completion_tokens": 5011,
+        "emitted": true,
+        "error": null,
+        "fallback": null,
+        "final_steps": 2,
+        "first_fixes": 0,
+        "first_refused": 1,
+        "first_steps": 3,
+        "fixed_by_coercion": false,
+        "fixed_by_repair": true,
+        "mode": "full",
+        "model_calls": 5,
+        "n_catalog_calls": 4,
+        "parse_error": null,
+        "plan_problems": [],
+        "prompt_tokens": 31647,
+        "refusals": [
+          {
+            "code": "invalid_request",
+            "detail": "step q2: from_step 'q1' is on the same graph",
+            "final": false,
+            "fix": "on one graph, add this step's hops to the path of step q1 (a path may have several hops) instead of starting a new step from it",
+            "step": "q2"
+          }
+        ],
+        "repair_used": true,
+        "replies": [
+          {
+            "calls": [
+              "resolve_entity",
+              "find_schema"
+            ],
+            "finish_reason": "tool_calls",
+            "repairs": [],
+            "status": "ok",
+            "text_chars": 0
+          },
+          {
+            "calls": [
+              "describe"
+            ],
+            "finish_reason": "tool_calls",
+            "repairs": [],
+            "status": "ok",
+            "text_chars": 0
+          },
+          {
+            "calls": [
+              "resolve_entity"
+            ],
+            "finish_reason": "tool_calls",
+            "repairs": [],
+            "status": "ok",
+            "text_chars": 0
+          },
+          {
+            "calls": [],
+            "finish_reason": "stop",
+            "repairs": [],
+            "status": "ok",
+            "text_chars": 760
+          },
+          {
+            "calls": [],
+            "finish_reason": "stop",
+            "repairs": [],
+            "status": "ok",
+            "text_chars": 653
+          }
+        ],
+        "seconds": 69.322,
+        "served_model": "qwen38-27b/248046",
+        "still_refused": 0,
+        "valid_first": false,
+        "valid_first_raw": false
+      }
+    ],
+    "unsupported": 0,
+    "variant_n": 262,
+    "wrong_entity": false
+  },
+  {
+    "abstained": true,
+    "abstentions": [
+      "Abstention(sub_question_id='q2', source='attack', statement=\"The attack source doesn't establish this \u2014 the executed query ran cleanly and returned no matching records for: \", query='MATCH (n:Technique) WHERE coalesce(n.attack_id, n.id) IN $ids RETURN coalesce(n.attack_id, n.id) AS id, n.name AS name LIMIT 1000')"
+    ],
+    "bank": "capec",
+    "cache_hit": false,
+    "canonical_question": "",
+    "case_id": "C-MAP-02",
+    "catalogue_dump": false,
+    "claims": [
+      "CAPEC-98 (Phishing) has 2 ATT&CK mappings: T1566, T1598.",
+      "CAPEC-98 (Phishing) has Abstraction: Standard; Likelihood_Of_Attack: High; Status: Draft; Typical_Severity: Very High.",
+      "CAPEC-98 (Phishing): Phishing is a social engineering technique where an attacker masquerades as a legitimate entity with which the victim might do business in order to prompt the user to reveal some confidential information (very frequently authentication credentials) that can later be used by an attacker. Phishing is essentially a form of information gathering or \"fishing\" for information.",
+      "Found 1 CAPEC record(s) for CAPEC-98; ATT&CK mappings: T1566, T1598.",
+      "Found 1 item(s) related to T1566 (e.g. TA0001) in MITRE ATT&CK.",
+      "Found 2 record(s) in MITRE ATT&CK including T1566, T1598.",
+      "Found 4 item(s) related to T1566 (e.g. T1566.003, T1566.004, T1566.001) in MITRE ATT&CK.",
+      "Found 4 item(s) related to T1598 (e.g. T1598.001, T1598.002, T1598.004) in MITRE ATT&CK.",
+      "T1566 (Phishing) has 1 related item(s): TA0001.",
+      "T1566 (Phishing) has 4 related item(s): T1566.003, T1566.004, T1566.001, T1566.002.",
+      "T1566 (Phishing) has revoked: False; stix_type: attack-pattern; x_mitre_deprecated: False; x_mitre_is_subtechnique: False; x_mitre_version: 2.7; x_mitre_contributors: Philip Winther Ohad Zaidenberg, @ohad_mz Liora Itkin Liran Ravich, CardinalOps Scott Cook, Capital One; x_mitre_domains: enterprise-attack; x_mitre_platforms: Identity Provider Linux macOS Office Suite SaaS Windows.",
+      "T1566 has no subtechniques in this catalogue.",
+      "T1566 has no techniques in this catalogue.",
+      "T1598 (Phishing for Information) has 1 related item(s): TA0043.",
+      "T1598 (Phishing for Information) has 4 related item(s): T1598.001, T1598.002, T1598.004, T1598.003.",
+      "T1598 (Phishing for Information) has revoked: False; stix_type: attack-pattern; x_mitre_deprecated: False; x_mitre_is_subtechnique: False; x_mitre_version: 1.4; x_mitre_domains: enterprise-attack; x_mitre_platforms: PRE.",
+      "T1598 has no subtechniques in this catalogue.",
+      "The identifier T1566 is corroborated across attack and capec (5 record(s) share it).",
+      "The identifier T1598 is corroborated across attack and capec (4 record(s) share it)."
+    ],
+    "claims_exact": false,
+    "entity_ids": [
+      "CAPEC-98",
+      "T1566",
+      "T1566.001",
+      "T1566.002",
+      "T1566.003",
+      "T1566.004",
+      "T1598",
+      "T1598.001",
+      "T1598.002",
+      "T1598.003",
+      "T1598.004",
+      "TA0001",
+      "TA0043"
+    ],
+    "entity_ids_by_source": {
+      "attack": [
+        "T1566",
+        "T1566.001",
+        "T1566.002",
+        "T1566.003",
+        "T1566.004",
+        "T1598",
+        "T1598.001",
+        "T1598.002",
+        "T1598.003",
+        "T1598.004",
+        "TA0001",
+        "TA0043"
+      ],
+      "capec": [
+        "CAPEC-98",
+        "T1566",
+        "T1598"
+      ]
+    },
+    "form_exact": null,
+    "gold_n": 13,
+    "gold_question": "Which ATT&CK techniques does CAPEC-98 map to?",
+    "model_consulted": false,
+    "note": "replaced 'map to' with 'correspond to', kept id",
+    "planner": {
+      "drafter": "TypedDrafter",
+      "plan": [
+        {
+          "entities": [
+            "AttackPattern",
+            "MAPS_TO",
+            "TaxonomyEntry"
+          ],
+          "source": "capec",
+          "step": {
+            "anchor_ids": [
+              "CAPEC-98"
+            ],
+            "anchor_label": "AttackPattern",
+            "depth": 1,
+            "filter": {
+              "property": "taxonomy_name",
+              "value": "ATTACK"
+            },
+            "hops": [
+              {
+                "direction": "out",
+                "relation": "MAPS_TO",
+                "target_label": "TaxonomyEntry"
+              }
+            ],
+            "kind": "expand"
+          }
+        },
+        {
+          "entities": [
+            "Technique"
+          ],
+          "source": "attack",
+          "step": {
+            "anchor_ids": [],
+            "anchor_label": "Technique",
+            "depth": 1,
+            "hops": [],
+            "kind": "describe"
+          }
+        },
+        {
+          "entities": [
+            "SubTechnique"
+          ],
+          "source": "attack",
+          "step": {
+            "anchor_ids": [],
+            "anchor_label": "SubTechnique",
+            "depth": 1,
+            "hops": [],
+            "kind": "describe"
+          }
+        }
+      ],
+      "unsupported": 0
+    },
+    "queries": [
+      "MATCH (n:Technique) WHERE coalesce(n.attack_id, n.id) IN $ids OPTIONAL MATCH (n)-[r]-(m) WITH n, CASE WHEN m IS NULL THEN NULL ELSE type(r) END AS rel, CASE WHEN m IS NULL THEN NULL ELSE startNode(r) = n END AS outgoing, CASE WHEN m IS NULL THEN NULL ELSE head(labels(m)) END AS neighbour_label, count(m) AS cnt WITH n, collect(CASE WHEN rel IS NULL THEN NULL ELSE {rel: rel, outgoing: outgoing, label: neighbour_label, count: cnt} END) AS raw WITH n, [f IN raw WHERE f IS NOT NULL] AS facets RETURN coalesce(n.attack_id, n.id) AS id, n.name AS name, n.properties_json AS properties_json, facets AS facets LIMIT 1000",
+      "MATCH (n:Technique) WHERE coalesce(n.attack_id, n.id) IN $ids RETURN coalesce(n.attack_id, n.id) AS id, n.name AS name LIMIT 1000",
+      "MATCH (t:Technique)-[:HAS_SUBTECHNIQUE]->(st:SubTechnique) WHERE t.attack_id IN $ids OR st.attack_id IN $ids RETURN t.attack_id AS parent_id, t.name AS parent_name, st.attack_id AS subtechnique_id, st.name AS subtechnique_name LIMIT 1000",
+      "MATCH (t:Technique)-[:HAS_SUBTECHNIQUE]->(st:SubTechnique) WHERE t.attack_id IN $ids OR st.attack_id IN $ids RETURN t.attack_id AS parent_id, t.name AS parent_name, st.attack_id AS subtechnique_id, st.name AS subtechnique_name LIMIT 1000",
+      "MATCH (ta:Tactic)-[:HAS_TECHNIQUE]->(t) WHERE (t:Technique OR t:SubTechnique) AND t.attack_id IN $ids RETURN t.attack_id AS technique_id, t.name AS technique_name, ta.attack_id AS in_tactic_id, ta.name AS in_tactic_name LIMIT 1000",
+      "MATCH (ta:Tactic)-[:HAS_TECHNIQUE]->(t) WHERE (t:Technique OR t:SubTechnique) AND t.attack_id IN $ids RETURN t.attack_id AS technique_id, t.name AS technique_name, ta.attack_id AS in_tactic_id, ta.name AS in_tactic_name LIMIT 1000",
+      "g.V().has(\"id\", within(ids)).project(\"ap\",\"tax\").by(elementMap()).by(__.out(\"MAPS_TO\").hasLabel(\"TaxonomyEntry\").has(\"taxonomy_name\",\"ATTACK\").elementMap().fold()).limit(1000)"
+    ],
+    "queries_exact": false,
+    "question": "Which ATT&CK techniques correspond to CAPEC-98?",
+    "record_count": 8,
+    "records_exact": true,
+    "records_jaccard": 1.0,
+    "records_recall": 1.0,
+    "run_index": 0,
+    "rung": "off",
+    "served_model": "",
+    "slot_anchor": null,
+    "slot_anchor_label": null,
+    "slot_relation": null,
+    "slot_target_label": null,
+    "slots_scored": 0,
+    "sources": [
+      "attack",
+      "capec"
+    ],
+    "tier": "T1",
+    "timing": {
+      "latency_s": 64.333
+    },
+    "typed": [
+      {
+        "catalog_calls": [
+          {
+            "args": {
+              "graph": "capec",
+              "label": "AttackPattern",
+              "text": "CAPEC-98"
+            },
+            "name": "resolve_entity",
+            "ok": true
+          },
+          {
+            "args": {
+              "graph": "capec",
+              "text": "TaxonomyEntry taxonomy_name"
+            },
+            "name": "find_schema",
+            "ok": true
+          },
+          {
+            "args": {
+              "graph": "capec",
+              "target": "TaxonomyEntry"
+            },
+            "name": "describe",
+            "ok": true
+          },
+          {
+            "args": {
+              "graph": "capec",
+              "target": "CAPEC-98"
+            },
+            "name": "describe",
+            "ok": false
+          }
+        ],
+        "coercions": [],
+        "completion_tokens": 3948,
+        "emitted": true,
+        "error": null,
+        "fallback": null,
+        "final_steps": 3,
+        "first_fixes": 0,
+        "first_refused": 2,
+        "first_steps": 3,
+        "fixed_by_coercion": false,
+        "fixed_by_repair": true,
+        "mode": "full",
+        "model_calls": 5,
+        "n_catalog_calls": 4,
+        "parse_error": null,
+        "plan_problems": [],
+        "prompt_tokens": 33217,
+        "refusals": [
+          {
+            "code": "invalid_request",
+            "detail": "step q2: an expand step needs a path",
+            "final": false,
+            "fix": "choose a hop from Technique from: DETECTS in -> DetectionStrategy, HAS_SUBTECHNIQUE out -> SubTechnique, HAS_TECHNIQUE in -> Tactic, MITIGATES in -> Mitigation, USES in -> Campaign, USES in -> Group, USES in -> Software. or use kind \"describe\" for the anchor itself",
+            "step": "q2"
+          },
+          {
+            "code": "invalid_request",
+            "detail": "step q3: an expand step needs a path",
+            "final": false,
+            "fix": "choose a hop from SubTechnique from: DETECTS in -> DetectionStrategy, HAS_SUBTECHNIQUE in -> Technique, HAS_TECHNIQUE in -> Tactic, MITIGATES in -> Mitigation, USES in -> Campaign, USES in -> Group, USES in -> Software. or use kind \"describe\" for the anchor itself",
+            "step": "q3"
+          }
+        ],
+        "repair_used": true,
+        "replies": [
+          {
+            "calls": [
+              "resolve_entity",
+              "find_schema"
+            ],
+            "finish_reason": "tool_calls",
+            "repairs": [],
+            "status": "ok",
+            "text_chars": 0
+          },
+          {
+            "calls": [
+              "describe"
+            ],
+            "finish_reason": "tool_calls",
+            "repairs": [],
+            "status": "ok",
+            "text_chars": 0
+          },
+          {
+            "calls": [
+              "describe"
+            ],
+            "finish_reason": "tool_calls",
+            "repairs": [],
+            "status": "ok",
+            "text_chars": 0
+          },
+          {
+            "calls": [],
+            "finish_reason": "stop",
+            "repairs": [],
+            "status": "ok",
+            "text_chars": 813
+          },
+          {
+            "calls": [],
+            "finish_reason": "stop",
+            "repairs": [],
+            "status": "ok",
+            "text_chars": 817
+          }
+        ],
+        "seconds": 63.643,
+        "served_model": "qwen38-27b/248046",
+        "still_refused": 0,
+        "valid_first": false,
+        "valid_first_raw": false
+      }
+    ],
+    "unsupported": 0,
+    "variant_n": 13,
+    "wrong_entity": false
+  }
+]

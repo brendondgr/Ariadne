@@ -69,6 +69,15 @@ class SubQuestion:
     join_key: str | None = None
     rationale: str = ""
     hop: int = 0
+    #: The typed step (EXP-2026-11-015): ``utils.specialists.signals.TypedStep``
+    #: as a dict. ``None`` for every English sub-question, and then omitted from
+    #: ``to_dict`` so existing plan JSON is byte-identical.
+    step: dict[str, Any] | None = None
+
+    @property
+    def seed_ids(self) -> tuple[str, ...]:
+        """The typed step's anchor ids; empty for an English sub-question."""
+        return tuple(str(x) for x in (self.step or {}).get("anchor_ids") or ())
 
     def to_dict(self) -> dict[str, Any]:
         out: dict[str, Any] = {
@@ -82,6 +91,8 @@ class SubQuestion:
         }
         if self.hop:
             out["hop"] = self.hop
+        if self.step is not None:
+            out["step"] = dict(self.step)
         return out
 
     @classmethod
@@ -95,6 +106,7 @@ class SubQuestion:
             join_key=data.get("join_key"),
             rationale=str(data.get("rationale", "")),
             hop=int(data.get("hop", 0) or 0),
+            step=dict(data["step"]) if isinstance(data.get("step"), dict) else None,
         )
 
 
@@ -160,6 +172,10 @@ class Plan:
     # byte-identical to every baseline captured before the stage existed —
     # exactly the contract ``intent`` already keeps.
     rewrite: dict[str, Any] | None = None
+    # The typed planner's record for this plan (EXP-2026-11-015): validity at
+    # first emission, coercions, repair, refusals, catalog calls, tokens.
+    # ``None`` for every other drafter and omitted from ``to_dict`` then.
+    typed: dict[str, Any] | None = None
 
     def target_sources(self) -> set[str]:
         return {sq.source for sq in self.sub_questions}
@@ -208,6 +224,8 @@ class Plan:
             out["intent"] = self.intent.to_dict()
         if self.rewrite is not None:
             out["rewrite"] = dict(self.rewrite)
+        if self.typed is not None:
+            out["typed"] = dict(self.typed)
         return out
 
     @classmethod
@@ -223,6 +241,7 @@ class Plan:
             trace=list(data.get("trace", [])),
             intent=IntentClassification.from_dict(data.get("intent")),
             rewrite=data.get("rewrite"),
+            typed=data.get("typed"),
         )
 
 
@@ -302,6 +321,7 @@ def merge_plans(base: Plan, addition: Plan, *, hop: int) -> Plan:
                 join_key=sq.join_key,
                 rationale=sq.rationale,
                 hop=hop,
+                step=sq.step,
             )
         )
         appended += 1

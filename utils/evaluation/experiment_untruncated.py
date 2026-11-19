@@ -47,7 +47,57 @@ ARMS = ("deterministic", "llm", "gold_llm", "llm_loop", "gold_loop_llm", "generi
         "deterministic_planned", "generic_planned_llm", "generic_composed_capped",
         "generic_local_narrator", "generic_local_full", "generic_narrator_off",
         "generic_planned_local",
-        "rewrite_off", "rewrite_det", "rewrite_model")
+        "rewrite_off", "rewrite_det", "rewrite_model",
+        "planned_llm_english", "planned_llm_typed_lazy", "planned_llm_typed_full")
+
+#: EXP-2026-11-015's planner arms: the model is a REGISTRY name (``--model``),
+#: never a relay alias, and its identity is checked by token id before and after.
+PLANNER_ARMS = ("planned_llm_english", "planned_llm_typed_lazy", "planned_llm_typed_full")
+TYPED_MODES = {"planned_llm_typed_lazy": "lazy", "planned_llm_typed_full": "full"}
+#: One question's budget for the planner arms. The typed planner makes up to six
+#: model calls, and the 120 s default would charge its latency to retrieval (a
+#: sub-question that would start past the deadline is skipped and reads as an
+#: empty retrieval). Every planner arm, the English control included, runs at it.
+PLANNER_PIPELINE_TIMEOUT_S = "900"
+
+
+def planner_arm_env(arm: str, spec: Any) -> dict[str, str]:
+    """The environment of one planner arm, for registry model ``spec``.
+
+    The planner seam is on; the specialist, synthesis and conversation seams are
+    stated off; the generic engine is on (``generic_planned_llm``'s posture).
+    The English drafter reaches the model through ``PLANNER_LLM_*`` set from
+    the registry entry (endpoint and alias), never from ``--llm-model``: the
+    alias ``default-model`` serves Gemma since 2026-11-18. The thinking level is
+    the registry's default (``medium`` for Qwen, none for Gemma). EXP-2026-11-015
+    amendment 2: the English drafter's token cap and thinking budget are set to
+    the registry client's (16,384 tokens, no thinking budget), so arms E and T
+    differ only in the hand-off.
+    """
+    if arm not in PLANNER_ARMS:
+        raise ValueError(f"{arm} is not a planner arm")
+    env = {
+        "SPECIALIST_GENERIC_ONLY": "true",
+        "PLANNER_LLM_ENABLED": "true",
+        "SPECIALIST_LLM_ENABLED": "false",
+        "SPECIALIST_LLM_QUERY_BUILDER": "false",
+        "SYNTHESIS_LLM_ENABLED": "false",
+        "CONVERSATION_LLM_ENABLED": "false",
+        "PLANNER_INTENT_LLM_ENABLED": "false",
+        "ARIADNE_REWRITE": "0",
+        "ARIADNE_REWRITE_MODEL": "0",
+        "ORCH_MAX_HOPS": "5",
+        "PIPELINE_TIMEOUT_S": PLANNER_PIPELINE_TIMEOUT_S,
+        "PLANNER_LLM_BASE_URL": spec.endpoint,
+        "PLANNER_LLM_MODEL": spec.alias or spec.name,
+        "LLM_REASONING_EFFORT": spec.reasoning_default or "",
+        "ARIADNE_PLANNER_REGISTRY_MODEL": spec.name,
+        "PLANNER_LLM_MAX_TOKENS": str(spec.max_tokens),
+        "PLANNER_LLM_THINKING_BUDGET": "0",
+    }
+    if arm in TYPED_MODES:
+        env["ARIADNE_TYPED_PLANNER"] = TYPED_MODES[arm]
+    return env
 
 #: The small-model endpoint (EXP-2026-09-019). Read at call time, never at
 #: import: an import-time environment read is how "LLM-off" runs reached a live
@@ -828,6 +878,10 @@ def _plan_dict(plan: Any) -> list[dict[str, Any]]:
                 if hasattr(getattr(sub, "limits", None), "to_dict") else None
             ),
         })
+        # The typed step, only when there is one (EXP-2026-11-015): an English
+        # plan's record is unchanged.
+        if getattr(sub, "step", None) is not None:
+            out[-1]["step"] = dict(sub.step)
     return out
 
 
@@ -975,7 +1029,7 @@ def run_llm(entry: dict, kind: str, _pool: Any) -> tuple[Any, Any, dict]:
 
 def _run_real_pipeline(
     entry: dict, kind: str, *, use_llm: bool, llm_synthesis: bool | None = None,
-    llm_specialist: bool | None = None,
+    llm_specialist: bool | None = None, agent: Any = None,
 ) -> tuple[Any, Any, dict]:
     """Drive the REAL pipeline — planner included — at an explicit LLM posture.
 
@@ -1036,7 +1090,7 @@ def _run_real_pipeline(
     for event, payload in iter_pipeline(
         entry["question"], mode="query", use_llm=use_llm, specialists=injected,
         synthesis_config=synthesis_config, specialist_config=specialist_config,
-        run=run,
+        run=run, agent=agent,
     ):
         if event == "plan":
             plan = payload.get("plan")
@@ -1104,6 +1158,73 @@ def run_planned_llm(entry: dict, kind: str, _pool: Any) -> tuple[Any, Any, dict]
     return _run_real_pipeline(
         entry, kind, use_llm=True, llm_synthesis=False, llm_specialist=False
     )
+
+
+#: The registry model the typed arms call, built once per process (its identity
+#: probe is a real completion, so it is not repeated per question).
+_TYPED_MODEL: Any = None
+_TYPED_MODEL_LOCK = threading.Lock()
+
+
+def typed_model() -> Any:
+    """The process's :class:`utils.agent.runner.RegistryModel` (identity checked on build)."""
+    global _TYPED_MODEL
+    with _TYPED_MODEL_LOCK:
+        if _TYPED_MODEL is None:
+            from utils.agent.runner import RegistryModel
+            from utils.llm.registry import load
+
+            _TYPED_MODEL = RegistryModel(load()[os.environ["ARIADNE_PLANNER_REGISTRY_MODEL"]])
+        return _TYPED_MODEL
+
+
+def _seams(agent: Any, specialist_llm: bool, synthesis_llm: bool) -> dict[str, Any]:
+    """Which model seams this question had, read off the objects that ran."""
+    return {
+        "planner_llm": bool(agent._config.llm_enabled),  # noqa: SLF001
+        "drafter": type(agent._drafter).__name__,  # noqa: SLF001
+        "specialist_llm": specialist_llm,
+        "synthesis_llm": synthesis_llm,
+        "generic_only": os.environ.get("SPECIALIST_GENERIC_ONLY"),
+    }
+
+
+def run_planned_english(entry: dict, kind: str, _pool: Any) -> tuple[Any, Any, dict]:
+    """Arm E: today's English planner (``generic_planned_llm``), the model from the registry."""
+    import dataclasses
+
+    from utils.planner.agent import PlanningAgent
+    from utils.planner.config import PlannerConfig
+
+    agent = PlanningAgent(dataclasses.replace(PlannerConfig.from_env(), llm_enabled=True))
+    evidence, answer, extra = _run_real_pipeline(
+        entry, kind, use_llm=True, llm_synthesis=False, llm_specialist=False, agent=agent)
+    extra["planner"] = "llm-english"
+    extra["registry_model"] = os.environ.get("ARIADNE_PLANNER_REGISTRY_MODEL")
+    extra["drafter_used"] = getattr(agent._drafter, "last_used", "")  # noqa: SLF001
+    extra["seams"] = _seams(agent, False, False)
+    return evidence, answer, extra
+
+
+def run_planned_typed(entry: dict, kind: str, _pool: Any) -> tuple[Any, Any, dict]:
+    """Arms T-lazy / T-full: the typed planner, executed through the same pipeline as E."""
+    import dataclasses
+
+    from utils.planner.agent import PlanningAgent
+    from utils.planner.config import PlannerConfig
+    from utils.planner.typed import TypedDrafter
+
+    mode = os.environ["ARIADNE_TYPED_PLANNER"]
+    drafter = TypedDrafter(typed_model(), mode)
+    agent = PlanningAgent(dataclasses.replace(PlannerConfig.from_env(), llm_enabled=True), drafter=drafter)
+    evidence, answer, extra = _run_real_pipeline(
+        entry, kind, use_llm=True, llm_synthesis=False, llm_specialist=False, agent=agent)
+    extra["planner"] = f"llm-typed-{mode}"
+    extra["registry_model"] = os.environ.get("ARIADNE_PLANNER_REGISTRY_MODEL")
+    extra["drafter_used"] = drafter.last_used
+    extra["typed"] = drafter.logs
+    extra["seams"] = _seams(agent, False, False)
+    return evidence, answer, extra
 
 
 def run_planned(entry: dict, kind: str, _pool: Any) -> tuple[Any, Any, dict]:
@@ -1174,6 +1295,12 @@ RUNNERS = {
     "rewrite_off": run_rewrite,
     "rewrite_det": run_rewrite,
     "rewrite_model": run_rewrite,
+    # EXP-2026-11-015. All three drive the real pipeline with the planner the
+    # only live seam (pinned at the call site, as `run_planned_llm` does), and
+    # differ only in the drafter the planning agent is given.
+    "planned_llm_english": run_planned_english,
+    "planned_llm_typed_lazy": run_planned_typed,
+    "planned_llm_typed_full": run_planned_typed,
 }
 
 
@@ -1220,7 +1347,7 @@ def run_arm(
     # baseline did; ARM A forces it off).
     if arm in ("llm", "llm_loop", "gold_loop_llm", "generic", "generic_planned",
                "generic_planned_local",
-               "rewrite_off", "rewrite_det", "rewrite_model"):
+               "rewrite_off", "rewrite_det", "rewrite_model", *PLANNER_ARMS):
         pool = None
     elif arm == "merged":
         pool = _MergedPool()
@@ -1390,11 +1517,19 @@ def main(argv: list[str] | None = None) -> int:
         help="model id for every LLM seam. Default 'default-model' on :9090.",
     )
     parser.add_argument("--llm-max-tokens", type=int, default=16384)
+    parser.add_argument(
+        "--model", default=None,
+        help="planner arms only: the REGISTRY name of the planner model (utils/llm/models.yaml); "
+             "default the registry default (qwen38-27b). Identity is checked by token id before "
+             "and after the run.",
+    )
     args = parser.parse_args(argv)
 
     from utils.config import load_env
 
     load_env()
+    if args.arm in PLANNER_ARMS:
+        return _main_planner(args)
     overlay = untruncated_env(
         arm=args.arm, llm_model=args.llm_model, llm_max_tokens=args.llm_max_tokens
     )
@@ -1415,6 +1550,33 @@ def main(argv: list[str] | None = None) -> int:
         args.arm, root=args.root, workers=args.workers,
         limit=args.limit, only=only, bank=args.bank,
     )
+    return 0
+
+
+def _main_planner(args: argparse.Namespace) -> int:
+    """A planner arm: registry model, identity before and after, the arm's env, the run."""
+    from utils.llm.registry import clear_identity_cache, load, require_identity
+
+    registry = load()
+    spec = registry[args.model] if args.model else registry.default
+    overlay = {**UNTRUNCATED_ENV, **planner_arm_env(args.arm, spec)}
+    apply_env(overlay)
+    before = require_identity(spec).as_dict()
+    print(f"[identity] {spec.name} via {spec.alias!r}: end-of-turn {before['last_token_id']} - ok",
+          file=sys.stderr)
+    only = {s.strip() for s in args.only.split(",")} if args.only else None
+    doc = run_arm(args.arm, root=args.root, workers=args.workers, limit=args.limit, only=only,
+                  bank=args.bank)
+    clear_identity_cache()
+    after = require_identity(spec).as_dict()
+    doc["identity"] = {"model": spec.name, "alias": spec.alias, "endpoint": spec.endpoint,
+                       "reasoning_effort": spec.reasoning_default, "before": before, "after": after}
+    doc["planner_env"] = {k: v for k, v in sorted(overlay.items()) if k not in UNTRUNCATED_ENV}
+    (Path(args.root) / args.arm / "manifest.json").write_text(
+        json.dumps(doc, indent=2, ensure_ascii=False), encoding="utf-8")
+    (Path(args.root) / args.arm / "identity.json").write_text(
+        json.dumps(doc["identity"], indent=1), encoding="utf-8")
+    print(f"[identity] {spec.name}: before and after verified", file=sys.stderr)
     return 0
 
 

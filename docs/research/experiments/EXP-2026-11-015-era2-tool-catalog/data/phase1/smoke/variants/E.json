@@ -1,0 +1,582 @@
+[
+  {
+    "abstained": true,
+    "abstentions": [
+      "Abstention(sub_question_id='q3', source='capec', statement=\"The capec source doesn't establish this \u2014 the executed query ran cleanly and returned no matching records for: Find TaxonomyEntry nodes where taxonomy is ATTACK and entry_id is T1047, traverse back via MAPS_TO to the corresponding AttackPattern, then retrieve all Mitigation nodes linked via HAS_MITIGATION, including the mitigation description.\", query='g.V().hasLabel(\"TaxonomyEntry\").has(\"taxonomy_name\",\"ATTACK\").has(\"entry_id\", within(entryIds)).as(\"tax\").in(\"MAPS_TO\").hasLabel(\"AttackPattern\").as(\"ap\").select(\"ap\",\"tax\").by(elementMap()).limit(1000)')"
+    ],
+    "bank": "attack",
+    "cache_hit": false,
+    "canonical_question": "",
+    "case_id": "A-MIT-01",
+    "catalogue_dump": false,
+    "claims": [
+      "Found 2 item(s) related to T1047 (e.g. DET0364, AN1031) in MITRE ATT&CK.",
+      "Found 4 item(s) related to T1047 (e.g. M1038, M1040, M1018) in MITRE ATT&CK.",
+      "T1047 (Windows Management Instrumentation) has 2 related item(s): DET0364, AN1031.",
+      "T1047 (Windows Management Instrumentation) has 4 related item(s): M1038, M1040, M1018, M1026.",
+      "T1047 has no MITIGATES relationships in this catalogue."
+    ],
+    "claims_exact": false,
+    "entity_ids": [
+      "AN1031",
+      "DET0364",
+      "M1018",
+      "M1026",
+      "M1038",
+      "M1040",
+      "T1047"
+    ],
+    "entity_ids_by_source": {
+      "attack": [
+        "AN1031",
+        "DET0364",
+        "M1018",
+        "M1026",
+        "M1038",
+        "M1040",
+        "T1047"
+      ],
+      "capec": []
+    },
+    "form_exact": null,
+    "gold_n": 5,
+    "gold_question": "What mitigations does ATT&CK list for T1047 (Windows Management Instrumentation)?",
+    "model_consulted": false,
+    "note": "kept id, swapped 'mitigations' for 'defend against'",
+    "planner": {
+      "drafter": "OpenAICompatibleDrafter",
+      "plan": [
+        {
+          "entities": [
+            "Technique",
+            "Mitigation",
+            "MITIGATES"
+          ],
+          "source": "attack",
+          "text": "Find the Technique with id T1047 and all Mitigation nodes connected to it via the MITIGATES relationship, returning the mitigation name, id, and description."
+        },
+        {
+          "entities": [
+            "Technique",
+            "DetectionStrategy",
+            "Analytic",
+            "DataComponent",
+            "DETECTS",
+            "HAS_ANALYTIC",
+            "MONITORS"
+          ],
+          "source": "attack",
+          "text": "Find all DetectionStrategy nodes that DETECTS Technique T1047, and for each, retrieve the Analytics linked via HAS_ANALYTIC, including analytic name, id, and the DataComponent(s) they MONITORS."
+        },
+        {
+          "entities": [
+            "TaxonomyEntry",
+            "AttackPattern",
+            "Mitigation",
+            "MAPS_TO",
+            "HAS_MITIGATION"
+          ],
+          "source": "capec",
+          "text": "Find TaxonomyEntry nodes where taxonomy is ATTACK and entry_id is T1047, traverse back via MAPS_TO to the corresponding AttackPattern, then retrieve all Mitigation nodes linked via HAS_MITIGATION, including the mitigation description."
+        }
+      ],
+      "unsupported": 0
+    },
+    "queries": [
+      "MATCH (t:Technique) WHERE t.attack_id IN $ids MATCH (t)<-[:DETECTS]-(d:DetectionStrategy) OPTIONAL MATCH (d)-[:HAS_ANALYTIC]->(a:Analytic) RETURN t.attack_id AS technique_id, t.name AS technique_name, d.attack_id AS detection_id, d.name AS detection_name, a.attack_id AS analytic_id, a.name AS analytic_name LIMIT 1000",
+      "MATCH (t:Technique) WHERE t.attack_id IN $ids OPTIONAL MATCH (t)<-[:MITIGATES]-(m:Mitigation) RETURN t.attack_id AS technique_id, t.name AS technique_name, m.attack_id AS mitigation_id, m.name AS mitigation_name LIMIT 1000",
+      "g.V().hasLabel(\"TaxonomyEntry\").has(\"taxonomy_name\",\"ATTACK\").has(\"entry_id\", within(entryIds)).as(\"tax\").in(\"MAPS_TO\").hasLabel(\"AttackPattern\").as(\"ap\").select(\"ap\",\"tax\").by(elementMap()).limit(1000)"
+    ],
+    "queries_exact": false,
+    "question": "How do I defend against T1047?",
+    "record_count": 2,
+    "records_exact": false,
+    "records_jaccard": 0.7143,
+    "records_recall": 1.0,
+    "run_index": 0,
+    "rung": "off",
+    "served_model": "",
+    "slot_anchor": null,
+    "slot_anchor_label": null,
+    "slot_relation": null,
+    "slot_target_label": null,
+    "slots_scored": 0,
+    "sources": [
+      "attack"
+    ],
+    "tier": "T1",
+    "timing": {
+      "latency_s": 46.293
+    },
+    "unsupported": 0,
+    "variant_n": 7,
+    "wrong_entity": false
+  },
+  {
+    "abstained": false,
+    "abstentions": [],
+    "bank": "attack",
+    "cache_hit": false,
+    "canonical_question": "",
+    "case_id": "A-MC-01",
+    "catalogue_dump": false,
+    "claims": [
+      "Found 7 record(s) in MITRE ATT&CK including T1187, T1556, T1003 and more.",
+      "T1003 (OS Credential Dumping) has 2 related item(s): TA0006, M1027.",
+      "T1110 (Brute Force) has 2 related item(s): TA0006, M1027.",
+      "T1187 (Forced Authentication) has 2 related item(s): TA0006, M1027.",
+      "T1552 (Unsecured Credentials) has 2 related item(s): TA0006, M1027.",
+      "T1555 (Credentials from Password Stores) has 2 related item(s): TA0006, M1027.",
+      "T1556 (Modify Authentication Process) has 2 related item(s): TA0006, M1027.",
+      "T1558 (Steal or Forge Kerberos Tickets) has 2 related item(s): TA0006, M1027."
+    ],
+    "claims_exact": true,
+    "entity_ids": [
+      "M1027",
+      "T1003",
+      "T1110",
+      "T1187",
+      "T1552",
+      "T1555",
+      "T1556",
+      "T1558",
+      "TA0006"
+    ],
+    "entity_ids_by_source": {
+      "attack": [
+        "M1027",
+        "T1003",
+        "T1110",
+        "T1187",
+        "T1552",
+        "T1555",
+        "T1556",
+        "T1558",
+        "TA0006"
+      ]
+    },
+    "form_exact": null,
+    "gold_n": 9,
+    "gold_question": "Which techniques in tactic TA0006 are mitigated by M1027?",
+    "model_consulted": false,
+    "note": "swapped 'mitigated by' for 'defend against', kept identifiers",
+    "planner": {
+      "drafter": "OpenAICompatibleDrafter",
+      "plan": [
+        {
+          "entities": [
+            "Tactic",
+            "Technique",
+            "Mitigation",
+            "HAS_TECHNIQUE",
+            "MITIGATES"
+          ],
+          "source": "attack",
+          "text": "Find all Technique nodes that are (a) linked from Tactic TA0006 via HAS_TECHNIQUE and (b) linked from Mitigation M1027 via MITIGATES. Return the technique id, name, and any sub-technique children."
+        }
+      ],
+      "unsupported": 0
+    },
+    "queries": [
+      "MATCH (ta:Tactic)-[:HAS_TECHNIQUE]->(t:Technique) WHERE ta.attack_id IN $tactic_ids MATCH (t)<-[:MITIGATES]-(m:Mitigation) WHERE m.attack_id IN $mitigation_ids RETURN ta.attack_id AS tactic_id, ta.name AS tactic_name, t.attack_id AS technique_id, t.name AS technique_name, m.attack_id AS mitigation_id, m.name AS mitigation_name LIMIT 1000"
+    ],
+    "queries_exact": true,
+    "question": "Which techniques under TA0006 does M1027 defend against?",
+    "record_count": 7,
+    "records_exact": true,
+    "records_jaccard": 1.0,
+    "records_recall": 1.0,
+    "run_index": 0,
+    "rung": "off",
+    "served_model": "",
+    "slot_anchor": null,
+    "slot_anchor_label": null,
+    "slot_relation": null,
+    "slot_target_label": null,
+    "slots_scored": 0,
+    "sources": [
+      "attack"
+    ],
+    "tier": "T1",
+    "timing": {
+      "latency_s": 30.192
+    },
+    "unsupported": 0,
+    "variant_n": 9,
+    "wrong_entity": false
+  },
+  {
+    "abstained": false,
+    "abstentions": [],
+    "bank": "federated",
+    "cache_hit": false,
+    "canonical_question": "",
+    "case_id": "F-CTM-01",
+    "catalogue_dump": false,
+    "claims": [
+      "CAPEC-150 (Collect Data from Common Resource Locations) has 6 ATT&CK mappings: T1602, T1003, T1119, T1213, T1530, T1555.",
+      "CAPEC-150 (Collect Data from Common Resource Locations) has Abstraction: Standard; Status: Draft; Typical_Severity: Medium.",
+      "CAPEC-150 (Collect Data from Common Resource Locations): An adversary exploits well-known locations for resources for the purposes of undermining the security of the target. In many, if not most systems, files and resources are organized in a default tree structure. This can be useful for adversaries because they often know where to look for resources or files that are necessary for attacks. Even when the precise location of a targeted resource may not be known, naming conventions may indicate a small area of the target machine's file tree where the resources are typically located. For example, configuration files are normally stored in the /etc director on Unix systems. Adversaries can take advantage of this to commit other types of attacks.",
+      "Found 1 CAPEC record(s) for CAPEC-150; ATT&CK mappings: T1003, T1119, T1213, T1530, T1555.",
+      "Found 6 record(s) in MITRE ATT&CK including T1003, T1602, T1119 and more.",
+      "T1003 (OS Credential Dumping) has 9 related item(s): M1041, M1015, M1026, M1040, M1027, M1025, M1043, M1028, M1017.",
+      "T1003 has no MITIGATES relationships in this catalogue.",
+      "T1119 (Automated Collection) has 2 related item(s): M1029, M1041.",
+      "T1213 (Data from Information Repositories) has 7 related item(s): M1041, M1047, M1054, M1032, M1018, M1060, M1017.",
+      "T1530 (Data from Cloud Storage) has 6 related item(s): M1022, M1041, M1047, M1032, M1018, M1037.",
+      "T1555 (Credentials from Password Stores) has 3 related item(s): M1051, M1026, M1027.",
+      "T1602 (Data from Configuration Repository) has 6 related item(s): M1041, M1051, M1054, M1030, M1037, M1031.",
+      "The identifier T1003 is corroborated across attack and capec (2 record(s) share it).",
+      "The identifier T1119 is corroborated across attack and capec (2 record(s) share it).",
+      "The identifier T1213 is corroborated across attack and capec (2 record(s) share it).",
+      "The identifier T1530 is corroborated across attack and capec (2 record(s) share it).",
+      "The identifier T1555 is corroborated across attack and capec (2 record(s) share it).",
+      "The identifier T1602 is corroborated across attack and capec (2 record(s) share it)."
+    ],
+    "claims_exact": false,
+    "entity_ids": [
+      "CAPEC-150",
+      "M1015",
+      "M1017",
+      "M1018",
+      "M1022",
+      "M1025",
+      "M1026",
+      "M1027",
+      "M1028",
+      "M1029",
+      "M1030",
+      "M1031",
+      "M1032",
+      "M1037",
+      "M1040",
+      "M1041",
+      "M1043",
+      "M1047",
+      "M1051",
+      "M1054",
+      "M1060",
+      "T1003",
+      "T1119",
+      "T1213",
+      "T1530",
+      "T1555",
+      "T1602"
+    ],
+    "entity_ids_by_source": {
+      "attack": [
+        "M1015",
+        "M1017",
+        "M1018",
+        "M1022",
+        "M1025",
+        "M1026",
+        "M1027",
+        "M1028",
+        "M1029",
+        "M1030",
+        "M1031",
+        "M1032",
+        "M1037",
+        "M1040",
+        "M1041",
+        "M1043",
+        "M1047",
+        "M1051",
+        "M1054",
+        "M1060",
+        "T1003",
+        "T1119",
+        "T1213",
+        "T1530",
+        "T1555",
+        "T1602"
+      ],
+      "capec": [
+        "CAPEC-150",
+        "T1003",
+        "T1119",
+        "T1213",
+        "T1530",
+        "T1555",
+        "T1602"
+      ]
+    },
+    "form_exact": null,
+    "gold_n": 27,
+    "gold_question": "Which ATT&CK techniques does CAPEC-150 (Collect Data from Common Resource Locations) map to, and what mitigations apply to those techniques?",
+    "model_consulted": false,
+    "note": "kept identifier, swapped 'map to'/'mitigations' for plainer verbs",
+    "planner": {
+      "drafter": "OpenAICompatibleDrafter",
+      "plan": [
+        {
+          "entities": [
+            "AttackPattern",
+            "TaxonomyEntry",
+            "MAPS_TO"
+          ],
+          "source": "capec",
+          "text": "Find the AttackPattern with id CAPEC-150 and retrieve all TaxonomyEntry nodes reachable via MAPS_TO where the taxonomy is ATT&CK, returning each entry_id (the ATT&CK technique/sub-technique id)."
+        },
+        {
+          "entities": [
+            "Technique",
+            "SubTechnique",
+            "Mitigation",
+            "MITIGATES"
+          ],
+          "source": "attack",
+          "text": "For each ATT&CK technique/sub-technique id obtained from q1 (via the attack-technique-id join), retrieve the matching Technique or SubTechnique node and all Mitigation nodes connected to it via the MITIGATES relationship, returning the mitigation name, id, and description."
+        }
+      ],
+      "unsupported": 0
+    },
+    "queries": [
+      "MATCH (t:Technique) WHERE t.attack_id IN $ids OPTIONAL MATCH (t)<-[:MITIGATES]-(m:Mitigation) RETURN t.attack_id AS technique_id, t.name AS technique_name, m.attack_id AS mitigation_id, m.name AS mitigation_name LIMIT 1000",
+      "g.V().has(\"id\", within(ids)).project(\"ap\",\"tax\").by(elementMap()).by(__.out(\"MAPS_TO\").hasLabel(\"TaxonomyEntry\").has(\"taxonomy_name\",\"ATTACK\").elementMap().fold()).limit(1000)"
+    ],
+    "queries_exact": true,
+    "question": "For CAPEC-150, which ATT&CK techniques does it correspond to, and how would you defend against each of those techniques?",
+    "record_count": 7,
+    "records_exact": true,
+    "records_jaccard": 1.0,
+    "records_recall": 1.0,
+    "run_index": 0,
+    "rung": "off",
+    "served_model": "",
+    "slot_anchor": null,
+    "slot_anchor_label": null,
+    "slot_relation": null,
+    "slot_target_label": null,
+    "slots_scored": 0,
+    "sources": [
+      "attack",
+      "capec"
+    ],
+    "tier": "T1",
+    "timing": {
+      "latency_s": 39.446
+    },
+    "unsupported": 0,
+    "variant_n": 27,
+    "wrong_entity": false
+  },
+  {
+    "abstained": true,
+    "abstentions": [
+      "Abstention(sub_question_id='q2', source='attack', statement=\"The attack source doesn't establish this \u2014 the executed query ran cleanly and returned no matching records for: Retrieve the Technique node with attack_id 'T1133' including its description, associated Tactic(s) via HAS_TACTIC, and any SubTechnique children via HAS_SUBTECHNIQUE, to explain what T1133 covers.\", query='MATCH (t:Technique)-[:HAS_SUBTECHNIQUE]->(st:SubTechnique) WHERE t.attack_id IN $ids OR st.attack_id IN $ids RETURN t.attack_id AS parent_id, t.name AS parent_name, st.attack_id AS subtechnique_id, st.name AS subtechnique_name LIMIT 1000')"
+    ],
+    "bank": "federated",
+    "cache_hit": false,
+    "canonical_question": "",
+    "case_id": "F-REV-05",
+    "catalogue_dump": false,
+    "claims": [
+      "CAPEC-555 (Remote Services with Stolen Credentials) has 1 ATT&CK mapping: T1133.",
+      "CAPEC-555 (Remote Services with Stolen Credentials) has Abstraction: Standard; Status: Stable; Typical_Severity: Very High.",
+      "CAPEC-555 (Remote Services with Stolen Credentials): This pattern of attack involves an adversary that uses stolen credentials to leverage remote services such as RDP, telnet, SSH, and VNC to log into a system. Once access is gained, any number of malicious activities could be performed.",
+      "Found 1 CAPEC record(s) for CAPEC-555; ATT&CK mappings: T1133."
+    ],
+    "claims_exact": false,
+    "entity_ids": [
+      "CAPEC-555",
+      "T1133"
+    ],
+    "entity_ids_by_source": {
+      "attack": [],
+      "capec": [
+        "CAPEC-555",
+        "T1133"
+      ]
+    },
+    "form_exact": null,
+    "gold_n": 2,
+    "gold_question": "Which CAPEC patterns map to ATT&CK technique T1133 (External Remote Services), and what is that technique?",
+    "model_consulted": false,
+    "note": "schema words 'map'/'technique' replaced with plain phrasing",
+    "planner": {
+      "drafter": "OpenAICompatibleDrafter",
+      "plan": [
+        {
+          "entities": [
+            "AttackPattern",
+            "TaxonomyEntry",
+            "MAPS_TO"
+          ],
+          "source": "capec",
+          "text": "Find all AttackPattern nodes that MAPS_TO a TaxonomyEntry whose taxonomy is ATT&CK and whose entry_id is 'T1133'. Return the AttackPattern id, name, and the linking TaxonomyEntry."
+        },
+        {
+          "entities": [
+            "Technique",
+            "Tactic",
+            "SubTechnique",
+            "HAS_TACTIC",
+            "HAS_SUBTECHNIQUE"
+          ],
+          "source": "attack",
+          "text": "Retrieve the Technique node with attack_id 'T1133' including its description, associated Tactic(s) via HAS_TACTIC, and any SubTechnique children via HAS_SUBTECHNIQUE, to explain what T1133 covers."
+        }
+      ],
+      "unsupported": 0
+    },
+    "queries": [
+      "MATCH (t:Technique)-[:HAS_SUBTECHNIQUE]->(st:SubTechnique) WHERE t.attack_id IN $ids OR st.attack_id IN $ids RETURN t.attack_id AS parent_id, t.name AS parent_name, st.attack_id AS subtechnique_id, st.name AS subtechnique_name LIMIT 1000",
+      "g.V().hasLabel(\"TaxonomyEntry\").has(\"taxonomy_name\",\"ATTACK\").has(\"entry_id\", within(entryIds)).as(\"tax\").in(\"MAPS_TO\").hasLabel(\"AttackPattern\").as(\"ap\").select(\"ap\",\"tax\").by(elementMap()).limit(1000)"
+    ],
+    "queries_exact": false,
+    "question": "Which CAPEC items correspond to T1133, and what does T1133 cover?",
+    "record_count": 1,
+    "records_exact": true,
+    "records_jaccard": 1.0,
+    "records_recall": 1.0,
+    "run_index": 0,
+    "rung": "off",
+    "served_model": "",
+    "slot_anchor": null,
+    "slot_anchor_label": null,
+    "slot_relation": null,
+    "slot_target_label": null,
+    "slots_scored": 0,
+    "sources": [
+      "capec"
+    ],
+    "tier": "T1",
+    "timing": {
+      "latency_s": 38.893
+    },
+    "unsupported": 0,
+    "variant_n": 2,
+    "wrong_entity": false
+  },
+  {
+    "abstained": false,
+    "abstentions": [],
+    "bank": "capec",
+    "cache_hit": false,
+    "canonical_question": "",
+    "case_id": "C-MAP-02",
+    "catalogue_dump": false,
+    "claims": [
+      "CAPEC-98 (Phishing) Likelihood Of Attack: High.",
+      "CAPEC-98 (Phishing) has 2 ATT&CK mappings, restricted to taxonomy name ATTACK: T1566, T1598.",
+      "CAPEC-98 (Phishing) has Abstraction: Standard; Likelihood_Of_Attack: High; Status: Draft; Typical_Severity: Very High.",
+      "CAPEC-98 (Phishing): Phishing is a social engineering technique where an attacker masquerades as a legitimate entity with which the victim might do business in order to prompt the user to reveal some confidential information (very frequently authentication credentials) that can later be used by an attacker. Phishing is essentially a form of information gathering or \"fishing\" for information.",
+      "Found 1 CAPEC record(s) for CAPEC-98; ATT&CK mappings: T1566, T1598.",
+      "Found 1 item(s) related to T1566 (e.g. TA0001) in MITRE ATT&CK.",
+      "Found 2 record(s) in MITRE ATT&CK including T1566, T1598.",
+      "Found 4 item(s) related to T1566 (e.g. T1566.003, T1566.004, T1566.001) in MITRE ATT&CK.",
+      "Found 4 item(s) related to T1598 (e.g. T1598.001, T1598.002, T1598.004) in MITRE ATT&CK.",
+      "T1566 (Phishing) has 1 related item(s): TA0001.",
+      "T1566 (Phishing) has 4 related item(s): T1566.003, T1566.004, T1566.001, T1566.002.",
+      "T1566 (Phishing) has revoked: False; stix_type: attack-pattern; x_mitre_deprecated: False; x_mitre_is_subtechnique: False; x_mitre_version: 2.7; x_mitre_contributors: Philip Winther Ohad Zaidenberg, @ohad_mz Liora Itkin Liran Ravich, CardinalOps Scott Cook, Capital One; x_mitre_domains: enterprise-attack; x_mitre_platforms: Identity Provider Linux macOS Office Suite SaaS Windows.",
+      "T1566 has no subtechniques in this catalogue.",
+      "T1566 has no techniques in this catalogue.",
+      "T1598 (Phishing for Information) has 1 related item(s): TA0043.",
+      "T1598 (Phishing for Information) has 4 related item(s): T1598.001, T1598.002, T1598.004, T1598.003.",
+      "T1598 (Phishing for Information) has revoked: False; stix_type: attack-pattern; x_mitre_deprecated: False; x_mitre_is_subtechnique: False; x_mitre_version: 1.4; x_mitre_domains: enterprise-attack; x_mitre_platforms: PRE.",
+      "T1598 has no subtechniques in this catalogue.",
+      "The identifier T1566 is corroborated across attack and capec (5 record(s) share it).",
+      "The identifier T1598 is corroborated across attack and capec (4 record(s) share it)."
+    ],
+    "claims_exact": false,
+    "entity_ids": [
+      "CAPEC-98",
+      "T1566",
+      "T1566.001",
+      "T1566.002",
+      "T1566.003",
+      "T1566.004",
+      "T1598",
+      "T1598.001",
+      "T1598.002",
+      "T1598.003",
+      "T1598.004",
+      "TA0001",
+      "TA0043"
+    ],
+    "entity_ids_by_source": {
+      "attack": [
+        "T1566",
+        "T1566.001",
+        "T1566.002",
+        "T1566.003",
+        "T1566.004",
+        "T1598",
+        "T1598.001",
+        "T1598.002",
+        "T1598.003",
+        "T1598.004",
+        "TA0001",
+        "TA0043"
+      ],
+      "capec": [
+        "CAPEC-98",
+        "T1566",
+        "T1598"
+      ]
+    },
+    "form_exact": null,
+    "gold_n": 13,
+    "gold_question": "Which ATT&CK techniques does CAPEC-98 map to?",
+    "model_consulted": false,
+    "note": "replaced 'map to' with 'correspond to', kept id",
+    "planner": {
+      "drafter": "OpenAICompatibleDrafter",
+      "plan": [
+        {
+          "entities": [
+            "AttackPattern",
+            "TaxonomyEntry",
+            "MAPS_TO"
+          ],
+          "source": "capec",
+          "text": "Find the AttackPattern with CAPEC-ID CAPEC-98 and retrieve all TaxonomyEntry nodes reachable via MAPS_TO where the taxonomy is ATTACK; return the entry_id values (ATT&CK technique IDs) on those TaxonomyEntry nodes."
+        },
+        {
+          "entities": [
+            "Technique",
+            "SubTechnique"
+          ],
+          "source": "attack",
+          "text": "Retrieve all Technique and SubTechnique nodes whose attack_id matches any of the ATT&CK technique IDs obtained from q1 (CAPEC-98's MAPS_TO TaxonomyEntry entry_ids)."
+        }
+      ],
+      "unsupported": 0
+    },
+    "queries": [
+      "MATCH (n:Technique) WHERE coalesce(n.attack_id, n.id) IN $ids OPTIONAL MATCH (n)-[r]-(m) WITH n, CASE WHEN m IS NULL THEN NULL ELSE type(r) END AS rel, CASE WHEN m IS NULL THEN NULL ELSE startNode(r) = n END AS outgoing, CASE WHEN m IS NULL THEN NULL ELSE head(labels(m)) END AS neighbour_label, count(m) AS cnt WITH n, collect(CASE WHEN rel IS NULL THEN NULL ELSE {rel: rel, outgoing: outgoing, label: neighbour_label, count: cnt} END) AS raw WITH n, [f IN raw WHERE f IS NOT NULL] AS facets RETURN coalesce(n.attack_id, n.id) AS id, n.name AS name, n.properties_json AS properties_json, facets AS facets LIMIT 1000",
+      "MATCH (t:Technique)-[:HAS_SUBTECHNIQUE]->(st:SubTechnique) WHERE t.attack_id IN $ids OR st.attack_id IN $ids RETURN t.attack_id AS parent_id, t.name AS parent_name, st.attack_id AS subtechnique_id, st.name AS subtechnique_name LIMIT 1000",
+      "MATCH (t:Technique)-[:HAS_SUBTECHNIQUE]->(st:SubTechnique) WHERE t.attack_id IN $ids OR st.attack_id IN $ids RETURN t.attack_id AS parent_id, t.name AS parent_name, st.attack_id AS subtechnique_id, st.name AS subtechnique_name LIMIT 1000",
+      "MATCH (ta:Tactic)-[:HAS_TECHNIQUE]->(t) WHERE (t:Technique OR t:SubTechnique) AND t.attack_id IN $ids RETURN t.attack_id AS technique_id, t.name AS technique_name, ta.attack_id AS in_tactic_id, ta.name AS in_tactic_name LIMIT 1000",
+      "MATCH (ta:Tactic)-[:HAS_TECHNIQUE]->(t) WHERE (t:Technique OR t:SubTechnique) AND t.attack_id IN $ids RETURN t.attack_id AS technique_id, t.name AS technique_name, ta.attack_id AS in_tactic_id, ta.name AS in_tactic_name LIMIT 1000",
+      "g.V().has(\"id\", within(ids)).project(\"ap\",\"tax\").by(elementMap()).by(__.out(\"MAPS_TO\").hasLabel(\"TaxonomyEntry\").has(\"taxonomy_name\",\"ATTACK\").elementMap().fold()).limit(1000)"
+    ],
+    "queries_exact": true,
+    "question": "Which ATT&CK techniques correspond to CAPEC-98?",
+    "record_count": 8,
+    "records_exact": true,
+    "records_jaccard": 1.0,
+    "records_recall": 1.0,
+    "run_index": 0,
+    "rung": "off",
+    "served_model": "",
+    "slot_anchor": null,
+    "slot_anchor_label": null,
+    "slot_relation": null,
+    "slot_target_label": null,
+    "slots_scored": 0,
+    "sources": [
+      "attack",
+      "capec"
+    ],
+    "tier": "T1",
+    "timing": {
+      "latency_s": 31.22
+    },
+    "unsupported": 0,
+    "variant_n": 13,
+    "wrong_entity": false
+  }
+]

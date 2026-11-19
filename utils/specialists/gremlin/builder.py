@@ -530,6 +530,14 @@ class GremlinQueryBuilder:
         Under ``SPECIALIST_GENERIC_ONLY`` the cascade is bypassed entirely for
         the generic-primitives branch below.
         """
+        # A typed step (EXP-2026-11-015) is executed as written, ahead of both
+        # the template ladder and the generic engine. Only the typed planner
+        # sets one; every other task has ``step is None`` and skips this line.
+        if resolved.task.signals.step is not None:
+            typed = self._typed_step(resolved)
+            if typed is not None:
+                return typed
+
         # Names are resolved before the template ladder — see the Cypher
         # builder for why. A question that names its entity should reach the
         # same template as one that gives the identifier.
@@ -1131,6 +1139,91 @@ class GremlinQueryBuilder:
                     if candidate not in out:
                         out.append(candidate)
         return out
+
+    def _typed_step(self, resolved: ResolvedTask) -> QueryDraft | None:
+        """Compile a typed step: the path, directions, labels and depth it states.
+
+        The Gremlin counterpart to ``CypherQueryBuilder._typed_step``. Nothing
+        is inferred: each hop is ``out``/``in`` of the store's edge label for the
+        card relation, then ``hasLabel`` of the hop's target. The full path is
+        one ``union`` branch; shorter prefixes (the intermediates) are added
+        while the traversal-step budget allows, full path first. The rows carry
+        ``generic_walk``'s ``select("ap","nbr")`` shape, so normalisation is
+        unchanged. ``None`` when the step cannot run here.
+        """
+        step = resolved.task.signals.step
+        if step is None:
+            return None
+        if step.kind == "scan":
+            return self._capec_scan(resolved)
+        if not resolved.seed_ids or self._seeds_are_foreign(resolved):
+            # No anchor here, or the partner catalogue's key values: only the
+            # declared bridge starts from those, and the engine owns it.
+            return None
+        via = getattr(resolved.join_endpoint, "via_edge", None) if resolved.has_join else None
+        if via and any(gremlin_edge_label(h.relation) == gremlin_edge_label(via) for h in step.hops):
+            # The step walks the declared join edge for a joined plan: the
+            # engine's bridge is the primitive that turns it into join values
+            # for the consuming step, so it is the one that runs.
+            return None
+        if step.kind == "common":
+            return None  # no intersection primitive on this side: the engine decides
+        if step.kind == "describe" or not step.hops:
+            return self._describe(resolved)
+        hops = list(step.hops)
+        depth = max(1, int(step.depth or 1))
+        budget = resolved.task.max_depth()
+
+        def _hop(h: Any, repeat: bool) -> str:
+            edge = gremlin_edge_label(_safe_gremlin_ident(h.relation, "relationship type"))
+            way = "in" if h.direction == "in" else "out"
+            # An empty target keeps every label the hop reaches.
+            target = (f'.hasLabel("{_safe_gremlin_ident(h.target_label, "target label")}")'
+                      if h.target_label else "")
+            if repeat:
+                return f'repeat(__.{way}("{edge}")).times({depth}).emit(){target}'
+            return f'{way}("{edge}"){target}'
+
+        repeat = len(hops) == 1 and depth > 1
+        branches = [".".join(_hop(h, repeat) for h in hops)]
+        spent = 1 if repeat else len(hops)
+        for i in range(len(hops) - 1, 0, -1):
+            if spent + i > budget:
+                break
+            branches.append(".".join(_hop(h, False) for h in hops[:i]))
+            spent += i
+        ids = _walk_candidate_ids(resolved.seed_ids)
+        lim = resolved.task.max_rows()
+        params: dict[str, Any] = {"ids": ids}
+        scope = ""
+        if step.filter and hops[-1].target_label:
+            prop, value = step.filter
+            label = hops[-1].target_label
+            try:
+                from utils.specialists.schema import get_registry
+
+                registry = get_registry()
+                ok = (registry.is_native_property(label, prop, dataset=resolved.dataset)
+                      and not registry.is_list_property(label, prop, dataset=resolved.dataset))
+            except Exception:  # noqa: BLE001
+                ok = False
+            if ok:
+                scope = (f'.or(__.not(__.hasLabel("{_safe_gremlin_ident(label, "filter label")}")), '
+                         f'__.has("{_safe_gremlin_ident(prop, "property")}", filterValue))')
+                params["filterValue"] = value
+        union = ", ".join(f"__.{b}" for b in branches)
+        query = (
+            'g.V().has("id", within(ids)).as("ap")'
+            f".union({union}){scope}.as(\"nbr\")"
+            f'.select("ap","nbr").by(elementMap()).limit({lim})'
+        )
+        return QueryDraft(
+            query=query, params=params, template="typed_step", expected_nonempty=False,
+            meta={"typed_step": step.to_dict(), "seed_ids": list(resolved.seed_ids),
+                  "bindings": _anchor_id_bindings(resolved.seed_ids, step.anchor_label or ""),
+                  **({"filter": f"{hops[-1].target_label}.{step.filter[0]}={step.filter[1]}"}
+                     if "filterValue" in params else {})},
+        )
 
     def _generic_walk(self, resolved: ResolvedTask) -> QueryDraft | None:
         """Walk every declared path from the resolved anchor to the wanted labels.

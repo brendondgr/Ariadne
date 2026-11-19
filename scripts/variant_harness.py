@@ -231,6 +231,20 @@ REWRITE_ENV: dict[str, dict[str, str]] = {
                   "ARIADNE_RERANK": "1", "ARIADNE_ANCHOR_DISCLOSED": "1", "ORCH_CHASE_FACETS": "true"},
 }
 
+#: EXP-2026-11-015's planner arms for ``compare``. ``R`` is the rules-only
+#: default (no ``--arm``). Each planner arm is the ``off`` rewrite posture plus
+#: one live seam, the planner: ``E`` the English drafter, ``T-*`` the typed
+#: planner (``lazy``: card names in the prompt; ``full``: the whole card).
+#: ``T-lazy-G`` is ``T-lazy`` run with ``--model gemma4-31b``.
+PLANNER_ARMS: dict[str, dict[str, str | None]] = {
+    "E": {"typed": None, "model": "qwen38-27b"},
+    "T-lazy": {"typed": "lazy", "model": "qwen38-27b"},
+    "T-full": {"typed": "full", "model": "qwen38-27b"},
+    "T-lazy-G": {"typed": "lazy", "model": "gemma4-31b"},
+}
+#: The planner arms' per-question budget (see experiment_untruncated).
+PLANNER_PIPELINE_TIMEOUT_S = "900"
+
 #: Where the understanding-gold lives, relative to ``--out``.
 SLOT_GOLD_NAME = "slot_gold.json"
 
@@ -270,15 +284,49 @@ def _norm_query(query: str) -> str:
     return " ".join((query or "").split())
 
 
-def capture_one(question: str, config: SynthesisConfig) -> dict[str, Any]:
-    """Everything one question extracts, with nothing time-varying in it."""
+def _planner_agent(planner: dict[str, Any]) -> tuple[Any, Any, Any]:
+    """``(agent, specialist_config, drafter)`` for a planner arm: only the planner is live."""
+    import dataclasses
+
+    from utils.planner.agent import PlanningAgent
+    from utils.planner.config import PlannerConfig
+    from utils.specialists.config import SpecialistConfig
+
+    config = dataclasses.replace(PlannerConfig.from_env(), llm_enabled=True)
+    drafter = None
+    if planner.get("typed"):
+        from utils.planner.typed import TypedDrafter
+
+        drafter = TypedDrafter(planner["model_obj"], str(planner["typed"]))
+    agent = PlanningAgent(config, drafter=drafter)
+    specialist = dataclasses.replace(SpecialistConfig.from_env(), llm_enabled=False,
+                                     llm_query_builder=False)
+    return agent, specialist, drafter
+
+
+def capture_one(question: str, config: SynthesisConfig,
+                planner: dict[str, Any] | None = None) -> dict[str, Any]:
+    """Everything one question extracts, with nothing time-varying in it.
+
+    ``planner`` is ``None`` for the rules-only pipeline (the reference, arm R:
+    unchanged). For a planner arm it is ``{"typed": None|"lazy"|"full",
+    "model_obj": RegistryModel}`` and the planner is the only live seam:
+    ``use_llm=True`` reaches the planner, and the specialist config (and the
+    synthesis ``config`` the caller passes, built with the seam off) pin the
+    other seams back off.
+    """
     from utils.orchestration.main import PipelineRun, iter_pipeline
 
     run = PipelineRun(question=question, mode="query")
     evidence = answer = plan = None
+    kwargs: dict[str, Any] = {"use_llm": False}
+    drafter = None
+    if planner is not None:
+        agent, specialist, drafter = _planner_agent(planner)
+        kwargs = {"use_llm": True, "agent": agent, "specialist_config": specialist}
     try:
         for event, payload in iter_pipeline(
-            question, mode="query", use_llm=False, run=run, synthesis_config=config
+            question, mode="query", run=run, synthesis_config=config, **kwargs
         ):
             if event == "plan":
                 plan = payload.get("plan")
@@ -329,6 +377,17 @@ def capture_one(question: str, config: SynthesisConfig) -> dict[str, Any]:
     rewrite = getattr(plan, "rewrite", None)
     if rewrite:
         out["rewrite"] = rewrite
+    # Planner arms only: what the planner did. Absent from every rules capture.
+    if planner is not None:
+        out["planner"] = {
+            "drafter": getattr(kwargs["agent"]._drafter, "last_used", ""),  # noqa: SLF001
+            "plan": [{"source": sq.source, "entities": list(sq.entities),
+                      **({"step": sq.step} if getattr(sq, "step", None) else {"text": sq.text})}
+                     for sq in getattr(plan, "sub_questions", []) or []],
+            "unsupported": len(getattr(plan, "unsupported", []) or []),
+        }
+        if drafter is not None:
+            out["typed"] = drafter.logs
     return out
 
 
@@ -559,6 +618,11 @@ def cmd_compare(args: argparse.Namespace) -> int:
 
     slot_gold = _slot_gold_index(out_dir)
     config = SynthesisConfig.from_env()
+    planner = getattr(args, "planner_spec", None)
+    if planner is not None:
+        import dataclasses
+
+        config = dataclasses.replace(config, llm_enabled=False)
     repeats = max(1, int(getattr(args, "repeat", 1) or 1))
     print(f"== scoring {len(variants)} variants, {args.workers} workers, "
           f"rewrite={getattr(args, 'rewrite', 'off')}, {repeats} run(s)")
@@ -568,7 +632,7 @@ def cmd_compare(args: argparse.Namespace) -> int:
         if gold is None:
             return {**v, "error": "no reference for case_id"}
         started = time.monotonic()
-        got = capture_one(v["question"], config)
+        got = capture_one(v["question"], config, planner)
         elapsed = round(time.monotonic() - started, 3)
         if "error" in got:
             return {**v, **got}
@@ -834,9 +898,20 @@ def main() -> int:
                            "separately and metrics.json reports mean and sd")
     cmp_.add_argument("--metrics", default=None,
                       help="write the aggregated per-tier metrics here")
+    cmp_.add_argument("--arm", choices=tuple(PLANNER_ARMS), default=None,
+                      help="EXP-2026-11-015 planner arm (default: none, the rules-only pipeline). "
+                           "Writes <arm>.json unless --name is given; T0 is scored too unless "
+                           "--no-gold.")
+    cmp_.add_argument("--model", default=None,
+                      help="registry name of the planner model (utils/llm/models.yaml); default "
+                           "the arm's own (qwen38-27b; gemma4-31b for T-lazy-G)")
+    cmp_.add_argument("--no-gold", action="store_true",
+                      help="planner arms: do not also score the 120 gold questions as tier T0")
     cmp_.set_defaults(func=cmd_compare)
 
     args = parser.parse_args()
+    if getattr(args, "arm", None):
+        return _main_planner_arm(args)
     for key, value in BASE_ENV.items():
         os.environ[key] = value
     # Arm environment, applied before anything reads a config. Stated in full
@@ -858,6 +933,66 @@ def main() -> int:
         os.environ["ARIADNE_REWRITE_CACHE_DIR"] = args.cache_dir
     preflight()
     return args.func(args)
+
+
+def _main_planner_arm(args: argparse.Namespace) -> int:
+    """``compare --arm``: the planner arm's environment, identity before and after, the run.
+
+    The environment is BASE_ENV and the ``off`` rewrite posture -- the reference's
+    own -- with the planner seam turned on and pointed at the registry entry.
+    The variants are scored as usual; the 120 gold questions are scored too, as
+    tier ``T0`` (G3), unless ``--no-gold``.
+    """
+    from utils.llm.registry import clear_identity_cache, load, require_identity
+
+    arm = PLANNER_ARMS[args.arm]
+    spec = load()[args.model or str(arm["model"])]
+    for key, value in BASE_ENV.items():
+        os.environ[key] = value
+    os.environ.update(REWRITE_ENV["off"])
+    os.environ.update({
+        "PLANNER_LLM_ENABLED": "true",
+        "PLANNER_INTENT_LLM_ENABLED": "false",
+        "SPECIALIST_LLM_QUERY_BUILDER": "false",
+        "PLANNER_LLM_BASE_URL": spec.endpoint,
+        "PLANNER_LLM_MODEL": spec.alias or spec.name,
+        "LLM_REASONING_EFFORT": spec.reasoning_default or "",
+        "PIPELINE_TIMEOUT_S": PLANNER_PIPELINE_TIMEOUT_S,
+    })
+    preflight()
+    before = require_identity(spec).as_dict()
+    print(f"== arm {args.arm}: {spec.name} via {spec.alias!r}, end-of-turn {before['last_token_id']} (verified)")
+    planner: dict[str, Any] = {"typed": arm["typed"]}
+    if arm["typed"]:
+        from utils.agent.runner import RegistryModel
+
+        planner["model_obj"] = RegistryModel(spec)
+    args.planner_spec = planner
+    if args.name == "scored.json":
+        args.name = f"{args.arm}.json"
+    out_dir = REPO / args.out
+    variants_name = args.variants
+    if not args.no_gold:
+        variants = json.loads((out_dir / args.variants).read_text())
+        gold = [{"case_id": g["case_id"], "tier": "T0", "question": g["question"], "bank": g["bank"],
+                 "note": "the gold question itself (G3)"}
+                for g in gold_questions(getattr(args, "gold", None))]
+        variants_name = f".{args.arm}.with_gold.json"
+        (out_dir / variants_name).write_text(json.dumps(gold + variants, indent=2) + "\n")
+        args.variants = variants_name
+    try:
+        rc = cmd_compare(args)
+    finally:
+        if not args.no_gold:
+            (out_dir / variants_name).unlink(missing_ok=True)
+    clear_identity_cache()
+    after = require_identity(spec).as_dict()
+    (out_dir / f"{args.arm}.identity.json").write_text(json.dumps(
+        {"arm": args.arm, "model": spec.name, "alias": spec.alias, "endpoint": spec.endpoint,
+         "reasoning_effort": spec.reasoning_default, "typed": arm["typed"],
+         "before": before, "after": after}, indent=1) + "\n")
+    print(f"== arm {args.arm}: identity verified before and after")
+    return rc
 
 
 if __name__ == "__main__":

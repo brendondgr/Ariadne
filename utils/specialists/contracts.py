@@ -101,6 +101,18 @@ class SpecialistTask:
         SubQuestion`` — without importing the planner package here.
         """
         limits = sq.limits.to_dict() if hasattr(sq.limits, "to_dict") else dict(sq.limits or {})
+        signals = getattr(sq, "signals", None)
+        # A typed step (EXP-2026-11-015) carries its own signals: the step and
+        # the id families of its anchors, never anything read from words. Its
+        # anchors seed the task unless a producer already seeded it.
+        step = getattr(sq, "step", None)
+        if step is not None:
+            from .signals import TypedStep, step_signals
+
+            typed = step if isinstance(step, TypedStep) else TypedStep.from_dict(step)
+            signals = step_signals(typed)
+            if not seed_ids:
+                seed_ids = typed.anchor_ids
         return cls(
             sub_question_id=str(getattr(sq, "id", "")),
             source=str(getattr(sq, "source", "")),
@@ -110,7 +122,7 @@ class SpecialistTask:
             join_key=getattr(sq, "join_key", None),
             seed_ids=tuple(seed_ids),
             rationale=str(getattr(sq, "rationale", "")),
-            signals=getattr(sq, "signals", None),
+            signals=signals,
         )
 
 

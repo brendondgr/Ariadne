@@ -256,3 +256,53 @@ all.
   reported beside it.
 - **Nothing else changes.** G1, G3, G4, E1–E5 and the decision rules stand.
 
+
+## Amendment 2, 2026-11-18, after Phase 1 and before any Phase 2 call: what was built differs from what was written
+
+Phase 1 is built, and E1–E5 pass (RESULTS will carry the figures). Ten points in the build
+differ from the protocol as written. Each is fixed here before any arm runs.
+
+1. **Arm names.** The dev-bank typed arm is two arms, `planned_llm_typed_lazy` and
+   `planned_llm_typed_full`. The Gemma arm is `planned_llm_typed_lazy --model gemma4-31b`.
+   The English control is `planned_llm_english`.
+2. **Planner turns.** A typed plan takes **up to 6** model turns, not 5:
+   - up to 4 catalog calls, spread over turns (a 5th call in a turn is refused for budget, and
+     later turns get no tools);
+   - 1 emission;
+   - 1 repair.
+3. **The model settings are made equal across arms.** As built, arm E ran
+   `generic_planned_llm`'s 4,096-token cap and the `.env` thinking budget of 512, while the
+   typed arms used the registry client at 16,384 tokens. Arm E now sets
+   `PLANNER_LLM_MAX_TOKENS` to the registry's value and `PLANNER_LLM_THINKING_BUDGET=0`. Both
+   arms then run Qwen at `reasoning_effort=medium`, 16,384 tokens and no thinking budget,
+   checked at the resolver. The hand-off is the only difference.
+4. **The pipeline deadline.** Every planner arm, E included, runs at `PIPELINE_TIMEOUT_S=900`,
+   not the `.env` 120 s. Otherwise six planner turns would use up the retrieval deadline and
+   be scored as empty retrievals. E's lost count may therefore differ from EXP-2026-11-009's
+   45. Amendment 1 already gates on the measured E.
+5. **Engines differ by harness.** The variant arms run the reference's own setting (the
+   template cascade, `SPECIALIST_GENERIC_ONLY=false`), and typed steps run ahead of the
+   cascade. The dev arms run the generic engine, as `generic_planned_llm` does. Within each
+   harness, every arm uses the same engine setting.
+6. **The planner's catalog tools have no store attached.** `describe` of an entity id is
+   refused, and `resolve_entity` answers from the entity index.
+7. **Step 9's operators are not in typed steps.** These are set operations other than "what
+   every anchor links to", aggregate, group and rank. Questions that need them become
+   `unsupported` parts. The step `filter` is single-valued equality on the last label.
+8. **Two reads of the request remain on the typed path,** neither in a builder or the
+   resolver:
+   - `federation.request_seeds(plan.request)`, for a consumer whose producer yielded nothing;
+   - the planner's intent classifier, which is off in every arm (`PLANNER_INTENT_LLM_ENABLED=false`).
+9. **The paired bootstrap.** Variants are resampled with each gold question and its variants
+   as one cluster. Dev questions are resampled one by one. Both use 2,000 resamples, seed
+   20261118.
+10. **Bridged steps lose their typed path.** A joined Gremlin step that walks the declared
+    join edge, or that is anchored on another graph's ids, runs on the engine's bridge. Its
+    stated direction and target are not used, and these are counted in the typed-path health
+    figures.
+
+**The authored baseline for G2 and G4** is the committed
+`harness-attribution-qwen-walkfix-2026-11-16/generic_composed/answers`. A same-tree
+`generic_composed` run on 2026-11-18 agreed with it on records > 0 for 284 of 284 questions.
+
+**Unchanged:** the gates G1–G4 (G2 as in amendment 1), the arms' roles and the decision rules.

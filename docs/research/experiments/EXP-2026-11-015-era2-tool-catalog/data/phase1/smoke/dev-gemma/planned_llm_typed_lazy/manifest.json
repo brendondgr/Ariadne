@@ -1,0 +1,121 @@
+{
+  "arm": "planned_llm_typed_lazy",
+  "bank": "docs/evaluation/composition/bank/bank-dev.json",
+  "count": 3,
+  "ok": 3,
+  "workers": 3,
+  "wall_s": 42.7,
+  "tokens": {
+    "calls": 10,
+    "prompt_tokens": 23794,
+    "completion_tokens": 6197
+  },
+  "profile": {
+    "EVAL_ARTIFACT_MAX_DESC_CHARS": "20000",
+    "EVAL_ARTIFACT_MAX_FACETS": "200",
+    "EVAL_ARTIFACT_MAX_PROP_LIST_ITEMS": "500",
+    "EVAL_ARTIFACT_MAX_RECORDS": "2000",
+    "EVAL_ARTIFACT_MAX_RELATED": "2000",
+    "SPECIALIST_EXPAND_DESC_CHARS": "20000",
+    "SPECIALIST_EXPAND_PAGE_SIZE": "20000",
+    "SPECIALIST_MAX_RESULT_ROWS": "20000",
+    "SPECIALIST_RELATED_DESC_CHARS": "20000",
+    "SYNTHESIS_MAX_CITATIONS": "200",
+    "SYNTHESIS_MAX_ENUMERATION_CLAIMS": "500",
+    "SYNTHESIS_MAX_ENUMERATION_IDS": "2000",
+    "SYNTHESIS_MAX_FACETS_PER_RECORD": "200",
+    "SYNTHESIS_MAX_PROP_CHARS": "20000",
+    "SYNTHESIS_MAX_PROP_LIST_ITEMS": "500",
+    "SYNTHESIS_MAX_RECORDS_PER_RESULT": "2000",
+    "SYNTHESIS_MAX_RELATED_DESC_CHARS": "20000",
+    "SYNTHESIS_MAX_RELATED_PER_RECORD": "2000"
+  },
+  "task_max_result_rows": 20000,
+  "llm": {
+    "planner": "true",
+    "specialist": "false",
+    "synthesis": "false",
+    "model": null,
+    "max_hops": "5",
+    "chase_facets": "true"
+  },
+  "categories": [
+    "D0-Analytic",
+    "D0-Category",
+    "D3-tactic_refs"
+  ],
+  "cases": [
+    {
+      "id": "D0-Analytic-subtechnique-of-AN1112-b87d8e::formal",
+      "ok": true,
+      "kind": "attack",
+      "tier": "adversarial",
+      "category": "D0-Analytic",
+      "records": 1,
+      "related": 3,
+      "wall_s": 42.667
+    },
+    {
+      "id": "D0-Category-ChildOf-CAPEC-210-c437b1::analyst",
+      "ok": true,
+      "kind": "capec",
+      "tier": "adversarial",
+      "category": "D0-Category",
+      "records": 0,
+      "related": 0,
+      "wall_s": 13.979
+    },
+    {
+      "id": "D3-tactic_refs-TA0008-a2b65f::analyst",
+      "ok": true,
+      "kind": "attack",
+      "tier": "medium",
+      "category": "D3-tactic_refs",
+      "records": 1,
+      "related": 1,
+      "wall_s": 7.533
+    }
+  ],
+  "identity": {
+    "model": "gemma4-31b",
+    "alias": "default-model",
+    "endpoint": "http://localhost:9090/v1",
+    "reasoning_effort": null,
+    "before": {
+      "model": "gemma4-31b",
+      "verified": true,
+      "expected_token_id": 106,
+      "last_token_id": 106,
+      "envelope_model": "default-model",
+      "checked_at": 1795053003.709,
+      "reason": ""
+    },
+    "after": {
+      "model": "gemma4-31b",
+      "verified": true,
+      "expected_token_id": 106,
+      "last_token_id": 106,
+      "envelope_model": "default-model",
+      "checked_at": 1795053046.813,
+      "reason": ""
+    }
+  },
+  "planner_env": {
+    "ARIADNE_PLANNER_REGISTRY_MODEL": "gemma4-31b",
+    "ARIADNE_REWRITE": "0",
+    "ARIADNE_REWRITE_MODEL": "0",
+    "ARIADNE_TYPED_PLANNER": "lazy",
+    "CONVERSATION_LLM_ENABLED": "false",
+    "LLM_REASONING_EFFORT": "",
+    "ORCH_MAX_HOPS": "5",
+    "PIPELINE_TIMEOUT_S": "900",
+    "PLANNER_INTENT_LLM_ENABLED": "false",
+    "PLANNER_LLM_BASE_URL": "http://localhost:9090/v1",
+    "PLANNER_LLM_ENABLED": "true",
+    "PLANNER_LLM_MODEL": "default-model",
+    "SPECIALIST_GENERIC_ONLY": "true",
+    "SPECIALIST_LLM_ENABLED": "false",
+    "SPECIALIST_LLM_QUERY_BUILDER": "false",
+    "SYNTHESIS_LLM_ENABLED": "false"
+  }
+}

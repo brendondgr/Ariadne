@@ -390,6 +390,14 @@ class CypherQueryBuilder:
         around a second ``build`` would race every other worker in the process.
         ``None`` keeps the environment's answer, which is the shipped behaviour.
         """
+        # A typed step (EXP-2026-11-015) is executed as written, ahead of both
+        # the template ladder and the generic engine. Only the typed planner
+        # sets one; every other task has ``step is None`` and skips this line.
+        if resolved.task.signals.step is not None:
+            typed = self._typed_step(resolved)
+            if typed is not None:
+                return typed
+
         if _generic_only() if generic is None else generic:
             return self._build_generic(resolved)
 
@@ -942,6 +950,96 @@ class CypherQueryBuilder:
         ):
             return self._describe(resolved)
         return self._label_scan(resolved)
+
+    def _typed_step(self, resolved: ResolvedTask) -> QueryDraft | None:
+        """Compile a typed step: the path, directions, labels and depth it states.
+
+        Nothing is inferred. ``describe`` and ``scan`` reuse the existing
+        compilers; ``expand``/``count`` walk the step's hops from the anchor ids,
+        collecting every prefix (so an intermediate the path passes through is
+        retrieved too, as ``generic_chain`` does), with each hop's relation,
+        direction and target label exactly as validated against the catalog.
+        Rows carry the ``generic_neighbors`` column contract, so normalisation
+        is unchanged. Returns ``None`` (the ordinary engine decides) when the
+        step cannot run here: no anchor ids, or no hops.
+        """
+        step = resolved.task.signals.step
+        if step is None:
+            return None
+        if step.kind == "scan":
+            return self._label_scan(resolved)
+        if not resolved.seed_ids:
+            return None
+        if step.kind == "common":
+            return self._generic_intersect(resolved) or self._describe(resolved)
+        if step.kind == "describe" or not step.hops:
+            return self._describe(resolved)
+        hops = list(step.hops)
+        depth = max(1, int(step.depth or 1))
+        bound = self._typed_filter(resolved, step)
+        blocks: list[str] = []
+        collected: list[str] = []
+        for i in range(1, len(hops) + 1):
+            pattern = []
+            for j, hop in enumerate(hops[:i]):
+                rel = _safe_ident(hop.relation, _SAFE_REL_RE, "relationship type")
+                # An empty target keeps every label the hop reaches.
+                target = (":" + _safe_ident(hop.target_label, _SAFE_LABEL_RE, "target label")
+                          if hop.target_label else "")
+                var = f"t{i - 1}" if j == i - 1 else ""
+                star = f"*1..{depth}" if len(hops) == 1 and depth > 1 else ""
+                if hop.direction == "in":
+                    pattern.append(f"<-[:{rel}{star}]-({var}{target})")
+                else:
+                    pattern.append(f"-[:{rel}{star}]->({var}{target})")
+            terminal = _safe_ident(hops[i - 1].relation, _SAFE_REL_RE, "relationship type")
+            where = ""
+            if bound is not None and i == len(hops):
+                where = f" WHERE {self._filter_predicate(bound, f't{i - 1}')}"
+            carry = ", ".join(["n", *collected])
+            blocks.append(
+                f"OPTIONAL MATCH (n){''.join(pattern)}{where} "
+                f"WITH {carry}, collect(DISTINCT {{m: t{i - 1}, r: '{terminal}'}}) AS k{i - 1}"
+            )
+            collected.append(f"k{i - 1}")
+        query = (
+            "MATCH (n) WHERE coalesce(n.attack_id, n.id) IN $ids "
+            + " ".join(blocks)
+            + f" WITH n, [x IN {' + '.join(collected)} WHERE x.m IS NOT NULL] AS hops "
+            "UNWIND (CASE WHEN size(hops) = 0 THEN [{m: null, r: null}] ELSE hops END) AS hop "
+            "RETURN coalesce(n.attack_id, n.id) AS anchor_id, n.name AS anchor_name, "
+            "labels(n)[0] AS anchor_label, "
+            "coalesce(hop.m.attack_id, hop.m.id) AS neighbour_id, "
+            "hop.m.name AS neighbour_name, "
+            "labels(hop.m)[0] AS neighbour_label, hop.r AS rel_type"
+        )
+        params: dict[str, Any] = {"ids": list(resolved.seed_ids)}
+        meta: dict[str, Any] = {"typed_step": step.to_dict(), "seed_ids": list(resolved.seed_ids)}
+        if bound is not None:
+            params["filterValue"] = bound[2]
+            meta["filter"] = f"{bound[0]}.{bound[1]}={bound[2]}"
+        return QueryDraft(query=query, params=params, template="typed_step",
+                          expected_nonempty=False, meta=meta)
+
+    def _typed_filter(self, resolved: ResolvedTask, step: Any):
+        """The step's ``(property, value)`` as a bound filter on its last label, or ``None``.
+
+        Same store rule as :meth:`_bound_filter`: a property the store never
+        stored natively would match nothing silently, so it is dropped.
+        """
+        if not step.filter or not step.hops or not step.hops[-1].target_label:
+            return None
+        label, (prop, value) = step.hops[-1].target_label, step.filter
+        try:
+            from utils.specialists.schema import get_registry
+
+            registry = get_registry()
+            if not registry.is_native_property(label, prop, dataset=resolved.dataset):
+                return None
+            is_list = registry.is_list_property(label, prop, dataset=resolved.dataset)
+        except Exception:  # noqa: BLE001 — no registry: no filter
+            return None
+        return label, prop, value, is_list
 
     def _generic_intersect(self, resolved: ResolvedTask) -> QueryDraft | None:
         """Nodes adjacent to **every** seed, when the seeds are of different kinds.

@@ -37,6 +37,74 @@ _TUPLE_FIELDS = (
 )
 
 
+#: What a typed step asks for. ``expand``: the neighbours over a path;
+#: ``count``: the same set, for a count; ``describe``: the anchor itself;
+#: ``scan``: every member of one label; ``common``: what every anchor links to.
+STEP_KINDS = ("expand", "count", "describe", "scan", "common")
+
+
+@dataclass(frozen=True)
+class TypedHop:
+    """One hop of a typed path: a card relation, its direction, the label it reaches."""
+
+    relation: str
+    direction: str
+    target_label: str
+
+    def to_dict(self) -> dict[str, Any]:
+        return {"relation": self.relation, "direction": self.direction, "target_label": self.target_label}
+
+    @classmethod
+    def from_dict(cls, data: dict[str, Any]) -> "TypedHop":
+        return cls(str(data.get("relation") or ""), str(data.get("direction") or ""),
+                   str(data.get("target_label") or ""))
+
+
+@dataclass(frozen=True)
+class TypedStep:
+    """A validated typed request: everything the builder needs, no English.
+
+    ``anchor_ids`` are entity ids (from ``resolve_entity`` or written by the
+    planner and checked); ``hops`` is the path from the anchor, every hop
+    checked against the catalog's option rules; ``depth`` repeats a single
+    repeating hop; ``filter`` is ``(property, value)`` on the last hop's label.
+    """
+
+    kind: str
+    anchor_label: str = ""
+    anchor_ids: tuple[str, ...] = ()
+    hops: tuple[TypedHop, ...] = ()
+    depth: int = 1
+    filter: tuple[str, str] | None = None
+
+    def to_dict(self) -> dict[str, Any]:
+        out: dict[str, Any] = {"kind": self.kind, "anchor_label": self.anchor_label,
+                               "anchor_ids": list(self.anchor_ids),
+                               "hops": [h.to_dict() for h in self.hops], "depth": self.depth}
+        if self.filter is not None:
+            out["filter"] = {"property": self.filter[0], "value": self.filter[1]}
+        return out
+
+    @classmethod
+    def from_dict(cls, data: dict[str, Any]) -> "TypedStep":
+        flt = data.get("filter")
+        return cls(
+            kind=str(data.get("kind") or "expand"),
+            anchor_label=str(data.get("anchor_label") or ""),
+            anchor_ids=tuple(str(x) for x in data.get("anchor_ids") or ()),
+            hops=tuple(TypedHop.from_dict(h) for h in data.get("hops") or ()),
+            depth=int(data.get("depth") or 1),
+            filter=(str(flt.get("property")), str(flt.get("value"))) if isinstance(flt, dict) else None,
+        )
+
+    def entities(self) -> list[str]:
+        """The card names the step touches, in path order (anchor, rel, label, ...)."""
+        out = [self.anchor_label] if self.anchor_label else []
+        for h in self.hops:
+            out += [h.relation, h.target_label]
+        return [e for e in dict.fromkeys(out) if e]
+
+
 @dataclass(frozen=True)
 class TaskSignals:
     """Everything the specialists may know about the question's wording."""
@@ -67,6 +135,11 @@ class TaskSignals:
     question_words: tuple[str, ...] = ()
     #: Registry-observed property values the text writes (``_value_in_text``).
     mentioned_values: tuple[str, ...] = ()
+    #: A typed step from the typed planner (EXP-2026-11-015 item 6), or ``None``.
+    #: When present the builders execute it instead of reading the lexical
+    #: fields; ``None`` (every rules-path task) changes nothing and is omitted
+    #: from ``to_dict``.
+    step: "TypedStep | None" = None
 
     @property
     def name_text(self) -> str:
@@ -78,6 +151,8 @@ class TaskSignals:
         for key in _TUPLE_FIELDS:
             out[key] = list(getattr(self, key))
         out["name_candidates"] = {k: list(v) for k, v in self.name_candidates.items()}
+        if self.step is not None:
+            out["step"] = self.step.to_dict()
         return out
 
     @classmethod
@@ -89,6 +164,7 @@ class TaskSignals:
                 str(k): tuple(str(x) for x in v)
                 for k, v in (data.get("name_candidates") or {}).items()
             },
+            step=TypedStep.from_dict(data["step"]) if isinstance(data.get("step"), dict) else None,
             **{key: tuple(str(x) for x in data.get(key) or ()) for key in _TUPLE_FIELDS},
         )
 
@@ -151,6 +227,25 @@ def _proper_nouns(text: str) -> tuple[str, ...]:
     ))
 
 
+def step_signals(step: TypedStep) -> TaskSignals:
+    """Signals for a typed step: the step itself, plus the id families of its anchors.
+
+    No lexical field is filled. The id fields are read from the anchor ids alone
+    (never from a question), so the resolver's native-id priority sees what the
+    step names and nothing else.
+    """
+    ids = id_signals(" ".join(step.anchor_ids))
+    return TaskSignals(
+        bulk_scan=step.kind == "scan",
+        definitional=step.kind == "describe",
+        attack_ids=ids.attack_ids,
+        capec_ids=ids.capec_ids,
+        cwe_ids=ids.cwe_ids,
+        attack_seed_ids=ids.attack_seed_ids,
+        step=step,
+    )
+
+
 def derive_signals(text: str) -> TaskSignals:
     """Read the question once. The only function here that sees English."""
     from utils.planner.canonical import _question_words
@@ -178,4 +273,4 @@ def derive_signals(text: str) -> TaskSignals:
     )
 
 
-__all__ = ["TaskSignals", "derive_signals", "id_signals"]
+__all__ = ["STEP_KINDS", "TaskSignals", "TypedHop", "TypedStep", "derive_signals", "id_signals", "step_signals"]

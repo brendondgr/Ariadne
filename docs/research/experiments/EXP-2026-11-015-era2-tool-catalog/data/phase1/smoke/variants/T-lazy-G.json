@@ -1,0 +1,567 @@
+[
+  {
+    "abstained": false,
+    "abstentions": [],
+    "bank": "attack",
+    "cache_hit": false,
+    "canonical_question": "",
+    "case_id": "A-MIT-01",
+    "catalogue_dump": false,
+    "claims": [
+      "Found 4 item(s) related to T1047 (e.g. M1038, M1040, M1018) in MITRE ATT&CK.",
+      "T1047 (Windows Management Instrumentation) has 4 mitigations: M1038, M1040, M1018, M1026."
+    ],
+    "claims_exact": false,
+    "entity_ids": [
+      "M1018",
+      "M1026",
+      "M1038",
+      "M1040",
+      "T1047"
+    ],
+    "entity_ids_by_source": {
+      "attack": [
+        "M1018",
+        "M1026",
+        "M1038",
+        "M1040",
+        "T1047"
+      ]
+    },
+    "form_exact": null,
+    "gold_n": 5,
+    "gold_question": "What mitigations does ATT&CK list for T1047 (Windows Management Instrumentation)?",
+    "model_consulted": false,
+    "note": "kept id, swapped 'mitigations' for 'defend against'",
+    "planner": {
+      "drafter": "TypedDrafter",
+      "plan": [
+        {
+          "entities": [
+            "Technique",
+            "MITIGATES",
+            "Mitigation"
+          ],
+          "source": "attack",
+          "step": {
+            "anchor_ids": [
+              "T1047"
+            ],
+            "anchor_label": "Technique",
+            "depth": 1,
+            "hops": [
+              {
+                "direction": "in",
+                "relation": "MITIGATES",
+                "target_label": "Mitigation"
+              }
+            ],
+            "kind": "expand"
+          }
+        }
+      ],
+      "unsupported": 0
+    },
+    "queries": [
+      "MATCH (n) WHERE coalesce(n.attack_id, n.id) IN $ids OPTIONAL MATCH (n)<-[:MITIGATES]-(t0:Mitigation) WITH n, collect(DISTINCT {m: t0, r: 'MITIGATES'}) AS k0 WITH n, [x IN k0 WHERE x.m IS NOT NULL] AS hops UNWIND (CASE WHEN size(hops) = 0 THEN [{m: null, r: null}] ELSE hops END) AS hop RETURN coalesce(n.attack_id, n.id) AS anchor_id, n.name AS anchor_name, labels(n)[0] AS anchor_label, coalesce(hop.m.attack_id, hop.m.id) AS neighbour_id, hop.m.name AS neighbour_name, labels(hop.m)[0] AS neighbour_label, hop.r AS rel_type LIMIT 1000"
+    ],
+    "queries_exact": false,
+    "question": "How do I defend against T1047?",
+    "record_count": 1,
+    "records_exact": true,
+    "records_jaccard": 1.0,
+    "records_recall": 1.0,
+    "run_index": 0,
+    "rung": "off",
+    "served_model": "",
+    "slot_anchor": null,
+    "slot_anchor_label": null,
+    "slot_relation": null,
+    "slot_target_label": null,
+    "slots_scored": 0,
+    "sources": [
+      "attack"
+    ],
+    "tier": "T1",
+    "timing": {
+      "latency_s": 14.294
+    },
+    "typed": [
+      {
+        "catalog_calls": [
+          {
+            "args": {
+              "graph": "attack",
+              "text": "MITIGATES"
+            },
+            "name": "find_schema",
+            "ok": true
+          }
+        ],
+        "coercions": [],
+        "completion_tokens": 1379,
+        "emitted": true,
+        "error": null,
+        "fallback": null,
+        "final_steps": 1,
+        "first_fixes": 0,
+        "first_refused": 0,
+        "first_steps": 1,
+        "fixed_by_coercion": false,
+        "fixed_by_repair": false,
+        "mode": "lazy",
+        "model_calls": 2,
+        "n_catalog_calls": 1,
+        "parse_error": null,
+        "plan_problems": [],
+        "prompt_tokens": 3559,
+        "refusals": [],
+        "repair_used": false,
+        "replies": [
+          {
+            "calls": [
+              "find_schema"
+            ],
+            "finish_reason": "tool_calls",
+            "repairs": [],
+            "status": "ok",
+            "text_chars": 0
+          },
+          {
+            "calls": [],
+            "finish_reason": "stop",
+            "repairs": [],
+            "status": "ok",
+            "text_chars": 451
+          }
+        ],
+        "seconds": 13.709,
+        "served_model": "gemma4-31b/106",
+        "still_refused": 0,
+        "valid_first": true,
+        "valid_first_raw": true
+      }
+    ],
+    "unsupported": 0,
+    "variant_n": 5,
+    "wrong_entity": false
+  },
+  {
+    "abstained": false,
+    "abstentions": [],
+    "bank": "attack",
+    "cache_hit": false,
+    "canonical_question": "",
+    "case_id": "A-MC-01",
+    "catalogue_dump": false,
+    "claims": [
+      "Found 29 record(s) in MITRE ATT&CK including T1556, T1003.006, T1558.003 and more.",
+      "T1003.003 (NTDS) has 1 mitigation: M1027.",
+      "T1003.003 (NTDS) has 1 tactic: TA0006.",
+      "T1003.005 (Cached Domain Credentials) has 1 mitigation: M1027.",
+      "T1003.005 (Cached Domain Credentials) has 1 tactic: TA0006.",
+      "T1003.006 (DCSync) has 1 mitigation: M1027.",
+      "T1003.006 (DCSync) has 1 tactic: TA0006.",
+      "T1003.008 (/etc/passwd and /etc/shadow) has 1 mitigation: M1027.",
+      "T1003.008 (/etc/passwd and /etc/shadow) has 1 tactic: TA0006.",
+      "T1110 (Brute Force) has 1 mitigation: M1027.",
+      "T1110 (Brute Force) has 1 tactic: TA0006.",
+      "T1110.003 (Password Spraying) has 1 mitigation: M1027.",
+      "T1110.004 (Credential Stuffing) has 1 mitigation: M1027.",
+      "T1110.004 (Credential Stuffing) has 1 tactic: TA0006.",
+      "T1187 (Forced Authentication) has 1 mitigation: M1027.",
+      "T1187 (Forced Authentication) has 1 tactic: TA0006.",
+      "T1552.001 (Credentials In Files) has 1 mitigation: M1027.",
+      "T1552.001 (Credentials In Files) has 1 tactic: TA0006.",
+      "T1556 (Modify Authentication Process) has 1 mitigation: M1027.",
+      "T1556 (Modify Authentication Process) has 1 tactic: TA0006.",
+      "T1556.005 (Reversible Encryption) has 1 mitigation: M1027.",
+      "T1556.005 (Reversible Encryption) has 1 tactic: TA0006.",
+      "T1558.002 (Silver Ticket) has 1 mitigation: M1027.",
+      "T1558.002 (Silver Ticket) has 1 tactic: TA0006.",
+      "T1558.003 (Kerberoasting) has 1 mitigation: M1027.",
+      "T1558.003 (Kerberoasting) has 1 tactic: TA0006."
+    ],
+    "claims_exact": false,
+    "entity_ids": [
+      "M1027",
+      "T1003",
+      "T1003.001",
+      "T1003.002",
+      "T1003.003",
+      "T1003.004",
+      "T1003.005",
+      "T1003.006",
+      "T1003.007",
+      "T1003.008",
+      "T1110",
+      "T1110.001",
+      "T1110.002",
+      "T1110.003",
+      "T1110.004",
+      "T1187",
+      "T1552",
+      "T1552.001",
+      "T1552.002",
+      "T1552.004",
+      "T1555",
+      "T1555.001",
+      "T1555.003",
+      "T1555.005",
+      "T1556",
+      "T1556.005",
+      "T1558",
+      "T1558.002",
+      "T1558.003",
+      "T1558.004",
+      "TA0006"
+    ],
+    "entity_ids_by_source": {
+      "attack": [
+        "M1027",
+        "T1003",
+        "T1003.001",
+        "T1003.002",
+        "T1003.003",
+        "T1003.004",
+        "T1003.005",
+        "T1003.006",
+        "T1003.007",
+        "T1003.008",
+        "T1110",
+        "T1110.001",
+        "T1110.002",
+        "T1110.003",
+        "T1110.004",
+        "T1187",
+        "T1552",
+        "T1552.001",
+        "T1552.002",
+        "T1552.004",
+        "T1555",
+        "T1555.001",
+        "T1555.003",
+        "T1555.005",
+        "T1556",
+        "T1556.005",
+        "T1558",
+        "T1558.002",
+        "T1558.003",
+        "T1558.004",
+        "TA0006"
+      ]
+    },
+    "form_exact": null,
+    "gold_n": 9,
+    "gold_question": "Which techniques in tactic TA0006 are mitigated by M1027?",
+    "model_consulted": false,
+    "note": "swapped 'mitigated by' for 'defend against', kept identifiers",
+    "planner": {
+      "drafter": "TypedDrafter",
+      "plan": [
+        {
+          "entities": [
+            "Mitigation"
+          ],
+          "source": "attack",
+          "step": {
+            "anchor_ids": [
+              "TA0006",
+              "M1027"
+            ],
+            "anchor_label": "Mitigation",
+            "depth": 1,
+            "hops": [],
+            "kind": "common"
+          }
+        }
+      ],
+      "unsupported": 0
+    },
+    "queries": [
+      "MATCH (n) WHERE coalesce(n.attack_id, n.id) IN $ids MATCH (n)-[r]-(m) WITH m, collect(DISTINCT coalesce(n.attack_id, n.id)) AS anchors, collect(DISTINCT {id: coalesce(n.attack_id, n.id), name: n.name, label: labels(n)[0], rel: type(r)}) AS sources WHERE size(anchors) = $anchorCount UNWIND sources AS source RETURN coalesce(m.attack_id, m.id) AS anchor_id, m.name AS anchor_name, labels(m)[0] AS anchor_label, source.id AS neighbour_id, source.name AS neighbour_name, source.label AS neighbour_label, source.rel AS rel_type LIMIT 1000"
+    ],
+    "queries_exact": false,
+    "question": "Which techniques under TA0006 does M1027 defend against?",
+    "record_count": 29,
+    "records_exact": false,
+    "records_jaccard": 0.2903,
+    "records_recall": 1.0,
+    "run_index": 0,
+    "rung": "off",
+    "served_model": "",
+    "slot_anchor": null,
+    "slot_anchor_label": null,
+    "slot_relation": null,
+    "slot_target_label": null,
+    "slots_scored": 0,
+    "sources": [
+      "attack"
+    ],
+    "tier": "T1",
+    "timing": {
+      "latency_s": 40.45
+    },
+    "typed": [
+      {
+        "catalog_calls": [],
+        "coercions": [],
+        "completion_tokens": 4669,
+        "emitted": true,
+        "error": null,
+        "fallback": null,
+        "final_steps": 1,
+        "first_fixes": 0,
+        "first_refused": 0,
+        "first_steps": 1,
+        "fixed_by_coercion": false,
+        "fixed_by_repair": false,
+        "mode": "lazy",
+        "model_calls": 1,
+        "n_catalog_calls": 0,
+        "parse_error": null,
+        "plan_problems": [],
+        "prompt_tokens": 1636,
+        "refusals": [],
+        "repair_used": false,
+        "replies": [
+          {
+            "calls": [],
+            "finish_reason": "stop",
+            "repairs": [],
+            "status": "ok",
+            "text_chars": 496
+          }
+        ],
+        "seconds": 39.895,
+        "served_model": "gemma4-31b/106",
+        "still_refused": 0,
+        "valid_first": true,
+        "valid_first_raw": true
+      }
+    ],
+    "unsupported": 0,
+    "variant_n": 31,
+    "wrong_entity": false
+  },
+  {
+    "abstained": false,
+    "abstentions": [],
+    "bank": "federated",
+    "cache_hit": false,
+    "canonical_question": "",
+    "case_id": "F-CTM-01",
+    "catalogue_dump": false,
+    "claims": [
+      "CAPEC-545 (Pull Data from System Resources) has 2 ATT&CK mappings: T1005, T1555.001.",
+      "CAPEC-545 (Pull Data from System Resources) has Abstraction: Standard; Status: Draft.",
+      "CAPEC-545 (Pull Data from System Resources): An adversary who is authorized or has the ability to search known system resources, does so with the intention of gathering useful information. System resources include files, memory, and other aspects of the target system. In this pattern of attack, the adversary does not necessarily know what they are going to find when they start pulling data. This is different than CAPEC-150 where the adversary knows what they are looking for due to the common location.",
+      "Found 1 CAPEC record(s) for CAPEC-545; ATT&CK mappings: T1005, T1555.001.",
+      "Found 2 record(s) in MITRE ATT&CK including T1555.001, T1005.",
+      "T1005 (Data from Local System) has 1 mitigation: M1057.",
+      "T1555.001 (Keychain) has 1 mitigation: M1027.",
+      "The identifier T1005 is corroborated across attack and capec (2 record(s) share it).",
+      "The identifier T1555.001 is corroborated across attack and capec (2 record(s) share it)."
+    ],
+    "claims_exact": false,
+    "entity_ids": [
+      "CAPEC-545",
+      "M1027",
+      "M1057",
+      "T1005",
+      "T1555.001"
+    ],
+    "entity_ids_by_source": {
+      "attack": [
+        "M1027",
+        "M1057",
+        "T1005",
+        "T1555.001"
+      ],
+      "capec": [
+        "CAPEC-545",
+        "T1005",
+        "T1555.001"
+      ]
+    },
+    "form_exact": null,
+    "gold_n": 27,
+    "gold_question": "Which ATT&CK techniques does CAPEC-150 (Collect Data from Common Resource Locations) map to, and what mitigations apply to those techniques?",
+    "model_consulted": false,
+    "note": "kept identifier, swapped 'map to'/'mitigations' for plainer verbs",
+    "planner": {
+      "drafter": "TypedDrafter",
+      "plan": [
+        {
+          "entities": [
+            "AttackPattern",
+            "MAPS_TO",
+            "TaxonomyEntry"
+          ],
+          "source": "capec",
+          "step": {
+            "anchor_ids": [
+              "CAPEC-545"
+            ],
+            "anchor_label": "AttackPattern",
+            "depth": 1,
+            "hops": [
+              {
+                "direction": "out",
+                "relation": "MAPS_TO",
+                "target_label": "TaxonomyEntry"
+              }
+            ],
+            "kind": "expand"
+          }
+        },
+        {
+          "entities": [
+            "Technique",
+            "MITIGATES",
+            "Mitigation"
+          ],
+          "source": "attack",
+          "step": {
+            "anchor_ids": [],
+            "anchor_label": "Technique",
+            "depth": 1,
+            "hops": [
+              {
+                "direction": "in",
+                "relation": "MITIGATES",
+                "target_label": "Mitigation"
+              }
+            ],
+            "kind": "expand"
+          }
+        }
+      ],
+      "unsupported": 0
+    },
+    "queries": [
+      "MATCH (n) WHERE coalesce(n.attack_id, n.id) IN $ids OPTIONAL MATCH (n)<-[:MITIGATES]-(t0:Mitigation) WITH n, collect(DISTINCT {m: t0, r: 'MITIGATES'}) AS k0 WITH n, [x IN k0 WHERE x.m IS NOT NULL] AS hops UNWIND (CASE WHEN size(hops) = 0 THEN [{m: null, r: null}] ELSE hops END) AS hop RETURN coalesce(n.attack_id, n.id) AS anchor_id, n.name AS anchor_name, labels(n)[0] AS anchor_label, coalesce(hop.m.attack_id, hop.m.id) AS neighbour_id, hop.m.name AS neighbour_name, labels(hop.m)[0] AS neighbour_label, hop.r AS rel_type LIMIT 1000",
+      "g.V().has(\"id\", within(ids)).project(\"ap\",\"tax\").by(elementMap()).by(__.out(\"MAPS_TO\").hasLabel(\"TaxonomyEntry\").has(\"taxonomy_name\",\"ATTACK\").elementMap().fold()).limit(1000)"
+    ],
+    "queries_exact": false,
+    "question": "For CAPEC-150, which ATT&CK techniques does it correspond to, and how would you defend against each of those techniques?",
+    "record_count": 3,
+    "records_exact": false,
+    "records_jaccard": 0.0323,
+    "records_recall": 0.037,
+    "run_index": 0,
+    "rung": "off",
+    "served_model": "",
+    "slot_anchor": null,
+    "slot_anchor_label": null,
+    "slot_relation": null,
+    "slot_target_label": null,
+    "slots_scored": 0,
+    "sources": [
+      "attack",
+      "capec"
+    ],
+    "tier": "T1",
+    "timing": {
+      "latency_s": 27.028
+    },
+    "typed": [
+      {
+        "catalog_calls": [
+          {
+            "args": {
+              "graph": "capec",
+              "label": "AttackPattern",
+              "text": "CAPEC-150"
+            },
+            "name": "resolve_entity",
+            "ok": true
+          },
+          {
+            "args": {
+              "graph": "capec",
+              "text": "MAPS_TO"
+            },
+            "name": "find_schema",
+            "ok": true
+          },
+          {
+            "args": {
+              "graph": "attack",
+              "text": "MITIGATES"
+            },
+            "name": "find_schema",
+            "ok": true
+          }
+        ],
+        "coercions": [
+          {
+            "field": "anchor",
+            "filled_by": "resolve_entity",
+            "from": {
+              "name": "CAPEC-150"
+            },
+            "step": "q1",
+            "to": {
+              "id": [
+                "CAPEC-545"
+              ]
+            }
+          }
+        ],
+        "completion_tokens": 3160,
+        "emitted": true,
+        "error": null,
+        "fallback": null,
+        "final_steps": 2,
+        "first_fixes": 1,
+        "first_refused": 0,
+        "first_steps": 2,
+        "fixed_by_coercion": true,
+        "fixed_by_repair": false,
+        "mode": "lazy",
+        "model_calls": 2,
+        "n_catalog_calls": 3,
+        "parse_error": null,
+        "plan_problems": [],
+        "prompt_tokens": 3865,
+        "refusals": [],
+        "repair_used": false,
+        "replies": [
+          {
+            "calls": [
+              "resolve_entity",
+              "find_schema",
+              "find_schema"
+            ],
+            "finish_reason": "tool_calls",
+            "repairs": [
+              {
+                "call_id": "chatcmpl-tool-9766301900462c54",
+                "detail": "35 chars",
+                "kind": "args_closed_truncated"
+              }
+            ],
+            "status": "ok",
+            "text_chars": 0
+          },
+          {
+            "calls": [],
+            "finish_reason": "stop",
+            "repairs": [],
+            "status": "ok",
+            "text_chars": 962
+          }
+        ],
+        "seconds": 26.465,
+        "served_model": "gemma4-31b/106",
+        "still_refused": 0,
+        "valid_first": true,
+        "valid_first_raw": false
+      }
+    ],
+    "unsupported": 0,
+    "variant_n": 5,
+    "wrong_entity": false
+  }
+]

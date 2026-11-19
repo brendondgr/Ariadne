@@ -1,0 +1,142 @@
+{
+  "arm": "planned_llm_english",
+  "bank": "docs/evaluation/composition/bank/bank-dev.json",
+  "count": 5,
+  "ok": 5,
+  "workers": 5,
+  "wall_s": 43.3,
+  "tokens": {
+    "calls": 5,
+    "prompt_tokens": 8592,
+    "completion_tokens": 8188
+  },
+  "profile": {
+    "EVAL_ARTIFACT_MAX_DESC_CHARS": "20000",
+    "EVAL_ARTIFACT_MAX_FACETS": "200",
+    "EVAL_ARTIFACT_MAX_PROP_LIST_ITEMS": "500",
+    "EVAL_ARTIFACT_MAX_RECORDS": "2000",
+    "EVAL_ARTIFACT_MAX_RELATED": "2000",
+    "SPECIALIST_EXPAND_DESC_CHARS": "20000",
+    "SPECIALIST_EXPAND_PAGE_SIZE": "20000",
+    "SPECIALIST_MAX_RESULT_ROWS": "20000",
+    "SPECIALIST_RELATED_DESC_CHARS": "20000",
+    "SYNTHESIS_MAX_CITATIONS": "200",
+    "SYNTHESIS_MAX_ENUMERATION_CLAIMS": "500",
+    "SYNTHESIS_MAX_ENUMERATION_IDS": "2000",
+    "SYNTHESIS_MAX_FACETS_PER_RECORD": "200",
+    "SYNTHESIS_MAX_PROP_CHARS": "20000",
+    "SYNTHESIS_MAX_PROP_LIST_ITEMS": "500",
+    "SYNTHESIS_MAX_RECORDS_PER_RESULT": "2000",
+    "SYNTHESIS_MAX_RELATED_DESC_CHARS": "20000",
+    "SYNTHESIS_MAX_RELATED_PER_RECORD": "2000"
+  },
+  "task_max_result_rows": 20000,
+  "llm": {
+    "planner": "true",
+    "specialist": "false",
+    "synthesis": "false",
+    "model": null,
+    "max_hops": "5",
+    "chase_facets": "true"
+  },
+  "categories": [
+    "D0-Analytic",
+    "D0-Category",
+    "D3-tactic_refs",
+    "D4-CanAlsoBe",
+    "D6-CanPrecede"
+  ],
+  "cases": [
+    {
+      "id": "D0-Analytic-subtechnique-of-AN1112-b87d8e::formal",
+      "ok": true,
+      "kind": "attack",
+      "tier": "adversarial",
+      "category": "D0-Analytic",
+      "records": 0,
+      "related": 0,
+      "wall_s": 42.978
+    },
+    {
+      "id": "D0-Category-ChildOf-CAPEC-210-c437b1::analyst",
+      "ok": true,
+      "kind": "capec",
+      "tier": "adversarial",
+      "category": "D0-Category",
+      "records": 0,
+      "related": 0,
+      "wall_s": 27.58
+    },
+    {
+      "id": "D3-tactic_refs-TA0008-a2b65f::analyst",
+      "ok": true,
+      "kind": "attack",
+      "tier": "medium",
+      "category": "D3-tactic_refs",
+      "records": 1,
+      "related": 1,
+      "wall_s": 26.837
+    },
+    {
+      "id": "D4-CanAlsoBe-HAS_CONSEQUENCE-CAPEC-248-02edba::analyst",
+      "ok": true,
+      "kind": "capec",
+      "tier": "hard",
+      "category": "D4-CanAlsoBe",
+      "records": 2,
+      "related": 2,
+      "wall_s": 39.442
+    },
+    {
+      "id": "D6-CanPrecede-MAPS_TO[ATTACK]-CAPEC-691-3d05ef::formal",
+      "ok": true,
+      "kind": "federated",
+      "tier": "hard",
+      "category": "D6-CanPrecede",
+      "records": 3,
+      "related": 6,
+      "wall_s": 43.321
+    }
+  ],
+  "identity": {
+    "model": "qwen38-27b",
+    "alias": "default-model-2",
+    "endpoint": "http://localhost:9090/v1",
+    "reasoning_effort": "medium",
+    "before": {
+      "model": "qwen38-27b",
+      "verified": true,
+      "expected_token_id": 248046,
+      "last_token_id": 248046,
+      "envelope_model": "default-model-2",
+      "checked_at": 1795053003.761,
+      "reason": ""
+    },
+    "after": {
+      "model": "qwen38-27b",
+      "verified": true,
+      "expected_token_id": 248046,
+      "last_token_id": 248046,
+      "envelope_model": "default-model-2",
+      "checked_at": 1795053047.505,
+      "reason": ""
+    }
+  },
+  "planner_env": {
+    "ARIADNE_PLANNER_REGISTRY_MODEL": "qwen38-27b",
+    "ARIADNE_REWRITE": "0",
+    "ARIADNE_REWRITE_MODEL": "0",
+    "CONVERSATION_LLM_ENABLED": "false",
+    "LLM_REASONING_EFFORT": "medium",
+    "ORCH_MAX_HOPS": "5",
+    "PIPELINE_TIMEOUT_S": "900",
+    "PLANNER_INTENT_LLM_ENABLED": "false",
+    "PLANNER_LLM_BASE_URL": "http://localhost:9090/v1",
+    "PLANNER_LLM_ENABLED": "true",
+    "PLANNER_LLM_MODEL": "default-model-2",
+    "SPECIALIST_GENERIC_ONLY": "true",
+    "SPECIALIST_LLM_ENABLED": "false",
+    "SPECIALIST_LLM_QUERY_BUILDER": "false",
+    "SYNTHESIS_LLM_ENABLED": "false"
+  }
+}
