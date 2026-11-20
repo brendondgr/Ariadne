@@ -7,7 +7,8 @@ identity check before and after still passes (EXP-2026-11-016 ISSUES). A model-l
 is one whose planner fell back to ``DeterministicDrafter``, or a dev answer that records
 ``could not reach localhost:9090``. A healthy arm has 1-12 of 699 (variants) or of 284
 (dev); a drop gives hundreds. Prints ``<path> modelless=<n> of <total> OK|RERUN`` and exits
-1 when the count is above ``--max``.
+1 when the count is above ``--max``. ``--merge <metrics.json>`` also records
+``{"modelless": n, "total": t, "max": m}`` under ``h1.<arm path relative to its run root>``.
 """
 
 from __future__ import annotations
@@ -43,9 +44,16 @@ def main(argv: list[str] | None = None) -> int:
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("path")
     ap.add_argument("--max", type=int, default=12)
+    ap.add_argument("--merge", default=None, help="a metrics.json to record the count in, under h1")
     args = ap.parse_args(argv)
     bad, total = count(Path(args.path))
     ok = bad <= args.max
+    if args.merge:
+        mp = Path(args.merge)
+        m = json.loads(mp.read_text())
+        key = "/".join(Path(args.path).parts[-2:])
+        m.setdefault("h1", {})[key] = {"modelless": bad, "total": total, "max": args.max}
+        mp.write_text(json.dumps(m, indent=2, sort_keys=True) + "\n")
     print(f"{args.path} modelless={bad} of {total} {'OK' if ok else 'RERUN'}")
     return 0 if ok else 1
 

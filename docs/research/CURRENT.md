@@ -131,5 +131,6 @@ this file says which number is *current*.
 | [`EXP-2026-11-014`](experiments/EXP-2026-11-014-era2-decision-model-usability/) | 2026-11-17 | `d4_pplx_wording_accuracy_gain` | 0.1487 ± 0.0000 (n=464) | — | — |
 | [`EXP-2026-11-015`](experiments/EXP-2026-11-015-era2-tool-catalog/) | 2026-11-18 | `t1_records_exact_typed_lazy` | 0.6167 ± 0.0000 (n=120) | — | — |
 | [`EXP-2026-11-016`](experiments/EXP-2026-11-016-era2-scan-fix/) | 2026-11-19 | `f1_anchorless_scan_cw_dev_typed_lazy` | 0.0000 ± 0.0000 (n=284) | — | — |
+| [`EXP-2026-11-017`](experiments/EXP-2026-11-017-era2-bridge-guard/) | 2026-11-19 | `f1_anchorless_scan_cw_variants_typed_lazy` | 2.0000 ± 0.0000 (n=669) | — | — |
 
-**25 withdrawn figure(s), 6 superseded experiment(s), 72 current headline(s).**
+**25 withdrawn figure(s), 6 superseded experiment(s), 73 current headline(s).**

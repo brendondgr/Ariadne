@@ -5,9 +5,9 @@
 id: EXP-2026-11-017
 slug: era2-bridge-guard
 title: "Era 2 Step 8 follow-up 2: the bridge-route scan guard in the typed planner, re-run on EXP-2026-11-015's arms and gates"
-status: planned            # planned | running | complete | failed | superseded
+status: complete           # planned | running | complete | failed | superseded
 date_started: 2026-11-19
-date_completed: null
+date_completed: 2026-11-19
 authors: ["brendondgr", "Claude Opus 5.5"]
 
 purpose: >
@@ -18,10 +18,10 @@ hypothesis: >
 
 # --- Reproducibility block (all fields mandatory) ---
 code:
-  commit: unknown          # set at launch: the commit this protocol and the fix are in
+  commit: 39b79c303eddc47f09c9a3b76690b5cb968c5b6c
   branch: main
   entrypoint: "bash docs/research/experiments/EXP-2026-11-017-era2-bridge-guard/data/run.sh, then scripts/era2_catalog_score.py --data docs/research/experiments/EXP-2026-11-017-era2-bridge-guard/data --runs docs/evaluation/experiments/bridge-guard-2026-11-19 and scripts/era2_scanfix_compare.py --against EXP-2026-11-016 (see PROTOCOL Procedure)"
-  dirty: false            # protocol stage; set at run time
+  dirty: false            # tracked tree clean in both sittings (logs/STATUS, STATUS2 list only the untracked output dir)
 config:
   path: null               # repo-relative path, or null if the run takes no config file
   hash: null               # sha256:... of that file
@@ -40,7 +40,7 @@ environment:
   container: null
 compute:
   hardware: "32-core x86_64 host, 121 GB RAM; relay :9090 (default-model = Gemma 4 31B, default-model-2 = Qwen 3.8 27B; 16 concurrent each)"
-  wall_clock_hours: 0.0    # set after the run
+  wall_clock_hours: 5.5    # two sittings: 17:27-21:15 and 21:19-22:59 (ISSUES)
   estimated_cost_usd: 0.0
 
 # --- LLM / agentic block (delete entirely if no model was in the loop) ---
@@ -61,10 +61,34 @@ llm:
 # --- Results block ---
 metrics:
   primary: f1_anchorless_scan_cw_variants_typed_lazy
-  values: {}               # {metric: {mean: 0.0, std: 0.0, n: 1}} — must be non-empty when status: complete
+  values:
+    f1_anchorless_scan_cw_variants_typed_lazy: {mean: 2, std: 0.0, n: 669}
+    f1_anchorless_scan_cw_dev_typed_lazy: {mean: 0, std: 0.0, n: 284}
+    h1_modelless_variants_typed_lazy: {mean: 5, std: 0.0, n: 699}
+    h1_modelless_variants_typed_full: {mean: 5, std: 0.0, n: 699}
+    h1_modelless_variants_english: {mean: 9, std: 0.0, n: 699}
+    t1_records_exact_typed_lazy: {mean: 0.6167, std: 0.0, n: 120}
+    t1_records_exact_english: {mean: 0.5750, std: 0.0, n: 120}
+    t0_records_exact_typed_lazy: {mean: 0.5917, std: 0.0, n: 120}
+    t0_records_exact_english: {mean: 0.6917, std: 0.0, n: 120}
+    t4_records_exact_typed_lazy_minus_english: {mean: 0.1346, std: 0.0, n: 104}
+    t5_records_exact_typed_lazy_minus_english: {mean: 0.1923, std: 0.0, n: 104}
+    dev_lost_typed_lazy: {mean: 59, std: 0.0, n: 284}
+    dev_lost_english: {mean: 43, std: 0.0, n: 284}
+    variants_confidently_wrong_typed_lazy: {mean: 52, std: 0.0, n: 669}
+    variants_confidently_wrong_english: {mean: 39, std: 0.0, n: 669}
+    variants_confidently_wrong_typed_full: {mean: 44, std: 0.0, n: 669}
+    variants_confidently_wrong_typed_lazy_gemma: {mean: 27, std: 0.0, n: 669}
+    dev_confidently_wrong_typed_lazy: {mean: 0, std: 0.0, n: 284}
+    dev_confidently_wrong_english: {mean: 1, std: 0.0, n: 284}
+    variants_confidently_wrong_typed_lazy_minus_exp_2026_11_016: {mean: 1.0, std: 0.0, n: 669}
+    t0_records_exact_typed_lazy_minus_exp_2026_11_016: {mean: -0.0167, std: 0.0, n: 120}
+    dev_lost_typed_lazy_minus_exp_2026_11_016: {mean: 7.0, std: 0.0, n: 284}
+    dev_confidently_wrong_english_minus_exp_2026_11_016: {mean: -3.0, std: 0.0, n: 284}
+    variants_confidently_wrong_typed_lazy_gemma_minus_exp_2026_11_016: {mean: -11.0, std: 0.0, n: 669}
   withdrawn: {}            # values later retracted by amendment: {metric: {mean, std, n, withdrawn_on, reason, replaced_by}}
-baselines_compared: []
-statistical_test: null
+baselines_compared: ["arm E: Qwen planner, English hand-off, same tree", "EXP-2026-11-016 T-lazy and E (paired, same items)", "arm R: rules-only reference re-captured"]
+statistical_test: "paired: 2,000 bootstrap resamples over cases (seed 20261118)"
 
 # --- Linkage ---
 supports_claims: []        # every ID here must exist in ../../CLAIMS.md
