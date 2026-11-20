@@ -202,9 +202,15 @@ def _record(raw: Any) -> dict[str, Any]:
     return dict(rec)
 
 
+#: Properties a loader writes for its own use, not card properties (§ 1: the algebra
+#: sees the card, not the raw storage). Neo4j's loader keeps a ``properties_json``
+#: copy of the canonical record; Gremlin has none.
+STORE_ONLY_PROPS = frozenset({"properties_json"})
+
+
 def _str_keys(d: Any) -> dict[str, Any]:
-    """A property map without Gremlin's ``T.id``/``T.label`` tokens."""
-    return {k: v for k, v in dict(d or {}).items() if isinstance(k, str)}
+    """A property map without Gremlin's ``T.id``/``T.label`` tokens or store-only keys."""
+    return {k: v for k, v in dict(d or {}).items() if isinstance(k, str) and k not in STORE_ONLY_PROPS}
 
 
 def median(values: list[Any]) -> Any:

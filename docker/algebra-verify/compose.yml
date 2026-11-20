@@ -1,0 +1,29 @@
+# Era 2 Step 9 (Phase E): the verification pair for the operator algebra's differential test.
+#
+# Separate from every measured store on purpose: ATT&CK and CAPEC are each loaded into BOTH
+# engines here, so Cypher and Gremlin can be compared on the same data. Nothing persists:
+# both stores are in memory or on an anonymous volume, and are reloaded by
+#   uv run python scripts/algebra_verify_stores.py load
+#
+#   docker compose -f docker/algebra-verify/compose.yml --env-file .env up -d
+services:
+  algebra-verify-neo4j:
+    image: neo4j:${NEO4J_VERSION:-5.26}
+    container_name: algebra-verify-neo4j
+    ports:
+      - "5481:7474"
+      - "5480:7687"
+    environment:
+      NEO4J_AUTH: ${NEO4J_AUTH:-neo4j/password}
+    healthcheck:
+      test: ["CMD-SHELL", "wget --no-verbose --tries=1 --spider http://localhost:7474 || exit 1"]
+      interval: 5s
+      timeout: 5s
+      retries: 30
+      start_period: 30s
+
+  algebra-verify-gremlin:
+    image: tinkerpop/gremlin-server:${GREMLIN_VERSION:-3.8.0}
+    container_name: algebra-verify-gremlin
+    ports:
+      - "6480:8182"

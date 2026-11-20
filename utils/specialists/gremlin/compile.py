@@ -446,12 +446,13 @@ def compile_gremlin(node: Any, ctx: Backend | None = None) -> Compiled:
         w = node.walk
         start = gx.nodeset(w.start)
         ends = gx.labels_of(w)
-        x = gx.key("x")
         if w.depth > 1:
             h, s = w.hops[0], gx.key("s")
-            frag = (f"{start}.as('{s}').repeat(__{gx.hop(h, label=False)}.simplePath().from('{s}').as('{x}'))"
+            # Amendment 3: every repetition count 1..depth is a prefix; keep each acyclic
+            # walk's end that meets the walk's conditions (as the Cypher compiler does).
+            frag = (f"{start}.as('{s}').repeat(__{gx.hop(h, label=False)}.simplePath().from('{s}'))"
                     f".emit().times({int(w.depth)}){gx.label(h.target)}{gx.conds(w.last_conds, ends)}"
-                    f".select(Pop.all, '{x}').unfold().dedup()")
+                    f".dedup()")
         else:
             # Amendment 3: the end nodes of every prefix of the hops, whether or not the
             # walk continues from them; the walk's conditions apply to the full walk only.

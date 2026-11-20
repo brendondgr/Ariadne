@@ -475,8 +475,12 @@ def compile_cypher(node: Any, ctx: Backend | None = None) -> Compiled:
             if ec:
                 preds.append(f"ALL({e} IN relationships({pv}) WHERE {' AND '.join(ec)})")
             preds += cx.conds(end, w.last_conds, ends)
+            # Amendment 3: each repetition count 1..depth is a prefix, so the answer is the
+            # end node of every acyclic walk of 1..depth steps, filtered by the walk's
+            # conditions (eqfilter is on the last hop's label, every repetition). The
+            # route nodes are themselves such ends; they are not added unfiltered.
             text = (f"{t} MATCH {pv} = ({s}){arrow}({end}{cx.label(h.target)}) WHERE {' AND '.join(preds)} "
-                    f"UNWIND nodes({pv})[1..] AS {v} WITH DISTINCT {v}")
+                    f"WITH DISTINCT {end} AS {v}")
         else:
             # Amendment 3: the end nodes of every prefix of the hops, whether or not the
             # walk continues from them; the walk's conditions apply to the full walk only.

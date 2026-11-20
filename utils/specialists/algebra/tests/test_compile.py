@@ -253,9 +253,13 @@ def test_expand_returns_every_prefix(card):
 
 
 def test_expand_repeated_hop_keeps_every_step(card):
+    # Amendment 3: each repetition count is a prefix; its end nodes are kept (and
+    # filtered), not every node on a path to a filtered end (EXP-2026-11-021).
     node = Expand(Walk(T, (Hop("HAS_SUB", "out", "Technique"),), 3))
-    assert "UNWIND nodes(" in compile_cypher(node, Backend.cypher(card)).text
-    assert "select(Pop.all, 'x" in compile_gremlin(node, Backend.gremlin(card)).text
+    cy = compile_cypher(node, Backend.cypher(card)).text
+    assert "*1..3" in cy and "UNWIND nodes(" not in cy
+    gr = compile_gremlin(node, Backend.gremlin(card)).text
+    assert ".emit().times(3)" in gr and "select(Pop.all" not in gr
 
 
 def test_repeated_walk_is_acyclic(card):

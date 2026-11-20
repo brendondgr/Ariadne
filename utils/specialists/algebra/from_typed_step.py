@@ -8,7 +8,7 @@ meaning:
 | ``describe``, or ``expand``/``count`` with no hops | ``Describe(Anchors)`` (the builder treats them alike) |
 | ``expand`` | ``Expand(Walk(Anchors, hops, depth, last_conds))`` |
 | ``count`` | ``Count(Walk(...))`` |
-| ``common`` | ``Common(Anchors)`` |
+| ``common`` | ``Common(Anchors)``, with no label: its anchors are of different kinds |
 | ``scan`` | ``Nodes(Scan(label))`` |
 
 The step's ``filter`` ``(property, value)`` becomes one condition on the last
@@ -46,6 +46,11 @@ def normalise(step: Any) -> dict[str, Any]:
         d.pop("filter", None)
         if d["kind"] == "scan":
             d["anchor_ids"] = []
+        if d["kind"] == "common":
+            # The anchors are of different kinds and the builder matches them by id
+            # alone, so the step's single anchor_label is not a label they share
+            # (EXP-2026-11-021, H3: it dropped every anchor of the other kind).
+            d["anchor_label"] = ""
     return d
 
 

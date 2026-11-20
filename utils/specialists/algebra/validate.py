@@ -287,6 +287,12 @@ def check(node: Any, card: Any, where: str = "op") -> frozenset[str] | None:
             op, val = node.having
             _need(op in COMPARE and isinstance(val, (int, float)) and not isinstance(val, bool), w,
                   f"having must be (op in {list(COMPARE)}, number)")
+            # A number compares only with a numeric group value: min/max of a text or
+            # date property is text, which no numeric `having` can select (EXP-2026-11-021).
+            numeric = node.fn != "count" and (node.fn in NUMERIC_ONLY or bool(
+                _prop_types(card, ends, node.prop) & set(NUMERIC_TYPES)))
+            _need(node.fn == "count" or numeric, w,
+                  f"having compares a number; {node.fn}({node.prop}) is not numeric")
         _need(node.order in (None, "asc", "desc"), w, "order must be asc or desc")
         _need(node.k is None or (node.order is not None and isinstance(node.k, int) and node.k >= 1), w,
               "k needs an order and must be a positive integer")
