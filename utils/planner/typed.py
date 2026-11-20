@@ -419,6 +419,7 @@ def check_step(raw: Any, index: int, ctx: PlanContext, earlier: dict[str, StepCh
         # -- the anchor -----------------------------------------------------
         ids: list[str] = []
         anchor_label = ""
+        merge_prod: StepCheck | None = None
         from_step = anchor.get("from_step") or raw.get("from_step")
         if from_step:
             prod = earlier.get(str(from_step))
@@ -428,14 +429,29 @@ def check_step(raw: Any, index: int, ctx: PlanContext, earlier: dict[str, StepCh
                                    [k for k, v in earlier.items() if v.ok] or ["an anchor id or name"],
                                    what="from_step"))
             if prod.graph == graph:
-                fix = (f"on one graph, add this step's hops to the path of step {from_step} (a path may have "
-                       "several hops) instead of starting a new step from it")
-                bridge = _bridge_hint(ctx, graph, label_raw, [v for v in earlier.values() if v.ok])
-                if bridge:
-                    fix += ". " + bridge
-                raise Refused(E.refusal(
-                    "invalid_request", f"step {sid}: from_step {from_step!r} is on the same graph", fix,
-                    [E.problem("from_step", from_step, [f"{from_step}.path"])]))
+                end = _merge_end(prod, kind, raw)
+                if end is None:
+                    fix = (f"on one graph, add this step's hops to the path of step {from_step} (a path may "
+                           "have several hops) instead of starting a new step from it")
+                    bridge = _bridge_hint(ctx, graph, label_raw, [v for v in earlier.values() if v.ok])
+                    if bridge:
+                        fix += ". " + bridge
+                    raise Refused(E.refusal(
+                        "invalid_request", f"step {sid}: from_step {from_step!r} is on the same graph", fix,
+                        [E.problem("from_step", from_step, [f"{from_step}.path"])]))
+                # The step continues the path of the step it starts from: the
+                # written form of the catalog's own advice ("add this step's hops
+                # to the path of step X"), done here instead of in a repair turn.
+                merge_prod = prod
+                anchor_label = _label(label_raw, "anchor_label") if label_raw else end
+                if anchor_label != end:
+                    raise Refused(_env("invalid_request", f"step {sid}: step {from_step} ends at {end}, not "
+                                       f"{anchor_label}", "anchor.label", label_raw, [end], what="anchor.label"))
+                log.add("from_step", str(from_step), f"the path of step {from_step}", "same_graph_merge")
+        if merge_prod is not None:
+            pass
+        elif from_step:
+            prod = earlier.get(str(from_step))
             key = resolve_join_key(ctx.cards[prod.graph], ctx.cards[graph])
             producer_ok = key is not None and any(e.dataset == prod.graph and e.produces for e in key.endpoints)
             if not producer_ok:
@@ -550,6 +566,15 @@ def check_step(raw: Any, index: int, ctx: PlanContext, earlier: dict[str, StepCh
             log.add("path", None, "from relation/direction/target_label", "single_hop")
         if isinstance(path, dict):
             path = [path]
+        if (not isinstance(path, list) or not path) and kind == "expand" and merge_prod is None:
+            # The refusal this replaces said "or use kind describe for the anchor
+            # itself", and the repair turn did exactly that (70 refusals in one
+            # run of the variants, EXP-2026-11-017); a bridged step left refused
+            # also refused every step that started from it.
+            log.add("kind", "expand", "describe", "no_path")
+            out.step = TypedStep(kind="describe", anchor_label=anchor_label, anchor_ids=tuple(ids))
+            out.fixes = list(log.fixes)
+            return out
         if not isinstance(path, list) or not path:
             opts = [f"{o.relation} {o.direction} -> {o.target}" for o in cat.options(anchor_label)]
             raise Refused(_env("invalid_request", f"step {sid}: an {kind} step needs a path", "path", path,
@@ -622,12 +647,50 @@ def check_step(raw: Any, index: int, ctx: PlanContext, earlier: dict[str, StepCh
                 except (NoMatch, Ambiguous):
                     pass  # the observed values are a sample: an unseen value is not refused
             filt = (prop, value)
+        if merge_prod is not None:
+            first = merge_prod.step
+            whole = tuple(first.hops) + tuple(hops)
+            if len(whole) > cat.model.max_depth:
+                raise Refused(E.refusal(
+                    "invalid_request", f"step {sid}: from_step {merge_prod.id!r} is on the same graph, and the "
+                    f"joined path has {len(whole)} hops (at most {cat.model.max_depth})",
+                    "split the question, or start this step from an anchor of its own",
+                    [E.problem("from_step", merge_prod.id, ["anchor.id"])]))
+            out.step = TypedStep(kind=kind, anchor_label=first.anchor_label, anchor_ids=first.anchor_ids,
+                                 hops=whole, depth=depth if len(whole) == 1 else 1, filter=filt)
+            out.from_step, out.join_key = merge_prod.from_step, merge_prod.join_key
+            out.fixes = list(log.fixes)
+            return out
         out.step = TypedStep(kind=kind, anchor_label=anchor_label, anchor_ids=tuple(ids), hops=tuple(hops),
                              depth=depth if len(hops) == 1 else 1, filter=filt)
         out.fixes = list(log.fixes)
         return out
     except Refused as r:
         return refuse(r.envelope)
+
+
+def _merge_end(prod: StepCheck, kind: str, raw: dict[str, Any]) -> str | None:
+    """The label where ``prod``'s path ends, when a step on the same graph may continue it.
+
+    ``None`` when it may not: the new step must walk a path of its own
+    (``expand`` or ``count``) from an ``expand`` or ``describe`` step whose
+    path ends at one label, with no filter on the way and no repeated hop.
+    """
+    st = prod.step
+    if st is None or st.kind not in ("expand", "describe") or kind not in ("expand", "count"):
+        return None
+    if not (raw.get("path") or raw.get("relation")):
+        return None
+    if st.hops:
+        if st.filter is not None or int(st.depth or 1) > 1:
+            return None
+        try:
+            if int(raw.get("depth") or 1) > 1:
+                return None
+        except (TypeError, ValueError):
+            return None
+        return st.hops[-1].target_label or None
+    return st.anchor_label or None
 
 
 def check_plan(data: Any, ctx: PlanContext) -> tuple[list[StepCheck], list[str]]:
@@ -741,19 +804,50 @@ def _refuse_unlinked_scans(checks: list[StepCheck], ctx: PlanContext) -> None:
             refused.add(c.id)
 
 
+def redundant_describes(checks: list[StepCheck]) -> dict[str, str]:
+    """``describe`` steps that repeat what an ``expand`` step already starts from: id -> that step.
+
+    A bridged plan often describes the entities it carried across and then
+    expands from the same entities ("which techniques does CAPEC-X map to, and
+    what mitigates them": describe the techniques, then expand them to
+    mitigations). The expand's records already carry those entities, so the
+    describe adds no entity of its own -- only its facet block, which the
+    pipeline then chases into tactics and sub-techniques nobody asked for. This
+    stayed invisible while the engine left all but the last bridged step
+    unseeded (EXP-2026-11-018): seeding them made 7 exact T0 answers inexact.
+
+    Only a describe that starts from an earlier step (``from_step``) and that no
+    later step starts from is dropped, beside an expand of the same label from
+    the same step on the same graph.
+    """
+    ok = [c for c in checks if c.ok]
+    used = {c.from_step for c in ok if c.from_step}
+    out: dict[str, str] = {}
+    for c in ok:
+        if c.step.kind != "describe" or not c.from_step or c.id in used:
+            continue
+        twin = next((d for d in ok if d is not c and d.graph == c.graph and d.from_step == c.from_step
+                     and d.step.hops and d.step.anchor_label == c.step.anchor_label), None)
+        if twin is not None:
+            out[c.id] = twin.id
+    return out
+
+
 def to_plan(request: str, checks: list[StepCheck], data: dict[str, Any], cards: dict[str, SourceCardView],
             refused: list[StepCheck], mode: str) -> Plan:
     """The validated steps as a :class:`Plan` (text blanked, a ``step`` on every sub-question)."""
     plan = Plan(request=request)
     by_id = {c.id: c for c in checks if c.ok}
+    dropped = redundant_describes(checks)
     for c in checks:
-        if not c.ok:
+        if not c.ok or c.id in dropped:
             continue
         card = cards[c.graph]
         entities = c.step.entities()
         plan.sub_questions.append(SubQuestion(
             id=c.id, source=c.graph, text="", entities=entities, limits=Limits(**card.limits()),
-            join_key=c.join_key, rationale=f"typed plan ({mode})", step=c.step.to_dict()))
+            join_key=c.join_key, rationale=f"typed plan ({mode})",
+            step={**c.step.to_dict(), **({"from_step": c.from_step} if c.from_step else {})}))
         if c.from_step and c.join_key and c.from_step in by_id:
             prod = by_id[c.from_step]
             key = next((k for k in CANONICAL_JOIN_KEYS if k.name == c.join_key), None)
@@ -770,7 +864,8 @@ def to_plan(request: str, checks: list[StepCheck], data: dict[str, Any], cards: 
         plan.unsupported.append(UnsupportedPart(
             f"step {c.id} could not be expressed against the catalog",
             f"refused after repair: {env.get('code')}: {env.get('detail')}"))
-    plan.assumptions = [str(a) for a in data.get("assumptions") or [] if a] + [f"typed plan ({mode})"]
+    plan.assumptions = [str(a) for a in data.get("assumptions") or [] if a] + [f"typed plan ({mode})"] + [
+        f"typed: step {sid} dropped, a describe of what step {other} starts from" for sid, other in dropped.items()]
     plan.partial = bool(plan.unsupported)
     plan.rationale = "typed plan against the card-derived tool catalog"
     return plan

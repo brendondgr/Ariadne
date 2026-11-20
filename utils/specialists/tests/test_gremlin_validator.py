@@ -181,6 +181,24 @@ class TestSchemaDirections:
             '.hasLabel("Mitigation").elementMap().limit(5)')
         assert result.ok
 
+    def test_a_later_union_branch_starts_where_the_first_did(self, validator, card, limits):
+        """EXP-2026-11-018: the prefix branch of a typed walk was checked from the
+        full branch's last label and rejected as ``in(...) from 'Mitigation'``."""
+        result = _validate(validator, card, limits,
+            'g.V().has("id", within(ids)).as("ap").union('
+            '__.in("EXPLOITS_WEAKNESS").hasLabel("AttackPattern").out("HAS_MITIGATION").hasLabel("Mitigation"), '
+            '__.in("EXPLOITS_WEAKNESS").hasLabel("AttackPattern")).as("nbr")'
+            '.select("ap","nbr").by(elementMap()).limit(5)')
+        assert result.ok, result.reasons
+
+    def test_a_union_branch_still_checks_from_a_known_start(self, validator, card, limits):
+        """The branch start is the label before the union, so a wrong first hop still fails."""
+        result = _validate(validator, card, limits,
+            'g.V().hasLabel("Weakness").union(__.in("EXPLOITS_WEAKNESS").hasLabel("AttackPattern"), '
+            '__.out("EXPLOITS_WEAKNESS")).elementMap().limit(5)')
+        assert not result.ok
+        assert any('out("EXPLOITS_WEAKNESS") from \'Weakness\'' in r for r in result.reasons)
+
 
 # ---------------------------------------------------------------------------
 # Cap injection — limit

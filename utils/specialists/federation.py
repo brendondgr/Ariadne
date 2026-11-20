@@ -140,6 +140,15 @@ def dependency_map(plan: Plan) -> dict[str, tuple[str, ...]]:
     deterministic. Still acyclic: producers and consumers are decided by the
     key's endpoints, not by the plan.
     """
+    typed = typed_links(plan)
+    if typed is not None:
+        # Typed steps link by what they state. Anything else in the plan (a
+        # re-plan's facet sub-questions) keeps the reading below, among itself.
+        rest = [sq for sq in plan.sub_questions if not isinstance(sq.step, dict)]
+        if not rest:
+            return typed
+        return {**dependency_map(Plan(request=plan.request, sub_questions=rest,
+                                      joins=list(plan.joins))), **typed}
     by_source: dict[str, SubQuestion] = {sq.source: sq for sq in plan.sub_questions}
     deps: dict[str, list[str]] = {}
     for join in plan.joins:
@@ -202,6 +211,40 @@ def dependency_map(plan: Plan) -> dict[str, tuple[str, ...]]:
             continue  # two independent asks, not a chain
         deps[sq.id] = [earlier.id]
     return {consumer: tuple(producers) for consumer, producers in deps.items()}
+
+
+def typed_links(plan: Plan) -> dict[str, tuple[str, ...]] | None:
+    """A typed plan's dependencies, exactly as its steps state them; ``None`` otherwise.
+
+    The typed planner (EXP-2026-11-015) writes which earlier step each step
+    starts from (``step["from_step"]``) and declares a join only for those
+    pairs, so the plan already says which step feeds which. The source-keyed
+    reading below keeps one sub-question per source: a typed plan that bridged
+    CAPEC into two ATT&CK steps (techniques and sub-techniques, or one per
+    CAPEC pattern) linked only the last of them, and the others ran with no
+    anchor at all -- a whole-label dump of 222 techniques for F-CTT-01, and
+    18 to 23 answers per run of the T-full arm (EXP-2026-11-018).
+    """
+    if not any(isinstance(sq.step, dict) for sq in plan.sub_questions):
+        return None
+    ids = {sq.id for sq in plan.sub_questions}
+    return {
+        sq.id: (str(sq.step["from_step"]),)
+        for sq in plan.sub_questions
+        if isinstance(sq.step, dict) and sq.step.get("from_step")
+        and str(sq.step["from_step"]) in ids and str(sq.step["from_step"]) != sq.id
+    }
+
+
+def unanchored_typed_step(sq: SubQuestion) -> bool:
+    """A typed step that names no anchor and is not a scan.
+
+    Such a step has nothing to start from unless a producer seeds it. Run
+    unseeded, the builders fall through to a label-wide template -- a dump,
+    not an answer -- so the engine answers it as an honest empty instead.
+    """
+    step = sq.step if isinstance(sq.step, dict) else None
+    return bool(step) and str(step.get("kind") or "") != "scan" and not step.get("anchor_ids")
 
 
 def execution_order(plan: Plan) -> list[SubQuestion]:
@@ -603,6 +646,17 @@ class SpecialistRouter:
             seed_ids: tuple[str, ...] = ()
             producer_ids = deps.get(sq.id) or ()
             producer_id = ", ".join(producer_ids)
+            if not producer_ids and unanchored_typed_step(sq):
+                result = dependency_skip_result(
+                    SpecialistTask.from_sub_question(sq), producer_id="no earlier step",
+                    reason="the step names no anchor and starts from no earlier step")
+                results.append(result)
+                by_id[sq.id] = result
+                sequencing.append(
+                    {"consumer": sq.id, "producer": None,
+                     "seed_count": 0, "truncated": False, "skipped": "no anchor"}
+                )
+                continue
             if producer_ids:
                 found = [by_id.get(pid) for pid in producer_ids]
                 # Union across producers: a consumer at the end of two declared

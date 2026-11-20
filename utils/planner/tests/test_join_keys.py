@@ -61,3 +61,21 @@ def test_resolve_returns_none_when_attack_lacks_technique() -> None:
 def test_resolve_returns_none_for_same_dataset() -> None:
     cards = load_fixture_cards()
     assert resolve_join_key(cards["attack"], cards["attack"]) is None
+
+
+def test_every_property_a_join_key_description_names_exists() -> None:
+    """The description reaches the planner's prompt, so the model copies its spelling.
+
+    It read ``TaxonomyEntry(taxonomy=ATTACK)`` where the property is
+    ``taxonomy_name``: the typed planner wrote ``taxonomy`` as a filter 90 times
+    in one run of the variants and was refused each time (EXP-2026-11-018).
+    """
+    import re
+
+    from utils.planner.join_keys import CANONICAL_JOIN_KEYS
+
+    cards = load_fixture_cards()
+    for key in CANONICAL_JOIN_KEYS:
+        for label, prop in re.findall(r"\b([A-Z]\w+)\((\w+)=", key.description):
+            holders = [c for c in cards.values() if prop in (c.label_property_keys(label) or ())]
+            assert holders, f"{key.name}: {label}.{prop} is named in the description but no card has it"

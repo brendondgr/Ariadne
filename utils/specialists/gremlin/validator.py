@@ -50,6 +50,28 @@ _REPEAT_RE = re.compile(r"\.repeat\(")
 _TIMES_RE = re.compile(r"\.times\((\d+)\)")
 
 
+_ANON_START_RE = re.compile(r"([(,])\s*__\.")
+
+
+def _paren_depths(query: str) -> list[int]:
+    """The parenthesis depth at each position of ``query`` (quotes ignored)."""
+    depths: list[int] = []
+    depth = 0
+    quote = ""
+    for ch in query:
+        if quote:
+            if ch == quote:
+                quote = ""
+        elif ch in "\"'":
+            quote = ch
+        elif ch == "(":
+            depth += 1
+        elif ch == ")":
+            depth -= 1
+        depths.append(depth)
+    return depths
+
+
 def _extract_edge_anchors(query: str) -> list[tuple[str, str, str]]:
     """Return [(direction, rel, anchor_label)] for each traversal step.
 
@@ -78,11 +100,25 @@ def _extract_edge_anchors(query: str) -> list[tuple[str, str, str]]:
         tokens.append((m.start(), "in", m.group(1)))
     for m in _BOTH_RE.finditer(query):
         tokens.append((m.start(), "both", m.group(1)))
+    # Each later branch of ``union(__.a, __.b)`` starts where the first did, not
+    # where the branch before it ended. Without this, a typed walk's prefix
+    # branch was checked from the full path's last label:
+    # ``union(__.in("EXPLOITS_WEAKNESS").hasLabel("AttackPattern")
+    # .out("HAS_MITIGATION").hasLabel("Mitigation"), __.in("EXPLOITS_WEAKNESS")...)``
+    # was rejected as ``in("EXPLOITS_WEAKNESS") from 'Mitigation'``.
+    for m in _ANON_START_RE.finditer(query):
+        tokens.append((m.start(), "branch_first" if m.group(1) == "(" else "branch_next", ""))
     tokens.sort(key=lambda t: t[0])
+    depth_at = _paren_depths(query)
 
     current_label = ""
+    branch_start: dict[int, str] = {}
     for _pos, kind, value in tokens:
-        if kind == "label":
+        if kind == "branch_first":
+            branch_start[depth_at[_pos]] = current_label
+        elif kind == "branch_next":
+            current_label = branch_start.get(depth_at[_pos], "")
+        elif kind == "label":
             current_label = value
         elif kind in ("out", "in", "both"):
             results.append((kind, value, current_label))

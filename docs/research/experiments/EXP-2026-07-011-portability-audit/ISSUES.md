@@ -1,5 +1,10 @@
 # ISSUES — EXP-2026-07-011
 
+## 2026-11-20 — The Gremlin builder pointer re-hashed: CWE seeds are no longer foreign
+**Cause:** EXP-2026-11-018 widened `_seeds_are_foreign` in `utils/specialists/gremlin/builder.py` to check every vertex id a walk seed could name (`_walk_candidate_ids`), so a `CWE-<n>` seed is recognised as `cwe:<n>`. A helper body changed; no template literal was added or removed.
+**Resolution:** the row was re-hashed: 80068 bytes, `sha256:fd4a6e2858ff…`. `derive_templates.py` re-run today: 30 distinct / 20 exercised, gremlin 15 literals, unchanged.
+**Impact:** none on the recorded counts.
+
 ## 2026-11-18 — Both builder pointers re-hashed again: `typed_step` adds one template identifier (29 → 30)
 **Impact:** the distinct count moves from 29 to 30 (Cypher 20 → 21 literals, Gremlin 14 → 15, shared 5 → 6). Exercised by the banks: 20, unchanged. `distinct_query_template_identifiers_current` is now 30, and 29 is moved to `withdrawn`.
 **Cause:** era 2 Step 8, part 2 (67607f55, EXP-2026-11-015) added `_typed_step` to both builders. It executes a typed plan step (anchor ids, relation, direction, target) ahead of the template ladder and runs only when a step is present. It is generic: it names no graph, label or relation. The entry below was written at a695b869, before this commit. Its "no template literal added" held then, but not after 67607f55, and the pointers were not re-hashed at that commit.

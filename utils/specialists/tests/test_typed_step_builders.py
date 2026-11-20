@@ -134,6 +134,25 @@ class TestGremlin:
         assert draft.template == "typed_step" and gate.ok, gate.reasons
 
 
+def test_a_cwe_anchored_step_is_walked_not_described(cards):
+    """EXP-2026-11-018: a ``CWE-<n>`` seed was read as the other graph's key value.
+
+    The store keys a weakness ``cwe:<n>``, and the foreign-seed check looked only
+    at the raw seed and the attack-pattern form, so the step fell through to
+    ``describe`` and the gate rejected it: all 14 CWE-anchored T-lazy plans of
+    EXP-2026-11-017 returned nothing.
+    """
+    from utils.specialists.schema import get_registry
+
+    if not (get_registry().dataset("capec") or None):
+        pytest.skip("no learned CAPEC schema")
+    hops = (TypedHop("EXPLOITS_WEAKNESS", "in", "AttackPattern"), TypedHop("HAS_MITIGATION", "out", "Mitigation"))
+    draft, gate = _build("capec", TypedStep("expand", "Weakness", ("CWE-287",), hops), cards)
+    assert draft.template == "typed_step"
+    assert draft.params["ids"] == ["cwe:287"]
+    assert gate.ok, gate.reasons
+
+
 def test_a_joined_step_over_the_join_edge_is_left_to_the_bridge(cards):
     """A producer walking the declared join edge must yield join values; the engine's bridge does."""
     from utils.specialists.gremlin.builder import GremlinQueryBuilder

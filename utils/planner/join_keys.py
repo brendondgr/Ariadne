@@ -77,7 +77,7 @@ CANONICAL_JOIN_KEYS: tuple[JoinKey, ...] = (
         name="attack-technique-id",
         description=(
             "ATT&CK technique id bridges CAPEC and ATT&CK: CAPEC AttackPattern "
-            "-[MAPS_TO]-> TaxonomyEntry(taxonomy=ATTACK).entry_id  <->  ATT&CK "
+            "-[MAPS_TO]-> TaxonomyEntry(taxonomy_name=ATTACK).entry_id  <->  ATT&CK "
             "Technique/SubTechnique.attack_id (with the 'T' prefix)."
         ),
         endpoints=(

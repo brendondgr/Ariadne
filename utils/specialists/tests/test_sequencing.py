@@ -298,3 +298,78 @@ def test_two_independent_asks_are_not_chained_by_adjacency() -> None:
     )
     assert dependency_map(plan) == {}
     assert refers_back(plan.sub_questions[1]) is False
+
+
+# --------------------------------------------------------------------------- #
+# Typed plans (EXP-2026-11-018): links come from the steps, never from sources
+# --------------------------------------------------------------------------- #
+
+
+def _typed(qid: str, source: str, anchors: tuple[str, ...] = (), from_step: str | None = None,
+           kind: str = "expand", label: str = "Technique") -> SubQuestion:
+    step = {"kind": kind, "anchor_label": label, "anchor_ids": list(anchors), "hops": [], "depth": 1}
+    if from_step:
+        step["from_step"] = from_step
+    return SubQuestion(id=qid, source=source, text="", entities=[label], limits=Limits(3, 1000, 5000),
+                       join_key="attack-technique-id" if (from_step or source == "capec") else None, step=step)
+
+
+def _typed_fan() -> Plan:
+    """CAPEC-98 bridged into two ATT&CK steps (techniques and sub-techniques)."""
+    return Plan(
+        request="Which ATT&CK tactics do the techniques mapped from CAPEC-98 belong to?",
+        sub_questions=[_typed("q1", "capec", ("CAPEC-98",), label="AttackPattern"),
+                       _typed("q2", "attack", from_step="q1"),
+                       _typed("q3", "attack", from_step="q1", label="SubTechnique")],
+        joins=[JoinDeclaration("attack-technique-id", ["capec", "attack"]),
+               JoinDeclaration("attack-technique-id", ["capec", "attack"])],
+    )
+
+
+def test_every_typed_consumer_is_linked_to_the_step_it_names() -> None:
+    """The source-keyed map linked only q3; q2 then ran with no anchor (a 222-row dump)."""
+    assert dependency_map(_typed_fan()) == {"q2": ("q1",), "q3": ("q1",)}
+    assert [sq.id for sq in execution_order(_typed_fan())] == ["q1", "q2", "q3"]
+
+
+def test_each_typed_consumer_is_seeded_by_its_producer() -> None:
+    cards = {"attack": fixture_card("attack"), "capec": fixture_card("capec")}
+    capec = FakeSpecialist(_result("capec", ("T1566", "T1598")))
+    attack = FakeSpecialist(_result("attack", ("T1566",)))
+    router = SpecialistRouter(cards=cards, specialists={"attack": attack, "capec": capec})
+
+    router.run_plan(_typed_fan())
+
+    assert [t.seed_ids for t in attack.tasks] == [("T1566", "T1598"), ("T1566", "T1598")]
+
+
+def test_a_typed_step_with_no_anchor_and_no_producer_never_runs() -> None:
+    cards = {"attack": fixture_card("attack"), "capec": fixture_card("capec")}
+    attack = FakeSpecialist(_result("attack", ("T1566",)))
+    router = SpecialistRouter(cards=cards, specialists={"attack": attack})
+    plan = Plan(request="r", sub_questions=[_typed("q1", "attack")])
+
+    evidence = router.run_plan(plan)
+
+    assert attack.tasks == [], "an unanchored typed step must not run a label-wide query"
+    assert evidence.results[0].ok and not evidence.results[0].records
+    assert evidence.sequencing[0]["skipped"] == "no anchor"
+
+
+def test_a_typed_scan_still_runs_without_an_anchor() -> None:
+    cards = {"attack": fixture_card("attack"), "capec": fixture_card("capec")}
+    attack = FakeSpecialist(_result("attack", ("T1566",)))
+    router = SpecialistRouter(cards=cards, specialists={"attack": attack})
+    router.run_plan(Plan(request="r", sub_questions=[_typed("q1", "attack", kind="scan")]))
+    assert len(attack.tasks) == 1
+
+
+def test_an_english_plan_keeps_the_source_keyed_reading() -> None:
+    assert dependency_map(_joined_plan()) == {"q-attack": ("q-capec",)}
+
+
+def test_a_replans_untyped_sub_questions_do_not_relink_the_typed_steps() -> None:
+    plan = _typed_fan()
+    plan.sub_questions.append(_sub("q4", "attack"))
+    deps = dependency_map(plan)
+    assert deps["q2"] == ("q1",) and deps["q3"] == ("q1",)

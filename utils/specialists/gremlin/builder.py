@@ -1096,7 +1096,19 @@ class GremlinQueryBuilder:
         seeds = [s for s in resolved.seed_ids if s]
         if not seeds:
             return False
-        return all(not schema.labels_for_id(_capec_gremlin_id(s)) and not schema.labels_for_id(s) for s in seeds)
+        # Every vertex id a seed could name, as the walk itself anchors it
+        # (`_walk_candidate_ids`). Checking only the attack-pattern form and the
+        # raw seed called every ``CWE-<n>`` foreign, because the store keys a
+        # weakness as ``cwe:<n>``: the typed step then fell through to
+        # ``describe``, whose bindings name no Weakness, and the gate rejected
+        # it. All 14 CWE-anchored typed plans of EXP-2026-11-017's T-lazy arm
+        # returned nothing for this reason.
+        return all(
+            not schema.labels_for_id(s)
+            and not schema.labels_for_id(_capec_gremlin_id(s))
+            and not any(schema.labels_for_id(c) for c in _walk_candidate_ids([s]))
+            for s in seeds
+        )
 
     def _generic_registry(self, resolved: ResolvedTask) -> Any | None:
         """The derived schema registry, or ``None`` when it cannot be loaded."""

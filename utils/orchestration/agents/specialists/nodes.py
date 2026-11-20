@@ -38,6 +38,7 @@ from utils.specialists.federation import (
     request_seeds,
     reroute_source,
     rerouted,
+    unanchored_typed_step,
 )
 
 NodeFn = Callable[[PipelineState], dict[str, Any]]
@@ -123,6 +124,25 @@ def build_nodes(
         seed_ids: tuple[str, ...] = ()
         producer_ids = deps.get(sq.id) or ()
         producer_id = ", ".join(producer_ids)
+        if not producer_ids and unanchored_typed_step(sq):
+            # A typed step with nothing to start from (EXP-2026-11-018): run
+            # unseeded it falls through to a label-wide template, a dump.
+            reason = "the step names no anchor and starts from no earlier step"
+            result = dependency_skip_result(
+                SpecialistTask.from_sub_question(sq), producer_id="no earlier step", reason=reason)
+            writer(("specialist-start", {"sub_question": sq.id, "source": sq.source,
+                                         "backend": _backend_of(sq.source, cards),
+                                         "index": index, "total": total,
+                                         "seed_count": 0, "producer": None,
+                                         "skipped": reason}))
+            writer(("specialist", {"result": result, "index": index, "total": total}))
+            delta.update(
+                results=[result],
+                by_id={sq.id: result},
+                sequencing=[{"consumer": sq.id, "producer": None,
+                             "seed_count": 0, "truncated": False, "skipped": "no anchor"}],
+            )
+            return delta
         if producer_ids:
             by_id_state = state.get("by_id") or {}
             found = [by_id_state.get(pid) for pid in producer_ids]

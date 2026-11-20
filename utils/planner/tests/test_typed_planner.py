@@ -223,14 +223,37 @@ class TestValidation:
         assert plan.sub_questions[0].step["kind"] == "common"
         assert plan.sub_questions[0].step["anchor_ids"] == ids
 
-    def test_a_same_graph_from_step_is_refused_with_the_path_fix(self, cards):
+    def test_a_same_graph_from_step_continues_the_path_it_starts_from(self, cards):
+        """EXP-2026-11-018: the refusal's own fix ("add this step's hops to the path of step q1"), applied."""
         step, lab, opt, _ = _step(cards)
         second = {"id": "q2", "graph": "attack", "kind": "expand", "anchor": {"from_step": "q1", "label": opt.target},
                   "path": [{"relation": opt.relation, "direction": "in", "target_label": lab}]}
-        plan, log, _ = _run(cards, [_plan_json(step, second), _plan_json(step)])
+        plan, log, _ = _run(cards, [_plan_json(step, second)])
+        assert log.valid_first and not log.repair_used
+        merged = plan.sub_questions[1].step
+        assert merged["anchor_ids"] == plan.sub_questions[0].step["anchor_ids"]
+        assert [h["relation"] for h in merged["hops"]] == [opt.relation, opt.relation]
+        assert any(f["filled_by"] == "same_graph_merge" for f in log.coercions)
+
+    def test_a_same_graph_from_step_after_a_filter_is_still_refused_with_the_path_fix(self, cards):
+        """A filter sits on the first step's last label; a longer path would move it, so no merge."""
+        step, lab, opt, _ = _step(cards)
+        props = sorted(cards["attack"].label_property_keys(opt.target) or ())
+        if not props or not opt.target:
+            pytest.skip("no filterable property on the hop's target")
+        filtered = dict(step, filter={"property": props[0], "value": "x"})
+        second = {"id": "q2", "graph": "attack", "kind": "expand", "anchor": {"from_step": "q1", "label": opt.target},
+                  "path": [{"relation": opt.relation, "direction": "in", "target_label": lab}]}
+        plan, log, _ = _run(cards, [_plan_json(filtered, second), _plan_json(filtered)])
         first = [r for r in log.refusals if not r["final"]][0]
         assert "same graph" in first["detail"] and "path of step q1" in first["fix"]
-        assert log.fixed_by_repair
+
+    def test_an_expand_with_no_path_is_a_describe(self, cards):
+        step, *_ = _step(cards)
+        bare = {k: v for k, v in step.items() if k != "path"}
+        plan, log, _ = _run(cards, [_plan_json(bare)])
+        assert log.valid_first and plan.sub_questions[0].step["kind"] == "describe"
+        assert any(f["filled_by"] == "no_path" for f in log.coercions)
 
     def test_resolve_entity_answers_an_id_from_the_entity_index(self, cards):
         from utils.planner.typed import PlanContext, _run_tool, catalogs_for
@@ -380,6 +403,29 @@ class TestNoUnlinkedScan:
             ctx.close()
         assert all(c.ok for c in checks), [c.refusals for c in checks]
         assert checks[1].join_key
+
+    def test_the_plan_records_which_step_each_step_starts_from(self, cards):
+        """EXP-2026-11-018: the engine links consumers by ``from_step``, so the plan must carry it."""
+        from utils.planner.typed import check_plan, to_plan
+        from utils.specialists.federation import dependency_map
+
+        hop = {"relation": "HAS_TECHNIQUE", "direction": "in", "target_label": "Tactic"}
+        ctx = self._ctx(cards)
+        try:
+            checks, _ = check_plan({"steps": [
+                {"id": "q1", "graph": "capec", "kind": "expand", "anchor": {"id": "CAPEC-98"},
+                 "path": [{"relation": "MAPS_TO", "direction": "out", "target_label": "TaxonomyEntry"}]},
+                {"id": "q2", "graph": "attack", "kind": "expand",
+                 "anchor": {"from_step": "q1", "label": "Technique"}, "path": [hop]},
+                {"id": "q3", "graph": "attack", "kind": "expand",
+                 "anchor": {"from_step": "q1", "label": "SubTechnique"}, "path": [hop]}]}, ctx)
+        finally:
+            ctx.close()
+        if not all(c.ok for c in checks):
+            pytest.skip(f"the cards refuse this bridge: {[c.refusals for c in checks]}")
+        plan = to_plan("r", checks, {}, cards, [], "lazy")
+        assert [sq.step.get("from_step") for sq in plan.sub_questions] == [None, "q1", "q1"]
+        assert dependency_map(plan) == {"q2": ("q1",), "q3": ("q1",)}
 
     def test_a_scan_alone_or_beside_a_same_graph_anchor_is_still_accepted(self, cards):
         from utils.planner.typed import check_plan

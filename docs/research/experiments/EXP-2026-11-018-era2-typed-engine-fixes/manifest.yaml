@@ -1,0 +1,74 @@
+# Filled by scripts/new_experiment.py. Every field below is required unless
+# marked optional. Do not delete a field you do not know — record it as null or
+# "unknown" and explain in ISSUES.md. Inventing a value is worse than admitting
+# a gap.
+id: EXP-2026-11-018
+slug: era2-typed-engine-fixes
+title: "Era 2 Step 8 follow-up 3: six faults in how typed plans are checked and executed, fixed and re-run on EXP-2026-11-015's arms and gates"
+status: planned            # planned | running | complete | failed | superseded
+date_started: 2026-11-20
+date_completed: null
+authors: ["brendondgr", "Claude Opus 5.5"]
+
+purpose: >
+  Follow-up to EXP-2026-11-017. A diagnosis of where the typed hand-off loses to English found six faults in the typed path, none in the model: CWE seeds read as foreign ids; the Gremlin validator checking each union branch from the label where the last branch ended; only the last of several bridged steps on one graph linked to its producer (the others ran unanchored); the join key description teaching the property name `taxonomy` for `taxonomy_name`; same-graph `from_step` and expand-without-path refused instead of applied as the refusal advised; and redundant bridged describes. Fixed, proven on the previously failing items (PROTOCOL, Smoke), re-run. Engineering measurement; no paper claim.
+
+hypothesis: >
+  E1: T-lazy dev lost falls by at least 15 against EXP-2026-11-017 (59). E2: T-lazy variants confidently wrong does not rise against EXP-2026-11-017 (52). H1 (harness) holds. Secondary, reported: records_exact with the gold question's own ids removed from both sides (scripts/era2_anchor_exact.py). Predicted: G2 still fails (bar about 21) and G4 variants still fails; G1, G3 fail.
+
+# --- Reproducibility block (all fields mandatory) ---
+code:
+  commit: unknown          # set at launch: the commit this protocol and the fixes are in
+  branch: main
+  entrypoint: "bash docs/research/experiments/EXP-2026-11-018-era2-typed-engine-fixes/data/run.sh, then the scoring in PROTOCOL Procedure"
+  dirty: false
+config:
+  path: null               # repo-relative path, or null if the run takes no config file
+  hash: null               # sha256:... of that file
+data:
+  name: "variant set (T0 120 golden + 579 variants) and the 284-question dev bank"
+  version: "docs/evaluation/variants-2026-09-15/variants.json; docs/evaluation/composition/bank/bank-dev.json"
+  split: "dev and variant sets (sealed held-out banks unread)"
+  n_examples: 983
+  dvc_path: null           # this repository does not use DVC; leave null
+  hash: sha256:428a23467ecf8aed1f266186504d6f68d0a9d88173cc090149558d078bdea63c   # variants.json
+seeds: [20261118]
+n_runs: 1                  # SYSTEM runs over the question set — grading passes are not runs
+environment:
+  python: "3.13"
+  lockfile: env/requirements.lock
+  container: null
+compute:
+  hardware: "32-core x86_64 host, 121 GB RAM; relay :9090 (default-model = Gemma 4 31B, default-model-2 = Qwen 3.8 27B; 16 concurrent each)"
+  wall_clock_hours: null
+  estimated_cost_usd: 0.0
+
+# --- LLM / agentic block (delete entirely if no model was in the loop) ---
+llm:
+  model: "Qwen 3.8 27B (:9090 default-model-2, reasoning_effort=medium) planner of record; Gemma 4 31B (:9090 default-model) replication arm; identity by token id"
+  temperature: 0.0
+  top_p: 1.0
+  max_tokens: 16384        # every planner arm, E included (amendment 2); thinking budget 0
+  prompt_files: []
+  prompt_hash: null
+  tool_schema_hash: null
+  total_input_tokens: null
+  total_output_tokens: null
+  nondeterminism_note: >
+    Provider-side nondeterminism remains even at temperature 0; results
+    are reported as mean ± std over n_runs.
+
+# --- Results block ---
+metrics:
+  primary: dev_lost_typed_lazy
+  values: {}
+  withdrawn: {}            # values later retracted by amendment: {metric: {mean, std, n, withdrawn_on, reason, replaced_by}}
+baselines_compared: ["arm E: Qwen planner, English hand-off, same tree", "EXP-2026-11-017 T-lazy and E (paired, same items)", "arm R: rules-only reference re-captured"]
+statistical_test: "paired: 2,000 bootstrap resamples over cases (seed 20261118)"
+
+# --- Linkage ---
+supports_claims: []        # every ID here must exist in ../../CLAIMS.md
+figures: []                # every name here must have a file in figures/ and vice versa
+supersedes: null           # set in BOTH manifests or in neither; the validator checks symmetry
+superseded_by: null
+related: ["EXP-2026-11-017", "EXP-2026-11-016", "EXP-2026-11-015"]
