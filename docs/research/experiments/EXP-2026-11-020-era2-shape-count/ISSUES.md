@@ -44,3 +44,14 @@ text they ask for.
 2026-11-20). The STIX relationship descriptions are not loaded.
 **Resolution:** not resolved. It is a builder change, proposed to the operator.
 **Paper implication:** any external verify score must say whether edge text was available.
+
+## 2026-11-20 — correction: the loader, not the builder, drops edge descriptions
+**Impact:** none on any figure. It corrects where the "how" text is lost.
+**Cause:** RESULTS § 4 and § 6 first said the builder drops relationship descriptions. Phase E
+of Step 9 read the built records: canonical edges carry `properties`, including `description`.
+The Neo4j and Gremlin stores write only `id` (`relationship_merge_cypher`,
+`edge_upsert_traversal`).
+**Resolution:** RESULTS corrected. Loading edge properties is proposed to the operator as a
+loader change.
+**Paper implication:** none.
+

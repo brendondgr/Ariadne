@@ -963,60 +963,35 @@ class CypherQueryBuilder:
         is unchanged. Returns ``None`` (the ordinary engine decides) when the
         step cannot run here: no anchor ids, or no hops.
         """
+        from dataclasses import replace
+
+        from utils.specialists.algebra.base import Common, Describe, Expand, Nodes
+        from utils.specialists.algebra.from_typed_step import from_typed_step
+
+        from .compile import compile_typed_walk
+
         step = resolved.task.signals.step
         if step is None:
             return None
-        if step.kind == "scan":
+        try:
+            # No card: the step's filter stays ``=``, and the store rule below
+            # (``_typed_filter``) decides its shape, exactly as before.
+            node = from_typed_step(step)
+        except ValueError:  # a kind the algebra does not name walks like expand, as before
+            node = from_typed_step(replace(step, kind="expand"))
+        if isinstance(node, Nodes):
             return self._label_scan(resolved)
         if not resolved.seed_ids:
             return None
-        if step.kind == "common":
+        if isinstance(node, Common):
             return self._generic_intersect(resolved) or self._describe(resolved)
-        if step.kind == "describe" or not step.hops:
+        if isinstance(node, Describe):
             return self._describe(resolved)
-        hops = list(step.hops)
-        depth = max(1, int(step.depth or 1))
+        walk = node.walk if isinstance(node, Expand) else node.of
         bound = self._typed_filter(resolved, step)
-        blocks: list[str] = []
-        collected: list[str] = []
-        for i in range(1, len(hops) + 1):
-            pattern = []
-            for j, hop in enumerate(hops[:i]):
-                rel = _safe_ident(hop.relation, _SAFE_REL_RE, "relationship type")
-                # An empty target keeps every label the hop reaches.
-                target = (":" + _safe_ident(hop.target_label, _SAFE_LABEL_RE, "target label")
-                          if hop.target_label else "")
-                var = f"t{i - 1}" if j == i - 1 else ""
-                star = f"*1..{depth}" if len(hops) == 1 and depth > 1 else ""
-                if hop.direction == "in":
-                    pattern.append(f"<-[:{rel}{star}]-({var}{target})")
-                else:
-                    pattern.append(f"-[:{rel}{star}]->({var}{target})")
-            terminal = _safe_ident(hops[i - 1].relation, _SAFE_REL_RE, "relationship type")
-            where = ""
-            if bound is not None and i == len(hops):
-                where = f" WHERE {self._filter_predicate(bound, f't{i - 1}')}"
-            carry = ", ".join(["n", *collected])
-            blocks.append(
-                f"OPTIONAL MATCH (n){''.join(pattern)}{where} "
-                f"WITH {carry}, collect(DISTINCT {{m: t{i - 1}, r: '{terminal}'}}) AS k{i - 1}"
-            )
-            collected.append(f"k{i - 1}")
-        query = (
-            "MATCH (n) WHERE coalesce(n.attack_id, n.id) IN $ids "
-            + " ".join(blocks)
-            + f" WITH n, [x IN {' + '.join(collected)} WHERE x.m IS NOT NULL] AS hops "
-            "UNWIND (CASE WHEN size(hops) = 0 THEN [{m: null, r: null}] ELSE hops END) AS hop "
-            "RETURN coalesce(n.attack_id, n.id) AS anchor_id, n.name AS anchor_name, "
-            "labels(n)[0] AS anchor_label, "
-            "coalesce(hop.m.attack_id, hop.m.id) AS neighbour_id, "
-            "hop.m.name AS neighbour_name, "
-            "labels(hop.m)[0] AS neighbour_label, hop.r AS rel_type"
-        )
-        params: dict[str, Any] = {"ids": list(resolved.seed_ids)}
+        query, params = compile_typed_walk(walk, resolved.seed_ids, bound)
         meta: dict[str, Any] = {"typed_step": step.to_dict(), "seed_ids": list(resolved.seed_ids)}
         if bound is not None:
-            params["filterValue"] = bound[2]
             meta["filter"] = f"{bound[0]}.{bound[1]}={bound[2]}"
         return QueryDraft(query=query, params=params, template="typed_step",
                           expected_nonempty=False, meta=meta)
@@ -1202,13 +1177,9 @@ class CypherQueryBuilder:
         than erroring: ``x_mitre_platforms`` holds a list and the question means
         membership; ``Abstraction`` holds a string and it means equality.
         """
-        if not bound or not var:
-            return ""
-        _, prop, _, is_list = bound
-        safe_prop = _safe_ident(prop, _SAFE_PROPERTY_RE, "property")
-        if is_list:
-            return f"$filterValue IN coalesce({var}.`{safe_prop}`, [])"
-        return f"{var}.`{safe_prop}` = $filterValue"
+        from .compile import filter_predicate
+
+        return filter_predicate(bound, var)
 
     def _chain_route(
         self, resolved: ResolvedTask

@@ -74,8 +74,8 @@ None. The tables are the result.
 - **The graph cannot answer the "how" part.** Every `USES`, `MITIGATES` and `DETECTS` edge in
   the live store carries only `id`; there is no description (checked 2026-11-20, § 6).
   - Verify can say whether the link exists.
-  - The procedure text needs the builder to keep relationship descriptions. That is a build
-    change, not a Step 9 operator.
+  - The procedure text needs the loaders to write relationship properties. The built records
+    already hold them. That is a loader change, not a Step 9 operator.
 - **Aggregate, rank, group-by, time and path have no natural frequency** in any source on this
   machine. They appear only in the 13 questions Step 6 wrote to be out of coverage.
 - **What this changes in Step 9:**
@@ -110,9 +110,11 @@ None. The tables are the result.
 
 ## 6. What surprised us
 
-- **Verify is the external shape, and the data for its text is missing.** The builder drops the
-  STIX relationship `description` when it loads `USES`, `MITIGATES` and `DETECTS` edges; the
-  edges hold only `id`. "How does S0623 use T1611?" asks for exactly that text.
+- **Verify is the external shape, and the data for its text never reaches the store.** The
+  built relationship records keep the STIX `description`. The loaders write only the edge's
+  `id`: `relationship_merge_cypher` and `edge_upsert_traversal` in `utils/graph_loader/stores/`.
+  "How does S0623 use T1611?" asks for exactly that text. (Corrected 2026-11-20: first written
+  as the builder dropping it; see ISSUES.)
 - **Step 6's out-of-coverage gold will be wrong once the switches are on.**
   - Four median questions (operators 2 + 6) and three shortest-chain questions (operator 8)
     become answerable.
@@ -125,8 +127,8 @@ None. The tables are the result.
 
 - **Phase B (next):** `operator-algebra.md`, with verify defined as existence plus the witness
   edge and its properties.
-- **Relationship descriptions:** loading them is a builder change. It affects every store and
-  needs the live fixture reload. **It is proposed to the operator for a decision, not done
+- **Relationship descriptions:** loading them is a loader change. The data is already built.
+  It affects every store and needs the live fixture reload. **It is proposed to the operator for a decision, not done
   here.**
 - **Step 6/7 exit sets:** re-label the seven out-of-coverage items that become answerable,
   before any exit metric is quoted with operators on.

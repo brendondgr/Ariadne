@@ -133,7 +133,7 @@ That is what lets plans chain.
 | Operation | Inputs | Output | Meaning |
 |---|---|---|---|
 | `describe` | `A` | nodes with all properties | each anchor node (S12 for missing ids) |
-| `expand` | `A`, hops (each `R` and an optional target label), depth | node set, with every intermediate | every node at the end of a matching walk, plus the nodes it passes through; one repeated hop may run 1..depth times |
+| `expand` | `A`, hops (each `R` and an optional target label), depth | node set, with every intermediate | for each prefix of the hops (hop 1; hops 1–2; …; all hops), the nodes at its end, whether or not the walk continues from them (amendment 3); one repeated hop may run 1..depth times |
 | `count` | as `expand` | integer | distinct nodes at the walk's end (S1) |
 | `scan` | `L` | node set | every node of `L` (S7 bounds the rows shown) |
 | `common` | `A` (two or more, of different kinds) | node set | nodes adjacent to every anchor |
@@ -342,3 +342,9 @@ missing.
 
    No compiler existed yet. The v3 compilers differ on the last three, and those requests are
    flagged by `from_v3.semantic_differences`.
+3. **2026-11-20, Phase D: what `expand` returns.** The text said "every node at the end of a
+   matching walk, plus the nodes it passes through". That could mean only complete walks.
+   Today's builder collects the end nodes of **every prefix** of the hops, whether or not the
+   walk continues, and `expand` is defined as unchanged in meaning. The text now says that.
+   Found when the first compiler draft returned only complete walks.
+
