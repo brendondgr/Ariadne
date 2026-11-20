@@ -10,7 +10,6 @@ that a dead end is walked into once rather than twice.
 
 | ID | Date | Title | Status | Primary metric | Claims | Link |
 |---|---|---|---|---|---|---|
-| `EXP-2026-11-018` | 2026-11-20 | Era 2 Step 8 follow-up 3: six faults in how typed plans are checked and executed, fixed and re-run on EXP-2026-11-015's arms and gates | planned | dev_lost_typed_lazy (not recorded) | — | [era2-typed-engine-fixes](experiments/EXP-2026-11-018-era2-typed-engine-fixes/) |
 | `EXP-2026-07-001` | 2026-07-26 | Arm A — fully deterministic pipeline (planning, extraction, synthesis) | complete | correctness 0.9972 (n=1) | C-001, C-004 | [arm-a-deterministic](experiments/EXP-2026-07-001-arm-a-deterministic/) |
 | `EXP-2026-07-002` | 2026-07-26 | Arm B — LLM planning with deterministic extraction and an LLM writer | complete | correctness 0.8505 (n=1) | C-002, C-003, C-016 | [arm-b-llm-planned](experiments/EXP-2026-07-002-arm-b-llm-planned/) |
 | `EXP-2026-07-003` | 2026-07-26 | Arm C — authored plan with an LLM writer reading raw evidence | complete | correctness 0.9690 (n=1) | C-002, C-005 | [arm-c-llm-writer-evidence](experiments/EXP-2026-07-003-arm-c-llm-writer-evidence/) |
@@ -84,6 +83,7 @@ that a dead end is walked into once rather than twice.
 | `EXP-2026-11-015` | 2026-11-18 | Era 2 Step 8: a tool catalog generated from the card, and a typed hand-off to the specialists | complete | t1_records_exact_typed_lazy 0.6167 ± 0.0000 (n=120) | — | [era2-tool-catalog](experiments/EXP-2026-11-015-era2-tool-catalog/) |
 | `EXP-2026-11-016` | 2026-11-19 | Era 2 Step 8 follow-up: the anchorless-scan fix in the typed planner, re-run on EXP-2026-11-015's arms and gates | complete | f1_anchorless_scan_cw_dev_typed_lazy 0.0000 ± 0.0000 (n=284) | — | [era2-scan-fix](experiments/EXP-2026-11-016-era2-scan-fix/) |
 | `EXP-2026-11-017` | 2026-11-19 | Era 2 Step 8 follow-up 2: the bridge-route scan guard in the typed planner, re-run on EXP-2026-11-015's arms and gates | complete | f1_anchorless_scan_cw_variants_typed_lazy 2.0000 ± 0.0000 (n=669) | — | [era2-bridge-guard](experiments/EXP-2026-11-017-era2-bridge-guard/) |
+| `EXP-2026-11-018` | 2026-11-20 | Era 2 Step 8 follow-up 3: six faults in how typed plans are checked and executed, fixed and re-run on EXP-2026-11-015's arms and gates | complete | dev_lost_typed_lazy 21.0000 ± 0.0000 (n=284) | — | [era2-typed-engine-fixes](experiments/EXP-2026-11-018-era2-typed-engine-fixes/) |
 | `EXP-2026-07-007` | 2026-07-26 | Arm G — generic primitives only, every hand-written template disabled | superseded → EXP-2026-08-001 | correctness 0.6388 (n=1) | C-003 | [arm-g-templates-disabled](experiments/EXP-2026-07-007-arm-g-templates-disabled/) |
 | `EXP-2026-07-010` | 2026-07-20 | First independent cross-model grading pass (the pre-fix committed baseline) | superseded → EXP-2026-07-001 | correctness 0.8946 (n=1) | C-009 | [independent-eval-baseline](experiments/EXP-2026-07-010-independent-eval-baseline/) |
 | `EXP-2026-07-011` | 2026-07-26 | Portability audit — what survives a dataset that is not MITRE | superseded → EXP-2026-08-011 | — | C-010 | [portability-audit](experiments/EXP-2026-07-011-portability-audit/) |

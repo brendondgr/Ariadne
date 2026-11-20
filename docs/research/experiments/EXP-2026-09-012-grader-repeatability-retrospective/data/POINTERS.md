@@ -18,7 +18,7 @@ stored output `data/recompute-audit.json` is the record of what was read.
 
 | Artifact | Path (repo-relative) | Bytes | SHA-256 | What it is |
 |---|---|---|---|---|
-| Judgment sidecar tree (input) | `docs/evaluation/experiments` | 1845376763 | `sha256:73ce6e1d6bef43e83716c143638f436c0fd266a4cf4a177d9bda37b3ae08b121` | Tree, **re-hashed 2026-11-19 (eleventh time)**: EXP-2026-11-017 added `bridge-guard-2026-11-19/` (60064338 bytes: variant arms and dev answers, no judgment sidecars); no judgment sidecar this experiment reads was changed; previous `sha256:807506747e9a…` |
+| Judgment sidecar tree (input) | `docs/evaluation/experiments` | 1907850852 | `sha256:7465fe90557260cb12d2ef312c8586013b3ac8818ce995dfb1710b8e97f1a34a` | Tree, **re-hashed 2026-11-20 (twelfth time)**: EXP-2026-11-018 added `typed-engine-fixes-2026-11-20/` (62474089 bytes: variant arms and dev answers, no judgment sidecars); no judgment sidecar this experiment reads was changed; previous `sha256:73ce6e1d6bef…`. **Re-hashed 2026-11-19 (eleventh time)**: EXP-2026-11-017 added `bridge-guard-2026-11-19/` (60064338 bytes: variant arms and dev answers, no judgment sidecars); no judgment sidecar this experiment reads was changed; previous `sha256:807506747e9a…` |
 
 The canonical output is `data/recompute-audit.json` (inside `docs/research/`,
 no pointer needed). `data/2026-09-07-recompute-audit.json` is an earlier copy

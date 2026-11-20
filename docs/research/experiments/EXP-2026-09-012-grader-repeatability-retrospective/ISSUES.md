@@ -4,6 +4,11 @@ Bugs, anomalies, aborted runs, and gotchas. Also the honest record of anything
 the manifest could not capture: unrecorded seeds, an unknown commit, a dirty
 tree at run time. An empty file is fine; a missing one is not.
 
+## 2026-11-20 — The judgment-tree pointer re-hashed (twelfth time)
+**Cause:** EXP-2026-11-018 wrote its run output to `docs/evaluation/experiments/typed-engine-fixes-2026-11-20/` (62,474,089 bytes: variant arms and dev answers, no judgment sidecars).
+**Resolution:** row 21 re-hashed: 1,907,850,852 bytes, `sha256:7465fe905572…`. The growth equals the new directory exactly.
+**Impact:** none; no sidecar this experiment reads changed.
+
 ## 2026-11-19 — The judgment-tree pointer re-hashed (eleventh time)
 **Impact:** none. EXP-2026-11-017 (the bridge-guard re-run of era 2 Step 8) added `docs/evaluation/experiments/bridge-guard-2026-11-19/`. It holds 60064338 bytes of variant-arm results and dev answers, and no judgment sidecars; the tree grew by exactly that much. The tree is now 1845376763 bytes, `sha256:73ce6e1d6bef…`.
 **Resolution:** re-hashed. No sidecar this experiment reads was changed.
