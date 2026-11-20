@@ -65,8 +65,11 @@ Each rule has an id, which the tests cite (§ 8).
   - Several filters on one item are joined by AND. OR is `union` (`O7c`).
 - **S5 — comparison by type.**
   - `int` and `float` compare as numbers.
-  - `str` compares exactly and is case-sensitive. `starts_with`, `ends_with` and `contains_text`
-    are case-sensitive substring tests.
+  - `str` compares exactly and is case-sensitive. It orders by code point (`<`, `>`, `<=`,
+    `>=`; amendment 2). `starts_with`, `ends_with` and `contains_text` are case-sensitive
+    substring tests.
+  - `number_text` (a number stored as text) compares, sorts and aggregates as the number it
+    spells. A value that does not parse as a number counts as missing (amendment 2).
   - `bool` allows only `=` and `<>`.
   - `list[str]` allows `contains` and `not_contains` (one element), and `size` with a comparison.
 - **S6 — dates.**
@@ -86,6 +89,8 @@ Each rule has an id, which the tests cite (§ 8).
     third returns 4 or more, and says so.
   - Every list has a deterministic order: the operator's own key, then stored id ascending.
     Unranked sets order by stored id.
+  - **A missing or `null` key sorts last in either order** (amendment 2). It is reached by a
+    top-`k` only when fewer than `k` items have a value.
 - **S9 — empty groups.** A group-by returns **every member** of the grouped label that passes the
   member filter:
   - a member with nothing to aggregate has count 0;
@@ -197,7 +202,8 @@ exactly as before (Phase D's byte-identical check).
 
 - **Inputs:**
   - a group label `L` (with optional member conditions);
-  - a walk from each member (hops);
+  - a walk from each member (hops), with optional conditions on the walk's end nodes
+    (`end_conds`, amendment 2);
   - an aggregate (`count`, `sum`, `avg`, `min`, `max`, `median` over the walk's end nodes or one
     of their properties);
   - optionally `having (op, value)`, and a rank (`O3`) over the groups.
@@ -233,7 +239,7 @@ exactly as before (Phase D's byte-identical check).
 
 - **`reach`:**
   - **Inputs:** anchors `A`, a set of relationships with directions, a depth cap `d` (default 6,
-    at most the card's cap).
+    at most 10; amendment 1).
   - **Output:** every node reachable in 1 to `d` steps along acyclic paths (S10). The anchors
     themselves are never in the result, since an acyclic path cannot return to its start.
 - **`shortest`:**
@@ -318,4 +324,21 @@ missing.
 
 ## 9. Amendments
 
-None yet.
+1. **2026-11-20, Phase C: the path depth cap.** The text said the path cap is "default 6, at
+   most the card's cap". But both cards cap walks at 3 (`max_traversal_depth`), so a path could
+   never reach its own default. Paths now have their own cap: default 6, at most 10. The card's
+   traversal cap still bounds `expand` and every walk. Found while writing the validator; no
+   code had used the old text.
+2. **2026-11-20, Phase C: four gaps found while converting the kill-test v3 requests.**
+   - **Strings order by code point.** The text allowed only `=` and `<>` on strings, while
+     ranking and `min`/`max` already ordered them.
+   - **`number_text` has a meaning:** the number it spells, else missing. S1–S12 never said.
+   - **A missing or null key sorts last in either order** (S8). It matters for `rank` and for a
+     ranked `groupby`, whose empty groups have `null` avg, min, max and median.
+   - **`groupby` takes `end_conds`:** conditions on the walk's end nodes. For example, "per
+     group, how many of its techniques run on Linux".
+   - **`Values` returns one value per node that has the property**, and reports how many nodes
+     lacked it. Nothing returns a null row.
+
+   No compiler existed yet. The v3 compilers differ on the last three, and those requests are
+   flagged by `from_v3.semantic_differences`.
