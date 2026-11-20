@@ -7,6 +7,12 @@ import re
 from pathlib import Path
 from typing import Any
 
+from utils.kg_builder.property_encoding import (
+    SAFE_PROPERTY_KEY,
+    is_json_encoded,
+    stored_properties,
+)
+
 from ..config import ADAPTER_VERSION
 from ..models import AdapterMetadata, ReferentialIntegrityResult
 from .base import GraphStore
@@ -55,7 +61,7 @@ _CORE_NODE_PROPERTIES = frozenset({"id", "name", "attack_id", "stix_type"})
 
 #: Property names safe to backtick-quote into a SET clause. Same allowlist
 #: rule, and the same reason, as :data:`_SAFE_LABEL`.
-_SAFE_PROPERTY = re.compile(r"^[A-Za-z][A-Za-z0-9_]*$")
+_SAFE_PROPERTY = SAFE_PROPERTY_KEY
 
 
 def _native_property_values(props: dict[str, Any]) -> dict[str, Any]:
@@ -74,18 +80,31 @@ def _native_property_values(props: dict[str, Any]) -> dict[str, Any]:
     ``properties_json`` is still written, unchanged and complete, so
     :func:`unpack_properties` and every reader built on it keep working. This
     only *adds* the queryable copy.
+
+    The value rule is the shared one (``utils/kg_builder/property_encoding.py``).
+    A map or list of maps is *stored* (as JSON text, see
+    :func:`_stored_node_properties`) but is not native: a filter on it would
+    compare against JSON text.
     """
-    native: dict[str, Any] = {}
-    for key, value in props.items():
-        if key in _CORE_NODE_PROPERTIES or not _SAFE_PROPERTY.match(key):
-            continue
-        if isinstance(value, (str, int, float, bool)):
-            native[key] = value
-        elif isinstance(value, (list, tuple)):
-            items = list(value)
-            if items and all(isinstance(i, (str, int, float, bool)) for i in items):
-                native[key] = items
-    return native
+    return {
+        key: value
+        for key, value in stored_properties(props).items()
+        if key not in _CORE_NODE_PROPERTIES and not is_json_encoded(props.get(key))
+    }
+
+
+def _stored_node_properties(props: dict[str, Any]) -> dict[str, Any]:
+    """Every canonical property written as its own node property.
+
+    Native values as they are, plus maps and lists of maps as JSON text — the
+    same set and the same forms the Gremlin loader writes. Core properties are
+    set explicitly and skipped here.
+    """
+    return {
+        key: value
+        for key, value in stored_properties(props).items()
+        if key not in _CORE_NODE_PROPERTIES
+    }
 
 
 def node_merge_cypher(node: dict[str, Any]) -> tuple[str, dict[str, Any]]:
@@ -104,7 +123,7 @@ def node_merge_cypher(node: dict[str, Any]) -> tuple[str, dict[str, Any]]:
         "SET n.name = $name, n.attack_id = $attack_id, "
         "n.stix_type = $stix_type, n.properties_json = $properties_json"
     )
-    for key, value in sorted(_native_property_values(props).items()):
+    for key, value in sorted(_stored_node_properties(props).items()):
         param = f"p_{key}"
         params[param] = value
         query += f" SET n.`{key}` = ${param}"
@@ -153,7 +172,7 @@ def relationship_merge_cypher(edge: dict[str, Any]) -> tuple[str, dict[str, Any]
     each existing relationship already carries the ``id`` it was written with.
     """
     rel_type = _sanitize_rel_type(edge["type"])
-    params = {
+    params: dict[str, Any] = {
         "id": edge["id"],
         "source_id": edge["source_id"],
         "target_id": edge["target_id"],
@@ -163,7 +182,21 @@ def relationship_merge_cypher(edge: dict[str, Any]) -> tuple[str, dict[str, Any]
         "MATCH (b {id: $target_id}) "
         f"MERGE (a)-[r:{rel_type} {{id: $id}}]->(b)"
     )
+    # The edge's own properties, by the node rule. They are SET after the
+    # MERGE, so a reload rewrites them on the matched relationship and the
+    # merge stays keyed on the id alone. Until 2026-11-20 only `id` was written.
+    for key, value in sorted(_stored_edge_properties(edge).items()):
+        param = f"p_{key}"
+        params[param] = value
+        query += f" SET r.`{key}` = ${param}"
     return query, params
+
+
+def _stored_edge_properties(edge: dict[str, Any]) -> dict[str, Any]:
+    """An edge's canonical properties as stored; ``id`` is the merge key, not a payload."""
+    stored = stored_properties(edge.get("properties"))
+    stored.pop("id", None)
+    return stored
 
 
 def parse_constraints_cypher(path: Path) -> list[str]:

@@ -8,6 +8,7 @@ from pathlib import Path
 from typing import Any
 
 from utils.kg_builder.io import read_jsonl
+from utils.kg_builder.property_encoding import stored_properties
 
 from ..config import ADAPTER_VERSION
 from ..models import AdapterMetadata, ReferentialIntegrityResult
@@ -76,7 +77,10 @@ def vertex_upsert_batches(node: dict[str, Any]) -> list[tuple[str, dict[str, Any
     caller already assumed and what a reload after a build change needs.
     """
     label = _sanitize_label(node["label"])
-    props: dict[str, Any] = dict(node.get("properties") or {})
+    # Values take the shared stored form (``utils/kg_builder/property_encoding.py``)
+    # so a record the exporter already encoded and a canonical record load the
+    # same way, and the same way the Neo4j loader writes them.
+    props: dict[str, Any] = stored_properties(node.get("properties"))
     # ``id`` is the vertex's identity and comes from the node id. A payload
     # ``id`` would be written after it and silently redefine the vertex: CAPEC's
     # ``capec:external-reference:REF-97`` carries ``properties.id == "REF-97"``,
@@ -136,21 +140,67 @@ def vertex_upsert_traversal(node: dict[str, Any]) -> tuple[str, dict[str, Any]]:
     return batches[0]
 
 
-def edge_upsert_traversal(edge: dict[str, Any]) -> tuple[str, dict[str, Any]]:
-    """Return a Gremlin traversal and bindings for idempotent edge upsert."""
+def edge_upsert_batches(edge: dict[str, Any]) -> list[tuple[str, dict[str, Any]]]:
+    """Idempotent edge upsert with the edge's properties, within `MAX_BINDINGS`.
+
+    The merge is keyed on the canonical edge ``id`` between the two endpoints,
+    as the Neo4j loader's is: two parallel edges of one type stay two edges.
+    Properties take the shared stored form and are written after the coalesce,
+    to the created or matched edge alike. An edge whose properties do not fit
+    in the head submission continues in later ones addressed by its id. Until
+    2026-11-20 the merge matched on ``(source, label, target)`` and only ``id``
+    was written.
+    """
     rel_type = _sanitize_rel_type(edge["type"])
-    bindings = {
+    props = stored_properties(edge.get("properties"))
+    # Identity comes from the edge id; a payload ``id`` must not redefine it.
+    props.pop("id", None)
+    head = {
         "sourceId": edge["source_id"],
         "targetId": edge["target_id"],
         "edgeId": edge["id"],
         "edgeLabel": rel_type,
     }
-    traversal = (
+    anchor = (
         "g.V().has('id', sourceId).as('a').V().has('id', targetId).as('b')"
-        ".coalesce(__.inE(edgeLabel).where(outV().as('a')), addE(edgeLabel).from('a').to('b'))"
-        ".property('id', edgeId)"
+        ".coalesce(__.inE(edgeLabel).has('id', edgeId).where(outV().as('a')), "
+        "addE(edgeLabel).from('a').to('b').property('id', edgeId))"
     )
-    return traversal, bindings
+    items = list(props.items())
+    batches: list[tuple[str, dict[str, Any]]] = []
+    index = 0
+    first = True
+    while True:
+        bindings: dict[str, Any] = dict(head) if first else {"edgeId": edge["id"]}
+        chunk = items[index:index + MAX_BINDINGS - len(bindings)]
+        if not chunk and not first:
+            break
+        traversal = anchor if first else "g.E().has('id', edgeId)"
+        for offset, (key, value) in enumerate(chunk):
+            name = f"p{index + offset}"
+            bindings[name] = value
+            traversal += f".property('{key}', {name})"
+        batches.append((traversal, bindings))
+        index += len(chunk)
+        first = False
+        if index >= len(items):
+            break
+    return batches
+
+
+def edge_upsert_traversal(edge: dict[str, Any]) -> tuple[str, dict[str, Any]]:
+    """The single-submission form, for edges whose properties fit in one batch.
+
+    Raises when the edge needs more than one; `edge_upsert_batches` is the
+    general path.
+    """
+    batches = edge_upsert_batches(edge)
+    if len(batches) != 1:
+        raise ValueError(
+            f"edge {edge['id']!r} needs {len(batches)} submissions to stay within "
+            f"{MAX_BINDINGS} bindings; use edge_upsert_batches"
+        )
+    return batches[0]
 
 
 def load_gremlin_export_nodes(path: Path) -> list[dict[str, Any]]:
@@ -227,8 +277,8 @@ class GremlinGraphStore(GraphStore):
     def upsert_edges(self, edges: list[dict[str, Any]]) -> int:
         written = 0
         for edge in edges:
-            traversal, bindings = edge_upsert_traversal(edge)
-            self._submit(traversal, bindings)
+            for traversal, bindings in edge_upsert_batches(edge):
+                self._submit(traversal, bindings)
             written += 1
         return written
 

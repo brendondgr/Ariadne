@@ -2,27 +2,22 @@
 
 from __future__ import annotations
 
-import json
 from pathlib import Path
 from typing import Any
 
 from ..io import ensure_dir, write_jsonl
 from ..models import EdgeRecord, NodeRecord
+from ..property_encoding import stored_properties
 
-# Gremlin/TinkerPop property values must be scalars; nested structures are JSON-encoded.
-GREMLIN_PROPERTY_SERIALIZATION = "json_string_for_nested"
+# Gremlin and Neo4j store a property value the same way (see
+# ``utils/kg_builder/property_encoding.py``): scalars as they are, homogeneous
+# scalar lists as list values, empty lists and None not at all, and maps or
+# lists of maps as JSON text. Until 2026-11-20 every list was JSON text here.
+GREMLIN_PROPERTY_SERIALIZATION = "scalar_lists_as_lists_json_string_for_objects"
 
 
 def _serialize_gremlin_properties(properties: dict[str, Any]) -> dict[str, Any]:
-    serialized: dict[str, Any] = {}
-    for key, value in properties.items():
-        if isinstance(value, (dict, list)):
-            serialized[key] = json.dumps(value, sort_keys=True)
-        elif value is None:
-            continue
-        else:
-            serialized[key] = value
-    return serialized
+    return stored_properties(properties)
 
 
 def _gremlin_node_record(node: dict[str, Any] | NodeRecord) -> dict[str, Any]:

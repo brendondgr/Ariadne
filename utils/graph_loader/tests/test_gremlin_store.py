@@ -82,12 +82,18 @@ def test_later_batches_attach_to_the_vertex_the_first_one_created() -> None:
 
 
 def test_binding_names_cannot_collide_between_similar_keys() -> None:
-    """Two keys that sanitize alike must not share a binding name."""
+    """Binding names are indexed, never derived from the key.
+
+    A key that is not identifier-shaped (``a-b``) is not stored by either
+    engine (the shared rule in ``utils/kg_builder/property_encoding.py``; Neo4j
+    could never hold it), so it takes no binding.
+    """
     from utils.graph_loader.stores.gremlin import vertex_upsert_batches
 
-    node = {"id": "n1", "label": "Campaign", "properties": {"a-b": 1, "a_b": 2}}
+    node = {"id": "n1", "label": "Campaign", "properties": {"a-b": 0, "a_b": 1, "a__b": 2}}
     traversal, bindings = vertex_upsert_batches(node)[0]
     assert bindings["p0"] == 1 and bindings["p1"] == 2
+    assert "'a-b'" not in traversal
 
 
 def test_the_single_submission_form_refuses_to_truncate() -> None:
