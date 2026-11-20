@@ -1,0 +1,83 @@
+# Filled by scripts/new_experiment.py. Every field below is required unless
+# marked optional. Do not delete a field you do not know — record it as null or
+# "unknown" and explain in ISSUES.md. Inventing a value is worse than admitting
+# a gap.
+id: EXP-2026-11-020
+slug: era2-shape-count
+title: "Era 2 Step 9 Phase A: which retrieval operators do the available questions need? (shape census of own banks, AttackQA, CTIBench)"
+status: complete            # planned | running | complete | failed | superseded
+date_started: 2026-11-20
+date_completed: 2026-11-20
+authors: ["brendondgr", "Claude Opus 5.5"]
+
+purpose: >
+  Step 9 builds retrieval operators. Before building, count which operations the questions this project can use actually need: Ariadne's own banks (labelled by code from their structured specs) and two external benchmarks plus Step 6's out-of-coverage questions (labelled by two model labellers against a written rubric, 20% double-labelled). It orders the operator work, weights Phase G's probe set, and decides whether Mind the Query's three gaps are built. Engineering census; no paper claim.
+
+hypothesis: >
+  H1: today's operations cover >= 0.98 of own banks. H2: on AttackQA weighted, O4.verify >= 0.40; O2/O3/O6/O7/O8 together < 0.02; outside retrieval 0.10-0.35. H3: each gap < 2% of external retrieval questions, so none is built. H4: every cti-ate row is X.extract.
+
+# --- Reproducibility block (all fields mandatory) ---
+code:
+  commit: 6cbb35909e50a6790046e9f5d9314d2e204fda21          # 40-char sha, or "unknown" for a back-filled experiment
+  branch: main
+  entrypoint: "uv run --with pyarrow python scripts/count_question_shapes.py sample; label (PROTOCOL); uv run python scripts/count_question_shapes.py count"
+  dirty: true             # uncommitted changes at run time? if true, explain in ISSUES.md
+config:
+  path: null               # repo-relative path, or null if the run takes no config file
+  hash: null               # sha256:... of that file
+data:
+  name: "own banks (dev 284, gold 120 + 579 variants, Step 6 tuning banks) and a 673-item labelled sample (600 AttackQA stratified by family, 60 CTIBench cti-ate, 13 Step 6 out-of-coverage)"
+  version: "AttackQA rev 1cecfc24; CTIBench rev 9237e163; bank-dev.json; variants-2026-09-15; card-sonnet-2026-11-16 tuning banks"
+  split: "dev and tuning only; sealed held-out banks unread"
+  n_examples: 2076
+  dvc_path: null           # this repository does not use DVC; leave null
+  hash: null               # md5:... or sha256:... of the dataset artifact
+seeds: [20261120]
+n_runs: 1                  # SYSTEM runs over the question set — grading passes are not runs
+environment:
+  python: "3.13"
+  lockfile: env/requirements.lock
+  container: null
+compute:
+  hardware: "32-core x86_64 host, 121 GB RAM; labellers are Claude Code subagents (no local model)"
+  wall_clock_hours: 0.1    # labelling, four subagents in parallel
+  estimated_cost_usd: 0.0
+
+# --- LLM / agentic block (delete entirely if no model was in the loop) ---
+llm:
+  model: "anthropic/claude-opus-5-5 (labeller A) and anthropic/claude-sonnet-5-5 (labeller B), medium effort, Claude Code subagents"
+  temperature: null
+  top_p: null
+  max_tokens: null
+  prompt_files: []
+  prompt_hash: null
+  tool_schema_hash: null
+  total_input_tokens: null
+  total_output_tokens: null
+  nondeterminism_note: >
+    Labels come from Claude Code subagents at their default sampling; temperature is not
+    controllable there. Reproducibility rests on the committed label files, not on re-labelling.
+
+# --- Results block ---
+metrics:
+  primary: external_retrieval_today_coverage
+  values:
+    external_retrieval_today_coverage: {mean: 0.6082, std: 0.0, n: 564}
+    attackqa_weighted_verify_share: {mean: 0.44, std: 0.0, n: 600}
+    attackqa_weighted_outside_share: {mean: 0.0645, std: 0.0, n: 600}
+    attackqa_weighted_rare_ops_share: {mean: 0.0, std: 0.0, n: 600}
+    own_banks_today_coverage: {mean: 0.9845, std: 0.0, n: 837}
+    own_banks_after_op8: {mean: 0.9964, std: 0.0, n: 837}
+    gap_share_max_external: {mean: 0.0, std: 0.0, n: 564}
+    cti_ate_extract_share: {mean: 1.0, std: 0.0, n: 60}
+    kappa_stage: {mean: 0.9386, std: 0.0, n: 135}
+  withdrawn: {}            # values later retracted by amendment: {metric: {mean, std, n, withdrawn_on, reason, replaced_by}}
+baselines_compared: []
+statistical_test: "none: a census; labeller agreement by Cohen kappa on the coverage stage"
+
+# --- Linkage ---
+supports_claims: []        # every ID here must exist in ../../CLAIMS.md
+figures: []                # every name here must have a file in figures/ and vice versa
+supersedes: null           # set in BOTH manifests or in neither; the validator checks symmetry
+superseded_by: null
+related: ["EXP-2026-11-006", "EXP-2026-11-018"]
