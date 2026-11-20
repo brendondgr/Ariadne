@@ -223,3 +223,32 @@ def test_from_step_chains_through_the_seeds(env):
     res = algebra_results(evidence)
     assert [r["step"] for r in res] == ["q2"]
     assert res[0]["kind"] == "nodes" and res[0]["ids"] == sorted(want) and res[0]["total"] == len(want)
+
+
+def test_an_expand_from_an_operator_step_on_capec(env):
+    """Stage 1's lost control (D6 ... T1491): a typescan, then an expand from it on the same graph."""
+    from utils.specialists.algebra.runtime import algebra_results
+    from utils.specialists.gremlin.normalizer import _expand_member_id, _taxonomy_public_id
+
+    rows = _gremlin("g.V().hasLabel('TaxonomyEntry').has('taxonomy_name', 'ATTACK').has('entry_id', '1491').as('s')"
+                    ".in('MAPS_TO').hasLabel('AttackPattern').dedup()"
+                    ".union(identity(), out('MAPS_TO').hasLabel('TaxonomyEntry').where(neq('s'))).dedup()"
+                    ".project('id', 'tn', 'eid').by(values('id'))"
+                    ".by(coalesce(values('taxonomy_name'), constant('')))"
+                    ".by(coalesce(values('entry_id'), constant('')))")
+    want = sorted(_taxonomy_public_id({"taxonomy_name": r["tn"], "entry_id": r["eid"]}, _expand_member_id(r["id"]))
+                  if r["tn"] else _expand_member_id(r["id"]) for r in rows)
+    assert any(w.startswith("OWASP Attacks:") for w in want)
+    evidence, _ = _run([
+        {"id": "q1", "graph": "capec", "kind": "typescan", "anchor_label": "TaxonomyEntry",
+         "where": [{"property": "taxonomy_name", "op": "=", "value": "ATTACK"},
+                   {"property": "entry_id", "op": "=", "value": "1491"}]},
+        {"id": "q2", "graph": "capec", "kind": "expand", "from_step": "q1",
+         "path": [{"relation": "MAPS_TO", "direction": "in", "target_label": "AttackPattern"},
+                  {"relation": "MAPS_TO", "direction": "out", "target_label": "TaxonomyEntry"}]},
+    ])
+    res = {r["step"]: r for r in algebra_results(evidence)}
+    assert res["q1"]["ids"] == ["T1491"]
+    assert res["q2"]["kind"] == "nodes" and res["q2"]["ids"] == want and not res["q2"]["info"].get("anchor_not_found")
+    got = {r.primary_id for x in evidence.results if x.task.sub_question_id == "q2" for r in x.records}
+    assert got == set(want)

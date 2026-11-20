@@ -110,6 +110,9 @@ _CYPHER_TO_STORED = ("MATCH (n) WHERE n.attack_id IN $ids OR n.id IN $ids "
 _CYPHER_TO_PUBLIC = ("MATCH (n) WHERE n.id IN $ids "
                      "RETURN n.id AS id, coalesce(n.attack_id, n.id) AS pub, labels(n) AS labels")
 _GREMLIN_TO_STORED = "g.V().has('id', within(ids)).values('id').dedup()"
+_GREMLIN_ENTRIES = ("g.V().has('entry_id', within(ids)).project('id', 'tn', 'eid')"
+                    ".by(values('id')).by(coalesce(values('taxonomy_name'), constant('')))"
+                    ".by(values('entry_id'))")
 _GREMLIN_TO_PUBLIC = ("g.V().has('id', within(ids)).project('id', 'label', 'tn', 'eid')"
                       ".by(values('id')).by(label())"
                       ".by(coalesce(values('taxonomy_name'), constant('')))"
@@ -140,7 +143,22 @@ def to_stored(connector: Any, backend: str, public: list[str], limits: dict[str,
     every = sorted({c for cs in cands.values() for c in cs})
     rows = connector.run(_GREMLIN_TO_STORED, {"ids": every}, _lookup_limits(limits, len(every)))
     found = {str(r.get("_raw", r)) if isinstance(r, dict) else str(r) for r in rows}
-    return {p: [c for c in cs if c in found] for p, cs in cands.items()}
+    out = {p: [c for c in cs if c in found] for p, cs in cands.items()}
+    # A cross-taxonomy entry is published as ``taxonomy_public_id(name, entry)``
+    # (``T1491``, ``OWASP Attacks:...``), not by its vertex id: the inverse is a
+    # lookup on ``entry_id``, kept only where the same rule gives back the id.
+    rest = [p for p, v in out.items() if not v]
+    if rest:
+        from utils.kg_builder.merge import taxonomy_public_id
+
+        eids = sorted({e for p in rest for e in (p, p[1:], p.split(":", 1)[-1]) if e})
+        rows = connector.run(_GREMLIN_ENTRIES, {"ids": eids}, _lookup_limits(limits, 4 * len(eids)))
+        for r in rows:
+            pub = taxonomy_public_id(str(r.get("tn") or ""), str(r.get("eid") or ""))
+            if pub in rest:
+                if str(r.get("id")) not in out[pub]:
+                    out[pub].append(str(r.get("id")))
+    return {p: sorted(v) for p, v in out.items()}
 
 
 def to_public(connector: Any, backend: str, stored: list[str], card: Any,

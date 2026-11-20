@@ -510,6 +510,12 @@ def _check_step(raw: Any, index: int, ctx: PlanContext, earlier: dict[str, StepC
                                    "accepted step", "from_step", from_step,
                                    [k for k, v in earlier.items() if v.ok] or ["an anchor id or name"],
                                    what="from_step"))
+            if prod.graph == graph and prod.step.algebra is not None:
+                # The producer is an operator step (only with ARIADNE_ALGEBRA_CORE on):
+                # its result cannot take more hops, so this step starts from it.
+                from .typed_algebra import check_step_from_algebra
+
+                return check_step_from_algebra(raw, sid, kind, graph, ctx, prod, log, out)
             if prod.graph == graph:
                 end = _merge_end(prod, kind, raw)
                 if end is None:

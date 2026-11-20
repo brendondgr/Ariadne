@@ -390,3 +390,75 @@ def test_a_non_native_filter_is_dropped_when_off_and_kept_when_core_is_on(cards,
         assert off.template == on.template == "typed_step"
         assert "filter" not in off.meta and "filterValue" not in off.params
         assert "filter" in on.meta and on.params.get("filterValue") == "x"
+
+
+# --------------------------------------------------------------------------- #
+# A today's-kind step starting from an operator step on the same graph
+# --------------------------------------------------------------------------- #
+
+D6 = [
+    {"id": "q1", "graph": "capec", "kind": "typescan", "anchor_label": "TaxonomyEntry",
+     "where": [{"property": "taxonomy_name", "op": "=", "value": "ATTACK"},
+               {"property": "entry_id", "op": "=", "value": "1491"}]},
+    {"id": "q2", "graph": "capec", "kind": "expand", "from_step": "q1",
+     "path": [{"relation": "MAPS_TO", "direction": "in", "target_label": "AttackPattern"},
+              {"relation": "MAPS_TO", "direction": "out", "target_label": "TaxonomyEntry"}]},
+]
+
+
+def test_an_expand_from_an_operator_step_on_the_same_graph_walks_from_it(cards, core):
+    from utils.planner.typed import to_plan
+
+    checks = _check(cards, D6)
+    assert all(c.ok for c in checks), [c.refusals for c in checks]
+    d = checks[1].step.to_dict()
+    assert d["kind"] == "algebra" and d["algebra"]["op"] == "expand"
+    walk = d["algebra"]["ir"]["walk"]
+    assert d["algebra"]["ir"]["@"] == "Expand"
+    assert walk["start"] == {"@": "FromStep", "step": "q1", "labels": ["TaxonomyEntry"]}
+    assert [h["relation"] for h in walk["hops"]] == ["MAPS_TO", "MAPS_TO"]
+    assert d["algebra"]["labels"] == ["AttackPattern", "TaxonomyEntry"]
+    plan = to_plan("Q", checks, {}, cards, [], "lazy")
+    from utils.specialists.federation import dependency_map
+
+    assert dependency_map(plan) == {"q2": ("q1",)} and not plan.joins
+
+
+def test_a_count_from_an_operator_step_is_a_count_of_the_walk(cards, core):
+    checks = _check(cards, [D6[0], {**D6[1], "kind": "count"}])
+    assert checks[1].ok and checks[1].step.to_dict()["algebra"]["ir"]["@"] == "Count"
+
+
+@pytest.mark.parametrize("second,word", [
+    ({"id": "q2", "graph": "capec", "kind": "common", "from_step": "q1", "anchor": {"id": ["CAPEC-66", "CAPEC-1"]}},
+     "operator step"),
+    ({"id": "q2", "graph": "capec", "kind": "expand", "from_step": "q1",
+      "path": [{"relation": "HAS_SKILL", "direction": "out"}]}, "not a relation"),
+])
+def test_refusals_from_an_operator_producer_never_ask_to_extend_its_path(cards, core, second, word):
+    c = _check(cards, [D6[0], second])[1]
+    assert not c.ok
+    text = c.refusals[0]["detail"] + " " + c.refusals[0]["fix"]
+    assert word in text and "to the path of step" not in text
+
+
+def test_a_step_from_a_scalar_operator_step_is_refused_with_why(cards, core):
+    first = {"id": "q1", "graph": "capec", "kind": "aggregate", "anchor_label": "TaxonomyEntry", "fn": "count"}
+    c = _check(cards, [first, D6[1]])[1]
+    assert not c.ok and "returns a value" in c.refusals[0]["detail"]
+
+
+@pytest.mark.parametrize("switch", [False, True])
+def test_a_same_graph_from_step_after_todays_filtered_step_keeps_todays_refusal(cards, monkeypatch, switch):
+    for k in SWITCHES:
+        monkeypatch.delenv(k, raising=False)
+    if switch:
+        monkeypatch.setenv("ARIADNE_ALGEBRA_CORE", "1")
+    checks = _check(cards, [
+        {"id": "q1", "graph": "attack", "kind": "expand", "anchor": {"id": "G0007"}, "path": USES_T,
+         "filter": {"property": "x_mitre_platforms", "value": "Linux"}},
+        {"id": "q2", "graph": "attack", "kind": "expand", "from_step": "q1",
+         "path": [{"relation": "MITIGATES", "direction": "in", "target_label": "Mitigation"}]},
+    ])
+    assert checks[0].ok and not checks[1].ok
+    assert "add this step's hops to the path of step q1" in checks[1].refusals[0]["fix"]

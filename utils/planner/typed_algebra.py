@@ -240,6 +240,19 @@ def _result_labels(node: Any, card: Any) -> list[str]:
 
     if isinstance(node, Nodes):
         return sorted(check(node.of, card) or ())
+    from utils.specialists.algebra.base import Expand
+
+    if isinstance(node, Expand):
+        # every prefix's end (amendment 3): each hop's reached labels
+        from utils.specialists.algebra.validate import check_hop
+
+        here, out = check(node.walk.start, card), set()
+        for i, h in enumerate(node.walk.hops):
+            here = check_hop(card, here, h, f"hops[{i}]")
+            out |= here
+        if node.walk.depth > 1:
+            out |= check(node.walk, card)
+        return sorted(out)
     if isinstance(node, Rank):
         return sorted(check(node.of, card) or ())
     if isinstance(node, GroupBy):
@@ -690,6 +703,86 @@ class _Parser:
         raise self._refuse(f"kind {kind!r} is not an operator step", "kind", kind, list(kinds()), what="kind")
 
 
+def check_step_from_algebra(raw: dict[str, Any], sid: str, kind: str, graph: str, ctx: Any, prod: Any,
+                            log: Any, out: Any) -> Any:
+    """Today's step kind starting from an operator step on the same graph, as an algebra step.
+
+    ``expand`` -> ``Expand(Walk(FromStep, hops, depth, last_conds))``, ``count`` ->
+    ``Count(Walk(...))``, ``describe`` -> the producer's nodes (``Nodes(FromStep)``).
+    The walk starts from the producer's result labels and runs through the same
+    ``FromStep`` seed path as an operator-step chain. Only reachable when an
+    algebra switch is on, since only then can a producer be an operator step.
+    """
+    from utils.agent import errors as E
+    from utils.agent.tools import Refused
+    from utils.specialists.algebra.base import Cond, Count, Expand, FromStep, Nodes, Walk
+    from utils.specialists.algebra.ir import to_dict
+    from utils.specialists.algebra.validate import InvalidOp, check
+    from utils.specialists.signals import ALGEBRA_KIND, TypedStep
+
+    p = _Parser(raw, sid, graph, ctx, {prod.id: prod}, log, out)
+    try:
+        if kind not in ("expand", "count", "describe"):
+            raise Refused(E.refusal(
+                "invalid_request", f"step {sid}: a {kind} step cannot start from step {prod.id}, an operator step",
+                f"start an expand (with a path), count or describe step from {prod.id}, or an operator step "
+                f"(filter, aggregate, rank, groupby, absence) with \"from_step\": \"{prod.id}\"",
+                [E.problem("kind", kind, ["expand", "count", "describe"])]))
+        labels = tuple((prod.step.algebra_spec() or {}).get("labels") or ())
+        if not labels:
+            raise Refused(E.refusal(
+                "invalid_request", f"step {sid}: step {prod.id} returns a value, not entities, so no step can "
+                "start from it", "start this step from an anchor of its own, or from a step that lists entities",
+                [E.problem("from_step", prod.id, ["anchor.id"])]))
+        anchor = raw.get("anchor") if isinstance(raw.get("anchor"), dict) else {}
+        label_raw = raw.get("anchor_label") or anchor.get("label")
+        if label_raw:
+            lab = p.label(label_raw, "anchor_label")
+            if lab not in labels:
+                raise p._refuse(f"step {prod.id} returns {list(labels)}, not {lab}", "anchor_label", label_raw,
+                                list(labels), what="anchor_label")
+            labels = (lab,)
+        start = FromStep(prod.id, labels)
+        out.from_step = prod.id
+        log.add("from_step", prod.id, f"FromStep({prod.id})", "algebra_producer")
+        path = raw.get("path")
+        if path is None and raw.get("relation"):
+            path = [{"relation": raw.get("relation"), "direction": raw.get("direction"),
+                     "target_label": raw.get("target_label")}]
+        if kind == "describe" or not path:
+            node: Any = Nodes(start)
+        else:
+            hops = p.hops(path, frozenset(labels), "path")
+            depth = p.integer(raw.get("depth"), "depth", default=1)
+            conds: tuple = ()
+            flt = raw.get("filter")
+            if isinstance(flt, dict) and flt.get("property") not in (None, ""):
+                ends = check(Walk(start, hops, depth), p.card)
+                prop = p.prop(flt.get("property"), ends, "filter.property")
+                types = {p.card.labels[lab].properties[prop].vtype for lab in ends
+                         if prop in p.card.labels[lab].properties}
+                is_list = types == {"list"}
+                vt = next(iter(types)) if len(types) == 1 else "string"
+                value = p.value(flt.get("value"), vt, "contains" if is_list else "=", ends, prop, "filter.value")
+                conds = (Cond(prop, "contains" if is_list else "=", value),)
+            walk = Walk(start, hops, depth, conds)
+            node = Count(walk) if kind == "count" else Expand(walk)
+        try:
+            check(node, p.card)
+            result = _result_labels(node, p.card)
+        except InvalidOp as exc:
+            raise Refused(_teach(sid, exc)) from None
+        spec = {"op": kind, "ir": to_dict(node), "labels": result}
+        out.step = TypedStep(kind=ALGEBRA_KIND, anchor_label=labels[0], anchor_ids=(),
+                             algebra=json.dumps(spec, sort_keys=True, ensure_ascii=False))
+        out.fixes = list(log.fixes)
+        return out
+    except Refused as r:
+        out.refusals.append(r.envelope)
+        out.fixes = list(log.fixes)
+        return out
+
+
 def _end_label(prod: Any) -> str:
     """The one label an earlier accepted step's result holds, or ``""``."""
     st = prod.step
@@ -751,5 +844,6 @@ def check_today_step(step: Any, card: Any) -> Exception | None:
     return None
 
 
-__all__ = ["CORE_KINDS", "EXTENDED_KINDS", "catalog_section", "check_algebra_step", "check_today_step",
+__all__ = ["CORE_KINDS", "EXTENDED_KINDS", "catalog_section", "check_algebra_step", "check_step_from_algebra",
+           "check_today_step",
            "condition_ops", "kinds", "system_section"]
