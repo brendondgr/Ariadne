@@ -244,7 +244,10 @@ def unanchored_typed_step(sq: SubQuestion) -> bool:
     not an answer -- so the engine answers it as an honest empty instead.
     """
     step = sq.step if isinstance(sq.step, dict) else None
-    return bool(step) and str(step.get("kind") or "") != "scan" and not step.get("anchor_ids")
+    # An operator-algebra step (Step 9, Phase G) may scan a label on purpose
+    # (count, group or filter every member): its own tree says where it starts.
+    return (bool(step) and str(step.get("kind") or "") not in ("scan", "algebra")
+            and not step.get("anchor_ids"))
 
 
 def execution_order(plan: Plan) -> list[SubQuestion]:

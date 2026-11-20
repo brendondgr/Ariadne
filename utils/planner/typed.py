@@ -147,14 +147,32 @@ def catalog_block(catalogs: dict[str, Any], mode: str) -> str:
         cat = catalogs[ds]
         parts.append(cat.summary() if mode == "lazy" else cat.render())
     keys = "\n".join(f"- {k.name}: {k.description}" for k in CANONICAL_JOIN_KEYS)
-    return "GRAPHS:\n" + "\n\n".join(parts) + "\n\nDECLARED JOIN KEYS:\n" + (keys or "(none)")
+    block = "GRAPHS:\n" + "\n\n".join(parts) + "\n\nDECLARED JOIN KEYS:\n" + (keys or "(none)")
+    from .typed_algebra import catalog_section
+
+    # Empty unless ARIADNE_ALGEBRA_CORE is on (Step 9, Phase G): off is byte-identical.
+    return block + catalog_section(catalogs, mode)
+
+
+def system_prompt(catalogs: dict[str, Any]) -> str:
+    """``SYSTEM_PROMPT``, plus the operator step kinds when ``ARIADNE_ALGEBRA_CORE`` is on."""
+    from .typed_algebra import system_section
+
+    return SYSTEM_PROMPT + system_section(catalogs)
 
 
 def build_messages(request: str, catalogs: dict[str, Any], mode: str) -> list[dict[str, Any]]:
     return [
-        {"role": "system", "content": SYSTEM_PROMPT},
+        {"role": "system", "content": system_prompt(catalogs)},
         {"role": "user", "content": catalog_block(catalogs, mode) + f"\n\nQUESTION:\n{request}"},
     ]
+
+
+def step_kinds() -> tuple[str, ...]:
+    """Today's step kinds, plus the operator kinds the algebra switches expose (none when off)."""
+    from .typed_algebra import kinds
+
+    return STEP_KINDS + kinds()
 
 
 def tool_specs(catalogs: dict[str, Any]) -> list[dict[str, Any]]:
@@ -376,7 +394,28 @@ def _env(code: str, detail: str, field_: str, got: Any, options: list[str], what
 
 
 def check_step(raw: Any, index: int, ctx: PlanContext, earlier: dict[str, StepCheck]) -> StepCheck:
-    """Validate and coerce one raw step. Never raises; refusals are envelopes."""
+    """Validate and coerce one raw step. Never raises; refusals are envelopes.
+
+    With ``ARIADNE_ALGEBRA_CORE`` on (Step 9, Phase G item 3), a step of today's
+    kinds that passed is also checked by the operator algebra's validator
+    against the card, and refused with what the card allows when it is not
+    valid (an untargeted hop followed by a hop no reached label has, for
+    example). Off, this is exactly :func:`_check_step`.
+    """
+    out = _check_step(raw, index, ctx, earlier)
+    from utils.specialists.algebra.switches import core_on
+
+    if core_on() and out.ok and out.step.algebra is None:
+        from .typed_algebra import _teach, check_today_step
+
+        bad = check_today_step(out.step, ctx.catalogs[out.graph].model)
+        if bad is not None:
+            out.refusals.append(_teach(out.id, bad))
+    return out
+
+
+def _check_step(raw: Any, index: int, ctx: PlanContext, earlier: dict[str, StepCheck]) -> StepCheck:
+    """:func:`check_step` without the algebra's validation of today's kinds."""
     from utils.agent import errors as E
     from utils.agent.coerce import Ambiguous, Coercions, NoMatch, coerce_enum, coerce_int, coerce_name
     from utils.agent.tools import Refused
@@ -409,11 +448,16 @@ def check_step(raw: Any, index: int, ctx: PlanContext, earlier: dict[str, StepCh
     cat, tools = ctx.catalogs[graph], ctx.tools[graph]
 
     kind_raw = raw.get("kind") or "expand"
+    kinds = step_kinds()  # STEP_KINDS unless an algebra switch is on
     try:
-        kind = coerce_enum(kind_raw, STEP_KINDS, "kind", log)
+        kind = coerce_enum(kind_raw, kinds, "kind", log)
     except (NoMatch, Ambiguous):
         return refuse(_env("invalid_request", f"step {sid}: kind {kind_raw!r} is not a step kind", "kind",
-                           kind_raw, list(STEP_KINDS), what="kind"))
+                           kind_raw, list(kinds), what="kind"))
+    if kind not in STEP_KINDS:
+        from .typed_algebra import check_algebra_step
+
+        return check_algebra_step(raw, sid, kind, graph, ctx, earlier, log, out)
 
     anchor = raw.get("anchor")
     if isinstance(anchor, str):
@@ -1222,4 +1266,4 @@ class TypedDrafter:
 
 __all__ = ["MAX_CATALOG_CALLS", "MODES", "PLANNER_TOOLS", "PlanContext", "STEP_KINDS", "StepCheck", "SYSTEM_PROMPT",
            "TypedDrafter", "TypedLog", "TypedPlanner", "build_messages", "catalog_block", "catalogs_for",
-           "check_plan", "check_step", "to_plan", "tool_specs"]
+           "check_plan", "check_step", "step_kinds", "system_prompt", "to_plan", "tool_specs"]

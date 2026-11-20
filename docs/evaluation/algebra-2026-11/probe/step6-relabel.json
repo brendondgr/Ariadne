@@ -1,0 +1,225 @@
+{
+ "meta": {
+  "created": "2026-11-20",
+  "source": [
+   "docs/evaluation/banks/card-sonnet-2026-11-16-attack-exit-tuning/bank.json",
+   "docs/evaluation/banks/card-sonnet-2026-11-16-capec-exit-tuning/bank.json"
+  ],
+  "note": "Every Step 6 out-of-coverage tuning item, with its status once operators are switched on. 'core' = operators 1-7 without time; 'extended' adds O7b time and O8 paths. Where answerable, probe_item names the probe item that carries its IR and gold."
+ },
+ "summary": {
+  "core=out_of_coverage, extended=out_of_coverage": 6,
+  "core=answerable, extended=answerable": 4,
+  "core=out_of_coverage, extended=answerable": 3
+ },
+ "items": [
+  {
+   "id": "CG-0fd9a53303cb",
+   "dataset": "attack",
+   "question": "Which analytic is most similar to AN0269?",
+   "missing_operator": "similarity",
+   "old_status": "out_of_coverage (gold_status: not_expressible, expected [])",
+   "core": "out_of_coverage",
+   "extended": "out_of_coverage",
+   "why": "semantic similarity / nearest neighbour (X.similar) is outside retrieval",
+   "probe_item": null,
+   "gold": null
+  },
+  {
+   "id": "CG-58a3ac8293ed",
+   "dataset": "attack",
+   "question": "What is the median number of software per group in the catalogue?",
+   "missing_operator": "statistical_median",
+   "old_status": "out_of_coverage (gold_status: not_expressible, expected [])",
+   "core": "answerable",
+   "extended": "answerable",
+   "why": "O2.aggregate + O6.groupby: a group-by count over every member (zeros included), then the median of the group values",
+   "probe_item": "PX-attack-O2-d66717bb4e",
+   "gold": {
+    "kind": "value",
+    "value": 4.0,
+    "ids": []
+   },
+   "note": "the anchor G1043 the generator attached is not used: the question is catalogue-wide"
+  },
+  {
+   "id": "CG-8270e6a64aa1",
+   "dataset": "attack",
+   "question": "What is the shortest chain of relationships that connects T1071 and T1546.016?",
+   "missing_operator": "path_search",
+   "old_status": "out_of_coverage (gold_status: not_expressible, expected [])",
+   "core": "out_of_coverage",
+   "extended": "answerable",
+   "why": "O8.path shortest: every acyclic path of the minimum length",
+   "probe_item": "PX-attack-O8-744167ef16",
+   "gold": {
+    "kind": "nodes",
+    "value": 3,
+    "ids": [
+     "C0057",
+     "S0584",
+     "S9008",
+     "T1071",
+     "T1071.001",
+     "T1546.016"
+    ]
+   },
+   "note": "gold computed with depth cap 3: at the default cap 6 the ATT&CK Cypher shortest query (its 'beyond' check) exceeds the 60 s timeout"
+  },
+  {
+   "id": "CG-99e2558015f9",
+   "dataset": "attack",
+   "question": "What is the median number of sub-techniques per campaign in the catalogue?",
+   "missing_operator": "statistical_median",
+   "old_status": "out_of_coverage (gold_status: not_expressible, expected [])",
+   "core": "answerable",
+   "extended": "answerable",
+   "why": "O2.aggregate + O6.groupby: a group-by count over every member (zeros included), then the median of the group values",
+   "probe_item": "PX-attack-O2-69be39304b",
+   "gold": {
+    "kind": "value",
+    "value": 10.5,
+    "ids": []
+   },
+   "note": "the anchor C0038 the generator attached is not used: the question is catalogue-wide"
+  },
+  {
+   "id": "CG-a62e2be566fe",
+   "dataset": "attack",
+   "question": "How has the number of detection strategies linked to T1546.016 changed from year to year?",
+   "missing_operator": "temporal_trend",
+   "old_status": "out_of_coverage (gold_status: not_expressible, expected [])",
+   "core": "out_of_coverage",
+   "extended": "out_of_coverage",
+   "why": "asks how a count changed from year to year; the graph holds one ATT&CK/CAPEC release and no history, so no operator (O7b included) can answer it",
+   "probe_item": null,
+   "gold": null
+  },
+  {
+   "id": "CG-ae0e79679111",
+   "dataset": "attack",
+   "question": "What is the median number of analytics per detection strategy in the catalogue?",
+   "missing_operator": "statistical_median",
+   "old_status": "out_of_coverage (gold_status: not_expressible, expected [])",
+   "core": "answerable",
+   "extended": "answerable",
+   "why": "O2.aggregate + O6.groupby: a group-by count over every member (zeros included), then the median of the group values",
+   "probe_item": "PX-attack-O2-58b7a5cd74",
+   "gold": {
+    "kind": "value",
+    "value": 2,
+    "ids": []
+   },
+   "note": "the anchor DET0129 the generator attached is not used: the question is catalogue-wide"
+  },
+  {
+   "id": "CG-d4cc4271f18c",
+   "dataset": "attack",
+   "question": "Which sub-technique is most similar to T1557.001?",
+   "missing_operator": "similarity",
+   "old_status": "out_of_coverage (gold_status: not_expressible, expected [])",
+   "core": "out_of_coverage",
+   "extended": "out_of_coverage",
+   "why": "semantic similarity / nearest neighbour (X.similar) is outside retrieval",
+   "probe_item": null,
+   "gold": null
+  },
+  {
+   "id": "CG-1ca4ef814dd0",
+   "dataset": "capec",
+   "question": "What is the median number of examples per attack pattern in the catalogue?",
+   "missing_operator": "statistical_median",
+   "old_status": "out_of_coverage (gold_status: not_expressible, expected [])",
+   "core": "answerable",
+   "extended": "answerable",
+   "why": "O2.aggregate + O6.groupby: a group-by count over every member (zeros included), then the median of the group values",
+   "probe_item": "PX-capec-O2-a6b3d802f2",
+   "gold": {
+    "kind": "value",
+    "value": 0.0,
+    "ids": []
+   },
+   "note": "the anchor CAPEC-12 the generator attached is not used: the question is catalogue-wide"
+  },
+  {
+   "id": "CG-2032191303d0",
+   "dataset": "capec",
+   "question": "How has the number of attack patterns linked to CAPEC-35 changed from year to year?",
+   "missing_operator": "temporal_trend",
+   "old_status": "out_of_coverage (gold_status: not_expressible, expected [])",
+   "core": "out_of_coverage",
+   "extended": "out_of_coverage",
+   "why": "asks how a count changed from year to year; the graph holds one ATT&CK/CAPEC release and no history, so no operator (O7b included) can answer it",
+   "probe_item": null,
+   "gold": null
+  },
+  {
+   "id": "CG-aa01f7f1dbe4",
+   "dataset": "capec",
+   "question": "What is the shortest chain of relationships that connects CAPEC-186 and CAPEC-183?",
+   "missing_operator": "path_search",
+   "old_status": "out_of_coverage (gold_status: not_expressible, expected [])",
+   "core": "out_of_coverage",
+   "extended": "answerable",
+   "why": "O8.path shortest: every acyclic path of the minimum length",
+   "probe_item": "PX-capec-O8-aae1c3b692",
+   "gold": {
+    "kind": "nodes",
+    "value": 4,
+    "ids": [
+     "CAPEC-183",
+     "CAPEC-184",
+     "CAPEC-186",
+     "CAPEC-248",
+     "CAPEC-513"
+    ]
+   }
+  },
+  {
+   "id": "CG-aea7a0ca2d32",
+   "dataset": "capec",
+   "question": "Which attack pattern is most similar to CAPEC-290?",
+   "missing_operator": "similarity",
+   "old_status": "out_of_coverage (gold_status: not_expressible, expected [])",
+   "core": "out_of_coverage",
+   "extended": "out_of_coverage",
+   "why": "semantic similarity / nearest neighbour (X.similar) is outside retrieval",
+   "probe_item": null,
+   "gold": null
+  },
+  {
+   "id": "CG-c366330a3a30",
+   "dataset": "capec",
+   "question": "How has the number of weaknesses linked to CAPEC-138 changed from year to year?",
+   "missing_operator": "temporal_trend",
+   "old_status": "out_of_coverage (gold_status: not_expressible, expected [])",
+   "core": "out_of_coverage",
+   "extended": "out_of_coverage",
+   "why": "asks how a count changed from year to year; the graph holds one ATT&CK/CAPEC release and no history, so no operator (O7b included) can answer it",
+   "probe_item": null,
+   "gold": null
+  },
+  {
+   "id": "CG-e59a5aa6aa92",
+   "dataset": "capec",
+   "question": "What is the shortest chain of relationships that connects CAPEC-183 and CAPEC-12?",
+   "missing_operator": "path_search",
+   "old_status": "out_of_coverage (gold_status: not_expressible, expected [])",
+   "core": "out_of_coverage",
+   "extended": "answerable",
+   "why": "O8.path shortest: every acyclic path of the minimum length",
+   "probe_item": "PX-capec-O8-15e563a332",
+   "gold": {
+    "kind": "nodes",
+    "value": 4,
+    "ids": [
+     "CAPEC-12",
+     "CAPEC-183",
+     "CAPEC-21",
+     "CAPEC-248",
+     "CAPEC-513"
+    ]
+   }
+  }
+ ]
+}

@@ -973,6 +973,12 @@ class CypherQueryBuilder:
         step = resolved.task.signals.step
         if step is None:
             return None
+        if step.algebra is not None:
+            # Step 9, Phase G: the operator algebra's own compiler, with the card
+            # and the task's row cap (anchors already hold stored ids).
+            from utils.specialists.algebra.runtime import draft
+
+            return draft(resolved, "cypher")
         try:
             # No card: the step's filter stays ``=``, and the store rule below
             # (``_typed_filter``) decides its shape, exactly as before.
@@ -1001,15 +1007,19 @@ class CypherQueryBuilder:
 
         Same store rule as :meth:`_bound_filter`: a property the store never
         stored natively would match nothing silently, so it is dropped.
+
+        With ``ARIADNE_ALGEBRA_CORE`` on it is kept instead, and so matches
+        nothing (S4): the operator's ruling in operator-algebra.md, amendment 4.
         """
         if not step.filter or not step.hops or not step.hops[-1].target_label:
             return None
         label, (prop, value) = step.hops[-1].target_label, step.filter
         try:
+            from utils.specialists.algebra.switches import core_on
             from utils.specialists.schema import get_registry
 
             registry = get_registry()
-            if not registry.is_native_property(label, prop, dataset=resolved.dataset):
+            if not core_on() and not registry.is_native_property(label, prop, dataset=resolved.dataset):
                 return None
             is_list = registry.is_list_property(label, prop, dataset=resolved.dataset)
         except Exception:  # noqa: BLE001 — no registry: no filter

@@ -41,6 +41,9 @@ _TUPLE_FIELDS = (
 #: ``count``: the same set, for a count; ``describe``: the anchor itself;
 #: ``scan``: every member of one label; ``common``: what every anchor links to.
 STEP_KINDS = ("expand", "count", "describe", "scan", "common")
+#: A step of the operator algebra (Step 9, Phase G; only behind ``ARIADNE_ALGEBRA_CORE``):
+#: its ``algebra`` field carries the internal form as JSON.
+ALGEBRA_KIND = "algebra"
 
 
 @dataclass(frozen=True)
@@ -68,6 +71,11 @@ class TypedStep:
     planner and checked); ``hops`` is the path from the anchor, every hop
     checked against the catalog's option rules; ``depth`` repeats a single
     repeating hop; ``filter`` is ``(property, value)`` on the last hop's label.
+
+    ``algebra`` is set only on a ``kind == "algebra"`` step: canonical JSON text
+    of ``{"op": <planner kind>, "ir": <algebra.to_dict(tree)>, "labels": [...]}``,
+    with **public** anchor ids (the runtime maps them to stored ids). ``None``
+    on every other step, and then absent from ``to_dict``.
     """
 
     kind: str
@@ -76,6 +84,7 @@ class TypedStep:
     hops: tuple[TypedHop, ...] = ()
     depth: int = 1
     filter: tuple[str, str] | None = None
+    algebra: str | None = None
 
     def to_dict(self) -> dict[str, Any]:
         out: dict[str, Any] = {"kind": self.kind, "anchor_label": self.anchor_label,
@@ -83,7 +92,19 @@ class TypedStep:
                                "hops": [h.to_dict() for h in self.hops], "depth": self.depth}
         if self.filter is not None:
             out["filter"] = {"property": self.filter[0], "value": self.filter[1]}
+        if self.algebra is not None:
+            import json
+
+            out["algebra"] = json.loads(self.algebra)
         return out
+
+    def algebra_spec(self) -> dict[str, Any] | None:
+        """The parsed ``algebra`` field, or ``None``."""
+        if self.algebra is None:
+            return None
+        import json
+
+        return json.loads(self.algebra)
 
     @classmethod
     def from_dict(cls, data: dict[str, Any]) -> "TypedStep":
@@ -95,6 +116,7 @@ class TypedStep:
             hops=tuple(TypedHop.from_dict(h) for h in data.get("hops") or ()),
             depth=int(data.get("depth") or 1),
             filter=(str(flt.get("property")), str(flt.get("value"))) if isinstance(flt, dict) else None,
+            algebra=_algebra_text(data.get("algebra")),
         )
 
     def entities(self) -> list[str]:
@@ -102,7 +124,48 @@ class TypedStep:
         out = [self.anchor_label] if self.anchor_label else []
         for h in self.hops:
             out += [h.relation, h.target_label]
+        if self.algebra is not None:
+            out += _algebra_names((self.algebra_spec() or {}).get("ir"))
         return [e for e in dict.fromkeys(out) if e]
+
+
+def _algebra_text(value: Any) -> str | None:
+    """A serialised ``algebra`` block as canonical JSON text, or ``None``."""
+    if value is None:
+        return None
+    import json
+
+    if isinstance(value, str):
+        value = json.loads(value)
+    return json.dumps(value, sort_keys=True, ensure_ascii=False)
+
+
+def _algebra_names(ir: Any) -> list[str]:
+    """Card labels and relation names an algebra tree (as JSON) touches, in tree order."""
+    out: list[str] = []
+
+    def walk(x: Any) -> None:
+        if isinstance(x, dict):
+            kind = x.get("@")
+            if kind in ("Anchors", "Scan", "TypeScan") and x.get("label"):
+                out.append(str(x["label"]))
+            if kind == "FromStep":
+                out.extend(str(v) for v in x.get("labels") or ())
+            if kind == "Hop":
+                out.extend([str(x.get("relation") or ""), str(x.get("target") or "")])
+            if kind in ("Reach", "Shortest"):
+                out.extend(str(r[0]) for r in x.get("rels") or () if r)
+            if kind == "Verify" and x.get("relation"):
+                out.append(str(x["relation"]))
+            for k, v in x.items():
+                if k != "@":
+                    walk(v)
+        elif isinstance(x, list):
+            for y in x:
+                walk(y)
+
+    walk(ir)
+    return out
 
 
 @dataclass(frozen=True)
@@ -273,4 +336,4 @@ def derive_signals(text: str) -> TaskSignals:
     )
 
 
-__all__ = ["STEP_KINDS", "TaskSignals", "TypedHop", "TypedStep", "derive_signals", "id_signals", "step_signals"]
+__all__ = ["ALGEBRA_KIND", "STEP_KINDS", "TaskSignals", "TypedHop", "TypedStep", "derive_signals", "id_signals", "step_signals"]

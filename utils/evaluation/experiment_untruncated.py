@@ -1312,6 +1312,14 @@ def _one(entry: dict, kind: str, arm: str, pool: Any) -> dict[str, Any]:
     artifact = _artifact(entry, kind, evidence, answer)
     artifact["arm"] = arm
     artifact["run_meta"] = {**extra, "wall_s": round(time.time() - started, 3)}
+    # Step 9, Phase G: every operator-algebra result of the run, machine-readable.
+    # Written only when an algebra step ran, so answers with the switches off are
+    # byte-identical to before (the probe scorer reads a missing key as "none").
+    from utils.specialists.algebra.runtime import algebra_results
+
+    found = algebra_results(evidence)
+    if found:
+        artifact["run_meta"]["algebra_results"] = found
     # The evidence volume this arm actually pulled — the experiment's headline
     # retrieval statistic, and the thing the caps used to bound.
     artifact["evidence_volume"] = {

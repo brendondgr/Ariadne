@@ -1173,6 +1173,12 @@ class GremlinQueryBuilder:
         step = resolved.task.signals.step
         if step is None:
             return None
+        if step.algebra is not None:
+            # Step 9, Phase G: the operator algebra's own compiler, with the card
+            # and the task's row cap (anchors already hold stored ids).
+            from utils.specialists.algebra.runtime import draft
+
+            return draft(resolved, "gremlin")
         try:
             # No card: the step's filter stays ``=``; the store rule below decides
             # whether it can run, exactly as before.
@@ -1200,10 +1206,13 @@ class GremlinQueryBuilder:
         if step.filter and step.hops[-1].target_label:
             prop, label = step.filter[0], step.hops[-1].target_label
             try:
+                from utils.specialists.algebra.switches import core_on
                 from utils.specialists.schema import get_registry
 
                 registry = get_registry()
-                filter_ok = (registry.is_native_property(label, prop, dataset=resolved.dataset)
+                # ARIADNE_ALGEBRA_CORE: a property the store does not hold natively is
+                # kept, and so matches nothing (S4; operator-algebra.md, amendment 4).
+                filter_ok = ((core_on() or registry.is_native_property(label, prop, dataset=resolved.dataset))
                              and not registry.is_list_property(label, prop, dataset=resolved.dataset))
             except Exception:  # noqa: BLE001
                 filter_ok = False

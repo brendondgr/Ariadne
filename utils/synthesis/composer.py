@@ -1628,6 +1628,39 @@ def _enumeration_claims(
     return claims
 
 
+def _algebra_claim(result: SpecialistResult, cap: int) -> tuple[Claim, bool] | None:
+    """The plain sentence stating an operator-algebra result, and whether it is scalar.
+
+    ``None`` for every result that is not from an algebra step, which is every
+    result while ``ARIADNE_ALGEBRA_CORE`` is off. The claim cites the result's
+    records: the entities ranked, grouped or listed, or the one result record of
+    a count, aggregate or verify.
+    """
+    from utils.specialists.algebra.runtime import claim_text, trace_of
+
+    detail = trace_of(result)
+    if detail is None or not result.records or not isinstance(detail.get("result"), dict):
+        return None
+    text = claim_text(detail)
+    if not text:
+        return None
+    scalar = detail["result"].get("kind") in ("count", "aggregate", "verify")
+    cited = result.records[: max(1, cap)]
+    ids = tuple(r.primary_id for r in cited if r.primary_id)
+    claim = Claim(
+        text=text,
+        citations=tuple(
+            Citation(source=result.task.source, primary_id=r.primary_id,
+                     record_id=r.provenance.record_id if r.provenance else "")
+            for r in cited
+        ),
+        entity_ids=ids,
+        kind="fact",
+        sub_question_id=result.task.sub_question_id,
+    )
+    return claim, scalar
+
+
 class DeterministicComposer:
     """Compose a ``SynthesizedAnswer`` draft mechanically from evidence."""
 
@@ -1656,6 +1689,12 @@ class DeterministicComposer:
         }
 
         for result in evidence.results:
+            algebra = _algebra_claim(result, cap)
+            if algebra is not None and algebra[1]:
+                # A scalar or verify result of the operator algebra (Step 9,
+                # Phase G): its one result record is stated, not enumerated.
+                claims.append(algebra[0])
+                continue
             slots = _slots_for(result)
             if result.records:
                 claims.append(_fact_claim(result, cap))
@@ -1681,8 +1720,12 @@ class DeterministicComposer:
                 # resolved: an answer, not an absence of one.
                 # Judged on THAT relation, and never against a facet that says
                 # the edge is there — see `_relation_is_empty`.
-                if slots.relation and _relation_is_empty(result, slots.relation):
+                # Not for an algebra result: its records are the answer set, not an
+                # anchor whose relation came back empty.
+                if algebra is None and slots.relation and _relation_is_empty(result, slots.relation):
                     claims.append(_absence_claim(result, slots.relation))
+                if algebra is not None:
+                    claims.append(algebra[0])
             elif result.ok and _sub_question_key(result) not in answered:
                 abstentions.append(abstention_for(result))
             else:

@@ -377,6 +377,13 @@ def capture_one(question: str, config: SynthesisConfig,
     rewrite = getattr(plan, "rewrite", None)
     if rewrite:
         out["rewrite"] = rewrite
+    # Step 9, Phase G: operator-algebra results, present only when an algebra step
+    # ran (never with ARIADNE_ALGEBRA_CORE off), so every other capture is unchanged.
+    from utils.specialists.algebra.runtime import algebra_results
+
+    algebra = algebra_results(evidence)
+    if algebra:
+        out["run_meta"] = {"algebra_results": algebra}
     # Planner arms only: what the planner did. Absent from every rules capture.
     if planner is not None:
         out["planner"] = {

@@ -258,6 +258,15 @@ class QuerySpecialist:
             )
 
         limits = self._effective_limits(task)
+        step = task.signals.step if task.signals is not None else None
+        if step is not None and step.algebra is not None:
+            # An operator-algebra step (Step 9, Phase G; only the typed planner
+            # writes one, only behind ARIADNE_ALGEBRA_CORE): ids are mapped
+            # through the store, the builder compiles it, and the finished
+            # result becomes evidence. No other task reaches this line.
+            from .algebra.runtime import run_algebra
+
+            return run_algebra(self, task, resolved, limits, traces)
         return self._loop(task, resolved, limits, traces)
 
     # -- internals ----------------------------------------------------------
