@@ -133,5 +133,6 @@ this file says which number is *current*.
 | [`EXP-2026-11-016`](experiments/EXP-2026-11-016-era2-scan-fix/) | 2026-11-19 | `f1_anchorless_scan_cw_dev_typed_lazy` | 0.0000 ± 0.0000 (n=284) | — | — |
 | [`EXP-2026-11-017`](experiments/EXP-2026-11-017-era2-bridge-guard/) | 2026-11-19 | `f1_anchorless_scan_cw_variants_typed_lazy` | 2.0000 ± 0.0000 (n=669) | — | — |
 | [`EXP-2026-11-018`](experiments/EXP-2026-11-018-era2-typed-engine-fixes/) | 2026-11-20 | `dev_lost_typed_lazy` | 21.0000 ± 0.0000 (n=284) | — | — |
+| [`EXP-2026-11-019`](experiments/EXP-2026-11-019-era2-written-id-guard/) | 2026-11-20 | `guard_fired_on_controls` | 0.0000 ± 0.0000 (n=54) | — | — |
 
-**25 withdrawn figure(s), 6 superseded experiment(s), 74 current headline(s).**
+**25 withdrawn figure(s), 6 superseded experiment(s), 75 current headline(s).**

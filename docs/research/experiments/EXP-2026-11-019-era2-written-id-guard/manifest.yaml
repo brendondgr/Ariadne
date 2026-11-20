@@ -1,0 +1,83 @@
+# Filled by scripts/new_experiment.py. Every field below is required unless
+# marked optional. Do not delete a field you do not know — record it as null or
+# "unknown" and explain in ISSUES.md. Inventing a value is worse than admitting
+# a gap.
+id: EXP-2026-11-019
+slug: era2-written-id-guard
+title: "Era 2 Step 8 follow-up 4: a written id outranks a name match, proven on the 16 recorded failures with controls"
+status: complete           # planned | running | complete | failed | superseded
+date_started: 2026-11-20
+date_completed: 2026-11-20
+authors: ["brendondgr", "Claude Opus 5.5"]
+
+purpose: >
+  Follow-up to EXP-2026-11-018 (RESULTS 6-7). When the question writes an id and the typed plan anchors by name, the name lookup can return another entity: a shared name (DET0891 and DET0862), the id given as the name (CAPEC-600 resolved to CAPEC-16), or a name the question pairs with an id the graph lacks. 16 recorded typed answers fail this way. A guard in the typed planner takes the written id when it is tied to the name. Proven on those items with controls; no full-bank run (its full effect is counted in Step 9's run). Engineering measurement; no paper claim.
+
+hypothesis: >
+  S1: the guard fires on no control, and no control loses because of it. S2: every target where it fires anchors the written id and is not confidently wrong. H1: model-less answers 0 or 1 per subset. Predicted: it fires on most Gemma targets and few Qwen ones; fired targets become exact; controls unchanged.
+
+# --- Reproducibility block (all fields mandatory) ---
+code:
+  commit: 4f0aac6f0ceadd7452dec547fe872c32c677fc0e          # 40-char sha, or "unknown" for a back-filled experiment
+  branch: main
+  entrypoint: "bash docs/research/experiments/EXP-2026-11-019-era2-written-id-guard/data/run.sh (run from the session scratchpad; outputs copied to docs/evaluation/experiments/written-id-guard-2026-11-20)"
+  dirty: true             # uncommitted changes at run time? if true, explain in ISSUES.md
+config:
+  path: null               # repo-relative path, or null if the run takes no config file
+  hash: null               # sha256:... of that file
+data:
+  name: "22 variant items (10 targets, 12 controls) of the 2026-09-15 variant set and 15 dev-bank questions (5 targets, 10 controls)"
+  version: "docs/evaluation/variants-2026-09-15/variants.json; docs/evaluation/composition/bank/bank-dev.json"
+  split: "dev and variant sets (sealed held-out banks unread)"
+  n_examples: 37
+  dvc_path: null           # this repository does not use DVC; leave null
+  hash: sha256:cf7a6ffd227979860c77fc0319b5a236f1dc7be82964acfee1e0636e407669c4   # the 22-item subset variants.json
+seeds: []                  # no resampling; temperature 0 (see ISSUES)
+n_runs: 1                  # SYSTEM runs over the question set — grading passes are not runs
+environment:
+  python: "3.13"
+  lockfile: env/requirements.lock
+  container: null
+compute:
+  hardware: "32-core x86_64 host, 121 GB RAM; relay :9090 (default-model = Gemma 4 31B, default-model-2 = Qwen 3.8 27B)"
+  wall_clock_hours: 0.1    # 11:16-11:22, after a store reload
+  estimated_cost_usd: 0.0
+
+# --- LLM / agentic block (delete entirely if no model was in the loop) ---
+llm:
+  model: "Qwen 3.8 27B (:9090 default-model-2, reasoning_effort=medium) planner of record; Gemma 4 31B (:9090 default-model) replication arm; identity by token id"
+  temperature: 0.0
+  top_p: 1.0
+  max_tokens: 16384
+  prompt_files: []
+  prompt_hash: null
+  tool_schema_hash: null
+  total_input_tokens: null
+  total_output_tokens: null
+  nondeterminism_note: >
+    Provider-side nondeterminism remains even at temperature 0; results
+    are reported as mean ± std over n_runs.
+
+# --- Results block ---
+metrics:
+  primary: guard_fired_on_controls
+  values:
+    guard_fired_on_controls: {mean: 0, std: 0.0, n: 54}
+    guard_fired_on_targets: {mean: 12, std: 0.0, n: 45}
+    guard_fired_confidently_wrong: {mean: 0, std: 0.0, n: 12}
+    variant_targets_exact_gemma_before: {mean: 0, std: 0.0, n: 10}
+    variant_targets_exact_gemma_after: {mean: 8, std: 0.0, n: 10}
+    variant_controls_exact_gemma_after: {mean: 11, std: 0.0, n: 12}
+    variant_controls_exact_qwen_after: {mean: 11, std: 0.0, n: 12}
+    dev_det0891_confidently_wrong_qwen_after: {mean: 0, std: 0.0, n: 1}
+    h1_modelless_max_per_subset: {mean: 1, std: 0.0, n: 15}
+  withdrawn: {}            # values later retracted by amendment: {metric: {mean, std, n, withdrawn_on, reason, replaced_by}}
+baselines_compared: ["EXP-2026-11-018, same arms, same items (unpaired sitting)"]
+statistical_test: "none: per-item comparison at n=37 (RESULTS 2)"
+
+# --- Linkage ---
+supports_claims: []        # every ID here must exist in ../../CLAIMS.md
+figures: []                # every name here must have a file in figures/ and vice versa
+supersedes: null           # set in BOTH manifests or in neither; the validator checks symmetry
+superseded_by: null
+related: ["EXP-2026-11-018"]

@@ -534,6 +534,59 @@ class TestNoUnlinkedScan:
         assert f'"anchor": {{"id": "{tech}"}}' in env["fix"] and '"anchor_label": "TaxonomyEntry"' in env["fix"]
 
 
+class TestWrittenIdOutranksName:
+    """EXP-2026-11-019: the question's own id wins over a name lookup that found another entity."""
+
+    @staticmethod
+    def _check(cards, request, graph, name, label=None):
+        import tempfile
+
+        from utils.planner.typed import PlanContext, catalogs_for, check_step
+
+        anchor = {"name": name, **({"label": label} if label else {})}
+        with tempfile.TemporaryDirectory() as d:
+            ctx = PlanContext(cards, catalogs_for(cards), Path(d), request=request)
+            try:
+                return check_step({"graph": graph, "kind": "describe", "anchor": anchor}, 0, ctx, {})
+            finally:
+                ctx.close()
+
+    @staticmethod
+    def _swapped(c):
+        return [f for f in c.fixes if f["filled_by"] == "written_id"]
+
+    def test_a_shared_name_takes_the_written_id(self, cards):
+        c = self._check(cards, "Which ATT&CK techniques does the detection strategy Detection of DNS Server "
+                        "(DET0891) detect?", "attack", "Detection of DNS Server", "DetectionStrategy")
+        assert c.ok and c.step.anchor_ids == ("DET0891",) and self._swapped(c)
+
+    def test_an_id_given_as_the_name_takes_the_written_id(self, cards):
+        c = self._check(cards, "Which CWE weaknesses does CAPEC-600 target?", "capec", "CAPEC-600")
+        assert c.ok and c.step.anchor_ids == ("CAPEC-600",) and self._swapped(c)
+
+    def test_the_written_id_brings_its_own_label(self, cards):
+        # The step asks for a Technique; the lookup then finds Protocol Tunneling (T1572).
+        c = self._check(cards, "Who contributed the ATT&CK technique Protocol or Service Impersonation "
+                        "(T1001.003)?", "attack", "Protocol or Service Impersonation", "Technique")
+        assert c.ok and c.step.anchor_ids == ("T1001.003",) and c.step.anchor_label == "SubTechnique"
+        assert self._swapped(c)
+
+    def test_a_written_id_the_graph_lacks_is_kept_and_answers_not_found(self, cards):
+        c = self._check(cards, "Which ATT&CK techniques does CAPEC-9999 (Quantum Keystroke Inference) map to?",
+                        "capec", "Quantum Keystroke Inference")
+        assert c.ok and c.step.anchor_ids == ("CAPEC-9999",) and self._swapped(c)
+
+    def test_a_name_tied_to_no_written_id_keeps_the_lookup(self, cards):
+        c = self._check(cards, "Which mitigations do T1047 and Spearphishing Attachment share?", "attack",
+                        "Spearphishing Attachment")
+        assert c.ok and "T1047" not in c.step.anchor_ids and not self._swapped(c)
+
+    def test_a_lookup_that_found_the_written_id_is_left_alone(self, cards):
+        c = self._check(cards, "What mitigates T1047 (Windows Management Instrumentation)?", "attack",
+                        "Windows Management Instrumentation")
+        assert c.ok and c.step.anchor_ids == ("T1047",) and not self._swapped(c)
+
+
 class TestByteIdentityWhenTypedIsOff:
     def test_an_english_sub_question_serialises_exactly_as_before(self):
         sq = SubQuestion("q1", "attack", "What mitigates T1059?", ["Technique"], Limits(3, 1000, 5000))

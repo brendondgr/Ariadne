@@ -221,3 +221,9 @@ No figure of this experiment changed, and none can: the row pins a *shared paren
 **Impact:** None on the audit, whose stored output `data/recompute-audit.json` is the record of what was read. The tree changed for two reasons: two answer files were lost in the 2026-10-20 memory-corruption event (EXP-2026-09-010, -09-018), and every run since 2026-09-14 added files.
 **Cause:** The artifact changed after the pointer was recorded; `make validate-research` flagged the hash.
 **Resolution:** Re-hashed, with the previous hash in the row's note. Not resolved: a pointer to a tree that grows with every run cannot hold one hash. A narrower pointer (the 218 audited cells) or a validator exemption is a follow-up.
+
+## 2026-11-20 — Judgment-tree pointer re-hashed a thirteenth time
+**Impact:** None on the audit. EXP-2026-11-019 added `written-id-guard-2026-11-20/` (1,243,581 bytes) under the shared tree.
+**Cause:** The row pins the shared parent directory, which grows with every run.
+**Resolution:** Re-hashed to `sha256:5da961fd09c0…` (1909094433 bytes); the previous hash is in the row's note.
+**Paper implication:** None.

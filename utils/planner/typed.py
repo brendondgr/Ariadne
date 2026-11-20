@@ -280,6 +280,42 @@ class PlanContext:
             self._written = found
         return self._written
 
+    def written_for_name(self, graph: str, name: str, resolved: list[str]) -> str | None:
+        """The id the question writes for ``name``, when a name lookup found another.
+
+        A name can be shared (two detection strategies named "Detection of DNS
+        Server") or can be the id itself ("CAPEC-600"), and the resolver then
+        returns some other entity. The question's own id wins when it is tied
+        to the name by one of: the graph stores that name for it, the name text
+        contains it, or the question pairs the two ("X (name)" or "name (X)").
+        ``None`` when the lookup already found a written id, or when no single
+        written id of this graph is tied to the name.
+        """
+        import re
+
+        written = [w for w in self.written_ids() if self.id_labels(graph, w)]
+        if not written or not name:
+            return None
+        stored = {self.known_id(graph, w)[0] if self.known_id(graph, w) else w: w for w in written}
+        if {str(r) for r in resolved} & set(stored):
+            return None
+
+        def norm(s: str) -> str:
+            return " ".join(re.sub(r"[^0-9a-z]+", " ", str(s).lower()).split())
+
+        names = _id_index(graph).get("names", {})
+        text = str(name).strip()
+        tied: list[str] = []
+        for sid, w in stored.items():
+            own = names.get(sid, "")
+            pair = re.escape(text)
+            if ((own and norm(own) == norm(text))
+                    or re.search(rf"(?<![\w-]){re.escape(w)}(?![\w-])", text, re.I)
+                    or re.search(rf"{re.escape(w)}\s*\(\s*{pair}\s*\)|{pair}\s*\(\s*{re.escape(w)}\s*\)",
+                                 self.request or "", re.I)):
+                tied.append(sid)
+        return tied[0] if len(tied) == 1 else None
+
     def foreign_id(self, graph: str, value: str) -> str | None:
         """Another graph joined to ``graph`` whose ids admit ``value`` (a bridge anchor)."""
         for other in sorted(self.catalogs):
@@ -304,17 +340,19 @@ def _id_index(graph: str) -> dict[str, dict[str, Any]]:
     with _CAT_LOCK:
         if graph not in _ID_INDEX:
             exact: dict[str, str] = {}
+            names: dict[str, str] = {}
             loose: dict[str, tuple[str, str] | None] = {}
             try:
                 from utils.specialists.schema.namesearch import index_for
 
-                for eid, label, _name, _toks in index_for(graph)._docs:  # noqa: SLF001
+                for eid, label, name, _toks in index_for(graph)._docs:  # noqa: SLF001
                     exact[eid] = label
+                    names[eid] = str(name or "")
                     k = _id_key(eid)
                     loose[k] = None if k in loose and loose[k] != (eid, label) else (eid, label)
             except Exception:  # noqa: BLE001 — no index: only the id schemes check
                 pass
-            _ID_INDEX[graph] = {"exact": exact, "loose": {k: v for k, v in loose.items() if v}}
+            _ID_INDEX[graph] = {"exact": exact, "names": names, "loose": {k: v for k, v in loose.items() if v}}
         return _ID_INDEX[graph]
 
 
@@ -536,6 +574,19 @@ def check_step(raw: Any, index: int, ctx: PlanContext, earlier: dict[str, StepCh
             if anchor_label not in cat.labels():
                 anchor_label = _label(anchor_label or label_raw, "anchor_label")
             log.add("anchor", {"name": anchor["name"]}, {"id": ids}, "resolve_entity")
+            written = ctx.written_for_name(graph, str(anchor["name"]), ids)
+            if written is not None:
+                # The question's own id outranks a name match (EXP-2026-11-019).
+                log.add("anchor.id", ids, [written], "written_id")
+                ids = [written]
+                labs = ctx.id_labels(graph, written)
+                if labs and anchor_label not in labs:
+                    if len(labs) != 1:
+                        raise Refused(_env("invalid_request", f"step {sid}: the question's id {written} fits "
+                                           f"several labels", "anchor_label", anchor_label, labs,
+                                           what="anchor_label"))
+                    log.add("anchor_label", anchor_label, labs[0], "id_scheme")
+                    anchor_label = labs[0]
         else:
             raise Refused(E.refusal("invalid_request", f"step {sid}: the step has no anchor",
                                     "give anchor {\"id\": ...} (the id the question writes, even if "
