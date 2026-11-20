@@ -33,7 +33,7 @@ raw storage. The compilers translate.
 | Stored id | the `id` property, unique in the graph | both: property `id` (Gremlin: `has('id', …)`, not `T.id`) |
 | Public identifier | the card's id scheme: `attack_id` for ATT&CK, `CAPEC-<n>` for CAPEC | Neo4j: `attack_id`; Gremlin CAPEC: `capec:<kind>:<n>` in `id` |
 | Relationship | a card name, a direction, and the labels it joins | Neo4j: the card name; Gremlin: the SCREAMING_SNAKE form (`gremlin_edge_label`) |
-| Property type | `str`, `int`, `float`, `bool`, `list[str]`, `date` (ISO-8601 text) | the same in both; dates are strings, lists are list values |
+| Property type | `str`, `int`, `float`, `bool`, `list[str]`, `date` (ISO-8601 text) | the same in both; dates are strings; string lists are list values, never JSON text, and an empty list is not stored (amendment 4) |
 
 **Anchors arrive resolved.** Grounding (names to ids, `resolve_entity`, the written-id guard) runs
 before the algebra and hands it stored ids. The algebra never matches by name.
@@ -347,4 +347,25 @@ missing.
    Today's builder collects the end nodes of **every prefix** of the hops, whether or not the
    walk continues, and `expand` is defined as unchanged in meaning. The text now says that.
    Found when the first compiler draft returned only complete walks.
+4. **2026-11-20, Phase E: four rules settled by the operator.** Each came from the differential
+   or the comparison with today's builder, and each is the operator's decision.
+   - **Walks never visit a node twice (S10 extended to every walk).** A walk of several hops,
+     and a repeated hop, keep only node-acyclic walks; the start node is never revisited. This
+     is stricter than Cypher's own rule (no relationship twice) and than Gremlin's (anything
+     goes), so both compilers enforce it explicitly. It changes the meaning of `expand` for
+     walks that would come back to a node they passed. Today's typed path keeps its own query
+     text until the planner moves onto the algebra (Phase G), and the change is measured in
+     Phase H.
+   - **Anchors must be of their stated label.** An `Anchors` with a label matches only nodes of
+     that card label. An id of another label counts as not found (S12) and is reported. Without
+     a label, the id alone matches. Today's builder matches by id alone, a difference recorded
+     for Phase G.
+   - **Lists hold strings, and an empty list is missing.** A `list[str]` property with no
+     elements counts as missing (S4): `present` is false, `missing` is true, `size` never
+     matches. Lists of objects (for example `external_references`) are not list properties.
+     The stores are changed to match (§1): Gremlin stores string lists as list values, not JSON
+     text, and neither engine stores an empty list.
+   - **A filter on a property the store does not hold matches nothing (S4).** Today's builder
+     drops such a filter silently. That is recorded as today's defect and fixed when the planner
+     moves onto the algebra (Phase G).
 

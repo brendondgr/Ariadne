@@ -13,7 +13,8 @@ import re
 import pytest
 
 from utils.specialists.algebra import (Anchors, Common, Cond, Count, Describe, Expand, FromStep, GroupBy, Having, Hop,
-                                       Intersect, Nodes, Reach, Scan, Shortest, TypeScan, Union_, Verify, Walk, Where)
+                                       Intersect, Nodes, Rank, Reach, Scan, Shortest, TypeScan, Union_, Values, Verify,
+                                       Walk, Where)
 from utils.specialists.algebra.compiled import (Backend, Compiled, UnsafeIdentifier, finish, median, rank_rows)
 from utils.specialists.algebra.edges import Absence
 from utils.specialists.algebra.tests import test_ir
@@ -168,7 +169,8 @@ def test_reach_from_a_walk_start(card):
     """Per start node, exclude only that node (S10): no start set is aggregated as 'seen'."""
     node = Nodes(Reach(Walk(G, (USES,)), (("HAS_SUB", "out"),), 3))
     gr = compile_gremlin(node, Backend.gremlin(card)).text
-    assert re.search(r"\.out\('USES'\)\.hasLabel\('Technique'\)\.dedup\(\)\.as\('s\d+'\)\.repeat\(", gr)
+    assert re.search(r"\.out\('USES'\)\.hasLabel\('Technique'\)\.where\(neq\('s\d+'\)\)\.dedup\(\)"
+                     r"\.as\('s\d+'\)\.repeat\(", gr)
     assert re.search(r"where\(neq\('s\d+'\)\)", gr) and re.search(r"dedup\('s\d+', 'v\d+'\)", gr)
     assert "without(" not in gr.split("total_beyond")[0]
     cy = compile_cypher(node, Backend.cypher(card)).text
@@ -191,7 +193,8 @@ def test_anchor_match_on_stored_id(card):
 def test_untargeted_hop_keeps_every_label(card):
     node = Expand(Walk(G, (Hop("USES", "out"),)))
     assert re.search(r"-\[r\d+:USES\]->\(t\d+\) ", compile_cypher(node, Backend.cypher(card)).text)
-    assert ".dedup().out('USES').dedup()" in compile_gremlin(node, Backend.gremlin(card)).text
+    assert re.search(r"\.dedup\(\)\.as\('s\d+'\)\.out\('USES'\)\.where\(neq\('s\d+'\)\)\.dedup\(\)",
+                     compile_gremlin(node, Backend.gremlin(card)).text)
 
 
 def test_dedup_everywhere(card):
@@ -208,7 +211,8 @@ def test_missing_never_matches(card):
     cy = compile_cypher(node, Backend.cypher(card)).text
     assert cy.count("IS NOT NULL") == 3
     gr = compile_gremlin(node, Backend.gremlin(card)).text
-    assert ".has('name', neq(" in gr and ".has('platforms').not(" in gr and ".has('platforms').where(" in gr
+    present = ".where(__.values('platforms').unfold())"
+    assert ".has('name', neq(" in gr and f"{present}.not(" in gr and f"{present}.where(" in gr
 
 
 def test_dates_compare_on_iso_prefix(card):
@@ -247,9 +251,10 @@ def test_expand_returns_every_prefix(card):
     assert len(arms) == 2 and "HAS_SUB" not in arms[0] and "score" not in arms[0]
     assert "HAS_SUB" in arms[1] and "score" in arms[1] and "OPTIONAL" not in cy
     gr = compile_gremlin(node, Backend.gremlin(card)).text
-    assert (".union(__.out('USES').hasLabel('Technique'), "
-            "__.out('USES').hasLabel('Technique').out('HAS_SUB').hasLabel('Technique').has('score', gt(p1))).dedup()"
-            in gr)
+    assert re.search(r"\.as\('(s\d+)'\)\.union\(__\.out\('USES'\)\.hasLabel\('Technique'\)\.where\(neq\('\1'\)\), "
+                     r"__\.out\('USES'\)\.hasLabel\('Technique'\)\.where\(neq\('\1'\)\)\.as\('(n\d+)'\)"
+                     r"\.out\('HAS_SUB'\)\.hasLabel\('Technique'\)\.where\(neq\('\1'\)\)\.where\(neq\('\2'\)\)"
+                     r"\.has\('score', gt\(p1\)\)\)\.dedup\(\)", gr)
 
 
 def test_expand_repeated_hop_keeps_every_step(card):
@@ -264,8 +269,148 @@ def test_expand_repeated_hop_keeps_every_step(card):
 
 def test_repeated_walk_is_acyclic(card):
     node = Count(Walk(T, (Hop("HAS_SUB", "out", "Technique"),), 3))
-    assert "<> v" in compile_cypher(node, Backend.cypher(card)).text
+    assert re.search(r"ALL\(i IN range\(0, length\((p\d+)\) - 1\) WHERE NOT nodes\(\1\)\[i\] IN nodes\(\1\)\[i \+ 1\.\.\]\)",
+                     compile_cypher(node, Backend.cypher(card)).text)
     assert "simplePath().from('s" in compile_gremlin(node, Backend.gremlin(card)).text
+
+
+# --- amendment 4: walks never visit a node twice; typed anchors; empty list is missing ---
+
+SUB = Hop("HAS_SUB", "out", "Technique")
+
+
+def _pairwise(text: str, n_nodes: int) -> bool:
+    """A ``WHERE`` that starts with every pairwise ``a <> b`` over ``n_nodes`` pattern nodes."""
+    pairs = n_nodes * (n_nodes - 1) // 2
+    return bool(re.search(r"WHERE " + " AND ".join([r"\w+ <> \w+"] * pairs) + r"(?: AND| RETURN| WITH| \})", text))
+
+
+@pytest.mark.parametrize("node, nodes_per_pattern", [
+    (Nodes(Walk(G, (USES, SUB))), [3]),  # a walk of several hops
+    (Nodes(Walk(G, (USES,))), [2]),  # one hop: a self-loop never returns the start
+    (Expand(Walk(G, (USES, SUB, SUB))), [2, 3, 4]),  # every prefix arm
+    (Rank(Scan("Group"), "desc", 3, by_walk=(USES, SUB)), [3]),
+    (GroupBy(Scan("Group"), (USES, SUB), "count"), [3]),
+    (Having(Scan("Technique"), Hop("MITIGATES", "in", "Mitigation")), [2]),
+    (Absence(Scan("Technique"), SUB), [2]),
+], ids=["walk", "one_hop", "expand_prefixes", "rank_by_walk", "groupby", "having", "absence"])
+def test_every_walk_is_node_acyclic(node, nodes_per_pattern, card):
+    """Amendment 4: an explicit pairwise node-distinctness predicate on every walk-bearing
+    operator: ``a <> b`` in Cypher, ``where(neq(label))`` over ``as`` labels in Gremlin."""
+    cy = compile_cypher(node, Backend.cypher(card)).text
+    for n in nodes_per_pattern:
+        assert _pairwise(cy, n), (n, cy)
+    gr = compile_gremlin(node, Backend.gremlin(card)).text
+    labels = re.findall(r"\.as\('([sn]\d+)'\)", gr)
+    neqs = re.findall(r"\.where\(neq\('([sn]\d+)'\)\)", gr)
+    assert len(neqs) == sum(n * (n - 1) // 2 for n in nodes_per_pattern) and set(neqs) <= set(labels), gr
+    assert "simplePath" not in gr  # labelled paths only: no full path tracking
+
+
+def test_three_hop_walk_names_every_pair(card):
+    cy = compile_cypher(Count(Walk(G, (USES, SUB, SUB))), Backend.cypher(card)).text
+    m = re.search(r"MATCH \((\w+)\)-\[\w+:USES\]->\((\w+):Technique\)-\[\w+:HAS_SUB\]->\((\w+):Technique\)"
+                  r"-\[\w+:HAS_SUB\]->\((\w+):Technique\) WHERE (.*?) WITH DISTINCT", cy)
+    assert m, cy
+    names, where = m.groups()[:4], m.group(5)
+    for i, a in enumerate(names):
+        for b in names[i + 1:]:
+            assert f"{a} <> {b}" in where, (a, b, where)
+
+
+@pytest.mark.parametrize("depth_node", [
+    Count(Walk(T, (SUB,), 3)), Expand(Walk(T, (SUB,), 3)), Nodes(Walk(T, (SUB,), 2, (Cond("score", ">", 1),)))])
+def test_repeated_hop_is_node_acyclic_from_its_start(depth_node, card):
+    cy = compile_cypher(depth_node, Backend.cypher(card)).text
+    assert re.search(r"(p\d+) = \(v\d+\)-\[:HAS_SUB\*1\.\.\d\]->.* WHERE ALL\(i IN range\(0, length\(\1\) - 1\) "
+                     r"WHERE NOT nodes\(\1\)\[i\] IN nodes\(\1\)\[i \+ 1\.\.\]\)", cy), cy
+    gr = compile_gremlin(depth_node, Backend.gremlin(card)).text
+    assert re.search(r"\.as\('(s\d+)'\)\.repeat\(__\.out\('HAS_SUB'\)\.simplePath\(\)\.from\('\1'\)\)", gr), gr
+
+
+def test_legacy_typed_walk_is_untouched():
+    """``compile_typed_walk`` keeps today's text (Phase D's snapshot); amendment 4 is the algebra's."""
+    from utils.specialists.cypher.compile import compile_typed_walk as cy_walk
+    from utils.specialists.gremlin.compile import compile_typed_walk as gr_walk
+
+    w = Walk(Anchors(("G1",), "Group"), (USES, SUB))
+    q, _ = cy_walk(w, ["G1"], None)
+    assert "<>" not in q and "ALL(" not in q
+    q, _ = gr_walk(w, ["G1"], 10, 100, False)
+    assert "simplePath" not in q
+
+
+@pytest.mark.parametrize("node", [
+    Nodes(Anchors(("G1", "T1"), "Group")), Describe(Anchors(("G1",), "Group")),
+    Expand(Walk(Anchors(("G1",), "Group"), (USES,))), Verify(G, T, "USES", "out"),
+    Shortest(G, Anchors(("M1",), "Mitigation"))])
+def test_anchor_with_a_label_matches_only_that_label(node, card):
+    """Amendment 4 / S12: an id of another label is not found; the anchor check uses the label too."""
+    cy = compile_cypher(node, Backend.cypher(card)).text
+    gr = compile_gremlin(node, Backend.gremlin(card)).text
+    for label in {a.label for a in (getattr(node, "a", None), getattr(node, "b", None)) if a} or {"Group"}:
+        anchor_matches = re.findall(rf"MATCH \((\w+)(:{label})?\) WHERE \1\.id IN", cy)
+        assert anchor_matches and all(lab for _, lab in anchor_matches), cy
+        anchor_steps = re.findall(r"(?<![A-Za-z])V\(\)\.has\('id', within\(p\d+\)\)(\.hasLabel\('\w+'\))?", gr)
+        assert anchor_steps and all(anchor_steps), gr
+
+
+def test_anchor_without_a_label_matches_the_id_alone(card):
+    node = Nodes(Anchors(("G1", "T1")))
+    cy = compile_cypher(node, Backend.cypher(card)).text
+    assert re.search(r"MATCH \(v\d+\) WHERE v\d+\.id IN \$p0", cy) and ":Group" not in cy
+    gr = compile_gremlin(node, Backend.gremlin(card)).text
+    assert "hasLabel" not in gr
+
+
+def test_finish_reports_a_wrong_label_anchor_as_not_found():
+    """The anchor check returns only ids of the stated label; the rest are anchor_not_found."""
+    raw = {"total": 0, "rows": [], "found_0": []}
+    r = finish(raw, _c("nodes", props=(), anchors=[["T1"]]))
+    assert r.info["anchor_not_found"] == ["T1"] and r.total == 0
+
+
+@pytest.mark.parametrize("cond, cy_has, gr_has", [
+    (Cond("platforms", "present"), "(v2.`platforms` IS NOT NULL AND v2.`platforms` <> [])",
+     ".where(__.values('platforms').unfold())"),
+    (Cond("platforms", "missing"), "(v2.`platforms` IS NULL OR v2.`platforms` = [])",
+     ".not(__.values('platforms').unfold())"),
+    (Cond("platforms", "size", 0, "="), "v2.`platforms` <> [] AND size(v2.`platforms`) = $p0",
+     ".where(__.values('platforms').unfold()).where(__.values('platforms').unfold().count().is(eq(p0)))"),
+    (Cond("platforms", "not_contains", "x"), "v2.`platforms` <> [] AND NOT $p0 IN v2.`platforms`",
+     ".where(__.values('platforms').unfold()).not(__.values('platforms').unfold().is(eq(p0)))"),
+])
+def test_empty_list_is_missing(cond, cy_has, gr_has, card):
+    """Amendment 4: an empty list is missing on both backends (defensive: the stores drop them)."""
+    node = Where(Scan("Technique"), (cond,))
+    assert cy_has in compile_cypher(node, Backend.cypher(card)).text
+    assert gr_has in compile_gremlin(node, Backend.gremlin(card)).text
+
+
+def test_scalar_presence_is_plain_and_unknown_type_is_defensive(card):
+    node = Where(Scan("Technique"), (Cond("name", "present"), Cond("name", "missing")))
+    cy = compile_cypher(node, Backend.cypher(card)).text
+    assert "WHERE v2.`name` IS NOT NULL AND v2.`name` IS NULL WITH" in cy and "<> []" not in cy
+    gr = compile_gremlin(node, Backend.gremlin(card)).text
+    assert ".has('name').hasNot('name')" in gr
+    # no card: the type is unknown, so presence also excludes an empty list
+    assert "<> []" in compile_cypher(node).text
+    assert ".where(__.values('name').unfold())" in compile_gremlin(node).text
+
+
+def test_values_counts_an_empty_list_as_lacking(card):
+    node = Values(Scan("Technique"), "platforms")
+    cy = compile_cypher(node, Backend.cypher(card)).text
+    assert len(re.findall(r"v\d+\.`platforms` <> \[\]", cy)) == 2  # n_has and the kept rows
+    gr = compile_gremlin(node, Backend.gremlin(card)).text
+    assert "__.unfold().where(__.values('platforms').unfold()).project('id', 'value')" in gr
+    assert "__.unfold().not(__.values('platforms').unfold()).count()" in gr
+
+
+def test_finish_describe_drops_empty_lists():
+    raw = {"rows": [{"id": "G1", "name": "APT", "properties": {"id": "G1", "aliases": [], "tags": ["x"]}}]}
+    r = finish(raw, _c("describe", anchors=[["G1"]]))
+    assert r.rows[0]["properties"] == {"id": "G1", "tags": ["x"]}
 
 
 def test_reach_and_shortest_shapes(card):
@@ -278,7 +423,7 @@ def test_reach_and_shortest_shapes(card):
     cy = compile_cypher(sp, Backend.cypher(card)).text
     assert "ALL SHORTEST" in cy and "{1,4}" in cy and "{1,5}" in cy
     gr = compile_gremlin(sp, Backend.gremlin(card)).text
-    assert ".barrier().aggregate(" in gr and "loops().is(4)" in gr and "path().from('s" in gr
+    assert ".barrier().aggregate(" in gr and len(re.findall(r"where\(within\('kb\d+'\)\)", gr)) == 4 and "path().from('s" in gr
 
 
 def test_mixed_direction_reach(card):

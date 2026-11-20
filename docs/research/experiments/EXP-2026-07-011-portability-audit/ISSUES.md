@@ -124,3 +124,13 @@ exists to detect.
 **Impact:** None. Both builders were edited by later commits (last 37a8c755, 2026-09-15). `derive_templates.py`, re-run on 2026-11-15, still prints 29 distinct template identifiers, 20 exercised (cypher 20 literals, gremlin 14), as the record states.
 **Cause:** The artifact changed after the pointer was recorded; `make validate-research` flagged the hash.
 **Resolution:** Both rows in `data/POINTERS.md` re-hashed, each with the previous hash in its note.
+
+## 2026-11-20 — builder pointers re-hashed after Step 9 Phase D
+**Impact:** none on this audit's figures. The template literals the derivation counts are
+unchanged.
+**Cause:** Era 2 Step 9 Phase D (commit cfe3e8dd) moved the typed-step walk compilation out of
+both builders into `cypher/compile.py` and `gremlin/compile.py`. EXP-2026-11-021 proved the
+generated query text byte-identical on 1,121 recorded steps. Only `_typed_step`'s body changed.
+**Resolution:** both rows re-hashed to the current files.
+**Paper implication:** none.
+

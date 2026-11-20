@@ -178,17 +178,25 @@ class _Gremlin:
         p = _q(c.prop, "property")
         vt = vtype or _guess_type(c)
         op = c.op
+        # Amendment 4: an empty list is missing. A list (or a property of unknown type)
+        # is present only when ``values(p).unfold()`` yields an element; a scalar
+        # (a string included) unfolds to itself, so this is ``has(p)`` for scalars.
+        has = f".where(__.values({p}).unfold())"
+        listy = vtype in (None, "list")
         if op == "present":
-            return f".has({p}, TextP.regex({self.param(NUMBER_REGEX)}))" if vt == "number_text" else f".has({p})"
+            if vt == "number_text":
+                return f".has({p}, TextP.regex({self.param(NUMBER_REGEX)}))"
+            return has if listy else f".has({p})"
         if op == "missing":
-            return (f".not(__.has({p}, TextP.regex({self.param(NUMBER_REGEX)})))" if vt == "number_text"
-                    else f".hasNot({p})")
+            if vt == "number_text":
+                return f".not(__.has({p}, TextP.regex({self.param(NUMBER_REGEX)})))"
+            return f".not(__.values({p}).unfold())" if listy else f".hasNot({p})"
         if op == "size":
-            return f".has({p}).where(__.values({p}).unfold().count().is({_P[c.cmp]}({self.param(int(c.value))})))"
+            return f"{has}.where(__.values({p}).unfold().count().is({_P[c.cmp]}({self.param(int(c.value))})))"
         if op == "contains":
             return f".where(__.values({p}).unfold().is(eq({self.param(c.value)})))"
         if op == "not_contains":
-            return f".has({p}).not(__.values({p}).unfold().is(eq({self.param(c.value)})))"
+            return f"{has}.not(__.values({p}).unfold().is(eq({self.param(c.value)})))"
         if op in _TEXT:
             return f".has({p}, TextP.{_TEXT[op]}({self.param(c.value)}))"
         if op in ("before", "after", "between", "year") or vt in _DATE_TYPES:
@@ -257,6 +265,8 @@ class _Gremlin:
             return f".has({p}, TextP.regex({self.param(NUMBER_REGEX)}))", f".values({p}).asNumber(GType.DOUBLE)"
         if vtype in _DATE_TYPES and day:
             return f".has({p}, TextP.regex({self.param(ISO_REGEX)}))", f".values({p}).substring(0, 10)"
+        if vtype == "list":  # amendment 4: an empty list is missing
+            return f".where(__.values({p}).unfold())", f".values({p})"
         return f".has({p})", f".values({p})"
 
     # -- walks
@@ -272,6 +282,29 @@ class _Gremlin:
 
     def hops(self, hops: tuple[Hop, ...]) -> str:
         return "".join(self.hop(h) for h in hops)
+
+    @staticmethod
+    def acyclic(start: str) -> str:
+        """Amendment 4 for a repeated hop: no vertex twice since the walk's start ``start``
+        (an ``as`` label), the start included, so a self-loop never returns it."""
+        return f".simplePath().from('{start}')"
+
+    def walk(self, start: str, hops: tuple[Hop, ...]) -> str:
+        """``hops`` from the vertex labelled ``start``, keeping only node-acyclic walks
+        (amendment 4: no vertex twice, the start included).
+
+        Explicit and pairwise, as in Cypher: each vertex reached is ``neq`` every vertex
+        before it, each named by an ``as`` label. This needs labelled paths only, not
+        full path tracking (``simplePath``), which stops the server from bulking
+        traversers and made a reach from a ``Having`` start time out (EXP-2026-11-021).
+        """
+        seen, out = [start], ""
+        for i, h in enumerate(hops):
+            out += self.hop(h) + "".join(f".where(neq('{x}'))" for x in seen)
+            if i < len(hops) - 1:
+                seen.append(self.key("n"))
+                out += f".as('{seen[-1]}')"
+        return out
 
     def path_step(self, rels: tuple[tuple[str, str], ...], edges: bool) -> str:
         """One step along any of ``rels`` (each ``(relation, out|in|both)``)."""
@@ -323,10 +356,12 @@ class _Gremlin:
             ends = self.labels_of(node)
             if node.depth > 1:
                 h, s = node.hops[0], self.key("s")
-                return (f"{start}.as('{s}').repeat(__{self.hop(h, label=False)}.simplePath().from('{s}'))"
+                return (f"{start}.as('{s}').repeat(__{self.hop(h, label=False)}{self.acyclic(s)})"
                         f".emit().times({int(node.depth)}){self.label(h.target)}"
                         f"{self.conds(node.last_conds, ends)}.dedup()")
-            return f"{start}{self.hops(node.hops)}{self.conds(node.last_conds, ends)}.dedup()"
+            s = self.key("s")
+            return (f"{start}.as('{s}'){self.walk(s, node.hops)}"
+                    f"{self.conds(node.last_conds, ends)}.dedup()")
         if isinstance(node, Where):
             return self.nodeset(node.of) + self.conds(node.conds, self.labels_of(node.of))
         if isinstance(node, Intersect):
@@ -345,8 +380,13 @@ class _Gremlin:
                 pre = f"{self.nodeset(node.target)}.aggregate('{k}').fold()"
                 member = f".where(within('{k}'))"
             reach = self.hop_labels(self.labels_of(node.of), (node.hop,))
-            test = f"__{self.hop(node.hop)}{self.conds(node.target_conds, reach)}{member}"
-            return f"{pre}{self.nodeset(node.of)}" + (f".where({test})" if node.exists else f".not({test})")
+            # The start label is set inside the child traversal: a parent's label is not
+            # visible there (the server reports "Could not locate path from-label").
+            # ``filter``, not ``where``: a ``where`` whose traversal starts with ``as`` is
+            # a pattern match.
+            s = self.key("s")
+            test = f"__.as('{s}'){self.walk(s, (node.hop,))}{self.conds(node.target_conds, reach)}{member}"
+            return f"{pre}{self.nodeset(node.of)}" + (f".filter({test})" if node.exists else f".not({test})")
         if isinstance(node, Reach):
             return self.reach(node, int(node.depth))
         raise ValueError(f"{type(node).__name__} is not a node set")
@@ -450,16 +490,18 @@ def compile_gremlin(node: Any, ctx: Backend | None = None) -> Compiled:
             h, s = w.hops[0], gx.key("s")
             # Amendment 3: every repetition count 1..depth is a prefix; keep each acyclic
             # walk's end that meets the walk's conditions (as the Cypher compiler does).
-            frag = (f"{start}.as('{s}').repeat(__{gx.hop(h, label=False)}.simplePath().from('{s}'))"
+            frag = (f"{start}.as('{s}').repeat(__{gx.hop(h, label=False)}{gx.acyclic(s)})"
                     f".emit().times({int(w.depth)}){gx.label(h.target)}{gx.conds(w.last_conds, ends)}"
                     f".dedup()")
         else:
             # Amendment 3: the end nodes of every prefix of the hops, whether or not the
             # walk continues from them; the walk's conditions apply to the full walk only.
-            arms = [f"__{gx.hops(w.hops[:i])}" + (gx.conds(w.last_conds, ends) if i == len(w.hops) else "")
+            # Amendment 4: each arm keeps only walks that visit no vertex twice.
+            s = gx.key("s")
+            arms = [f"__{gx.walk(s, w.hops[:i])}" + (gx.conds(w.last_conds, ends) if i == len(w.hops) else "")
                     for i in range(1, len(w.hops) + 1)]
             body = arms[0][2:] if len(arms) == 1 else f".union({', '.join(arms)})"
-            frag = f"{start}{body}.dedup()"
+            frag = f"{start}.as('{s}'){body}.dedup()"
         return gx.compiled(gx.envelope(frag, (), anchors), "nodes", props=(), anchors=meta_anchors)
 
     if isinstance(node, Describe):
@@ -484,7 +526,8 @@ def compile_gremlin(node: Any, ctx: Backend | None = None) -> Compiled:
 
     if isinstance(node, Values):
         vt = gx.b.prop_type(gx.labels_of(node.of), node.prop)
-        flt, val = gx.value(node.prop, vt, day=False)
+        _, val = gx.value(node.prop, vt, day=False)
+        flt = gx.cond(Cond(node.prop, "present"), vt)  # amendment 4: an empty list is missing
         lacking = gx.cond(Cond(node.prop, "missing"), vt)
         dedup = ".dedup().by(__.select('value'))" if node.distinct else ""
         kept = f"__.unfold(){flt}.project('id', 'value').by('id').by(__{val}){dedup}"
@@ -510,12 +553,13 @@ def compile_gremlin(node: Any, ctx: Backend | None = None) -> Compiled:
                            anchors=meta_anchors)
 
     if isinstance(node, Rank):
+        s = gx.key("s")
         if node.prop is not None:
             vt = gx.b.prop_type(gx.labels_of(node.of), node.prop)
             flt, val = gx.value(node.prop, vt)
             key = f"__.coalesce(__{flt}{val}, __.constant(null))"
         else:
-            key = f"__{gx.hops(node.by_walk)}.dedup().count()"
+            key = f"__.as('{s}'){gx.walk(s, node.by_walk)}.dedup().count()"
         head = (f"{gx.nodeset(node.of)}.project('id', 'name', 'value').by('id').by({gx.name()}).by({key})"
                 f".order().by(__.select('id')).fold()")
         return gx.compiled(gx.project(head, [("rows", "__.identity()")], anchors), "rank", "rank",
@@ -524,7 +568,8 @@ def compile_gremlin(node: Any, ctx: Backend | None = None) -> Compiled:
 
     if isinstance(node, GroupBy):
         ends = gx.hop_labels(gx.labels_of(node.members), node.hops)
-        walk = f"__{gx.hops(node.hops)}{gx.conds(node.end_conds, ends)}.dedup()"
+        s = gx.key("s")
+        walk = f"__.as('{s}'){gx.walk(s, node.hops)}{gx.conds(node.end_conds, ends)}.dedup()"
         if node.fn == "count":
             agg = f"{walk}.count()"
         else:
@@ -535,7 +580,8 @@ def compile_gremlin(node: Any, ctx: Backend | None = None) -> Compiled:
                 fn = {"sum": "sum", "avg": "mean", "min": "min", "max": "max"}[node.fn]
                 empty = "0" if node.fn == "sum" else "null"
                 agg = f"{walk}{flt}{val}.fold().coalesce(__.unfold().{fn}(), __.constant({empty}))"
-        head = (f"{gx.nodeset(node.members)}.project('id', 'name', 'value').by('id').by({gx.name()}).by({agg})"
+        head = (f"{gx.nodeset(node.members)}.project('id', 'name', 'value')"
+                f".by('id').by({gx.name()}).by({agg})"
                 f".order().by(__.select('id')).fold()")
         return gx.compiled(gx.project(head, [("rows", "__.identity()")], anchors), "groupby", "group",
                            fn=node.fn, having=list(node.having) if node.having else None, order=node.order,
@@ -565,12 +611,25 @@ def compile_gremlin(node: Any, ctx: Backend | None = None) -> Compiled:
         seed = f".V().has('id', within({pa})){gx.label(a.label)}"
         at_b = f"has('id', within({pb})){gx.label(b.label)}"
         s, k = gx.key("s"), gx.key("k")
-        # Level by level: every traverser reaching an unseen vertex at this level is
-        # kept (the barrier comes before the level is marked seen), so every
-        # minimum-length path survives and nothing longer reaches b.
-        paths = (f"__{seed}.as('{s}').aggregate('{k}')"
-                 f".repeat(__{gx.path_step(node.rels, True)}.where(without('{k}')).barrier().aggregate('{k}'))"
-                 f".until(__.or(__.{at_b}, __.loops().is({d})))"
+        # Backward from b first: ``kb<r>`` holds every vertex within r steps of b
+        # (against the walk's direction), r = 0..d-1. A vertex at step j of a path that
+        # ends at b within d steps is within d-j of b, so a traverser outside
+        # ``kb<d-j>`` is dropped: no shortest path is lost, and the forward search no
+        # longer fans out across the whole graph at the last levels (a Group-to-Group
+        # search at depth 3 timed out without it, EXP-2026-11-021).
+        back = [gx.key("kb") for _ in range(d)]
+        rev = tuple((r, {"out": "in", "in": "out"}.get(dr, dr)) for r, dr in node.rels)
+        pre = f"__.V().{at_b}.aggregate('{back[0]}')" + "".join(
+            f".union(__.identity(), __{gx.path_step(rev, False)}).dedup().aggregate('{back[r]}')" for r in range(1, d))
+        # Then forward, level by level (unrolled, d <= 10): a traverser at b stays; every
+        # other one steps, and is kept when its vertex is unseen and still within reach of
+        # b. The barrier comes before the level is marked seen, so every minimum-length
+        # path survives and nothing longer reaches b.
+        step = gx.path_step(node.rels, True)
+        levels = "".join(
+            f".union(__.{at_b}, __.not(__.{at_b}){step}.where(without('{k}')).where(within('{back[d - j]}')))"
+            f".barrier().aggregate('{k}')" for j in range(1, d + 1))
+        paths = (f"{pre}.fold(){seed}.as('{s}').aggregate('{k}'){levels}"
                  f".{at_b}.path().from('{s}').by('id').by(__.label()).fold()")
         frag = (f".project('a_found', 'b_found', 'paths', 'total_within', 'total_beyond')"
                 f".by(__{seed}.count()).by(__.V().{at_b}.count()).by({paths})"

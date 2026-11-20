@@ -209,8 +209,10 @@ STORE_ONLY_PROPS = frozenset({"properties_json"})
 
 
 def _str_keys(d: Any) -> dict[str, Any]:
-    """A property map without Gremlin's ``T.id``/``T.label`` tokens or store-only keys."""
-    return {k: v for k, v in dict(d or {}).items() if isinstance(k, str) and k not in STORE_ONLY_PROPS}
+    """A property map without Gremlin's ``T.id``/``T.label`` tokens, store-only keys, or
+    empty lists (amendment 4: an empty list is missing, so describe never shows one)."""
+    return {k: v for k, v in dict(d or {}).items()
+            if isinstance(k, str) and k not in STORE_ONLY_PROPS and not (isinstance(v, (list, tuple)) and not v)}
 
 
 def median(values: list[Any]) -> Any:

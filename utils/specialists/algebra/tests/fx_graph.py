@@ -31,6 +31,16 @@ The graph (hand-checked answers live beside each test):
     FxSub (FxTech -> FxTech):          t1->t2, t2->t3, t1->t3
     FxMitigates (FxMit -> FxTech):     m1->t1, m1->t2, m2->t2
     FxLink (FxPlace -> FxPlace):       p1->p2, p1->p3, p2->p4, p3->p4, p4->p5, p5->p1, p5->p6   (p7 alone)
+
+Amendment 4 (walks never visit a node twice; an empty list is missing):
+
+    FxNode   c1..c4        tags: c1 [a], c2 [] (declared, never stored), c3 [a, b], c4 none
+    FxRel (FxNode -> FxNode):  c1->c2, c2->c1 (a 2-cycle), c2->c3, c3->c3 (a self-loop), c4->c2
+    FxAlt (FxNode -> FxNode):  c1->c2 (parallel to c1-FxRel->c2, so c1 -FxRel-> c2 <-FxAlt- c1
+                               returns to its start with no relationship reused)
+
+**Empty lists.** ``c2`` declares ``tags=[]``. :func:`load` drops empty lists before the
+upsert (§ 1: neither engine stores an empty list), so it reads as missing.
 """
 
 from __future__ import annotations
@@ -39,7 +49,7 @@ from typing import Any
 
 from utils.agent.catalog import CardModel, LabelModel, PropertyModel, RelationModel, _build_options
 
-FX_LABELS = ("FxGroup", "FxTech", "FxTool", "FxMit", "FxPlace")
+FX_LABELS = ("FxGroup", "FxTech", "FxTool", "FxMit", "FxPlace", "FxNode")
 FX_EXTRA = ("FxObject", "FxExtra")
 
 
@@ -68,6 +78,10 @@ NODES: list[dict[str, Any]] = [
     _n("fx:m1", "FxMit", "M-One"),
     _n("fx:m2", "FxMit", "M-Two"),
     *[_n(f"fx:p{i}", "FxPlace", f"P{i}") for i in range(1, 8)],
+    _n("fx:c1", "FxNode", "C1", tags=["a"]),
+    _n("fx:c2", "FxNode", "C2", tags=[]),
+    _n("fx:c3", "FxNode", "C3", tags=["a", "b"]),
+    _n("fx:c4", "FxNode", "C4"),
 ]
 
 
@@ -85,6 +99,9 @@ EDGES: list[dict[str, Any]] = [
     _e("FxLink", "fx:p1", "fx:p2"), _e("FxLink", "fx:p1", "fx:p3"), _e("FxLink", "fx:p2", "fx:p4"),
     _e("FxLink", "fx:p3", "fx:p4"), _e("FxLink", "fx:p4", "fx:p5"), _e("FxLink", "fx:p5", "fx:p1"),
     _e("FxLink", "fx:p5", "fx:p6"),
+    _e("FxRel", "fx:c1", "fx:c2"), _e("FxRel", "fx:c2", "fx:c1"), _e("FxRel", "fx:c2", "fx:c3"),
+    _e("FxRel", "fx:c3", "fx:c3"), _e("FxRel", "fx:c4", "fx:c2"),
+    _e("FxAlt", "fx:c1", "fx:c2"),
 ]
 
 #: Written by :func:`load` itself (the loader drops relationship properties).
@@ -113,6 +130,7 @@ def card() -> CardModel:
         "FxTool": {"name": "string"},
         "FxMit": {"name": "string"},
         "FxPlace": {"name": "string"},
+        "FxNode": {"name": "string", "tags": "list"},
     }
     labels = {lab: LabelModel(lab, "", "name", {p: _p(p, t) for p, t in ps.items()}) for lab, ps in props.items()}
     rels = {
@@ -122,6 +140,8 @@ def card() -> CardModel:
         "FxSub": RelationModel("FxSub", patterns=(("FxTech", "FxTech"),)),
         "FxMitigates": RelationModel("FxMitigates", patterns=(("FxMit", "FxTech"),)),
         "FxLink": RelationModel("FxLink", patterns=(("FxPlace", "FxPlace"),)),
+        "FxRel": RelationModel("FxRel", patterns=(("FxNode", "FxNode"),)),
+        "FxAlt": RelationModel("FxAlt", patterns=(("FxNode", "FxNode"),)),
     }
     m = CardModel("fx", "test", "neo4j+gremlin", labels, rels, 3, "test")
     _build_options(m, {})
@@ -131,6 +151,12 @@ def card() -> CardModel:
 # --------------------------------------------------------------------------- #
 # Loading (idempotent; wipes only Fx-labelled data)
 # --------------------------------------------------------------------------- #
+
+
+def stored(node: dict[str, Any]) -> dict[str, Any]:
+    """The record as the stores hold it: no empty list (amendment 4, § 1)."""
+    props = {k: v for k, v in node["properties"].items() if not (isinstance(v, list) and not v)}
+    return {**node, "properties": props}
 
 
 def wipe(engines: Any) -> None:
@@ -155,7 +181,7 @@ def load(engines: Any) -> dict[str, Any]:
     for store in (neo, grem):
         store.connect()
         try:
-            store.upsert_nodes(NODES)
+            store.upsert_nodes([stored(n) for n in NODES])
             store.upsert_edges(EDGES)
         finally:
             store.close()

@@ -148,6 +148,21 @@ def _anchors_in(node: Any) -> list[Anchors]:
     return out
 
 
+def distinct_nodes(names: list[str]) -> list[str]:
+    """Amendment 4 (S10 for every walk): the pattern's nodes are pairwise distinct.
+
+    Explicit, because Cypher only keeps a pattern's *relationships* distinct: without
+    it ``(a)-[:R]->(b)<-[:R]-(c)`` could bind ``c`` to ``a`` through a parallel edge,
+    and a self-loop would return the start.
+    """
+    return [f"{a} <> {b}" for i, a in enumerate(names) for b in names[i + 1:]]
+
+
+def acyclic_path(p: str) -> str:
+    """Amendment 4 for a variable-length path ``p``: no node of ``nodes(p)`` repeats."""
+    return f"ALL(i IN range(0, length({p}) - 1) WHERE NOT nodes({p})[i] IN nodes({p})[i + 1..])"
+
+
 class _Cypher:
     """One compilation: parameters, fresh variable names, and the card."""
 
@@ -206,16 +221,21 @@ class _Cypher:
         vt = vtype or _guess_type(c)
         op = c.op
         nn = f"{x} IS NOT NULL"
+        # Amendment 4: an empty list is missing. A list (or a property of unknown type)
+        # is present only when it holds an element; ``x <> []`` is true for any scalar.
+        listy = vtype in (None, "list") or op in ("size", "contains", "not_contains")
+        has = f"({nn} AND {x} <> [])" if listy else nn
         if op == "present":
-            return f"coalesce({x} =~ {self.param(NUMBER_REGEX)}, false)" if vt == "number_text" else nn
+            return f"coalesce({x} =~ {self.param(NUMBER_REGEX)}, false)" if vt == "number_text" else has
         if op == "missing":
-            return f"NOT coalesce({x} =~ {self.param(NUMBER_REGEX)}, false)" if vt == "number_text" else f"{x} IS NULL"
+            return (f"NOT coalesce({x} =~ {self.param(NUMBER_REGEX)}, false)" if vt == "number_text"
+                    else f"({x} IS NULL OR {x} = [])" if listy else f"{x} IS NULL")
         if op == "size":
-            return f"({nn} AND size({x}) {c.cmp} {self.param(int(c.value))})"
+            return f"({nn} AND {x} <> [] AND size({x}) {c.cmp} {self.param(int(c.value))})"
         if op == "contains":
             return f"({nn} AND {self.param(c.value)} IN {x})"
         if op == "not_contains":
-            return f"({nn} AND NOT {self.param(c.value)} IN {x})"
+            return f"({nn} AND {x} <> [] AND NOT {self.param(c.value)} IN {x})"
         if op in _TEXT_OPS:
             return f"({nn} AND {x} {_TEXT_OPS[op]} {self.param(c.value)})"
         if op in ("before", "after", "between", "year") or vt in _DATE_TYPES:
@@ -258,7 +278,12 @@ class _Cypher:
     def chain(self, start: str, hops: tuple[Hop, ...], end: str,
               start_labels: frozenset[str] | None) -> tuple[str, list[str], list[str]]:
         """``(start)-..->(end)`` for ``hops`` (depth 1), with the edge predicates and the
-        intermediate variables."""
+        intermediate variables.
+
+        The predicates include :func:`distinct_nodes` over every node of the pattern
+        (amendment 4: a walk never visits a node twice, the start included), which
+        is stricter than Cypher's own rule (no relationship twice).
+        """
         pattern, preds, mids = f"({start})", [], []
         for i, h in enumerate(hops):
             rv = self.var("r")
@@ -268,6 +293,8 @@ class _Cypher:
                 mids.append(nv)
             pattern += f"{arrow}({nv}{self.label(h.target)})"
             preds += self.edge_conds(rv, h)
+        if hops:
+            preds = distinct_nodes([start, *mids, end]) + preds
         return pattern, preds, mids
 
     def qpp(self, rels: tuple[tuple[str, str], ...]) -> str:
@@ -313,7 +340,7 @@ class _Cypher:
                 h, pv = hops[0], self.var("p")
                 arrow = self.arrow(h, "", f"*1..{int(node.depth)}")
                 e = self.var("e")
-                preds = [f"{v} <> {s}"]
+                preds = [acyclic_path(pv)]  # amendment 4: no node twice, the start included
                 ec = self.edge_conds(e, h)
                 if ec:
                     preds.append(f"ALL({e} IN relationships({pv}) WHERE {' AND '.join(ec)})")
@@ -470,7 +497,7 @@ def compile_cypher(node: Any, ctx: Backend | None = None) -> Compiled:
         if w.depth > 1:
             h, pv, e, end = w.hops[0], cx.var("p"), cx.var("e"), cx.var("t")
             arrow = cx.arrow(h, "", f"*1..{int(w.depth)}")
-            preds = [f"ALL(i IN range(0, length({pv}) - 1) WHERE NOT nodes({pv})[i] IN nodes({pv})[i + 1..])"]
+            preds = [acyclic_path(pv)]  # amendment 4: no node twice, the start included
             ec = cx.edge_conds(e, h)
             if ec:
                 preds.append(f"ALL({e} IN relationships({pv}) WHERE {' AND '.join(ec)})")

@@ -179,8 +179,13 @@ class CardModel:
 def _prop(name: str, raw: Any) -> PropertyModel:
     if isinstance(raw, dict):
         t = str(raw.get("type") or "string")
-        return PropertyModel(name, VALUE_TYPES.get(t.lower(), "string"), t, bool(raw.get("optional", True)),
-                             raw.get("example"))
+        vtype = VALUE_TYPES.get(t.lower(), "string")
+        ex = raw.get("example")
+        if vtype == "list" and isinstance(ex, list) and any(not isinstance(x, str) for x in ex):
+            # A list of objects (``external_references``) is not a list property: both
+            # stores hold it as JSON text (operator-algebra.md, amendment 4).
+            vtype = "string"
+        return PropertyModel(name, vtype, t, bool(raw.get("optional", True)), ex)
     t = str(raw or "string")
     return PropertyModel(name, VALUE_TYPES.get(t.lower(), "string"), t)
 

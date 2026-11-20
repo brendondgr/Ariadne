@@ -230,6 +230,39 @@ def combined_card(data_dir: str | Path = "data", datasets: tuple[str, ...] = ("a
     return model
 
 
+#: Neo4j ``valueType`` -> card value type, for relationship properties read from the store.
+_EDGE_TYPES = {"STRING NOT NULL": "string", "FLOAT NOT NULL": "number", "INTEGER NOT NULL": "integer",
+               "BOOLEAN NOT NULL": "boolean", "LIST<STRING NOT NULL> NOT NULL": "list"}
+
+
+def with_stored_edge_props(card: Any, engines: "Engines") -> dict[str, list[str]]:
+    """Give ``card``'s relationships the properties the store holds on them (differential only).
+
+    Neither card declares a relationship property, so O7a (edge filters) cannot run on
+    real data through the card. The store reload of 2026-11-20 writes edge properties in
+    both engines (ATT&CK: ``relationship_type``, ``stix_type``, ``phase_name``,
+    ``log_source_names``; CAPEC: ``step``). This reads each relationship's property keys
+    and one value type from Neo4j and adds them to the card, so the generator can draw
+    edge filters from stored values. ``id`` and long text (``SKIP_PROPS``) are left out;
+    a key with more than one value type is left out. Returns relation -> added names.
+    """
+    from utils.agent.catalog import PropertyModel
+
+    rows = engines.neo4j_raw("MATCH ()-[r]->() UNWIND keys(r) AS k "
+                             "RETURN type(r) AS rel, k, collect(DISTINCT valueType(r[k])) AS types")
+    added: dict[str, list[str]] = {}
+    for r in rows:
+        rel, k, types = r["rel"], r["k"], r["types"]
+        if rel not in card.relations or k == "id" or k in SKIP_PROPS or len(types) != 1:
+            continue
+        vtype = _EDGE_TYPES.get(types[0])
+        if vtype is None:
+            continue
+        card.relations[rel].properties[k] = PropertyModel(k, vtype, vtype)
+        added.setdefault(rel, []).append(k)
+    return {k: sorted(v) for k, v in sorted(added.items())}
+
+
 # --------------------------------------------------------------------------- #
 # Generating
 # --------------------------------------------------------------------------- #
@@ -292,6 +325,20 @@ class Sampler:
             self._vals[key] = vals
         return self._vals[key]
 
+    def edge_values(self, relation: str, prop: str) -> list[Any]:
+        """Present values of a relationship property (list elements for a list), as ``values``."""
+        key = ("@" + relation, prop)
+        if key not in self._vals:
+            vtype = self.card.relations[relation].properties[prop].vtype
+            unwind = f"UNWIND r.`{prop}` AS v" if vtype == "list" else f"WITH r.`{prop}` AS v"
+            q = f"MATCH ()-[r:`{relation}`]->() WHERE r.`{prop}` IS NOT NULL {unwind} RETURN DISTINCT v"
+            vals = [r["v"] for r in self.engines.neo4j_raw(q)]
+            vals = sorted({v for v in vals if isinstance(v, (str, int, float, bool))}, key=lambda v: (str(type(v)), v))
+            if len(vals) > MAX_VALUES:
+                vals = sorted(self.rng.sample(vals, MAX_VALUES), key=lambda v: (str(type(v)), v))
+            self._vals[key] = vals
+        return self._vals[key]
+
     def pick(self, seq: list[Any]) -> Any:
         return seq[self.rng.randrange(len(seq))] if seq else None
 
@@ -300,9 +347,10 @@ def _props(card: Any, label: str) -> list[tuple[str, str]]:
     return [(p, pm.vtype) for p, pm in sorted(card.labels[label].properties.items()) if p not in SKIP_PROPS]
 
 
-def cond_for(s: Sampler, label: str, prop: str, vtype: str, op: str) -> Cond | None:
-    """A condition with a value drawn from the store, or ``None`` when none fits."""
-    vals = s.values(label, prop)
+def cond_for(s: Sampler, label: str, prop: str, vtype: str, op: str, vals: list[Any] | None = None) -> Cond | None:
+    """A condition with a value drawn from the store (``vals``, else ``label``'s values of
+    ``prop``), or ``None`` when none fits."""
+    vals = s.values(label, prop) if vals is None else vals
     if op in ("present", "missing"):
         return Cond(prop, op)
     if not vals:
@@ -444,6 +492,34 @@ def card_instances(card: Any, s: Sampler) -> list[Instance]:
             add("O7c", [label], Union_((Walk(anchors, (hops[0],)), Walk(anchors, (hops[1],)))))
         else:
             add("O7c", [label], Union_((Scan(label), anchors)))
+    # O7a: edge filters on the relationship properties the store holds (see
+    # ``with_stored_edge_props``), one per (relationship, direction from its source label,
+    # property, op), with values drawn from the stored edges.
+    for label in sorted(card.labels):
+        ids = s.ids(label)
+        if not ids:
+            continue
+        for hop in _hops_from(card, label):
+            props = card.relations[hop.relation].properties
+            if hop.direction != "out" or not props:
+                continue
+            linked = s.linked_ids(label, hop.relation, hop.direction, hop.target)
+            if not linked:
+                continue
+            a = Anchors(tuple(sorted(rng.sample(linked, min(5, len(linked))))), label)
+            for prop, pm in sorted(props.items()):
+                if prop in SKIP_PROPS:
+                    continue
+                vals = s.edge_values(hop.relation, prop)
+                for op in allowed_ops(pm.vtype):
+                    c = cond_for(s, label, prop, pm.vtype, op, vals)
+                    if c is None:
+                        continue
+                    eh = Hop(hop.relation, hop.direction, hop.target, (c,))
+                    add("O7a", [label, hop.target], Expand(Walk(a, (eh,))))
+                    if op in ("=", "contains", "present"):
+                        add("O7a", [label, hop.target], Count(Walk(Scan(label), (eh,))))
+                        add("O7a", [label, hop.target], Having(Scan(label), eh, False))
     return out
 
 
@@ -631,46 +707,20 @@ def operators_in(node: Any) -> set[str]:
 # --------------------------------------------------------------------------- #
 
 
-def known_issue(node: Any, card: Any) -> str | None:
-    """A reason this instance cannot agree today that no compiler fix may remove, or ``None``.
+def known_issue(node: Any, card: Any) -> str | None:  # noqa: ARG001 - kept for the report's shape
+    """A reason this instance cannot agree that the semantics document states, or ``None``.
 
-    - ``list_encoding``: the tree reads a list-typed card property. The Gremlin export
-      stores every list as JSON text (``'["a", "b"]'``), Neo4j as a native list; Neo4j
-      also drops empty lists and lists of maps (``external_references``). § 1 assumes
-      "lists are list values" in both. Reported to the operator (EXP-2026-11-021).
-    - ``walk_edge_reuse``: a walk with a hop followed by the same relationship in the
-      opposite direction. Cypher's pattern never reuses a relationship; Gremlin's walk
-      does, so the start comes back. The document does not say which a walk means.
-      Reported to the operator.
+    There is none today. Two tags existed in Phase E, part 1, and both are retired:
+
+    - ``walk_edge_reuse`` (a hop followed by the same relationship back): amendment 4
+      makes every walk node-acyclic on both backends.
+    - ``list_encoding`` (Gremlin stored lists as JSON text, Neo4j as lists): amendment 4
+      and the store reload (2026-11-20) store string lists as list values in both, and
+      no empty list.
+
+    Every disagreement and one-sided error now counts.
     """
-    lists = {p for lab in card.labels.values() for p, pm in lab.properties.items() if pm.vtype == "list"}
-    reasons: set[str] = set()
-
-    def walk(x: Any) -> None:
-        if dataclasses.is_dataclass(x) and not isinstance(x, type):
-            name = type(x).__name__
-            if name == "Cond" and x.prop in lists:
-                reasons.add("list_encoding")
-            if name in ("Values", "Aggregate", "Rank", "GroupBy") and getattr(x, "prop", None) in lists:
-                reasons.add("list_encoding")
-            if name == "Nodes" and set(x.props) & lists:
-                reasons.add("list_encoding")
-            if name == "Describe" and any(
-                    pm.vtype == "list" for lab in ([x.anchors.label] if x.anchors.label else list(card.labels))
-                    for pm in card.labels[lab].properties.values()):
-                reasons.add("list_encoding")
-            if name == "Walk":
-                for a, b in zip(x.hops, x.hops[1:]):
-                    if a.relation == b.relation and a.direction != b.direction:
-                        reasons.add("walk_edge_reuse")
-            for f in dataclasses.fields(x):
-                walk(getattr(x, f.name))
-        elif isinstance(x, (tuple, list)):
-            for y in x:
-                walk(y)
-
-    walk(node)
-    return "+".join(sorted(reasons)) or None
+    return None
 
 
 def run_instance(engines: Engines, inst: Instance, card: Any, row_cap: int = 1000) -> dict[str, Any]:
@@ -745,9 +795,9 @@ ALWAYS = ("scan", "describe", "count", "nodes", "O1", "O2", "O5", "O7c", "O8")
 
 
 def applicable_cells(card: Any) -> list[tuple[str, str]]:
-    """(operator, label) cells the card allows. O7a (edge filters) needs a relationship
-    property, which neither ATT&CK nor CAPEC has, so it is not applicable there; O7b
-    (time) needs an ISO-shaped property value."""
+    """(operator, label) cells the card allows. O7a (edge filters) applies to a label with
+    a relationship that has a property (only after ``with_stored_edge_props``: neither
+    card declares one); O7b (time) needs an ISO-shaped property value."""
     cells = []
     for lab in sorted(card.labels):
         ops = set(ALWAYS)
@@ -760,7 +810,7 @@ def applicable_cells(card: Any) -> list[tuple[str, str]]:
         cells += [(op, lab) for op in ops]
         if any(p in ("created", "modified", "first_seen", "last_seen") for p in card.labels[lab].properties):
             cells.append(("O7b", lab))
-        if any(r.properties for r in card.relations.values()):
+        if any(card.relations[o.relation].properties for o in card.options(lab)):
             cells.append(("O7a", lab))
     return cells
 
@@ -773,6 +823,8 @@ def main(argv: list[str] | None = None) -> int:
     ap.add_argument("--row-cap", type=int, default=1000)
     ap.add_argument("--limit", type=int, default=0, help="run only the first N instances (debugging)")
     ap.add_argument("--only", default="", help="comma-separated instance ids to run")
+    ap.add_argument("--no-edge-props", dest="edge_props", action="store_false",
+                    help="do not add the store's relationship properties to the card (no O7a on real data)")
     a = ap.parse_args(argv)
     out = Path(a.out)
     out.mkdir(parents=True, exist_ok=True)
@@ -782,6 +834,7 @@ def main(argv: list[str] | None = None) -> int:
     rng = random.Random(a.seed)
     engines = Engines()
     card = combined_card()
+    edge_props = with_stored_edge_props(card, engines) if a.edge_props else {}
     s = Sampler(engines, card, rng)
     t0 = time.time()
     insts = generate(card, s, a.random)
@@ -817,6 +870,7 @@ def main(argv: list[str] | None = None) -> int:
         "error_ids": [r["iid"] for r in rows if r["status"] == "error"],
         "coverage": {k: v for k, v in cov.items() if k != "per_cell"}, "coverage_cells": cov["per_cell"],
         "tolerance": {"relative": REL_TOL, "applies_to": "sum/avg aggregate and group values"},
+        "edge_props_from_store": edge_props,
         "neo4j_uri": NEO4J_URI, "gremlin_uri": GREMLIN_URI, "seconds": round(time.time() - t0, 1),
     }
     (out / "summary.json").write_text(json.dumps(summary, indent=1, sort_keys=True) + "\n")

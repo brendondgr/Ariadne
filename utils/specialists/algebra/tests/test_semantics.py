@@ -564,6 +564,82 @@ def test_amendment3_repeated_hop_filters_every_step(run):
     assert ids(run(Expand(Walk(T("t1"), (SUB,), 2, (Cond("weight", "=", 5),))))) == ["fx:t2"]
 
 
+# --- amendment 4 -------------------------------------------------------------------
+# FxRel: c1->c2, c2->c1, c2->c3, c3->c3 (self-loop), c4->c2;  FxAlt: c1->c2
+# tags: c1 [a], c2 [] (not stored: missing), c3 [a, b], c4 none
+
+C = lambda *n: Anchors(tuple(f"fx:{x}" for x in n), "FxNode")  # noqa: E731
+REL = Hop("FxRel", "out", "FxNode")
+REL_IN = Hop("FxRel", "in", "FxNode")
+ALT_IN = Hop("FxAlt", "in", "FxNode")
+
+
+def test_amendment4_walk_never_returns_to_its_start(run):
+    # c1 -FxRel-> c2 -FxRel-> {c1 (the start: excluded), c3}
+    assert idset(run(Nodes(Walk(C("c1"), (REL, REL))))) == fx("c3")
+    assert run(Count(Walk(C("c1"), (REL, REL)))).value == 1
+    assert idset(run(Expand(Walk(C("c1"), (REL, REL))))) == fx("c2", "c3")
+    # A -R-> B <-R'- A with no relationship reused: c1 -FxRel-> c2 <-FxAlt- c1 returns to c1
+    assert idset(run(Nodes(Walk(C("c1"), (REL, ALT_IN))))) == set()
+    assert idset(run(Expand(Walk(C("c1"), (REL, ALT_IN))))) == fx("c2")
+    # A -R-> B <-R- ?: c1 -> c2 <- {c1 (excluded), c4}
+    assert idset(run(Nodes(Walk(C("c1"), (REL, REL_IN))))) == fx("c4")
+
+
+def test_amendment4_two_cycle_and_self_loop(run):
+    # c2 -> c1 -> c2 (the start) and c2 -> c3 -> c3 (c3 twice): neither walk is kept
+    assert idset(run(Nodes(Walk(C("c2"), (REL, REL))))) == set()
+    assert idset(run(Expand(Walk(C("c2"), (REL, REL))))) == fx("c1", "c3")
+    # a self-loop never returns the start, even in one hop
+    assert idset(run(Nodes(Walk(C("c3"), (REL,))))) == set()
+    assert run(Count(Walk(C("c3"), (REL,)))).value == 0
+    # a repeated hop: 1 step {c1, c3}; 2 steps would revisit c2 or c3
+    assert idset(run(Expand(Walk(C("c2"), (REL,), 2)))) == fx("c1", "c3")
+    assert idset(run(Nodes(Walk(C("c2"), (REL,), 3)))) == fx("c1", "c3")
+    # from c4: c2; c1, c3; then c1 -> c2 and c3 -> c3 revisit
+    assert idset(run(Expand(Walk(C("c4"), (REL,), 3)))) == fx("c2", "c1", "c3")
+
+
+def test_amendment4_rank_groupby_having_walks_are_acyclic(run):
+    # two FxRel hops from each: c1 {c3}, c2 {}, c3 {}, c4 {c1, c3}
+    r = run(GroupBy(Scan("FxNode"), (REL, REL), "count"))
+    assert by_id(r) == {"fx:c1": 1, "fx:c2": 0, "fx:c3": 0, "fx:c4": 2}
+    r = run(Rank(Scan("FxNode"), "desc", 2, by_walk=(REL, REL)))
+    assert ids(r) == ["fx:c4", "fx:c1"] and [row["value"] for row in r.rows] == [2, 1]
+    # one hop: c3's only FxRel is its self-loop, so it has none
+    assert idset(run(Having(Scan("FxNode"), REL))) == fx("c1", "c2", "c4")
+    assert idset(run(Absence(Scan("FxNode"), REL))) == fx("c3")
+
+
+def test_amendment4_anchor_of_another_label_is_not_found(run):
+    r = run(Expand(Walk(Anchors(("fx:t1",), "FxGroup"), (USES_T,))))
+    assert r.rows == [] and r.info.get("anchor_not_found") == ["fx:t1"]
+    r = run(Describe(Anchors(("fx:g1", "fx:t1"), "FxGroup")))
+    assert ids(r) == ["fx:g1"] and r.info.get("anchor_not_found") == ["fx:t1"]
+    r = run(Count(Walk(Anchors(("fx:g1", "fx:t1"), "FxGroup"), (USES_T,))))
+    assert r.value == 2 and r.info.get("anchor_not_found") == ["fx:t1"]
+    r = run(Verify(Anchors(("fx:t1",), "FxGroup"), T("t2")))
+    assert r.info.get("anchor_not_found") == ["fx:t1"] and r.info.get("exists") is False
+    # without a label, the id alone matches
+    r = run(Nodes(Anchors(("fx:t1", "fx:g1"))))
+    assert idset(r) == fx("t1", "g1")
+    _no_anchor_missing(r)
+
+
+def test_amendment4_empty_list_is_missing(run):
+    W = lambda *c: idset(run(Where(Scan("FxNode"), tuple(c))))  # noqa: E731
+    assert W(Cond("tags", "present")) == fx("c1", "c3")
+    assert W(Cond("tags", "missing")) == fx("c2", "c4")
+    assert W(Cond("tags", "size", 0, "=")) == set()
+    assert W(Cond("tags", "size", 2, "<")) == fx("c1")
+    assert W(Cond("tags", "not_contains", "b")) == fx("c1")
+    assert W(Cond("tags", "contains", "a")) == fx("c1", "c3")
+    r = run(Values(Scan("FxNode"), "tags"))
+    assert {row["id"] for row in r.rows} == fx("c1", "c3") and r.info.get("lacking") == 2
+    r = run(Describe(C("c2")))
+    assert ids(r) == ["fx:c2"] and "tags" not in r.rows[0]["properties"]
+
+
 def test_having_needs_a_numeric_group_value(run):
     # min/max of a text or date property is text; a numeric `having` cannot select it
     with pytest.raises(InvalidOp):
