@@ -404,14 +404,26 @@ class _Parser:
         if prod is None or not prod.ok:
             raise self._refuse(f"from_step {fs!r} is not an earlier accepted step", "from_step", fs,
                                [k for k, v in self.earlier.items() if v.ok] or ["an anchor"], what="from_step")
+        anchor = part.get("anchor") if isinstance(part.get("anchor"), dict) else {}
+        label_raw = part.get("anchor_label") or anchor.get("label")
+        # A describe that only starts from an earlier step holds exactly that step's
+        # result (on its label): read through it. Starting from the describe kept it in
+        # the plan, and its facet block made the iterative loop chase parents and
+        # tactics nobody asked for (Stage round 3: F-FAN-01, F-CTM-03/07/08). The
+        # describe, now unused, is dropped as before (``redundant_describes``).
+        while (prod.graph == self.graph and prod.step is not None and prod.step.kind == "describe"
+               and prod.step.algebra is None and not prod.step.anchor_ids and prod.from_step
+               and prod.from_step in self.earlier and self.earlier[prod.from_step].ok
+               and (not label_raw or str(label_raw) == prod.step.anchor_label)):
+            label_raw = prod.step.anchor_label
+            self.log.add("from_step", fs, prod.from_step, "through_describe")
+            fs, prod = prod.from_step, self.earlier[prod.from_step]
         if self.out.from_step not in (None, fs):
             # A union over several earlier steps: every producer seeds this step.
             extra = getattr(self.out, "from_steps", None) or [self.out.from_step]
             if fs not in extra:
                 extra.append(fs)
             self.out.from_steps = extra
-        anchor = part.get("anchor") if isinstance(part.get("anchor"), dict) else {}
-        label_raw = part.get("anchor_label") or anchor.get("label")
         if prod.graph != self.graph:
             key = resolve_join_key(self.ctx.cards[prod.graph], self.ctx.cards[self.graph])
             if key is None or not any(e.dataset == prod.graph and e.produces for e in key.endpoints):

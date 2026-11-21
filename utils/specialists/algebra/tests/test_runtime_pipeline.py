@@ -271,3 +271,65 @@ def test_a_union_of_earlier_steps_on_capec(env):
     evidence, _ = _run(steps)
     res = {r["step"]: r for r in algebra_results(evidence)}
     assert res["q4"]["kind"] == "nodes" and res["q4"]["ids"] == want and want
+
+
+def test_f_fan_01_shape_matches_the_reference_with_the_iterative_loop(env, monkeypatch):
+    """Fix round 3: three MAPS_TO expands -> union, describes -> union, MITIGATES expands -> union.
+
+    Run with the measured arms' loop settings (five hops, facet chasing on). The
+    entity ids equal the rules reference: no parent techniques, no tactics.
+    """
+    import json
+
+    import scripts.variant_harness as VH
+    from utils.planner.tests.test_algebra_exposure import FAN
+
+    monkeypatch.setenv("ORCH_MAX_HOPS", "5")
+    monkeypatch.setenv("ORCH_CHASE_FACETS", "true")
+    monkeypatch.setenv("ORCH_EXPAND_UNBOUND", "0")
+    ref_path = REPO / "docs/evaluation/experiments/algebra-exposure-2026-11-20/stage-round3/reference.json"
+    if not ref_path.exists():
+        pytest.skip("round-3 reference not present")
+    want = next(x for x in json.loads(ref_path.read_text()) if x["case_id"] == "F-FAN-01")["entity_ids"]
+    evidence, _ = _run(FAN)
+    got = set()
+    for r in evidence.results:
+        got |= VH._entity_ids(r)
+    assert sorted(got) == sorted(want)
+    assert not any(i.startswith("TA") for i in got)
+
+
+def test_from_step_labels_bound_the_seeds_on_both_backends(env):
+    """S2 for FromStep: seeds of another label never enter the set (Cypher label predicate, Gremlin hasLabel)."""
+    from neo4j import GraphDatabase
+
+    from utils.specialists.algebra.base import FromStep, Nodes
+    from utils.specialists.algebra.compiled import Backend, finish
+    from utils.specialists.algebra.runtime import card_model
+    from utils.specialists.cypher.compile import compile_cypher
+    from utils.specialists.gremlin.compile import compile_gremlin
+
+    stored = {r["a"]: r["id"] for r in _neo4j(
+        "MATCH (n) WHERE n.attack_id IN ['T1047', 'TA0002'] RETURN n.attack_id AS a, n.id AS id")}
+    c = compile_cypher(Nodes(FromStep("q1", ("Technique",))), Backend.cypher(card_model("attack")))
+    params = {**c.params, **{k: list(stored.values()) for k in c.meta["inputs"]}}
+    drv = GraphDatabase.driver(os.environ["NEO4J_URI"], auth=(os.environ.get("NEO4J_USER", "neo4j"),
+                                                                os.environ.get("NEO4J_PASSWORD", "")))
+    try:
+        with drv.session() as s:
+            res = finish([r.data() for r in s.run(c.text, params)], c)
+    finally:
+        drv.close()
+    assert [r["id"] for r in res.rows] == [stored["T1047"]]
+
+    g = compile_gremlin(Nodes(FromStep("q1", ("Weakness",))), Backend.gremlin(card_model("capec")))
+    from gremlin_python.driver import client as gclient
+    from gremlin_python.driver.serializer import GraphSONSerializersV3d0
+
+    cl = gclient.Client(os.environ["GREMLIN_URI"], "g", message_serializer=GraphSONSerializersV3d0())
+    try:
+        params = {**g.params, **{k: ["capec:attack-pattern:66", "cwe:89"] for k in g.meta["inputs"]}}
+        res = finish(cl.submit(g.text, params).all().result(), g)
+    finally:
+        cl.close()
+    assert [r["id"] for r in res.rows] == ["cwe:89"]

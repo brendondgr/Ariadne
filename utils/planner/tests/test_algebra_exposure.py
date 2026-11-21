@@ -561,3 +561,60 @@ def test_stage1s_pinned_typescan_is_now_refused_with_the_bridged_anchor(cards, c
     c = _check(cards, [{**D6[0], "where": [{"property": "taxonomy_name", "op": "=", "value": "ATTACK"},
                                            {"property": "entry_id", "op": "=", "value": "1491"}]}])[0]
     assert not c.ok and '"id": "T1491"' in c.refusals[0]["fix"]
+
+
+# --------------------------------------------------------------------------- #
+# Fix round 3: an operator step reads through a describe of an earlier step
+# --------------------------------------------------------------------------- #
+
+FAN = [
+    *[{"id": f"q{i}", "graph": "capec", "kind": "expand", "anchor": {"id": f"CAPEC-{n}"},
+       "path": [{"relation": "MAPS_TO", "direction": "out", "target_label": "TaxonomyEntry"}],
+       "filter": {"property": "taxonomy_name", "value": "ATTACK"}} for i, n in ((1, 19), (2, 35), (3, 448))],
+    {"id": "q4", "graph": "capec", "kind": "union", "parts": ["q1", "q2", "q3"]},
+    {"id": "q5", "graph": "attack", "kind": "describe", "from_step": "q4", "anchor_label": "Technique"},
+    {"id": "q6", "graph": "attack", "kind": "describe", "from_step": "q4", "anchor_label": "SubTechnique"},
+    {"id": "q7", "graph": "attack", "kind": "union", "parts": ["q5", "q6"]},
+    {"id": "q8", "graph": "attack", "kind": "expand", "from_step": "q4", "anchor_label": "Technique",
+     "path": [{"relation": "MITIGATES", "direction": "in", "target_label": "Mitigation"}]},
+    {"id": "q9", "graph": "attack", "kind": "expand", "from_step": "q4", "anchor_label": "SubTechnique",
+     "path": [{"relation": "MITIGATES", "direction": "in", "target_label": "Mitigation"}]},
+    {"id": "q10", "graph": "attack", "kind": "union", "parts": ["q8", "q9"]},
+]
+
+
+def test_a_union_of_describes_reads_through_them_and_the_describes_are_dropped(cards, core):
+    from utils.planner.typed import to_plan
+    from utils.specialists.federation import dependency_map
+
+    checks = _check(cards, FAN)
+    assert all(c.ok for c in checks), [(c.id, c.refusals) for c in checks]
+    q7 = checks[6]
+    ir = q7.step.to_dict()["algebra"]["ir"]["of"]["parts"]
+    assert ir == [{"@": "FromStep", "step": "q4", "labels": ["Technique"]},
+                  {"@": "FromStep", "step": "q4", "labels": ["SubTechnique"]}]
+    assert q7.from_step == "q4" and q7.join_key == "attack-technique-id"
+    plan = to_plan("Q", checks, {}, cards, [], "lazy")
+    ids = [sq.id for sq in plan.sub_questions]
+    assert "q5" not in ids and "q6" not in ids  # dropped: describes of what q8/q9 start from
+    assert dependency_map(plan)["q7"] == ("q4",)
+
+
+def test_a_describe_used_by_a_union_is_not_dropped_as_redundant(cards, core):
+    """``redundant_describes`` counts a union's every producer as used (``from_steps``)."""
+    from utils.planner.typed import StepCheck, redundant_describes
+    from utils.specialists.signals import TypedStep
+
+    def sc(i, kind, label, frm, hops=()):
+        from utils.specialists.signals import TypedHop
+
+        return StepCheck(id=i, graph="attack", from_step=frm,
+                         step=TypedStep(kind=kind, anchor_label=label,
+                                        hops=tuple(TypedHop(*h) for h in hops)))
+
+    d = sc("q2", "describe", "Technique", "q1")
+    twin = sc("q3", "expand", "Technique", "q1", [("MITIGATES", "in", "Mitigation")])
+    u = sc("q4", "union", "Technique", "q9")
+    assert redundant_describes([d, twin, u]) == {"q2": "q3"}
+    u.from_steps = ["q9", "q2"]
+    assert redundant_describes([d, twin, u]) == {}

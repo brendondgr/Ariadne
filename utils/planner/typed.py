@@ -932,6 +932,8 @@ def redundant_describes(checks: list[StepCheck]) -> dict[str, str]:
     """
     ok = [c for c in checks if c.ok]
     used = {c.from_step for c in ok if c.from_step}
+    # every producer of an operator union (only with an algebra switch on)
+    used |= {s for c in ok for s in (getattr(c, "from_steps", None) or ())}
     out: dict[str, str] = {}
     for c in ok:
         if c.step.kind != "describe" or not c.from_step or c.id in used:
