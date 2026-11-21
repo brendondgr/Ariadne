@@ -83,6 +83,9 @@ def system_section(catalogs: dict[str, Any]) -> str:
         "with an optional \"path\" (the entities at the end of the path), or \"from_step\": \"<id>\" "
         "(what an earlier step found; give its label as \"anchor_label\"), or only \"anchor_label\" "
         "(every entity of that label). \"where\" keeps the members that meet every condition.",
+        "When the question names an entity (by id or by name), anchor on it (\"anchor\" with a \"path\"); "
+        "\"typescan\" and a filter over a whole label are for \"every X that ...\", never to look up one "
+        "named entity. \"union\" \"parts\" may name earlier steps: \"parts\": [\"q1\", \"q2\"].",
         "- \"filter\": the members of a set that meet \"where\".",
         "- \"typescan\": every entity of \"anchor_label\" that meets \"where\", with the exact total.",
         f"- \"aggregate\": one value over a set: \"fn\" is one of {', '.join(AGG_FNS)}; every fn but "
@@ -192,15 +195,33 @@ def _first_label(node: Any) -> str:
     return found[0] if found else ""
 
 
-def _teach(sid: str, exc: Exception) -> dict[str, Any]:
-    """An ``InvalidOp`` as the planner's refusal envelope."""
+def _teach(sid: str, exc: Exception, card: Any = None) -> dict[str, Any]:
+    """An ``InvalidOp`` as the planner's refusal envelope.
+
+    For a hop the card does not allow from where the walk is, the fix names the
+    hop and lists the relations (direction and target) that do leave the labels
+    the walk has reached there.
+    """
+    import re
+
     from utils.agent import errors as E
 
-    where = getattr(exc, "where", "step")
+    where = str(getattr(exc, "where", "step"))
     msg = str(exc)
-    return E.refusal("invalid_request", f"step {sid}: {msg}",
-                     "change the step as this says; it lists what the card allows here",
-                     [E.problem(str(where), None, [])])
+    fix = "change the step as this says; it lists what the card allows here"
+    hop = re.search(r"(hops|by_path|path|lacks)\[(\d+)\]", where)
+    at = re.search(r"(?:joins none of|from) \[([^\]]*)\]", msg)
+    if card is not None and hop and at:
+        labels = [x.strip().strip("'\"") for x in at.group(1).split(",") if x.strip()]
+        opts = sorted({f"{o.relation} {o.direction} -> {o.target}" for lab in labels
+                       for o in getattr(card, "options", lambda _l: [])(lab)})
+        n = int(hop.group(2)) + 1
+        fix = (f"hop {n} starts from {', '.join(labels)}; the relations that leave there are: "
+               + ("; ".join(opts) if opts else "none") + f". Choose hop {n} from these, or name a "
+               f"target_label on hop {n - 1} so the walk is at a label that has the relation you want"
+               if n > 1 else f"hop 1 starts from {', '.join(labels)}; the relations that leave there are: "
+               + ("; ".join(opts) if opts else "none"))
+    return E.refusal("invalid_request", f"step {sid}: {msg}", fix, [E.problem(where, None, [])])
 
 
 def check_algebra_step(raw: dict[str, Any], sid: str, kind: str, graph: str, ctx: Any,
@@ -218,7 +239,7 @@ def check_algebra_step(raw: dict[str, Any], sid: str, kind: str, graph: str, ctx
             check(node, p.card)
             labels = _result_labels(node, p.card)
         except InvalidOp as exc:
-            raise Refused(_teach(sid, exc)) from None
+            raise Refused(_teach(sid, exc, p.card)) from None
         spec = {"op": kind, "ir": to_dict(node), "labels": labels}
         out.step = TypedStep(kind=ALGEBRA_KIND, anchor_label=_first_label(node),
                              anchor_ids=tuple(_ids_in(node)),
@@ -384,8 +405,11 @@ class _Parser:
             raise self._refuse(f"from_step {fs!r} is not an earlier accepted step", "from_step", fs,
                                [k for k, v in self.earlier.items() if v.ok] or ["an anchor"], what="from_step")
         if self.out.from_step not in (None, fs):
-            raise self._refuse("an operator step starts from one earlier step", "from_step", fs,
-                               [self.out.from_step], what="from_step")
+            # A union over several earlier steps: every producer seeds this step.
+            extra = getattr(self.out, "from_steps", None) or [self.out.from_step]
+            if fs not in extra:
+                extra.append(fs)
+            self.out.from_steps = extra
         anchor = part.get("anchor") if isinstance(part.get("anchor"), dict) else {}
         label_raw = part.get("anchor_label") or anchor.get("label")
         if prod.graph != self.graph:
@@ -401,7 +425,8 @@ class _Parser:
         if not label:
             raise self._refuse(f"step {fs} ends at several labels; name the one to start from",
                                "anchor_label", None, self.cat.labels(), what="anchor_label")
-        self.out.from_step = fs
+        if self.out.from_step is None:
+            self.out.from_step = fs
         return FromStep(fs, (label,))
 
     def nodeset(self, part: dict[str, Any], field_: str = "step", conds: bool = True) -> Any:
@@ -412,9 +437,23 @@ class _Parser:
         from utils.specialists.algebra.validate import InvalidOp, check
         from utils.agent.tools import Refused
 
+        if isinstance(part, str) and part.strip():
+            name = part.strip()
+            if name in self.earlier and self.earlier[name].ok:
+                self.log.add(field_, part, {"from_step": name}, "step_id_as_set")
+                part = {"from_step": name}
+            else:
+                self.log.add(field_, part, {"anchor": {"id": name}}, "id_as_set")
+                part = {"anchor": {"id": name}}
         if not isinstance(part, dict):
-            raise self._refuse(f"{field_} must be an object", field_, part, ["anchor", "from_step", "anchor_label"],
-                               what="a set")
+            ok = [k for k, v in self.earlier.items() if v.ok]
+            ex = (f"\"parts\": [\"{ok[0]}\", \"{ok[1]}\"]" if len(ok) > 1 else
+                  f"{{\"from_step\": \"{ok[0]}\"}}" if ok else
+                  "{\"anchor\": {\"id\": \"<id>\"}, \"path\": [...]}")
+            raise self._refuse(f"{field_} must be a set: an earlier step's id (\"q1\"), {{\"from_step\": \"q1\"}}, "
+                               "{\"anchor\": ..., \"path\": [...]} or {\"anchor_label\": ..., \"where\": [...]}",
+                               field_, part, ["\"<step id>\"", "from_step", "anchor", "anchor_label"],
+                               what="a set", hint="for example " + ex)
         anchor = part.get("anchor")
         fs = part.get("from_step") or (anchor.get("from_step") if isinstance(anchor, dict) else None)
         if fs:
@@ -438,7 +477,7 @@ class _Parser:
         try:
             labels = check(node, self.card)
         except InvalidOp as exc:
-            raise Refused(_teach(self.sid, exc)) from None
+            raise Refused(_teach(self.sid, exc, self.card)) from None
         cs = self.conds(where, labels, "where")
         if isinstance(node, Scan):
             return TypeScan(node.label, cs)
@@ -542,7 +581,7 @@ class _Parser:
             try:
                 reach = check_hop(self.card, here, hop, f)
             except InvalidOp as exc:
-                raise Refused(_teach(self.sid, exc)) from None
+                raise Refused(_teach(self.sid, exc, self.card)) from None
             if h.get("where"):
                 eprops = self.card.relations[rel].properties
                 hop = Hop(rel, d, target, self._edge_conds(h["where"], eprops, f"{f}.where"))
@@ -584,6 +623,54 @@ class _Parser:
     # -- the kinds -----------------------------------------------------------
 
     def build(self, kind: str) -> Any:
+        node = self._build(kind)
+        if kind in ("filter", "typescan"):
+            self._refuse_lookup(node)
+        return node
+
+    def _refuse_lookup(self, node: Any) -> None:
+        """A whole-label scan pinned to one entity by its identifying property: anchor on it instead."""
+        from utils.specialists.algebra.base import Nodes
+        from utils.specialists.algebra.typescan import TypeScan
+
+        ts = node.of if isinstance(node, Nodes) else None
+        if not isinstance(ts, TypeScan):
+            return
+        lab = self.card.labels.get(ts.label)
+        key = getattr(lab, "key", "") or ""
+        pins = [c for c in ts.conds if c.op == "=" and isinstance(c.value, str)
+                and (c.prop in ("name", "id", key) or c.prop.endswith("_id"))]
+        if not pins:
+            return
+        c = pins[0]
+        cands = [c.value]
+        other = {x.prop: x.value for x in ts.conds if x is not c and x.op == "="}
+        if "taxonomy_name" in other or len(other) == 1:
+            from utils.kg_builder.merge import taxonomy_public_id
+
+            for v in other.values():
+                pub = taxonomy_public_id(str(v), c.value)
+                if pub and pub not in cands:
+                    cands.insert(0, pub)
+        anchor = None
+        for cand in cands:
+            if self.ctx.id_labels(self.graph, cand):
+                anchor = f"\"anchor\": {{\"id\": \"{cand}\"}}"
+                break
+            if self.ctx.foreign_id(self.graph, cand):
+                anchor = f"\"anchor\": {{\"id\": \"{cand}\"}}, \"anchor_label\": \"{ts.label}\" (an id the join key bridges)"
+                break
+        if anchor is None:
+            anchor = (f"\"anchor\": {{\"name\": \"{c.value}\", \"label\": \"{ts.label}\"}}" if c.prop == "name"
+                      else f"\"anchor\": {{\"id\": \"{c.value}\"}}")
+        raise self._refuse(
+            f"a {'typescan' if self.raw.get('kind') == 'typescan' else 'filter'} over every {ts.label} with "
+            f"{c.prop} = {c.value!r} looks up one named entity",
+            "where", [c.prop, c.value], [anchor], what="the entity as the anchor",
+            hint=f"anchor the step on it instead ({anchor}) and add the path to what the question asks for; "
+                 f"scan a label only for \"every {ts.label} that ...\"")
+
+    def _build(self, kind: str) -> Any:
         from utils.specialists.algebra.aggregate import FNS as AGG_FNS, Aggregate
         from utils.specialists.algebra.base import Cond, Hop, Nodes, Scan
         from utils.specialists.algebra.edges import Having, Union_
@@ -771,7 +858,7 @@ def check_step_from_algebra(raw: dict[str, Any], sid: str, kind: str, graph: str
             check(node, p.card)
             result = _result_labels(node, p.card)
         except InvalidOp as exc:
-            raise Refused(_teach(sid, exc)) from None
+            raise Refused(_teach(sid, exc, p.card)) from None
         spec = {"op": kind, "ir": to_dict(node), "labels": result}
         out.step = TypedStep(kind=ALGEBRA_KIND, anchor_label=labels[0], anchor_ids=(),
                              algebra=json.dumps(spec, sort_keys=True, ensure_ascii=False))

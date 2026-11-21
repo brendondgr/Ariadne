@@ -230,7 +230,7 @@ def test_an_expand_from_an_operator_step_on_capec(env):
     from utils.specialists.algebra.runtime import algebra_results
     from utils.specialists.gremlin.normalizer import _expand_member_id, _taxonomy_public_id
 
-    rows = _gremlin("g.V().hasLabel('TaxonomyEntry').has('taxonomy_name', 'ATTACK').has('entry_id', '1491').as('s')"
+    rows = _gremlin("g.V().hasLabel('TaxonomyEntry').has('taxonomy_name', 'ATTACK').has('entry_id', startingWith('1491')).as('s')"
                     ".in('MAPS_TO').hasLabel('AttackPattern').dedup()"
                     ".union(identity(), out('MAPS_TO').hasLabel('TaxonomyEntry').where(neq('s'))).dedup()"
                     ".project('id', 'tn', 'eid').by(values('id'))"
@@ -242,7 +242,7 @@ def test_an_expand_from_an_operator_step_on_capec(env):
     evidence, _ = _run([
         {"id": "q1", "graph": "capec", "kind": "typescan", "anchor_label": "TaxonomyEntry",
          "where": [{"property": "taxonomy_name", "op": "=", "value": "ATTACK"},
-                   {"property": "entry_id", "op": "=", "value": "1491"}]},
+                   {"property": "entry_id", "op": "starts_with", "value": "1491"}]},
         {"id": "q2", "graph": "capec", "kind": "expand", "from_step": "q1",
          "path": [{"relation": "MAPS_TO", "direction": "in", "target_label": "AttackPattern"},
                   {"relation": "MAPS_TO", "direction": "out", "target_label": "TaxonomyEntry"}]},
@@ -252,3 +252,22 @@ def test_an_expand_from_an_operator_step_on_capec(env):
     assert res["q2"]["kind"] == "nodes" and res["q2"]["ids"] == want and not res["q2"]["info"].get("anchor_not_found")
     got = {r.primary_id for x in evidence.results if x.task.sub_question_id == "q2" for r in x.records}
     assert got == set(want)
+
+
+def test_a_union_of_earlier_steps_on_capec(env):
+    """Stage 2's F-FAN-01: the merged ATT&CK entries of three patterns, as a union of their steps."""
+    from utils.specialists.algebra.runtime import algebra_results
+    from utils.specialists.gremlin.normalizer import _taxonomy_public_id
+
+    caps = ["19", "35", "448"]
+    rows = _gremlin("g.V().has('id', within(" + ", ".join(f"'capec:attack-pattern:{n}'" for n in caps) + "))"
+                    ".out('MAPS_TO').hasLabel('TaxonomyEntry').has('taxonomy_name', 'ATTACK').dedup()"
+                    ".project('tn', 'eid').by(values('taxonomy_name')).by(values('entry_id'))")
+    want = sorted({_taxonomy_public_id({"taxonomy_name": r["tn"], "entry_id": r["eid"]}, "") for r in rows})
+    steps = [{"id": f"q{i}", "graph": "capec", "kind": "expand", "anchor": {"id": f"CAPEC-{n}"},
+              "path": [{"relation": "MAPS_TO", "direction": "out", "target_label": "TaxonomyEntry"}],
+              "filter": {"property": "taxonomy_name", "value": "ATTACK"}} for i, n in enumerate(caps, 1)]
+    steps.append({"id": "q4", "graph": "capec", "kind": "union", "parts": ["q1", "q2", "q3"]})
+    evidence, _ = _run(steps)
+    res = {r["step"]: r for r in algebra_results(evidence)}
+    assert res["q4"]["kind"] == "nodes" and res["q4"]["ids"] == want and want

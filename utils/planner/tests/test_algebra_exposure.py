@@ -399,7 +399,7 @@ def test_a_non_native_filter_is_dropped_when_off_and_kept_when_core_is_on(cards,
 D6 = [
     {"id": "q1", "graph": "capec", "kind": "typescan", "anchor_label": "TaxonomyEntry",
      "where": [{"property": "taxonomy_name", "op": "=", "value": "ATTACK"},
-               {"property": "entry_id", "op": "=", "value": "1491"}]},
+               {"property": "entry_id", "op": "starts_with", "value": "1491"}]},
     {"id": "q2", "graph": "capec", "kind": "expand", "from_step": "q1",
      "path": [{"relation": "MAPS_TO", "direction": "in", "target_label": "AttackPattern"},
               {"relation": "MAPS_TO", "direction": "out", "target_label": "TaxonomyEntry"}]},
@@ -462,3 +462,102 @@ def test_a_same_graph_from_step_after_todays_filtered_step_keeps_todays_refusal(
     ])
     assert checks[0].ok and not checks[1].ok
     assert "add this step's hops to the path of step q1" in checks[1].refusals[0]["fix"]
+
+
+# --------------------------------------------------------------------------- #
+# Fix round 2 (Stage 2)
+# --------------------------------------------------------------------------- #
+
+
+def _maps(i, cap):
+    return {"id": i, "graph": "capec", "kind": "expand", "anchor": {"id": cap},
+            "path": [{"relation": "MAPS_TO", "direction": "out", "target_label": "TaxonomyEntry"}],
+            "filter": {"property": "taxonomy_name", "value": "ATTACK"}}
+
+
+@pytest.mark.parametrize("parts", [["q1", "q2"], [{"from_step": "q1"}, {"from_step": "q2"}]])
+def test_a_union_of_earlier_steps_is_accepted_and_depends_on_both(cards, core, parts):
+    from utils.planner.typed import to_plan
+    from utils.specialists.federation import dependency_map
+
+    checks = _check(cards, [_maps("q1", "CAPEC-19"), _maps("q2", "CAPEC-35"),
+                            {"id": "q3", "graph": "capec", "kind": "union", "parts": parts}])
+    assert all(c.ok for c in checks), [c.refusals for c in checks]
+    ir = checks[2].step.to_dict()["algebra"]["ir"]
+    assert [p["step"] for p in ir["of"]["parts"]] == ["q1", "q2"]
+    plan = to_plan("Q", checks, {}, cards, [], "lazy")
+    assert plan.sub_questions[2].step["from_steps"] == ["q1", "q2"]
+    assert dependency_map(plan) == {"q3": ("q1", "q2")}
+
+
+def test_a_union_part_that_is_not_a_set_is_refused_with_the_accepted_shapes(cards, core):
+    c = _check(cards, [_maps("q1", "CAPEC-19"), _maps("q2", "CAPEC-35"),
+                       {"id": "q3", "graph": "capec", "kind": "union", "parts": [1, 2]}])[2]
+    assert not c.ok
+    text = c.refusals[0]["detail"] + c.refusals[0]["fix"]
+    assert '"parts": ["q1", "q2"]' in text and "from_step" in text and "anchor_label" in text
+
+
+@pytest.mark.parametrize("graph,label,where,anchor", [
+    ("capec", "TaxonomyEntry", [{"property": "entry_id", "op": "=", "value": "T1021"},
+                                {"property": "taxonomy_name", "op": "=", "value": "ATTACK"}], '"id": "T1021"'),
+    ("capec", "TaxonomyEntry", [{"property": "entry_id", "op": "=", "value": "1021"},
+                                {"property": "taxonomy_name", "op": "=", "value": "ATTACK"}], '"id": "T1021"'),
+    ("attack", "Analytic", [{"property": "id", "op": "=", "value": "AN0280"}], '"id": "AN0280"'),
+    ("attack", "Software", [{"property": "name", "op": "=", "value": "Cobalt Strike"}],
+     '"name": "Cobalt Strike", "label": "Software"'),
+])
+@pytest.mark.parametrize("kind", ["typescan", "filter"])
+def test_a_scan_pinned_to_one_entity_is_refused_with_the_anchor_to_use(cards, core, graph, label, where, anchor,
+                                                                       kind):
+    c = _check(cards, [{"id": "q1", "graph": graph, "kind": kind, "anchor_label": label, "where": where}])[0]
+    assert not c.ok
+    text = c.refusals[0]["detail"] + " " + c.refusals[0]["fix"]
+    assert "looks up one named entity" in text and anchor in text
+
+
+def test_a_scan_on_a_non_identifying_property_is_still_accepted(cards, core):
+    c = _check(cards, [{"id": "q1", "graph": "capec", "kind": "typescan", "anchor_label": "TaxonomyEntry",
+                        "where": [{"property": "taxonomy_name", "op": "=", "value": "ATTACK"}]}])[0]
+    assert c.ok, c.refusals
+
+
+def test_the_prompt_says_to_anchor_named_entities_only_when_on(cards, monkeypatch):
+    for k in SWITCHES:
+        monkeypatch.delenv(k, raising=False)
+    assert "never to look up one named entity" not in _system(cards)
+    monkeypatch.setenv("ARIADNE_ALGEBRA_CORE", "1")
+    assert "never to look up one named entity" in _system(cards)
+
+
+def test_a_card_invalid_hop_lists_the_relations_that_leave_where_the_walk_is(cards, core):
+    c = _check(cards, [{"id": "q1", "graph": "attack", "kind": "expand", "anchor": {"id": "M1049"},
+                        "anchor_label": "Mitigation",
+                        "path": [{"relation": "MITIGATES", "direction": "out"},
+                                 {"relation": "HAS_ANALYTIC", "direction": "out"}]}])[0]
+    assert not c.ok
+    fix = c.refusals[0]["fix"]
+    assert "hop 2 starts from SubTechnique, Technique" in fix
+    assert "DETECTS in -> DetectionStrategy" in fix and "MITIGATES in -> Mitigation" in fix
+
+
+@pytest.mark.parametrize("kind,extra", [("expand", {"path": [{"relation": "MONITORS", "direction": "out"}]}),
+                                        ("aggregate", {"path": [{"relation": "MONITORS", "direction": "out"}],
+                                                       "fn": "count"})])
+def test_an_id_written_as_a_name_anchors_when_core_is_on(cards, monkeypatch, kind, extra):
+    raw = {"id": "q1", "graph": "attack", "kind": kind, "anchor": {"name": "AN0280"}, **extra}
+    monkeypatch.setenv("ARIADNE_ALGEBRA_CORE", "1")
+    c = _check(cards, [raw])[0]
+    assert c.ok, c.refusals
+    assert c.step.anchor_ids == ("AN0280",)
+    if kind == "expand":  # today's kind: refused exactly as before with the switch off
+        monkeypatch.delenv("ARIADNE_ALGEBRA_CORE")
+        off = _check(cards, [raw])[0]
+        assert not off.ok and "no entity of this graph matches" in off.refusals[0]["detail"]
+
+
+def test_stage1s_pinned_typescan_is_now_refused_with_the_bridged_anchor(cards, core):
+    """Stage 1 wrote entry_id = "1491"; fix round 2 refuses that lookup and names the anchor that resolves."""
+    c = _check(cards, [{**D6[0], "where": [{"property": "taxonomy_name", "op": "=", "value": "ATTACK"},
+                                           {"property": "entry_id", "op": "=", "value": "1491"}]}])[0]
+    assert not c.ok and '"id": "T1491"' in c.refusals[0]["fix"]

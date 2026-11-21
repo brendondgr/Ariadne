@@ -410,7 +410,7 @@ def check_step(raw: Any, index: int, ctx: PlanContext, earlier: dict[str, StepCh
 
         bad = check_today_step(out.step, ctx.catalogs[out.graph].model)
         if bad is not None:
-            out.refusals.append(_teach(out.id, bad))
+            out.refusals.append(_teach(out.id, bad, ctx.catalogs[out.graph].model))
     return out
 
 
@@ -465,6 +465,15 @@ def _check_step(raw: Any, index: int, ctx: PlanContext, earlier: dict[str, StepC
         anchor = {"id": anchor}
     anchor = anchor if isinstance(anchor, dict) else {}
     label_raw = raw.get("anchor_label") or anchor.get("label")
+    from utils.specialists.algebra.switches import core_on
+
+    if (core_on() and anchor.get("name") and anchor.get("id") in (None, "", [])
+            and isinstance(anchor["name"], str) and ctx.known_id(graph, anchor["name"].strip()) is not None):
+        # An entity id written as a name ("AN0280"): the name search ranks it as
+        # words and finds nothing. Only with ARIADNE_ALGEBRA_CORE on (Step 9, G).
+        hit = ctx.known_id(graph, anchor["name"].strip())
+        log.add("anchor", {"name": anchor["name"]}, {"id": hit[0]}, "id_as_name")
+        anchor = {**{k: v for k, v in anchor.items() if k != "name"}, "id": hit[0]}
 
     def _label(value: Any, field_: str) -> str:
         try:
@@ -948,7 +957,9 @@ def to_plan(request: str, checks: list[StepCheck], data: dict[str, Any], cards: 
         plan.sub_questions.append(SubQuestion(
             id=c.id, source=c.graph, text="", entities=entities, limits=Limits(**card.limits()),
             join_key=c.join_key, rationale=f"typed plan ({mode})",
-            step={**c.step.to_dict(), **({"from_step": c.from_step} if c.from_step else {})}))
+            step={**c.step.to_dict(), **({"from_step": c.from_step} if c.from_step else {}),
+                  # an operator union over several earlier steps (only with an algebra switch on)
+                  **({"from_steps": list(c.from_steps)} if getattr(c, "from_steps", None) else {})}))
         if c.from_step and c.join_key and c.from_step in by_id:
             prod = by_id[c.from_step]
             key = next((k for k in CANONICAL_JOIN_KEYS if k.name == c.join_key), None)

@@ -228,12 +228,20 @@ def typed_links(plan: Plan) -> dict[str, tuple[str, ...]] | None:
     if not any(isinstance(sq.step, dict) for sq in plan.sub_questions):
         return None
     ids = {sq.id for sq in plan.sub_questions}
-    return {
+    out = {
         sq.id: (str(sq.step["from_step"]),)
         for sq in plan.sub_questions
         if isinstance(sq.step, dict) and sq.step.get("from_step")
         and str(sq.step["from_step"]) in ids and str(sq.step["from_step"]) != sq.id
     }
+    # An operator-algebra union over several earlier steps (Step 9, Phase G; only
+    # behind ARIADNE_ALGEBRA_CORE) names every producer; seeds are their union.
+    for sq in plan.sub_questions:
+        extra = sq.step.get("from_steps") if isinstance(sq.step, dict) else None
+        if extra and sq.id in out:
+            out[sq.id] = tuple(dict.fromkeys([*out[sq.id], *(str(x) for x in extra
+                                                              if str(x) in ids and str(x) != sq.id)]))
+    return out
 
 
 def unanchored_typed_step(sq: SubQuestion) -> bool:
