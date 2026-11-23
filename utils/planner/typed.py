@@ -1190,6 +1190,14 @@ class TypedPlanner:
                     if data2 is None:
                         if data is None:
                             raise DrafterUnavailable(f"no plan JSON after the repair turn ({log.parse_error})")
+                        from utils.specialists.algebra.switches import core_on
+
+                        if core_on():
+                            # The repair reply held no plan (a runaway, an empty reply), so the first
+                            # plan stands and no turn follows it: check it again as the last turn, or
+                            # its first-turn teaching refusals are final (fix round 6, C-CWE-02 T4).
+                            # Off, nothing reads the flag and the first checks stand as before.
+                            checks = check_plan(data, ctx)[0]
                     else:
                         data, checks = data2, checks2
                     refused = [c for c in checks if not c.ok]

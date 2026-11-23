@@ -258,3 +258,46 @@ Gemma's recovered items are reported, not gated: a recovery on a re-run is partl
 **Then:** the Stage 3 chain re-runs core (moved aside as `core-superseded-2`), with the stop rule
 against off-A, then core+ext and off-B, all on the fix-5 tree. If the stop rule fires again, one round is left
 (Amendment 2). After that, the switches stay off.
+
+## Amendment 5 (2026-11-23, before any fix-round-6 run): fix round 6, the last
+
+Written after the fix-5 proving set failed Amendment 4's bar (ISSUES, 2026-11-23). This is the second
+and last of the two further fix rounds that Amendment 2 allows.
+
+**The fix (CORE only):**
+1. **A repair reply with no plan** (a runaway, an empty reply): the first plan stands and no turn
+   follows it, so it is checked again as the last turn. Fix 5's last-turn policies then apply to
+   it. Off, the first checks stand as before.
+2. **A cross-graph `from_step`** seeds every label the join key's consumer endpoint names, with
+   the named label first. On ATT&CK that is Technique and SubTechnique. Today's cross-graph
+   step matches its seed ids with no label; the algebra's one-label `FromStep` was stricter.
+   Logged as the coercion `join_key_labels`.
+3. **A step of today's kinds from an operator step that holds several labels** keeps all of
+   them, with the named label first, instead of narrowing to its one `anchor_label`. Logged as
+   `producer_labels`.
+
+Switches off: unchanged. (1) runs only with `ARIADNE_ALGEBRA_CORE` on. (2) and (3) are in the
+algebra parser, which only an algebra switch reaches. The hash test passes.
+
+**Prove small** (`fix6-small`). The items are exactly `fix5-small`'s, so the two compare directly:
+- the 111 variant rows;
+- the 30 dev ids;
+- the probe tune half;
+- core and core+ext, all three arms.
+
+It goes ahead to the core sitting if:
+- no teaching refusal is final on any arm;
+- no control **that off-A answered right** is lost to an operator step, on an arm that lost
+  none in the fix-4 proving set. This narrows Amendment 4's clause for one observed case. The
+  dev control D5-mitigates-x_mitre_platforms-M1042 is lost by off-A itself, so it cannot show
+  an operator cost. It is still reported.
+- probe tune exact per arm stays within 5 of the fix-5 proving set.
+
+Recoveries and the count of remaining operator losses are reported, not gated.
+
+**Then:** the Stage 3 chain re-runs core, with the stop rule against off-A, then core+ext and
+off-B, all on the fix-6 tree. The fix-5 core sitting never ran, so there is nothing to move aside.
+
+**Last round:**
+- If the stop rule fires, or the final confidence bar is not met on an arm, no further fix round follows.
+- The switches whose bar is not met stay off. Step 9 closes, and its record says so.

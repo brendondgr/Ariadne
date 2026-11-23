@@ -509,7 +509,18 @@ class _Parser:
                                "anchor_label", None, self.cat.labels(), what="anchor_label")
         if self.out.from_step is None:
             self.out.from_step = fs
-        return FromStep(fs, (label,))
+        labels: tuple[str, ...] = (label,)
+        if prod.graph != self.graph:
+            # Values from another graph seed every label the join key says carries them
+            # (ATT&CK: Technique and SubTechnique), as today's cross-graph step matches its
+            # ids with no label. Seeding the named label alone dropped every sub-technique a
+            # CAPEC mapping reached (fix round 6: F-FAN-02/03, F-CTM-04).
+            ep = key.endpoint_for(self.graph)
+            wide = tuple(lab for lab in (ep.labels if ep else ()) if lab in self.card.labels)
+            if label in wide and len(wide) > 1:
+                labels = (label, *(lab for lab in wide if lab != label))
+                self.log.add("anchor_label", label, list(labels), "join_key_labels")
+        return FromStep(fs, labels)
 
     def nodeset(self, part: dict[str, Any], field_: str = "step", conds: bool = True) -> Any:
         """A set, from ``from_step``, an anchor (and path), or a label; then its ``where``."""
@@ -923,7 +934,14 @@ def check_step_from_algebra(raw: dict[str, Any], sid: str, kind: str, graph: str
             if lab not in labels:
                 raise p._refuse(f"step {prod.id} returns {list(labels)}, not {lab}", "anchor_label", label_raw,
                                 list(labels), what="anchor_label")
-            labels = (lab,)
+            if len(labels) > 1:
+                # Today's step kinds always name one anchor_label, so a step from an operator
+                # step that holds several labels cannot ask for all of them. Narrowing to the
+                # named one lost 10 of the 11 items it touched (fix round 6): keep them all.
+                labels = (lab, *(x for x in labels if x != lab))
+                log.add("anchor_label", lab, list(labels), "producer_labels")
+            else:
+                labels = (lab,)
         start = FromStep(prod.id, labels)
         out.from_step = prod.id
         log.add("from_step", prod.id, f"FromStep({prod.id})", "algebra_producer")

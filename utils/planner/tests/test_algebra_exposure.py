@@ -591,8 +591,9 @@ def test_a_union_of_describes_reads_through_them_and_the_describes_are_dropped(c
     assert all(c.ok for c in checks), [(c.id, c.refusals) for c in checks]
     q7 = checks[6]
     ir = q7.step.to_dict()["algebra"]["ir"]["of"]["parts"]
-    assert ir == [{"@": "FromStep", "step": "q4", "labels": ["Technique"]},
-                  {"@": "FromStep", "step": "q4", "labels": ["SubTechnique"]}]
+    # Fix round 6: values from another graph seed every label the join key names, named one first.
+    assert ir == [{"@": "FromStep", "step": "q4", "labels": ["Technique", "SubTechnique"]},
+                  {"@": "FromStep", "step": "q4", "labels": ["SubTechnique", "Technique"]}]
     assert q7.from_step == "q4" and q7.join_key == "attack-technique-id"
     plan = to_plan("Q", checks, {}, cards, [], "lazy")
     ids = [sq.id for sq in plan.sub_questions]
@@ -778,3 +779,62 @@ def test_the_planner_checks_the_repair_turn_as_the_last_turn(cards, core, monkey
     plan, log = TypedPlanner(model, "lazy").plan("What is CAPEC-98?", cards, {"attack", "capec"})
     assert log.repair_used and log.fixed_by_repair and log.still_refused == 0
     assert any(f.get("filled_by") == "lookup_scan_to_anchor" for f in log.coercions)
+
+
+# --------------------------------------------------------------------------- #
+# Fix round 6: no plan after the repair turn; labels a step starts from (Amendment 5)
+# --------------------------------------------------------------------------- #
+
+
+def test_a_first_plan_left_standing_by_an_empty_repair_reply_is_checked_as_the_last_turn(cards, core, monkeypatch):
+    """C-CWE-02 T4: the repair reply ran away empty, and the first turn's refusals were final."""
+    from utils.agent.tests.scripted import ScriptedModel
+    from utils.planner.typed import TypedPlanner
+    from utils.specialists.algebra import runtime
+
+    monkeypatch.setattr(runtime, "scan_total", lambda *a, **k: 0)
+    plan_json = json.dumps({"steps": _PARAPHRASE, "unsupported": [], "assumptions": []})
+    plan, log = TypedPlanner(ScriptedModel([plan_json, ""]), "lazy").plan("Which tool?", cards, {"attack", "capec"})
+    assert log.repair_used and log.first_refused == 1
+    assert log.still_refused == 0 and not [r for r in log.refusals if r["final"]]
+    assert len(plan.sub_questions) == 1
+
+
+def test_an_empty_repair_reply_leaves_the_first_checks_when_off(cards, monkeypatch):
+    from utils.agent.tests.scripted import ScriptedModel
+    from utils.planner.typed import TypedPlanner
+
+    for k in SWITCHES:
+        monkeypatch.delenv(k, raising=False)
+    bad = {"id": "q1", "graph": "attack", "kind": "expand", "anchor": {"id": "G0007"},
+           "path": [{"relation": "NO_SUCH_RELATION", "direction": "out"}]}
+    plan_json = json.dumps({"steps": [bad], "unsupported": [], "assumptions": []})
+    _, log = TypedPlanner(ScriptedModel([plan_json, ""]), "lazy").plan("Q", cards, {"attack", "capec"})
+    assert log.repair_used and log.still_refused == 1
+
+
+def test_a_step_from_another_graph_seeds_every_label_the_join_key_names(cards, core):
+    """F-FAN-03 T0: a CAPEC mapping reaches sub-techniques; the named Technique alone dropped them."""
+    checks = _check(cards, [_maps("q1", "CAPEC-37"), _maps("q2", "CAPEC-639"),
+                            {"id": "q3", "graph": "attack", "kind": "union", "anchor_label": "Technique",
+                             "parts": [{"from_step": "q1", "anchor_label": "Technique"},
+                                       {"from_step": "q2", "anchor_label": "Technique"}]}])
+    assert all(c.ok for c in checks), [c.refusals for c in checks]
+    parts = json.loads(checks[2].step.algebra)["ir"]["of"]["parts"]
+    assert [p["labels"] for p in parts] == [["Technique", "SubTechnique"]] * 2
+    assert any(f["filled_by"] == "join_key_labels" for f in checks[2].fixes)
+
+
+def test_a_step_from_a_union_of_two_labels_keeps_both(cards, core):
+    """F-CTM-04 T0: an expand naming Technique from a Technique+SubTechnique union walked Technique only."""
+    steps = [_maps("q1", "CAPEC-639"),
+             {"id": "q2", "graph": "attack", "kind": "union",
+              "parts": [{"from_step": "q1", "anchor_label": "Technique"},
+                        {"from_step": "q1", "anchor_label": "SubTechnique"}]},
+             {"id": "q3", "graph": "attack", "kind": "expand", "from_step": "q2", "anchor_label": "Technique",
+              "path": [{"relation": "MITIGATES", "direction": "in", "target_label": "Mitigation"}]}]
+    checks = _check(cards, steps)
+    assert all(c.ok for c in checks), [c.refusals for c in checks]
+    start = json.loads(checks[2].step.algebra)["ir"]["walk"]["start"]
+    assert start == {"@": "FromStep", "step": "q2", "labels": ["Technique", "SubTechnique"]}
+    assert any(f["filled_by"] == "producer_labels" for f in checks[2].fixes)
