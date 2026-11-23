@@ -48,3 +48,30 @@ not allow, and report the first core sitting's numbers beside the fixed ones.
 - Probe tune exact stayed within 5 of round 4 on every arm (largest gap 3).
 Disclosed: Gemma core lost one control to an operator step (F-FAN-01 T2, a union of three anchor walks whose output fed a Technique expand). That arm also lost one in round 4 (A-LKP-04 T4), so the bar does not apply to it.
 The first proving attempt failed preflight on a stale store (the full pytest after the fix rewrote `data/`); its logs are in `fix4-small/stale-store-attempt/`. The stores were reloaded and the proving set re-run whole.
+
+## 2026-11-23 — The stop rule fired again on the fixed core sitting (Gemma, variants)
+**Impact:** the chain halted after the core sitting (fix-round-4 tree 840f20da); core+ext and off-B
+were not run. The sitting is kept as `phase-h/core-superseded-2/`. Its stop check, and the
+confidence bar against off-A alone (provisional), are in `metrics-stop-check.json`.
+- **Against off-A:**
+  - Gemma's exact variant answers fell 354 → 335 (−19; bar −10).
+  - Qwen held: T-lazy 328 → 324, T-full 346 → 343.
+  - Confidently wrong: 54 → 54, 52 → 47, 30 → 30.
+  - Dev kept 265 / 268 / 253; dev confidently wrong 0 / 0 / 1.
+  - Probe core exact 87 / 90 / 81 of 99.
+- **Provisional bar:** both Qwen arms are confident on every Amendment 3 check. Gemma fails only variants exact: −0.027 [−0.052, −0.002].
+**Cause:** `vs-offA-variants-by-cause.json`. Fix 4 did what it was for. Gemma's operator-step losses fell
+from 17 to 7, and its text-scan losses from 11 to 1. Two kinds of teaching refusal remain,
+and both land on the repair turn, after which no turn follows, so the refusal is final and the answer abstains:
+- a one-entity scan ("looks up one named entity"): 5 Gemma losses, e.g. a TaxonomyEntry scan on
+  `entry_id = 'T1021'`, which as stored is `1021`;
+- an empty text scan: 3 Gemma losses and 1 Qwen T-full loss.
+
+The rest of Gemma's net loss (41 lost, 22 won) is clean plans of today's step kinds (20 lost, 15
+won) and other refusals (6 lost, 4 won). Gemma's off runs on this bank are 350 (EXP-2026-11-018) and 354
+(off-A), and its core runs are 338 and 335, so the drop is not an off-A outlier. 11 items are exact in both
+off runs and lost in both core runs, against 3 the other way round. Most are T4/T5 questions that describe
+an entity, where Gemma reaches for a scan.
+**Resolution:** fix round 5 (PROTOCOL Amendment 4), the first of the two Amendment 2 allows.
+**Paper implication:** a teaching refusal costs an answer when it lands on the last turn; any
+refuse-and-teach guard needs a last-turn policy.
