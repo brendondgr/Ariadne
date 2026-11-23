@@ -35,9 +35,16 @@ paraphrased questions unless the planner is told the difference; report as an ex
 
 ## 2026-11-22 — Fix round 4 (a deviation), on the operator's decision
 **Impact:** the measured core configuration is the fixed one. The first core sitting stays on
-record (`phase-h/core/`) as the stop-rule evidence. off-A is reused across the fix.
+record (`phase-h/core-superseded-1/`, moved from `phase-h/core/`) as the stop-rule evidence. off-A is reused across the fix.
 **Cause:** the stop rule (entry above).
 **Resolution:** PROTOCOL Amendment 1: literal-text teaching, and an empty whole-label text scan
 refused once, counted live at planning time.
 **Paper implication:** report that core passed only after a fourth teaching fix, which Stage 1 did
 not allow, and report the first core sitting's numbers beside the fixed ones.
+**Proving set (2026-11-23):** `fix4-small/score.json` (scorer `data/fix4_score.py`, runner
+`data/fix4_prove.sh`). It cleared Amendment 1's bar:
+- Gemma core's operator-attributed variant losses: 4 on these items, against 14 on the same items in the first core sitting (bar: well below 17).
+- No control was lost to an operator step on an arm that lost none in round 4.
+- Probe tune exact stayed within 5 of round 4 on every arm (largest gap 3).
+Disclosed: Gemma core lost one control to an operator step (F-FAN-01 T2, a union of three anchor walks whose output fed a Technique expand). That arm also lost one in round 4 (A-LKP-04 T4), so the bar does not apply to it.
+The first proving attempt failed preflight on a stale store (the full pytest after the fix rewrote `data/`); its logs are in `fix4-small/stale-store-attempt/`. The stores were reloaded and the proving set re-run whole.
