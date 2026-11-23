@@ -165,3 +165,36 @@ It goes ahead to Stage 3 if:
 - **off-B, now on the new tree,** is also the check that off did not move. If off-B differs from
   off-A by more than the stop-rule margins on any arm, that is reported as drift, and the gates
   use both off runs as written.
+
+## Amendment 2 (2026-11-22, before the proving set's result was read): the confidence bar
+
+The operator asked for a statistical bar, not only the count gates, before Step 9 closes. It is
+added to the Phase H gates and read the same way for every typed arm and switch-on
+configuration. The **off reference** for an item is the mean of its off-A and off-B outcomes.
+
+The intervals are paired, two-sided 95% percentile bootstrap intervals: 2,000 resamples, seed
+20261118 (`era2_catalog_score.bootstrap`). Variants resample gold questions as clusters, as in
+EXP-2026-11-018; dev and the probe resample items.
+
+| Check | Bar |
+|---|---|
+| Variants, exact: switch-on minus off, per item | lower bound ≥ −0.02 (non-inferiority, 2 points) |
+| Variants, confidently wrong: switch-on minus off, per item | upper bound ≤ +0.015 |
+| Dev, lost: switch-on minus off, summed | upper bound ≤ +6 (about 2% of 284) |
+| Dev, confidently wrong: switch-on minus off, summed | upper bound ≤ +3 |
+| Probe measure half, per switch group: switch-on exact minus off | lower bound > 0 |
+
+**Confident** means a configuration passes these and the Phase H count gates.
+
+**What follows from the result:**
+- **core** is recommended on only if it is confident on all three arms.
+- **extended** is kept only if it is confident too, and its extended probe items gain over core
+  (lower bound > 0).
+- **A configuration that fails:**
+  - the failure is diagnosed item by item;
+  - one targeted fix per round, each its own commit, proven small (Amendment 1's bar) before
+    its sitting is re-run;
+  - at most two more rounds for core.
+- **If core is still not confident after that,** the switches stay off by default. Step 9 closes
+  with the engine result and the exposure result as measured, and Step 10 starts from there,
+  since it does not depend on the operators.
