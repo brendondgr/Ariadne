@@ -1,0 +1,311 @@
+{
+  "id": "PG-capec-O2-7a9e4c35fb",
+  "kind": "capec",
+  "tier": "algebra-probe",
+  "category": "PG-capec",
+  "question": "How many different taxonomy names appear across all CAPEC taxonomy entries?",
+  "gold": {
+    "assertions": {
+      "min_records": 0,
+      "must_include_ids": [],
+      "must_include_related": []
+    },
+    "ex_gold": {
+      "pool": "algebra",
+      "scheme": "capec",
+      "kind": "value",
+      "expected": [],
+      "value": 3
+    }
+  },
+  "answer": {
+    "headline": "Gathered 1 record(s) from 1 source(s).",
+    "narrative": "There are 3 distinct values of taxonomy_name (exact).",
+    "composer": "deterministic",
+    "fallback_reason": null,
+    "claims": [
+      {
+        "text": "There are 3 distinct values of taxonomy_name (exact).",
+        "kind": "fact",
+        "entity_ids": [],
+        "citations": [
+          {
+            "source": "capec",
+            "primary_id": ""
+          }
+        ]
+      }
+    ],
+    "abstentions": [],
+    "notes": []
+  },
+  "logic_flow": {
+    "task": {
+      "sub_question_id": "PG-capec-O2-7a9e4c35fb",
+      "source": "capec",
+      "text": "How many different taxonomy names appear across all CAPEC taxonomy entries?",
+      "entities": [
+        "TaxonomyEntry"
+      ],
+      "limits": {
+        "max_traversal_depth": 3,
+        "max_result_rows": 20000,
+        "query_timeout_ms": 60000
+      },
+      "join_key": null,
+      "seed_ids": [],
+      "rationale": "algebra probe set (Era 2 Step 9 Phase G)"
+    },
+    "results": [
+      {
+        "source": "capec",
+        "sub_question_id": "q1",
+        "sub_question": "",
+        "query": "g.V().hasLabel('TaxonomyEntry').has('taxonomy_name').values('taxonomy_name').dedup().fold().project('value').by(__.count(local))",
+        "ok": true,
+        "partial": false,
+        "error": null,
+        "summary": "Found 1 CAPEC record(s): .",
+        "traces": [
+          {
+            "step": "intake",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "source": "capec",
+              "card": "capec"
+            }
+          },
+          {
+            "step": "resolve",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "labels": [
+                "TaxonomyEntry"
+              ],
+              "relationships": [],
+              "seed_ids": [],
+              "join_key": null
+            }
+          },
+          {
+            "step": "gate",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "attempt": 1,
+              "template": "algebra",
+              "query": "g.V().hasLabel('TaxonomyEntry').has('taxonomy_name').values('taxonomy_name').dedup().fold().project('value').by(__.count(local))",
+              "injected": [],
+              "note": "compiled by the operator algebra (validated against the card; read-only by construction)",
+              "id_map": {}
+            }
+          },
+          {
+            "step": "execute",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "row_count": 1
+            }
+          },
+          {
+            "step": "algebra",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "result": {
+                "step": "q1",
+                "kind": "count",
+                "value": 3,
+                "ids": [],
+                "rows": [
+                  {
+                    "value": 3
+                  }
+                ],
+                "total": 1,
+                "complete": true,
+                "info": {}
+              },
+              "op": "aggregate",
+              "ir": {
+                "@": "Aggregate",
+                "fn": "count_values",
+                "of": {
+                  "@": "Scan",
+                  "label": "TaxonomyEntry"
+                },
+                "prop": "taxonomy_name"
+              },
+              "fn": "count_values",
+              "property": "taxonomy_name"
+            }
+          }
+        ],
+        "records": [
+          {
+            "primary_id": "",
+            "name": "count result",
+            "label": "Result",
+            "description": "",
+            "properties": {
+              "value": 3
+            },
+            "facets": [],
+            "join_values": [],
+            "related": []
+          }
+        ]
+      }
+    ]
+  },
+  "deterministic_scores": {
+    "correlation": null,
+    "mapping_recall": null,
+    "coverage": null,
+    "provenance": {
+      "citations": 1,
+      "compliant": 1,
+      "citation_provenance_rate": 1.0,
+      "abstention_proof_ok": true,
+      "fully_provenanced": true
+    },
+    "inspectability": {
+      "citation_coverage": 1.0,
+      "traceability": 1.0,
+      "abstention_proofs": 1.0,
+      "inspectability": 1.0
+    }
+  },
+  "arm": "planned_llm_typed_lazy",
+  "run_meta": {
+    "planner": "llm-typed-lazy",
+    "synthesis": "deterministic",
+    "use_llm": true,
+    "llm_synthesis": false,
+    "llm_specialist": false,
+    "rewrite": null,
+    "observed_plan": [
+      {
+        "sub_question_id": "q1",
+        "source": "capec",
+        "text": "",
+        "entities": [
+          "TaxonomyEntry"
+        ],
+        "seed_ids": [],
+        "depends_on": null,
+        "limits": {
+          "max_traversal_depth": 3,
+          "max_result_rows": 1000,
+          "query_timeout_ms": 5000
+        },
+        "step": {
+          "kind": "algebra",
+          "anchor_label": "TaxonomyEntry",
+          "anchor_ids": [],
+          "hops": [],
+          "depth": 1,
+          "algebra": {
+            "ir": {
+              "@": "Aggregate",
+              "fn": "count_values",
+              "of": {
+                "@": "Scan",
+                "label": "TaxonomyEntry"
+              },
+              "prop": "taxonomy_name"
+            },
+            "labels": [],
+            "op": "aggregate"
+          }
+        }
+      }
+    ],
+    "exit_code": 0,
+    "status": "answered",
+    "timings": {
+      "plan_ms": 15058.557,
+      "specialists": [
+        {
+          "sub_question": "q1",
+          "source": "capec",
+          "ms": 7.911
+        }
+      ],
+      "synthesis_ms": 4.299,
+      "total_ms": 15109.176
+    },
+    "registry_model": "gemma4-31b",
+    "drafter_used": "TypedDrafter",
+    "typed": [
+      {
+        "mode": "lazy",
+        "served_model": "gemma4-31b/106",
+        "model_calls": 1,
+        "catalog_calls": [],
+        "prompt_tokens": 2927,
+        "completion_tokens": 768,
+        "emitted": true,
+        "parse_error": null,
+        "first_steps": 1,
+        "first_refused": 0,
+        "first_fixes": 0,
+        "valid_first": true,
+        "valid_first_raw": true,
+        "repair_used": false,
+        "fixed_by_repair": false,
+        "still_refused": 0,
+        "final_steps": 1,
+        "coercions": [],
+        "refusals": [],
+        "plan_problems": [],
+        "replies": [
+          {
+            "status": "ok",
+            "finish_reason": "stop",
+            "calls": [],
+            "text_chars": 256,
+            "repairs": []
+          }
+        ],
+        "error": null,
+        "fallback": null,
+        "seconds": 15.048,
+        "n_catalog_calls": 0,
+        "fixed_by_coercion": false
+      }
+    ],
+    "seams": {
+      "planner_llm": true,
+      "drafter": "TypedDrafter",
+      "specialist_llm": false,
+      "synthesis_llm": false,
+      "generic_only": "true"
+    },
+    "wall_s": 15.113,
+    "algebra_results": [
+      {
+        "step": "q1",
+        "kind": "count",
+        "value": 3,
+        "ids": [],
+        "rows": [
+          {
+            "value": 3
+          }
+        ],
+        "total": 1,
+        "complete": true,
+        "info": {}
+      }
+    ]
+  },
+  "evidence_volume": {
+    "results": 1,
+    "records": 1,
+    "related": 0
+  }
+}

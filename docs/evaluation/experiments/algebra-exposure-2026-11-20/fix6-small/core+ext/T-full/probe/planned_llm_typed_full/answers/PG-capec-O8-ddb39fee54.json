@@ -1,0 +1,376 @@
+{
+  "id": "PG-capec-O8-ddb39fee54",
+  "kind": "capec",
+  "tier": "algebra-probe",
+  "category": "PG-capec",
+  "question": "What is the shortest chain of connections, following any kind of link in either direction, between CAPEC-642 (Replace Binaries) and CAPEC-650 (Upload a Web Shell to a Web Server)?",
+  "gold": {
+    "assertions": {
+      "min_records": 0,
+      "must_include_ids": [],
+      "must_include_related": []
+    },
+    "ex_gold": {
+      "pool": "algebra",
+      "scheme": "capec",
+      "kind": "set",
+      "expected": [
+        "CAPEC-17",
+        "CAPEC-642",
+        "CAPEC-650"
+      ]
+    }
+  },
+  "answer": {
+    "headline": "No records were returned by the routed specialists.",
+    "narrative": "I couldn't find 'CAPEC' or 'Replace Binaries' or 'Upload a Web Shell' or 'Web Server' in the live capec graph. Check the name, or tell me the entity's catalogue id and I'll look it up.",
+    "composer": "deterministic",
+    "fallback_reason": null,
+    "claims": [],
+    "abstentions": [],
+    "notes": [
+      "The capec specialist failed and contributed no evidence: ExecutionError: "
+    ]
+  },
+  "logic_flow": {
+    "task": {
+      "sub_question_id": "PG-capec-O8-ddb39fee54",
+      "source": "capec",
+      "text": "What is the shortest chain of connections, following any kind of link in either direction, between CAPEC-642 (Replace Binaries) and CAPEC-650 (Upload a Web Shell to a Web Server)?",
+      "entities": [
+        "AttackPattern"
+      ],
+      "limits": {
+        "max_traversal_depth": 3,
+        "max_result_rows": 20000,
+        "query_timeout_ms": 60000
+      },
+      "join_key": null,
+      "seed_ids": [
+        "CAPEC-642",
+        "CAPEC-650"
+      ],
+      "rationale": "algebra probe set (Era 2 Step 9 Phase G)"
+    },
+    "results": [
+      {
+        "source": "capec",
+        "sub_question_id": "q1",
+        "sub_question": "",
+        "query": "g.inject(0).project('a_found', 'b_found', 'paths', 'total_within', 'total_beyond').by(__.V().has('id', within(p0)).hasLabel('AttackPattern').count()).by(__.V().has('id', within(p1)).hasLabel('AttackPattern').count()).by(__.V().has('id', within(p1)).hasLabel('AttackPattern').aggregate('kb3').union(__.identity(), __.both('CAN_ALSO_BE', 'CAN_FOLLOW', 'CAN_PRECEDE', 'CHILD_OF', 'EXPLOITS_WEAKNESS', 'HAS_ALTERNATE_TERM', 'HAS_CONSEQUENCE', 'HAS_EXAMPLE', 'HAS_EXECUTION_STEP', 'HAS_INDICATOR', 'HAS_MITIGATION', 'HAS_PREREQUISITE', 'HAS_REFERENCE', 'IN_VIEW', 'MAPS_TO', 'MEMBER_OF', 'NEXT_STEP', 'PARENT_OF', 'PEER_OF', 'REQUIRES_RESOURCE', 'REQUIRES_SKILL')).dedup().aggregate('kb4').union(__.identity(), __.both('CAN_ALSO_BE', 'CAN_FOLLOW', 'CAN_PRECEDE', 'CHILD_OF', 'EXPLOITS_WEAKNESS', 'HAS_ALTERNATE_TERM', 'HAS_CONSEQUENCE', 'HAS_EXAMPLE', 'HAS_EXECUTION_STEP', 'HAS_INDICATOR', 'HAS_MITIGATION', 'HAS_PREREQUISITE', 'HAS_REFERENCE', 'IN_VIEW', 'MAPS_TO', 'MEMBER_OF', 'NEXT_STEP', 'PARENT_OF', 'PEER_OF', 'REQUIRES_RESOURCE', 'REQUIRES_SKILL')).dedup().aggregate('kb5').union(__.identity(), __.both('CAN_ALSO_BE', 'CAN_FOLLOW', 'CAN_PRECEDE', 'CHILD_OF', 'EXPLOITS_WEAKNESS', 'HAS_ALTERNATE_TERM', 'HAS_CONSEQUENCE', 'HAS_EXAMPLE', 'HAS_EXECUTION_STEP', 'HAS_INDICATOR', 'HAS_MITIGATION', 'HAS_PREREQUISITE', 'HAS_REFERENCE', 'IN_VIEW', 'MAPS_TO', 'MEMBER_OF', 'NEXT_STEP', 'PARENT_OF', 'PEER_OF', 'REQUIRES_RESOURCE', 'REQUIRES_SKILL')).dedup().aggregate('kb6').union(__.identity(), __.both('CAN_ALSO_BE', 'CAN_FOLLOW', 'CAN_PRECEDE', 'CHILD_OF', 'EXPLOITS_WEAKNESS', 'HAS_ALTERNATE_TERM', 'HAS_CONSEQUENCE', 'HAS_EXAMPLE', 'HAS_EXECUTION_STEP', 'HAS_INDICATOR', 'HAS_MITIGATION', 'HAS_PREREQUISITE', 'HAS_REFERENCE', 'IN_VIEW', 'MAPS_TO', 'MEMBER_OF', 'NEXT_STEP', 'PARENT_OF', 'PEER_OF', 'REQUIRES_RESOURCE', 'REQUIRES_SKILL')).dedup().aggregate('kb7').union(__.identity(), __.both('CAN_ALSO_BE', 'CAN_FOLLOW', 'CAN_PRECEDE', 'CHILD_OF', 'EXPLOITS_WEAKNESS', 'HAS_ALTERNATE_TERM', 'HAS_CONSEQUENCE', 'HAS_EXAMPLE', 'HAS_EXECUTION_STEP', 'HAS_INDICATOR', 'HAS_MITIGATION', 'HAS_PREREQUISITE', 'HAS_REFERENCE', 'IN_VIEW', 'MAPS_TO', 'MEMBER_OF', 'NEXT_STEP', 'PARENT_OF', 'PEER_OF', 'REQUIRES_RESOURCE', 'REQUIRES_SKILL')).dedup().aggregate('kb8').union(__.identity(), __.both('CAN_ALSO_BE', 'CAN_FOLLOW', 'CAN_PRECEDE', 'CHILD_OF', 'EXPLOITS_WEAKNESS', 'HAS_ALTERNATE_TERM', 'HAS_CONSEQUENCE', 'HAS_EXAMPLE', 'HAS_EXECUTION_STEP', 'HAS_INDICATOR', 'HAS_MITIGATION', 'HAS_PREREQUISITE', 'HAS_REFERENCE', 'IN_VIEW', 'MAPS_TO', 'MEMBER_OF', 'NEXT_STEP', 'PARENT_OF', 'PEER_OF', 'REQUIRES_RESOURCE', 'REQUIRES_SKILL')).dedup().aggregate('kb9').union(__.identity(), __.both('CAN_ALSO_BE', 'CAN_FOLLOW', 'CAN_PRECEDE', 'CHILD_OF', 'EXPLOITS_WEAKNESS', 'HAS_ALTERNATE_TERM', 'HAS_CONSEQUENCE', 'HAS_EXAMPLE', 'HAS_EXECUTION_STEP', 'HAS_INDICATOR', 'HAS_MITIGATION', 'HAS_PREREQUISITE', 'HAS_REFERENCE', 'IN_VIEW', 'MAPS_TO', 'MEMBER_OF', 'NEXT_STEP', 'PARENT_OF', 'PEER_OF', 'REQUIRES_RESOURCE', 'REQUIRES_SKILL')).dedup().aggregate('kb10').union(__.identity(), __.both('CAN_ALSO_BE', 'CAN_FOLLOW', 'CAN_PRECEDE', 'CHILD_OF', 'EXPLOITS_WEAKNESS', 'HAS_ALTERNATE_TERM', 'HAS_CONSEQUENCE', 'HAS_EXAMPLE', 'HAS_EXECUTION_STEP', 'HAS_INDICATOR', 'HAS_MITIGATION', 'HAS_PREREQUISITE', 'HAS_REFERENCE', 'IN_VIEW', 'MAPS_TO', 'MEMBER_OF', 'NEXT_STEP', 'PARENT_OF', 'PEER_OF', 'REQUIRES_RESOURCE', 'REQUIRES_SKILL')).dedup().aggregate('kb11').union(__.identity(), __.both('CAN_ALSO_BE', 'CAN_FOLLOW', 'CAN_PRECEDE', 'CHILD_OF', 'EXPLOITS_WEAKNESS', 'HAS_ALTERNATE_TERM', 'HAS_CONSEQUENCE', 'HAS_EXAMPLE', 'HAS_EXECUTION_STEP', 'HAS_INDICATOR', 'HAS_MITIGATION', 'HAS_PREREQUISITE', 'HAS_REFERENCE', 'IN_VIEW', 'MAPS_TO', 'MEMBER_OF', 'NEXT_STEP', 'PARENT_OF', 'PEER_OF', 'REQUIRES_RESOURCE', 'REQUIRES_SKILL')).dedup().aggregate('kb12').fold().V().has('id', within(p0)).hasLabel('AttackPattern').as('s1').aggregate('k2').union(__.has('id', within(p1)).hasLabel('AttackPattern'), __.not(__.has('id', within(p1)).hasLabel('AttackPattern')).bothE('CAN_ALSO_BE', 'CAN_FOLLOW', 'CAN_PRECEDE', 'CHILD_OF', 'EXPLOITS_WEAKNESS', 'HAS_ALTERNATE_TERM', 'HAS_CONSEQUENCE', 'HAS_EXAMPLE', 'HAS_EXECUTION_STEP', 'HAS_INDICATOR', 'HAS_MITIGATION', 'HAS_PREREQUISITE', 'HAS_REFERENCE', 'IN_VIEW', 'MAPS_TO', 'MEMBER_OF', 'NEXT_STEP', 'PARENT_OF', 'PEER_OF', 'REQUIRES_RESOURCE', 'REQUIRES_SKILL').otherV().where(without('k2')).where(within('kb12'))).barrier().aggregate('k2').union(__.has('id', within(p1)).hasLabel('AttackPattern'), __.not(__.has('id', within(p1)).hasLabel('AttackPattern')).bothE('CAN_ALSO_BE', 'CAN_FOLLOW', 'CAN_PRECEDE', 'CHILD_OF', 'EXPLOITS_WEAKNESS', 'HAS_ALTERNATE_TERM', 'HAS_CONSEQUENCE', 'HAS_EXAMPLE', 'HAS_EXECUTION_STEP', 'HAS_INDICATOR', 'HAS_MITIGATION', 'HAS_PREREQUISITE', 'HAS_REFERENCE', 'IN_VIEW', 'MAPS_TO', 'MEMBER_OF', 'NEXT_STEP', 'PARENT_OF', 'PEER_OF', 'REQUIRES_RESOURCE', 'REQUIRES_SKILL').otherV().where(without('k2')).where(within('kb11'))).barrier().aggregate('k2').union(__.has('id', within(p1)).hasLabel('AttackPattern'), __.not(__.has('id', within(p1)).hasLabel('AttackPattern')).bothE('CAN_ALSO_BE', 'CAN_FOLLOW', 'CAN_PRECEDE', 'CHILD_OF', 'EXPLOITS_WEAKNESS', 'HAS_ALTERNATE_TERM', 'HAS_CONSEQUENCE', 'HAS_EXAMPLE', 'HAS_EXECUTION_STEP', 'HAS_INDICATOR', 'HAS_MITIGATION', 'HAS_PREREQUISITE', 'HAS_REFERENCE', 'IN_VIEW', 'MAPS_TO', 'MEMBER_OF', 'NEXT_STEP', 'PARENT_OF', 'PEER_OF', 'REQUIRES_RESOURCE', 'REQUIRES_SKILL').otherV().where(without('k2')).where(within('kb10'))).barrier().aggregate('k2').union(__.has('id', within(p1)).hasLabel('AttackPattern'), __.not(__.has('id', within(p1)).hasLabel('AttackPattern')).bothE('CAN_ALSO_BE', 'CAN_FOLLOW', 'CAN_PRECEDE', 'CHILD_OF', 'EXPLOITS_WEAKNESS', 'HAS_ALTERNATE_TERM', 'HAS_CONSEQUENCE', 'HAS_EXAMPLE', 'HAS_EXECUTION_STEP', 'HAS_INDICATOR', 'HAS_MITIGATION', 'HAS_PREREQUISITE', 'HAS_REFERENCE', 'IN_VIEW', 'MAPS_TO', 'MEMBER_OF', 'NEXT_STEP', 'PARENT_OF', 'PEER_OF', 'REQUIRES_RESOURCE', 'REQUIRES_SKILL').otherV().where(without('k2')).where(within('kb9'))).barrier().aggregate('k2').union(__.has('id', within(p1)).hasLabel('AttackPattern'), __.not(__.has('id', within(p1)).hasLabel('AttackPattern')).bothE('CAN_ALSO_BE', 'CAN_FOLLOW', 'CAN_PRECEDE', 'CHILD_OF', 'EXPLOITS_WEAKNESS', 'HAS_ALTERNATE_TERM', 'HAS_CONSEQUENCE', 'HAS_EXAMPLE', 'HAS_EXECUTION_STEP', 'HAS_INDICATOR', 'HAS_MITIGATION', 'HAS_PREREQUISITE', 'HAS_REFERENCE', 'IN_VIEW', 'MAPS_TO', 'MEMBER_OF', 'NEXT_STEP', 'PARENT_OF', 'PEER_OF', 'REQUIRES_RESOURCE', 'REQUIRES_SKILL').otherV().where(without('k2')).where(within('kb8'))).barrier().aggregate('k2').union(__.has('id', within(p1)).hasLabel('AttackPattern'), __.not(__.has('id', within(p1)).hasLabel('AttackPattern')).bothE('CAN_ALSO_BE', 'CAN_FOLLOW', 'CAN_PRECEDE', 'CHILD_OF', 'EXPLOITS_WEAKNESS', 'HAS_ALTERNATE_TERM', 'HAS_CONSEQUENCE', 'HAS_EXAMPLE', 'HAS_EXECUTION_STEP', 'HAS_INDICATOR', 'HAS_MITIGATION', 'HAS_PREREQUISITE', 'HAS_REFERENCE', 'IN_VIEW', 'MAPS_TO', 'MEMBER_OF', 'NEXT_STEP', 'PARENT_OF', 'PEER_OF', 'REQUIRES_RESOURCE', 'REQUIRES_SKILL').otherV().where(without('k2')).where(within('kb7'))).barrier().aggregate('k2').union(__.has('id', within(p1)).hasLabel('AttackPattern'), __.not(__.has('id', within(p1)).hasLabel('AttackPattern')).bothE('CAN_ALSO_BE', 'CAN_FOLLOW', 'CAN_PRECEDE', 'CHILD_OF', 'EXPLOITS_WEAKNESS', 'HAS_ALTERNATE_TERM', 'HAS_CONSEQUENCE', 'HAS_EXAMPLE', 'HAS_EXECUTION_STEP', 'HAS_INDICATOR', 'HAS_MITIGATION', 'HAS_PREREQUISITE', 'HAS_REFERENCE', 'IN_VIEW', 'MAPS_TO', 'MEMBER_OF', 'NEXT_STEP', 'PARENT_OF', 'PEER_OF', 'REQUIRES_RESOURCE', 'REQUIRES_SKILL').otherV().where(without('k2')).where(within('kb6'))).barrier().aggregate('k2').union(__.has('id', within(p1)).hasLabel('AttackPattern'), __.not(__.has('id', within(p1)).hasLabel('AttackPattern')).bothE('CAN_ALSO_BE', 'CAN_FOLLOW', 'CAN_PRECEDE', 'CHILD_OF', 'EXPLOITS_WEAKNESS', 'HAS_ALTERNATE_TERM', 'HAS_CONSEQUENCE', 'HAS_EXAMPLE', 'HAS_EXECUTION_STEP', 'HAS_INDICATOR', 'HAS_MITIGATION', 'HAS_PREREQUISITE', 'HAS_REFERENCE', 'IN_VIEW', 'MAPS_TO', 'MEMBER_OF', 'NEXT_STEP', 'PARENT_OF', 'PEER_OF', 'REQUIRES_RESOURCE', 'REQUIRES_SKILL').otherV().where(without('k2')).where(within('kb5'))).barrier().aggregate('k2').union(__.has('id', within(p1)).hasLabel('AttackPattern'), __.not(__.has('id', within(p1)).hasLabel('AttackPattern')).bothE('CAN_ALSO_BE', 'CAN_FOLLOW', 'CAN_PRECEDE', 'CHILD_OF', 'EXPLOITS_WEAKNESS', 'HAS_ALTERNATE_TERM', 'HAS_CONSEQUENCE', 'HAS_EXAMPLE', 'HAS_EXECUTION_STEP', 'HAS_INDICATOR', 'HAS_MITIGATION', 'HAS_PREREQUISITE', 'HAS_REFERENCE', 'IN_VIEW', 'MAPS_TO', 'MEMBER_OF', 'NEXT_STEP', 'PARENT_OF', 'PEER_OF', 'REQUIRES_RESOURCE', 'REQUIRES_SKILL').otherV().where(without('k2')).where(within('kb4'))).barrier().aggregate('k2').union(__.has('id', within(p1)).hasLabel('AttackPattern'), __.not(__.has('id', within(p1)).hasLabel('AttackPattern')).bothE('CAN_ALSO_BE', 'CAN_FOLLOW', 'CAN_PRECEDE', 'CHILD_OF', 'EXPLOITS_WEAKNESS', 'HAS_ALTERNATE_TERM', 'HAS_CONSEQUENCE', 'HAS_EXAMPLE', 'HAS_EXECUTION_STEP', 'HAS_INDICATOR', 'HAS_MITIGATION', 'HAS_PREREQUISITE', 'HAS_REFERENCE', 'IN_VIEW', 'MAPS_TO', 'MEMBER_OF', 'NEXT_STEP', 'PARENT_OF', 'PEER_OF', 'REQUIRES_RESOURCE', 'REQUIRES_SKILL').otherV().where(without('k2')).where(within('kb3'))).barrier().aggregate('k2').has('id', within(p1)).hasLabel('AttackPattern').path().from('s1').by('id').by(__.label()).fold()).by(__.V().has('id', within(p0)).hasLabel('AttackPattern').aggregate('k13').repeat(__.both('CAN_ALSO_BE', 'CAN_FOLLOW', 'CAN_PRECEDE', 'CHILD_OF', 'EXPLOITS_WEAKNESS', 'HAS_ALTERNATE_TERM', 'HAS_CONSEQUENCE', 'HAS_EXAMPLE', 'HAS_EXECUTION_STEP', 'HAS_INDICATOR', 'HAS_MITIGATION', 'HAS_PREREQUISITE', 'HAS_REFERENCE', 'IN_VIEW', 'MAPS_TO', 'MEMBER_OF', 'NEXT_STEP', 'PARENT_OF', 'PEER_OF', 'REQUIRES_RESOURCE', 'REQUIRES_SKILL').where(without('k13')).dedup().aggregate('k13')).emit().times(10).count()).by(__.V().has('id', within(p0)).hasLabel('AttackPattern').aggregate('k14').repeat(__.both('CAN_ALSO_BE', 'CAN_FOLLOW', 'CAN_PRECEDE', 'CHILD_OF', 'EXPLOITS_WEAKNESS', 'HAS_ALTERNATE_TERM', 'HAS_CONSEQUENCE', 'HAS_EXAMPLE', 'HAS_EXECUTION_STEP', 'HAS_INDICATOR', 'HAS_MITIGATION', 'HAS_PREREQUISITE', 'HAS_REFERENCE', 'IN_VIEW', 'MAPS_TO', 'MEMBER_OF', 'NEXT_STEP', 'PARENT_OF', 'PEER_OF', 'REQUIRES_RESOURCE', 'REQUIRES_SKILL').where(without('k14')).dedup().aggregate('k14')).emit().times(11).count())",
+        "ok": false,
+        "partial": true,
+        "error": "ExecutionError: ",
+        "summary": "",
+        "traces": [
+          {
+            "step": "intake",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "source": "capec",
+              "card": "capec"
+            }
+          },
+          {
+            "step": "resolve",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "labels": [
+                "AttackPattern"
+              ],
+              "relationships": [],
+              "seed_ids": [
+                "CAPEC-642",
+                "CAPEC-650"
+              ],
+              "join_key": null
+            }
+          },
+          {
+            "step": "gate",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "attempt": 1,
+              "template": "algebra",
+              "query": "g.inject(0).project('a_found', 'b_found', 'paths', 'total_within', 'total_beyond').by(__.V().has('id', within(p0)).hasLabel('AttackPattern').count()).by(__.V().has('id', within(p1)).hasLabel('AttackPattern').count()).by(__.V().has('id', within(p1)).hasLabel('AttackPattern').aggregate('kb3').union(__.identity(), __.both('CAN_ALSO_BE', 'CAN_FOLLOW', 'CAN_PRECEDE', 'CHILD_OF', 'EXPLOITS_WEAKNESS', 'HAS_ALTERNATE_TERM', 'HAS_CONSEQUENCE', 'HAS_EXAMPLE', 'HAS_EXECUTION_STEP', 'HAS_INDICATOR', 'HAS_MITIGATION', 'HAS_PREREQUISITE', 'HAS_REFERENCE', 'IN_VIEW', 'MAPS_TO', 'MEMBER_OF', 'NEXT_STEP', 'PARENT_OF', 'PEER_OF', 'REQUIRES_RESOURCE', 'REQUIRES_SKILL')).dedup().aggregate('kb4').union(__.identity(), __.both('CAN_ALSO_BE', 'CAN_FOLLOW', 'CAN_PRECEDE', 'CHILD_OF', 'EXPLOITS_WEAKNESS', 'HAS_ALTERNATE_TERM', 'HAS_CONSEQUENCE', 'HAS_EXAMPLE', 'HAS_EXECUTION_STEP', 'HAS_INDICATOR', 'HAS_MITIGATION', 'HAS_PREREQUISITE', 'HAS_REFERENCE', 'IN_VIEW', 'MAPS_TO', 'MEMBER_OF', 'NEXT_STEP', 'PARENT_OF', 'PEER_OF', 'REQUIRES_RESOURCE', 'REQUIRES_SKILL')).dedup().aggregate('kb5').union(__.identity(), __.both('CAN_ALSO_BE', 'CAN_FOLLOW', 'CAN_PRECEDE', 'CHILD_OF', 'EXPLOITS_WEAKNESS', 'HAS_ALTERNATE_TERM', 'HAS_CONSEQUENCE', 'HAS_EXAMPLE', 'HAS_EXECUTION_STEP', 'HAS_INDICATOR', 'HAS_MITIGATION', 'HAS_PREREQUISITE', 'HAS_REFERENCE', 'IN_VIEW', 'MAPS_TO', 'MEMBER_OF', 'NEXT_STEP', 'PARENT_OF', 'PEER_OF', 'REQUIRES_RESOURCE', 'REQUIRES_SKILL')).dedup().aggregate('kb6').union(__.identity(), __.both('CAN_ALSO_BE', 'CAN_FOLLOW', 'CAN_PRECEDE', 'CHILD_OF', 'EXPLOITS_WEAKNESS', 'HAS_ALTERNATE_TERM', 'HAS_CONSEQUENCE', 'HAS_EXAMPLE', 'HAS_EXECUTION_STEP', 'HAS_INDICATOR', 'HAS_MITIGATION', 'HAS_PREREQUISITE', 'HAS_REFERENCE', 'IN_VIEW', 'MAPS_TO', 'MEMBER_OF', 'NEXT_STEP', 'PARENT_OF', 'PEER_OF', 'REQUIRES_RESOURCE', 'REQUIRES_SKILL')).dedup().aggregate('kb7').union(__.identity(), __.both('CAN_ALSO_BE', 'CAN_FOLLOW', 'CAN_PRECEDE', 'CHILD_OF', 'EXPLOITS_WEAKNESS', 'HAS_ALTERNATE_TERM', 'HAS_CONSEQUENCE', 'HAS_EXAMPLE', 'HAS_EXECUTION_STEP', 'HAS_INDICATOR', 'HAS_MITIGATION', 'HAS_PREREQUISITE', 'HAS_REFERENCE', 'IN_VIEW', 'MAPS_TO', 'MEMBER_OF', 'NEXT_STEP', 'PARENT_OF', 'PEER_OF', 'REQUIRES_RESOURCE', 'REQUIRES_SKILL')).dedup().aggregate('kb8').union(__.identity(), __.both('CAN_ALSO_BE', 'CAN_FOLLOW', 'CAN_PRECEDE', 'CHILD_OF', 'EXPLOITS_WEAKNESS', 'HAS_ALTERNATE_TERM', 'HAS_CONSEQUENCE', 'HAS_EXAMPLE', 'HAS_EXECUTION_STEP', 'HAS_INDICATOR', 'HAS_MITIGATION', 'HAS_PREREQUISITE', 'HAS_REFERENCE', 'IN_VIEW', 'MAPS_TO', 'MEMBER_OF', 'NEXT_STEP', 'PARENT_OF', 'PEER_OF', 'REQUIRES_RESOURCE', 'REQUIRES_SKILL')).dedup().aggregate('kb9').union(__.identity(), __.both('CAN_ALSO_BE', 'CAN_FOLLOW', 'CAN_PRECEDE', 'CHILD_OF', 'EXPLOITS_WEAKNESS', 'HAS_ALTERNATE_TERM', 'HAS_CONSEQUENCE', 'HAS_EXAMPLE', 'HAS_EXECUTION_STEP', 'HAS_INDICATOR', 'HAS_MITIGATION', 'HAS_PREREQUISITE', 'HAS_REFERENCE', 'IN_VIEW', 'MAPS_TO', 'MEMBER_OF', 'NEXT_STEP', 'PARENT_OF', 'PEER_OF', 'REQUIRES_RESOURCE', 'REQUIRES_SKILL')).dedup().aggregate('kb10').union(__.identity(), __.both('CAN_ALSO_BE', 'CAN_FOLLOW', 'CAN_PRECEDE', 'CHILD_OF', 'EXPLOITS_WEAKNESS', 'HAS_ALTERNATE_TERM', 'HAS_CONSEQUENCE', 'HAS_EXAMPLE', 'HAS_EXECUTION_STEP', 'HAS_INDICATOR', 'HAS_MITIGATION', 'HAS_PREREQUISITE', 'HAS_REFERENCE', 'IN_VIEW', 'MAPS_TO', 'MEMBER_OF', 'NEXT_STEP', 'PARENT_OF', 'PEER_OF', 'REQUIRES_RESOURCE', 'REQUIRES_SKILL')).dedup().aggregate('kb11').union(__.identity(), __.both('CAN_ALSO_BE', 'CAN_FOLLOW', 'CAN_PRECEDE', 'CHILD_OF', 'EXPLOITS_WEAKNESS', 'HAS_ALTERNATE_TERM', 'HAS_CONSEQUENCE', 'HAS_EXAMPLE', 'HAS_EXECUTION_STEP', 'HAS_INDICATOR', 'HAS_MITIGATION', 'HAS_PREREQUISITE', 'HAS_REFERENCE', 'IN_VIEW', 'MAPS_TO', 'MEMBER_OF', 'NEXT_STEP', 'PARENT_OF', 'PEER_OF', 'REQUIRES_RESOURCE', 'REQUIRES_SKILL')).dedup().aggregate('kb12').fold().V().has('id', within(p0)).hasLabel('AttackPattern').as('s1').aggregate('k2').union(__.has('id', within(p1)).hasLabel('AttackPattern'), __.not(__.has('id', within(p1)).hasLabel('AttackPattern')).bothE('CAN_ALSO_BE', 'CAN_FOLLOW', 'CAN_PRECEDE', 'CHILD_OF', 'EXPLOITS_WEAKNESS', 'HAS_ALTERNATE_TERM', 'HAS_CONSEQUENCE', 'HAS_EXAMPLE', 'HAS_EXECUTION_STEP', 'HAS_INDICATOR', 'HAS_MITIGATION', 'HAS_PREREQUISITE', 'HAS_REFERENCE', 'IN_VIEW', 'MAPS_TO', 'MEMBER_OF', 'NEXT_STEP', 'PARENT_OF', 'PEER_OF', 'REQUIRES_RESOURCE', 'REQUIRES_SKILL').otherV().where(without('k2')).where(within('kb12'))).barrier().aggregate('k2').union(__.has('id', within(p1)).hasLabel('AttackPattern'), __.not(__.has('id', within(p1)).hasLabel('AttackPattern')).bothE('CAN_ALSO_BE', 'CAN_FOLLOW', 'CAN_PRECEDE', 'CHILD_OF', 'EXPLOITS_WEAKNESS', 'HAS_ALTERNATE_TERM', 'HAS_CONSEQUENCE', 'HAS_EXAMPLE', 'HAS_EXECUTION_STEP', 'HAS_INDICATOR', 'HAS_MITIGATION', 'HAS_PREREQUISITE', 'HAS_REFERENCE', 'IN_VIEW', 'MAPS_TO', 'MEMBER_OF', 'NEXT_STEP', 'PARENT_OF', 'PEER_OF', 'REQUIRES_RESOURCE', 'REQUIRES_SKILL').otherV().where(without('k2')).where(within('kb11'))).barrier().aggregate('k2').union(__.has('id', within(p1)).hasLabel('AttackPattern'), __.not(__.has('id', within(p1)).hasLabel('AttackPattern')).bothE('CAN_ALSO_BE', 'CAN_FOLLOW', 'CAN_PRECEDE', 'CHILD_OF', 'EXPLOITS_WEAKNESS', 'HAS_ALTERNATE_TERM', 'HAS_CONSEQUENCE', 'HAS_EXAMPLE', 'HAS_EXECUTION_STEP', 'HAS_INDICATOR', 'HAS_MITIGATION', 'HAS_PREREQUISITE', 'HAS_REFERENCE', 'IN_VIEW', 'MAPS_TO', 'MEMBER_OF', 'NEXT_STEP', 'PARENT_OF', 'PEER_OF', 'REQUIRES_RESOURCE', 'REQUIRES_SKILL').otherV().where(without('k2')).where(within('kb10'))).barrier().aggregate('k2').union(__.has('id', within(p1)).hasLabel('AttackPattern'), __.not(__.has('id', within(p1)).hasLabel('AttackPattern')).bothE('CAN_ALSO_BE', 'CAN_FOLLOW', 'CAN_PRECEDE', 'CHILD_OF', 'EXPLOITS_WEAKNESS', 'HAS_ALTERNATE_TERM', 'HAS_CONSEQUENCE', 'HAS_EXAMPLE', 'HAS_EXECUTION_STEP', 'HAS_INDICATOR', 'HAS_MITIGATION', 'HAS_PREREQUISITE', 'HAS_REFERENCE', 'IN_VIEW', 'MAPS_TO', 'MEMBER_OF', 'NEXT_STEP', 'PARENT_OF', 'PEER_OF', 'REQUIRES_RESOURCE', 'REQUIRES_SKILL').otherV().where(without('k2')).where(within('kb9'))).barrier().aggregate('k2').union(__.has('id', within(p1)).hasLabel('AttackPattern'), __.not(__.has('id', within(p1)).hasLabel('AttackPattern')).bothE('CAN_ALSO_BE', 'CAN_FOLLOW', 'CAN_PRECEDE', 'CHILD_OF', 'EXPLOITS_WEAKNESS', 'HAS_ALTERNATE_TERM', 'HAS_CONSEQUENCE', 'HAS_EXAMPLE', 'HAS_EXECUTION_STEP', 'HAS_INDICATOR', 'HAS_MITIGATION', 'HAS_PREREQUISITE', 'HAS_REFERENCE', 'IN_VIEW', 'MAPS_TO', 'MEMBER_OF', 'NEXT_STEP', 'PARENT_OF', 'PEER_OF', 'REQUIRES_RESOURCE', 'REQUIRES_SKILL').otherV().where(without('k2')).where(within('kb8'))).barrier().aggregate('k2').union(__.has('id', within(p1)).hasLabel('AttackPattern'), __.not(__.has('id', within(p1)).hasLabel('AttackPattern')).bothE('CAN_ALSO_BE', 'CAN_FOLLOW', 'CAN_PRECEDE', 'CHILD_OF', 'EXPLOITS_WEAKNESS', 'HAS_ALTERNATE_TERM', 'HAS_CONSEQUENCE', 'HAS_EXAMPLE', 'HAS_EXECUTION_STEP', 'HAS_INDICATOR', 'HAS_MITIGATION', 'HAS_PREREQUISITE', 'HAS_REFERENCE', 'IN_VIEW', 'MAPS_TO', 'MEMBER_OF', 'NEXT_STEP', 'PARENT_OF', 'PEER_OF', 'REQUIRES_RESOURCE', 'REQUIRES_SKILL').otherV().where(without('k2')).where(within('kb7'))).barrier().aggregate('k2').union(__.has('id', within(p1)).hasLabel('AttackPattern'), __.not(__.has('id', within(p1)).hasLabel('AttackPattern')).bothE('CAN_ALSO_BE', 'CAN_FOLLOW', 'CAN_PRECEDE', 'CHILD_OF', 'EXPLOITS_WEAKNESS', 'HAS_ALTERNATE_TERM', 'HAS_CONSEQUENCE', 'HAS_EXAMPLE', 'HAS_EXECUTION_STEP', 'HAS_INDICATOR', 'HAS_MITIGATION', 'HAS_PREREQUISITE', 'HAS_REFERENCE', 'IN_VIEW', 'MAPS_TO', 'MEMBER_OF', 'NEXT_STEP', 'PARENT_OF', 'PEER_OF', 'REQUIRES_RESOURCE', 'REQUIRES_SKILL').otherV().where(without('k2')).where(within('kb6'))).barrier().aggregate('k2').union(__.has('id', within(p1)).hasLabel('AttackPattern'), __.not(__.has('id', within(p1)).hasLabel('AttackPattern')).bothE('CAN_ALSO_BE', 'CAN_FOLLOW', 'CAN_PRECEDE', 'CHILD_OF', 'EXPLOITS_WEAKNESS', 'HAS_ALTERNATE_TERM', 'HAS_CONSEQUENCE', 'HAS_EXAMPLE', 'HAS_EXECUTION_STEP', 'HAS_INDICATOR', 'HAS_MITIGATION', 'HAS_PREREQUISITE', 'HAS_REFERENCE', 'IN_VIEW', 'MAPS_TO', 'MEMBER_OF', 'NEXT_STEP', 'PARENT_OF', 'PEER_OF', 'REQUIRES_RESOURCE', 'REQUIRES_SKILL').otherV().where(without('k2')).where(within('kb5'))).barrier().aggregate('k2').union(__.has('id', within(p1)).hasLabel('AttackPattern'), __.not(__.has('id', within(p1)).hasLabel('AttackPattern')).bothE('CAN_ALSO_BE', 'CAN_FOLLOW', 'CAN_PRECEDE', 'CHILD_OF', 'EXPLOITS_WEAKNESS', 'HAS_ALTERNATE_TERM', 'HAS_CONSEQUENCE', 'HAS_EXAMPLE', 'HAS_EXECUTION_STEP', 'HAS_INDICATOR', 'HAS_MITIGATION', 'HAS_PREREQUISITE', 'HAS_REFERENCE', 'IN_VIEW', 'MAPS_TO', 'MEMBER_OF', 'NEXT_STEP', 'PARENT_OF', 'PEER_OF', 'REQUIRES_RESOURCE', 'REQUIRES_SKILL').otherV().where(without('k2')).where(within('kb4'))).barrier().aggregate('k2').union(__.has('id', within(p1)).hasLabel('AttackPattern'), __.not(__.has('id', within(p1)).hasLabel('AttackPattern')).bothE('CAN_ALSO_BE', 'CAN_FOLLOW', 'CAN_PRECEDE', 'CHILD_OF', 'EXPLOITS_WEAKNESS', 'HAS_ALTERNATE_TERM', 'HAS_CONSEQUENCE', 'HAS_EXAMPLE', 'HAS_EXECUTION_STEP', 'HAS_INDICATOR', 'HAS_MITIGATION', 'HAS_PREREQUISITE', 'HAS_REFERENCE', 'IN_VIEW', 'MAPS_TO', 'MEMBER_OF', 'NEXT_STEP', 'PARENT_OF', 'PEER_OF', 'REQUIRES_RESOURCE', 'REQUIRES_SKILL').otherV().where(without('k2')).where(within('kb3'))).barrier().aggregate('k2').has('id', within(p1)).hasLabel('AttackPattern').path().from('s1').by('id').by(__.label()).fold()).by(__.V().has('id', within(p0)).hasLabel('AttackPattern').aggregate('k13').repeat(__.both('CAN_ALSO_BE', 'CAN_FOLLOW', 'CAN_PRECEDE', 'CHILD_OF', 'EXPLOITS_WEAKNESS', 'HAS_ALTERNATE_TERM', 'HAS_CONSEQUENCE', 'HAS_EXAMPLE', 'HAS_EXECUTION_STEP', 'HAS_INDICATOR', 'HAS_MITIGATION', 'HAS_PREREQUISITE', 'HAS_REFERENCE', 'IN_VIEW', 'MAPS_TO', 'MEMBER_OF', 'NEXT_STEP', 'PARENT_OF', 'PEER_OF', 'REQUIRES_RESOURCE', 'REQUIRES_SKILL').where(without('k13')).dedup().aggregate('k13')).emit().times(10).count()).by(__.V().has('id', within(p0)).hasLabel('AttackPattern').aggregate('k14').repeat(__.both('CAN_ALSO_BE', 'CAN_FOLLOW', 'CAN_PRECEDE', 'CHILD_OF', 'EXPLOITS_WEAKNESS', 'HAS_ALTERNATE_TERM', 'HAS_CONSEQUENCE', 'HAS_EXAMPLE', 'HAS_EXECUTION_STEP', 'HAS_INDICATOR', 'HAS_MITIGATION', 'HAS_PREREQUISITE', 'HAS_REFERENCE', 'IN_VIEW', 'MAPS_TO', 'MEMBER_OF', 'NEXT_STEP', 'PARENT_OF', 'PEER_OF', 'REQUIRES_RESOURCE', 'REQUIRES_SKILL').where(without('k14')).dedup().aggregate('k14')).emit().times(11).count())",
+              "injected": [],
+              "note": "compiled by the operator algebra (validated against the card; read-only by construction)",
+              "id_map": {
+                "CAPEC-642": [
+                  "capec:attack-pattern:642"
+                ],
+                "CAPEC-650": [
+                  "capec:attack-pattern:650"
+                ]
+              }
+            }
+          },
+          {
+            "step": "algebra",
+            "ok": false,
+            "reasons": [
+              "ExecutionError: "
+            ],
+            "detail": {
+              "result": {
+                "step": "q1",
+                "kind": null,
+                "value": null,
+                "ids": [],
+                "rows": [],
+                "total": null,
+                "complete": false,
+                "info": {
+                  "error": "ExecutionError: "
+                }
+              }
+            }
+          }
+        ],
+        "records": []
+      }
+    ]
+  },
+  "deterministic_scores": {
+    "correlation": null,
+    "mapping_recall": null,
+    "coverage": null,
+    "provenance": {
+      "citations": 0,
+      "compliant": 0,
+      "citation_provenance_rate": 1.0,
+      "abstention_proof_ok": true,
+      "fully_provenanced": true
+    },
+    "inspectability": {
+      "citation_coverage": 1.0,
+      "traceability": 1.0,
+      "abstention_proofs": 1.0,
+      "inspectability": 1.0
+    }
+  },
+  "arm": "planned_llm_typed_full",
+  "run_meta": {
+    "planner": "llm-typed-full",
+    "synthesis": "deterministic",
+    "use_llm": true,
+    "llm_synthesis": false,
+    "llm_specialist": false,
+    "rewrite": null,
+    "observed_plan": [
+      {
+        "sub_question_id": "q1",
+        "source": "capec",
+        "text": "",
+        "entities": [
+          "AttackPattern"
+        ],
+        "seed_ids": [
+          "CAPEC-642",
+          "CAPEC-650"
+        ],
+        "depends_on": null,
+        "limits": {
+          "max_traversal_depth": 3,
+          "max_result_rows": 1000,
+          "query_timeout_ms": 5000
+        },
+        "step": {
+          "kind": "algebra",
+          "anchor_label": "AttackPattern",
+          "anchor_ids": [
+            "CAPEC-642",
+            "CAPEC-650"
+          ],
+          "hops": [],
+          "depth": 1,
+          "algebra": {
+            "ir": {
+              "@": "Shortest",
+              "a": {
+                "@": "Anchors",
+                "ids": [
+                  "CAPEC-642"
+                ],
+                "label": "AttackPattern"
+              },
+              "b": {
+                "@": "Anchors",
+                "ids": [
+                  "CAPEC-650"
+                ],
+                "label": "AttackPattern"
+              },
+              "depth": 10,
+              "rels": []
+            },
+            "labels": [],
+            "op": "shortest"
+          }
+        }
+      }
+    ],
+    "exit_code": 1,
+    "status": "partial",
+    "timings": {
+      "plan_ms": 23401.536,
+      "specialists": [
+        {
+          "sub_question": "q1",
+          "source": "capec",
+          "ms": 10014.277
+        }
+      ],
+      "synthesis_ms": 10.293,
+      "total_ms": 33479.297
+    },
+    "registry_model": "qwen38-27b",
+    "drafter_used": "TypedDrafter",
+    "typed": [
+      {
+        "mode": "full",
+        "served_model": "qwen38-27b/248046",
+        "model_calls": 4,
+        "catalog_calls": [
+          {
+            "name": "resolve_entity",
+            "args": {
+              "text": "CAPEC-642",
+              "label": "AttackPattern",
+              "graph": "capec"
+            },
+            "ok": true
+          },
+          {
+            "name": "resolve_entity",
+            "args": {
+              "text": "CAPEC-650",
+              "label": "AttackPattern",
+              "graph": "capec"
+            },
+            "ok": true
+          },
+          {
+            "name": "describe",
+            "args": {
+              "target": "CAPEC-642",
+              "graph": "capec"
+            },
+            "ok": false
+          },
+          {
+            "name": "describe",
+            "args": {
+              "target": "AttackPattern",
+              "graph": "capec"
+            },
+            "ok": true
+          }
+        ],
+        "prompt_tokens": 31627,
+        "completion_tokens": 1074,
+        "emitted": true,
+        "parse_error": null,
+        "first_steps": 1,
+        "first_refused": 0,
+        "first_fixes": 2,
+        "valid_first": true,
+        "valid_first_raw": false,
+        "repair_used": false,
+        "fixed_by_repair": false,
+        "still_refused": 0,
+        "final_steps": 1,
+        "coercions": [
+          {
+            "step": "q1",
+            "field": "anchor.anchor_label",
+            "from": null,
+            "to": "AttackPattern",
+            "filled_by": "id_scheme"
+          },
+          {
+            "step": "q1",
+            "field": "other.anchor_label",
+            "from": null,
+            "to": "AttackPattern",
+            "filled_by": "id_scheme"
+          }
+        ],
+        "refusals": [],
+        "plan_problems": [],
+        "replies": [
+          {
+            "status": "ok",
+            "finish_reason": "tool_calls",
+            "calls": [
+              "resolve_entity",
+              "resolve_entity"
+            ],
+            "text_chars": 0,
+            "repairs": []
+          },
+          {
+            "status": "ok",
+            "finish_reason": "tool_calls",
+            "calls": [
+              "describe"
+            ],
+            "text_chars": 173,
+            "repairs": []
+          },
+          {
+            "status": "ok",
+            "finish_reason": "tool_calls",
+            "calls": [
+              "describe"
+            ],
+            "text_chars": 188,
+            "repairs": []
+          },
+          {
+            "status": "ok",
+            "finish_reason": "stop",
+            "calls": [],
+            "text_chars": 310,
+            "repairs": []
+          }
+        ],
+        "error": null,
+        "fallback": null,
+        "seconds": 23.388,
+        "n_catalog_calls": 4,
+        "fixed_by_coercion": true
+      }
+    ],
+    "seams": {
+      "planner_llm": true,
+      "drafter": "TypedDrafter",
+      "specialist_llm": false,
+      "synthesis_llm": false,
+      "generic_only": "true"
+    },
+    "wall_s": 33.484,
+    "algebra_results": [
+      {
+        "step": "q1",
+        "kind": null,
+        "value": null,
+        "ids": [],
+        "rows": [],
+        "total": null,
+        "complete": false,
+        "info": {
+          "error": "ExecutionError: "
+        }
+      }
+    ]
+  },
+  "evidence_volume": {
+    "results": 1,
+    "records": 0,
+    "related": 0
+  }
+}

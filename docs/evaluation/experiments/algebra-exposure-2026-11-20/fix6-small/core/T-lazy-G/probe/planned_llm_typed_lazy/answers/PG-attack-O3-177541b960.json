@@ -1,0 +1,402 @@
+{
+  "id": "PG-attack-O3-177541b960",
+  "kind": "attack",
+  "tier": "algebra-probe",
+  "category": "PG-attack",
+  "question": "Which software makes use of the largest number of techniques (not counting sub-techniques)? If there is a tie, name every one tied.",
+  "gold": {
+    "assertions": {
+      "min_records": 0,
+      "must_include_ids": [],
+      "must_include_related": []
+    },
+    "ex_gold": {
+      "pool": "algebra",
+      "scheme": "attack",
+      "kind": "set",
+      "expected": [
+        "S0260"
+      ]
+    }
+  },
+  "answer": {
+    "headline": "Gathered 1 record(s) from 1 source(s).",
+    "narrative": "Found 1 record in MITRE ATT&CK: InvisiMole (S0260). S0260 (InvisiMole) has value: 33. 1 member(s), with their count: InvisiMole (S0260): 33.",
+    "composer": "deterministic",
+    "fallback_reason": null,
+    "claims": [
+      {
+        "text": "Found 1 record in MITRE ATT&CK: InvisiMole (S0260).",
+        "kind": "fact",
+        "entity_ids": [
+          "S0260"
+        ],
+        "citations": [
+          {
+            "source": "attack",
+            "primary_id": "S0260"
+          }
+        ]
+      },
+      {
+        "text": "S0260 (InvisiMole) has value: 33.",
+        "kind": "fact",
+        "entity_ids": [
+          "S0260"
+        ],
+        "citations": [
+          {
+            "source": "attack",
+            "primary_id": "S0260"
+          }
+        ]
+      },
+      {
+        "text": "1 member(s), with their count: InvisiMole (S0260): 33.",
+        "kind": "fact",
+        "entity_ids": [
+          "S0260"
+        ],
+        "citations": [
+          {
+            "source": "attack",
+            "primary_id": "S0260"
+          }
+        ]
+      }
+    ],
+    "abstentions": [],
+    "notes": []
+  },
+  "logic_flow": {
+    "task": {
+      "sub_question_id": "PG-attack-O3-177541b960",
+      "source": "attack",
+      "text": "Which software makes use of the largest number of techniques (not counting sub-techniques)? If there is a tie, name every one tied.",
+      "entities": [
+        "Software",
+        "USES",
+        "Technique"
+      ],
+      "limits": {
+        "max_traversal_depth": 3,
+        "max_result_rows": 20000,
+        "query_timeout_ms": 60000
+      },
+      "join_key": null,
+      "seed_ids": [],
+      "rationale": "algebra probe set (Era 2 Step 9 Phase G)"
+    },
+    "results": [
+      {
+        "source": "attack",
+        "sub_question_id": "q1",
+        "sub_question": "",
+        "query": "MATCH (v1:Software) WITH DISTINCT v1 CALL { WITH v1 OPTIONAL MATCH (v1)-[r3:USES]->(m2:Technique) WHERE v1 <> m2 WITH DISTINCT m2 RETURN count(m2) AS value } WITH v1, value ORDER BY v1.id WITH collect({id: v1.id, name: v1.name, value: value}) AS rows RETURN rows",
+        "ok": true,
+        "partial": false,
+        "error": null,
+        "summary": "Found 1 record in MITRE ATT&CK: InvisiMole (S0260).",
+        "traces": [
+          {
+            "step": "intake",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "source": "attack",
+              "card": "attack"
+            }
+          },
+          {
+            "step": "resolve",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "labels": [
+                "Software",
+                "Technique"
+              ],
+              "relationships": [
+                "USES"
+              ],
+              "seed_ids": [],
+              "join_key": null
+            }
+          },
+          {
+            "step": "gate",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "attempt": 1,
+              "template": "algebra",
+              "query": "MATCH (v1:Software) WITH DISTINCT v1 CALL { WITH v1 OPTIONAL MATCH (v1)-[r3:USES]->(m2:Technique) WHERE v1 <> m2 WITH DISTINCT m2 RETURN count(m2) AS value } WITH v1, value ORDER BY v1.id WITH collect({id: v1.id, name: v1.name, value: value}) AS rows RETURN rows",
+              "injected": [],
+              "note": "compiled by the operator algebra (validated against the card; read-only by construction)",
+              "id_map": {}
+            }
+          },
+          {
+            "step": "execute",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "row_count": 1
+            }
+          },
+          {
+            "step": "algebra",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "result": {
+                "step": "q1",
+                "kind": "groupby",
+                "value": null,
+                "ids": [
+                  "S0260"
+                ],
+                "rows": [
+                  {
+                    "id": "S0260",
+                    "name": "InvisiMole",
+                    "value": 33
+                  }
+                ],
+                "total": 1,
+                "complete": true,
+                "info": {}
+              },
+              "op": "groupby",
+              "ir": {
+                "@": "GroupBy",
+                "end_conds": [],
+                "fn": "count",
+                "having": null,
+                "hops": [
+                  {
+                    "@": "Hop",
+                    "direction": "out",
+                    "edge_conds": [],
+                    "relation": "USES",
+                    "target": "Technique"
+                  }
+                ],
+                "k": 1,
+                "members": {
+                  "@": "Scan",
+                  "label": "Software"
+                },
+                "order": "desc",
+                "prop": null
+              },
+              "fn": "count",
+              "property": null,
+              "order": "desc"
+            }
+          }
+        ],
+        "records": [
+          {
+            "primary_id": "S0260",
+            "name": "InvisiMole",
+            "label": "Software",
+            "description": "",
+            "properties": {
+              "value": 33
+            },
+            "facets": [],
+            "join_values": [],
+            "related": []
+          }
+        ]
+      }
+    ]
+  },
+  "deterministic_scores": {
+    "correlation": null,
+    "mapping_recall": null,
+    "coverage": null,
+    "provenance": {
+      "citations": 3,
+      "compliant": 3,
+      "citation_provenance_rate": 1.0,
+      "abstention_proof_ok": true,
+      "fully_provenanced": true
+    },
+    "inspectability": {
+      "citation_coverage": 1.0,
+      "traceability": 1.0,
+      "abstention_proofs": 1.0,
+      "inspectability": 1.0
+    }
+  },
+  "arm": "planned_llm_typed_lazy",
+  "run_meta": {
+    "planner": "llm-typed-lazy",
+    "synthesis": "deterministic",
+    "use_llm": true,
+    "llm_synthesis": false,
+    "llm_specialist": false,
+    "rewrite": null,
+    "observed_plan": [
+      {
+        "sub_question_id": "q1",
+        "source": "attack",
+        "text": "",
+        "entities": [
+          "Software",
+          "USES",
+          "Technique"
+        ],
+        "seed_ids": [],
+        "depends_on": null,
+        "limits": {
+          "max_traversal_depth": 3,
+          "max_result_rows": 1000,
+          "query_timeout_ms": 5000
+        },
+        "step": {
+          "kind": "algebra",
+          "anchor_label": "Software",
+          "anchor_ids": [],
+          "hops": [],
+          "depth": 1,
+          "algebra": {
+            "ir": {
+              "@": "GroupBy",
+              "end_conds": [],
+              "fn": "count",
+              "having": null,
+              "hops": [
+                {
+                  "@": "Hop",
+                  "direction": "out",
+                  "edge_conds": [],
+                  "relation": "USES",
+                  "target": "Technique"
+                }
+              ],
+              "k": 1,
+              "members": {
+                "@": "Scan",
+                "label": "Software"
+              },
+              "order": "desc",
+              "prop": null
+            },
+            "labels": [
+              "Software"
+            ],
+            "op": "groupby"
+          }
+        }
+      }
+    ],
+    "exit_code": 0,
+    "status": "answered",
+    "timings": {
+      "plan_ms": 21406.449,
+      "specialists": [
+        {
+          "sub_question": "q1",
+          "source": "attack",
+          "ms": 18.174
+        }
+      ],
+      "synthesis_ms": 8.134,
+      "total_ms": 21472.802
+    },
+    "registry_model": "gemma4-31b",
+    "drafter_used": "TypedDrafter",
+    "typed": [
+      {
+        "mode": "lazy",
+        "served_model": "gemma4-31b/106",
+        "model_calls": 2,
+        "catalog_calls": [
+          {
+            "name": "find_schema",
+            "args": {
+              "graph": "attack",
+              "text": "USES"
+            },
+            "ok": true
+          }
+        ],
+        "prompt_tokens": 6365,
+        "completion_tokens": 1276,
+        "emitted": true,
+        "parse_error": null,
+        "first_steps": 1,
+        "first_refused": 0,
+        "first_fixes": 0,
+        "valid_first": true,
+        "valid_first_raw": true,
+        "repair_used": false,
+        "fixed_by_repair": false,
+        "still_refused": 0,
+        "final_steps": 1,
+        "coercions": [],
+        "refusals": [],
+        "plan_problems": [],
+        "replies": [
+          {
+            "status": "ok",
+            "finish_reason": "tool_calls",
+            "calls": [
+              "find_schema"
+            ],
+            "text_chars": 0,
+            "repairs": []
+          },
+          {
+            "status": "ok",
+            "finish_reason": "stop",
+            "calls": [],
+            "text_chars": 388,
+            "repairs": []
+          }
+        ],
+        "error": null,
+        "fallback": null,
+        "seconds": 21.393,
+        "n_catalog_calls": 1,
+        "fixed_by_coercion": false
+      }
+    ],
+    "seams": {
+      "planner_llm": true,
+      "drafter": "TypedDrafter",
+      "specialist_llm": false,
+      "synthesis_llm": false,
+      "generic_only": "true"
+    },
+    "wall_s": 21.478,
+    "algebra_results": [
+      {
+        "step": "q1",
+        "kind": "groupby",
+        "value": null,
+        "ids": [
+          "S0260"
+        ],
+        "rows": [
+          {
+            "id": "S0260",
+            "name": "InvisiMole",
+            "value": 33
+          }
+        ],
+        "total": 1,
+        "complete": true,
+        "info": {}
+      }
+    ]
+  },
+  "evidence_volume": {
+    "results": 1,
+    "records": 1,
+    "related": 0
+  }
+}

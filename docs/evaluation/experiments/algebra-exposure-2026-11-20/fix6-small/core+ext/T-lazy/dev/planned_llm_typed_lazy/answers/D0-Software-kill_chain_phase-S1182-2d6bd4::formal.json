@@ -1,0 +1,458 @@
+{
+  "id": "D0-Software-kill_chain_phase-S1182-2d6bd4::formal",
+  "kind": "attack",
+  "tier": "adversarial",
+  "category": "D0-Software",
+  "question": "Which ATT&CK tactics does the malware MagicRAT (S1182) belong to?",
+  "gold": {
+    "assertions": {
+      "min_records": 0,
+      "must_include_ids": [
+        "S1182"
+      ],
+      "must_include_related": []
+    },
+    "ex_gold": {
+      "pool": "neighbors",
+      "expected": [],
+      "scheme": "attack",
+      "kind": "set"
+    }
+  },
+  "answer": {
+    "headline": "Gathered 1 record(s) from 1 source(s).",
+    "narrative": "Found 9 item(s) related to S1182 (e.g. T1105, T1041, T1016) in MITRE ATT&CK. S1182 (MagicRAT) has 5 used techniques: T1105, T1041, T1016, T1140, T1082. S1182 (MagicRAT) has 4 tactics: TA0011, TA0010, TA0007, TA0005.",
+    "composer": "deterministic",
+    "fallback_reason": null,
+    "claims": [
+      {
+        "text": "Found 9 item(s) related to S1182 (e.g. T1105, T1041, T1016) in MITRE ATT&CK.",
+        "kind": "fact",
+        "entity_ids": [
+          "S1182"
+        ],
+        "citations": [
+          {
+            "source": "attack",
+            "primary_id": "S1182"
+          }
+        ]
+      },
+      {
+        "text": "S1182 (MagicRAT) has 5 used techniques: T1105, T1041, T1016, T1140, T1082.",
+        "kind": "enumeration",
+        "entity_ids": [
+          "T1105",
+          "T1041",
+          "T1016",
+          "T1140",
+          "T1082"
+        ],
+        "citations": [
+          {
+            "source": "attack",
+            "primary_id": "S1182"
+          }
+        ]
+      },
+      {
+        "text": "S1182 (MagicRAT) has 4 tactics: TA0011, TA0010, TA0007, TA0005.",
+        "kind": "enumeration",
+        "entity_ids": [
+          "TA0011",
+          "TA0010",
+          "TA0007",
+          "TA0005"
+        ],
+        "citations": [
+          {
+            "source": "attack",
+            "primary_id": "S1182"
+          }
+        ]
+      }
+    ],
+    "abstentions": [],
+    "notes": []
+  },
+  "logic_flow": {
+    "task": {
+      "sub_question_id": "q1",
+      "source": "attack",
+      "text": "Which ATT&CK tactics does the malware MagicRAT (S1182) belong to?",
+      "entities": [
+        "Software",
+        "HAS_TECHNIQUE",
+        "Tactic"
+      ],
+      "limits": {
+        "max_traversal_depth": 3,
+        "max_result_rows": 20000,
+        "query_timeout_ms": 5000
+      },
+      "join_key": null,
+      "seed_ids": [
+        "S1182"
+      ],
+      "rationale": "generated from the schema census"
+    },
+    "results": [
+      {
+        "source": "attack",
+        "sub_question_id": "q1",
+        "sub_question": "",
+        "query": "MATCH (n) WHERE coalesce(n.attack_id, n.id) IN $ids OPTIONAL MATCH (n)-[:USES]->(t0:Technique) WITH n, collect(DISTINCT {m: t0, r: 'USES'}) AS k0 OPTIONAL MATCH (n)-[:USES]->(:Technique)<-[:HAS_TECHNIQUE]-(t1:Tactic) WITH n, k0, collect(DISTINCT {m: t1, r: 'HAS_TECHNIQUE'}) AS k1 WITH n, [x IN k0 + k1 WHERE x.m IS NOT NULL] AS hops UNWIND (CASE WHEN size(hops) = 0 THEN [{m: null, r: null}] ELSE hops END) AS hop RETURN coalesce(n.attack_id, n.id) AS anchor_id, n.name AS anchor_name, labels(n)[0] AS anchor_label, coalesce(hop.m.attack_id, hop.m.id) AS neighbour_id, hop.m.name AS neighbour_name, labels(hop.m)[0] AS neighbour_label, hop.r AS rel_type LIMIT 1000",
+        "ok": true,
+        "partial": false,
+        "error": null,
+        "summary": "Found 9 item(s) related to S1182 (e.g. T1105, T1041, T1016) in MITRE ATT&CK.",
+        "traces": [
+          {
+            "step": "intake",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "source": "attack",
+              "card": "attack"
+            }
+          },
+          {
+            "step": "resolve",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "labels": [
+                "Software",
+                "Technique",
+                "Tactic"
+              ],
+              "relationships": [
+                "USES",
+                "HAS_TECHNIQUE"
+              ],
+              "seed_ids": [
+                "S1182"
+              ],
+              "join_key": null
+            }
+          },
+          {
+            "step": "gate",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "attempt": 1,
+              "template": "typed_step",
+              "query": "MATCH (n) WHERE coalesce(n.attack_id, n.id) IN $ids OPTIONAL MATCH (n)-[:USES]->(t0:Technique) WITH n, collect(DISTINCT {m: t0, r: 'USES'}) AS k0 OPTIONAL MATCH (n)-[:USES]->(:Technique)<-[:HAS_TECHNIQUE]-(t1:Tactic) WITH n, k0, collect(DISTINCT {m: t1, r: 'HAS_TECHNIQUE'}) AS k1 WITH n, [x IN k0 + k1 WHERE x.m IS NOT NULL] AS hops UNWIND (CASE WHEN size(hops) = 0 THEN [{m: null, r: null}] ELSE hops END) AS hop RETURN coalesce(n.attack_id, n.id) AS anchor_id, n.name AS anchor_name, labels(n)[0] AS anchor_label, coalesce(hop.m.attack_id, hop.m.id) AS neighbour_id, hop.m.name AS neighbour_name, labels(hop.m)[0] AS neighbour_label, hop.r AS rel_type LIMIT 1000",
+              "injected": [
+                "LIMIT 1000 appended (none present)"
+              ],
+              "timing_ms": 0.363
+            }
+          },
+          {
+            "step": "execute",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "row_count": 9,
+              "timing_ms": 6.4,
+              "row_ceiling": 1000,
+              "truncated": false
+            }
+          },
+          {
+            "step": "assess",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "row_count": 9,
+              "timing_ms": 0.006
+            }
+          },
+          {
+            "step": "normalize",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "record_count": 1,
+              "timing_ms": 3.108
+            }
+          }
+        ],
+        "records": [
+          {
+            "primary_id": "S1182",
+            "name": "MagicRAT",
+            "label": "Software",
+            "description": "",
+            "properties": {},
+            "facets": [],
+            "join_values": [],
+            "related": [
+              {
+                "id": "T1105",
+                "name": "Ingress Tool Transfer",
+                "label": "Technique",
+                "type": "USES",
+                "description": "Adversaries may transfer tools or other files from an external system into a compromised environment. Tools or files may be copied from an external adversary-controlled system to the victim network through the command and control channel or through alternate protocols such as [ftp](https://attack.mitre.org/software/S0095). Once present, adversaries may also transfer/spread tools between victim devices within a compromised environment (i.e. [Lateral Tool Transfer](https://attack.mitre.org/techniques/T1570)). \n\nOn Windows, adversaries may use various utilities to download tools, such as `copy`, `finger`, [certutil](https://attack.mitre.org/software/S0160), and [PowerShell](https://attack.mitre.org/techniques/T1059/001) commands such as <code>IEX(New-Object Net.WebClient).downloadString()</code> and <code>Invoke-WebRequest</code>. On Linux and macOS systems, a variety of utilities also exist, such as `curl`, `scp`, `sftp`, `tftp`, `rsync`, `finger`, and `wget`.(Citation: t1105_lolbas)  A number of these tools, such as `wget`, `curl`, and `scp`, also exist on ESXi. After downloading a file, a threat actor may attempt to verify its integrity by checking its hash value (e.g., via `certutil -hashfile`).(Citation: Google Cloud Threat Intelligence COSCMICENERGY 2023)\n\nAdversaries may also abuse installers and package managers, such as `yum` or `winget`, to download tools to victim hosts. Adversaries have also abused file application features, such as the Windows `search-ms` protocol handler, to deliver malicious files to victims through remote file searches invoked by [User Execution](https://attack.mitre.org/techniques/T1204) (typically after interacting with [Phishing](https://attack.mitre.org/techniques/T1566) lures).(Citation: T1105: Trellix_search-ms)\n\nFiles can also be transferred using various [Web Service](https://attack.mitre.org/techniques/T1102)s as well as native or otherwise present tools on the victim system.(Citation: PTSecurity Cobalt Dec 2016) In some cases, adversaries may be able to leverage services that sync between a web-based and an on-premises client, such as Dropbox or OneDrive, to transfer files onto victim systems. For example, by compromising a cloud account and logging into the service's web portal, an adversary may be able to trigger an automatic syncing process that transfers the file onto the victim's machine.(Citation: Dropbox Malware Sync)"
+              },
+              {
+                "id": "T1041",
+                "name": "Exfiltration Over C2 Channel",
+                "label": "Technique",
+                "type": "USES",
+                "description": "Adversaries may steal data by exfiltrating it over an existing command and control channel. Stolen data is encoded into the normal communications channel using the same protocol as command and control communications."
+              },
+              {
+                "id": "T1016",
+                "name": "System Network Configuration Discovery",
+                "label": "Technique",
+                "type": "USES",
+                "description": "Adversaries may look for details about the network configuration and settings, such as IP and/or MAC addresses, of systems they access or through information discovery of remote systems. Several operating system administration utilities exist that can be used to gather this information. Examples include [Arp](https://attack.mitre.org/software/S0099), [ipconfig](https://attack.mitre.org/software/S0100)/[ifconfig](https://attack.mitre.org/software/S0101), [nbtstat](https://attack.mitre.org/software/S0102), and [route](https://attack.mitre.org/software/S0103).\n\nAdversaries may also leverage a [Network Device CLI](https://attack.mitre.org/techniques/T1059/008) on network devices to gather information about configurations and settings, such as IP addresses of configured interfaces and static/dynamic routes (e.g. <code>show ip route</code>, <code>show ip interface</code>).(Citation: US-CERT-TA18-106A)(Citation: Mandiant APT41 Global Intrusion ) On ESXi, adversaries may leverage esxcli to gather network configuration information. For example, the command `esxcli network nic list` will retrieve the MAC address, while `esxcli network ip interface ipv4 get` will retrieve the local IPv4 address.(Citation: Trellix Rnasomhouse 2024)\n\nAdversaries may use the information from [System Network Configuration Discovery](https://attack.mitre.org/techniques/T1016) during automated discovery to shape follow-on behaviors, including determining certain access within the target network and what actions to do next. "
+              },
+              {
+                "id": "T1140",
+                "name": "Deobfuscate/Decode Files or Information",
+                "label": "Technique",
+                "type": "USES",
+                "description": "Adversaries may use [Obfuscated Files or Information](https://attack.mitre.org/techniques/T1027) to hide artifacts of an intrusion from analysis. They may require separate mechanisms to decode or deobfuscate that information depending on how they intend to use it. Methods for doing that include built-in functionality of malware or by using utilities present on the system.\n\nOne such example is the use of [certutil](https://attack.mitre.org/software/S0160) to decode a remote access tool portable executable file that has been hidden inside a certificate file.(Citation: Malwarebytes Targeted Attack against Saudi Arabia) Another example is using the Windows <code>copy /b</code> or <code>type</code> command to reassemble binary fragments into a malicious payload.(Citation: Carbon Black Obfuscation Sept 2016)(Citation: Sentinel One Tainted Love 2023)\n\nSometimes a user's action may be required to open it for deobfuscation or decryption as part of [User Execution](https://attack.mitre.org/techniques/T1204). The user may also be required to input a password to open a password protected compressed/encrypted file that was provided by the adversary.(Citation: Volexity PowerDuke November 2016)"
+              },
+              {
+                "id": "T1082",
+                "name": "System Information Discovery",
+                "label": "Technique",
+                "type": "USES",
+                "description": "An adversary may attempt to get detailed information about the operating system and hardware, including version, patches, hotfixes, service packs, and architecture. Adversaries may use this information to shape follow-on behaviors, including whether or not the adversary fully infects the target and/or attempts specific actions. This behavior is distinct from [Local Storage Discovery](https://attack.mitre.org/techniques/T1680) which is an adversary's discovery of local drive, disks and/or volumes.\n\nTools such as [Systeminfo](https://attack.mitre.org/software/S0096) can be used to gather detailed system information. If running with privileged access, a breakdown of system data can be gathered through the <code>systemsetup</code> configuration tool on macOS. Adversaries may leverage a [Network Device CLI](https://attack.mitre.org/techniques/T1059/008) on network devices to gather detailed system information (e.g. <code>show version</code>).(Citation: US-CERT-TA18-106A) On ESXi servers, threat actors may gather system information from various esxcli utilities, such as `system hostname get` and `system version get`.(Citation: Crowdstrike Hypervisor Jackpotting Pt 2 2021)(Citation: Varonis)\n\nInfrastructure as a Service (IaaS) cloud providers such as AWS, GCP, and Azure allow access to instance and virtual machine information via APIs. Successful authenticated API calls can return data such as the operating system platform and status of a particular instance or the model view of a virtual machine.(Citation: Amazon Describe Instance)(Citation: Google Instances Resource)(Citation: Microsoft Virutal Machine API)\n\n[System Information Discovery](https://attack.mitre.org/techniques/T1082) combined with information gathered from other forms of discovery and reconnaissance can drive payload development and concealment.(Citation: OSX.FairyTale)(Citation: 20 macOS Common Tools and Techniques) "
+              },
+              {
+                "id": "TA0011",
+                "name": "Command and Control",
+                "label": "Tactic",
+                "type": "HAS_TECHNIQUE",
+                "description": "The adversary is trying to communicate with compromised systems to control them.\n\nCommand and Control consists of techniques that adversaries may use to communicate with systems under their control within a victim network. Adversaries commonly attempt to mimic normal, expected traffic to avoid detection. There are many ways an adversary can establish command and control with various levels of stealth depending on the victim’s network structure and defenses."
+              },
+              {
+                "id": "TA0010",
+                "name": "Exfiltration",
+                "label": "Tactic",
+                "type": "HAS_TECHNIQUE",
+                "description": "The adversary is trying to steal data.\n\nExfiltration consists of techniques that adversaries may use to steal data from your network. Once they’ve collected data, adversaries often package it to avoid detection while removing it. This can include compression and encryption. Techniques for getting data out of a target network typically include transferring it over their command and control channel or an alternate channel and may also include putting size limits on the transmission."
+              },
+              {
+                "id": "TA0007",
+                "name": "Discovery",
+                "label": "Tactic",
+                "type": "HAS_TECHNIQUE",
+                "description": "The adversary is trying to figure out your environment.\n\nDiscovery consists of techniques an adversary may use to gain knowledge about the system and internal network. These techniques help adversaries observe the environment and orient themselves before deciding how to act. They also allow adversaries to explore what they can control and what’s around their entry point in order to discover how it could benefit their current objective. Native operating system tools are often used toward this post-compromise information-gathering objective. "
+              },
+              {
+                "id": "TA0005",
+                "name": "Stealth",
+                "label": "Tactic",
+                "type": "HAS_TECHNIQUE",
+                "description": "The adversary is trying to hide and conceal their actions, appearing as normal behavior.\n\nStealth consists of techniques that reduce the likelihood of detection by blending in with legitimate activity or minimizing observable signals. These techniques are characterized by concealment behaviors, such as avoiding, obfuscating, or mimicking normal operations, without modifying security controls or compromising collection and monitoring feeds. The goal is to remain indistinguishable from benign activity while leaving defensive systems intact."
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "deterministic_scores": {
+    "correlation": null,
+    "mapping_recall": null,
+    "coverage": {
+      "gold": 1,
+      "found": 1,
+      "coverage": 1.0,
+      "missing": []
+    },
+    "provenance": {
+      "citations": 3,
+      "compliant": 3,
+      "citation_provenance_rate": 1.0,
+      "abstention_proof_ok": true,
+      "fully_provenanced": true
+    },
+    "inspectability": {
+      "citation_coverage": 1.0,
+      "traceability": 1.0,
+      "abstention_proofs": 1.0,
+      "inspectability": 1.0
+    }
+  },
+  "arm": "planned_llm_typed_lazy",
+  "run_meta": {
+    "planner": "llm-typed-lazy",
+    "synthesis": "deterministic",
+    "use_llm": true,
+    "llm_synthesis": false,
+    "llm_specialist": false,
+    "rewrite": null,
+    "observed_plan": [
+      {
+        "sub_question_id": "q1",
+        "source": "attack",
+        "text": "",
+        "entities": [
+          "Software",
+          "USES",
+          "Technique",
+          "HAS_TECHNIQUE",
+          "Tactic"
+        ],
+        "seed_ids": [
+          "S1182"
+        ],
+        "depends_on": null,
+        "limits": {
+          "max_traversal_depth": 3,
+          "max_result_rows": 1000,
+          "query_timeout_ms": 5000
+        },
+        "step": {
+          "kind": "expand",
+          "anchor_label": "Software",
+          "anchor_ids": [
+            "S1182"
+          ],
+          "hops": [
+            {
+              "relation": "USES",
+              "direction": "out",
+              "target_label": "Technique"
+            },
+            {
+              "relation": "HAS_TECHNIQUE",
+              "direction": "in",
+              "target_label": "Tactic"
+            }
+          ],
+          "depth": 1
+        }
+      }
+    ],
+    "exit_code": 0,
+    "status": "answered",
+    "timings": {
+      "plan_ms": 50834.757,
+      "specialists": [
+        {
+          "sub_question": "q1",
+          "source": "attack",
+          "ms": 10.443
+        }
+      ],
+      "synthesis_ms": 6.963,
+      "total_ms": 51507.206
+    },
+    "registry_model": "qwen38-27b",
+    "drafter_used": "TypedDrafter",
+    "typed": [
+      {
+        "mode": "lazy",
+        "served_model": "qwen38-27b/248046",
+        "model_calls": 3,
+        "catalog_calls": [
+          {
+            "name": "resolve_entity",
+            "args": {
+              "text": "MagicRAT",
+              "label": "Software",
+              "graph": "attack"
+            },
+            "ok": true
+          },
+          {
+            "name": "describe",
+            "args": {
+              "target": "USES",
+              "graph": "attack"
+            },
+            "ok": true
+          },
+          {
+            "name": "describe",
+            "args": {
+              "target": "HAS_TACTIC",
+              "graph": "attack"
+            },
+            "ok": true
+          },
+          {
+            "name": "describe",
+            "args": {
+              "target": "Technique",
+              "graph": "attack"
+            },
+            "ok": true
+          }
+        ],
+        "prompt_tokens": 13028,
+        "completion_tokens": 1634,
+        "emitted": true,
+        "parse_error": null,
+        "first_steps": 1,
+        "first_refused": 0,
+        "first_fixes": 0,
+        "valid_first": true,
+        "valid_first_raw": true,
+        "repair_used": false,
+        "fixed_by_repair": false,
+        "still_refused": 0,
+        "final_steps": 1,
+        "coercions": [],
+        "refusals": [],
+        "plan_problems": [],
+        "replies": [
+          {
+            "status": "ok",
+            "finish_reason": "tool_calls",
+            "calls": [
+              "resolve_entity",
+              "describe",
+              "describe"
+            ],
+            "text_chars": 0,
+            "repairs": []
+          },
+          {
+            "status": "ok",
+            "finish_reason": "tool_calls",
+            "calls": [
+              "describe"
+            ],
+            "text_chars": 374,
+            "repairs": []
+          },
+          {
+            "status": "ok",
+            "finish_reason": "stop",
+            "calls": [],
+            "text_chars": 514,
+            "repairs": []
+          }
+        ],
+        "error": null,
+        "fallback": null,
+        "seconds": 50.775,
+        "n_catalog_calls": 4,
+        "fixed_by_coercion": false
+      }
+    ],
+    "seams": {
+      "planner_llm": true,
+      "drafter": "TypedDrafter",
+      "specialist_llm": false,
+      "synthesis_llm": false,
+      "generic_only": "true"
+    },
+    "wall_s": 52.18
+  },
+  "evidence_volume": {
+    "results": 1,
+    "records": 1,
+    "related": 9
+  }
+}

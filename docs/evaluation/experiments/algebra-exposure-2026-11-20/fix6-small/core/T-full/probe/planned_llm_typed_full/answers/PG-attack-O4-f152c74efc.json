@@ -1,0 +1,612 @@
+{
+  "id": "PG-attack-O4-f152c74efc",
+  "kind": "attack",
+  "tier": "algebra-probe",
+  "category": "PG-attack",
+  "question": "Is group G1028 (APT-C-23) directly connected to software S0339 (Micropsia) in ATT&CK, and if it is, what is the nature of that connection?",
+  "gold": {
+    "assertions": {
+      "min_records": 0,
+      "must_include_ids": [],
+      "must_include_related": []
+    },
+    "ex_gold": {
+      "pool": "algebra",
+      "scheme": "attack",
+      "kind": "value",
+      "expected": [],
+      "value": true
+    }
+  },
+  "answer": {
+    "headline": "Gathered 2 record(s) from 1 source(s).",
+    "narrative": "G1028 has no USES relationships in this catalogue. Yes: they are linked by USES (out). Found 1 record in MITRE ATT&CK: APT-C-23 (G1028).",
+    "composer": "deterministic",
+    "fallback_reason": null,
+    "claims": [
+      {
+        "text": "Yes: they are linked by USES (out).",
+        "kind": "fact",
+        "entity_ids": [],
+        "citations": [
+          {
+            "source": "attack",
+            "primary_id": ""
+          }
+        ]
+      },
+      {
+        "text": "Found 1 record in MITRE ATT&CK: APT-C-23 (G1028).",
+        "kind": "fact",
+        "entity_ids": [
+          "G1028"
+        ],
+        "citations": [
+          {
+            "source": "attack",
+            "primary_id": "G1028"
+          }
+        ]
+      },
+      {
+        "text": "G1028 has no USES relationships in this catalogue.",
+        "kind": "absence",
+        "entity_ids": [
+          "G1028"
+        ],
+        "citations": [
+          {
+            "source": "attack",
+            "primary_id": "G1028"
+          }
+        ]
+      }
+    ],
+    "abstentions": [],
+    "notes": []
+  },
+  "logic_flow": {
+    "task": {
+      "sub_question_id": "PG-attack-O4-f152c74efc",
+      "source": "attack",
+      "text": "Is group G1028 (APT-C-23) directly connected to software S0339 (Micropsia) in ATT&CK, and if it is, what is the nature of that connection?",
+      "entities": [
+        "Group",
+        "USES",
+        "Software"
+      ],
+      "limits": {
+        "max_traversal_depth": 3,
+        "max_result_rows": 20000,
+        "query_timeout_ms": 60000
+      },
+      "join_key": null,
+      "seed_ids": [
+        "G1028",
+        "S0339"
+      ],
+      "rationale": "algebra probe set (Era 2 Step 9 Phase G)"
+    },
+    "results": [
+      {
+        "source": "attack",
+        "sub_question_id": "q1",
+        "sub_question": "",
+        "query": "CALL { MATCH (a1:Group) WHERE a1.id IN $p0 RETURN count(a1) > 0 AS f6 } CALL { MATCH (b2:Software) WHERE b2.id IN $p1 RETURN count(b2) > 0 AS f7 } CALL { MATCH (a3:Group)-[r5:USES]->(b4:Software) WHERE a3.id IN $p0 AND b4.id IN $p1 WITH DISTINCT a3, r5 ORDER BY type(r5), r5.id RETURN collect({relation: type(r5), direction: CASE WHEN startNode(r5) = a3 THEN 'out' ELSE 'in' END, properties: properties(r5)}) AS witness } RETURN f6 AS a_found, f7 AS b_found, witness",
+        "ok": true,
+        "partial": false,
+        "error": null,
+        "summary": "Found 1 record in MITRE ATT&CK: verify result.",
+        "traces": [
+          {
+            "step": "intake",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "source": "attack",
+              "card": "attack"
+            }
+          },
+          {
+            "step": "resolve",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "labels": [
+                "Group",
+                "Software"
+              ],
+              "relationships": [
+                "USES"
+              ],
+              "seed_ids": [
+                "G1028",
+                "S0339"
+              ],
+              "join_key": null
+            }
+          },
+          {
+            "step": "gate",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "attempt": 1,
+              "template": "algebra",
+              "query": "CALL { MATCH (a1:Group) WHERE a1.id IN $p0 RETURN count(a1) > 0 AS f6 } CALL { MATCH (b2:Software) WHERE b2.id IN $p1 RETURN count(b2) > 0 AS f7 } CALL { MATCH (a3:Group)-[r5:USES]->(b4:Software) WHERE a3.id IN $p0 AND b4.id IN $p1 WITH DISTINCT a3, r5 ORDER BY type(r5), r5.id RETURN collect({relation: type(r5), direction: CASE WHEN startNode(r5) = a3 THEN 'out' ELSE 'in' END, properties: properties(r5)}) AS witness } RETURN f6 AS a_found, f7 AS b_found, witness",
+              "injected": [],
+              "note": "compiled by the operator algebra (validated against the card; read-only by construction)",
+              "id_map": {
+                "G1028": [
+                  "intrusion-set--8332952e-b86b-486b-acc3-1c2a85d39394"
+                ],
+                "S0339": [
+                  "malware--8c050cea-86e1-4b63-bf21-7af4fa483349"
+                ]
+              }
+            }
+          },
+          {
+            "step": "execute",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "row_count": 1
+            }
+          },
+          {
+            "step": "algebra",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "result": {
+                "step": "q1",
+                "kind": "verify",
+                "value": true,
+                "ids": [],
+                "rows": [
+                  {
+                    "relation": "USES",
+                    "direction": "out",
+                    "properties": {
+                      "stix_type": "relationship",
+                      "relationship_type": "uses",
+                      "id": "relationship--edfebe9b-4387-47e6-8a77-30cfe824c037"
+                    }
+                  }
+                ],
+                "total": 1,
+                "complete": true,
+                "info": {
+                  "a_found": true,
+                  "b_found": true,
+                  "exists": true,
+                  "anchor_not_found": []
+                }
+              },
+              "op": "verify",
+              "ir": {
+                "@": "Verify",
+                "a": {
+                  "@": "Anchors",
+                  "ids": [
+                    "G1028"
+                  ],
+                  "label": "Group"
+                },
+                "b": {
+                  "@": "Anchors",
+                  "ids": [
+                    "S0339"
+                  ],
+                  "label": "Software"
+                },
+                "direction": "out",
+                "relation": "USES"
+              }
+            }
+          }
+        ],
+        "records": [
+          {
+            "primary_id": "",
+            "name": "verify result",
+            "label": "Result",
+            "description": "",
+            "properties": {
+              "value": true,
+              "exists": true,
+              "anchor_not_found": []
+            },
+            "facets": [],
+            "join_values": [],
+            "related": []
+          }
+        ]
+      },
+      {
+        "source": "attack",
+        "sub_question_id": "q2",
+        "sub_question": "",
+        "query": "MATCH (n) WHERE coalesce(n.attack_id, n.id) IN $ids OPTIONAL MATCH (n)-[:USES]->(t0:Software) WHERE t0.`id` = $filterValue WITH n, collect(DISTINCT {m: t0, r: 'USES'}) AS k0 WITH n, [x IN k0 WHERE x.m IS NOT NULL] AS hops UNWIND (CASE WHEN size(hops) = 0 THEN [{m: null, r: null}] ELSE hops END) AS hop RETURN coalesce(n.attack_id, n.id) AS anchor_id, n.name AS anchor_name, labels(n)[0] AS anchor_label, coalesce(hop.m.attack_id, hop.m.id) AS neighbour_id, hop.m.name AS neighbour_name, labels(hop.m)[0] AS neighbour_label, hop.r AS rel_type LIMIT 1000",
+        "ok": true,
+        "partial": false,
+        "error": null,
+        "summary": "Found 1 record in MITRE ATT&CK: APT-C-23 (G1028).",
+        "traces": [
+          {
+            "step": "intake",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "source": "attack",
+              "card": "attack"
+            }
+          },
+          {
+            "step": "resolve",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "labels": [
+                "Group",
+                "Software"
+              ],
+              "relationships": [
+                "USES"
+              ],
+              "seed_ids": [
+                "G1028"
+              ],
+              "join_key": null
+            }
+          },
+          {
+            "step": "gate",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "attempt": 1,
+              "template": "typed_step",
+              "query": "MATCH (n) WHERE coalesce(n.attack_id, n.id) IN $ids OPTIONAL MATCH (n)-[:USES]->(t0:Software) WHERE t0.`id` = $filterValue WITH n, collect(DISTINCT {m: t0, r: 'USES'}) AS k0 WITH n, [x IN k0 WHERE x.m IS NOT NULL] AS hops UNWIND (CASE WHEN size(hops) = 0 THEN [{m: null, r: null}] ELSE hops END) AS hop RETURN coalesce(n.attack_id, n.id) AS anchor_id, n.name AS anchor_name, labels(n)[0] AS anchor_label, coalesce(hop.m.attack_id, hop.m.id) AS neighbour_id, hop.m.name AS neighbour_name, labels(hop.m)[0] AS neighbour_label, hop.r AS rel_type LIMIT 1000",
+              "injected": [
+                "LIMIT 1000 appended (none present)"
+              ],
+              "timing_ms": 0.312
+            }
+          },
+          {
+            "step": "execute",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "row_count": 1,
+              "timing_ms": 14.5,
+              "row_ceiling": 1000,
+              "truncated": false
+            }
+          },
+          {
+            "step": "assess",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "row_count": 1,
+              "timing_ms": 0.009
+            }
+          },
+          {
+            "step": "normalize",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "record_count": 1,
+              "timing_ms": 0.067
+            }
+          }
+        ],
+        "records": [
+          {
+            "primary_id": "G1028",
+            "name": "APT-C-23",
+            "label": "Group",
+            "description": "",
+            "properties": {},
+            "facets": [],
+            "join_values": [],
+            "related": []
+          }
+        ]
+      }
+    ]
+  },
+  "deterministic_scores": {
+    "correlation": null,
+    "mapping_recall": null,
+    "coverage": null,
+    "provenance": {
+      "citations": 3,
+      "compliant": 3,
+      "citation_provenance_rate": 1.0,
+      "abstention_proof_ok": true,
+      "fully_provenanced": true
+    },
+    "inspectability": {
+      "citation_coverage": 1.0,
+      "traceability": 1.0,
+      "abstention_proofs": 1.0,
+      "inspectability": 1.0
+    }
+  },
+  "arm": "planned_llm_typed_full",
+  "run_meta": {
+    "planner": "llm-typed-full",
+    "synthesis": "deterministic",
+    "use_llm": true,
+    "llm_synthesis": false,
+    "llm_specialist": false,
+    "rewrite": null,
+    "observed_plan": [
+      {
+        "sub_question_id": "q1",
+        "source": "attack",
+        "text": "",
+        "entities": [
+          "Group",
+          "USES",
+          "Software"
+        ],
+        "seed_ids": [
+          "G1028",
+          "S0339"
+        ],
+        "depends_on": null,
+        "limits": {
+          "max_traversal_depth": 3,
+          "max_result_rows": 1000,
+          "query_timeout_ms": 5000
+        },
+        "step": {
+          "kind": "algebra",
+          "anchor_label": "Group",
+          "anchor_ids": [
+            "G1028",
+            "S0339"
+          ],
+          "hops": [],
+          "depth": 1,
+          "algebra": {
+            "ir": {
+              "@": "Verify",
+              "a": {
+                "@": "Anchors",
+                "ids": [
+                  "G1028"
+                ],
+                "label": "Group"
+              },
+              "b": {
+                "@": "Anchors",
+                "ids": [
+                  "S0339"
+                ],
+                "label": "Software"
+              },
+              "direction": "out",
+              "relation": "USES"
+            },
+            "labels": [],
+            "op": "verify"
+          }
+        }
+      },
+      {
+        "sub_question_id": "q2",
+        "source": "attack",
+        "text": "",
+        "entities": [
+          "Group",
+          "USES",
+          "Software"
+        ],
+        "seed_ids": [
+          "G1028"
+        ],
+        "depends_on": null,
+        "limits": {
+          "max_traversal_depth": 3,
+          "max_result_rows": 1000,
+          "query_timeout_ms": 5000
+        },
+        "step": {
+          "kind": "expand",
+          "anchor_label": "Group",
+          "anchor_ids": [
+            "G1028"
+          ],
+          "hops": [
+            {
+              "relation": "USES",
+              "direction": "out",
+              "target_label": "Software"
+            }
+          ],
+          "depth": 1,
+          "filter": {
+            "property": "id",
+            "value": "S0339"
+          }
+        }
+      }
+    ],
+    "exit_code": 0,
+    "status": "answered",
+    "timings": {
+      "plan_ms": 39888.346,
+      "specialists": [
+        {
+          "sub_question": "q1",
+          "source": "attack",
+          "ms": 8.691
+        },
+        {
+          "sub_question": "q2",
+          "source": "attack",
+          "ms": 16.181
+        }
+      ],
+      "synthesis_ms": 7.715,
+      "total_ms": 39961.943
+    },
+    "registry_model": "qwen38-27b",
+    "drafter_used": "TypedDrafter",
+    "typed": [
+      {
+        "mode": "full",
+        "served_model": "qwen38-27b/248046",
+        "model_calls": 3,
+        "catalog_calls": [
+          {
+            "name": "describe",
+            "args": {
+              "target": "G1028",
+              "graph": "attack"
+            },
+            "ok": false
+          },
+          {
+            "name": "describe",
+            "args": {
+              "target": "S0339",
+              "graph": "attack"
+            },
+            "ok": false
+          },
+          {
+            "name": "resolve_entity",
+            "args": {
+              "text": "APT-C-23",
+              "label": "Group",
+              "graph": "attack"
+            },
+            "ok": true
+          },
+          {
+            "name": "resolve_entity",
+            "args": {
+              "text": "Micropsia",
+              "label": "Software",
+              "graph": "attack"
+            },
+            "ok": true
+          }
+        ],
+        "prompt_tokens": 21618,
+        "completion_tokens": 1472,
+        "emitted": true,
+        "parse_error": null,
+        "first_steps": 2,
+        "first_refused": 0,
+        "first_fixes": 2,
+        "valid_first": true,
+        "valid_first_raw": false,
+        "repair_used": false,
+        "fixed_by_repair": false,
+        "still_refused": 0,
+        "final_steps": 2,
+        "coercions": [
+          {
+            "step": "q1",
+            "field": "anchor.anchor_label",
+            "from": null,
+            "to": "Group",
+            "filled_by": "id_scheme"
+          },
+          {
+            "step": "q1",
+            "field": "other.anchor_label",
+            "from": null,
+            "to": "Software",
+            "filled_by": "id_scheme"
+          }
+        ],
+        "refusals": [],
+        "plan_problems": [],
+        "replies": [
+          {
+            "status": "ok",
+            "finish_reason": "tool_calls",
+            "calls": [
+              "describe",
+              "describe"
+            ],
+            "text_chars": 0,
+            "repairs": []
+          },
+          {
+            "status": "ok",
+            "finish_reason": "tool_calls",
+            "calls": [
+              "resolve_entity",
+              "resolve_entity"
+            ],
+            "text_chars": 0,
+            "repairs": []
+          },
+          {
+            "status": "ok",
+            "finish_reason": "stop",
+            "calls": [],
+            "text_chars": 578,
+            "repairs": []
+          }
+        ],
+        "error": null,
+        "fallback": null,
+        "seconds": 39.876,
+        "n_catalog_calls": 4,
+        "fixed_by_coercion": true
+      }
+    ],
+    "seams": {
+      "planner_llm": true,
+      "drafter": "TypedDrafter",
+      "specialist_llm": false,
+      "synthesis_llm": false,
+      "generic_only": "true"
+    },
+    "wall_s": 39.964,
+    "algebra_results": [
+      {
+        "step": "q1",
+        "kind": "verify",
+        "value": true,
+        "ids": [],
+        "rows": [
+          {
+            "relation": "USES",
+            "direction": "out",
+            "properties": {
+              "stix_type": "relationship",
+              "relationship_type": "uses",
+              "id": "relationship--edfebe9b-4387-47e6-8a77-30cfe824c037"
+            }
+          }
+        ],
+        "total": 1,
+        "complete": true,
+        "info": {
+          "a_found": true,
+          "b_found": true,
+          "exists": true,
+          "anchor_not_found": []
+        }
+      }
+    ]
+  },
+  "evidence_volume": {
+    "results": 2,
+    "records": 2,
+    "related": 0
+  }
+}

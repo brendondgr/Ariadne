@@ -1,0 +1,548 @@
+{
+  "id": "D3-uses-T1552.004-88380d::analyst",
+  "kind": "attack",
+  "tier": "medium",
+  "category": "D3-uses",
+  "question": "Which malware and tools use T1552.004?",
+  "gold": {
+    "assertions": {
+      "min_records": 1,
+      "must_include_ids": [
+        "T1552.004"
+      ],
+      "must_include_related": [
+        "S0002",
+        "S0283",
+        "S0363",
+        "S0377",
+        "S0409",
+        "S0599",
+        "S0601",
+        "S0661",
+        "S0677",
+        "S1060",
+        "S1196"
+      ]
+    },
+    "ex_gold": {
+      "pool": "neighbors",
+      "expected": [
+        "S0002",
+        "S0283",
+        "S0363",
+        "S0377",
+        "S0409",
+        "S0599",
+        "S0601",
+        "S0661",
+        "S0677",
+        "S1060",
+        "S1196"
+      ],
+      "scheme": "attack",
+      "kind": "set"
+    }
+  },
+  "answer": {
+    "headline": "Gathered 1 record(s) from 1 source(s).",
+    "narrative": "Found 19 item(s) related to T1552.004 (e.g. S0002, S0363, S0677) in MITRE ATT&CK. T1552.004 (Private Keys) has 11 pieces of software: S0002, S0363, S0677, S0283, S0599, S0377, S1196, S0661, S0601, S1060, S0409. T1552.004 (Private Keys) has 6 groups: G1053, G1015, G0106, G0139, G1017, G0094. T1552.004 (Private Keys) has 2 campaigns: C0014, C0024.",
+    "composer": "deterministic",
+    "fallback_reason": null,
+    "claims": [
+      {
+        "text": "Found 19 item(s) related to T1552.004 (e.g. S0002, S0363, S0677) in MITRE ATT&CK.",
+        "kind": "fact",
+        "entity_ids": [
+          "T1552.004"
+        ],
+        "citations": [
+          {
+            "source": "attack",
+            "primary_id": "T1552.004"
+          }
+        ]
+      },
+      {
+        "text": "T1552.004 (Private Keys) has 11 pieces of software: S0002, S0363, S0677, S0283, S0599, S0377, S1196, S0661, S0601, S1060, S0409.",
+        "kind": "enumeration",
+        "entity_ids": [
+          "S0002",
+          "S0363",
+          "S0677",
+          "S0283",
+          "S0599",
+          "S0377",
+          "S1196",
+          "S0661",
+          "S0601",
+          "S1060",
+          "S0409"
+        ],
+        "citations": [
+          {
+            "source": "attack",
+            "primary_id": "T1552.004"
+          }
+        ]
+      },
+      {
+        "text": "T1552.004 (Private Keys) has 6 groups: G1053, G1015, G0106, G0139, G1017, G0094.",
+        "kind": "enumeration",
+        "entity_ids": [
+          "G1053",
+          "G1015",
+          "G0106",
+          "G0139",
+          "G1017",
+          "G0094"
+        ],
+        "citations": [
+          {
+            "source": "attack",
+            "primary_id": "T1552.004"
+          }
+        ]
+      },
+      {
+        "text": "T1552.004 (Private Keys) has 2 campaigns: C0014, C0024.",
+        "kind": "enumeration",
+        "entity_ids": [
+          "C0014",
+          "C0024"
+        ],
+        "citations": [
+          {
+            "source": "attack",
+            "primary_id": "T1552.004"
+          }
+        ]
+      }
+    ],
+    "abstentions": [],
+    "notes": []
+  },
+  "logic_flow": {
+    "task": {
+      "sub_question_id": "q1",
+      "source": "attack",
+      "text": "Which malware and tools use T1552.004?",
+      "entities": [
+        "Technique",
+        "USES",
+        "Software"
+      ],
+      "limits": {
+        "max_traversal_depth": 3,
+        "max_result_rows": 20000,
+        "query_timeout_ms": 5000
+      },
+      "join_key": null,
+      "seed_ids": [
+        "T1552.004"
+      ],
+      "rationale": "generated from the schema census"
+    },
+    "results": [
+      {
+        "source": "attack",
+        "sub_question_id": "q1",
+        "sub_question": "",
+        "query": "MATCH (n) WHERE coalesce(n.attack_id, n.id) IN $ids OPTIONAL MATCH (n)<-[:USES]-(t0) WITH n, collect(DISTINCT {m: t0, r: 'USES'}) AS k0 WITH n, [x IN k0 WHERE x.m IS NOT NULL] AS hops UNWIND (CASE WHEN size(hops) = 0 THEN [{m: null, r: null}] ELSE hops END) AS hop RETURN coalesce(n.attack_id, n.id) AS anchor_id, n.name AS anchor_name, labels(n)[0] AS anchor_label, coalesce(hop.m.attack_id, hop.m.id) AS neighbour_id, hop.m.name AS neighbour_name, labels(hop.m)[0] AS neighbour_label, hop.r AS rel_type LIMIT 1000",
+        "ok": true,
+        "partial": false,
+        "error": null,
+        "summary": "Found 19 item(s) related to T1552.004 (e.g. S0002, S0363, S0677) in MITRE ATT&CK.",
+        "traces": [
+          {
+            "step": "intake",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "source": "attack",
+              "card": "attack"
+            }
+          },
+          {
+            "step": "resolve",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "labels": [
+                "SubTechnique"
+              ],
+              "relationships": [
+                "USES"
+              ],
+              "seed_ids": [
+                "T1552.004"
+              ],
+              "join_key": null
+            }
+          },
+          {
+            "step": "gate",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "attempt": 1,
+              "template": "typed_step",
+              "query": "MATCH (n) WHERE coalesce(n.attack_id, n.id) IN $ids OPTIONAL MATCH (n)<-[:USES]-(t0) WITH n, collect(DISTINCT {m: t0, r: 'USES'}) AS k0 WITH n, [x IN k0 WHERE x.m IS NOT NULL] AS hops UNWIND (CASE WHEN size(hops) = 0 THEN [{m: null, r: null}] ELSE hops END) AS hop RETURN coalesce(n.attack_id, n.id) AS anchor_id, n.name AS anchor_name, labels(n)[0] AS anchor_label, coalesce(hop.m.attack_id, hop.m.id) AS neighbour_id, hop.m.name AS neighbour_name, labels(hop.m)[0] AS neighbour_label, hop.r AS rel_type LIMIT 1000",
+              "injected": [
+                "LIMIT 1000 appended (none present)"
+              ],
+              "timing_ms": 0.291
+            }
+          },
+          {
+            "step": "execute",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "row_count": 19,
+              "timing_ms": 14.4,
+              "row_ceiling": 1000,
+              "truncated": false
+            }
+          },
+          {
+            "step": "assess",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "row_count": 19,
+              "timing_ms": 0.011
+            }
+          },
+          {
+            "step": "normalize",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "record_count": 1,
+              "timing_ms": 3.634
+            }
+          }
+        ],
+        "records": [
+          {
+            "primary_id": "T1552.004",
+            "name": "Private Keys",
+            "label": "SubTechnique",
+            "description": "",
+            "properties": {},
+            "facets": [],
+            "join_values": [
+              "T1552.004"
+            ],
+            "related": [
+              {
+                "id": "S0002",
+                "name": "Mimikatz",
+                "label": "Software",
+                "type": "USES",
+                "description": "[Mimikatz](https://attack.mitre.org/software/S0002) is a credential dumper capable of obtaining plaintext Windows account logins and passwords, along with many other features that make it useful for testing the security of networks. (Citation: Deply Mimikatz) (Citation: Adsecurity Mimikatz Guide)"
+              },
+              {
+                "id": "S0363",
+                "name": "Empire",
+                "label": "Software",
+                "type": "USES",
+                "description": "[Empire](https://attack.mitre.org/software/S0363) is an open-source, cross-platform remote administration and post-exploitation framework that is publicly available on GitHub. While the tool itself is primarily written in Python, the post-exploitation agents are written in pure [PowerShell](https://attack.mitre.org/techniques/T1059/001) for Windows and Python for Linux/macOS. [Empire](https://attack.mitre.org/software/S0363) was one of five tools singled out by a joint report on public hacking tools being widely used by adversaries.(Citation: NCSC Joint Report Public Tools)(Citation: Github PowerShell Empire)(Citation: GitHub ATTACK Empire)"
+              },
+              {
+                "id": "S0677",
+                "name": "AADInternals",
+                "label": "Software",
+                "type": "USES",
+                "description": "[AADInternals](https://attack.mitre.org/software/S0677) is a PowerShell-based framework for administering, enumerating, and exploiting Azure Active Directory. The tool is publicly available on GitHub.(Citation: AADInternals Github)(Citation: AADInternals Documentation)"
+              },
+              {
+                "id": "S0283",
+                "name": "jRAT",
+                "label": "Software",
+                "type": "USES",
+                "description": "[jRAT](https://attack.mitre.org/software/S0283) is a cross-platform, Java-based backdoor originally available for purchase in 2012. Variants of [jRAT](https://attack.mitre.org/software/S0283) have been distributed via a software-as-a-service platform, similar to an online subscription model.(Citation: Kaspersky Adwind Feb 2016) (Citation: jRAT Symantec Aug 2018)"
+              },
+              {
+                "id": "S0599",
+                "name": "Kinsing",
+                "label": "Software",
+                "type": "USES",
+                "description": "[Kinsing](https://attack.mitre.org/software/S0599) is Golang-based malware that runs a cryptocurrency miner and attempts to spread itself to other hosts in the victim environment. (Citation: Aqua Kinsing April 2020)(Citation: Sysdig Kinsing November 2020)(Citation: Aqua Security Cloud Native Threat Report June 2021)"
+              },
+              {
+                "id": "S0377",
+                "name": "Ebury",
+                "label": "Software",
+                "type": "USES",
+                "description": "[Ebury](https://attack.mitre.org/software/S0377) is an OpenSSH backdoor and credential stealer targeting Linux servers and container hosts developed by [Windigo](https://attack.mitre.org/groups/G0124). [Ebury](https://attack.mitre.org/software/S0377) is primarily installed through modifying shared libraries (`.so` files) executed by the legitimate OpenSSH program. First seen in 2009, [Ebury](https://attack.mitre.org/software/S0377) has been used to maintain a botnet of servers, deploy additional malware, and steal cryptocurrency wallets, credentials, and credit card details.(Citation: ESET Ebury Feb 2014)(Citation: BleepingComputer Ebury March 2017)(Citation: ESET Ebury Oct 2017)(Citation: ESET Ebury May 2024)"
+              },
+              {
+                "id": "S1196",
+                "name": "Troll Stealer",
+                "label": "Software",
+                "type": "USES",
+                "description": "[Troll Stealer](https://attack.mitre.org/software/S1196) is an information stealer written in Go associated with [Kimsuky](https://attack.mitre.org/groups/G0094) operations. [Troll Stealer](https://attack.mitre.org/software/S1196) has typically been delivered through a dropper disguised as a legitimate security program installation file. [Troll Stealer](https://attack.mitre.org/software/S1196) features code similar to [AppleSeed](https://attack.mitre.org/software/S0622), also uniquely associated with [Kimsuky](https://attack.mitre.org/groups/G0094) operations.(Citation: S2W Troll Stealer 2024)(Citation: Symantec Troll Stealer 2024)"
+              },
+              {
+                "id": "S0661",
+                "name": "FoggyWeb",
+                "label": "Software",
+                "type": "USES",
+                "description": "[FoggyWeb](https://attack.mitre.org/software/S0661) is a passive and highly-targeted backdoor capable of remotely exfiltrating sensitive information from a compromised Active Directory Federated Services (AD FS) server. It has been used by [APT29](https://attack.mitre.org/groups/G0016) since at least early April 2021.(Citation: MSTIC FoggyWeb September 2021)"
+              },
+              {
+                "id": "S0601",
+                "name": "Hildegard",
+                "label": "Software",
+                "type": "USES",
+                "description": "[Hildegard](https://attack.mitre.org/software/S0601) is malware that targets misconfigured kubelets for initial access and runs cryptocurrency miner operations. The malware was first observed in January 2021. The TeamTNT activity group is believed to be behind [Hildegard](https://attack.mitre.org/software/S0601). (Citation: Unit 42 Hildegard Malware)"
+              },
+              {
+                "id": "S1060",
+                "name": "Mafalda",
+                "label": "Software",
+                "type": "USES",
+                "description": "[Mafalda](https://attack.mitre.org/software/S1060) is a flexible interactive implant that has been used by [Metador](https://attack.mitre.org/groups/G1013). Security researchers assess the [Mafalda](https://attack.mitre.org/software/S1060) name may be inspired by an Argentinian cartoon character that has been popular as a means of political commentary since the 1960s. (Citation: SentinelLabs Metador Sept 2022)"
+              },
+              {
+                "id": "S0409",
+                "name": "Machete",
+                "label": "Software",
+                "type": "USES",
+                "description": "[Machete](https://attack.mitre.org/software/S0409) is a cyber espionage toolset used by [Machete](https://attack.mitre.org/groups/G0095). It is a Python-based backdoor targeting Windows machines that was first observed in 2010.(Citation: ESET Machete July 2019)(Citation: Securelist Machete Aug 2014)(Citation: 360 Machete Sep 2020)"
+              },
+              {
+                "id": "G1053",
+                "name": "Storm-0501",
+                "label": "Group",
+                "type": "USES",
+                "description": "[Storm-0501](https://attack.mitre.org/groups/G1053) is a financially motivated cyber criminal group that uses commodity and open-source tools to conduct ransomware operations. [Storm-0501](https://attack.mitre.org/groups/G1053) has been active since 2021 and has previously been affiliated with Sabbath Ransomware and other Ransomware-as-a-Service (RaaS) variants such as Hive, [BlackCat](https://attack.mitre.org/software/S1068), Hunters International, [LockBit 3.0](https://attack.mitre.org/software/S1202), and [Embargo](https://attack.mitre.org/software/S1247) ransomware.(Citation: Avertium Storm-0501 Sabbath Ransomware Arcane January 2022)(Citation: Microsoft Storm-501 Sabbath Ransomware Embargo September 2024)(Citation: Microsoft Storm-0501 Embargo Ransomware August 2025)(Citation: Google Mandiant Storm-0501 Sabbath Ransomware November 2021)"
+              },
+              {
+                "id": "G1015",
+                "name": "Scattered Spider",
+                "label": "Group",
+                "type": "USES",
+                "description": "[Scattered Spider](https://attack.mitre.org/groups/G1015) is a native English-speaking cybercriminal group active since at least 2022. (Citation: CrowdStrike Scattered Spider Profile) (Citation: MSTIC Octo Tempest Operations October 2023) The group initially targeted customer relationship management (CRM) providers, business process outsourcing (BPO) firms, and telecommunications and technology companies before expanding in 2023 to gaming, hospitality, retail, managed service provider (MSP), manufacturing, and financial sectors. (Citation: MSTIC Octo Tempest Operations October 2023)\n[Scattered Spider](https://attack.mitre.org/groups/G1015) relies heavily on social engineering, including impersonating IT and help-desk staff, to gain initial access, bypass multi-factor authentication (MFA), and compromise enterprise networks. The group has adapted its tooling to evade endpoint detection and response (EDR) defenses and used ransomware for financial gain. (Citation: CISA Scattered Spider Advisory November 2023) (Citation: CrowdStrike Scattered Spider BYOVD January 2023) (Citation: Crowdstrike TELCO BPO Campaign December 2022)\n[Scattered Spider](https://attack.mitre.org/groups/G1015) had expanded into hybrid cloud and identity environments, using help-desk impersonation and MFA bypass to obtain administrator access in Okta, AWS, and Office 365. (Citation: Mandiant UNC3944 May 2025)"
+              },
+              {
+                "id": "G0106",
+                "name": "Rocke",
+                "label": "Group",
+                "type": "USES",
+                "description": "[Rocke](https://attack.mitre.org/groups/G0106) is an alleged Chinese-speaking adversary whose primary objective appeared to be cryptojacking, or stealing victim system resources for the purposes of mining cryptocurrency. The name [Rocke](https://attack.mitre.org/groups/G0106) comes from the email address \"rocke@live.cn\" used to create the wallet which held collected cryptocurrency. Researchers have detected overlaps between [Rocke](https://attack.mitre.org/groups/G0106) and the Iron Cybercrime Group, though this attribution has not been confirmed.(Citation: Talos Rocke August 2018)"
+              },
+              {
+                "id": "G0139",
+                "name": "TeamTNT",
+                "label": "Group",
+                "type": "USES",
+                "description": "[TeamTNT](https://attack.mitre.org/groups/G0139) is a threat group that has primarily targeted cloud and containerized environments. The group as been active since at least October 2019 and has mainly focused its efforts on leveraging cloud and container resources to deploy cryptocurrency miners in victim environments.(Citation: Palo Alto Black-T October 2020)(Citation: Lacework TeamTNT May 2021)(Citation: Intezer TeamTNT September 2020)(Citation: Cado Security TeamTNT Worm August 2020)(Citation: Unit 42 Hildegard Malware)(Citation: Trend Micro TeamTNT)(Citation: ATT TeamTNT Chimaera September 2020)(Citation: Aqua TeamTNT August 2020)(Citation: Intezer TeamTNT Explosion September 2021)"
+              },
+              {
+                "id": "G1017",
+                "name": "Volt Typhoon",
+                "label": "Group",
+                "type": "USES",
+                "description": "[Volt Typhoon](https://attack.mitre.org/groups/G1017) is a People's Republic of China (PRC) state-sponsored actor that has been active since at least 2021, primarily targeting critical infrastructure organizations in the US and its territories including Guam. [Volt Typhoon](https://attack.mitre.org/groups/G1017)'s targeting and pattern of behavior have been assessed as pre-positioning to enable lateral movement to operational technology (OT) assets for potential destructive or disruptive attacks. [Volt Typhoon](https://attack.mitre.org/groups/G1017) has emphasized stealth in operations using web shells, living-off-the-land (LOTL) binaries, hands on keyboard activities, and stolen credentials.(Citation: CISA AA24-038A PRC Critical Infrastructure February 2024)(Citation: Microsoft Volt Typhoon May 2023)(Citation: Joint Cybersecurity Advisory Volt Typhoon June 2023)(Citation: Secureworks BRONZE SILHOUETTE May 2023). The group has leveraged compromised SOHO routers to proxy command and control traffic and obscure its infrastructure, activity associated with the KV botnet.(Citation: DOJ KVBotnet 2024). \n\nReporting indicates a separate initial access cluster, SYLVANITE, has been observed exploiting internet-facing edge devices and transferring access to [Volt Typhoon](https://attack.mitre.org/groups/G1017), also tracked as VOLTZITE, for follow-on operations. (Citation: Dragos 2025 Year in Review)"
+              },
+              {
+                "id": "G0094",
+                "name": "Kimsuky",
+                "label": "Group",
+                "type": "USES",
+                "description": "[Kimsuky](https://attack.mitre.org/groups/G0094) is a Democratic People's Republic of Korea (DPRK)-based cyber espionage group that has been active since at least 2012. The group initially targeted South Korean government agencies, think tanks, and subject-matter experts in various fields. Its operations expanded to include the United Nations and organizations in the government, education, business services, and manufacturing sectors across the United States, Japan, Russia, and Europe. [Kimsuky](https://attack.mitre.org/groups/G0094) has focused collection on foreign policy and national security issues tied to the Korean Peninsula, nuclear policy, and sanctions. [Kimsuky](https://attack.mitre.org/groups/G0094) operations have overlapped with those of other North Korean state-sponsored cyber espionage actors as a result of ad hoc collaborations or other limited resource sharing.(Citation: EST Kimsuky April 2019)(Citation: Cybereason Kimsuky November 2020)(Citation: Malwarebytes Kimsuky June 2021)(Citation: CISA AA20-301A Kimsuky)(Citation: Mandiant APT43 March 2024)(Citation: Proofpoint TA427 April 2024) \n\n[Kimsuky](https://attack.mitre.org/groups/G0094) was assessed to be responsible for the 2014 Korea Hydro & Nuclear Power Co. compromise; other notable campaigns include Operation STOLEN PENCIL (2018), Operation Kabar Cobra (2019), and Operation Smoke Screen (2019).(Citation: Netscout Stolen Pencil Dec 2018)(Citation: EST Kimsuky SmokeScreen April 2019)(Citation: AhnLab Kimsuky Kabar Cobra Feb 2019) In 2023, [Kimsuky](https://attack.mitre.org/groups/G0094) was observed using commercial large language models (LLMs) to assist with vulnerability research, scripting, social engineering and reconnaissance.(Citation: MSFT-AI)\n\nDPRK threat actor cluster boundaries overlap in open source reporting, with some security researchers consolidating all attributed North Korean state-sponsored cyber activity under [Lazarus Group](https://attack.mitre.org/groups/G0032), rather than tracking operationally distinct subgroups."
+              },
+              {
+                "id": "C0014",
+                "name": "Operation Wocao",
+                "label": "Campaign",
+                "type": "USES",
+                "description": "[Operation Wocao](https://attack.mitre.org/campaigns/C0014) was a cyber espionage campaign that targeted organizations around the world, including in Brazil, China, France, Germany, Italy, Mexico, Portugal, Spain, the United Kingdom, and the United States. The suspected China-based actors compromised government organizations and managed service providers, as well as aviation, construction, energy, finance, health care, insurance, offshore engineering, software development, and transportation companies.(Citation: FoxIT Wocao December 2019)\n\nSecurity researchers assessed the [Operation Wocao](https://attack.mitre.org/campaigns/C0014) actors used similar TTPs and tools as APT20, suggesting a possible overlap. [Operation Wocao](https://attack.mitre.org/campaigns/C0014) was named after an observed command line entry by one of the threat actors, possibly out of frustration from losing webshell access.(Citation: FoxIT Wocao December 2019)"
+              },
+              {
+                "id": "C0024",
+                "name": "SolarWinds Compromise",
+                "label": "Campaign",
+                "type": "USES",
+                "description": "The [SolarWinds Compromise](https://attack.mitre.org/campaigns/C0024) was a sophisticated supply chain cyber operation conducted by [APT29](https://attack.mitre.org/groups/G0016) that was discovered in mid-December 2020. [APT29](https://attack.mitre.org/groups/G0016) used customized malware to inject malicious code into the SolarWinds Orion software build process that was later distributed through a normal software update; they also used password spraying, token theft, API abuse, spear phishing, and other supply chain attacks to compromise user accounts and leverage their associated access. Victims of this campaign included government, consulting, technology, telecom, and other organizations in North America, Europe, Asia, and the Middle East. This activity has been labled the StellarParticle campaign in industry reporting.(Citation: CrowdStrike StellarParticle January 2022) Industry reporting also initially referred to the actors involved in this campaign as UNC2452, NOBELIUM, Dark Halo, and SolarStorm.(Citation: SolarWinds Advisory Dec 2020)(Citation: SolarWinds Sunburst Sunspot Update January 2021)(Citation: FireEye SUNBURST Backdoor December 2020)(Citation: Volexity SolarWinds)(Citation: CrowdStrike StellarParticle January 2022)(Citation: Unit 42 SolarStorm December 2020)(Citation: Microsoft Analyzing Solorigate Dec 2020)(Citation: Microsoft Internal Solorigate Investigation Blog) \n\nIn April 2021, the US and UK governments attributed the [SolarWinds Compromise](https://attack.mitre.org/campaigns/C0024) to Russia's Foreign Intelligence Service (SVR); public statements included citations to [APT29](https://attack.mitre.org/groups/G0016), Cozy Bear, and The Dukes.(Citation: NSA Joint Advisory SVR SolarWinds April 2021)(Citation: UK NSCS Russia SolarWinds April 2021)(Citation: Mandiant UNC2452 APT29 April 2022) The US government assessed that of the approximately 18,000 affected public and private sector customers of Solar Winds’ Orion product, a much smaller number were compromised by follow-on [APT29](https://attack.mitre.org/groups/G0016) activity on their systems.(Citation: USG Joint Statement SolarWinds January 2021) "
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "deterministic_scores": {
+    "correlation": null,
+    "mapping_recall": null,
+    "coverage": {
+      "gold": 12,
+      "found": 12,
+      "coverage": 1.0,
+      "missing": []
+    },
+    "provenance": {
+      "citations": 4,
+      "compliant": 4,
+      "citation_provenance_rate": 1.0,
+      "abstention_proof_ok": true,
+      "fully_provenanced": true
+    },
+    "inspectability": {
+      "citation_coverage": 1.0,
+      "traceability": 1.0,
+      "abstention_proofs": 1.0,
+      "inspectability": 1.0
+    }
+  },
+  "arm": "planned_llm_typed_lazy",
+  "run_meta": {
+    "planner": "llm-typed-lazy",
+    "synthesis": "deterministic",
+    "use_llm": true,
+    "llm_synthesis": false,
+    "llm_specialist": false,
+    "rewrite": null,
+    "observed_plan": [
+      {
+        "sub_question_id": "q1",
+        "source": "attack",
+        "text": "",
+        "entities": [
+          "SubTechnique",
+          "USES"
+        ],
+        "seed_ids": [
+          "T1552.004"
+        ],
+        "depends_on": null,
+        "limits": {
+          "max_traversal_depth": 3,
+          "max_result_rows": 1000,
+          "query_timeout_ms": 5000
+        },
+        "step": {
+          "kind": "expand",
+          "anchor_label": "SubTechnique",
+          "anchor_ids": [
+            "T1552.004"
+          ],
+          "hops": [
+            {
+              "relation": "USES",
+              "direction": "in",
+              "target_label": ""
+            }
+          ],
+          "depth": 1
+        }
+      }
+    ],
+    "exit_code": 0,
+    "status": "answered",
+    "timings": {
+      "plan_ms": 21213.299,
+      "specialists": [
+        {
+          "sub_question": "q1",
+          "source": "attack",
+          "ms": 18.887
+        }
+      ],
+      "synthesis_ms": 9.924,
+      "total_ms": 21686.002
+    },
+    "registry_model": "gemma4-31b",
+    "drafter_used": "TypedDrafter",
+    "typed": [
+      {
+        "mode": "lazy",
+        "served_model": "gemma4-31b/106",
+        "model_calls": 2,
+        "catalog_calls": [
+          {
+            "name": "find_schema",
+            "args": {
+              "graph": "attack",
+              "text": "USES"
+            },
+            "ok": true
+          }
+        ],
+        "prompt_tokens": 6595,
+        "completion_tokens": 1130,
+        "emitted": true,
+        "parse_error": null,
+        "first_steps": 1,
+        "first_refused": 0,
+        "first_fixes": 2,
+        "valid_first": true,
+        "valid_first_raw": false,
+        "repair_used": false,
+        "fixed_by_repair": false,
+        "still_refused": 0,
+        "final_steps": 1,
+        "coercions": [
+          {
+            "step": "q1",
+            "field": "anchor_label",
+            "from": "Technique",
+            "to": "SubTechnique",
+            "filled_by": "id_scheme"
+          },
+          {
+            "step": "q1",
+            "field": "path[0].target_label",
+            "from": null,
+            "to": [
+              "Campaign",
+              "Group",
+              "Software"
+            ],
+            "filled_by": "all_targets"
+          }
+        ],
+        "refusals": [],
+        "plan_problems": [],
+        "replies": [
+          {
+            "status": "ok",
+            "finish_reason": "tool_calls",
+            "calls": [
+              "find_schema"
+            ],
+            "text_chars": 0,
+            "repairs": []
+          },
+          {
+            "status": "ok",
+            "finish_reason": "stop",
+            "calls": [],
+            "text_chars": 455,
+            "repairs": []
+          }
+        ],
+        "error": null,
+        "fallback": null,
+        "seconds": 21.073,
+        "n_catalog_calls": 1,
+        "fixed_by_coercion": true
+      }
+    ],
+    "seams": {
+      "planner_llm": true,
+      "drafter": "TypedDrafter",
+      "specialist_llm": false,
+      "synthesis_llm": false,
+      "generic_only": "true"
+    },
+    "wall_s": 22.527
+  },
+  "evidence_volume": {
+    "results": 1,
+    "records": 1,
+    "related": 19
+  }
+}

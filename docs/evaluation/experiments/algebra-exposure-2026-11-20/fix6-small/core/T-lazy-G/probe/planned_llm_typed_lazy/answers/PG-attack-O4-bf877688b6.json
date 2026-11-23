@@ -1,0 +1,536 @@
+{
+  "id": "PG-attack-O4-bf877688b6",
+  "kind": "attack",
+  "tier": "algebra-probe",
+  "category": "PG-attack",
+  "question": "Is group G0019 (Naikon) directly connected to technique T1047 (Windows Management Instrumentation) in ATT&CK, and if it is, what is the nature of that connection?",
+  "gold": {
+    "assertions": {
+      "min_records": 0,
+      "must_include_ids": [],
+      "must_include_related": []
+    },
+    "ex_gold": {
+      "pool": "algebra",
+      "scheme": "attack",
+      "kind": "value",
+      "expected": [],
+      "value": true
+    }
+  },
+  "answer": {
+    "headline": "Gathered 1 record(s) from 1 source(s); 1 question(s) the sources don't establish.",
+    "narrative": "Found 4 item(s) related to G0019 (e.g. T1046, T1018, T1016) in MITRE ATT&CK. G0019 (Naikon) has 4 used techniques: T1046, T1018, T1016, T1047. The attack source doesn't establish this — the executed query ran cleanly and returned no matching records for:",
+    "composer": "deterministic",
+    "fallback_reason": null,
+    "claims": [
+      {
+        "text": "Found 4 item(s) related to G0019 (e.g. T1046, T1018, T1016) in MITRE ATT&CK.",
+        "kind": "fact",
+        "entity_ids": [
+          "G0019"
+        ],
+        "citations": [
+          {
+            "source": "attack",
+            "primary_id": "G0019"
+          }
+        ]
+      },
+      {
+        "text": "G0019 (Naikon) has 4 used techniques: T1046, T1018, T1016, T1047.",
+        "kind": "enumeration",
+        "entity_ids": [
+          "T1046",
+          "T1018",
+          "T1016",
+          "T1047"
+        ],
+        "citations": [
+          {
+            "source": "attack",
+            "primary_id": "G0019"
+          }
+        ]
+      }
+    ],
+    "abstentions": [
+      {
+        "source": "attack",
+        "statement": "The attack source doesn't establish this — the executed query ran cleanly and returned no matching records for: ",
+        "query": "MATCH (v2) WHERE v2.id IN $p0 AND (v2:Technique) WITH DISTINCT v2 WITH v2 WHERE (v2.`id` IS NOT NULL AND v2.`id` = $p1) WITH v2 ORDER BY v2.id WITH collect(v2) AS all_ RETURN size(all_) AS total, [x IN all_[0..1000] | {id: x.id, name: x.name}] AS rows"
+      }
+    ],
+    "notes": []
+  },
+  "logic_flow": {
+    "task": {
+      "sub_question_id": "PG-attack-O4-bf877688b6",
+      "source": "attack",
+      "text": "Is group G0019 (Naikon) directly connected to technique T1047 (Windows Management Instrumentation) in ATT&CK, and if it is, what is the nature of that connection?",
+      "entities": [
+        "Group",
+        "USES",
+        "Technique"
+      ],
+      "limits": {
+        "max_traversal_depth": 3,
+        "max_result_rows": 20000,
+        "query_timeout_ms": 60000
+      },
+      "join_key": null,
+      "seed_ids": [
+        "G0019",
+        "T1047"
+      ],
+      "rationale": "algebra probe set (Era 2 Step 9 Phase G)"
+    },
+    "results": [
+      {
+        "source": "attack",
+        "sub_question_id": "q1",
+        "sub_question": "",
+        "query": "MATCH (n) WHERE coalesce(n.attack_id, n.id) IN $ids OPTIONAL MATCH (n)-[:USES]->(t0:Technique) WITH n, collect(DISTINCT {m: t0, r: 'USES'}) AS k0 WITH n, [x IN k0 WHERE x.m IS NOT NULL] AS hops UNWIND (CASE WHEN size(hops) = 0 THEN [{m: null, r: null}] ELSE hops END) AS hop RETURN coalesce(n.attack_id, n.id) AS anchor_id, n.name AS anchor_name, labels(n)[0] AS anchor_label, coalesce(hop.m.attack_id, hop.m.id) AS neighbour_id, hop.m.name AS neighbour_name, labels(hop.m)[0] AS neighbour_label, hop.r AS rel_type LIMIT 1000",
+        "ok": true,
+        "partial": false,
+        "error": null,
+        "summary": "Found 4 item(s) related to G0019 (e.g. T1046, T1018, T1016) in MITRE ATT&CK.",
+        "traces": [
+          {
+            "step": "intake",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "source": "attack",
+              "card": "attack"
+            }
+          },
+          {
+            "step": "resolve",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "labels": [
+                "Group",
+                "Technique"
+              ],
+              "relationships": [
+                "USES"
+              ],
+              "seed_ids": [
+                "G0019"
+              ],
+              "join_key": null
+            }
+          },
+          {
+            "step": "gate",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "attempt": 1,
+              "template": "typed_step",
+              "query": "MATCH (n) WHERE coalesce(n.attack_id, n.id) IN $ids OPTIONAL MATCH (n)-[:USES]->(t0:Technique) WITH n, collect(DISTINCT {m: t0, r: 'USES'}) AS k0 WITH n, [x IN k0 WHERE x.m IS NOT NULL] AS hops UNWIND (CASE WHEN size(hops) = 0 THEN [{m: null, r: null}] ELSE hops END) AS hop RETURN coalesce(n.attack_id, n.id) AS anchor_id, n.name AS anchor_name, labels(n)[0] AS anchor_label, coalesce(hop.m.attack_id, hop.m.id) AS neighbour_id, hop.m.name AS neighbour_name, labels(hop.m)[0] AS neighbour_label, hop.r AS rel_type LIMIT 1000",
+              "injected": [
+                "LIMIT 1000 appended (none present)"
+              ],
+              "timing_ms": 0.263
+            }
+          },
+          {
+            "step": "execute",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "row_count": 4,
+              "timing_ms": 5.6,
+              "row_ceiling": 1000,
+              "truncated": false
+            }
+          },
+          {
+            "step": "assess",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "row_count": 4,
+              "timing_ms": 0.007
+            }
+          },
+          {
+            "step": "normalize",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "record_count": 1,
+              "timing_ms": 2.674
+            }
+          }
+        ],
+        "records": [
+          {
+            "primary_id": "G0019",
+            "name": "Naikon",
+            "label": "Group",
+            "description": "",
+            "properties": {},
+            "facets": [],
+            "join_values": [],
+            "related": [
+              {
+                "id": "T1046",
+                "name": "Network Service Discovery",
+                "label": "Technique",
+                "type": "USES",
+                "description": "Adversaries may attempt to get a listing of services running on remote hosts and local network infrastructure devices, including those that may be vulnerable to remote software exploitation. Common methods to acquire this information include port, vulnerability, and/or wordlist scans using tools that are brought onto a system.(Citation: CISA AR21-126A FIVEHANDS May 2021)   \n\nWithin cloud environments, adversaries may attempt to discover services running on other cloud hosts. Additionally, if the cloud environment is connected to a on-premises environment, adversaries may be able to identify services running on non-cloud systems as well.\n\nWithin macOS environments, adversaries may use the native Bonjour application to discover services running on other macOS hosts within a network. The Bonjour mDNSResponder daemon automatically registers and advertises a host’s registered services on the network. For example, adversaries can use a mDNS query (such as <code>dns-sd -B _ssh._tcp .</code>) to find other systems broadcasting the ssh service.(Citation: apple doco bonjour description)(Citation: macOS APT Activity Bradley)"
+              },
+              {
+                "id": "T1018",
+                "name": "Remote System Discovery",
+                "label": "Technique",
+                "type": "USES",
+                "description": "Adversaries may attempt to get a listing of other systems by IP address, hostname, or other logical identifier on a network that may be used for Lateral Movement from the current system. Functionality could exist within remote access tools to enable this, but utilities available on the operating system could also be used such as  [Ping](https://attack.mitre.org/software/S0097), <code>net view</code> using [Net](https://attack.mitre.org/software/S0039), or, on ESXi servers, `esxcli network diag ping`.\n\nAdversaries may also analyze data from local host files (ex: <code>C:\\Windows\\System32\\Drivers\\etc\\hosts</code> or <code>/etc/hosts</code>) or other passive means (such as local [Arp](https://attack.mitre.org/software/S0099) cache entries) in order to discover the presence of remote systems in an environment.\n\nAdversaries may also target discovery of network infrastructure as well as leverage [Network Device CLI](https://attack.mitre.org/techniques/T1059/008) commands on network devices to gather detailed information about systems within a network (e.g. <code>show cdp neighbors</code>, <code>show arp</code>).(Citation: US-CERT-TA18-106A)(Citation: CISA AR21-126A FIVEHANDS May 2021)  \n"
+              },
+              {
+                "id": "T1016",
+                "name": "System Network Configuration Discovery",
+                "label": "Technique",
+                "type": "USES",
+                "description": "Adversaries may look for details about the network configuration and settings, such as IP and/or MAC addresses, of systems they access or through information discovery of remote systems. Several operating system administration utilities exist that can be used to gather this information. Examples include [Arp](https://attack.mitre.org/software/S0099), [ipconfig](https://attack.mitre.org/software/S0100)/[ifconfig](https://attack.mitre.org/software/S0101), [nbtstat](https://attack.mitre.org/software/S0102), and [route](https://attack.mitre.org/software/S0103).\n\nAdversaries may also leverage a [Network Device CLI](https://attack.mitre.org/techniques/T1059/008) on network devices to gather information about configurations and settings, such as IP addresses of configured interfaces and static/dynamic routes (e.g. <code>show ip route</code>, <code>show ip interface</code>).(Citation: US-CERT-TA18-106A)(Citation: Mandiant APT41 Global Intrusion ) On ESXi, adversaries may leverage esxcli to gather network configuration information. For example, the command `esxcli network nic list` will retrieve the MAC address, while `esxcli network ip interface ipv4 get` will retrieve the local IPv4 address.(Citation: Trellix Rnasomhouse 2024)\n\nAdversaries may use the information from [System Network Configuration Discovery](https://attack.mitre.org/techniques/T1016) during automated discovery to shape follow-on behaviors, including determining certain access within the target network and what actions to do next. "
+              },
+              {
+                "id": "T1047",
+                "name": "Windows Management Instrumentation",
+                "label": "Technique",
+                "type": "USES",
+                "description": "Adversaries may abuse Windows Management Instrumentation (WMI) to execute malicious commands and payloads. WMI is designed for programmers and is the infrastructure for management data and operations on Windows systems.(Citation: WMI 1-3) WMI is an administration feature that provides a uniform environment to access Windows system components.\n\nThe WMI service enables both local and remote access, though the latter is facilitated by [Remote Services](https://attack.mitre.org/techniques/T1021) such as [Distributed Component Object Model](https://attack.mitre.org/techniques/T1021/003) and [Windows Remote Management](https://attack.mitre.org/techniques/T1021/006).(Citation: WMI 1-3) Remote WMI over DCOM operates using port 135, whereas WMI over WinRM operates over port 5985 when using HTTP and 5986 for HTTPS.(Citation: WMI 1-3) (Citation: Mandiant WMI)\n\nAn adversary can use WMI to interact with local and remote systems and use it as a means to execute various behaviors, such as gathering information for [Discovery](https://attack.mitre.org/tactics/TA0007) as well as [Execution](https://attack.mitre.org/tactics/TA0002) of commands and payloads.(Citation: Mandiant WMI) For example, `wmic.exe` can be abused by an adversary to delete shadow copies with the command `wmic.exe Shadowcopy Delete` (i.e., [Inhibit System Recovery](https://attack.mitre.org/techniques/T1490)).(Citation: WMI 6)\n\n**Note:** `wmic.exe` is deprecated as of January of 2024, with the WMIC feature being “disabled by default” on Windows 11+. WMIC will be removed from subsequent Windows releases and replaced by [PowerShell](https://attack.mitre.org/techniques/T1059/001) as the primary WMI interface.(Citation: WMI 7,8) In addition to PowerShell and tools like `wbemtool.exe`, COM APIs can also be used to programmatically interact with WMI via C++, .NET, VBScript, etc.(Citation: WMI 7,8)"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "source": "attack",
+        "sub_question_id": "q2",
+        "sub_question": "",
+        "query": "MATCH (v2) WHERE v2.id IN $p0 AND (v2:Technique) WITH DISTINCT v2 WITH v2 WHERE (v2.`id` IS NOT NULL AND v2.`id` = $p1) WITH v2 ORDER BY v2.id WITH collect(v2) AS all_ RETURN size(all_) AS total, [x IN all_[0..1000] | {id: x.id, name: x.name}] AS rows",
+        "ok": true,
+        "partial": false,
+        "error": null,
+        "summary": "0 entities match.",
+        "traces": [
+          {
+            "step": "intake",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "source": "attack",
+              "card": "attack"
+            }
+          },
+          {
+            "step": "resolve",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "labels": [
+                "Technique"
+              ],
+              "relationships": [],
+              "seed_ids": [
+                "T1016",
+                "T1018",
+                "T1046",
+                "T1047"
+              ],
+              "join_key": null
+            }
+          },
+          {
+            "step": "gate",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "attempt": 1,
+              "template": "algebra",
+              "query": "MATCH (v2) WHERE v2.id IN $p0 AND (v2:Technique) WITH DISTINCT v2 WITH v2 WHERE (v2.`id` IS NOT NULL AND v2.`id` = $p1) WITH v2 ORDER BY v2.id WITH collect(v2) AS all_ RETURN size(all_) AS total, [x IN all_[0..1000] | {id: x.id, name: x.name}] AS rows",
+              "injected": [],
+              "note": "compiled by the operator algebra (validated against the card; read-only by construction)",
+              "id_map": {
+                "T1016": [
+                  "attack-pattern--707399d6-ab3e-4963-9315-d9d3818cd6a0"
+                ],
+                "T1018": [
+                  "attack-pattern--e358d692-23c0-4a31-9eb6-ecc13a8d7735"
+                ],
+                "T1046": [
+                  "attack-pattern--e3a12395-188d-4051-9a16-ea8e14d07b88"
+                ],
+                "T1047": [
+                  "attack-pattern--01a5a209-b94c-450b-b7f9-946497d91055"
+                ]
+              }
+            }
+          },
+          {
+            "step": "execute",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "row_count": 0
+            }
+          },
+          {
+            "step": "algebra",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "result": {
+                "step": "q2",
+                "kind": "nodes",
+                "value": null,
+                "ids": [],
+                "rows": [],
+                "total": 0,
+                "complete": true,
+                "info": {}
+              },
+              "op": "filter",
+              "ir": {
+                "@": "Nodes",
+                "of": {
+                  "@": "Where",
+                  "conds": [
+                    {
+                      "@": "Cond",
+                      "cmp": null,
+                      "op": "=",
+                      "prop": "id",
+                      "value": "T1047"
+                    }
+                  ],
+                  "of": {
+                    "@": "FromStep",
+                    "labels": [
+                      "Technique"
+                    ],
+                    "step": "q1"
+                  }
+                },
+                "props": []
+              }
+            }
+          }
+        ],
+        "records": []
+      }
+    ]
+  },
+  "deterministic_scores": {
+    "correlation": null,
+    "mapping_recall": null,
+    "coverage": null,
+    "provenance": {
+      "citations": 2,
+      "compliant": 2,
+      "citation_provenance_rate": 1.0,
+      "abstention_proof_ok": true,
+      "fully_provenanced": true
+    },
+    "inspectability": {
+      "citation_coverage": 1.0,
+      "traceability": 1.0,
+      "abstention_proofs": 1.0,
+      "inspectability": 1.0
+    }
+  },
+  "arm": "planned_llm_typed_lazy",
+  "run_meta": {
+    "planner": "llm-typed-lazy",
+    "synthesis": "deterministic",
+    "use_llm": true,
+    "llm_synthesis": false,
+    "llm_specialist": false,
+    "rewrite": null,
+    "observed_plan": [
+      {
+        "sub_question_id": "q1",
+        "source": "attack",
+        "text": "",
+        "entities": [
+          "Group",
+          "USES",
+          "Technique"
+        ],
+        "seed_ids": [
+          "G0019"
+        ],
+        "depends_on": null,
+        "limits": {
+          "max_traversal_depth": 3,
+          "max_result_rows": 1000,
+          "query_timeout_ms": 5000
+        },
+        "step": {
+          "kind": "expand",
+          "anchor_label": "Group",
+          "anchor_ids": [
+            "G0019"
+          ],
+          "hops": [
+            {
+              "relation": "USES",
+              "direction": "out",
+              "target_label": "Technique"
+            }
+          ],
+          "depth": 1
+        }
+      },
+      {
+        "sub_question_id": "q2",
+        "source": "attack",
+        "text": "",
+        "entities": [
+          "Technique"
+        ],
+        "seed_ids": [],
+        "depends_on": null,
+        "limits": {
+          "max_traversal_depth": 3,
+          "max_result_rows": 1000,
+          "query_timeout_ms": 5000
+        },
+        "step": {
+          "kind": "algebra",
+          "anchor_label": "Technique",
+          "anchor_ids": [],
+          "hops": [],
+          "depth": 1,
+          "algebra": {
+            "ir": {
+              "@": "Nodes",
+              "of": {
+                "@": "Where",
+                "conds": [
+                  {
+                    "@": "Cond",
+                    "cmp": null,
+                    "op": "=",
+                    "prop": "id",
+                    "value": "T1047"
+                  }
+                ],
+                "of": {
+                  "@": "FromStep",
+                  "labels": [
+                    "Technique"
+                  ],
+                  "step": "q1"
+                }
+              },
+              "props": []
+            },
+            "labels": [
+              "Technique"
+            ],
+            "op": "filter"
+          },
+          "from_step": "q1"
+        }
+      }
+    ],
+    "exit_code": 0,
+    "status": "answered",
+    "timings": {
+      "plan_ms": 112125.424,
+      "specialists": [
+        {
+          "sub_question": "q1",
+          "source": "attack",
+          "ms": 9.051
+        },
+        {
+          "sub_question": "q2",
+          "source": "attack",
+          "ms": 8.829
+        }
+      ],
+      "synthesis_ms": 9.721,
+      "total_ms": 112202.125
+    },
+    "registry_model": "gemma4-31b",
+    "drafter_used": "TypedDrafter",
+    "typed": [
+      {
+        "mode": "lazy",
+        "served_model": "gemma4-31b/106",
+        "model_calls": 1,
+        "catalog_calls": [],
+        "prompt_tokens": 2957,
+        "completion_tokens": 7170,
+        "emitted": true,
+        "parse_error": null,
+        "first_steps": 2,
+        "first_refused": 0,
+        "first_fixes": 1,
+        "valid_first": true,
+        "valid_first_raw": false,
+        "repair_used": false,
+        "fixed_by_repair": false,
+        "still_refused": 0,
+        "final_steps": 2,
+        "coercions": [
+          {
+            "step": "q1",
+            "field": "anchor_label",
+            "from": null,
+            "to": "Group",
+            "filled_by": "id_scheme"
+          }
+        ],
+        "refusals": [],
+        "plan_problems": [],
+        "replies": [
+          {
+            "status": "ok",
+            "finish_reason": "stop",
+            "calls": [],
+            "text_chars": 687,
+            "repairs": []
+          }
+        ],
+        "error": null,
+        "fallback": null,
+        "seconds": 112.112,
+        "n_catalog_calls": 0,
+        "fixed_by_coercion": true
+      }
+    ],
+    "seams": {
+      "planner_llm": true,
+      "drafter": "TypedDrafter",
+      "specialist_llm": false,
+      "synthesis_llm": false,
+      "generic_only": "true"
+    },
+    "wall_s": 112.205,
+    "algebra_results": [
+      {
+        "step": "q2",
+        "kind": "nodes",
+        "value": null,
+        "ids": [],
+        "rows": [],
+        "total": 0,
+        "complete": true,
+        "info": {}
+      }
+    ]
+  },
+  "evidence_volume": {
+    "results": 2,
+    "records": 1,
+    "related": 4
+  }
+}

@@ -1,0 +1,377 @@
+{
+  "id": "PG-capec-O4-59240afc39",
+  "kind": "capec",
+  "tier": "algebra-probe",
+  "category": "PG-capec",
+  "question": "Is attack pattern CAPEC-27 (Leveraging Race Conditions via Symbolic Links) directly connected to weakness CWE-61 in CAPEC, and if it is, what is the nature of that connection?",
+  "gold": {
+    "assertions": {
+      "min_records": 0,
+      "must_include_ids": [],
+      "must_include_related": []
+    },
+    "ex_gold": {
+      "pool": "algebra",
+      "scheme": "capec",
+      "kind": "value",
+      "expected": [],
+      "value": true
+    }
+  },
+  "answer": {
+    "headline": "Gathered 1 record(s) from 1 source(s).",
+    "narrative": "Found 1 CAPEC record(s): CAPEC-27. CAPEC-27 (Leveraging Race Conditions via Symbolic Links): This attack leverages the use of symbolic links (Symlinks) in order to write to sensitive files. An attacker can create a Symlink link to a target file not otherwise accessible to them. When the privileged program tries to create a temporary file with the same name as the Symlink link, it will actually write to the target file pointed to by the attackers' Symlink link. If the attacker can insert malicious content in the temporary file they will be writing to the sensitive file by using the Symlink. The race occurs because the system checks if the temporary file exists, then creates the file. CAPEC-27 (Leveraging Race Conditions via Symbolic Links) has Abstraction: Detailed; Likelihood_Of_Attack: Medium; Status: Draft; Typical_Severity: High. CAPEC-27 (Leveraging Race Conditions via Symbolic Links) Likelihood Of Attack: Medium. CAPEC-27 (Leveraging Race Conditions via Symbolic Links) has 3 prerequisites, named only as text: “The attacker is able to create Symlink links on the target host.”; “Tainted data from the attacker is used and copied to temporary files.”; “The target host does insecure temporary file creation.”. CAPEC-27 (Leveraging Race Conditions via Symbolic Links) has 1 prerequisite: CAPEC-27.",
+    "composer": "deterministic",
+    "fallback_reason": null,
+    "claims": [
+      {
+        "text": "Found 1 CAPEC record(s): CAPEC-27.",
+        "kind": "fact",
+        "entity_ids": [
+          "CAPEC-27"
+        ],
+        "citations": [
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-27"
+          }
+        ]
+      },
+      {
+        "text": "CAPEC-27 (Leveraging Race Conditions via Symbolic Links): This attack leverages the use of symbolic links (Symlinks) in order to write to sensitive files. An attacker can create a Symlink link to a target file not otherwise accessible to them. When the privileged program tries to create a temporary file with the same name as the Symlink link, it will actually write to the target file pointed to by the attackers' Symlink link. If the attacker can insert malicious content in the temporary file they will be writing to the sensitive file by using the Symlink. The race occurs because the system checks if the temporary file exists, then creates the file.",
+        "kind": "fact",
+        "entity_ids": [
+          "CAPEC-27"
+        ],
+        "citations": [
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-27"
+          }
+        ]
+      },
+      {
+        "text": "CAPEC-27 (Leveraging Race Conditions via Symbolic Links) has Abstraction: Detailed; Likelihood_Of_Attack: Medium; Status: Draft; Typical_Severity: High.",
+        "kind": "fact",
+        "entity_ids": [
+          "CAPEC-27"
+        ],
+        "citations": [
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-27"
+          }
+        ]
+      },
+      {
+        "text": "CAPEC-27 (Leveraging Race Conditions via Symbolic Links) Likelihood Of Attack: Medium.",
+        "kind": "fact",
+        "entity_ids": [
+          "CAPEC-27"
+        ],
+        "citations": [
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-27"
+          }
+        ]
+      },
+      {
+        "text": "CAPEC-27 (Leveraging Race Conditions via Symbolic Links) has 3 prerequisites, named only as text: “The attacker is able to create Symlink links on the target host.”; “Tainted data from the attacker is used and copied to temporary files.”; “The target host does insecure temporary file creation.”.",
+        "kind": "enumeration",
+        "entity_ids": [
+          "capec:attack-pattern:27:prerequisite:1",
+          "capec:attack-pattern:27:prerequisite:2",
+          "capec:attack-pattern:27:prerequisite:3"
+        ],
+        "citations": [
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-27"
+          }
+        ]
+      },
+      {
+        "text": "CAPEC-27 (Leveraging Race Conditions via Symbolic Links) has 1 prerequisite: CAPEC-27.",
+        "kind": "enumeration",
+        "entity_ids": [
+          "CAPEC-27"
+        ],
+        "citations": [
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-27"
+          }
+        ]
+      }
+    ],
+    "abstentions": [],
+    "notes": []
+  },
+  "logic_flow": {
+    "task": {
+      "sub_question_id": "PG-capec-O4-59240afc39",
+      "source": "capec",
+      "text": "Is attack pattern CAPEC-27 (Leveraging Race Conditions via Symbolic Links) directly connected to weakness CWE-61 in CAPEC, and if it is, what is the nature of that connection?",
+      "entities": [
+        "AttackPattern",
+        "EXPLOITS_WEAKNESS",
+        "Weakness"
+      ],
+      "limits": {
+        "max_traversal_depth": 3,
+        "max_result_rows": 20000,
+        "query_timeout_ms": 60000
+      },
+      "join_key": null,
+      "seed_ids": [
+        "CAPEC-27",
+        "CWE-61"
+      ],
+      "rationale": "algebra probe set (Era 2 Step 9 Phase G)"
+    },
+    "results": [
+      {
+        "source": "capec",
+        "sub_question_id": "q1",
+        "sub_question": "In capec, identify AttackPattern, EXPLOITS_WEAKNESS, HAS_PREREQUISITE, Prerequisite, Weakness relevant to: Is attack pattern CAPEC-27 (Leveraging Race Conditions via Symbolic Links) directly connected to weakness CWE-61 in CAPEC, and if it is, what is the nature of that connection?",
+        "query": "g.V().has(\"id\", within(ids)).as(\"ap\").union(__.or(__.hasLabel(\"AttackPattern\"), __.not(__.hasLabel(\"AttackPattern\", \"Prerequisite\", \"Weakness\"))).out(\"HAS_PREREQUISITE\"), __.or(__.hasLabel(\"AttackPattern\"), __.not(__.hasLabel(\"AttackPattern\", \"Prerequisite\", \"Weakness\"))).out(\"HAS_PREREQUISITE\").in(\"HAS_PREREQUISITE\")).as(\"nbr\").select(\"ap\",\"nbr\").by(elementMap()).limit(1000)",
+        "ok": true,
+        "partial": false,
+        "error": null,
+        "summary": "Found 1 CAPEC record(s): CAPEC-27.",
+        "traces": [
+          {
+            "step": "intake",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "source": "capec",
+              "card": "capec"
+            }
+          },
+          {
+            "step": "resolve",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "labels": [
+                "AttackPattern",
+                "Prerequisite",
+                "Weakness"
+              ],
+              "relationships": [
+                "EXPLOITS_WEAKNESS",
+                "HAS_PREREQUISITE"
+              ],
+              "seed_ids": [
+                "CAPEC-27"
+              ],
+              "join_key": null
+            }
+          },
+          {
+            "step": "gate",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "attempt": 1,
+              "template": "generic_walk",
+              "query": "g.V().has(\"id\", within(ids)).as(\"ap\").union(__.or(__.hasLabel(\"AttackPattern\"), __.not(__.hasLabel(\"AttackPattern\", \"Prerequisite\", \"Weakness\"))).out(\"HAS_PREREQUISITE\"), __.or(__.hasLabel(\"AttackPattern\"), __.not(__.hasLabel(\"AttackPattern\", \"Prerequisite\", \"Weakness\"))).out(\"HAS_PREREQUISITE\").in(\"HAS_PREREQUISITE\")).as(\"nbr\").select(\"ap\",\"nbr\").by(elementMap()).limit(1000)",
+              "injected": [],
+              "timing_ms": 2.85
+            }
+          },
+          {
+            "step": "execute",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "row_count": 6,
+              "timing_ms": 15.1,
+              "row_ceiling": 1000,
+              "truncated": false
+            }
+          },
+          {
+            "step": "assess",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "row_count": 6,
+              "timing_ms": 0.011
+            }
+          },
+          {
+            "step": "normalize",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "record_count": 1,
+              "timing_ms": 0.179
+            }
+          }
+        ],
+        "records": [
+          {
+            "primary_id": "CAPEC-27",
+            "name": "Leveraging Race Conditions via Symbolic Links",
+            "label": "AttackPattern",
+            "description": "This attack leverages the use of symbolic links (Symlinks) in order to write to sensitive files. An attacker can create a Symlink link to a target file not otherwise accessible to them. When the privileged program tries to create a temporary file with the same name as the Symlink link, it will actually write to the target file pointed to by the attackers' Symlink link. If the attacker can insert malicious content in the temporary file they will be writing to the sensitive file by using the Symlink. The race occurs because the system checks if the temporary file exists, then creates the file. The attacker would typically create the Symlink during the interval between the check and the creation of the temporary file.",
+            "properties": {
+              "Status": "Draft",
+              "Likelihood_Of_Attack": "Medium",
+              "Typical_Severity": "High",
+              "name": "Leveraging Race Conditions via Symbolic Links",
+              "description": "This attack leverages the use of symbolic links (Symlinks) in order to write to sensitive files. An attacker can create a Symlink link to a target file not otherwise accessible to them. When the privileged program tries to create a temporary file with the same name as the Symlink link, it will actually write to the target file pointed to by the attackers' Symlink link. If the attacker can insert malicious content in the temporary file they will be writing to the sensitive file by using the Symlink. The race occurs because the system checks if the temporary file exists, then creates the file. The attacker would typically create the Symlink during the interval between the check and the creation of the temporary file.",
+              "id": "capec:attack-pattern:27",
+              "Abstraction": "Detailed"
+            },
+            "facets": [],
+            "join_values": [],
+            "related": [
+              {
+                "id": "capec:attack-pattern:27:prerequisite:1",
+                "name": "capec:attack-pattern:27:prerequisite:1",
+                "label": "Prerequisite",
+                "type": "HAS_PREREQUISITE",
+                "description": "The attacker is able to create Symlink links on the target host."
+              },
+              {
+                "id": "capec:attack-pattern:27:prerequisite:2",
+                "name": "capec:attack-pattern:27:prerequisite:2",
+                "label": "Prerequisite",
+                "type": "HAS_PREREQUISITE",
+                "description": "Tainted data from the attacker is used and copied to temporary files."
+              },
+              {
+                "id": "capec:attack-pattern:27:prerequisite:3",
+                "name": "capec:attack-pattern:27:prerequisite:3",
+                "label": "Prerequisite",
+                "type": "HAS_PREREQUISITE",
+                "description": "The target host does insecure temporary file creation."
+              },
+              {
+                "id": "CAPEC-27",
+                "name": "Leveraging Race Conditions via Symbolic Links",
+                "label": "AttackPattern",
+                "type": "HAS_PREREQUISITE",
+                "Status": "Draft",
+                "Likelihood_Of_Attack": "Medium",
+                "Typical_Severity": "High",
+                "description": "This attack leverages the use of symbolic links (Symlinks) in order to write to sensitive files. An attacker can create a Symlink link to a target file not otherwise accessible to them. When the privileged program tries to create a temporary file with the same name as the Symlink link, it will actually write to the target file pointed to by the attackers' Symlink link. If the attacker can insert malicious content in the temporary file they will be writing to the sensitive file by using the Symlink. The race occurs because the system checks if the temporary file exists, then creates the file. The attacker would typically create the Symlink during the interval between the check and the creation of the temporary file.",
+                "Abstraction": "Detailed"
+              },
+              {
+                "id": "CAPEC-27",
+                "name": "Leveraging Race Conditions via Symbolic Links",
+                "label": "AttackPattern",
+                "type": "HAS_PREREQUISITE",
+                "Status": "Draft",
+                "Likelihood_Of_Attack": "Medium",
+                "Typical_Severity": "High",
+                "description": "This attack leverages the use of symbolic links (Symlinks) in order to write to sensitive files. An attacker can create a Symlink link to a target file not otherwise accessible to them. When the privileged program tries to create a temporary file with the same name as the Symlink link, it will actually write to the target file pointed to by the attackers' Symlink link. If the attacker can insert malicious content in the temporary file they will be writing to the sensitive file by using the Symlink. The race occurs because the system checks if the temporary file exists, then creates the file. The attacker would typically create the Symlink during the interval between the check and the creation of the temporary file.",
+                "Abstraction": "Detailed"
+              },
+              {
+                "id": "CAPEC-27",
+                "name": "Leveraging Race Conditions via Symbolic Links",
+                "label": "AttackPattern",
+                "type": "HAS_PREREQUISITE",
+                "Status": "Draft",
+                "Likelihood_Of_Attack": "Medium",
+                "Typical_Severity": "High",
+                "description": "This attack leverages the use of symbolic links (Symlinks) in order to write to sensitive files. An attacker can create a Symlink link to a target file not otherwise accessible to them. When the privileged program tries to create a temporary file with the same name as the Symlink link, it will actually write to the target file pointed to by the attackers' Symlink link. If the attacker can insert malicious content in the temporary file they will be writing to the sensitive file by using the Symlink. The race occurs because the system checks if the temporary file exists, then creates the file. The attacker would typically create the Symlink during the interval between the check and the creation of the temporary file.",
+                "Abstraction": "Detailed"
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "deterministic_scores": {
+    "correlation": null,
+    "mapping_recall": null,
+    "coverage": null,
+    "provenance": {
+      "citations": 6,
+      "compliant": 6,
+      "citation_provenance_rate": 1.0,
+      "abstention_proof_ok": true,
+      "fully_provenanced": true
+    },
+    "inspectability": {
+      "citation_coverage": 1.0,
+      "traceability": 1.0,
+      "abstention_proofs": 1.0,
+      "inspectability": 1.0
+    }
+  },
+  "arm": "planned_llm_typed_lazy",
+  "run_meta": {
+    "planner": "llm-typed-lazy",
+    "synthesis": "deterministic",
+    "use_llm": true,
+    "llm_synthesis": false,
+    "llm_specialist": false,
+    "rewrite": null,
+    "observed_plan": [
+      {
+        "sub_question_id": "q1",
+        "source": "capec",
+        "text": "In capec, identify AttackPattern, EXPLOITS_WEAKNESS, HAS_PREREQUISITE, Prerequisite, Weakness relevant to: Is attack pattern CAPEC-27 (Leveraging Race Conditions via Symbolic Links) directly connected to weakness CWE-61 in CAPEC, and if it is, what is the nature of that connection?",
+        "entities": [
+          "AttackPattern",
+          "EXPLOITS_WEAKNESS",
+          "HAS_PREREQUISITE",
+          "Prerequisite",
+          "Weakness"
+        ],
+        "seed_ids": [],
+        "depends_on": null,
+        "limits": {
+          "max_traversal_depth": 3,
+          "max_result_rows": 1000,
+          "query_timeout_ms": 5000
+        }
+      }
+    ],
+    "exit_code": 0,
+    "status": "answered",
+    "timings": {
+      "plan_ms": 367352.919,
+      "specialists": [
+        {
+          "sub_question": "q1",
+          "source": "capec",
+          "ms": 23.666
+        }
+      ],
+      "synthesis_ms": 6.396,
+      "total_ms": 367420.445
+    },
+    "registry_model": "gemma4-31b",
+    "drafter_used": "DeterministicDrafter",
+    "typed": [
+      {
+        "mode": "lazy",
+        "fallback": "unavailable",
+        "error": "no plan JSON after the repair turn (empty model response)"
+      }
+    ],
+    "seams": {
+      "planner_llm": true,
+      "drafter": "TypedDrafter",
+      "specialist_llm": false,
+      "synthesis_llm": false,
+      "generic_only": "true"
+    },
+    "wall_s": 367.423
+  },
+  "evidence_volume": {
+    "results": 1,
+    "records": 1,
+    "related": 6
+  }
+}

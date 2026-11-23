@@ -1,0 +1,871 @@
+{
+  "id": "D5-mitigates-x_mitre_platforms-M1042-ad62f1::formal",
+  "kind": "attack",
+  "tier": "hard",
+  "category": "D5-mitigates",
+  "question": "Which techniques that apply to SaaS are mitigated by the Disable or Remove Feature or Program mitigation, M1042?",
+  "gold": {
+    "assertions": {
+      "min_records": 1,
+      "must_include_ids": [
+        "M1042"
+      ],
+      "must_include_related": [
+        "T1059",
+        "T1098",
+        "T1098.001",
+        "T1671"
+      ]
+    },
+    "ex_gold": {
+      "pool": "neighbors",
+      "expected": [
+        "T1059",
+        "T1098",
+        "T1098.001",
+        "T1671"
+      ],
+      "scheme": "attack",
+      "kind": "set"
+    }
+  },
+  "answer": {
+    "headline": "Gathered 1 record(s) from 1 source(s); 1 question(s) the sources don't establish.",
+    "narrative": "Found 26 item(s) related to M1042 (e.g. T1127, T1052, T1046) in MITRE ATT&CK. M1042 (Disable or Remove Feature or Program) has 26 mitigated techniques: T1127, T1052, T1046, T1221, T1505, T1671, T1557, T1133, T1137, T1689, T1091, T1219, T1205, T1218, T1611, T1011, T1021, T1563, T1092, T1059, T1609, T1649, T1210, T1098, T1559, T1685. The attack source doesn't establish this — the executed query ran cleanly and returned no matching records for:",
+    "composer": "deterministic",
+    "fallback_reason": null,
+    "claims": [
+      {
+        "text": "Found 26 item(s) related to M1042 (e.g. T1127, T1052, T1046) in MITRE ATT&CK.",
+        "kind": "fact",
+        "entity_ids": [
+          "M1042"
+        ],
+        "citations": [
+          {
+            "source": "attack",
+            "primary_id": "M1042"
+          }
+        ]
+      },
+      {
+        "text": "M1042 (Disable or Remove Feature or Program) has 26 mitigated techniques: T1127, T1052, T1046, T1221, T1505, T1671, T1557, T1133, T1137, T1689, T1091, T1219, T1205, T1218, T1611, T1011, T1021, T1563, T1092, T1059, T1609, T1649, T1210, T1098, T1559, T1685.",
+        "kind": "enumeration",
+        "entity_ids": [
+          "T1127",
+          "T1052",
+          "T1046",
+          "T1221",
+          "T1505",
+          "T1671",
+          "T1557",
+          "T1133",
+          "T1137",
+          "T1689",
+          "T1091",
+          "T1219",
+          "T1205",
+          "T1218",
+          "T1611",
+          "T1011",
+          "T1021",
+          "T1563",
+          "T1092",
+          "T1059",
+          "T1609",
+          "T1649",
+          "T1210",
+          "T1098",
+          "T1559",
+          "T1685"
+        ],
+        "citations": [
+          {
+            "source": "attack",
+            "primary_id": "M1042"
+          }
+        ]
+      }
+    ],
+    "abstentions": [
+      {
+        "source": "attack",
+        "statement": "The attack source doesn't establish this — the executed query ran cleanly and returned no matching records for: ",
+        "query": "MATCH (v2) WHERE v2.id IN $p0 AND (v2:Technique) WITH DISTINCT v2 WITH v2 WHERE (v2.`x_mitre_domains` IS NOT NULL AND $p1 IN v2.`x_mitre_domains`) WITH v2 ORDER BY v2.id WITH collect(v2) AS all_ RETURN size(all_) AS total, [x IN all_[0..1000] | {id: x.id, name: x.name}] AS rows"
+      }
+    ],
+    "notes": []
+  },
+  "logic_flow": {
+    "task": {
+      "sub_question_id": "q1",
+      "source": "attack",
+      "text": "Which techniques that apply to SaaS are mitigated by the Disable or Remove Feature or Program mitigation, M1042?",
+      "entities": [
+        "Mitigation",
+        "MITIGATES",
+        "Technique"
+      ],
+      "limits": {
+        "max_traversal_depth": 3,
+        "max_result_rows": 20000,
+        "query_timeout_ms": 5000
+      },
+      "join_key": null,
+      "seed_ids": [
+        "M1042"
+      ],
+      "rationale": "generated from the schema census"
+    },
+    "results": [
+      {
+        "source": "attack",
+        "sub_question_id": "q1",
+        "sub_question": "",
+        "query": "MATCH (n) WHERE coalesce(n.attack_id, n.id) IN $ids OPTIONAL MATCH (n)-[:MITIGATES]->(t0:Technique) WITH n, collect(DISTINCT {m: t0, r: 'MITIGATES'}) AS k0 WITH n, [x IN k0 WHERE x.m IS NOT NULL] AS hops UNWIND (CASE WHEN size(hops) = 0 THEN [{m: null, r: null}] ELSE hops END) AS hop RETURN coalesce(n.attack_id, n.id) AS anchor_id, n.name AS anchor_name, labels(n)[0] AS anchor_label, coalesce(hop.m.attack_id, hop.m.id) AS neighbour_id, hop.m.name AS neighbour_name, labels(hop.m)[0] AS neighbour_label, hop.r AS rel_type LIMIT 1000",
+        "ok": true,
+        "partial": false,
+        "error": null,
+        "summary": "Found 26 item(s) related to M1042 (e.g. T1127, T1052, T1046) in MITRE ATT&CK.",
+        "traces": [
+          {
+            "step": "intake",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "source": "attack",
+              "card": "attack"
+            }
+          },
+          {
+            "step": "resolve",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "labels": [
+                "Mitigation",
+                "Technique"
+              ],
+              "relationships": [
+                "MITIGATES"
+              ],
+              "seed_ids": [
+                "M1042"
+              ],
+              "join_key": null
+            }
+          },
+          {
+            "step": "gate",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "attempt": 1,
+              "template": "typed_step",
+              "query": "MATCH (n) WHERE coalesce(n.attack_id, n.id) IN $ids OPTIONAL MATCH (n)-[:MITIGATES]->(t0:Technique) WITH n, collect(DISTINCT {m: t0, r: 'MITIGATES'}) AS k0 WITH n, [x IN k0 WHERE x.m IS NOT NULL] AS hops UNWIND (CASE WHEN size(hops) = 0 THEN [{m: null, r: null}] ELSE hops END) AS hop RETURN coalesce(n.attack_id, n.id) AS anchor_id, n.name AS anchor_name, labels(n)[0] AS anchor_label, coalesce(hop.m.attack_id, hop.m.id) AS neighbour_id, hop.m.name AS neighbour_name, labels(hop.m)[0] AS neighbour_label, hop.r AS rel_type LIMIT 1000",
+              "injected": [
+                "LIMIT 1000 appended (none present)"
+              ],
+              "timing_ms": 0.303
+            }
+          },
+          {
+            "step": "execute",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "row_count": 26,
+              "timing_ms": 6.1,
+              "row_ceiling": 1000,
+              "truncated": false
+            }
+          },
+          {
+            "step": "assess",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "row_count": 26,
+              "timing_ms": 0.007
+            }
+          },
+          {
+            "step": "normalize",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "record_count": 1,
+              "timing_ms": 3.849
+            }
+          }
+        ],
+        "records": [
+          {
+            "primary_id": "M1042",
+            "name": "Disable or Remove Feature or Program",
+            "label": "Mitigation",
+            "description": "",
+            "properties": {},
+            "facets": [],
+            "join_values": [],
+            "related": [
+              {
+                "id": "T1127",
+                "name": "Trusted Developer Utilities Proxy Execution",
+                "label": "Technique",
+                "type": "MITIGATES",
+                "description": "Adversaries may take advantage of trusted developer utilities to proxy execution of malicious payloads. There are many utilities used for software development related tasks that can be used to execute code in various forms to assist in development, debugging, and reverse engineering.(Citation: engima0x3 DNX Bypass)(Citation: engima0x3 RCSI Bypass)(Citation: Exploit Monday WinDbg)(Citation: LOLBAS Tracker) These utilities may often be signed with legitimate certificates that allow them to execute on a system and proxy execution of malicious code through a trusted process that effectively bypasses application control solutions.\n\nSmart App Control is a feature of Windows that blocks applications it considers potentially malicious from running by verifying unsigned applications against a known safe list from a Microsoft cloud service before executing them.(Citation: Microsoft Smart App Control) However, adversaries may leverage \"reputation hijacking\" to abuse an operating system’s trust of safe, signed applications that support the execution of arbitrary code. By leveraging [Trusted Developer Utilities Proxy Execution](https://attack.mitre.org/techniques/T1127) to run their malicious code, adversaries may bypass Smart App Control protections.(Citation: Elastic Security Labs)"
+              },
+              {
+                "id": "T1052",
+                "name": "Exfiltration Over Physical Medium",
+                "label": "Technique",
+                "type": "MITIGATES",
+                "description": "Adversaries may attempt to exfiltrate data via a physical medium, such as a removable drive. In certain circumstances, such as an air-gapped network compromise, exfiltration could occur via a physical medium or device introduced by a user. Such media could be an external hard drive, USB drive, cellular phone, MP3 player, or other removable storage and processing device. The physical medium or device could be used as the final exfiltration point or to hop between otherwise disconnected systems."
+              },
+              {
+                "id": "T1046",
+                "name": "Network Service Discovery",
+                "label": "Technique",
+                "type": "MITIGATES",
+                "description": "Adversaries may attempt to get a listing of services running on remote hosts and local network infrastructure devices, including those that may be vulnerable to remote software exploitation. Common methods to acquire this information include port, vulnerability, and/or wordlist scans using tools that are brought onto a system.(Citation: CISA AR21-126A FIVEHANDS May 2021)   \n\nWithin cloud environments, adversaries may attempt to discover services running on other cloud hosts. Additionally, if the cloud environment is connected to a on-premises environment, adversaries may be able to identify services running on non-cloud systems as well.\n\nWithin macOS environments, adversaries may use the native Bonjour application to discover services running on other macOS hosts within a network. The Bonjour mDNSResponder daemon automatically registers and advertises a host’s registered services on the network. For example, adversaries can use a mDNS query (such as <code>dns-sd -B _ssh._tcp .</code>) to find other systems broadcasting the ssh service.(Citation: apple doco bonjour description)(Citation: macOS APT Activity Bradley)"
+              },
+              {
+                "id": "T1221",
+                "name": "Template Injection",
+                "label": "Technique",
+                "type": "MITIGATES",
+                "description": "Adversaries may create or modify references in user document templates to conceal malicious code or force authentication attempts. For example, Microsoft’s Office Open XML (OOXML) specification defines an XML-based format for Office documents (.docx, xlsx, .pptx) to replace older binary formats (.doc, .xls, .ppt). OOXML files are packed together ZIP archives compromised of various XML files, referred to as parts, containing properties that collectively define how a document is rendered.(Citation: Microsoft Open XML July 2017)\n\nProperties within parts may reference shared public resources accessed via online URLs. For example, template properties may reference a file, serving as a pre-formatted document blueprint, that is fetched when the document is loaded.\n\nAdversaries may abuse these templates to initially conceal malicious code to be executed via user documents. Template references injected into a document may enable malicious payloads to be fetched and executed when the document is loaded.(Citation: SANS Brian Wiltse Template Injection) These documents can be delivered via other techniques such as [Phishing](https://attack.mitre.org/techniques/T1566) and/or [Taint Shared Content](https://attack.mitre.org/techniques/T1080) and may evade static detections since no typical indicators (VBA macro, script, etc.) are present until after the malicious payload is fetched.(Citation: Redxorblue Remote Template Injection) Examples have been seen in the wild where template injection was used to load malicious code containing an exploit.(Citation: MalwareBytes Template Injection OCT 2017)\n\nAdversaries may also modify the <code>*\\template</code> control word within an .rtf file to similarly conceal then download malicious code. This legitimate control word value is intended to be a file destination of a template file resource that is retrieved and loaded when an .rtf file is opened. However, adversaries may alter the bytes of an existing .rtf file to insert a template control word field to include a URL resource of a malicious payload.(Citation: Proofpoint RTF Injection)(Citation: Ciberseguridad Decoding malicious RTF files)\n\nThis technique may also enable [Forced Authentication](https://attack.mitre.org/techniques/T1187) by injecting a SMB/HTTPS (or other credential prompting) URL and triggering an authentication attempt.(Citation: Anomali Template Injection MAR 2018)(Citation: Talos Template Injection July 2017)(Citation: ryhanson phishery SEPT 2016)"
+              },
+              {
+                "id": "T1505",
+                "name": "Server Software Component",
+                "label": "Technique",
+                "type": "MITIGATES",
+                "description": "Adversaries may abuse legitimate extensible development features of servers to establish persistent access to systems. Enterprise server applications may include features that allow developers to write and install software or scripts to extend the functionality of the main application. Adversaries may install malicious components to extend and abuse server applications.(Citation: volexity_0day_sophos_FW)"
+              },
+              {
+                "id": "T1671",
+                "name": "Cloud Application Integration",
+                "label": "Technique",
+                "type": "MITIGATES",
+                "description": "Adversaries may achieve persistence by leveraging OAuth application integrations in a software-as-a-service environment. Adversaries may create a custom application, add a legitimate application into the environment, or even co-opt an existing integration to achieve malicious ends.(Citation: Push Security SaaS Persistence 2022)(Citation: SaaS Attacks GitHub Evil Twin Integrations)\n\nOAuth is an open standard that allows users to authorize applications to access their information on their behalf. In a SaaS environment such as Microsoft 365 or Google Workspace, users may integrate applications to improve their workflow and achieve tasks.  \n\nLeveraging application integrations may allow adversaries to persist in an environment – for example, by granting consent to an application from a high-privileged adversary-controlled account in order to maintain access to its data, even in the event of losing access to the account.(Citation: Wiz Midnight Blizzard 2024)(Citation: Microsoft Malicious OAuth Applications 2022)(Citation: Huntress Persistence Microsoft 365 Compromise 2024) In some cases, integrations may remain valid even after the original consenting user account is disabled.(Citation: Push Security Slack Persistence 2023) Application integrations may also allow adversaries to bypass multi-factor authentication requirements through the use of [Application Access Token](https://attack.mitre.org/techniques/T1550/001)s. Finally, they may enable persistent [Automated Exfiltration](https://attack.mitre.org/techniques/T1020) over time.(Citation: Synes Cyber Corner Malicious Azure Application 2023)\n\nCreating or adding a new application may require the adversary to create a dedicated [Cloud Account](https://attack.mitre.org/techniques/T1136/003) for the application and assign it [Additional Cloud Roles](https://attack.mitre.org/techniques/T1098/003) – for example, in Microsoft 365 environments, an application can only access resources via an associated service principal.(Citation: Microsoft Entra ID Service Principals)  "
+              },
+              {
+                "id": "T1557",
+                "name": "Adversary-in-the-Middle",
+                "label": "Technique",
+                "type": "MITIGATES",
+                "description": "Adversaries may attempt to position themselves between two or more networked devices using an adversary-in-the-middle (AiTM) technique to support follow-on behaviors such as [Network Sniffing](https://attack.mitre.org/techniques/T1040), [Transmitted Data Manipulation](https://attack.mitre.org/techniques/T1565/002), or replay attacks ([Exploitation for Credential Access](https://attack.mitre.org/techniques/T1212)). By abusing features of common networking protocols that can determine the flow of network traffic (e.g. ARP, DNS, LLMNR, etc.), adversaries may force a device to communicate through an adversary controlled system so they can collect information or perform additional actions.(Citation: Rapid7 MiTM Basics)\n\nFor example, adversaries may manipulate victim DNS settings to enable other malicious activities such as preventing/redirecting users from accessing legitimate sites and/or pushing additional malware.(Citation: ttint_rat)(Citation: dns_changer_trojans)(Citation: ad_blocker_with_miner) Adversaries may also manipulate DNS and leverage their position in order to intercept user credentials, including access tokens ([Steal Application Access Token](https://attack.mitre.org/techniques/T1528)) and session cookies ([Steal Web Session Cookie](https://attack.mitre.org/techniques/T1539)).(Citation: volexity_0day_sophos_FW)(Citation: Token tactics) [Downgrade Attack](https://attack.mitre.org/techniques/T1689)s can also be used to establish an AiTM position, such as by negotiating a less secure, deprecated, or weaker version of communication protocol (SSL/TLS) or encryption algorithm.(Citation: mitm_tls_downgrade_att)(Citation: taxonomy_downgrade_att_tls)(Citation: tlseminar_downgrade_att)\n\nAdversaries may also leverage the AiTM position to attempt to monitor and/or modify traffic, such as in [Transmitted Data Manipulation](https://attack.mitre.org/techniques/T1565/002). Adversaries can setup a position similar to AiTM to prevent traffic from flowing to the appropriate destination, potentially to impair defenses and/or in support of a [Network Denial of Service](https://attack.mitre.org/techniques/T1498)."
+              },
+              {
+                "id": "T1133",
+                "name": "External Remote Services",
+                "label": "Technique",
+                "type": "MITIGATES",
+                "description": "Adversaries may leverage external-facing remote services to initially access and/or persist within a network. Remote services such as VPNs, Citrix, and other access mechanisms allow users to connect to internal enterprise network resources from external locations. There are often remote service gateways that manage connections and credential authentication for these services. Services such as [Windows Remote Management](https://attack.mitre.org/techniques/T1021/006) and [VNC](https://attack.mitre.org/techniques/T1021/005) can also be used externally.(Citation: MacOS VNC software for Remote Desktop)\n\nAccess to [Valid Accounts](https://attack.mitre.org/techniques/T1078) to use the service is often a requirement, which could be obtained through credential pharming or by obtaining the credentials from users after compromising the enterprise network.(Citation: Volexity Virtual Private Keylogging) Access to remote services may be used as a redundant or persistent access mechanism during an operation.\n\nAccess may also be gained through an exposed service that doesn’t require authentication. In containerized environments, this may include an exposed Docker API, Kubernetes API server, kubelet, or web application such as the Kubernetes dashboard.(Citation: Trend Micro Exposed Docker Server)(Citation: Unit 42 Hildegard Malware)\n\nAdversaries may also establish persistence on network by configuring a Tor hidden service on a compromised system. Adversaries may utilize the tool `ShadowLink` to facilitate the installation and configuration of the Tor hidden service. Tor hidden service is then accessible via the Tor network because `ShadowLink` sets up a .onion address on the compromised system. `ShadowLink` may be used to forward any inbound connections to RDP, allowing the adversaries to have remote access.(Citation: The BadPilot campaign) Adversaries may get `ShadowLink` to persist on a system by masquerading it as an MS Defender application.(Citation: Russian threat actors dig in, prepare to seize on war fatigue)"
+              },
+              {
+                "id": "T1137",
+                "name": "Office Application Startup",
+                "label": "Technique",
+                "type": "MITIGATES",
+                "description": "Adversaries may leverage Microsoft Office-based applications for persistence between startups. Microsoft Office is a fairly common application suite on Windows-based operating systems within an enterprise network. There are multiple mechanisms that can be used with Office for persistence when an Office-based application is started; this can include the use of Office Template Macros and add-ins.\n\nA variety of features have been discovered in Outlook that can be abused to obtain persistence, such as Outlook rules, forms, and Home Page.(Citation: SensePost Ruler GitHub) These persistence mechanisms can work within Outlook or be used through Office 365.(Citation: TechNet O365 Outlook Rules)"
+              },
+              {
+                "id": "T1689",
+                "name": "Downgrade Attack",
+                "label": "Technique",
+                "type": "MITIGATES",
+                "description": "Adversaries may downgrade or use a version of system features that may be outdated, vulnerable, and/or does not support updated security controls. Downgrade attacks typically take advantage of a system’s backward compatibility to force it into less secure modes of operation.\n\nAdversaries may downgrade and use various less-secure versions of features of a system, such as [Command and Scripting Interpreter](https://attack.mitre.org/techniques/T1059) or even network protocols that can be abused to enable [Adversary-in-the-Middle](https://attack.mitre.org/techniques/T1557) or [Network Sniffing](https://attack.mitre.org/techniques/T1040).(Citation: Praetorian TLS Downgrade Attack 2014) For example, [PowerShell](https://attack.mitre.org/techniques/T1059/001) versions 5+ includes Script Block Logging (SBL), which can record executed script content. However, adversaries may attempt to execute a previous version of PowerShell that does not support SBL with the intent to impair defenses while running malicious scripts that may have otherwise been detected.(Citation: CrowdStrike downgrade attack)(Citation: Google Cloud downgrade attack)(Citation: att_def_ps_logging)\n\nAdversaries may similarly target network traffic to downgrade from an encrypted HTTPS connection to an unsecured HTTP connection that exposes network data in clear text.(Citation: Targeted SSL Stripping Attacks Are Real)(Citation: CrowdStrike Downgrade attack 2) On Windows systems, adversaries may downgrade the boot manager to a vulnerable version that bypasses Secure Boot, granting the ability to disable various operating system security mechanisms.(Citation: SafeBreach)"
+              },
+              {
+                "id": "T1091",
+                "name": "Replication Through Removable Media",
+                "label": "Technique",
+                "type": "MITIGATES",
+                "description": "Adversaries may move onto systems, possibly those on disconnected or air-gapped networks, by copying malware to removable media and taking advantage of Autorun features when the media is inserted into a system and executes. In the case of Lateral Movement, this may occur through modification of executable files stored on removable media or by copying malware and renaming it to look like a legitimate file to trick users into executing it on a separate system. In the case of Initial Access, this may occur through manual manipulation of the media, modification of systems used to initially format the media, or modification to the media's firmware itself.\n\nMobile devices may also be used to infect PCs with malware if connected via USB.(Citation: Exploiting Smartphone USB ) This infection may be achieved using devices (Android, iOS, etc.) and, in some instances, USB charging cables.(Citation: Windows Malware Infecting Android)(Citation: iPhone Charging Cable Hack) For example, when a smartphone is connected to a system, it may appear to be mounted similar to a USB-connected disk drive. If malware that is compatible with the connected system is on the mobile device, the malware could infect the machine (especially if Autorun features are enabled)."
+              },
+              {
+                "id": "T1219",
+                "name": "Remote Access Tools",
+                "label": "Technique",
+                "type": "MITIGATES",
+                "description": "An adversary may use legitimate remote access tools to establish an interactive command and control channel within a network. Remote access tools create a session between two trusted hosts through a graphical interface, a command line interaction, a protocol tunnel via development or management software, or hardware-level access such as KVM (Keyboard, Video, Mouse) over IP solutions. Desktop support software (usually graphical interface) and remote management software (typically command line interface) allow a user to control a computer remotely as if they are a local user inheriting the user or software permissions. This software is commonly used for troubleshooting, software installation, and system management.(Citation: Symantec Living off the Land)(Citation: CrowdStrike 2015 Global Threat Report)(Citation: CrySyS Blog TeamSpy) Adversaries may similarly abuse response features included in EDR and other defensive tools that enable remote access.\n\nRemote access tools may be installed and used post-compromise as an alternate communications channel for redundant access or to establish an interactive remote desktop session with the target system. It may also be used as a malware component to establish a reverse connection or back-connect to a service or adversary-controlled system.\n\nInstallation of many remote access tools may also include persistence (e.g., the software's installation routine creates a [Windows Service](https://attack.mitre.org/techniques/T1543/003)). Remote access modules/features may also exist as part of otherwise existing software (e.g., Google Chrome’s Remote Desktop).(Citation: Google Chrome Remote Desktop)(Citation: Chrome Remote Desktop)"
+              },
+              {
+                "id": "T1205",
+                "name": "Traffic Signaling",
+                "label": "Technique",
+                "type": "MITIGATES",
+                "description": "Adversaries may use traffic signaling to hide open ports or other malicious functionality used for persistence or command and control. Traffic signaling involves the use of a magic value or sequence that must be sent to a system to trigger a special response, such as opening a closed port or executing a malicious task. This may take the form of sending a series of packets with certain characteristics before a port will be opened that the adversary can use for command and control. Usually this series of packets consists of attempted connections to a predefined sequence of closed ports (i.e. [Port Knocking](https://attack.mitre.org/techniques/T1205/001)), but can involve unusual flags, specific strings, or other unique characteristics. After the sequence is completed, opening a port may be accomplished by the host-based firewall, but could also be implemented by custom software.\n\nAdversaries may also communicate with an already open port, but the service listening on that port will only respond to commands or trigger other malicious functionality if passed the appropriate magic value(s).\n\nThe observation of the signal packets to trigger the communication can be conducted through different methods. One means, originally implemented by Cd00r (Citation: Hartrell cd00r 2002), is to use the libpcap libraries to sniff for the packets in question. Another method leverages raw sockets, which enables the malware to use ports that are already open for use by other programs.\n\nOn network devices, adversaries may use crafted packets to enable [Network Device Authentication](https://attack.mitre.org/techniques/T1556/004) for standard services offered by the device such as telnet.  Such signaling may also be used to open a closed service port such as telnet, or to trigger module modification of malware implants on the device, adding, removing, or changing malicious capabilities.  Adversaries may use crafted packets to attempt to connect to one or more (open or closed) ports, but may also attempt to connect to a router interface, broadcast, and network address IP on the same port in order to achieve their goals and objectives.(Citation: Cisco Synful Knock Evolution)(Citation: Mandiant - Synful Knock)(Citation: Cisco Blog Legacy Device Attacks)  To enable this traffic signaling on embedded devices, adversaries must first achieve and leverage [Patch System Image](https://attack.mitre.org/techniques/T1601/001) due to the monolithic nature of the architecture.\n\nAdversaries may also use the Wake-on-LAN feature to turn on powered off systems. Wake-on-LAN is a hardware feature that allows a powered down system to be powered on, or woken up, by sending a magic packet to it. Once the system is powered on, it may become a target for lateral movement.(Citation: Bleeping Computer - Ryuk WoL)(Citation: AMD Magic Packet)"
+              },
+              {
+                "id": "T1218",
+                "name": "System Binary Proxy Execution",
+                "label": "Technique",
+                "type": "MITIGATES",
+                "description": "Adversaries may bypass process and/or signature-based defenses by proxying execution of malicious content with signed, or otherwise trusted, binaries. Binaries used in this technique are often Microsoft-signed files, indicating that they have been either downloaded from Microsoft or are already native in the operating system.(Citation: LOLBAS Project) Binaries signed with trusted digital certificates can typically execute on Windows systems protected by digital signature validation. Several Microsoft signed binaries that are default on Windows installations can be used to proxy execution of other files or commands.\n\nSimilarly, on Linux systems adversaries may abuse trusted binaries such as <code>split</code> to proxy execution of malicious commands.(Citation: split man page)(Citation: GTFO split)"
+              },
+              {
+                "id": "T1611",
+                "name": "Escape to Host",
+                "label": "Technique",
+                "type": "MITIGATES",
+                "description": "Adversaries may break out of a container or virtualized environment to gain access to the underlying host. This can allow an adversary access to other containerized or virtualized resources from the host level or to the host itself. In principle, containerized / virtualized resources should provide a clear separation of application functionality and be isolated from the host environment.(Citation: Docker Overview)\n\nThere are multiple ways an adversary may escape from a container to a host environment. Examples include creating a container configured to mount the host’s filesystem using the bind parameter, which allows the adversary to drop payloads and execute control utilities such as cron on the host; utilizing a privileged container to run commands or load a malicious kernel module on the underlying host; or abusing system calls such as `unshare` and `keyctl` to escalate privileges and steal secrets.(Citation: Docker Bind Mounts)(Citation: Trend Micro Privileged Container)(Citation: Intezer Doki July 20)(Citation: Container Escape)(Citation: Crowdstrike Kubernetes Container Escape)(Citation: Keyctl-unmask)\n\nAdditionally, an adversary may be able to exploit a compromised container with a mounted container management socket, such as `docker.sock`, to break out of the container via a [Container Administration Command](https://attack.mitre.org/techniques/T1609).(Citation: Container Escape) Adversaries may also escape via [Exploitation for Privilege Escalation](https://attack.mitre.org/techniques/T1068), such as exploiting vulnerabilities in global symbolic links in order to access the root directory of a host machine.(Citation: Windows Server Containers Are Open)\n\nIn ESXi environments, an adversary may exploit a vulnerability in order to escape from a virtual machine into the hypervisor.(Citation: Broadcom VMSA-2025-004)\n\nGaining access to the host may provide the adversary with the opportunity to achieve follow-on objectives, such as establishing persistence, moving laterally within the environment, accessing other containers or virtual machines running on the host, or setting up a command and control channel on the host."
+              },
+              {
+                "id": "T1011",
+                "name": "Exfiltration Over Other Network Medium",
+                "label": "Technique",
+                "type": "MITIGATES",
+                "description": "Adversaries may attempt to exfiltrate data over a different network medium than the command and control channel. If the command and control network is a wired Internet connection, the exfiltration may occur, for example, over a WiFi connection, modem, cellular data connection, Bluetooth, or another radio frequency (RF) channel.\n\nAdversaries may choose to do this if they have sufficient access or proximity, and the connection might not be secured or defended as well as the primary Internet-connected channel because it is not routed through the same enterprise network."
+              },
+              {
+                "id": "T1021",
+                "name": "Remote Services",
+                "label": "Technique",
+                "type": "MITIGATES",
+                "description": "Adversaries may use [Valid Accounts](https://attack.mitre.org/techniques/T1078) to log into a service that accepts remote connections, such as telnet, SSH, and VNC. The adversary may then perform actions as the logged-on user.\n\nIn an enterprise environment, servers and workstations can be organized into domains. Domains provide centralized identity management, allowing users to login using one set of credentials across the entire network. If an adversary is able to obtain a set of valid domain credentials, they could login to many different machines using remote access protocols such as secure shell (SSH) or remote desktop protocol (RDP).(Citation: SSH Secure Shell)(Citation: TechNet Remote Desktop Services) They could also login to accessible SaaS or IaaS services, such as those that federate their identities to the domain, or management platforms for internal virtualization environments such as VMware vCenter. \n\nLegitimate applications (such as [Software Deployment Tools](https://attack.mitre.org/techniques/T1072) and other administrative programs) may utilize [Remote Services](https://attack.mitre.org/techniques/T1021) to access remote hosts. For example, Apple Remote Desktop (ARD) on macOS is native software used for remote management. ARD leverages a blend of protocols, including [VNC](https://attack.mitre.org/techniques/T1021/005) to send the screen and control buffers and [SSH](https://attack.mitre.org/techniques/T1021/004) for secure file transfer.(Citation: Remote Management MDM macOS)(Citation: Kickstart Apple Remote Desktop commands)(Citation: Apple Remote Desktop Admin Guide 3.3) Adversaries can abuse applications such as ARD to gain remote code execution and perform lateral movement. In versions of macOS prior to 10.14, an adversary can escalate an SSH session to an ARD session which enables an adversary to accept TCC (Transparency, Consent, and Control) prompts without user interaction and gain access to data.(Citation: FireEye 2019 Apple Remote Desktop)(Citation: Lockboxx ARD 2019)(Citation: Kickstart Apple Remote Desktop commands)"
+              },
+              {
+                "id": "T1563",
+                "name": "Remote Service Session Hijacking",
+                "label": "Technique",
+                "type": "MITIGATES",
+                "description": "Adversaries may take control of preexisting sessions with remote services to move laterally in an environment. Users may use valid credentials to log into a service specifically designed to accept remote connections, such as telnet, SSH, and RDP. When a user logs into a service, a session will be established that will allow them to maintain a continuous interaction with that service.\n\nAdversaries may commandeer these sessions to carry out actions on remote systems. [Remote Service Session Hijacking](https://attack.mitre.org/techniques/T1563) differs from use of [Remote Services](https://attack.mitre.org/techniques/T1021) because it hijacks an existing session rather than creating a new session using [Valid Accounts](https://attack.mitre.org/techniques/T1078).(Citation: RDP Hijacking Medium)(Citation: Breach Post-mortem SSH Hijack)"
+              },
+              {
+                "id": "T1092",
+                "name": "Communication Through Removable Media",
+                "label": "Technique",
+                "type": "MITIGATES",
+                "description": "Adversaries can perform command and control between compromised hosts on potentially disconnected networks using removable media to transfer commands from system to system.(Citation: ESET Sednit USBStealer 2014) Both systems would need to be compromised, with the likelihood that an Internet-connected system was compromised first and the second through lateral movement by [Replication Through Removable Media](https://attack.mitre.org/techniques/T1091). Commands and files would be relayed from the disconnected system to the Internet-connected system to which the adversary has direct access."
+              },
+              {
+                "id": "T1059",
+                "name": "Command and Scripting Interpreter",
+                "label": "Technique",
+                "type": "MITIGATES",
+                "description": "Adversaries may abuse command and script interpreters to execute commands, scripts, or binaries. These interfaces and languages provide ways of interacting with computer systems and are a common feature across many different platforms. Most systems come with some built-in command-line interface and scripting capabilities, for example, macOS and Linux distributions include some flavor of [Unix Shell](https://attack.mitre.org/techniques/T1059/004) while Windows installations include the [Windows Command Shell](https://attack.mitre.org/techniques/T1059/003) and [PowerShell](https://attack.mitre.org/techniques/T1059/001).\n\nThere are also cross-platform interpreters such as [Python](https://attack.mitre.org/techniques/T1059/006), as well as those commonly associated with client applications such as [JavaScript](https://attack.mitre.org/techniques/T1059/007) and [Visual Basic](https://attack.mitre.org/techniques/T1059/005).\n\nAdversaries may abuse these technologies in various ways as a means of executing arbitrary commands. Commands and scripts can be embedded in [Initial Access](https://attack.mitre.org/tactics/TA0001) payloads delivered to victims as lure documents or as secondary payloads downloaded from an existing C2. Adversaries may also execute commands through interactive terminals/shells, as well as utilize various [Remote Services](https://attack.mitre.org/techniques/T1021) in order to achieve remote Execution.(Citation: Powershell Remote Commands)(Citation: Cisco IOS Software Integrity Assurance - Command History)(Citation: Remote Shell Execution in Python)"
+              },
+              {
+                "id": "T1609",
+                "name": "Container Administration Command",
+                "label": "Technique",
+                "type": "MITIGATES",
+                "description": "Adversaries may abuse a container administration service to execute commands within a container. A container administration service such as the Docker daemon, the Kubernetes API server, or the kubelet may allow remote management of containers within an environment.(Citation: Docker Daemon CLI)(Citation: Kubernetes API)(Citation: Kubernetes Kubelet)\n\nIn Docker, adversaries may specify an entrypoint during container deployment that executes a script or command, or they may use a command such as <code>docker exec</code> to execute a command within a running container.(Citation: Docker Entrypoint)(Citation: Docker Exec) In Kubernetes, if an adversary has sufficient permissions, they may gain remote execution in a container in the cluster via interaction with the Kubernetes API server, the kubelet, or by running a command such as <code>kubectl exec</code>.(Citation: Kubectl Exec Get Shell)"
+              },
+              {
+                "id": "T1649",
+                "name": "Steal or Forge Authentication Certificates",
+                "label": "Technique",
+                "type": "MITIGATES",
+                "description": "Adversaries may steal or forge certificates used for authentication to access remote systems or resources. Digital certificates are often used to sign and encrypt messages and/or files. Certificates are also used as authentication material. For example, Entra ID device certificates and Active Directory Certificate Services (AD CS) certificates bind to an identity and can be used as credentials for domain accounts.(Citation: O365 Blog Azure AD Device IDs)(Citation: Microsoft AD CS Overview)\n\nAuthentication certificates can be both stolen and forged. For example, AD CS certificates can be stolen from encrypted storage (in the Registry or files)(Citation: APT29 Deep Look at Credential Roaming), misplaced certificate files (i.e. [Unsecured Credentials](https://attack.mitre.org/techniques/T1552)), or directly from the Windows certificate store via various crypto APIs.(Citation: SpecterOps Certified Pre Owned)(Citation: GitHub CertStealer)(Citation: GitHub GhostPack Certificates) With appropriate enrollment rights, users and/or machines within a domain can also request and/or manually renew certificates from enterprise certificate authorities (CA). This enrollment process defines various settings and permissions associated with the certificate. Of note, the certificate’s extended key usage (EKU) values define signing, encryption, and authentication use cases, while the certificate’s subject alternative name (SAN) values define the certificate owner’s alternate names.(Citation: Medium Certified Pre Owned)\n\nAbusing certificates for authentication credentials may enable other behaviors such as [Lateral Movement](https://attack.mitre.org/tactics/TA0008). Certificate-related misconfigurations may also enable opportunities for [Privilege Escalation](https://attack.mitre.org/tactics/TA0004), by way of allowing users to impersonate or assume privileged accounts or permissions via the identities (SANs) associated with a certificate. These abuses may also enable [Persistence](https://attack.mitre.org/tactics/TA0003) via stealing or forging certificates that can be used as [Valid Accounts](https://attack.mitre.org/techniques/T1078) for the duration of the certificate's validity, despite user password resets. Authentication certificates can also be stolen and forged for machine accounts.\n\nAdversaries who have access to root (or subordinate) CA certificate private keys (or mechanisms protecting/managing these keys) may also establish [Persistence](https://attack.mitre.org/tactics/TA0003) by forging arbitrary authentication certificates for the victim domain (known as “golden” certificates).(Citation: Medium Certified Pre Owned) Adversaries may also target certificates and related services in order to access other forms of credentials, such as [Golden Ticket](https://attack.mitre.org/techniques/T1558/001) ticket-granting tickets (TGT) or NTLM plaintext.(Citation: Medium Certified Pre Owned)"
+              },
+              {
+                "id": "T1210",
+                "name": "Exploitation of Remote Services",
+                "label": "Technique",
+                "type": "MITIGATES",
+                "description": "Adversaries may exploit remote services to gain unauthorized access to internal systems once inside of a network. Exploitation of a software vulnerability occurs when an adversary takes advantage of a programming error in a program, service, or within the operating system software or kernel itself to execute adversary-controlled code. A common goal for post-compromise exploitation of remote services is for lateral movement to enable access to a remote system.\n\nAn adversary may need to determine if the remote system is in a vulnerable state, which may be done through [Network Service Discovery](https://attack.mitre.org/techniques/T1046) or other Discovery methods looking for common, vulnerable software that may be deployed in the network, the lack of certain patches that may indicate vulnerabilities,  or security software that may be used to detect or contain remote exploitation. Servers are likely a high value target for lateral movement exploitation, but endpoint systems may also be at risk if they provide an advantage or access to additional resources.\n\nThere are several well-known vulnerabilities that exist in common services such as SMB(Citation: CIS Multiple SMB Vulnerabilities) and RDP(Citation: NVD CVE-2017-0176) as well as applications that may be used within internal networks such as MySQL(Citation: NVD CVE-2016-6662) and web server services.(Citation: NVD CVE-2014-7169)(Citation: Ars Technica VMWare Code Execution Vulnerability 2021) Additionally, there have been a number of vulnerabilities in VMware vCenter installations, which may enable threat actors to move laterally from the compromised vCenter server to virtual machines or even to ESXi hypervisors.(Citation: Broadcom VMSA-2024-0019)\n\nDepending on the permissions level of the vulnerable remote service an adversary may achieve [Exploitation for Privilege Escalation](https://attack.mitre.org/techniques/T1068) as a result of lateral movement exploitation as well."
+              },
+              {
+                "id": "T1098",
+                "name": "Account Manipulation",
+                "label": "Technique",
+                "type": "MITIGATES",
+                "description": "Adversaries may manipulate accounts to maintain and/or elevate access to victim systems. Account manipulation may consist of any action that preserves or modifies adversary access to a compromised account, such as modifying credentials or permission groups.(Citation: FireEye SMOKEDHAM June 2021) These actions could also include account activity designed to subvert security policies, such as performing iterative password updates to bypass password duration policies and preserve the life of compromised credentials. \n\nIn order to create or manipulate accounts, the adversary must already have sufficient permissions on systems or the domain. However, account manipulation may also lead to privilege escalation where modifications grant access to additional roles, permissions, or higher-privileged [Valid Accounts](https://attack.mitre.org/techniques/T1078)."
+              },
+              {
+                "id": "T1559",
+                "name": "Inter-Process Communication",
+                "label": "Technique",
+                "type": "MITIGATES",
+                "description": "Adversaries may abuse inter-process communication (IPC) mechanisms for local code or command execution. IPC is typically used by processes to share data, communicate with each other, or synchronize execution. IPC is also commonly used to avoid situations such as deadlocks, which occurs when processes are stuck in a cyclic waiting pattern. \n\nAdversaries may abuse IPC to execute arbitrary code or commands. IPC mechanisms may differ depending on OS, but typically exists in a form accessible through programming languages/libraries or native interfaces such as Windows [Dynamic Data Exchange](https://attack.mitre.org/techniques/T1559/002) or [Component Object Model](https://attack.mitre.org/techniques/T1559/001). Linux environments support several different IPC mechanisms, two of which being sockets and pipes.(Citation: Linux IPC) Higher level execution mediums, such as those of [Command and Scripting Interpreter](https://attack.mitre.org/techniques/T1059)s, may also leverage underlying IPC mechanisms. Adversaries may also use [Remote Services](https://attack.mitre.org/techniques/T1021) such as [Distributed Component Object Model](https://attack.mitre.org/techniques/T1021/003) to facilitate remote IPC execution.(Citation: Fireeye Hunting COM June 2019)"
+              },
+              {
+                "id": "T1685",
+                "name": "Disable or Modify Tools",
+                "label": "Technique",
+                "type": "MITIGATES",
+                "description": "Adversaries may disable, degrade, or tamper with security tools or applications (e.g., endpoint detection and response (EDR) tools, intrusion detection systems (IDS), antivirus, logging agents, sensors, etc.) to impair or reduce visibility of defensive capabilities. This may include stopping specific services, killing processes, modifying or deleting tool configuration files and Registry keys, or preventing tools from updating. This may also include impairing defenses more broadly by disrupting preventative, detection, and response mechanisms across host, network, and cloud environments.(Citation: SCADAfence_ransomware) \n\nIn addition to directly targeting tools, adversaries may block or manipulate indicators and telemetry used for detection. This includes maliciously disabling or redirecting sensors such as Event Tracing for Windows (ETW), modifying event log configurations (e.g., redirecting Security logs), or interfering with logging pipelines and forwarding mechanisms (e.g., SIEM ingestion).(Citation: Microsoft Lamin Sept 2017)(Citation: ETW Palantir)\n\nMore advanced techniques include leveraging legitimate drivers or debugging mechanisms to render tools non-functional, bypassing anti-tampering protections, and targeting specific defenses such as Sysmon or cloud monitoring agents. Adversaries may also disrupt broader defensive operations, including update mechanisms, logging infrastructure (e.g., syslog), or event aggregation, further degrading an organization’s ability to detect and respond to malicious activity.(Citation: Cocomazzi FIN7 Reboot)"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "source": "attack",
+        "sub_question_id": "q2",
+        "sub_question": "",
+        "query": "MATCH (v2) WHERE v2.id IN $p0 AND (v2:Technique) WITH DISTINCT v2 WITH v2 WHERE (v2.`x_mitre_domains` IS NOT NULL AND $p1 IN v2.`x_mitre_domains`) WITH v2 ORDER BY v2.id WITH collect(v2) AS all_ RETURN size(all_) AS total, [x IN all_[0..1000] | {id: x.id, name: x.name}] AS rows",
+        "ok": true,
+        "partial": false,
+        "error": null,
+        "summary": "0 entities match.",
+        "traces": [
+          {
+            "step": "intake",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "source": "attack",
+              "card": "attack"
+            }
+          },
+          {
+            "step": "resolve",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "labels": [
+                "Technique"
+              ],
+              "relationships": [],
+              "seed_ids": [
+                "T1011",
+                "T1021",
+                "T1046",
+                "T1052",
+                "T1059",
+                "T1091",
+                "T1092",
+                "T1098",
+                "T1127",
+                "T1133",
+                "T1137",
+                "T1205",
+                "T1210",
+                "T1218",
+                "T1219",
+                "T1221",
+                "T1505",
+                "T1557",
+                "T1559",
+                "T1563",
+                "T1609",
+                "T1611",
+                "T1649",
+                "T1671",
+                "T1685",
+                "T1689"
+              ],
+              "join_key": null
+            }
+          },
+          {
+            "step": "gate",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "attempt": 1,
+              "template": "algebra",
+              "query": "MATCH (v2) WHERE v2.id IN $p0 AND (v2:Technique) WITH DISTINCT v2 WITH v2 WHERE (v2.`x_mitre_domains` IS NOT NULL AND $p1 IN v2.`x_mitre_domains`) WITH v2 ORDER BY v2.id WITH collect(v2) AS all_ RETURN size(all_) AS total, [x IN all_[0..1000] | {id: x.id, name: x.name}] AS rows",
+              "injected": [],
+              "note": "compiled by the operator algebra (validated against the card; read-only by construction)",
+              "id_map": {
+                "T1011": [
+                  "attack-pattern--51ea26b1-ff1e-4faa-b1a0-1114cd298c87"
+                ],
+                "T1021": [
+                  "attack-pattern--54a649ff-439a-41a4-9856-8d144a2551ba"
+                ],
+                "T1046": [
+                  "attack-pattern--e3a12395-188d-4051-9a16-ea8e14d07b88"
+                ],
+                "T1052": [
+                  "attack-pattern--e6415f09-df0e-48de-9aba-928c902b7549"
+                ],
+                "T1059": [
+                  "attack-pattern--7385dfaf-6886-4229-9ecd-6fd678040830"
+                ],
+                "T1091": [
+                  "attack-pattern--3b744087-9945-4a6f-91e8-9dbceda417a4"
+                ],
+                "T1092": [
+                  "attack-pattern--64196062-5210-42c3-9a02-563a0d1797ef"
+                ],
+                "T1098": [
+                  "attack-pattern--a10641f4-87b4-45a3-a906-92a149cb2c27"
+                ],
+                "T1127": [
+                  "attack-pattern--ff25900d-76d5-449b-a351-8824e62fc81b"
+                ],
+                "T1133": [
+                  "attack-pattern--10d51417-ee35-4589-b1ff-b6df1c334e8d"
+                ],
+                "T1137": [
+                  "attack-pattern--2c4d4e92-0ccf-4a97-b54c-86d662988a53"
+                ],
+                "T1205": [
+                  "attack-pattern--451a9977-d255-43c9-b431-66de80130c8c"
+                ],
+                "T1210": [
+                  "attack-pattern--9db0cf3a-a3c9-4012-8268-123b9db6fd82"
+                ],
+                "T1218": [
+                  "attack-pattern--457c7820-d331-465a-915e-42f85500ccc4"
+                ],
+                "T1219": [
+                  "attack-pattern--4061e78c-1284-44b4-9116-73e4ac3912f7"
+                ],
+                "T1221": [
+                  "attack-pattern--dc31fe1e-d722-49da-8f5f-92c7b5aff534"
+                ],
+                "T1505": [
+                  "attack-pattern--d456de47-a16f-4e46-8980-e67478a12dcb"
+                ],
+                "T1557": [
+                  "attack-pattern--035bb001-ab69-4a0b-9f6c-2de8b09e1b9d"
+                ],
+                "T1559": [
+                  "attack-pattern--acd0ba37-7ba9-4cc5-ac61-796586cd856d"
+                ],
+                "T1563": [
+                  "attack-pattern--5b0ad6f8-6a16-4966-a4ef-d09ea6e2a9f5"
+                ],
+                "T1609": [
+                  "attack-pattern--7b50a1d3-4ca7-45d1-989d-a6503f04bfe1"
+                ],
+                "T1611": [
+                  "attack-pattern--4a5b7ade-8bb5-4853-84ed-23f262002665"
+                ],
+                "T1649": [
+                  "attack-pattern--7de1f7ac-5d0c-4c9c-8873-627202205331"
+                ],
+                "T1671": [
+                  "attack-pattern--c31aebd6-c9b5-420f-ba2a-5853bbf897fa"
+                ],
+                "T1685": [
+                  "attack-pattern--bbde9781-60aa-4b8a-a911-895b0c1b3872"
+                ],
+                "T1689": [
+                  "attack-pattern--30904c16-39f9-41c6-b01a-500eb8878442"
+                ]
+              }
+            }
+          },
+          {
+            "step": "execute",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "row_count": 0
+            }
+          },
+          {
+            "step": "algebra",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "result": {
+                "step": "q2",
+                "kind": "nodes",
+                "value": null,
+                "ids": [],
+                "rows": [],
+                "total": 0,
+                "complete": true,
+                "info": {}
+              },
+              "op": "filter",
+              "ir": {
+                "@": "Nodes",
+                "of": {
+                  "@": "Where",
+                  "conds": [
+                    {
+                      "@": "Cond",
+                      "cmp": null,
+                      "op": "contains",
+                      "prop": "x_mitre_domains",
+                      "value": "SaaS"
+                    }
+                  ],
+                  "of": {
+                    "@": "FromStep",
+                    "labels": [
+                      "Technique"
+                    ],
+                    "step": "q1"
+                  }
+                },
+                "props": []
+              }
+            }
+          }
+        ],
+        "records": []
+      }
+    ]
+  },
+  "deterministic_scores": {
+    "correlation": null,
+    "mapping_recall": null,
+    "coverage": {
+      "gold": 5,
+      "found": 4,
+      "coverage": 0.8,
+      "missing": [
+        "T1098.001"
+      ]
+    },
+    "provenance": {
+      "citations": 2,
+      "compliant": 2,
+      "citation_provenance_rate": 1.0,
+      "abstention_proof_ok": true,
+      "fully_provenanced": true
+    },
+    "inspectability": {
+      "citation_coverage": 1.0,
+      "traceability": 1.0,
+      "abstention_proofs": 1.0,
+      "inspectability": 1.0
+    }
+  },
+  "arm": "planned_llm_typed_lazy",
+  "run_meta": {
+    "planner": "llm-typed-lazy",
+    "synthesis": "deterministic",
+    "use_llm": true,
+    "llm_synthesis": false,
+    "llm_specialist": false,
+    "rewrite": null,
+    "observed_plan": [
+      {
+        "sub_question_id": "q1",
+        "source": "attack",
+        "text": "",
+        "entities": [
+          "Mitigation",
+          "MITIGATES",
+          "Technique"
+        ],
+        "seed_ids": [
+          "M1042"
+        ],
+        "depends_on": null,
+        "limits": {
+          "max_traversal_depth": 3,
+          "max_result_rows": 1000,
+          "query_timeout_ms": 5000
+        },
+        "step": {
+          "kind": "expand",
+          "anchor_label": "Mitigation",
+          "anchor_ids": [
+            "M1042"
+          ],
+          "hops": [
+            {
+              "relation": "MITIGATES",
+              "direction": "out",
+              "target_label": "Technique"
+            }
+          ],
+          "depth": 1
+        }
+      },
+      {
+        "sub_question_id": "q2",
+        "source": "attack",
+        "text": "",
+        "entities": [
+          "Technique"
+        ],
+        "seed_ids": [],
+        "depends_on": null,
+        "limits": {
+          "max_traversal_depth": 3,
+          "max_result_rows": 1000,
+          "query_timeout_ms": 5000
+        },
+        "step": {
+          "kind": "algebra",
+          "anchor_label": "Technique",
+          "anchor_ids": [],
+          "hops": [],
+          "depth": 1,
+          "algebra": {
+            "ir": {
+              "@": "Nodes",
+              "of": {
+                "@": "Where",
+                "conds": [
+                  {
+                    "@": "Cond",
+                    "cmp": null,
+                    "op": "contains",
+                    "prop": "x_mitre_domains",
+                    "value": "SaaS"
+                  }
+                ],
+                "of": {
+                  "@": "FromStep",
+                  "labels": [
+                    "Technique"
+                  ],
+                  "step": "q1"
+                }
+              },
+              "props": []
+            },
+            "labels": [
+              "Technique"
+            ],
+            "op": "filter"
+          },
+          "from_step": "q1"
+        }
+      }
+    ],
+    "exit_code": 0,
+    "status": "answered",
+    "timings": {
+      "plan_ms": 51006.936,
+      "specialists": [
+        {
+          "sub_question": "q1",
+          "source": "attack",
+          "ms": 10.799
+        },
+        {
+          "sub_question": "q2",
+          "source": "attack",
+          "ms": 13.625
+        }
+      ],
+      "synthesis_ms": 9.597,
+      "total_ms": 51087.806
+    },
+    "registry_model": "qwen38-27b",
+    "drafter_used": "TypedDrafter",
+    "typed": [
+      {
+        "mode": "lazy",
+        "served_model": "qwen38-27b/248046",
+        "model_calls": 4,
+        "catalog_calls": [
+          {
+            "name": "resolve_entity",
+            "args": {
+              "text": "Disable or Remove Feature or Program",
+              "label": "Mitigation",
+              "graph": "attack"
+            },
+            "ok": true
+          },
+          {
+            "name": "find_schema",
+            "args": {
+              "text": "SaaS",
+              "graph": "attack"
+            },
+            "ok": false
+          },
+          {
+            "name": "describe",
+            "args": {
+              "target": "MITIGATES",
+              "graph": "attack"
+            },
+            "ok": true
+          },
+          {
+            "name": "describe",
+            "args": {
+              "target": "Technique",
+              "graph": "attack"
+            },
+            "ok": true
+          }
+        ],
+        "prompt_tokens": 14783,
+        "completion_tokens": 2013,
+        "emitted": true,
+        "parse_error": null,
+        "first_steps": 2,
+        "first_refused": 0,
+        "first_fixes": 0,
+        "valid_first": true,
+        "valid_first_raw": true,
+        "repair_used": false,
+        "fixed_by_repair": false,
+        "still_refused": 0,
+        "final_steps": 2,
+        "coercions": [],
+        "refusals": [],
+        "plan_problems": [],
+        "replies": [
+          {
+            "status": "ok",
+            "finish_reason": "tool_calls",
+            "calls": [
+              "resolve_entity",
+              "find_schema"
+            ],
+            "text_chars": 0,
+            "repairs": []
+          },
+          {
+            "status": "ok",
+            "finish_reason": "tool_calls",
+            "calls": [
+              "describe"
+            ],
+            "text_chars": 0,
+            "repairs": []
+          },
+          {
+            "status": "ok",
+            "finish_reason": "tool_calls",
+            "calls": [
+              "describe"
+            ],
+            "text_chars": 0,
+            "repairs": []
+          },
+          {
+            "status": "ok",
+            "finish_reason": "stop",
+            "calls": [],
+            "text_chars": 509,
+            "repairs": []
+          }
+        ],
+        "error": null,
+        "fallback": null,
+        "seconds": 50.992,
+        "n_catalog_calls": 4,
+        "fixed_by_coercion": false
+      }
+    ],
+    "seams": {
+      "planner_llm": true,
+      "drafter": "TypedDrafter",
+      "specialist_llm": false,
+      "synthesis_llm": false,
+      "generic_only": "true"
+    },
+    "wall_s": 51.091,
+    "algebra_results": [
+      {
+        "step": "q2",
+        "kind": "nodes",
+        "value": null,
+        "ids": [],
+        "rows": [],
+        "total": 0,
+        "complete": true,
+        "info": {}
+      }
+    ]
+  },
+  "evidence_volume": {
+    "results": 2,
+    "records": 1,
+    "related": 26
+  }
+}

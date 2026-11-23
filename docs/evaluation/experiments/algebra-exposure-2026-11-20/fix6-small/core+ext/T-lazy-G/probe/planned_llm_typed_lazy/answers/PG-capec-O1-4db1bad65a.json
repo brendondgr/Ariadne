@@ -1,0 +1,810 @@
+{
+  "id": "PG-capec-O1-4db1bad65a",
+  "kind": "capec",
+  "tier": "algebra-probe",
+  "category": "PG-capec",
+  "question": "Of the attack patterns that are children of CAPEC-66 (SQL Injection), which have a typical severity stated?",
+  "gold": {
+    "assertions": {
+      "min_records": 0,
+      "must_include_ids": [],
+      "must_include_related": []
+    },
+    "ex_gold": {
+      "pool": "algebra",
+      "scheme": "capec",
+      "kind": "set",
+      "expected": [
+        "CAPEC-108",
+        "CAPEC-109",
+        "CAPEC-110",
+        "CAPEC-470",
+        "CAPEC-7"
+      ]
+    }
+  },
+  "answer": {
+    "headline": "Gathered 7 record(s) from 1 source(s).",
+    "narrative": "Found 1 CAPEC record(s): CAPEC-66. CAPEC-66 (SQL Injection): This attack exploits target software that constructs SQL statements based on user input. An attacker crafts input strings so that when the target software constructs SQL statements based on the input, the resulting SQL statement performs actions other than those the application intended. SQL Injection results from failure of the application to appropriately validate input. CAPEC-66 (SQL Injection) has Abstraction: Standard; Likelihood_Of_Attack: High; Status: Draft; Typical_Severity: High. CAPEC-66 (SQL Injection) has 5 ChildOf parents: CAPEC-108, CAPEC-109, CAPEC-110, CAPEC-470, CAPEC-7. Found 6 CAPEC record(s): CAPEC-108, CAPEC-109, CAPEC-110, CAPEC-470, CAPEC-66 … (+1 more). 6 entities match.",
+    "composer": "deterministic",
+    "fallback_reason": null,
+    "claims": [
+      {
+        "text": "Found 1 CAPEC record(s): CAPEC-66.",
+        "kind": "fact",
+        "entity_ids": [
+          "CAPEC-66"
+        ],
+        "citations": [
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-66"
+          }
+        ]
+      },
+      {
+        "text": "CAPEC-66 (SQL Injection): This attack exploits target software that constructs SQL statements based on user input. An attacker crafts input strings so that when the target software constructs SQL statements based on the input, the resulting SQL statement performs actions other than those the application intended. SQL Injection results from failure of the application to appropriately validate input.",
+        "kind": "fact",
+        "entity_ids": [
+          "CAPEC-66"
+        ],
+        "citations": [
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-66"
+          }
+        ]
+      },
+      {
+        "text": "CAPEC-66 (SQL Injection) has Abstraction: Standard; Likelihood_Of_Attack: High; Status: Draft; Typical_Severity: High.",
+        "kind": "fact",
+        "entity_ids": [
+          "CAPEC-66"
+        ],
+        "citations": [
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-66"
+          }
+        ]
+      },
+      {
+        "text": "CAPEC-66 (SQL Injection) has 5 ChildOf parents: CAPEC-108, CAPEC-109, CAPEC-110, CAPEC-470, CAPEC-7.",
+        "kind": "enumeration",
+        "entity_ids": [
+          "CAPEC-108",
+          "CAPEC-109",
+          "CAPEC-110",
+          "CAPEC-470",
+          "CAPEC-7"
+        ],
+        "citations": [
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-66"
+          }
+        ]
+      },
+      {
+        "text": "Found 6 CAPEC record(s): CAPEC-108, CAPEC-109, CAPEC-110, CAPEC-470, CAPEC-66 … (+1 more).",
+        "kind": "fact",
+        "entity_ids": [
+          "CAPEC-108",
+          "CAPEC-109",
+          "CAPEC-110",
+          "CAPEC-470",
+          "CAPEC-66",
+          "CAPEC-7"
+        ],
+        "citations": [
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-108"
+          },
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-109"
+          },
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-110"
+          },
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-470"
+          },
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-66"
+          },
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-7"
+          }
+        ]
+      },
+      {
+        "text": "6 entities match.",
+        "kind": "fact",
+        "entity_ids": [
+          "CAPEC-108",
+          "CAPEC-109",
+          "CAPEC-110",
+          "CAPEC-470",
+          "CAPEC-66",
+          "CAPEC-7"
+        ],
+        "citations": [
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-108"
+          },
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-109"
+          },
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-110"
+          },
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-470"
+          },
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-66"
+          },
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-7"
+          }
+        ]
+      }
+    ],
+    "abstentions": [],
+    "notes": []
+  },
+  "logic_flow": {
+    "task": {
+      "sub_question_id": "PG-capec-O1-4db1bad65a",
+      "source": "capec",
+      "text": "Of the attack patterns that are children of CAPEC-66 (SQL Injection), which have a typical severity stated?",
+      "entities": [
+        "AttackPattern",
+        "AttackPattern"
+      ],
+      "limits": {
+        "max_traversal_depth": 3,
+        "max_result_rows": 20000,
+        "query_timeout_ms": 60000
+      },
+      "join_key": null,
+      "seed_ids": [
+        "CAPEC-66"
+      ],
+      "rationale": "algebra probe set (Era 2 Step 9 Phase G)"
+    },
+    "results": [
+      {
+        "source": "capec",
+        "sub_question_id": "q1",
+        "sub_question": "",
+        "query": "g.V().has(\"id\", within(ids)).as(\"ap\").union(__.in(\"CHILD_OF\").hasLabel(\"AttackPattern\")).as(\"nbr\").select(\"ap\",\"nbr\").by(elementMap()).limit(1000)",
+        "ok": true,
+        "partial": false,
+        "error": null,
+        "summary": "Found 1 CAPEC record(s): CAPEC-66.",
+        "traces": [
+          {
+            "step": "intake",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "source": "capec",
+              "card": "capec"
+            }
+          },
+          {
+            "step": "resolve",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "labels": [
+                "AttackPattern"
+              ],
+              "relationships": [
+                "ChildOf"
+              ],
+              "seed_ids": [
+                "CAPEC-66"
+              ],
+              "join_key": null
+            }
+          },
+          {
+            "step": "gate",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "attempt": 1,
+              "template": "typed_step",
+              "query": "g.V().has(\"id\", within(ids)).as(\"ap\").union(__.in(\"CHILD_OF\").hasLabel(\"AttackPattern\")).as(\"nbr\").select(\"ap\",\"nbr\").by(elementMap()).limit(1000)",
+              "injected": [],
+              "timing_ms": 0.401
+            }
+          },
+          {
+            "step": "execute",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "row_count": 5,
+              "timing_ms": 8.3,
+              "row_ceiling": 1000,
+              "truncated": false
+            }
+          },
+          {
+            "step": "assess",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "row_count": 5,
+              "timing_ms": 0.007
+            }
+          },
+          {
+            "step": "normalize",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "record_count": 1,
+              "timing_ms": 0.081
+            }
+          }
+        ],
+        "records": [
+          {
+            "primary_id": "CAPEC-66",
+            "name": "SQL Injection",
+            "label": "AttackPattern",
+            "description": "This attack exploits target software that constructs SQL statements based on user input. An attacker crafts input strings so that when the target software constructs SQL statements based on the input, the resulting SQL statement performs actions other than those the application intended. SQL Injection results from failure of the application to appropriately validate input.",
+            "properties": {
+              "Status": "Draft",
+              "Likelihood_Of_Attack": "High",
+              "Typical_Severity": "High",
+              "name": "SQL Injection",
+              "description": "This attack exploits target software that constructs SQL statements based on user input. An attacker crafts input strings so that when the target software constructs SQL statements based on the input, the resulting SQL statement performs actions other than those the application intended. SQL Injection results from failure of the application to appropriately validate input.",
+              "id": "capec:attack-pattern:66",
+              "Abstraction": "Standard"
+            },
+            "facets": [],
+            "join_values": [],
+            "related": [
+              {
+                "id": "CAPEC-108",
+                "name": "Command Line Execution through SQL Injection",
+                "label": "AttackPattern",
+                "type": "CHILD_OF",
+                "Status": "Draft",
+                "Likelihood_Of_Attack": "Low",
+                "Typical_Severity": "Very High",
+                "description": "An attacker uses standard SQL injection methods to inject data into the command line for execution. This could be done directly through misuse of directives such as MSSQL_xp_cmdshell or indirectly through injection of data into the database that would be interpreted as shell commands. Sometime later, an unscrupulous backend application (or could be part of the functionality of the same application) fetches the injected data stored in the database and uses this data as command line arguments without performing proper validation. The malicious data escapes that data plane by spawning new commands to be executed on the host.",
+                "Abstraction": "Detailed"
+              },
+              {
+                "id": "CAPEC-109",
+                "name": "Object Relational Mapping Injection",
+                "label": "AttackPattern",
+                "type": "CHILD_OF",
+                "Status": "Draft",
+                "Likelihood_Of_Attack": "Low",
+                "Typical_Severity": "High",
+                "description": "An attacker leverages a weakness present in the database access layer code generated with an Object Relational Mapping (ORM) tool or a weakness in the way that a developer used a persistence framework to inject their own SQL commands to be executed against the underlying database. The attack here is similar to plain SQL injection, except that the application does not use JDBC to directly talk to the database, but instead it uses a data access layer generated by an ORM tool or framework (e.g. Hibernate). While most of the time code generated by an ORM tool contains safe access methods that are immune to SQL injection, sometimes either due to some weakness in the generated code or due to the fact that the developer failed to use the generated access methods properly, SQL injection is still possible.",
+                "Abstraction": "Detailed"
+              },
+              {
+                "id": "CAPEC-110",
+                "name": "SQL Injection through SOAP Parameter Tampering",
+                "label": "AttackPattern",
+                "type": "CHILD_OF",
+                "Status": "Draft",
+                "Likelihood_Of_Attack": "High",
+                "Typical_Severity": "Very High",
+                "description": "An attacker modifies the parameters of the SOAP message that is sent from the service consumer to the service provider to initiate a SQL injection attack. On the service provider side, the SOAP message is parsed and parameters are not properly validated before being used to access a database in a way that does not use parameter binding, thus enabling the attacker to control the structure of the executed SQL query. This pattern describes a SQL injection attack with the delivery mechanism being a SOAP message.",
+                "Abstraction": "Detailed"
+              },
+              {
+                "id": "CAPEC-470",
+                "name": "Expanding Control over the Operating System from the Database",
+                "label": "AttackPattern",
+                "type": "CHILD_OF",
+                "Status": "Draft",
+                "Typical_Severity": "Very High",
+                "description": "An attacker is able to leverage access gained to the database to read / write data to the file system, compromise the operating system, create a tunnel for accessing the host machine, and use this access to potentially attack other machines on the same network as the database machine. Traditionally SQL injections attacks are viewed as a way to gain unauthorized read access to the data stored in the database, modify the data in the database, delete the data, etc. However, almost every data base management system (DBMS) system includes facilities that if compromised allow an attacker complete access to the file system, operating system, and full access to the host running the database. The attacker can then use this privileged access to launch subsequent attacks. These facilities include dropping into a command shell, creating user defined functions that can call system level libraries present on the host machine, stored procedures, etc.",
+                "Abstraction": "Detailed"
+              },
+              {
+                "id": "CAPEC-7",
+                "name": "Blind SQL Injection",
+                "label": "AttackPattern",
+                "type": "CHILD_OF",
+                "Status": "Draft",
+                "Likelihood_Of_Attack": "High",
+                "Typical_Severity": "High",
+                "description": "Blind SQL Injection results from an insufficient mitigation for SQL Injection. Although suppressing database error messages are considered best practice, the suppression alone is not sufficient to prevent SQL Injection. Blind SQL Injection is a form of SQL Injection that overcomes the lack of error messages. Without the error messages that facilitate SQL Injection, the adversary constructs input strings that probe the target through simple Boolean SQL expressions. The adversary can determine if the syntax and structure of the injection was successful based on whether the query was executed or not. Applied iteratively, the adversary determines how and where the target is vulnerable to SQL Injection.",
+                "Abstraction": "Detailed"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "source": "capec",
+        "sub_question_id": "q2",
+        "sub_question": "",
+        "query": "g.V().has('id', within(p0)).hasLabel('AttackPattern').dedup().has('Typical_Severity').order().by('id').fold().project('total', 'rows').by(__.count(local)).by(__.unfold().limit(1000).project('id', 'name').by('id').by(__.coalesce(__.values('name'), __.constant(null))).fold())",
+        "ok": true,
+        "partial": false,
+        "error": null,
+        "summary": "Found 6 CAPEC record(s): CAPEC-108, CAPEC-109, CAPEC-110, CAPEC-470, CAPEC-66 … (+1 more).",
+        "traces": [
+          {
+            "step": "intake",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "source": "capec",
+              "card": "capec"
+            }
+          },
+          {
+            "step": "resolve",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "labels": [
+                "AttackPattern"
+              ],
+              "relationships": [],
+              "seed_ids": [
+                "CAPEC-108",
+                "CAPEC-109",
+                "CAPEC-110",
+                "CAPEC-470",
+                "CAPEC-66",
+                "CAPEC-7"
+              ],
+              "join_key": null
+            }
+          },
+          {
+            "step": "gate",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "attempt": 1,
+              "template": "algebra",
+              "query": "g.V().has('id', within(p0)).hasLabel('AttackPattern').dedup().has('Typical_Severity').order().by('id').fold().project('total', 'rows').by(__.count(local)).by(__.unfold().limit(1000).project('id', 'name').by('id').by(__.coalesce(__.values('name'), __.constant(null))).fold())",
+              "injected": [],
+              "note": "compiled by the operator algebra (validated against the card; read-only by construction)",
+              "id_map": {
+                "CAPEC-108": [
+                  "capec:attack-pattern:108"
+                ],
+                "CAPEC-109": [
+                  "capec:attack-pattern:109"
+                ],
+                "CAPEC-110": [
+                  "capec:attack-pattern:110"
+                ],
+                "CAPEC-470": [
+                  "capec:attack-pattern:470"
+                ],
+                "CAPEC-66": [
+                  "capec:attack-pattern:66"
+                ],
+                "CAPEC-7": [
+                  "capec:attack-pattern:7"
+                ]
+              }
+            }
+          },
+          {
+            "step": "execute",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "row_count": 6
+            }
+          },
+          {
+            "step": "algebra",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "result": {
+                "step": "q2",
+                "kind": "nodes",
+                "value": null,
+                "ids": [
+                  "CAPEC-108",
+                  "CAPEC-109",
+                  "CAPEC-110",
+                  "CAPEC-470",
+                  "CAPEC-66",
+                  "CAPEC-7"
+                ],
+                "rows": [
+                  {
+                    "id": "CAPEC-108",
+                    "name": "Command Line Execution through SQL Injection"
+                  },
+                  {
+                    "id": "CAPEC-109",
+                    "name": "Object Relational Mapping Injection"
+                  },
+                  {
+                    "id": "CAPEC-110",
+                    "name": "SQL Injection through SOAP Parameter Tampering"
+                  },
+                  {
+                    "id": "CAPEC-470",
+                    "name": "Expanding Control over the Operating System from the Database"
+                  },
+                  {
+                    "id": "CAPEC-66",
+                    "name": "SQL Injection"
+                  },
+                  {
+                    "id": "CAPEC-7",
+                    "name": "Blind SQL Injection"
+                  }
+                ],
+                "total": 6,
+                "complete": true,
+                "info": {}
+              },
+              "op": "filter",
+              "ir": {
+                "@": "Nodes",
+                "of": {
+                  "@": "Where",
+                  "conds": [
+                    {
+                      "@": "Cond",
+                      "cmp": null,
+                      "op": "present",
+                      "prop": "Typical_Severity",
+                      "value": null
+                    }
+                  ],
+                  "of": {
+                    "@": "FromStep",
+                    "labels": [
+                      "AttackPattern"
+                    ],
+                    "step": "q1"
+                  }
+                },
+                "props": []
+              }
+            }
+          }
+        ],
+        "records": [
+          {
+            "primary_id": "CAPEC-108",
+            "name": "Command Line Execution through SQL Injection",
+            "label": "AttackPattern",
+            "description": "",
+            "properties": {},
+            "facets": [],
+            "join_values": [],
+            "related": []
+          },
+          {
+            "primary_id": "CAPEC-109",
+            "name": "Object Relational Mapping Injection",
+            "label": "AttackPattern",
+            "description": "",
+            "properties": {},
+            "facets": [],
+            "join_values": [],
+            "related": []
+          },
+          {
+            "primary_id": "CAPEC-110",
+            "name": "SQL Injection through SOAP Parameter Tampering",
+            "label": "AttackPattern",
+            "description": "",
+            "properties": {},
+            "facets": [],
+            "join_values": [],
+            "related": []
+          },
+          {
+            "primary_id": "CAPEC-470",
+            "name": "Expanding Control over the Operating System from the Database",
+            "label": "AttackPattern",
+            "description": "",
+            "properties": {},
+            "facets": [],
+            "join_values": [],
+            "related": []
+          },
+          {
+            "primary_id": "CAPEC-66",
+            "name": "SQL Injection",
+            "label": "AttackPattern",
+            "description": "",
+            "properties": {},
+            "facets": [],
+            "join_values": [],
+            "related": []
+          },
+          {
+            "primary_id": "CAPEC-7",
+            "name": "Blind SQL Injection",
+            "label": "AttackPattern",
+            "description": "",
+            "properties": {},
+            "facets": [],
+            "join_values": [],
+            "related": []
+          }
+        ]
+      }
+    ]
+  },
+  "deterministic_scores": {
+    "correlation": null,
+    "mapping_recall": null,
+    "coverage": null,
+    "provenance": {
+      "citations": 16,
+      "compliant": 16,
+      "citation_provenance_rate": 1.0,
+      "abstention_proof_ok": true,
+      "fully_provenanced": true
+    },
+    "inspectability": {
+      "citation_coverage": 1.0,
+      "traceability": 1.0,
+      "abstention_proofs": 1.0,
+      "inspectability": 1.0
+    }
+  },
+  "arm": "planned_llm_typed_lazy",
+  "run_meta": {
+    "planner": "llm-typed-lazy",
+    "synthesis": "deterministic",
+    "use_llm": true,
+    "llm_synthesis": false,
+    "llm_specialist": false,
+    "rewrite": null,
+    "observed_plan": [
+      {
+        "sub_question_id": "q1",
+        "source": "capec",
+        "text": "",
+        "entities": [
+          "AttackPattern",
+          "ChildOf"
+        ],
+        "seed_ids": [
+          "CAPEC-66"
+        ],
+        "depends_on": null,
+        "limits": {
+          "max_traversal_depth": 3,
+          "max_result_rows": 1000,
+          "query_timeout_ms": 5000
+        },
+        "step": {
+          "kind": "expand",
+          "anchor_label": "AttackPattern",
+          "anchor_ids": [
+            "CAPEC-66"
+          ],
+          "hops": [
+            {
+              "relation": "ChildOf",
+              "direction": "in",
+              "target_label": "AttackPattern"
+            }
+          ],
+          "depth": 1
+        }
+      },
+      {
+        "sub_question_id": "q2",
+        "source": "capec",
+        "text": "",
+        "entities": [
+          "AttackPattern"
+        ],
+        "seed_ids": [],
+        "depends_on": null,
+        "limits": {
+          "max_traversal_depth": 3,
+          "max_result_rows": 1000,
+          "query_timeout_ms": 5000
+        },
+        "step": {
+          "kind": "algebra",
+          "anchor_label": "AttackPattern",
+          "anchor_ids": [],
+          "hops": [],
+          "depth": 1,
+          "algebra": {
+            "ir": {
+              "@": "Nodes",
+              "of": {
+                "@": "Where",
+                "conds": [
+                  {
+                    "@": "Cond",
+                    "cmp": null,
+                    "op": "present",
+                    "prop": "Typical_Severity",
+                    "value": null
+                  }
+                ],
+                "of": {
+                  "@": "FromStep",
+                  "labels": [
+                    "AttackPattern"
+                  ],
+                  "step": "q1"
+                }
+              },
+              "props": []
+            },
+            "labels": [
+              "AttackPattern"
+            ],
+            "op": "filter"
+          },
+          "from_step": "q1"
+        }
+      }
+    ],
+    "exit_code": 0,
+    "status": "answered",
+    "timings": {
+      "plan_ms": 33553.5,
+      "specialists": [
+        {
+          "sub_question": "q1",
+          "source": "capec",
+          "ms": 9.768
+        },
+        {
+          "sub_question": "q2",
+          "source": "capec",
+          "ms": 24.153
+        }
+      ],
+      "synthesis_ms": 8.381,
+      "total_ms": 33669.053
+    },
+    "registry_model": "gemma4-31b",
+    "drafter_used": "TypedDrafter",
+    "typed": [
+      {
+        "mode": "lazy",
+        "served_model": "gemma4-31b/106",
+        "model_calls": 2,
+        "catalog_calls": [
+          {
+            "name": "resolve_entity",
+            "args": {
+              "graph": "capec",
+              "label": "AttackPattern",
+              "text": "CAPEC-66"
+            },
+            "ok": true
+          }
+        ],
+        "prompt_tokens": 6218,
+        "completion_tokens": 1840,
+        "emitted": true,
+        "parse_error": null,
+        "first_steps": 2,
+        "first_refused": 0,
+        "first_fixes": 0,
+        "valid_first": true,
+        "valid_first_raw": true,
+        "repair_used": false,
+        "fixed_by_repair": false,
+        "still_refused": 0,
+        "final_steps": 2,
+        "coercions": [],
+        "refusals": [],
+        "plan_problems": [],
+        "replies": [
+          {
+            "status": "ok",
+            "finish_reason": "tool_calls",
+            "calls": [
+              "resolve_entity"
+            ],
+            "text_chars": 0,
+            "repairs": []
+          },
+          {
+            "status": "ok",
+            "finish_reason": "stop",
+            "calls": [],
+            "text_chars": 736,
+            "repairs": []
+          }
+        ],
+        "error": null,
+        "fallback": null,
+        "seconds": 33.54,
+        "n_catalog_calls": 1,
+        "fixed_by_coercion": false
+      }
+    ],
+    "seams": {
+      "planner_llm": true,
+      "drafter": "TypedDrafter",
+      "specialist_llm": false,
+      "synthesis_llm": false,
+      "generic_only": "true"
+    },
+    "wall_s": 33.673,
+    "algebra_results": [
+      {
+        "step": "q2",
+        "kind": "nodes",
+        "value": null,
+        "ids": [
+          "CAPEC-108",
+          "CAPEC-109",
+          "CAPEC-110",
+          "CAPEC-470",
+          "CAPEC-66",
+          "CAPEC-7"
+        ],
+        "rows": [
+          {
+            "id": "CAPEC-108",
+            "name": "Command Line Execution through SQL Injection"
+          },
+          {
+            "id": "CAPEC-109",
+            "name": "Object Relational Mapping Injection"
+          },
+          {
+            "id": "CAPEC-110",
+            "name": "SQL Injection through SOAP Parameter Tampering"
+          },
+          {
+            "id": "CAPEC-470",
+            "name": "Expanding Control over the Operating System from the Database"
+          },
+          {
+            "id": "CAPEC-66",
+            "name": "SQL Injection"
+          },
+          {
+            "id": "CAPEC-7",
+            "name": "Blind SQL Injection"
+          }
+        ],
+        "total": 6,
+        "complete": true,
+        "info": {}
+      }
+    ]
+  },
+  "evidence_volume": {
+    "results": 2,
+    "records": 7,
+    "related": 5
+  }
+}

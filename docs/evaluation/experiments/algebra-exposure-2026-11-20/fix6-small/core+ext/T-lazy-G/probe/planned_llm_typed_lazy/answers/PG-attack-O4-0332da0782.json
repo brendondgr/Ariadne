@@ -1,0 +1,362 @@
+{
+  "id": "PG-attack-O4-0332da0782",
+  "kind": "attack",
+  "tier": "algebra-probe",
+  "category": "PG-attack",
+  "question": "Is technique T1195 (Supply Chain Compromise) directly connected to sub-technique T1195.002 (Compromise Software Supply Chain) in ATT&CK, and if it is, what is the nature of that connection?",
+  "gold": {
+    "assertions": {
+      "min_records": 0,
+      "must_include_ids": [],
+      "must_include_related": []
+    },
+    "ex_gold": {
+      "pool": "algebra",
+      "scheme": "attack",
+      "kind": "value",
+      "expected": [],
+      "value": true
+    }
+  },
+  "answer": {
+    "headline": "Gathered 1 record(s) from 1 source(s).",
+    "narrative": "T1195 has no subtechniques in this catalogue. Found 1 record in MITRE ATT&CK: Supply Chain Compromise (T1195).",
+    "composer": "deterministic",
+    "fallback_reason": null,
+    "claims": [
+      {
+        "text": "Found 1 record in MITRE ATT&CK: Supply Chain Compromise (T1195).",
+        "kind": "fact",
+        "entity_ids": [
+          "T1195"
+        ],
+        "citations": [
+          {
+            "source": "attack",
+            "primary_id": "T1195"
+          }
+        ]
+      },
+      {
+        "text": "T1195 has no subtechniques in this catalogue.",
+        "kind": "absence",
+        "entity_ids": [
+          "T1195"
+        ],
+        "citations": [
+          {
+            "source": "attack",
+            "primary_id": "T1195"
+          }
+        ]
+      }
+    ],
+    "abstentions": [],
+    "notes": []
+  },
+  "logic_flow": {
+    "task": {
+      "sub_question_id": "PG-attack-O4-0332da0782",
+      "source": "attack",
+      "text": "Is technique T1195 (Supply Chain Compromise) directly connected to sub-technique T1195.002 (Compromise Software Supply Chain) in ATT&CK, and if it is, what is the nature of that connection?",
+      "entities": [
+        "Technique",
+        "HAS_SUBTECHNIQUE",
+        "SubTechnique"
+      ],
+      "limits": {
+        "max_traversal_depth": 3,
+        "max_result_rows": 20000,
+        "query_timeout_ms": 60000
+      },
+      "join_key": null,
+      "seed_ids": [
+        "T1195",
+        "T1195.002"
+      ],
+      "rationale": "algebra probe set (Era 2 Step 9 Phase G)"
+    },
+    "results": [
+      {
+        "source": "attack",
+        "sub_question_id": "q1",
+        "sub_question": "",
+        "query": "MATCH (n) WHERE coalesce(n.attack_id, n.id) IN $ids OPTIONAL MATCH (n)-[:HAS_SUBTECHNIQUE]->(t0:SubTechnique) WHERE t0.`id` = $filterValue WITH n, collect(DISTINCT {m: t0, r: 'HAS_SUBTECHNIQUE'}) AS k0 WITH n, [x IN k0 WHERE x.m IS NOT NULL] AS hops UNWIND (CASE WHEN size(hops) = 0 THEN [{m: null, r: null}] ELSE hops END) AS hop RETURN coalesce(n.attack_id, n.id) AS anchor_id, n.name AS anchor_name, labels(n)[0] AS anchor_label, coalesce(hop.m.attack_id, hop.m.id) AS neighbour_id, hop.m.name AS neighbour_name, labels(hop.m)[0] AS neighbour_label, hop.r AS rel_type LIMIT 1000",
+        "ok": true,
+        "partial": false,
+        "error": null,
+        "summary": "Found 1 record in MITRE ATT&CK: Supply Chain Compromise (T1195).",
+        "traces": [
+          {
+            "step": "intake",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "source": "attack",
+              "card": "attack"
+            }
+          },
+          {
+            "step": "resolve",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "labels": [
+                "Technique",
+                "SubTechnique"
+              ],
+              "relationships": [
+                "HAS_SUBTECHNIQUE"
+              ],
+              "seed_ids": [
+                "T1195"
+              ],
+              "join_key": null
+            }
+          },
+          {
+            "step": "gate",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "attempt": 1,
+              "template": "typed_step",
+              "query": "MATCH (n) WHERE coalesce(n.attack_id, n.id) IN $ids OPTIONAL MATCH (n)-[:HAS_SUBTECHNIQUE]->(t0:SubTechnique) WHERE t0.`id` = $filterValue WITH n, collect(DISTINCT {m: t0, r: 'HAS_SUBTECHNIQUE'}) AS k0 WITH n, [x IN k0 WHERE x.m IS NOT NULL] AS hops UNWIND (CASE WHEN size(hops) = 0 THEN [{m: null, r: null}] ELSE hops END) AS hop RETURN coalesce(n.attack_id, n.id) AS anchor_id, n.name AS anchor_name, labels(n)[0] AS anchor_label, coalesce(hop.m.attack_id, hop.m.id) AS neighbour_id, hop.m.name AS neighbour_name, labels(hop.m)[0] AS neighbour_label, hop.r AS rel_type LIMIT 1000",
+              "injected": [
+                "LIMIT 1000 appended (none present)"
+              ],
+              "timing_ms": 0.338
+            }
+          },
+          {
+            "step": "execute",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "row_count": 1,
+              "timing_ms": 4.9,
+              "row_ceiling": 1000,
+              "truncated": false
+            }
+          },
+          {
+            "step": "assess",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "row_count": 1,
+              "timing_ms": 0.006
+            }
+          },
+          {
+            "step": "normalize",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "record_count": 1,
+              "timing_ms": 0.044
+            }
+          }
+        ],
+        "records": [
+          {
+            "primary_id": "T1195",
+            "name": "Supply Chain Compromise",
+            "label": "Technique",
+            "description": "",
+            "properties": {},
+            "facets": [],
+            "join_values": [
+              "T1195"
+            ],
+            "related": []
+          }
+        ]
+      }
+    ]
+  },
+  "deterministic_scores": {
+    "correlation": null,
+    "mapping_recall": null,
+    "coverage": null,
+    "provenance": {
+      "citations": 2,
+      "compliant": 2,
+      "citation_provenance_rate": 1.0,
+      "abstention_proof_ok": true,
+      "fully_provenanced": true
+    },
+    "inspectability": {
+      "citation_coverage": 1.0,
+      "traceability": 1.0,
+      "abstention_proofs": 1.0,
+      "inspectability": 1.0
+    }
+  },
+  "arm": "planned_llm_typed_lazy",
+  "run_meta": {
+    "planner": "llm-typed-lazy",
+    "synthesis": "deterministic",
+    "use_llm": true,
+    "llm_synthesis": false,
+    "llm_specialist": false,
+    "rewrite": null,
+    "observed_plan": [
+      {
+        "sub_question_id": "q1",
+        "source": "attack",
+        "text": "",
+        "entities": [
+          "Technique",
+          "HAS_SUBTECHNIQUE",
+          "SubTechnique"
+        ],
+        "seed_ids": [
+          "T1195"
+        ],
+        "depends_on": null,
+        "limits": {
+          "max_traversal_depth": 3,
+          "max_result_rows": 1000,
+          "query_timeout_ms": 5000
+        },
+        "step": {
+          "kind": "expand",
+          "anchor_label": "Technique",
+          "anchor_ids": [
+            "T1195"
+          ],
+          "hops": [
+            {
+              "relation": "HAS_SUBTECHNIQUE",
+              "direction": "out",
+              "target_label": "SubTechnique"
+            }
+          ],
+          "depth": 1,
+          "filter": {
+            "property": "id",
+            "value": "T1195.002"
+          }
+        }
+      }
+    ],
+    "exit_code": 0,
+    "status": "answered",
+    "timings": {
+      "plan_ms": 80579.563,
+      "specialists": [
+        {
+          "sub_question": "q1",
+          "source": "attack",
+          "ms": 5.8
+        }
+      ],
+      "synthesis_ms": 7.677,
+      "total_ms": 80636.198
+    },
+    "registry_model": "gemma4-31b",
+    "drafter_used": "TypedDrafter",
+    "typed": [
+      {
+        "mode": "lazy",
+        "served_model": "gemma4-31b/106",
+        "model_calls": 3,
+        "catalog_calls": [
+          {
+            "name": "describe",
+            "args": {
+              "graph": "attack",
+              "target": "T1195"
+            },
+            "ok": false
+          },
+          {
+            "name": "resolve_entity",
+            "args": {
+              "graph": "attack",
+              "text": "Supply Chain Compromise"
+            },
+            "ok": true
+          },
+          {
+            "name": "resolve_entity",
+            "args": {
+              "graph": "attack",
+              "text": "Compromise Software Supply Chain"
+            },
+            "ok": true
+          }
+        ],
+        "prompt_tokens": 10141,
+        "completion_tokens": 4510,
+        "emitted": true,
+        "parse_error": null,
+        "first_steps": 1,
+        "first_refused": 0,
+        "first_fixes": 0,
+        "valid_first": true,
+        "valid_first_raw": true,
+        "repair_used": false,
+        "fixed_by_repair": false,
+        "still_refused": 0,
+        "final_steps": 1,
+        "coercions": [],
+        "refusals": [],
+        "plan_problems": [],
+        "replies": [
+          {
+            "status": "ok",
+            "finish_reason": "tool_calls",
+            "calls": [
+              "describe"
+            ],
+            "text_chars": 0,
+            "repairs": []
+          },
+          {
+            "status": "ok",
+            "finish_reason": "tool_calls",
+            "calls": [
+              "resolve_entity",
+              "resolve_entity"
+            ],
+            "text_chars": 0,
+            "repairs": [
+              {
+                "kind": "args_closed_truncated",
+                "detail": "52 chars",
+                "call_id": "chatcmpl-tool-9768311568e42d2b"
+              }
+            ]
+          },
+          {
+            "status": "ok",
+            "finish_reason": "stop",
+            "calls": [],
+            "text_chars": 608,
+            "repairs": []
+          }
+        ],
+        "error": null,
+        "fallback": null,
+        "seconds": 80.556,
+        "n_catalog_calls": 3,
+        "fixed_by_coercion": false
+      }
+    ],
+    "seams": {
+      "planner_llm": true,
+      "drafter": "TypedDrafter",
+      "specialist_llm": false,
+      "synthesis_llm": false,
+      "generic_only": "true"
+    },
+    "wall_s": 80.639
+  },
+  "evidence_volume": {
+    "results": 1,
+    "records": 1,
+    "related": 0
+  }
+}

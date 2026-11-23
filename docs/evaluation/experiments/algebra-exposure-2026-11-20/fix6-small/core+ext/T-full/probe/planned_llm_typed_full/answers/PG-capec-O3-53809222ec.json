@@ -1,0 +1,875 @@
+{
+  "id": "PG-capec-O3-53809222ec",
+  "kind": "capec",
+  "tier": "algebra-probe",
+  "category": "PG-capec",
+  "question": "Among the attack patterns belonging to category CAPEC-210 (Abuse Existing Functionality), which one has the fewest mitigations, counting zero? If there is a tie, name every one tied.",
+  "gold": {
+    "assertions": {
+      "min_records": 0,
+      "must_include_ids": [],
+      "must_include_related": []
+    },
+    "ex_gold": {
+      "pool": "algebra",
+      "scheme": "capec",
+      "kind": "set",
+      "expected": [
+        "CAPEC-113",
+        "CAPEC-272",
+        "CAPEC-554"
+      ]
+    }
+  },
+  "answer": {
+    "headline": "Gathered 4 record(s) from 1 source(s).",
+    "narrative": "Found 1 CAPEC record(s): CAPEC-210. CAPEC-210 (Abuse Existing Functionality) has Status: Stable. CAPEC-210 (Abuse Existing Functionality) has 9 attack patterns: CAPEC-130, CAPEC-113, CAPEC-131, CAPEC-227, CAPEC-272, CAPEC-212, CAPEC-125, CAPEC-216, CAPEC-554. Found 3 CAPEC record(s): CAPEC-113, CAPEC-272, CAPEC-554. CAPEC-113 (Interface Manipulation) has value: 0. CAPEC-272 (Protocol Manipulation) has value: 0. CAPEC-554 (Functionality Bypass) has value: 0. 3 member(s), with their count: Interface Manipulation (CAPEC-113): 0; Protocol Manipulation (CAPEC-272): 0; Functionality Bypass (CAPEC-554): 0.",
+    "composer": "deterministic",
+    "fallback_reason": null,
+    "claims": [
+      {
+        "text": "Found 1 CAPEC record(s): CAPEC-210.",
+        "kind": "fact",
+        "entity_ids": [
+          "CAPEC-210"
+        ],
+        "citations": [
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-210"
+          }
+        ]
+      },
+      {
+        "text": "CAPEC-210 (Abuse Existing Functionality) has Status: Stable.",
+        "kind": "fact",
+        "entity_ids": [
+          "CAPEC-210"
+        ],
+        "citations": [
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-210"
+          }
+        ]
+      },
+      {
+        "text": "CAPEC-210 (Abuse Existing Functionality) has 9 attack patterns: CAPEC-130, CAPEC-113, CAPEC-131, CAPEC-227, CAPEC-272, CAPEC-212, CAPEC-125, CAPEC-216, CAPEC-554.",
+        "kind": "enumeration",
+        "entity_ids": [
+          "CAPEC-130",
+          "CAPEC-113",
+          "CAPEC-131",
+          "CAPEC-227",
+          "CAPEC-272",
+          "CAPEC-212",
+          "CAPEC-125",
+          "CAPEC-216",
+          "CAPEC-554"
+        ],
+        "citations": [
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-210"
+          }
+        ]
+      },
+      {
+        "text": "Found 3 CAPEC record(s): CAPEC-113, CAPEC-272, CAPEC-554.",
+        "kind": "fact",
+        "entity_ids": [
+          "CAPEC-113",
+          "CAPEC-272",
+          "CAPEC-554"
+        ],
+        "citations": [
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-113"
+          },
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-272"
+          },
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-554"
+          }
+        ]
+      },
+      {
+        "text": "CAPEC-113 (Interface Manipulation) has value: 0.",
+        "kind": "fact",
+        "entity_ids": [
+          "CAPEC-113"
+        ],
+        "citations": [
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-113"
+          }
+        ]
+      },
+      {
+        "text": "CAPEC-272 (Protocol Manipulation) has value: 0.",
+        "kind": "fact",
+        "entity_ids": [
+          "CAPEC-272"
+        ],
+        "citations": [
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-272"
+          }
+        ]
+      },
+      {
+        "text": "CAPEC-554 (Functionality Bypass) has value: 0.",
+        "kind": "fact",
+        "entity_ids": [
+          "CAPEC-554"
+        ],
+        "citations": [
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-554"
+          }
+        ]
+      },
+      {
+        "text": "3 member(s), with their count: Interface Manipulation (CAPEC-113): 0; Protocol Manipulation (CAPEC-272): 0; Functionality Bypass (CAPEC-554): 0.",
+        "kind": "fact",
+        "entity_ids": [
+          "CAPEC-113",
+          "CAPEC-272",
+          "CAPEC-554"
+        ],
+        "citations": [
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-113"
+          },
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-272"
+          },
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-554"
+          }
+        ]
+      }
+    ],
+    "abstentions": [],
+    "notes": []
+  },
+  "logic_flow": {
+    "task": {
+      "sub_question_id": "PG-capec-O3-53809222ec",
+      "source": "capec",
+      "text": "Among the attack patterns belonging to category CAPEC-210 (Abuse Existing Functionality), which one has the fewest mitigations, counting zero? If there is a tie, name every one tied.",
+      "entities": [
+        "Category",
+        "AttackPattern",
+        "HAS_MITIGATION"
+      ],
+      "limits": {
+        "max_traversal_depth": 3,
+        "max_result_rows": 20000,
+        "query_timeout_ms": 60000
+      },
+      "join_key": null,
+      "seed_ids": [
+        "CAPEC-210"
+      ],
+      "rationale": "algebra probe set (Era 2 Step 9 Phase G)"
+    },
+    "results": [
+      {
+        "source": "capec",
+        "sub_question_id": "q1",
+        "sub_question": "",
+        "query": "g.V().has(\"id\", within(ids)).as(\"ap\").union(__.in(\"MEMBER_OF\").hasLabel(\"AttackPattern\")).as(\"nbr\").select(\"ap\",\"nbr\").by(elementMap()).limit(1000)",
+        "ok": true,
+        "partial": false,
+        "error": null,
+        "summary": "Found 1 CAPEC record(s): CAPEC-210.",
+        "traces": [
+          {
+            "step": "intake",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "source": "capec",
+              "card": "capec"
+            }
+          },
+          {
+            "step": "resolve",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "labels": [
+                "Category",
+                "AttackPattern"
+              ],
+              "relationships": [
+                "MEMBER_OF"
+              ],
+              "seed_ids": [
+                "CAPEC-210"
+              ],
+              "join_key": null
+            }
+          },
+          {
+            "step": "gate",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "attempt": 1,
+              "template": "typed_step",
+              "query": "g.V().has(\"id\", within(ids)).as(\"ap\").union(__.in(\"MEMBER_OF\").hasLabel(\"AttackPattern\")).as(\"nbr\").select(\"ap\",\"nbr\").by(elementMap()).limit(1000)",
+              "injected": [],
+              "timing_ms": 0.422
+            }
+          },
+          {
+            "step": "execute",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "row_count": 9,
+              "timing_ms": 8.4,
+              "row_ceiling": 1000,
+              "truncated": false
+            }
+          },
+          {
+            "step": "assess",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "row_count": 9,
+              "timing_ms": 0.011
+            }
+          },
+          {
+            "step": "normalize",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "record_count": 1,
+              "timing_ms": 0.168
+            }
+          }
+        ],
+        "records": [
+          {
+            "primary_id": "CAPEC-210",
+            "name": "Abuse Existing Functionality",
+            "label": "Category",
+            "description": "",
+            "properties": {
+              "Status": "Stable",
+              "summary": "An adversary uses or manipulates one or more functions of an application in order to achieve a malicious objective not originally intended by the application, or to deplete a resource to the point that the target's functionality is affected. This is a broad class of attacks wherein the adversary is able to alter the intended result or purpose of the functionality and thereby affect application behavior or information integrity. Outcomes can range from information exposure, vandalism, degrading or denial of service, as well as execution of arbitrary code on the target machine.",
+              "name": "Abuse Existing Functionality",
+              "id": "capec:category:210"
+            },
+            "facets": [],
+            "join_values": [],
+            "related": [
+              {
+                "id": "CAPEC-130",
+                "name": "Excessive Allocation",
+                "label": "AttackPattern",
+                "type": "MEMBER_OF",
+                "Status": "Stable",
+                "Likelihood_Of_Attack": "Medium",
+                "Typical_Severity": "Medium",
+                "description": "An adversary causes the target to allocate excessive resources to servicing the attackers' request, thereby reducing the resources available for legitimate services and degrading or denying services. Usually, this attack focuses on memory allocation, but any finite resource on the target could be the attacked, including bandwidth, processing cycles, or other resources. This attack does not attempt to force this allocation through a large number of requests (that would be Resource Depletion through Flooding) but instead uses one or a small number of requests that are carefully formatted to force the target to allocate excessive resources to service this request(s). Often this attack takes advantage of a bug in the target to cause the target to allocate resources vastly beyond what would be needed for a normal request.",
+                "Abstraction": "Meta"
+              },
+              {
+                "id": "CAPEC-113",
+                "name": "Interface Manipulation",
+                "label": "AttackPattern",
+                "type": "MEMBER_OF",
+                "Status": "Draft",
+                "Likelihood_Of_Attack": "Medium",
+                "Typical_Severity": "Medium",
+                "description": "An adversary manipulates the use or processing of an interface (e.g. Application Programming Interface (API) or System-on-Chip (SoC)) resulting in an adverse impact upon the security of the system implementing the interface. This can allow the adversary to bypass access control and/or execute functionality not intended by the interface implementation, possibly compromising the system which integrates the interface. Interface manipulation can take on a number of forms including forcing the unexpected use of an interface or the use of an interface in an unintended way.",
+                "Abstraction": "Meta"
+              },
+              {
+                "id": "CAPEC-131",
+                "name": "Resource Leak Exposure",
+                "label": "AttackPattern",
+                "type": "MEMBER_OF",
+                "Status": "Stable",
+                "Likelihood_Of_Attack": "Medium",
+                "Typical_Severity": "Medium",
+                "description": "An adversary utilizes a resource leak on the target to deplete the quantity of the resource available to service legitimate requests.",
+                "Abstraction": "Meta"
+              },
+              {
+                "id": "CAPEC-227",
+                "name": "Sustained Client Engagement",
+                "label": "AttackPattern",
+                "type": "MEMBER_OF",
+                "Status": "Draft",
+                "description": "An adversary attempts to deny legitimate users access to a resource by continually engaging a specific resource in an attempt to keep the resource tied up as long as possible. The adversary's primary goal is not to crash or flood the target, which would alert defenders; rather it is to repeatedly perform actions or abuse algorithmic flaws such that a given resource is tied up and not available to a legitimate user. By carefully crafting a requests that keep the resource engaged through what is seemingly benign requests, legitimate users are limited or completely denied access to the resource.",
+                "Abstraction": "Meta"
+              },
+              {
+                "id": "CAPEC-272",
+                "name": "Protocol Manipulation",
+                "label": "AttackPattern",
+                "type": "MEMBER_OF",
+                "Status": "Draft",
+                "Typical_Severity": "Medium",
+                "description": "An adversary subverts a communications protocol to perform an attack. This type of attack can allow an adversary to impersonate others, discover sensitive information, control the outcome of a session, or perform other attacks. This type of attack targets invalid assumptions that may be inherent in implementers of the protocol, incorrect implementations of the protocol, or vulnerabilities in the protocol itself.",
+                "Abstraction": "Meta"
+              },
+              {
+                "id": "CAPEC-212",
+                "name": "Functionality Misuse",
+                "label": "AttackPattern",
+                "type": "MEMBER_OF",
+                "Status": "Stable",
+                "Likelihood_Of_Attack": "Medium",
+                "Typical_Severity": "Medium",
+                "description": "An adversary leverages a legitimate capability of an application in such a way as to achieve a negative technical impact. The system functionality is not altered or modified but used in a way that was not intended. This is often accomplished through the overuse of a specific functionality or by leveraging functionality with design flaws that enables the adversary to gain access to unauthorized, sensitive data.",
+                "Abstraction": "Meta"
+              },
+              {
+                "id": "CAPEC-125",
+                "name": "Flooding",
+                "label": "AttackPattern",
+                "type": "MEMBER_OF",
+                "Status": "Stable",
+                "Likelihood_Of_Attack": "High",
+                "Typical_Severity": "Medium",
+                "description": "An adversary consumes the resources of a target by rapidly engaging in a large number of interactions with the target. This type of attack generally exposes a weakness in rate limiting or flow. When successful this attack prevents legitimate users from accessing the service and can cause the target to crash. This attack differs from resource depletion through leaks or allocations in that the latter attacks do not rely on the volume of requests made to the target but instead focus on manipulation of the target's operations. The key factor in a flooding attack is the number of requests the adversary can make in a given period of time. The greater this number, the more likely an attack is to succeed against a given target.",
+                "Abstraction": "Meta"
+              },
+              {
+                "id": "CAPEC-216",
+                "name": "Communication Channel Manipulation",
+                "label": "AttackPattern",
+                "type": "MEMBER_OF",
+                "Status": "Stable",
+                "description": "An adversary manipulates a setting or parameter on communications channel in order to compromise its security. This can result in information exposure, insertion/removal of information from the communications stream, and/or potentially system compromise.",
+                "Abstraction": "Meta"
+              },
+              {
+                "id": "CAPEC-554",
+                "name": "Functionality Bypass",
+                "label": "AttackPattern",
+                "type": "MEMBER_OF",
+                "Status": "Draft",
+                "Likelihood_Of_Attack": "Medium",
+                "Typical_Severity": "High",
+                "description": "An adversary attacks a system by bypassing some or all functionality intended to protect it. Often, a system user will think that protection is in place, but the functionality behind those protections has been disabled by the adversary.",
+                "Abstraction": "Meta"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "source": "capec",
+        "sub_question_id": "q2",
+        "sub_question": "",
+        "query": "g.V().has('id', within(p0)).hasLabel('AttackPattern').dedup().project('id', 'name', 'value').by('id').by(__.coalesce(__.values('name'), __.constant(null))).by(__.as('s1').out('HAS_MITIGATION').hasLabel('Mitigation').where(neq('s1')).dedup().count()).order().by(__.select('id')).fold().project('rows').by(__.identity())",
+        "ok": true,
+        "partial": false,
+        "error": null,
+        "summary": "Found 3 CAPEC record(s): CAPEC-113, CAPEC-272, CAPEC-554.",
+        "traces": [
+          {
+            "step": "intake",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "source": "capec",
+              "card": "capec"
+            }
+          },
+          {
+            "step": "resolve",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "labels": [
+                "AttackPattern",
+                "Mitigation"
+              ],
+              "relationships": [
+                "HAS_MITIGATION"
+              ],
+              "seed_ids": [
+                "CAPEC-113",
+                "CAPEC-125",
+                "CAPEC-130",
+                "CAPEC-131",
+                "CAPEC-212",
+                "CAPEC-216",
+                "CAPEC-227",
+                "CAPEC-272",
+                "CAPEC-554"
+              ],
+              "join_key": null
+            }
+          },
+          {
+            "step": "gate",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "attempt": 1,
+              "template": "algebra",
+              "query": "g.V().has('id', within(p0)).hasLabel('AttackPattern').dedup().project('id', 'name', 'value').by('id').by(__.coalesce(__.values('name'), __.constant(null))).by(__.as('s1').out('HAS_MITIGATION').hasLabel('Mitigation').where(neq('s1')).dedup().count()).order().by(__.select('id')).fold().project('rows').by(__.identity())",
+              "injected": [],
+              "note": "compiled by the operator algebra (validated against the card; read-only by construction)",
+              "id_map": {
+                "CAPEC-113": [
+                  "capec:attack-pattern:113"
+                ],
+                "CAPEC-125": [
+                  "capec:attack-pattern:125"
+                ],
+                "CAPEC-130": [
+                  "capec:attack-pattern:130"
+                ],
+                "CAPEC-131": [
+                  "capec:attack-pattern:131"
+                ],
+                "CAPEC-212": [
+                  "capec:attack-pattern:212"
+                ],
+                "CAPEC-216": [
+                  "capec:attack-pattern:216"
+                ],
+                "CAPEC-227": [
+                  "capec:attack-pattern:227"
+                ],
+                "CAPEC-272": [
+                  "capec:attack-pattern:272"
+                ],
+                "CAPEC-554": [
+                  "capec:attack-pattern:554"
+                ]
+              }
+            }
+          },
+          {
+            "step": "execute",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "row_count": 3
+            }
+          },
+          {
+            "step": "algebra",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "result": {
+                "step": "q2",
+                "kind": "groupby",
+                "value": null,
+                "ids": [
+                  "CAPEC-113",
+                  "CAPEC-272",
+                  "CAPEC-554"
+                ],
+                "rows": [
+                  {
+                    "id": "CAPEC-113",
+                    "name": "Interface Manipulation",
+                    "value": 0
+                  },
+                  {
+                    "id": "CAPEC-272",
+                    "name": "Protocol Manipulation",
+                    "value": 0
+                  },
+                  {
+                    "id": "CAPEC-554",
+                    "name": "Functionality Bypass",
+                    "value": 0
+                  }
+                ],
+                "total": 3,
+                "complete": true,
+                "info": {}
+              },
+              "op": "groupby",
+              "ir": {
+                "@": "GroupBy",
+                "end_conds": [],
+                "fn": "count",
+                "having": null,
+                "hops": [
+                  {
+                    "@": "Hop",
+                    "direction": "out",
+                    "edge_conds": [],
+                    "relation": "HAS_MITIGATION",
+                    "target": "Mitigation"
+                  }
+                ],
+                "k": 1,
+                "members": {
+                  "@": "FromStep",
+                  "labels": [
+                    "AttackPattern"
+                  ],
+                  "step": "q1"
+                },
+                "order": "asc",
+                "prop": null
+              },
+              "fn": "count",
+              "property": null,
+              "order": "asc"
+            }
+          }
+        ],
+        "records": [
+          {
+            "primary_id": "CAPEC-113",
+            "name": "Interface Manipulation",
+            "label": "AttackPattern",
+            "description": "",
+            "properties": {
+              "value": 0
+            },
+            "facets": [],
+            "join_values": [],
+            "related": []
+          },
+          {
+            "primary_id": "CAPEC-272",
+            "name": "Protocol Manipulation",
+            "label": "AttackPattern",
+            "description": "",
+            "properties": {
+              "value": 0
+            },
+            "facets": [],
+            "join_values": [],
+            "related": []
+          },
+          {
+            "primary_id": "CAPEC-554",
+            "name": "Functionality Bypass",
+            "label": "AttackPattern",
+            "description": "",
+            "properties": {
+              "value": 0
+            },
+            "facets": [],
+            "join_values": [],
+            "related": []
+          }
+        ]
+      }
+    ]
+  },
+  "deterministic_scores": {
+    "correlation": null,
+    "mapping_recall": null,
+    "coverage": null,
+    "provenance": {
+      "citations": 12,
+      "compliant": 12,
+      "citation_provenance_rate": 1.0,
+      "abstention_proof_ok": true,
+      "fully_provenanced": true
+    },
+    "inspectability": {
+      "citation_coverage": 1.0,
+      "traceability": 1.0,
+      "abstention_proofs": 1.0,
+      "inspectability": 1.0
+    }
+  },
+  "arm": "planned_llm_typed_full",
+  "run_meta": {
+    "planner": "llm-typed-full",
+    "synthesis": "deterministic",
+    "use_llm": true,
+    "llm_synthesis": false,
+    "llm_specialist": false,
+    "rewrite": null,
+    "observed_plan": [
+      {
+        "sub_question_id": "q1",
+        "source": "capec",
+        "text": "",
+        "entities": [
+          "Category",
+          "MEMBER_OF",
+          "AttackPattern"
+        ],
+        "seed_ids": [
+          "CAPEC-210"
+        ],
+        "depends_on": null,
+        "limits": {
+          "max_traversal_depth": 3,
+          "max_result_rows": 1000,
+          "query_timeout_ms": 5000
+        },
+        "step": {
+          "kind": "expand",
+          "anchor_label": "Category",
+          "anchor_ids": [
+            "CAPEC-210"
+          ],
+          "hops": [
+            {
+              "relation": "MEMBER_OF",
+              "direction": "in",
+              "target_label": "AttackPattern"
+            }
+          ],
+          "depth": 1
+        }
+      },
+      {
+        "sub_question_id": "q2",
+        "source": "capec",
+        "text": "",
+        "entities": [
+          "AttackPattern",
+          "HAS_MITIGATION",
+          "Mitigation"
+        ],
+        "seed_ids": [],
+        "depends_on": null,
+        "limits": {
+          "max_traversal_depth": 3,
+          "max_result_rows": 1000,
+          "query_timeout_ms": 5000
+        },
+        "step": {
+          "kind": "algebra",
+          "anchor_label": "AttackPattern",
+          "anchor_ids": [],
+          "hops": [],
+          "depth": 1,
+          "algebra": {
+            "ir": {
+              "@": "GroupBy",
+              "end_conds": [],
+              "fn": "count",
+              "having": null,
+              "hops": [
+                {
+                  "@": "Hop",
+                  "direction": "out",
+                  "edge_conds": [],
+                  "relation": "HAS_MITIGATION",
+                  "target": "Mitigation"
+                }
+              ],
+              "k": 1,
+              "members": {
+                "@": "FromStep",
+                "labels": [
+                  "AttackPattern"
+                ],
+                "step": "q1"
+              },
+              "order": "asc",
+              "prop": null
+            },
+            "labels": [
+              "AttackPattern"
+            ],
+            "op": "groupby"
+          },
+          "from_step": "q1"
+        }
+      }
+    ],
+    "exit_code": 0,
+    "status": "answered",
+    "timings": {
+      "plan_ms": 82836.651,
+      "specialists": [
+        {
+          "sub_question": "q1",
+          "source": "capec",
+          "ms": 9.956
+        },
+        {
+          "sub_question": "q2",
+          "source": "capec",
+          "ms": 28.262
+        }
+      ],
+      "synthesis_ms": 9.073,
+      "total_ms": 82942.168
+    },
+    "registry_model": "qwen38-27b",
+    "drafter_used": "TypedDrafter",
+    "typed": [
+      {
+        "mode": "full",
+        "served_model": "qwen38-27b/248046",
+        "model_calls": 4,
+        "catalog_calls": [
+          {
+            "name": "resolve_entity",
+            "args": {
+              "text": "CAPEC-210",
+              "label": "Category",
+              "graph": "capec"
+            },
+            "ok": true
+          },
+          {
+            "name": "describe",
+            "args": {
+              "target": "MEMBER_OF",
+              "graph": "capec"
+            },
+            "ok": true
+          },
+          {
+            "name": "describe",
+            "args": {
+              "target": "HAS_MITIGATION",
+              "graph": "capec"
+            },
+            "ok": true
+          },
+          {
+            "name": "describe",
+            "args": {
+              "target": "CAPEC-210",
+              "graph": "capec"
+            },
+            "ok": false
+          }
+        ],
+        "prompt_tokens": 29479,
+        "completion_tokens": 3501,
+        "emitted": true,
+        "parse_error": null,
+        "first_steps": 2,
+        "first_refused": 0,
+        "first_fixes": 1,
+        "valid_first": true,
+        "valid_first_raw": false,
+        "repair_used": false,
+        "fixed_by_repair": false,
+        "still_refused": 0,
+        "final_steps": 2,
+        "coercions": [
+          {
+            "step": "q1",
+            "field": "anchor_label",
+            "from": null,
+            "to": "Category",
+            "filled_by": "id_scheme"
+          }
+        ],
+        "refusals": [],
+        "plan_problems": [],
+        "replies": [
+          {
+            "status": "ok",
+            "finish_reason": "tool_calls",
+            "calls": [
+              "resolve_entity",
+              "describe"
+            ],
+            "text_chars": 0,
+            "repairs": []
+          },
+          {
+            "status": "ok",
+            "finish_reason": "tool_calls",
+            "calls": [
+              "describe"
+            ],
+            "text_chars": 0,
+            "repairs": []
+          },
+          {
+            "status": "ok",
+            "finish_reason": "tool_calls",
+            "calls": [
+              "describe"
+            ],
+            "text_chars": 0,
+            "repairs": []
+          },
+          {
+            "status": "ok",
+            "finish_reason": "stop",
+            "calls": [],
+            "text_chars": 623,
+            "repairs": []
+          }
+        ],
+        "error": null,
+        "fallback": null,
+        "seconds": 82.825,
+        "n_catalog_calls": 4,
+        "fixed_by_coercion": true
+      }
+    ],
+    "seams": {
+      "planner_llm": true,
+      "drafter": "TypedDrafter",
+      "specialist_llm": false,
+      "synthesis_llm": false,
+      "generic_only": "true"
+    },
+    "wall_s": 82.945,
+    "algebra_results": [
+      {
+        "step": "q2",
+        "kind": "groupby",
+        "value": null,
+        "ids": [
+          "CAPEC-113",
+          "CAPEC-272",
+          "CAPEC-554"
+        ],
+        "rows": [
+          {
+            "id": "CAPEC-113",
+            "name": "Interface Manipulation",
+            "value": 0
+          },
+          {
+            "id": "CAPEC-272",
+            "name": "Protocol Manipulation",
+            "value": 0
+          },
+          {
+            "id": "CAPEC-554",
+            "name": "Functionality Bypass",
+            "value": 0
+          }
+        ],
+        "total": 3,
+        "complete": true,
+        "info": {}
+      }
+    ]
+  },
+  "evidence_volume": {
+    "results": 2,
+    "records": 4,
+    "related": 9
+  }
+}

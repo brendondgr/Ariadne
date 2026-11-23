@@ -1,0 +1,413 @@
+{
+  "id": "D5-mitigates-x_mitre_platforms-M1042-ad62f1::formal",
+  "kind": "attack",
+  "tier": "hard",
+  "category": "D5-mitigates",
+  "question": "Which techniques that apply to SaaS are mitigated by the Disable or Remove Feature or Program mitigation, M1042?",
+  "gold": {
+    "assertions": {
+      "min_records": 1,
+      "must_include_ids": [
+        "M1042"
+      ],
+      "must_include_related": [
+        "T1059",
+        "T1098",
+        "T1098.001",
+        "T1671"
+      ]
+    },
+    "ex_gold": {
+      "pool": "neighbors",
+      "expected": [
+        "T1059",
+        "T1098",
+        "T1098.001",
+        "T1671"
+      ],
+      "scheme": "attack",
+      "kind": "set"
+    }
+  },
+  "answer": {
+    "headline": "Gathered 1 record(s) from 1 source(s).",
+    "narrative": "Found 3 item(s) related to M1042 (e.g. T1671, T1059, T1098) in MITRE ATT&CK. M1042 (Disable or Remove Feature or Program) has 3 mitigated techniques: T1671, T1059, T1098.",
+    "composer": "deterministic",
+    "fallback_reason": null,
+    "claims": [
+      {
+        "text": "Found 3 item(s) related to M1042 (e.g. T1671, T1059, T1098) in MITRE ATT&CK.",
+        "kind": "fact",
+        "entity_ids": [
+          "M1042"
+        ],
+        "citations": [
+          {
+            "source": "attack",
+            "primary_id": "M1042"
+          }
+        ]
+      },
+      {
+        "text": "M1042 (Disable or Remove Feature or Program) has 3 mitigated techniques: T1671, T1059, T1098.",
+        "kind": "enumeration",
+        "entity_ids": [
+          "T1671",
+          "T1059",
+          "T1098"
+        ],
+        "citations": [
+          {
+            "source": "attack",
+            "primary_id": "M1042"
+          }
+        ]
+      }
+    ],
+    "abstentions": [],
+    "notes": []
+  },
+  "logic_flow": {
+    "task": {
+      "sub_question_id": "q1",
+      "source": "attack",
+      "text": "Which techniques that apply to SaaS are mitigated by the Disable or Remove Feature or Program mitigation, M1042?",
+      "entities": [
+        "Mitigation",
+        "MITIGATES",
+        "Technique"
+      ],
+      "limits": {
+        "max_traversal_depth": 3,
+        "max_result_rows": 20000,
+        "query_timeout_ms": 5000
+      },
+      "join_key": null,
+      "seed_ids": [
+        "M1042"
+      ],
+      "rationale": "generated from the schema census"
+    },
+    "results": [
+      {
+        "source": "attack",
+        "sub_question_id": "q1",
+        "sub_question": "",
+        "query": "MATCH (n) WHERE coalesce(n.attack_id, n.id) IN $ids OPTIONAL MATCH (n)-[:MITIGATES]->(t0:Technique) WHERE $filterValue IN coalesce(t0.`x_mitre_platforms`, []) WITH n, collect(DISTINCT {m: t0, r: 'MITIGATES'}) AS k0 WITH n, [x IN k0 WHERE x.m IS NOT NULL] AS hops UNWIND (CASE WHEN size(hops) = 0 THEN [{m: null, r: null}] ELSE hops END) AS hop RETURN coalesce(n.attack_id, n.id) AS anchor_id, n.name AS anchor_name, labels(n)[0] AS anchor_label, coalesce(hop.m.attack_id, hop.m.id) AS neighbour_id, hop.m.name AS neighbour_name, labels(hop.m)[0] AS neighbour_label, hop.r AS rel_type LIMIT 1000",
+        "ok": true,
+        "partial": false,
+        "error": null,
+        "summary": "Found 3 item(s) related to M1042 (e.g. T1671, T1059, T1098) in MITRE ATT&CK.",
+        "traces": [
+          {
+            "step": "intake",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "source": "attack",
+              "card": "attack"
+            }
+          },
+          {
+            "step": "resolve",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "labels": [
+                "Mitigation",
+                "Technique"
+              ],
+              "relationships": [
+                "MITIGATES"
+              ],
+              "seed_ids": [
+                "M1042"
+              ],
+              "join_key": null
+            }
+          },
+          {
+            "step": "gate",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "attempt": 1,
+              "template": "typed_step",
+              "query": "MATCH (n) WHERE coalesce(n.attack_id, n.id) IN $ids OPTIONAL MATCH (n)-[:MITIGATES]->(t0:Technique) WHERE $filterValue IN coalesce(t0.`x_mitre_platforms`, []) WITH n, collect(DISTINCT {m: t0, r: 'MITIGATES'}) AS k0 WITH n, [x IN k0 WHERE x.m IS NOT NULL] AS hops UNWIND (CASE WHEN size(hops) = 0 THEN [{m: null, r: null}] ELSE hops END) AS hop RETURN coalesce(n.attack_id, n.id) AS anchor_id, n.name AS anchor_name, labels(n)[0] AS anchor_label, coalesce(hop.m.attack_id, hop.m.id) AS neighbour_id, hop.m.name AS neighbour_name, labels(hop.m)[0] AS neighbour_label, hop.r AS rel_type LIMIT 1000",
+              "injected": [
+                "LIMIT 1000 appended (none present)"
+              ],
+              "timing_ms": 0.307
+            }
+          },
+          {
+            "step": "execute",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "row_count": 3,
+              "timing_ms": 5.3,
+              "row_ceiling": 1000,
+              "truncated": false
+            }
+          },
+          {
+            "step": "assess",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "row_count": 3,
+              "timing_ms": 0.007
+            }
+          },
+          {
+            "step": "normalize",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "record_count": 1,
+              "timing_ms": 2.361
+            }
+          }
+        ],
+        "records": [
+          {
+            "primary_id": "M1042",
+            "name": "Disable or Remove Feature or Program",
+            "label": "Mitigation",
+            "description": "",
+            "properties": {},
+            "facets": [],
+            "join_values": [],
+            "related": [
+              {
+                "id": "T1671",
+                "name": "Cloud Application Integration",
+                "label": "Technique",
+                "type": "MITIGATES",
+                "description": "Adversaries may achieve persistence by leveraging OAuth application integrations in a software-as-a-service environment. Adversaries may create a custom application, add a legitimate application into the environment, or even co-opt an existing integration to achieve malicious ends.(Citation: Push Security SaaS Persistence 2022)(Citation: SaaS Attacks GitHub Evil Twin Integrations)\n\nOAuth is an open standard that allows users to authorize applications to access their information on their behalf. In a SaaS environment such as Microsoft 365 or Google Workspace, users may integrate applications to improve their workflow and achieve tasks.  \n\nLeveraging application integrations may allow adversaries to persist in an environment – for example, by granting consent to an application from a high-privileged adversary-controlled account in order to maintain access to its data, even in the event of losing access to the account.(Citation: Wiz Midnight Blizzard 2024)(Citation: Microsoft Malicious OAuth Applications 2022)(Citation: Huntress Persistence Microsoft 365 Compromise 2024) In some cases, integrations may remain valid even after the original consenting user account is disabled.(Citation: Push Security Slack Persistence 2023) Application integrations may also allow adversaries to bypass multi-factor authentication requirements through the use of [Application Access Token](https://attack.mitre.org/techniques/T1550/001)s. Finally, they may enable persistent [Automated Exfiltration](https://attack.mitre.org/techniques/T1020) over time.(Citation: Synes Cyber Corner Malicious Azure Application 2023)\n\nCreating or adding a new application may require the adversary to create a dedicated [Cloud Account](https://attack.mitre.org/techniques/T1136/003) for the application and assign it [Additional Cloud Roles](https://attack.mitre.org/techniques/T1098/003) – for example, in Microsoft 365 environments, an application can only access resources via an associated service principal.(Citation: Microsoft Entra ID Service Principals)  "
+              },
+              {
+                "id": "T1059",
+                "name": "Command and Scripting Interpreter",
+                "label": "Technique",
+                "type": "MITIGATES",
+                "description": "Adversaries may abuse command and script interpreters to execute commands, scripts, or binaries. These interfaces and languages provide ways of interacting with computer systems and are a common feature across many different platforms. Most systems come with some built-in command-line interface and scripting capabilities, for example, macOS and Linux distributions include some flavor of [Unix Shell](https://attack.mitre.org/techniques/T1059/004) while Windows installations include the [Windows Command Shell](https://attack.mitre.org/techniques/T1059/003) and [PowerShell](https://attack.mitre.org/techniques/T1059/001).\n\nThere are also cross-platform interpreters such as [Python](https://attack.mitre.org/techniques/T1059/006), as well as those commonly associated with client applications such as [JavaScript](https://attack.mitre.org/techniques/T1059/007) and [Visual Basic](https://attack.mitre.org/techniques/T1059/005).\n\nAdversaries may abuse these technologies in various ways as a means of executing arbitrary commands. Commands and scripts can be embedded in [Initial Access](https://attack.mitre.org/tactics/TA0001) payloads delivered to victims as lure documents or as secondary payloads downloaded from an existing C2. Adversaries may also execute commands through interactive terminals/shells, as well as utilize various [Remote Services](https://attack.mitre.org/techniques/T1021) in order to achieve remote Execution.(Citation: Powershell Remote Commands)(Citation: Cisco IOS Software Integrity Assurance - Command History)(Citation: Remote Shell Execution in Python)"
+              },
+              {
+                "id": "T1098",
+                "name": "Account Manipulation",
+                "label": "Technique",
+                "type": "MITIGATES",
+                "description": "Adversaries may manipulate accounts to maintain and/or elevate access to victim systems. Account manipulation may consist of any action that preserves or modifies adversary access to a compromised account, such as modifying credentials or permission groups.(Citation: FireEye SMOKEDHAM June 2021) These actions could also include account activity designed to subvert security policies, such as performing iterative password updates to bypass password duration policies and preserve the life of compromised credentials. \n\nIn order to create or manipulate accounts, the adversary must already have sufficient permissions on systems or the domain. However, account manipulation may also lead to privilege escalation where modifications grant access to additional roles, permissions, or higher-privileged [Valid Accounts](https://attack.mitre.org/techniques/T1078)."
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "deterministic_scores": {
+    "correlation": null,
+    "mapping_recall": null,
+    "coverage": {
+      "gold": 5,
+      "found": 4,
+      "coverage": 0.8,
+      "missing": [
+        "T1098.001"
+      ]
+    },
+    "provenance": {
+      "citations": 2,
+      "compliant": 2,
+      "citation_provenance_rate": 1.0,
+      "abstention_proof_ok": true,
+      "fully_provenanced": true
+    },
+    "inspectability": {
+      "citation_coverage": 1.0,
+      "traceability": 1.0,
+      "abstention_proofs": 1.0,
+      "inspectability": 1.0
+    }
+  },
+  "arm": "planned_llm_typed_full",
+  "run_meta": {
+    "planner": "llm-typed-full",
+    "synthesis": "deterministic",
+    "use_llm": true,
+    "llm_synthesis": false,
+    "llm_specialist": false,
+    "rewrite": null,
+    "observed_plan": [
+      {
+        "sub_question_id": "q1",
+        "source": "attack",
+        "text": "",
+        "entities": [
+          "Mitigation",
+          "MITIGATES",
+          "Technique"
+        ],
+        "seed_ids": [
+          "M1042"
+        ],
+        "depends_on": null,
+        "limits": {
+          "max_traversal_depth": 3,
+          "max_result_rows": 1000,
+          "query_timeout_ms": 5000
+        },
+        "step": {
+          "kind": "expand",
+          "anchor_label": "Mitigation",
+          "anchor_ids": [
+            "M1042"
+          ],
+          "hops": [
+            {
+              "relation": "MITIGATES",
+              "direction": "out",
+              "target_label": "Technique"
+            }
+          ],
+          "depth": 1,
+          "filter": {
+            "property": "x_mitre_platforms",
+            "value": "SaaS"
+          }
+        }
+      }
+    ],
+    "exit_code": 0,
+    "status": "answered",
+    "timings": {
+      "plan_ms": 28803.527,
+      "specialists": [
+        {
+          "sub_question": "q1",
+          "source": "attack",
+          "ms": 8.483
+        }
+      ],
+      "synthesis_ms": 7.173,
+      "total_ms": 28868.956
+    },
+    "registry_model": "qwen38-27b",
+    "drafter_used": "TypedDrafter",
+    "typed": [
+      {
+        "mode": "full",
+        "served_model": "qwen38-27b/248046",
+        "model_calls": 4,
+        "catalog_calls": [
+          {
+            "name": "resolve_entity",
+            "args": {
+              "text": "Disable or Remove Feature or Program",
+              "label": "Mitigation",
+              "graph": "attack"
+            },
+            "ok": true
+          },
+          {
+            "name": "find_schema",
+            "args": {
+              "text": "SaaS",
+              "graph": "attack"
+            },
+            "ok": false
+          },
+          {
+            "name": "describe",
+            "args": {
+              "target": "M1042",
+              "graph": "attack"
+            },
+            "ok": false
+          },
+          {
+            "name": "describe",
+            "args": {
+              "target": "set:1",
+              "graph": "attack"
+            },
+            "ok": false
+          }
+        ],
+        "prompt_tokens": 29468,
+        "completion_tokens": 1020,
+        "emitted": true,
+        "parse_error": null,
+        "first_steps": 1,
+        "first_refused": 0,
+        "first_fixes": 0,
+        "valid_first": true,
+        "valid_first_raw": true,
+        "repair_used": false,
+        "fixed_by_repair": false,
+        "still_refused": 0,
+        "final_steps": 1,
+        "coercions": [],
+        "refusals": [],
+        "plan_problems": [],
+        "replies": [
+          {
+            "status": "ok",
+            "finish_reason": "tool_calls",
+            "calls": [
+              "resolve_entity",
+              "find_schema"
+            ],
+            "text_chars": 0,
+            "repairs": []
+          },
+          {
+            "status": "ok",
+            "finish_reason": "tool_calls",
+            "calls": [
+              "describe"
+            ],
+            "text_chars": 191,
+            "repairs": []
+          },
+          {
+            "status": "ok",
+            "finish_reason": "tool_calls",
+            "calls": [
+              "describe"
+            ],
+            "text_chars": 265,
+            "repairs": []
+          },
+          {
+            "status": "ok",
+            "finish_reason": "stop",
+            "calls": [],
+            "text_chars": 494,
+            "repairs": []
+          }
+        ],
+        "error": null,
+        "fallback": null,
+        "seconds": 28.791,
+        "n_catalog_calls": 4,
+        "fixed_by_coercion": false
+      }
+    ],
+    "seams": {
+      "planner_llm": true,
+      "drafter": "TypedDrafter",
+      "specialist_llm": false,
+      "synthesis_llm": false,
+      "generic_only": "true"
+    },
+    "wall_s": 28.872
+  },
+  "evidence_volume": {
+    "results": 1,
+    "records": 1,
+    "related": 3
+  }
+}

@@ -1,0 +1,385 @@
+{
+  "id": "D3-HAS_MEMBER-CAPEC-687-12133c::formal",
+  "kind": "capec",
+  "tier": "medium",
+  "category": "D3-HAS_MEMBER",
+  "question": "Which CAPEC views contain the category Acquisition and Deployment (CAPEC-687)?",
+  "gold": {
+    "assertions": {
+      "min_records": 1,
+      "must_include_ids": [
+        "CAPEC-687"
+      ],
+      "must_include_related": [
+        "CAPEC-683"
+      ]
+    },
+    "ex_gold": {
+      "pool": "neighbors",
+      "expected": [
+        "CAPEC-683"
+      ],
+      "scheme": "capec",
+      "kind": "set"
+    }
+  },
+  "answer": {
+    "headline": "Gathered 1 record(s) from 1 source(s).",
+    "narrative": "Found 1 CAPEC record(s): CAPEC-687. CAPEC-687 (Acquisition and Deployment) has Status: Draft. CAPEC-687 (Acquisition and Deployment) has 1 View: CAPEC-683.",
+    "composer": "deterministic",
+    "fallback_reason": null,
+    "claims": [
+      {
+        "text": "Found 1 CAPEC record(s): CAPEC-687.",
+        "kind": "fact",
+        "entity_ids": [
+          "CAPEC-687"
+        ],
+        "citations": [
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-687"
+          }
+        ]
+      },
+      {
+        "text": "CAPEC-687 (Acquisition and Deployment) has Status: Draft.",
+        "kind": "fact",
+        "entity_ids": [
+          "CAPEC-687"
+        ],
+        "citations": [
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-687"
+          }
+        ]
+      },
+      {
+        "text": "CAPEC-687 (Acquisition and Deployment) has 1 View: CAPEC-683.",
+        "kind": "enumeration",
+        "entity_ids": [
+          "CAPEC-683"
+        ],
+        "citations": [
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-687"
+          }
+        ]
+      }
+    ],
+    "abstentions": [],
+    "notes": []
+  },
+  "logic_flow": {
+    "task": {
+      "sub_question_id": "q1",
+      "source": "capec",
+      "text": "Which CAPEC views contain the category Acquisition and Deployment (CAPEC-687)?",
+      "entities": [
+        "Category",
+        "MEMBER_OF",
+        "View"
+      ],
+      "limits": {
+        "max_traversal_depth": 3,
+        "max_result_rows": 20000,
+        "query_timeout_ms": 5000
+      },
+      "join_key": null,
+      "seed_ids": [
+        "CAPEC-687"
+      ],
+      "rationale": "generated from the schema census"
+    },
+    "results": [
+      {
+        "source": "capec",
+        "sub_question_id": "q1",
+        "sub_question": "",
+        "query": "g.V().has(\"id\", within(ids)).as(\"ap\").union(__.out(\"IN_VIEW\").hasLabel(\"View\")).as(\"nbr\").select(\"ap\",\"nbr\").by(elementMap()).limit(1000)",
+        "ok": true,
+        "partial": false,
+        "error": null,
+        "summary": "Found 1 CAPEC record(s): CAPEC-687.",
+        "traces": [
+          {
+            "step": "intake",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "source": "capec",
+              "card": "capec"
+            }
+          },
+          {
+            "step": "resolve",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "labels": [
+                "Category",
+                "View"
+              ],
+              "relationships": [
+                "IN_VIEW"
+              ],
+              "seed_ids": [
+                "CAPEC-687"
+              ],
+              "join_key": null
+            }
+          },
+          {
+            "step": "gate",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "attempt": 1,
+              "template": "typed_step",
+              "query": "g.V().has(\"id\", within(ids)).as(\"ap\").union(__.out(\"IN_VIEW\").hasLabel(\"View\")).as(\"nbr\").select(\"ap\",\"nbr\").by(elementMap()).limit(1000)",
+              "injected": [],
+              "timing_ms": 0.406
+            }
+          },
+          {
+            "step": "execute",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "row_count": 1,
+              "timing_ms": 8.1,
+              "row_ceiling": 1000,
+              "truncated": false
+            }
+          },
+          {
+            "step": "assess",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "row_count": 1,
+              "timing_ms": 0.006
+            }
+          },
+          {
+            "step": "normalize",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "record_count": 1,
+              "timing_ms": 0.063
+            }
+          }
+        ],
+        "records": [
+          {
+            "primary_id": "CAPEC-687",
+            "name": "Acquisition and Deployment",
+            "label": "Category",
+            "description": "",
+            "properties": {
+              "Status": "Draft",
+              "summary": "Attack patterns within this category focus on the exploitation of weaknesses within the Acquisition and Deployment phase of the CISA Supply Chain Lifecycle.",
+              "name": "Acquisition and Deployment",
+              "id": "capec:category:687"
+            },
+            "facets": [],
+            "join_values": [],
+            "related": [
+              {
+                "id": "CAPEC-683",
+                "name": "Supply Chain Risks",
+                "label": "View",
+                "type": "IN_VIEW",
+                "Status": "Draft",
+                "Type": "Graph",
+                "members": [
+                  "684",
+                  "685",
+                  "686",
+                  "687",
+                  "688",
+                  "689"
+                ],
+                "objective": "This view covers patterns that fall within the CISA Supply Chain Lifecycle"
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "deterministic_scores": {
+    "correlation": null,
+    "mapping_recall": null,
+    "coverage": {
+      "gold": 2,
+      "found": 2,
+      "coverage": 1.0,
+      "missing": []
+    },
+    "provenance": {
+      "citations": 3,
+      "compliant": 3,
+      "citation_provenance_rate": 1.0,
+      "abstention_proof_ok": true,
+      "fully_provenanced": true
+    },
+    "inspectability": {
+      "citation_coverage": 1.0,
+      "traceability": 1.0,
+      "abstention_proofs": 1.0,
+      "inspectability": 1.0
+    }
+  },
+  "arm": "planned_llm_typed_lazy",
+  "run_meta": {
+    "planner": "llm-typed-lazy",
+    "synthesis": "deterministic",
+    "use_llm": true,
+    "llm_synthesis": false,
+    "llm_specialist": false,
+    "rewrite": null,
+    "observed_plan": [
+      {
+        "sub_question_id": "q1",
+        "source": "capec",
+        "text": "",
+        "entities": [
+          "Category",
+          "IN_VIEW",
+          "View"
+        ],
+        "seed_ids": [
+          "CAPEC-687"
+        ],
+        "depends_on": null,
+        "limits": {
+          "max_traversal_depth": 3,
+          "max_result_rows": 1000,
+          "query_timeout_ms": 5000
+        },
+        "step": {
+          "kind": "expand",
+          "anchor_label": "Category",
+          "anchor_ids": [
+            "CAPEC-687"
+          ],
+          "hops": [
+            {
+              "relation": "IN_VIEW",
+              "direction": "out",
+              "target_label": "View"
+            }
+          ],
+          "depth": 1
+        }
+      }
+    ],
+    "exit_code": 0,
+    "status": "answered",
+    "timings": {
+      "plan_ms": 14057.897,
+      "specialists": [
+        {
+          "sub_question": "q1",
+          "source": "capec",
+          "ms": 9.948
+        }
+      ],
+      "synthesis_ms": 7.019,
+      "total_ms": 14120.935
+    },
+    "registry_model": "gemma4-31b",
+    "drafter_used": "TypedDrafter",
+    "typed": [
+      {
+        "mode": "lazy",
+        "served_model": "gemma4-31b/106",
+        "model_calls": 3,
+        "catalog_calls": [
+          {
+            "name": "describe",
+            "args": {
+              "graph": "capec",
+              "target": "IN_VIEW"
+            },
+            "ok": true
+          },
+          {
+            "name": "resolve_entity",
+            "args": {
+              "graph": "capec",
+              "label": "Category",
+              "text": "Acquisition and Deployment (CAPEC-687)"
+            },
+            "ok": true
+          }
+        ],
+        "prompt_tokens": 9988,
+        "completion_tokens": 761,
+        "emitted": true,
+        "parse_error": null,
+        "first_steps": 1,
+        "first_refused": 0,
+        "first_fixes": 0,
+        "valid_first": true,
+        "valid_first_raw": true,
+        "repair_used": false,
+        "fixed_by_repair": false,
+        "still_refused": 0,
+        "final_steps": 1,
+        "coercions": [],
+        "refusals": [],
+        "plan_problems": [],
+        "replies": [
+          {
+            "status": "ok",
+            "finish_reason": "tool_calls",
+            "calls": [
+              "describe"
+            ],
+            "text_chars": 0,
+            "repairs": []
+          },
+          {
+            "status": "ok",
+            "finish_reason": "tool_calls",
+            "calls": [
+              "resolve_entity"
+            ],
+            "text_chars": 0,
+            "repairs": []
+          },
+          {
+            "status": "ok",
+            "finish_reason": "stop",
+            "calls": [],
+            "text_chars": 379,
+            "repairs": []
+          }
+        ],
+        "error": null,
+        "fallback": null,
+        "seconds": 14.046,
+        "n_catalog_calls": 2,
+        "fixed_by_coercion": false
+      }
+    ],
+    "seams": {
+      "planner_llm": true,
+      "drafter": "TypedDrafter",
+      "specialist_llm": false,
+      "synthesis_llm": false,
+      "generic_only": "true"
+    },
+    "wall_s": 14.124
+  },
+  "evidence_volume": {
+    "results": 1,
+    "records": 1,
+    "related": 1
+  }
+}

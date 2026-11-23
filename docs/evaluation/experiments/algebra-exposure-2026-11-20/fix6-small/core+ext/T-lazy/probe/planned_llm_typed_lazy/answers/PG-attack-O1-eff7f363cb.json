@@ -1,0 +1,890 @@
+{
+  "id": "PG-attack-O1-eff7f363cb",
+  "kind": "attack",
+  "tier": "algebra-probe",
+  "category": "PG-attack",
+  "question": "Which of the software tools used by group G0050 (APT32) have any aliases on record?",
+  "gold": {
+    "assertions": {
+      "min_records": 0,
+      "must_include_ids": [],
+      "must_include_related": []
+    },
+    "ex_gold": {
+      "pool": "algebra",
+      "scheme": "attack",
+      "kind": "set",
+      "expected": [
+        "S1078",
+        "S0156",
+        "S0585",
+        "S0157",
+        "S0154",
+        "S0352",
+        "S0477",
+        "S0354",
+        "S0158",
+        "S0039",
+        "S0100",
+        "S0099",
+        "S0108",
+        "S0002"
+      ]
+    }
+  },
+  "answer": {
+    "headline": "Gathered 14 record(s) from 1 source(s).",
+    "narrative": "Found 14 record(s) in MITRE ATT&CK including S1078, S0156, S0585 and more. 14 entities match.",
+    "composer": "deterministic",
+    "fallback_reason": null,
+    "claims": [
+      {
+        "text": "Found 14 record(s) in MITRE ATT&CK including S1078, S0156, S0585 and more.",
+        "kind": "fact",
+        "entity_ids": [
+          "S1078",
+          "S0156",
+          "S0585",
+          "S0157",
+          "S0154",
+          "S0352",
+          "S0477",
+          "S0354",
+          "S0158",
+          "S0039",
+          "S0100",
+          "S0099",
+          "S0108",
+          "S0002"
+        ],
+        "citations": [
+          {
+            "source": "attack",
+            "primary_id": "S1078"
+          },
+          {
+            "source": "attack",
+            "primary_id": "S0156"
+          },
+          {
+            "source": "attack",
+            "primary_id": "S0585"
+          },
+          {
+            "source": "attack",
+            "primary_id": "S0157"
+          },
+          {
+            "source": "attack",
+            "primary_id": "S0154"
+          },
+          {
+            "source": "attack",
+            "primary_id": "S0352"
+          },
+          {
+            "source": "attack",
+            "primary_id": "S0477"
+          },
+          {
+            "source": "attack",
+            "primary_id": "S0354"
+          },
+          {
+            "source": "attack",
+            "primary_id": "S0158"
+          },
+          {
+            "source": "attack",
+            "primary_id": "S0039"
+          },
+          {
+            "source": "attack",
+            "primary_id": "S0100"
+          },
+          {
+            "source": "attack",
+            "primary_id": "S0099"
+          },
+          {
+            "source": "attack",
+            "primary_id": "S0108"
+          },
+          {
+            "source": "attack",
+            "primary_id": "S0002"
+          }
+        ]
+      },
+      {
+        "text": "14 entities match.",
+        "kind": "fact",
+        "entity_ids": [
+          "S1078",
+          "S0156",
+          "S0585",
+          "S0157",
+          "S0154",
+          "S0352",
+          "S0477",
+          "S0354",
+          "S0158",
+          "S0039",
+          "S0100",
+          "S0099",
+          "S0108",
+          "S0002"
+        ],
+        "citations": [
+          {
+            "source": "attack",
+            "primary_id": "S1078"
+          },
+          {
+            "source": "attack",
+            "primary_id": "S0156"
+          },
+          {
+            "source": "attack",
+            "primary_id": "S0585"
+          },
+          {
+            "source": "attack",
+            "primary_id": "S0157"
+          },
+          {
+            "source": "attack",
+            "primary_id": "S0154"
+          },
+          {
+            "source": "attack",
+            "primary_id": "S0352"
+          },
+          {
+            "source": "attack",
+            "primary_id": "S0477"
+          },
+          {
+            "source": "attack",
+            "primary_id": "S0354"
+          },
+          {
+            "source": "attack",
+            "primary_id": "S0158"
+          },
+          {
+            "source": "attack",
+            "primary_id": "S0039"
+          },
+          {
+            "source": "attack",
+            "primary_id": "S0100"
+          },
+          {
+            "source": "attack",
+            "primary_id": "S0099"
+          },
+          {
+            "source": "attack",
+            "primary_id": "S0108"
+          },
+          {
+            "source": "attack",
+            "primary_id": "S0002"
+          }
+        ]
+      }
+    ],
+    "abstentions": [],
+    "notes": []
+  },
+  "logic_flow": {
+    "task": {
+      "sub_question_id": "PG-attack-O1-eff7f363cb",
+      "source": "attack",
+      "text": "Which of the software tools used by group G0050 (APT32) have any aliases on record?",
+      "entities": [
+        "Group",
+        "USES",
+        "Software"
+      ],
+      "limits": {
+        "max_traversal_depth": 3,
+        "max_result_rows": 20000,
+        "query_timeout_ms": 60000
+      },
+      "join_key": null,
+      "seed_ids": [
+        "G0050"
+      ],
+      "rationale": "algebra probe set (Era 2 Step 9 Phase G)"
+    },
+    "results": [
+      {
+        "source": "attack",
+        "sub_question_id": "q1",
+        "sub_question": "",
+        "query": "MATCH (v3:Group) WHERE v3.id IN $p0 WITH DISTINCT v3 MATCH (v3)-[r4:USES]->(v2:Software) WHERE v3 <> v2 WITH DISTINCT v2 WITH v2 WHERE (v2.`x_mitre_aliases` IS NOT NULL AND v2.`x_mitre_aliases` <> []) WITH v2 ORDER BY v2.id WITH collect(v2) AS all_ CALL { MATCH (a5:Group) WHERE a5.id IN $p0 RETURN collect(DISTINCT a5.id) AS f6 } RETURN size(all_) AS total, [x IN all_[0..1000] | {id: x.id, name: x.name}] AS rows, [f6] AS found",
+        "ok": true,
+        "partial": false,
+        "error": null,
+        "summary": "Found 14 record(s) in MITRE ATT&CK including S1078, S0156, S0585 and more.",
+        "traces": [
+          {
+            "step": "intake",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "source": "attack",
+              "card": "attack"
+            }
+          },
+          {
+            "step": "resolve",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "labels": [
+                "Group",
+                "Software"
+              ],
+              "relationships": [
+                "USES"
+              ],
+              "seed_ids": [
+                "G0050"
+              ],
+              "join_key": null
+            }
+          },
+          {
+            "step": "gate",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "attempt": 1,
+              "template": "algebra",
+              "query": "MATCH (v3:Group) WHERE v3.id IN $p0 WITH DISTINCT v3 MATCH (v3)-[r4:USES]->(v2:Software) WHERE v3 <> v2 WITH DISTINCT v2 WITH v2 WHERE (v2.`x_mitre_aliases` IS NOT NULL AND v2.`x_mitre_aliases` <> []) WITH v2 ORDER BY v2.id WITH collect(v2) AS all_ CALL { MATCH (a5:Group) WHERE a5.id IN $p0 RETURN collect(DISTINCT a5.id) AS f6 } RETURN size(all_) AS total, [x IN all_[0..1000] | {id: x.id, name: x.name}] AS rows, [f6] AS found",
+              "injected": [],
+              "note": "compiled by the operator algebra (validated against the card; read-only by construction)",
+              "id_map": {
+                "G0050": [
+                  "intrusion-set--247cb30b-955f-42eb-97a5-a89fef69341e"
+                ]
+              }
+            }
+          },
+          {
+            "step": "execute",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "row_count": 14
+            }
+          },
+          {
+            "step": "algebra",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "result": {
+                "step": "q1",
+                "kind": "nodes",
+                "value": null,
+                "ids": [
+                  "S0002",
+                  "S0039",
+                  "S0099",
+                  "S0100",
+                  "S0108",
+                  "S0154",
+                  "S0156",
+                  "S0157",
+                  "S0158",
+                  "S0352",
+                  "S0354",
+                  "S0477",
+                  "S0585",
+                  "S1078"
+                ],
+                "rows": [
+                  {
+                    "id": "S1078",
+                    "name": "RotaJakiro"
+                  },
+                  {
+                    "id": "S0156",
+                    "name": "KOMPROGO"
+                  },
+                  {
+                    "id": "S0585",
+                    "name": "Kerrdown"
+                  },
+                  {
+                    "id": "S0157",
+                    "name": "SOUNDBITE"
+                  },
+                  {
+                    "id": "S0154",
+                    "name": "Cobalt Strike"
+                  },
+                  {
+                    "id": "S0352",
+                    "name": "OSX_OCEANLOTUS.D"
+                  },
+                  {
+                    "id": "S0477",
+                    "name": "Goopy"
+                  },
+                  {
+                    "id": "S0354",
+                    "name": "Denis"
+                  },
+                  {
+                    "id": "S0158",
+                    "name": "PHOREAL"
+                  },
+                  {
+                    "id": "S0039",
+                    "name": "Net"
+                  },
+                  {
+                    "id": "S0100",
+                    "name": "ipconfig"
+                  },
+                  {
+                    "id": "S0099",
+                    "name": "Arp"
+                  },
+                  {
+                    "id": "S0108",
+                    "name": "netsh"
+                  },
+                  {
+                    "id": "S0002",
+                    "name": "Mimikatz"
+                  }
+                ],
+                "total": 14,
+                "complete": true,
+                "info": {
+                  "anchor_not_found": []
+                }
+              },
+              "op": "filter",
+              "ir": {
+                "@": "Nodes",
+                "of": {
+                  "@": "Where",
+                  "conds": [
+                    {
+                      "@": "Cond",
+                      "cmp": null,
+                      "op": "present",
+                      "prop": "x_mitre_aliases",
+                      "value": null
+                    }
+                  ],
+                  "of": {
+                    "@": "Walk",
+                    "depth": 1,
+                    "hops": [
+                      {
+                        "@": "Hop",
+                        "direction": "out",
+                        "edge_conds": [],
+                        "relation": "USES",
+                        "target": "Software"
+                      }
+                    ],
+                    "last_conds": [],
+                    "start": {
+                      "@": "Anchors",
+                      "ids": [
+                        "G0050"
+                      ],
+                      "label": "Group"
+                    }
+                  }
+                },
+                "props": []
+              }
+            }
+          }
+        ],
+        "records": [
+          {
+            "primary_id": "S1078",
+            "name": "RotaJakiro",
+            "label": "Software",
+            "description": "",
+            "properties": {},
+            "facets": [],
+            "join_values": [],
+            "related": []
+          },
+          {
+            "primary_id": "S0156",
+            "name": "KOMPROGO",
+            "label": "Software",
+            "description": "",
+            "properties": {},
+            "facets": [],
+            "join_values": [],
+            "related": []
+          },
+          {
+            "primary_id": "S0585",
+            "name": "Kerrdown",
+            "label": "Software",
+            "description": "",
+            "properties": {},
+            "facets": [],
+            "join_values": [],
+            "related": []
+          },
+          {
+            "primary_id": "S0157",
+            "name": "SOUNDBITE",
+            "label": "Software",
+            "description": "",
+            "properties": {},
+            "facets": [],
+            "join_values": [],
+            "related": []
+          },
+          {
+            "primary_id": "S0154",
+            "name": "Cobalt Strike",
+            "label": "Software",
+            "description": "",
+            "properties": {},
+            "facets": [],
+            "join_values": [],
+            "related": []
+          },
+          {
+            "primary_id": "S0352",
+            "name": "OSX_OCEANLOTUS.D",
+            "label": "Software",
+            "description": "",
+            "properties": {},
+            "facets": [],
+            "join_values": [],
+            "related": []
+          },
+          {
+            "primary_id": "S0477",
+            "name": "Goopy",
+            "label": "Software",
+            "description": "",
+            "properties": {},
+            "facets": [],
+            "join_values": [],
+            "related": []
+          },
+          {
+            "primary_id": "S0354",
+            "name": "Denis",
+            "label": "Software",
+            "description": "",
+            "properties": {},
+            "facets": [],
+            "join_values": [],
+            "related": []
+          },
+          {
+            "primary_id": "S0158",
+            "name": "PHOREAL",
+            "label": "Software",
+            "description": "",
+            "properties": {},
+            "facets": [],
+            "join_values": [],
+            "related": []
+          },
+          {
+            "primary_id": "S0039",
+            "name": "Net",
+            "label": "Software",
+            "description": "",
+            "properties": {},
+            "facets": [],
+            "join_values": [],
+            "related": []
+          },
+          {
+            "primary_id": "S0100",
+            "name": "ipconfig",
+            "label": "Software",
+            "description": "",
+            "properties": {},
+            "facets": [],
+            "join_values": [],
+            "related": []
+          },
+          {
+            "primary_id": "S0099",
+            "name": "Arp",
+            "label": "Software",
+            "description": "",
+            "properties": {},
+            "facets": [],
+            "join_values": [],
+            "related": []
+          },
+          {
+            "primary_id": "S0108",
+            "name": "netsh",
+            "label": "Software",
+            "description": "",
+            "properties": {},
+            "facets": [],
+            "join_values": [],
+            "related": []
+          },
+          {
+            "primary_id": "S0002",
+            "name": "Mimikatz",
+            "label": "Software",
+            "description": "",
+            "properties": {},
+            "facets": [],
+            "join_values": [],
+            "related": []
+          }
+        ]
+      }
+    ]
+  },
+  "deterministic_scores": {
+    "correlation": null,
+    "mapping_recall": null,
+    "coverage": null,
+    "provenance": {
+      "citations": 28,
+      "compliant": 28,
+      "citation_provenance_rate": 1.0,
+      "abstention_proof_ok": true,
+      "fully_provenanced": true
+    },
+    "inspectability": {
+      "citation_coverage": 1.0,
+      "traceability": 1.0,
+      "abstention_proofs": 1.0,
+      "inspectability": 1.0
+    }
+  },
+  "arm": "planned_llm_typed_lazy",
+  "run_meta": {
+    "planner": "llm-typed-lazy",
+    "synthesis": "deterministic",
+    "use_llm": true,
+    "llm_synthesis": false,
+    "llm_specialist": false,
+    "rewrite": null,
+    "observed_plan": [
+      {
+        "sub_question_id": "q1",
+        "source": "attack",
+        "text": "",
+        "entities": [
+          "Group",
+          "USES",
+          "Software"
+        ],
+        "seed_ids": [
+          "G0050"
+        ],
+        "depends_on": null,
+        "limits": {
+          "max_traversal_depth": 3,
+          "max_result_rows": 1000,
+          "query_timeout_ms": 5000
+        },
+        "step": {
+          "kind": "algebra",
+          "anchor_label": "Group",
+          "anchor_ids": [
+            "G0050"
+          ],
+          "hops": [],
+          "depth": 1,
+          "algebra": {
+            "ir": {
+              "@": "Nodes",
+              "of": {
+                "@": "Where",
+                "conds": [
+                  {
+                    "@": "Cond",
+                    "cmp": null,
+                    "op": "present",
+                    "prop": "x_mitre_aliases",
+                    "value": null
+                  }
+                ],
+                "of": {
+                  "@": "Walk",
+                  "depth": 1,
+                  "hops": [
+                    {
+                      "@": "Hop",
+                      "direction": "out",
+                      "edge_conds": [],
+                      "relation": "USES",
+                      "target": "Software"
+                    }
+                  ],
+                  "last_conds": [],
+                  "start": {
+                    "@": "Anchors",
+                    "ids": [
+                      "G0050"
+                    ],
+                    "label": "Group"
+                  }
+                }
+              },
+              "props": []
+            },
+            "labels": [
+              "Software"
+            ],
+            "op": "filter"
+          }
+        }
+      }
+    ],
+    "exit_code": 0,
+    "status": "answered",
+    "timings": {
+      "plan_ms": 38662.012,
+      "specialists": [
+        {
+          "sub_question": "q1",
+          "source": "attack",
+          "ms": 14.398
+        }
+      ],
+      "synthesis_ms": 9.9,
+      "total_ms": 39090.597
+    },
+    "registry_model": "qwen38-27b",
+    "drafter_used": "TypedDrafter",
+    "typed": [
+      {
+        "mode": "lazy",
+        "served_model": "qwen38-27b/248046",
+        "model_calls": 5,
+        "catalog_calls": [
+          {
+            "name": "find_schema",
+            "args": {
+              "text": "group uses software",
+              "graph": "attack"
+            },
+            "ok": true
+          },
+          {
+            "name": "resolve_entity",
+            "args": {
+              "text": "G0050",
+              "label": "Group",
+              "graph": "attack"
+            },
+            "ok": true
+          },
+          {
+            "name": "describe",
+            "args": {
+              "target": "Software",
+              "graph": "attack"
+            },
+            "ok": true
+          },
+          {
+            "name": "describe",
+            "args": {
+              "target": "aliases",
+              "graph": "attack"
+            },
+            "ok": false
+          }
+        ],
+        "prompt_tokens": 20892,
+        "completion_tokens": 1322,
+        "emitted": true,
+        "parse_error": null,
+        "first_steps": 1,
+        "first_refused": 1,
+        "first_fixes": 0,
+        "valid_first": false,
+        "valid_first_raw": false,
+        "repair_used": true,
+        "fixed_by_repair": true,
+        "still_refused": 0,
+        "final_steps": 1,
+        "coercions": [],
+        "refusals": [
+          {
+            "step": "q1",
+            "final": false,
+            "code": "invalid_request",
+            "detail": "step q1: the filter needs a value",
+            "fix": "choose filter.value from: a list value"
+          }
+        ],
+        "plan_problems": [],
+        "replies": [
+          {
+            "status": "ok",
+            "finish_reason": "tool_calls",
+            "calls": [
+              "find_schema",
+              "resolve_entity"
+            ],
+            "text_chars": 0,
+            "repairs": []
+          },
+          {
+            "status": "ok",
+            "finish_reason": "tool_calls",
+            "calls": [
+              "describe"
+            ],
+            "text_chars": 0,
+            "repairs": []
+          },
+          {
+            "status": "ok",
+            "finish_reason": "tool_calls",
+            "calls": [
+              "describe"
+            ],
+            "text_chars": 65,
+            "repairs": []
+          },
+          {
+            "status": "ok",
+            "finish_reason": "stop",
+            "calls": [],
+            "text_chars": 392,
+            "repairs": []
+          },
+          {
+            "status": "ok",
+            "finish_reason": "stop",
+            "calls": [],
+            "text_chars": 393,
+            "repairs": []
+          }
+        ],
+        "error": null,
+        "fallback": null,
+        "seconds": 38.505,
+        "n_catalog_calls": 4,
+        "fixed_by_coercion": false
+      }
+    ],
+    "seams": {
+      "planner_llm": true,
+      "drafter": "TypedDrafter",
+      "specialist_llm": false,
+      "synthesis_llm": false,
+      "generic_only": "true"
+    },
+    "wall_s": 39.846,
+    "algebra_results": [
+      {
+        "step": "q1",
+        "kind": "nodes",
+        "value": null,
+        "ids": [
+          "S0002",
+          "S0039",
+          "S0099",
+          "S0100",
+          "S0108",
+          "S0154",
+          "S0156",
+          "S0157",
+          "S0158",
+          "S0352",
+          "S0354",
+          "S0477",
+          "S0585",
+          "S1078"
+        ],
+        "rows": [
+          {
+            "id": "S1078",
+            "name": "RotaJakiro"
+          },
+          {
+            "id": "S0156",
+            "name": "KOMPROGO"
+          },
+          {
+            "id": "S0585",
+            "name": "Kerrdown"
+          },
+          {
+            "id": "S0157",
+            "name": "SOUNDBITE"
+          },
+          {
+            "id": "S0154",
+            "name": "Cobalt Strike"
+          },
+          {
+            "id": "S0352",
+            "name": "OSX_OCEANLOTUS.D"
+          },
+          {
+            "id": "S0477",
+            "name": "Goopy"
+          },
+          {
+            "id": "S0354",
+            "name": "Denis"
+          },
+          {
+            "id": "S0158",
+            "name": "PHOREAL"
+          },
+          {
+            "id": "S0039",
+            "name": "Net"
+          },
+          {
+            "id": "S0100",
+            "name": "ipconfig"
+          },
+          {
+            "id": "S0099",
+            "name": "Arp"
+          },
+          {
+            "id": "S0108",
+            "name": "netsh"
+          },
+          {
+            "id": "S0002",
+            "name": "Mimikatz"
+          }
+        ],
+        "total": 14,
+        "complete": true,
+        "info": {
+          "anchor_not_found": []
+        }
+      }
+    ]
+  },
+  "evidence_volume": {
+    "results": 1,
+    "records": 14,
+    "related": 0
+  }
+}

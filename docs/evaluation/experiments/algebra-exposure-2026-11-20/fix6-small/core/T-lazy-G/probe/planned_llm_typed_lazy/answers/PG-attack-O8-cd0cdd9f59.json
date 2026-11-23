@@ -1,0 +1,859 @@
+{
+  "id": "PG-attack-O8-cd0cdd9f59",
+  "kind": "attack",
+  "tier": "algebra-probe",
+  "category": "PG-attack",
+  "question": "Starting from sub-technique T1578.002 (Create Cloud Instance) and moving up through its parent technique and tactic, which techniques and tactics can be reached?",
+  "gold": {
+    "assertions": {
+      "min_records": 0,
+      "must_include_ids": [],
+      "must_include_related": []
+    },
+    "ex_gold": {
+      "pool": "algebra",
+      "scheme": "attack",
+      "kind": "set",
+      "expected": [
+        "T1578",
+        "TA0112"
+      ]
+    }
+  },
+  "answer": {
+    "headline": "Gathered 4 record(s) from 1 source(s).",
+    "narrative": "Found 1 item(s) related to T1578.002 (e.g. T1578) in MITRE ATT&CK. T1578.002 (Create Cloud Instance) has 1 technique: T1578. Found 2 item(s) related to T1578.002 (e.g. T1578, TA0112) in MITRE ATT&CK. T1578.002 (Create Cloud Instance) has 1 tactic: TA0112. Found 2 record(s) in MITRE ATT&CK including T1578, TA0112. 2 entities match.",
+    "composer": "deterministic",
+    "fallback_reason": null,
+    "claims": [
+      {
+        "text": "Found 1 item(s) related to T1578.002 (e.g. T1578) in MITRE ATT&CK.",
+        "kind": "fact",
+        "entity_ids": [
+          "T1578.002"
+        ],
+        "citations": [
+          {
+            "source": "attack",
+            "primary_id": "T1578.002"
+          }
+        ]
+      },
+      {
+        "text": "T1578.002 (Create Cloud Instance) has 1 technique: T1578.",
+        "kind": "enumeration",
+        "entity_ids": [
+          "T1578"
+        ],
+        "citations": [
+          {
+            "source": "attack",
+            "primary_id": "T1578.002"
+          }
+        ]
+      },
+      {
+        "text": "Found 2 item(s) related to T1578.002 (e.g. T1578, TA0112) in MITRE ATT&CK.",
+        "kind": "fact",
+        "entity_ids": [
+          "T1578.002"
+        ],
+        "citations": [
+          {
+            "source": "attack",
+            "primary_id": "T1578.002"
+          }
+        ]
+      },
+      {
+        "text": "T1578.002 (Create Cloud Instance) has 1 tactic: TA0112.",
+        "kind": "enumeration",
+        "entity_ids": [
+          "TA0112"
+        ],
+        "citations": [
+          {
+            "source": "attack",
+            "primary_id": "T1578.002"
+          }
+        ]
+      },
+      {
+        "text": "Found 2 record(s) in MITRE ATT&CK including T1578, TA0112.",
+        "kind": "fact",
+        "entity_ids": [
+          "T1578",
+          "TA0112"
+        ],
+        "citations": [
+          {
+            "source": "attack",
+            "primary_id": "T1578"
+          },
+          {
+            "source": "attack",
+            "primary_id": "TA0112"
+          }
+        ]
+      },
+      {
+        "text": "2 entities match.",
+        "kind": "fact",
+        "entity_ids": [
+          "T1578",
+          "TA0112"
+        ],
+        "citations": [
+          {
+            "source": "attack",
+            "primary_id": "T1578"
+          },
+          {
+            "source": "attack",
+            "primary_id": "TA0112"
+          }
+        ]
+      }
+    ],
+    "abstentions": [],
+    "notes": []
+  },
+  "logic_flow": {
+    "task": {
+      "sub_question_id": "PG-attack-O8-cd0cdd9f59",
+      "source": "attack",
+      "text": "Starting from sub-technique T1578.002 (Create Cloud Instance) and moving up through its parent technique and tactic, which techniques and tactics can be reached?",
+      "entities": [
+        "SubTechnique",
+        "HAS_SUBTECHNIQUE",
+        "HAS_TECHNIQUE"
+      ],
+      "limits": {
+        "max_traversal_depth": 3,
+        "max_result_rows": 20000,
+        "query_timeout_ms": 60000
+      },
+      "join_key": null,
+      "seed_ids": [
+        "T1578.002"
+      ],
+      "rationale": "algebra probe set (Era 2 Step 9 Phase G)"
+    },
+    "results": [
+      {
+        "source": "attack",
+        "sub_question_id": "q1",
+        "sub_question": "",
+        "query": "MATCH (n) WHERE coalesce(n.attack_id, n.id) IN $ids OPTIONAL MATCH (n)<-[:HAS_SUBTECHNIQUE]-(t0:Technique) WITH n, collect(DISTINCT {m: t0, r: 'HAS_SUBTECHNIQUE'}) AS k0 WITH n, [x IN k0 WHERE x.m IS NOT NULL] AS hops UNWIND (CASE WHEN size(hops) = 0 THEN [{m: null, r: null}] ELSE hops END) AS hop RETURN coalesce(n.attack_id, n.id) AS anchor_id, n.name AS anchor_name, labels(n)[0] AS anchor_label, coalesce(hop.m.attack_id, hop.m.id) AS neighbour_id, hop.m.name AS neighbour_name, labels(hop.m)[0] AS neighbour_label, hop.r AS rel_type LIMIT 1000",
+        "ok": true,
+        "partial": false,
+        "error": null,
+        "summary": "Found 1 item(s) related to T1578.002 (e.g. T1578) in MITRE ATT&CK.",
+        "traces": [
+          {
+            "step": "intake",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "source": "attack",
+              "card": "attack"
+            }
+          },
+          {
+            "step": "resolve",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "labels": [
+                "SubTechnique",
+                "Technique"
+              ],
+              "relationships": [
+                "HAS_SUBTECHNIQUE"
+              ],
+              "seed_ids": [
+                "T1578.002"
+              ],
+              "join_key": null
+            }
+          },
+          {
+            "step": "gate",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "attempt": 1,
+              "template": "typed_step",
+              "query": "MATCH (n) WHERE coalesce(n.attack_id, n.id) IN $ids OPTIONAL MATCH (n)<-[:HAS_SUBTECHNIQUE]-(t0:Technique) WITH n, collect(DISTINCT {m: t0, r: 'HAS_SUBTECHNIQUE'}) AS k0 WITH n, [x IN k0 WHERE x.m IS NOT NULL] AS hops UNWIND (CASE WHEN size(hops) = 0 THEN [{m: null, r: null}] ELSE hops END) AS hop RETURN coalesce(n.attack_id, n.id) AS anchor_id, n.name AS anchor_name, labels(n)[0] AS anchor_label, coalesce(hop.m.attack_id, hop.m.id) AS neighbour_id, hop.m.name AS neighbour_name, labels(hop.m)[0] AS neighbour_label, hop.r AS rel_type LIMIT 1000",
+              "injected": [
+                "LIMIT 1000 appended (none present)"
+              ],
+              "timing_ms": 0.274
+            }
+          },
+          {
+            "step": "execute",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "row_count": 1,
+              "timing_ms": 4.5,
+              "row_ceiling": 1000,
+              "truncated": false
+            }
+          },
+          {
+            "step": "assess",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "row_count": 1,
+              "timing_ms": 0.007
+            }
+          },
+          {
+            "step": "normalize",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "record_count": 1,
+              "timing_ms": 2.227
+            }
+          }
+        ],
+        "records": [
+          {
+            "primary_id": "T1578.002",
+            "name": "Create Cloud Instance",
+            "label": "SubTechnique",
+            "description": "",
+            "properties": {},
+            "facets": [],
+            "join_values": [
+              "T1578.002"
+            ],
+            "related": [
+              {
+                "id": "T1578",
+                "name": "Modify Cloud Compute Infrastructure",
+                "label": "Technique",
+                "type": "HAS_SUBTECHNIQUE",
+                "description": "An adversary may attempt to modify a cloud account's compute service infrastructure to evade defenses. A modification to the compute service infrastructure can include the creation, deletion, or modification of one or more components such as compute instances, virtual machines, and snapshots.\n\nPermissions gained from the modification of infrastructure components may bypass restrictions that prevent access to existing infrastructure. Modifying infrastructure components may also allow an adversary to evade detection and remove evidence of their presence.(Citation: Mandiant M-Trends 2020)"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "source": "attack",
+        "sub_question_id": "q2",
+        "sub_question": "",
+        "query": "MATCH (n) WHERE coalesce(n.attack_id, n.id) IN $ids OPTIONAL MATCH (n)<-[:HAS_SUBTECHNIQUE]-(t0:Technique) WITH n, collect(DISTINCT {m: t0, r: 'HAS_SUBTECHNIQUE'}) AS k0 OPTIONAL MATCH (n)<-[:HAS_SUBTECHNIQUE]-(:Technique)<-[:HAS_TECHNIQUE]-(t1:Tactic) WITH n, k0, collect(DISTINCT {m: t1, r: 'HAS_TECHNIQUE'}) AS k1 WITH n, [x IN k0 + k1 WHERE x.m IS NOT NULL] AS hops UNWIND (CASE WHEN size(hops) = 0 THEN [{m: null, r: null}] ELSE hops END) AS hop RETURN coalesce(n.attack_id, n.id) AS anchor_id, n.name AS anchor_name, labels(n)[0] AS anchor_label, coalesce(hop.m.attack_id, hop.m.id) AS neighbour_id, hop.m.name AS neighbour_name, labels(hop.m)[0] AS neighbour_label, hop.r AS rel_type LIMIT 1000",
+        "ok": true,
+        "partial": false,
+        "error": null,
+        "summary": "Found 2 item(s) related to T1578.002 (e.g. T1578, TA0112) in MITRE ATT&CK.",
+        "traces": [
+          {
+            "step": "intake",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "source": "attack",
+              "card": "attack"
+            }
+          },
+          {
+            "step": "resolve",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "labels": [
+                "SubTechnique",
+                "Technique",
+                "Tactic"
+              ],
+              "relationships": [
+                "HAS_SUBTECHNIQUE",
+                "HAS_TECHNIQUE"
+              ],
+              "seed_ids": [
+                "T1578.002"
+              ],
+              "join_key": null
+            }
+          },
+          {
+            "step": "gate",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "attempt": 1,
+              "template": "typed_step",
+              "query": "MATCH (n) WHERE coalesce(n.attack_id, n.id) IN $ids OPTIONAL MATCH (n)<-[:HAS_SUBTECHNIQUE]-(t0:Technique) WITH n, collect(DISTINCT {m: t0, r: 'HAS_SUBTECHNIQUE'}) AS k0 OPTIONAL MATCH (n)<-[:HAS_SUBTECHNIQUE]-(:Technique)<-[:HAS_TECHNIQUE]-(t1:Tactic) WITH n, k0, collect(DISTINCT {m: t1, r: 'HAS_TECHNIQUE'}) AS k1 WITH n, [x IN k0 + k1 WHERE x.m IS NOT NULL] AS hops UNWIND (CASE WHEN size(hops) = 0 THEN [{m: null, r: null}] ELSE hops END) AS hop RETURN coalesce(n.attack_id, n.id) AS anchor_id, n.name AS anchor_name, labels(n)[0] AS anchor_label, coalesce(hop.m.attack_id, hop.m.id) AS neighbour_id, hop.m.name AS neighbour_name, labels(hop.m)[0] AS neighbour_label, hop.r AS rel_type LIMIT 1000",
+              "injected": [
+                "LIMIT 1000 appended (none present)"
+              ],
+              "timing_ms": 0.27
+            }
+          },
+          {
+            "step": "execute",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "row_count": 2,
+              "timing_ms": 4.9,
+              "row_ceiling": 1000,
+              "truncated": false
+            }
+          },
+          {
+            "step": "assess",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "row_count": 2,
+              "timing_ms": 0.007
+            }
+          },
+          {
+            "step": "normalize",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "record_count": 1,
+              "timing_ms": 2.484
+            }
+          }
+        ],
+        "records": [
+          {
+            "primary_id": "T1578.002",
+            "name": "Create Cloud Instance",
+            "label": "SubTechnique",
+            "description": "",
+            "properties": {},
+            "facets": [],
+            "join_values": [
+              "T1578.002"
+            ],
+            "related": [
+              {
+                "id": "T1578",
+                "name": "Modify Cloud Compute Infrastructure",
+                "label": "Technique",
+                "type": "HAS_SUBTECHNIQUE",
+                "description": "An adversary may attempt to modify a cloud account's compute service infrastructure to evade defenses. A modification to the compute service infrastructure can include the creation, deletion, or modification of one or more components such as compute instances, virtual machines, and snapshots.\n\nPermissions gained from the modification of infrastructure components may bypass restrictions that prevent access to existing infrastructure. Modifying infrastructure components may also allow an adversary to evade detection and remove evidence of their presence.(Citation: Mandiant M-Trends 2020)"
+              },
+              {
+                "id": "TA0112",
+                "name": "Defense Impairment",
+                "label": "Tactic",
+                "type": "HAS_TECHNIQUE",
+                "description": "The adversary is trying to break security mechanisms, pipelines, and tooling so defenders can’t see or trust what’s happening.\n\nDefense Impairment consists of techniques that degrade, disable, or undermine the effectiveness and trustworthiness of security controls and monitoring mechanisms. These techniques are characterized by direct interference with defensive systems. The goal is to reduce defenders’ ability to detect, interpret, or respond to adversary activity."
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "source": "attack",
+        "sub_question_id": "q3",
+        "sub_question": "",
+        "query": "CALL { MATCH (v2) WHERE v2.id IN $p0 AND (v2:Technique) WITH DISTINCT v2 RETURN v2 AS v1 UNION MATCH (v3) WHERE v3.id IN $p1 AND (v3:Tactic) WITH DISTINCT v3 RETURN v3 AS v1 } WITH DISTINCT v1 WITH v1 ORDER BY v1.id WITH collect(v1) AS all_ RETURN size(all_) AS total, [x IN all_[0..1000] | {id: x.id, name: x.name}] AS rows",
+        "ok": true,
+        "partial": false,
+        "error": null,
+        "summary": "Found 2 record(s) in MITRE ATT&CK including T1578, TA0112.",
+        "traces": [
+          {
+            "step": "intake",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "source": "attack",
+              "card": "attack"
+            }
+          },
+          {
+            "step": "resolve",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "labels": [
+                "Technique",
+                "Tactic"
+              ],
+              "relationships": [],
+              "seed_ids": [
+                "T1578",
+                "TA0112"
+              ],
+              "join_key": null
+            }
+          },
+          {
+            "step": "gate",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "attempt": 1,
+              "template": "algebra",
+              "query": "CALL { MATCH (v2) WHERE v2.id IN $p0 AND (v2:Technique) WITH DISTINCT v2 RETURN v2 AS v1 UNION MATCH (v3) WHERE v3.id IN $p1 AND (v3:Tactic) WITH DISTINCT v3 RETURN v3 AS v1 } WITH DISTINCT v1 WITH v1 ORDER BY v1.id WITH collect(v1) AS all_ RETURN size(all_) AS total, [x IN all_[0..1000] | {id: x.id, name: x.name}] AS rows",
+              "injected": [],
+              "note": "compiled by the operator algebra (validated against the card; read-only by construction)",
+              "id_map": {
+                "T1578": [
+                  "attack-pattern--144e007b-e638-431d-a894-45d90c54ab90"
+                ],
+                "TA0112": [
+                  "x-mitre-tactic--43c49635-f2fa-44f2-92b9-0ee980bbf4ef"
+                ]
+              }
+            }
+          },
+          {
+            "step": "execute",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "row_count": 2
+            }
+          },
+          {
+            "step": "algebra",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "result": {
+                "step": "q3",
+                "kind": "nodes",
+                "value": null,
+                "ids": [
+                  "T1578",
+                  "TA0112"
+                ],
+                "rows": [
+                  {
+                    "id": "T1578",
+                    "name": "Modify Cloud Compute Infrastructure"
+                  },
+                  {
+                    "id": "TA0112",
+                    "name": "Defense Impairment"
+                  }
+                ],
+                "total": 2,
+                "complete": true,
+                "info": {}
+              },
+              "op": "union",
+              "ir": {
+                "@": "Nodes",
+                "of": {
+                  "@": "Union_",
+                  "parts": [
+                    {
+                      "@": "FromStep",
+                      "labels": [
+                        "Technique"
+                      ],
+                      "step": "q1"
+                    },
+                    {
+                      "@": "FromStep",
+                      "labels": [
+                        "Tactic"
+                      ],
+                      "step": "q2"
+                    }
+                  ]
+                },
+                "props": []
+              }
+            }
+          }
+        ],
+        "records": [
+          {
+            "primary_id": "T1578",
+            "name": "Modify Cloud Compute Infrastructure",
+            "label": "Technique",
+            "description": "",
+            "properties": {},
+            "facets": [],
+            "join_values": [
+              "T1578"
+            ],
+            "related": []
+          },
+          {
+            "primary_id": "TA0112",
+            "name": "Defense Impairment",
+            "label": "Tactic",
+            "description": "",
+            "properties": {},
+            "facets": [],
+            "join_values": [],
+            "related": []
+          }
+        ]
+      }
+    ]
+  },
+  "deterministic_scores": {
+    "correlation": null,
+    "mapping_recall": null,
+    "coverage": null,
+    "provenance": {
+      "citations": 8,
+      "compliant": 8,
+      "citation_provenance_rate": 1.0,
+      "abstention_proof_ok": true,
+      "fully_provenanced": true
+    },
+    "inspectability": {
+      "citation_coverage": 1.0,
+      "traceability": 1.0,
+      "abstention_proofs": 1.0,
+      "inspectability": 1.0
+    }
+  },
+  "arm": "planned_llm_typed_lazy",
+  "run_meta": {
+    "planner": "llm-typed-lazy",
+    "synthesis": "deterministic",
+    "use_llm": true,
+    "llm_synthesis": false,
+    "llm_specialist": false,
+    "rewrite": null,
+    "observed_plan": [
+      {
+        "sub_question_id": "q1",
+        "source": "attack",
+        "text": "",
+        "entities": [
+          "SubTechnique",
+          "HAS_SUBTECHNIQUE",
+          "Technique"
+        ],
+        "seed_ids": [
+          "T1578.002"
+        ],
+        "depends_on": null,
+        "limits": {
+          "max_traversal_depth": 3,
+          "max_result_rows": 1000,
+          "query_timeout_ms": 5000
+        },
+        "step": {
+          "kind": "expand",
+          "anchor_label": "SubTechnique",
+          "anchor_ids": [
+            "T1578.002"
+          ],
+          "hops": [
+            {
+              "relation": "HAS_SUBTECHNIQUE",
+              "direction": "in",
+              "target_label": "Technique"
+            }
+          ],
+          "depth": 1
+        }
+      },
+      {
+        "sub_question_id": "q2",
+        "source": "attack",
+        "text": "",
+        "entities": [
+          "SubTechnique",
+          "HAS_SUBTECHNIQUE",
+          "Technique",
+          "HAS_TECHNIQUE",
+          "Tactic"
+        ],
+        "seed_ids": [
+          "T1578.002"
+        ],
+        "depends_on": null,
+        "limits": {
+          "max_traversal_depth": 3,
+          "max_result_rows": 1000,
+          "query_timeout_ms": 5000
+        },
+        "step": {
+          "kind": "expand",
+          "anchor_label": "SubTechnique",
+          "anchor_ids": [
+            "T1578.002"
+          ],
+          "hops": [
+            {
+              "relation": "HAS_SUBTECHNIQUE",
+              "direction": "in",
+              "target_label": "Technique"
+            },
+            {
+              "relation": "HAS_TECHNIQUE",
+              "direction": "in",
+              "target_label": "Tactic"
+            }
+          ],
+          "depth": 1
+        }
+      },
+      {
+        "sub_question_id": "q3",
+        "source": "attack",
+        "text": "",
+        "entities": [
+          "Technique",
+          "Tactic"
+        ],
+        "seed_ids": [],
+        "depends_on": null,
+        "limits": {
+          "max_traversal_depth": 3,
+          "max_result_rows": 1000,
+          "query_timeout_ms": 5000
+        },
+        "step": {
+          "kind": "algebra",
+          "anchor_label": "Technique",
+          "anchor_ids": [],
+          "hops": [],
+          "depth": 1,
+          "algebra": {
+            "ir": {
+              "@": "Nodes",
+              "of": {
+                "@": "Union_",
+                "parts": [
+                  {
+                    "@": "FromStep",
+                    "labels": [
+                      "Technique"
+                    ],
+                    "step": "q1"
+                  },
+                  {
+                    "@": "FromStep",
+                    "labels": [
+                      "Tactic"
+                    ],
+                    "step": "q2"
+                  }
+                ]
+              },
+              "props": []
+            },
+            "labels": [
+              "Tactic",
+              "Technique"
+            ],
+            "op": "union"
+          },
+          "from_step": "q1",
+          "from_steps": [
+            "q1",
+            "q2"
+          ]
+        }
+      }
+    ],
+    "exit_code": 0,
+    "status": "answered",
+    "timings": {
+      "plan_ms": 55415.709,
+      "specialists": [
+        {
+          "sub_question": "q1",
+          "source": "attack",
+          "ms": 7.462
+        },
+        {
+          "sub_question": "q2",
+          "source": "attack",
+          "ms": 8.079
+        },
+        {
+          "sub_question": "q3",
+          "source": "attack",
+          "ms": 11.076
+        }
+      ],
+      "synthesis_ms": 13.543,
+      "total_ms": 55502.071
+    },
+    "registry_model": "gemma4-31b",
+    "drafter_used": "TypedDrafter",
+    "typed": [
+      {
+        "mode": "lazy",
+        "served_model": "gemma4-31b/106",
+        "model_calls": 3,
+        "catalog_calls": [
+          {
+            "name": "describe",
+            "args": {
+              "graph": "attack",
+              "target": "SubTechnique"
+            },
+            "ok": true
+          },
+          {
+            "name": "describe",
+            "args": {
+              "graph": "attack",
+              "target": "Technique"
+            },
+            "ok": true
+          },
+          {
+            "name": "describe",
+            "args": {
+              "graph": "attack",
+              "target": "Tactic"
+            },
+            "ok": true
+          },
+          {
+            "name": "resolve_entity",
+            "args": {
+              "graph": "attack",
+              "label": "SubTechnique",
+              "text": "T1578.002"
+            },
+            "ok": true
+          }
+        ],
+        "prompt_tokens": 15160,
+        "completion_tokens": 2897,
+        "emitted": true,
+        "parse_error": null,
+        "first_steps": 3,
+        "first_refused": 0,
+        "first_fixes": 3,
+        "valid_first": true,
+        "valid_first_raw": false,
+        "repair_used": false,
+        "fixed_by_repair": false,
+        "still_refused": 0,
+        "final_steps": 3,
+        "coercions": [
+          {
+            "step": "q2",
+            "field": "from_step",
+            "from": "q1",
+            "to": "the path of step q1",
+            "filled_by": "same_graph_merge"
+          },
+          {
+            "step": "q3",
+            "field": "parts[0]",
+            "from": "q1",
+            "to": {
+              "from_step": "q1"
+            },
+            "filled_by": "step_id_as_set"
+          },
+          {
+            "step": "q3",
+            "field": "parts[1]",
+            "from": "q2",
+            "to": {
+              "from_step": "q2"
+            },
+            "filled_by": "step_id_as_set"
+          }
+        ],
+        "refusals": [],
+        "plan_problems": [],
+        "replies": [
+          {
+            "status": "ok",
+            "finish_reason": "tool_calls",
+            "calls": [
+              "describe",
+              "describe",
+              "describe"
+            ],
+            "text_chars": 0,
+            "repairs": [
+              {
+                "kind": "args_closed_truncated",
+                "detail": "43 chars",
+                "call_id": "chatcmpl-tool-8827f484bcba1aeb"
+              },
+              {
+                "kind": "args_closed_truncated",
+                "detail": "40 chars",
+                "call_id": "chatcmpl-tool-999412af8e5bcabd"
+              }
+            ]
+          },
+          {
+            "status": "ok",
+            "finish_reason": "tool_calls",
+            "calls": [
+              "resolve_entity"
+            ],
+            "text_chars": 0,
+            "repairs": []
+          },
+          {
+            "status": "ok",
+            "finish_reason": "stop",
+            "calls": [],
+            "text_chars": 873,
+            "repairs": []
+          }
+        ],
+        "error": null,
+        "fallback": null,
+        "seconds": 55.402,
+        "n_catalog_calls": 4,
+        "fixed_by_coercion": true
+      }
+    ],
+    "seams": {
+      "planner_llm": true,
+      "drafter": "TypedDrafter",
+      "specialist_llm": false,
+      "synthesis_llm": false,
+      "generic_only": "true"
+    },
+    "wall_s": 55.506,
+    "algebra_results": [
+      {
+        "step": "q3",
+        "kind": "nodes",
+        "value": null,
+        "ids": [
+          "T1578",
+          "TA0112"
+        ],
+        "rows": [
+          {
+            "id": "T1578",
+            "name": "Modify Cloud Compute Infrastructure"
+          },
+          {
+            "id": "TA0112",
+            "name": "Defense Impairment"
+          }
+        ],
+        "total": 2,
+        "complete": true,
+        "info": {}
+      }
+    ]
+  },
+  "evidence_volume": {
+    "results": 3,
+    "records": 4,
+    "related": 3
+  }
+}

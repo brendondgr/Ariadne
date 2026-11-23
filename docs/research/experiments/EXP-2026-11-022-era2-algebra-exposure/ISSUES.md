@@ -108,3 +108,38 @@ main operator loss is one shape: a step whose start is narrower than today's ste
 **Resolution:** fix round 6 (PROTOCOL Amendment 5), the last that Amendment 2 allows.
 **Paper implication:** an operator IR that types its seeds must not be stricter than the
 untyped path it replaces. A label filter the old path never applied silently drops rows.
+
+## 2026-11-23 — The fix-6 proving set fails Amendment 5's control clause; no fix round remains
+**Impact:** the Stage 3 chain is not run on the fix-6 tree (c998650a). Per Amendments 2 and 5, both
+switches stay off and Step 9 closes. Scores: `fix6-small/score.json`.
+- **Teaching refusals final:** 0 on every arm. That clause passes. Fix 1 (re-checking the first
+  plan after an empty repair reply) did what it was for.
+- **Probe tune exact:** within 2 of fix-5 on every arm. That clause passes.
+- **Controls that off-A answered right, lost to an operator step on an arm that lost none in
+  the fix-4 set: 3.**
+  - **T-full core+ext, F-CTT-01 T3:** churn. The model anchored CAPEC-63 where the question
+    names Phishing (CAPEC-98). The union in the plan plays no part.
+  - **T-lazy core, F-FAN-01 T2, and T-full core+ext, F-CTM-04 T0:** the same plan shape,
+    chosen this time and not in fix 4 or fix 5. The model describes Technique and SubTechnique
+    from the CAPEC step, unions the two describes, then expands mitigations from the union.
+    - Fix 6 made that shape's mitigations complete. F-CTM-04 now returns every gold mitigation;
+      fix 5's run of the same shape on T-lazy returned 2 of 8.
+    - The answer still overshoots. The union reads *through* the describes (`through_describe`),
+      but `redundant_describes` drops a describe only beside a today-kind expand twin. So both
+      describes stay in the plan, and their facet blocks add parent techniques and tactics
+      nobody asked for (F-FAN-01: T1027, T1546, T1564, TA0003–5; F-CTM-04: TA0009).
+    - This is the defect fix round 3 meant to remove ("the describe, now unused, is dropped as
+      before"). It covered only plans with an expand twin.
+- **Recovered core-sitting losses (reported, not gated):** core 6/32, 10/20, 18/40; core+ext
+  10/32, 7/20, 17/40.
+- **Operator losses against off-A on the set:** core 9, 3, 5; core+ext 7, 6, 5 (T-lazy, T-full,
+  Gemma). In the second core sitting they were 9, 7, 6.
+
+**Resolution:**
+- No fix round remains (Amendment 2 allowed two after round 4; both are spent).
+- `ARIADNE_ALGEBRA_CORE` and `ARIADNE_ALGEBRA_EXTENDED` stay off by default; their code stays.
+- The describe read-through defect is OPEN_QUESTIONS Q66.
+
+**Paper implication:** each fix removed the defect it targeted, and the model then found a new plan
+shape that reached the next one. A proving set of re-runs cannot tell the two apart. Only a
+plan-shape inventory with a model-free replay can.

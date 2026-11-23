@@ -1,0 +1,399 @@
+{
+  "id": "PG-capec-O4-dc2e6a2ede",
+  "kind": "capec",
+  "tier": "algebra-probe",
+  "category": "PG-capec",
+  "question": "Is category CAPEC-689 (Disposal) directly connected to view CAPEC-703 (Industrial Control System (ICS) Patterns) in CAPEC, and if it is, what is the nature of that connection?",
+  "gold": {
+    "assertions": {
+      "min_records": 0,
+      "must_include_ids": [],
+      "must_include_related": []
+    },
+    "ex_gold": {
+      "pool": "algebra",
+      "scheme": "capec",
+      "kind": "value",
+      "expected": [],
+      "value": false
+    }
+  },
+  "answer": {
+    "headline": "Gathered 1 record(s) from 1 source(s).",
+    "narrative": "Found 1 CAPEC record(s): CAPEC-689. CAPEC-689 (Disposal) has Status: Draft. CAPEC-689 (Disposal) has 1 View: CAPEC-683.",
+    "composer": "deterministic",
+    "fallback_reason": null,
+    "claims": [
+      {
+        "text": "Found 1 CAPEC record(s): CAPEC-689.",
+        "kind": "fact",
+        "entity_ids": [
+          "CAPEC-689"
+        ],
+        "citations": [
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-689"
+          }
+        ]
+      },
+      {
+        "text": "CAPEC-689 (Disposal) has Status: Draft.",
+        "kind": "fact",
+        "entity_ids": [
+          "CAPEC-689"
+        ],
+        "citations": [
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-689"
+          }
+        ]
+      },
+      {
+        "text": "CAPEC-689 (Disposal) has 1 View: CAPEC-683.",
+        "kind": "enumeration",
+        "entity_ids": [
+          "CAPEC-683"
+        ],
+        "citations": [
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-689"
+          }
+        ]
+      }
+    ],
+    "abstentions": [],
+    "notes": []
+  },
+  "logic_flow": {
+    "task": {
+      "sub_question_id": "PG-capec-O4-dc2e6a2ede",
+      "source": "capec",
+      "text": "Is category CAPEC-689 (Disposal) directly connected to view CAPEC-703 (Industrial Control System (ICS) Patterns) in CAPEC, and if it is, what is the nature of that connection?",
+      "entities": [
+        "Category",
+        "IN_VIEW",
+        "View"
+      ],
+      "limits": {
+        "max_traversal_depth": 3,
+        "max_result_rows": 20000,
+        "query_timeout_ms": 60000
+      },
+      "join_key": null,
+      "seed_ids": [
+        "CAPEC-689",
+        "CAPEC-703"
+      ],
+      "rationale": "algebra probe set (Era 2 Step 9 Phase G)"
+    },
+    "results": [
+      {
+        "source": "capec",
+        "sub_question_id": "q1",
+        "sub_question": "",
+        "query": "g.V().has(\"id\", within(ids)).as(\"ap\").union(__.out(\"IN_VIEW\").hasLabel(\"View\")).as(\"nbr\").select(\"ap\",\"nbr\").by(elementMap()).limit(1000)",
+        "ok": true,
+        "partial": false,
+        "error": null,
+        "summary": "Found 1 CAPEC record(s): CAPEC-689.",
+        "traces": [
+          {
+            "step": "intake",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "source": "capec",
+              "card": "capec"
+            }
+          },
+          {
+            "step": "resolve",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "labels": [
+                "Category",
+                "View"
+              ],
+              "relationships": [
+                "IN_VIEW"
+              ],
+              "seed_ids": [
+                "CAPEC-689"
+              ],
+              "join_key": null
+            }
+          },
+          {
+            "step": "gate",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "attempt": 1,
+              "template": "typed_step",
+              "query": "g.V().has(\"id\", within(ids)).as(\"ap\").union(__.out(\"IN_VIEW\").hasLabel(\"View\")).as(\"nbr\").select(\"ap\",\"nbr\").by(elementMap()).limit(1000)",
+              "injected": [],
+              "timing_ms": 0.44
+            }
+          },
+          {
+            "step": "execute",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "row_count": 1,
+              "timing_ms": 8.5,
+              "row_ceiling": 1000,
+              "truncated": false
+            }
+          },
+          {
+            "step": "assess",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "row_count": 1,
+              "timing_ms": 0.007
+            }
+          },
+          {
+            "step": "normalize",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "record_count": 1,
+              "timing_ms": 0.062
+            }
+          }
+        ],
+        "records": [
+          {
+            "primary_id": "CAPEC-689",
+            "name": "Disposal",
+            "label": "Category",
+            "description": "",
+            "properties": {
+              "Status": "Draft",
+              "summary": "Attack patterns within this category focus on the exploitation of weaknesses within the Disposal phase of the CISA Supply Chain Lifecycle.",
+              "name": "Disposal",
+              "id": "capec:category:689"
+            },
+            "facets": [],
+            "join_values": [],
+            "related": [
+              {
+                "id": "CAPEC-683",
+                "name": "Supply Chain Risks",
+                "label": "View",
+                "type": "IN_VIEW",
+                "Status": "Draft",
+                "Type": "Graph",
+                "members": [
+                  "684",
+                  "685",
+                  "686",
+                  "687",
+                  "688",
+                  "689"
+                ],
+                "objective": "This view covers patterns that fall within the CISA Supply Chain Lifecycle"
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "deterministic_scores": {
+    "correlation": null,
+    "mapping_recall": null,
+    "coverage": null,
+    "provenance": {
+      "citations": 3,
+      "compliant": 3,
+      "citation_provenance_rate": 1.0,
+      "abstention_proof_ok": true,
+      "fully_provenanced": true
+    },
+    "inspectability": {
+      "citation_coverage": 1.0,
+      "traceability": 1.0,
+      "abstention_proofs": 1.0,
+      "inspectability": 1.0
+    }
+  },
+  "arm": "planned_llm_typed_lazy",
+  "run_meta": {
+    "planner": "llm-typed-lazy",
+    "synthesis": "deterministic",
+    "use_llm": true,
+    "llm_synthesis": false,
+    "llm_specialist": false,
+    "rewrite": null,
+    "observed_plan": [
+      {
+        "sub_question_id": "q1",
+        "source": "capec",
+        "text": "",
+        "entities": [
+          "Category",
+          "IN_VIEW",
+          "View"
+        ],
+        "seed_ids": [
+          "CAPEC-689"
+        ],
+        "depends_on": null,
+        "limits": {
+          "max_traversal_depth": 3,
+          "max_result_rows": 1000,
+          "query_timeout_ms": 5000
+        },
+        "step": {
+          "kind": "expand",
+          "anchor_label": "Category",
+          "anchor_ids": [
+            "CAPEC-689"
+          ],
+          "hops": [
+            {
+              "relation": "IN_VIEW",
+              "direction": "out",
+              "target_label": "View"
+            }
+          ],
+          "depth": 1
+        }
+      }
+    ],
+    "exit_code": 0,
+    "status": "answered",
+    "timings": {
+      "plan_ms": 139119.029,
+      "specialists": [
+        {
+          "sub_question": "q1",
+          "source": "capec",
+          "ms": 10.007
+        }
+      ],
+      "synthesis_ms": 6.795,
+      "total_ms": 139179.352
+    },
+    "registry_model": "gemma4-31b",
+    "drafter_used": "TypedDrafter",
+    "typed": [
+      {
+        "mode": "lazy",
+        "served_model": "gemma4-31b/106",
+        "model_calls": 3,
+        "catalog_calls": [
+          {
+            "name": "resolve_entity",
+            "args": {
+              "graph": "capec",
+              "label": "Category",
+              "text": "Disposal"
+            },
+            "ok": true
+          },
+          {
+            "name": "resolve_entity",
+            "args": {
+              "graph": "capec",
+              "label": "View",
+              "text": "Industrial Control System (ICS) Patterns"
+            },
+            "ok": true
+          },
+          {
+            "name": "describe",
+            "args": {
+              "graph": "capec",
+              "target": "CAPEC-689"
+            },
+            "ok": false
+          }
+        ],
+        "prompt_tokens": 10393,
+        "completion_tokens": 6878,
+        "emitted": true,
+        "parse_error": null,
+        "first_steps": 2,
+        "first_refused": 1,
+        "first_fixes": 1,
+        "valid_first": false,
+        "valid_first_raw": false,
+        "repair_used": true,
+        "fixed_by_repair": true,
+        "still_refused": 0,
+        "final_steps": 1,
+        "coercions": [],
+        "refusals": [
+          {
+            "step": "q1",
+            "final": false,
+            "code": "invalid_request",
+            "detail": "step q1, hop 1: Category has MEMBER_OF only as direction ['in']",
+            "fix": "choose direction from: in. MEMBER_OF in -> AttackPattern (the attack patterns that are members of this category)"
+          }
+        ],
+        "plan_problems": [],
+        "replies": [
+          {
+            "status": "ok",
+            "finish_reason": "tool_calls",
+            "calls": [
+              "resolve_entity",
+              "resolve_entity",
+              "describe"
+            ],
+            "text_chars": 0,
+            "repairs": [
+              {
+                "kind": "args_closed_truncated",
+                "detail": "85 chars",
+                "call_id": "chatcmpl-tool-8a58e79fff7c8035"
+              }
+            ]
+          },
+          {
+            "status": "ok",
+            "finish_reason": "stop",
+            "calls": [],
+            "text_chars": 732,
+            "repairs": []
+          },
+          {
+            "status": "ok",
+            "finish_reason": "stop",
+            "calls": [],
+            "text_chars": 379,
+            "repairs": []
+          }
+        ],
+        "error": null,
+        "fallback": null,
+        "seconds": 139.106,
+        "n_catalog_calls": 3,
+        "fixed_by_coercion": false
+      }
+    ],
+    "seams": {
+      "planner_llm": true,
+      "drafter": "TypedDrafter",
+      "specialist_llm": false,
+      "synthesis_llm": false,
+      "generic_only": "true"
+    },
+    "wall_s": 139.182
+  },
+  "evidence_volume": {
+    "results": 1,
+    "records": 1,
+    "related": 1
+  }
+}

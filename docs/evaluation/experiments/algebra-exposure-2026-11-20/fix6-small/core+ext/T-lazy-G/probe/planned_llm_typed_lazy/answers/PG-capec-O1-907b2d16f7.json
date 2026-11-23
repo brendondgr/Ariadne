@@ -1,0 +1,453 @@
+{
+  "id": "PG-capec-O1-907b2d16f7",
+  "kind": "capec",
+  "tier": "algebra-probe",
+  "category": "PG-capec",
+  "question": "Which attack patterns in view CAPEC-703 (Industrial Control System (ICS) Patterns) have 'Engagement' in their name?",
+  "gold": {
+    "assertions": {
+      "min_records": 0,
+      "must_include_ids": [],
+      "must_include_related": []
+    },
+    "ex_gold": {
+      "pool": "algebra",
+      "scheme": "capec",
+      "kind": "set",
+      "expected": [
+        "CAPEC-227"
+      ]
+    }
+  },
+  "answer": {
+    "headline": "Gathered 1 record(s) from 1 source(s).",
+    "narrative": "Found 1 CAPEC record(s): CAPEC-227. 1 entity match.",
+    "composer": "deterministic",
+    "fallback_reason": null,
+    "claims": [
+      {
+        "text": "Found 1 CAPEC record(s): CAPEC-227.",
+        "kind": "fact",
+        "entity_ids": [
+          "CAPEC-227"
+        ],
+        "citations": [
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-227"
+          }
+        ]
+      },
+      {
+        "text": "1 entity match.",
+        "kind": "fact",
+        "entity_ids": [
+          "CAPEC-227"
+        ],
+        "citations": [
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-227"
+          }
+        ]
+      }
+    ],
+    "abstentions": [],
+    "notes": []
+  },
+  "logic_flow": {
+    "task": {
+      "sub_question_id": "PG-capec-O1-907b2d16f7",
+      "source": "capec",
+      "text": "Which attack patterns in view CAPEC-703 (Industrial Control System (ICS) Patterns) have 'Engagement' in their name?",
+      "entities": [
+        "View",
+        "AttackPattern"
+      ],
+      "limits": {
+        "max_traversal_depth": 3,
+        "max_result_rows": 20000,
+        "query_timeout_ms": 60000
+      },
+      "join_key": null,
+      "seed_ids": [
+        "CAPEC-703"
+      ],
+      "rationale": "algebra probe set (Era 2 Step 9 Phase G)"
+    },
+    "results": [
+      {
+        "source": "capec",
+        "sub_question_id": "q1",
+        "sub_question": "",
+        "query": "g.V().has('id', within(p0)).hasLabel('View').dedup().as('s1').in('IN_VIEW').hasLabel('AttackPattern').where(neq('s1')).dedup().has('name', TextP.containing(p1)).order().by('id').fold().project('total', 'rows', 'found_0').by(__.count(local)).by(__.unfold().limit(1000).project('id', 'name').by('id').by(__.coalesce(__.values('name'), __.constant(null))).fold()).by(__.V().has('id', within(p0)).hasLabel('View').values('id').dedup().fold())",
+        "ok": true,
+        "partial": false,
+        "error": null,
+        "summary": "Found 1 CAPEC record(s): CAPEC-227.",
+        "traces": [
+          {
+            "step": "intake",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "source": "capec",
+              "card": "capec"
+            }
+          },
+          {
+            "step": "resolve",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "labels": [
+                "View",
+                "AttackPattern"
+              ],
+              "relationships": [
+                "IN_VIEW"
+              ],
+              "seed_ids": [
+                "CAPEC-703"
+              ],
+              "join_key": null
+            }
+          },
+          {
+            "step": "gate",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "attempt": 1,
+              "template": "algebra",
+              "query": "g.V().has('id', within(p0)).hasLabel('View').dedup().as('s1').in('IN_VIEW').hasLabel('AttackPattern').where(neq('s1')).dedup().has('name', TextP.containing(p1)).order().by('id').fold().project('total', 'rows', 'found_0').by(__.count(local)).by(__.unfold().limit(1000).project('id', 'name').by('id').by(__.coalesce(__.values('name'), __.constant(null))).fold()).by(__.V().has('id', within(p0)).hasLabel('View').values('id').dedup().fold())",
+              "injected": [],
+              "note": "compiled by the operator algebra (validated against the card; read-only by construction)",
+              "id_map": {
+                "CAPEC-703": [
+                  "capec:view:703"
+                ]
+              }
+            }
+          },
+          {
+            "step": "execute",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "row_count": 1
+            }
+          },
+          {
+            "step": "algebra",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "result": {
+                "step": "q1",
+                "kind": "nodes",
+                "value": null,
+                "ids": [
+                  "CAPEC-227"
+                ],
+                "rows": [
+                  {
+                    "id": "CAPEC-227",
+                    "name": "Sustained Client Engagement"
+                  }
+                ],
+                "total": 1,
+                "complete": true,
+                "info": {
+                  "anchor_not_found": []
+                }
+              },
+              "op": "filter",
+              "ir": {
+                "@": "Nodes",
+                "of": {
+                  "@": "Where",
+                  "conds": [
+                    {
+                      "@": "Cond",
+                      "cmp": null,
+                      "op": "contains_text",
+                      "prop": "name",
+                      "value": "Engagement"
+                    }
+                  ],
+                  "of": {
+                    "@": "Walk",
+                    "depth": 1,
+                    "hops": [
+                      {
+                        "@": "Hop",
+                        "direction": "in",
+                        "edge_conds": [],
+                        "relation": "IN_VIEW",
+                        "target": "AttackPattern"
+                      }
+                    ],
+                    "last_conds": [],
+                    "start": {
+                      "@": "Anchors",
+                      "ids": [
+                        "CAPEC-703"
+                      ],
+                      "label": "View"
+                    }
+                  }
+                },
+                "props": []
+              }
+            }
+          }
+        ],
+        "records": [
+          {
+            "primary_id": "CAPEC-227",
+            "name": "Sustained Client Engagement",
+            "label": "AttackPattern",
+            "description": "",
+            "properties": {},
+            "facets": [],
+            "join_values": [],
+            "related": []
+          }
+        ]
+      }
+    ]
+  },
+  "deterministic_scores": {
+    "correlation": null,
+    "mapping_recall": null,
+    "coverage": null,
+    "provenance": {
+      "citations": 2,
+      "compliant": 2,
+      "citation_provenance_rate": 1.0,
+      "abstention_proof_ok": true,
+      "fully_provenanced": true
+    },
+    "inspectability": {
+      "citation_coverage": 1.0,
+      "traceability": 1.0,
+      "abstention_proofs": 1.0,
+      "inspectability": 1.0
+    }
+  },
+  "arm": "planned_llm_typed_lazy",
+  "run_meta": {
+    "planner": "llm-typed-lazy",
+    "synthesis": "deterministic",
+    "use_llm": true,
+    "llm_synthesis": false,
+    "llm_specialist": false,
+    "rewrite": null,
+    "observed_plan": [
+      {
+        "sub_question_id": "q1",
+        "source": "capec",
+        "text": "",
+        "entities": [
+          "View",
+          "IN_VIEW",
+          "AttackPattern"
+        ],
+        "seed_ids": [
+          "CAPEC-703"
+        ],
+        "depends_on": null,
+        "limits": {
+          "max_traversal_depth": 3,
+          "max_result_rows": 1000,
+          "query_timeout_ms": 5000
+        },
+        "step": {
+          "kind": "algebra",
+          "anchor_label": "View",
+          "anchor_ids": [
+            "CAPEC-703"
+          ],
+          "hops": [],
+          "depth": 1,
+          "algebra": {
+            "ir": {
+              "@": "Nodes",
+              "of": {
+                "@": "Where",
+                "conds": [
+                  {
+                    "@": "Cond",
+                    "cmp": null,
+                    "op": "contains_text",
+                    "prop": "name",
+                    "value": "Engagement"
+                  }
+                ],
+                "of": {
+                  "@": "Walk",
+                  "depth": 1,
+                  "hops": [
+                    {
+                      "@": "Hop",
+                      "direction": "in",
+                      "edge_conds": [],
+                      "relation": "IN_VIEW",
+                      "target": "AttackPattern"
+                    }
+                  ],
+                  "last_conds": [],
+                  "start": {
+                    "@": "Anchors",
+                    "ids": [
+                      "CAPEC-703"
+                    ],
+                    "label": "View"
+                  }
+                }
+              },
+              "props": []
+            },
+            "labels": [
+              "AttackPattern"
+            ],
+            "op": "filter"
+          }
+        }
+      }
+    ],
+    "exit_code": 0,
+    "status": "answered",
+    "timings": {
+      "plan_ms": 25646.443,
+      "specialists": [
+        {
+          "sub_question": "q1",
+          "source": "capec",
+          "ms": 25.634
+        }
+      ],
+      "synthesis_ms": 4.577,
+      "total_ms": 25732.323
+    },
+    "registry_model": "gemma4-31b",
+    "drafter_used": "TypedDrafter",
+    "typed": [
+      {
+        "mode": "lazy",
+        "served_model": "gemma4-31b/106",
+        "model_calls": 3,
+        "catalog_calls": [
+          {
+            "name": "resolve_entity",
+            "args": {
+              "graph": "capec",
+              "label": "View",
+              "text": "CAPEC-703 (Industrial Control System (ICS) Patterns)"
+            },
+            "ok": true
+          },
+          {
+            "name": "describe",
+            "args": {
+              "graph": "capec",
+              "target": "IN_VIEW"
+            },
+            "ok": true
+          }
+        ],
+        "prompt_tokens": 9851,
+        "completion_tokens": 1338,
+        "emitted": true,
+        "parse_error": null,
+        "first_steps": 1,
+        "first_refused": 0,
+        "first_fixes": 1,
+        "valid_first": true,
+        "valid_first_raw": false,
+        "repair_used": false,
+        "fixed_by_repair": false,
+        "still_refused": 0,
+        "final_steps": 1,
+        "coercions": [
+          {
+            "step": "q1",
+            "field": "step.anchor_label",
+            "from": null,
+            "to": "View",
+            "filled_by": "id_scheme"
+          }
+        ],
+        "refusals": [],
+        "plan_problems": [],
+        "replies": [
+          {
+            "status": "ok",
+            "finish_reason": "tool_calls",
+            "calls": [
+              "resolve_entity"
+            ],
+            "text_chars": 0,
+            "repairs": []
+          },
+          {
+            "status": "ok",
+            "finish_reason": "tool_calls",
+            "calls": [
+              "describe"
+            ],
+            "text_chars": 0,
+            "repairs": []
+          },
+          {
+            "status": "ok",
+            "finish_reason": "stop",
+            "calls": [],
+            "text_chars": 306,
+            "repairs": []
+          }
+        ],
+        "error": null,
+        "fallback": null,
+        "seconds": 25.635,
+        "n_catalog_calls": 2,
+        "fixed_by_coercion": true
+      }
+    ],
+    "seams": {
+      "planner_llm": true,
+      "drafter": "TypedDrafter",
+      "specialist_llm": false,
+      "synthesis_llm": false,
+      "generic_only": "true"
+    },
+    "wall_s": 25.734,
+    "algebra_results": [
+      {
+        "step": "q1",
+        "kind": "nodes",
+        "value": null,
+        "ids": [
+          "CAPEC-227"
+        ],
+        "rows": [
+          {
+            "id": "CAPEC-227",
+            "name": "Sustained Client Engagement"
+          }
+        ],
+        "total": 1,
+        "complete": true,
+        "info": {
+          "anchor_not_found": []
+        }
+      }
+    ]
+  },
+  "evidence_volume": {
+    "results": 1,
+    "records": 1,
+    "related": 0
+  }
+}

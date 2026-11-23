@@ -1,0 +1,622 @@
+{
+  "id": "D5-uses-x_mitre_platforms-G0139-fa8fa1::indirect",
+  "kind": "attack",
+  "tier": "hard",
+  "category": "D5-uses",
+  "question": "Out of all the malware and tools TeamTNT (G0139) is known to use, which ones work against Containers?",
+  "gold": {
+    "assertions": {
+      "min_records": 1,
+      "must_include_ids": [
+        "G0139"
+      ],
+      "must_include_related": [
+        "S0601",
+        "S0683"
+      ]
+    },
+    "ex_gold": {
+      "pool": "neighbors",
+      "expected": [
+        "S0601",
+        "S0683"
+      ],
+      "scheme": "attack",
+      "kind": "set"
+    }
+  },
+  "answer": {
+    "headline": "Gathered 3 record(s) from 1 source(s).",
+    "narrative": "Found 4 item(s) related to G0139 (e.g. S0349, S0683, S0179) in MITRE ATT&CK. G0139 (TeamTNT) has 4 pieces of software: S0349, S0683, S0179, S0601. Found 2 record(s) in MITRE ATT&CK including S0601, S0683. 2 entities match.",
+    "composer": "deterministic",
+    "fallback_reason": null,
+    "claims": [
+      {
+        "text": "Found 4 item(s) related to G0139 (e.g. S0349, S0683, S0179) in MITRE ATT&CK.",
+        "kind": "fact",
+        "entity_ids": [
+          "G0139"
+        ],
+        "citations": [
+          {
+            "source": "attack",
+            "primary_id": "G0139"
+          }
+        ]
+      },
+      {
+        "text": "G0139 (TeamTNT) has 4 pieces of software: S0349, S0683, S0179, S0601.",
+        "kind": "enumeration",
+        "entity_ids": [
+          "S0349",
+          "S0683",
+          "S0179",
+          "S0601"
+        ],
+        "citations": [
+          {
+            "source": "attack",
+            "primary_id": "G0139"
+          }
+        ]
+      },
+      {
+        "text": "Found 2 record(s) in MITRE ATT&CK including S0601, S0683.",
+        "kind": "fact",
+        "entity_ids": [
+          "S0601",
+          "S0683"
+        ],
+        "citations": [
+          {
+            "source": "attack",
+            "primary_id": "S0601"
+          },
+          {
+            "source": "attack",
+            "primary_id": "S0683"
+          }
+        ]
+      },
+      {
+        "text": "2 entities match.",
+        "kind": "fact",
+        "entity_ids": [
+          "S0601",
+          "S0683"
+        ],
+        "citations": [
+          {
+            "source": "attack",
+            "primary_id": "S0601"
+          },
+          {
+            "source": "attack",
+            "primary_id": "S0683"
+          }
+        ]
+      }
+    ],
+    "abstentions": [],
+    "notes": []
+  },
+  "logic_flow": {
+    "task": {
+      "sub_question_id": "q1",
+      "source": "attack",
+      "text": "Out of all the malware and tools TeamTNT (G0139) is known to use, which ones work against Containers?",
+      "entities": [
+        "Group",
+        "USES",
+        "Software"
+      ],
+      "limits": {
+        "max_traversal_depth": 3,
+        "max_result_rows": 20000,
+        "query_timeout_ms": 5000
+      },
+      "join_key": null,
+      "seed_ids": [
+        "G0139"
+      ],
+      "rationale": "generated from the schema census"
+    },
+    "results": [
+      {
+        "source": "attack",
+        "sub_question_id": "q1",
+        "sub_question": "",
+        "query": "MATCH (n) WHERE coalesce(n.attack_id, n.id) IN $ids OPTIONAL MATCH (n)-[:USES]->(t0:Software) WITH n, collect(DISTINCT {m: t0, r: 'USES'}) AS k0 WITH n, [x IN k0 WHERE x.m IS NOT NULL] AS hops UNWIND (CASE WHEN size(hops) = 0 THEN [{m: null, r: null}] ELSE hops END) AS hop RETURN coalesce(n.attack_id, n.id) AS anchor_id, n.name AS anchor_name, labels(n)[0] AS anchor_label, coalesce(hop.m.attack_id, hop.m.id) AS neighbour_id, hop.m.name AS neighbour_name, labels(hop.m)[0] AS neighbour_label, hop.r AS rel_type LIMIT 1000",
+        "ok": true,
+        "partial": false,
+        "error": null,
+        "summary": "Found 4 item(s) related to G0139 (e.g. S0349, S0683, S0179) in MITRE ATT&CK.",
+        "traces": [
+          {
+            "step": "intake",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "source": "attack",
+              "card": "attack"
+            }
+          },
+          {
+            "step": "resolve",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "labels": [
+                "Group",
+                "Software"
+              ],
+              "relationships": [
+                "USES"
+              ],
+              "seed_ids": [
+                "G0139"
+              ],
+              "join_key": null
+            }
+          },
+          {
+            "step": "gate",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "attempt": 1,
+              "template": "typed_step",
+              "query": "MATCH (n) WHERE coalesce(n.attack_id, n.id) IN $ids OPTIONAL MATCH (n)-[:USES]->(t0:Software) WITH n, collect(DISTINCT {m: t0, r: 'USES'}) AS k0 WITH n, [x IN k0 WHERE x.m IS NOT NULL] AS hops UNWIND (CASE WHEN size(hops) = 0 THEN [{m: null, r: null}] ELSE hops END) AS hop RETURN coalesce(n.attack_id, n.id) AS anchor_id, n.name AS anchor_name, labels(n)[0] AS anchor_label, coalesce(hop.m.attack_id, hop.m.id) AS neighbour_id, hop.m.name AS neighbour_name, labels(hop.m)[0] AS neighbour_label, hop.r AS rel_type LIMIT 1000",
+              "injected": [
+                "LIMIT 1000 appended (none present)"
+              ],
+              "timing_ms": 0.463
+            }
+          },
+          {
+            "step": "execute",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "row_count": 4,
+              "timing_ms": 5.5,
+              "row_ceiling": 1000,
+              "truncated": false
+            }
+          },
+          {
+            "step": "assess",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "row_count": 4,
+              "timing_ms": 0.01
+            }
+          },
+          {
+            "step": "normalize",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "record_count": 1,
+              "timing_ms": 2.74
+            }
+          }
+        ],
+        "records": [
+          {
+            "primary_id": "G0139",
+            "name": "TeamTNT",
+            "label": "Group",
+            "description": "",
+            "properties": {},
+            "facets": [],
+            "join_values": [],
+            "related": [
+              {
+                "id": "S0349",
+                "name": "LaZagne",
+                "label": "Software",
+                "type": "USES",
+                "description": "[LaZagne](https://attack.mitre.org/software/S0349) is a post-exploitation, open-source tool used to recover stored passwords on a system. It has modules for Windows, Linux, and OSX, but is mainly focused on Windows systems. [LaZagne](https://attack.mitre.org/software/S0349) is publicly available on GitHub.(Citation: GitHub LaZagne Dec 2018)"
+              },
+              {
+                "id": "S0683",
+                "name": "Peirates",
+                "label": "Software",
+                "type": "USES",
+                "description": "[Peirates](https://attack.mitre.org/software/S0683) is a post-exploitation Kubernetes exploitation framework with a focus on gathering service account tokens for lateral movement and privilege escalation. The tool is written in GoLang and publicly available on GitHub.(Citation: Peirates GitHub)"
+              },
+              {
+                "id": "S0179",
+                "name": "MimiPenguin",
+                "label": "Software",
+                "type": "USES",
+                "description": "[MimiPenguin](https://attack.mitre.org/software/S0179) is a credential dumper, similar to [Mimikatz](https://attack.mitre.org/software/S0002), designed specifically for Linux platforms. (Citation: MimiPenguin GitHub May 2017)"
+              },
+              {
+                "id": "S0601",
+                "name": "Hildegard",
+                "label": "Software",
+                "type": "USES",
+                "description": "[Hildegard](https://attack.mitre.org/software/S0601) is malware that targets misconfigured kubelets for initial access and runs cryptocurrency miner operations. The malware was first observed in January 2021. The TeamTNT activity group is believed to be behind [Hildegard](https://attack.mitre.org/software/S0601). (Citation: Unit 42 Hildegard Malware)"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "source": "attack",
+        "sub_question_id": "q2",
+        "sub_question": "",
+        "query": "MATCH (v2) WHERE v2.id IN $p0 AND (v2:Software) WITH DISTINCT v2 WITH v2 WHERE (v2.`x_mitre_platforms` IS NOT NULL AND $p1 IN v2.`x_mitre_platforms`) WITH v2 ORDER BY v2.id WITH collect(v2) AS all_ RETURN size(all_) AS total, [x IN all_[0..1000] | {id: x.id, name: x.name}] AS rows",
+        "ok": true,
+        "partial": false,
+        "error": null,
+        "summary": "Found 2 record(s) in MITRE ATT&CK including S0601, S0683.",
+        "traces": [
+          {
+            "step": "intake",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "source": "attack",
+              "card": "attack"
+            }
+          },
+          {
+            "step": "resolve",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "labels": [
+                "Software"
+              ],
+              "relationships": [],
+              "seed_ids": [
+                "S0179",
+                "S0349",
+                "S0601",
+                "S0683"
+              ],
+              "join_key": null
+            }
+          },
+          {
+            "step": "gate",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "attempt": 1,
+              "template": "algebra",
+              "query": "MATCH (v2) WHERE v2.id IN $p0 AND (v2:Software) WITH DISTINCT v2 WITH v2 WHERE (v2.`x_mitre_platforms` IS NOT NULL AND $p1 IN v2.`x_mitre_platforms`) WITH v2 ORDER BY v2.id WITH collect(v2) AS all_ RETURN size(all_) AS total, [x IN all_[0..1000] | {id: x.id, name: x.name}] AS rows",
+              "injected": [],
+              "note": "compiled by the operator algebra (validated against the card; read-only by construction)",
+              "id_map": {
+                "S0179": [
+                  "tool--5a33468d-844d-4b1f-98c9-0e786c556b27"
+                ],
+                "S0349": [
+                  "tool--b76b2d94-60e4-4107-a903-4a3a7622fb3b"
+                ],
+                "S0601": [
+                  "malware--40a1b8ec-7295-416c-a6b1-68181d86f120"
+                ],
+                "S0683": [
+                  "tool--79dd477a-8226-4b3d-ad15-28623675f221"
+                ]
+              }
+            }
+          },
+          {
+            "step": "execute",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "row_count": 2
+            }
+          },
+          {
+            "step": "algebra",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "result": {
+                "step": "q2",
+                "kind": "nodes",
+                "value": null,
+                "ids": [
+                  "S0601",
+                  "S0683"
+                ],
+                "rows": [
+                  {
+                    "id": "S0601",
+                    "name": "Hildegard"
+                  },
+                  {
+                    "id": "S0683",
+                    "name": "Peirates"
+                  }
+                ],
+                "total": 2,
+                "complete": true,
+                "info": {}
+              },
+              "op": "filter",
+              "ir": {
+                "@": "Nodes",
+                "of": {
+                  "@": "Where",
+                  "conds": [
+                    {
+                      "@": "Cond",
+                      "cmp": null,
+                      "op": "contains",
+                      "prop": "x_mitre_platforms",
+                      "value": "Containers"
+                    }
+                  ],
+                  "of": {
+                    "@": "FromStep",
+                    "labels": [
+                      "Software"
+                    ],
+                    "step": "q1"
+                  }
+                },
+                "props": []
+              }
+            }
+          }
+        ],
+        "records": [
+          {
+            "primary_id": "S0601",
+            "name": "Hildegard",
+            "label": "Software",
+            "description": "",
+            "properties": {},
+            "facets": [],
+            "join_values": [],
+            "related": []
+          },
+          {
+            "primary_id": "S0683",
+            "name": "Peirates",
+            "label": "Software",
+            "description": "",
+            "properties": {},
+            "facets": [],
+            "join_values": [],
+            "related": []
+          }
+        ]
+      }
+    ]
+  },
+  "deterministic_scores": {
+    "correlation": null,
+    "mapping_recall": null,
+    "coverage": {
+      "gold": 3,
+      "found": 3,
+      "coverage": 1.0,
+      "missing": []
+    },
+    "provenance": {
+      "citations": 6,
+      "compliant": 6,
+      "citation_provenance_rate": 1.0,
+      "abstention_proof_ok": true,
+      "fully_provenanced": true
+    },
+    "inspectability": {
+      "citation_coverage": 1.0,
+      "traceability": 1.0,
+      "abstention_proofs": 1.0,
+      "inspectability": 1.0
+    }
+  },
+  "arm": "planned_llm_typed_lazy",
+  "run_meta": {
+    "planner": "llm-typed-lazy",
+    "synthesis": "deterministic",
+    "use_llm": true,
+    "llm_synthesis": false,
+    "llm_specialist": false,
+    "rewrite": null,
+    "observed_plan": [
+      {
+        "sub_question_id": "q1",
+        "source": "attack",
+        "text": "",
+        "entities": [
+          "Group",
+          "USES",
+          "Software"
+        ],
+        "seed_ids": [
+          "G0139"
+        ],
+        "depends_on": null,
+        "limits": {
+          "max_traversal_depth": 3,
+          "max_result_rows": 1000,
+          "query_timeout_ms": 5000
+        },
+        "step": {
+          "kind": "expand",
+          "anchor_label": "Group",
+          "anchor_ids": [
+            "G0139"
+          ],
+          "hops": [
+            {
+              "relation": "USES",
+              "direction": "out",
+              "target_label": "Software"
+            }
+          ],
+          "depth": 1
+        }
+      },
+      {
+        "sub_question_id": "q2",
+        "source": "attack",
+        "text": "",
+        "entities": [
+          "Software"
+        ],
+        "seed_ids": [],
+        "depends_on": null,
+        "limits": {
+          "max_traversal_depth": 3,
+          "max_result_rows": 1000,
+          "query_timeout_ms": 5000
+        },
+        "step": {
+          "kind": "algebra",
+          "anchor_label": "Software",
+          "anchor_ids": [],
+          "hops": [],
+          "depth": 1,
+          "algebra": {
+            "ir": {
+              "@": "Nodes",
+              "of": {
+                "@": "Where",
+                "conds": [
+                  {
+                    "@": "Cond",
+                    "cmp": null,
+                    "op": "contains",
+                    "prop": "x_mitre_platforms",
+                    "value": "Containers"
+                  }
+                ],
+                "of": {
+                  "@": "FromStep",
+                  "labels": [
+                    "Software"
+                  ],
+                  "step": "q1"
+                }
+              },
+              "props": []
+            },
+            "labels": [
+              "Software"
+            ],
+            "op": "filter"
+          },
+          "from_step": "q1"
+        }
+      }
+    ],
+    "exit_code": 0,
+    "status": "answered",
+    "timings": {
+      "plan_ms": 16615.089,
+      "specialists": [
+        {
+          "sub_question": "q1",
+          "source": "attack",
+          "ms": 9.503
+        },
+        {
+          "sub_question": "q2",
+          "source": "attack",
+          "ms": 12.596
+        }
+      ],
+      "synthesis_ms": 7.274,
+      "total_ms": 16690.005
+    },
+    "registry_model": "gemma4-31b",
+    "drafter_used": "TypedDrafter",
+    "typed": [
+      {
+        "mode": "lazy",
+        "served_model": "gemma4-31b/106",
+        "model_calls": 1,
+        "catalog_calls": [],
+        "prompt_tokens": 3069,
+        "completion_tokens": 1026,
+        "emitted": true,
+        "parse_error": null,
+        "first_steps": 2,
+        "first_refused": 0,
+        "first_fixes": 1,
+        "valid_first": true,
+        "valid_first_raw": false,
+        "repair_used": false,
+        "fixed_by_repair": false,
+        "still_refused": 0,
+        "final_steps": 2,
+        "coercions": [
+          {
+            "step": "q2",
+            "field": "where[0].value",
+            "from": "Container",
+            "to": "Containers",
+            "filled_by": "edit_distance"
+          }
+        ],
+        "refusals": [],
+        "plan_problems": [],
+        "replies": [
+          {
+            "status": "ok",
+            "finish_reason": "stop",
+            "calls": [],
+            "text_chars": 824,
+            "repairs": []
+          }
+        ],
+        "error": null,
+        "fallback": null,
+        "seconds": 16.602,
+        "n_catalog_calls": 0,
+        "fixed_by_coercion": true
+      }
+    ],
+    "seams": {
+      "planner_llm": true,
+      "drafter": "TypedDrafter",
+      "specialist_llm": false,
+      "synthesis_llm": false,
+      "generic_only": "true"
+    },
+    "wall_s": 16.693,
+    "algebra_results": [
+      {
+        "step": "q2",
+        "kind": "nodes",
+        "value": null,
+        "ids": [
+          "S0601",
+          "S0683"
+        ],
+        "rows": [
+          {
+            "id": "S0601",
+            "name": "Hildegard"
+          },
+          {
+            "id": "S0683",
+            "name": "Peirates"
+          }
+        ],
+        "total": 2,
+        "complete": true,
+        "info": {}
+      }
+    ]
+  },
+  "evidence_volume": {
+    "results": 2,
+    "records": 3,
+    "related": 4
+  }
+}

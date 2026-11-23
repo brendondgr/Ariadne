@@ -1,0 +1,360 @@
+{
+  "id": "PG-attack-O4-f152c74efc",
+  "kind": "attack",
+  "tier": "algebra-probe",
+  "category": "PG-attack",
+  "question": "Is group G1028 (APT-C-23) directly connected to software S0339 (Micropsia) in ATT&CK, and if it is, what is the nature of that connection?",
+  "gold": {
+    "assertions": {
+      "min_records": 0,
+      "must_include_ids": [],
+      "must_include_related": []
+    },
+    "ex_gold": {
+      "pool": "algebra",
+      "scheme": "attack",
+      "kind": "value",
+      "expected": [],
+      "value": true
+    }
+  },
+  "answer": {
+    "headline": "Gathered 1 record(s) from 1 source(s).",
+    "narrative": "G1028 has no USES relationships in this catalogue. Found 1 record in MITRE ATT&CK: APT-C-23 (G1028).",
+    "composer": "deterministic",
+    "fallback_reason": null,
+    "claims": [
+      {
+        "text": "Found 1 record in MITRE ATT&CK: APT-C-23 (G1028).",
+        "kind": "fact",
+        "entity_ids": [
+          "G1028"
+        ],
+        "citations": [
+          {
+            "source": "attack",
+            "primary_id": "G1028"
+          }
+        ]
+      },
+      {
+        "text": "G1028 has no USES relationships in this catalogue.",
+        "kind": "absence",
+        "entity_ids": [
+          "G1028"
+        ],
+        "citations": [
+          {
+            "source": "attack",
+            "primary_id": "G1028"
+          }
+        ]
+      }
+    ],
+    "abstentions": [],
+    "notes": []
+  },
+  "logic_flow": {
+    "task": {
+      "sub_question_id": "PG-attack-O4-f152c74efc",
+      "source": "attack",
+      "text": "Is group G1028 (APT-C-23) directly connected to software S0339 (Micropsia) in ATT&CK, and if it is, what is the nature of that connection?",
+      "entities": [
+        "Group",
+        "USES",
+        "Software"
+      ],
+      "limits": {
+        "max_traversal_depth": 3,
+        "max_result_rows": 20000,
+        "query_timeout_ms": 60000
+      },
+      "join_key": null,
+      "seed_ids": [
+        "G1028",
+        "S0339"
+      ],
+      "rationale": "algebra probe set (Era 2 Step 9 Phase G)"
+    },
+    "results": [
+      {
+        "source": "attack",
+        "sub_question_id": "q1",
+        "sub_question": "",
+        "query": "MATCH (n) WHERE coalesce(n.attack_id, n.id) IN $ids OPTIONAL MATCH (n)-[:USES]->(t0:Software) WHERE t0.`id` = $filterValue WITH n, collect(DISTINCT {m: t0, r: 'USES'}) AS k0 WITH n, [x IN k0 WHERE x.m IS NOT NULL] AS hops UNWIND (CASE WHEN size(hops) = 0 THEN [{m: null, r: null}] ELSE hops END) AS hop RETURN coalesce(n.attack_id, n.id) AS anchor_id, n.name AS anchor_name, labels(n)[0] AS anchor_label, coalesce(hop.m.attack_id, hop.m.id) AS neighbour_id, hop.m.name AS neighbour_name, labels(hop.m)[0] AS neighbour_label, hop.r AS rel_type LIMIT 1000",
+        "ok": true,
+        "partial": false,
+        "error": null,
+        "summary": "Found 1 record in MITRE ATT&CK: APT-C-23 (G1028).",
+        "traces": [
+          {
+            "step": "intake",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "source": "attack",
+              "card": "attack"
+            }
+          },
+          {
+            "step": "resolve",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "labels": [
+                "Group",
+                "Software"
+              ],
+              "relationships": [
+                "USES"
+              ],
+              "seed_ids": [
+                "G1028"
+              ],
+              "join_key": null
+            }
+          },
+          {
+            "step": "gate",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "attempt": 1,
+              "template": "typed_step",
+              "query": "MATCH (n) WHERE coalesce(n.attack_id, n.id) IN $ids OPTIONAL MATCH (n)-[:USES]->(t0:Software) WHERE t0.`id` = $filterValue WITH n, collect(DISTINCT {m: t0, r: 'USES'}) AS k0 WITH n, [x IN k0 WHERE x.m IS NOT NULL] AS hops UNWIND (CASE WHEN size(hops) = 0 THEN [{m: null, r: null}] ELSE hops END) AS hop RETURN coalesce(n.attack_id, n.id) AS anchor_id, n.name AS anchor_name, labels(n)[0] AS anchor_label, coalesce(hop.m.attack_id, hop.m.id) AS neighbour_id, hop.m.name AS neighbour_name, labels(hop.m)[0] AS neighbour_label, hop.r AS rel_type LIMIT 1000",
+              "injected": [
+                "LIMIT 1000 appended (none present)"
+              ],
+              "timing_ms": 0.296
+            }
+          },
+          {
+            "step": "execute",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "row_count": 1,
+              "timing_ms": 5.5,
+              "row_ceiling": 1000,
+              "truncated": false
+            }
+          },
+          {
+            "step": "assess",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "row_count": 1,
+              "timing_ms": 0.01
+            }
+          },
+          {
+            "step": "normalize",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "record_count": 1,
+              "timing_ms": 0.076
+            }
+          }
+        ],
+        "records": [
+          {
+            "primary_id": "G1028",
+            "name": "APT-C-23",
+            "label": "Group",
+            "description": "",
+            "properties": {},
+            "facets": [],
+            "join_values": [],
+            "related": []
+          }
+        ]
+      }
+    ]
+  },
+  "deterministic_scores": {
+    "correlation": null,
+    "mapping_recall": null,
+    "coverage": null,
+    "provenance": {
+      "citations": 2,
+      "compliant": 2,
+      "citation_provenance_rate": 1.0,
+      "abstention_proof_ok": true,
+      "fully_provenanced": true
+    },
+    "inspectability": {
+      "citation_coverage": 1.0,
+      "traceability": 1.0,
+      "abstention_proofs": 1.0,
+      "inspectability": 1.0
+    }
+  },
+  "arm": "planned_llm_typed_lazy",
+  "run_meta": {
+    "planner": "llm-typed-lazy",
+    "synthesis": "deterministic",
+    "use_llm": true,
+    "llm_synthesis": false,
+    "llm_specialist": false,
+    "rewrite": null,
+    "observed_plan": [
+      {
+        "sub_question_id": "q1",
+        "source": "attack",
+        "text": "",
+        "entities": [
+          "Group",
+          "USES",
+          "Software"
+        ],
+        "seed_ids": [
+          "G1028"
+        ],
+        "depends_on": null,
+        "limits": {
+          "max_traversal_depth": 3,
+          "max_result_rows": 1000,
+          "query_timeout_ms": 5000
+        },
+        "step": {
+          "kind": "expand",
+          "anchor_label": "Group",
+          "anchor_ids": [
+            "G1028"
+          ],
+          "hops": [
+            {
+              "relation": "USES",
+              "direction": "out",
+              "target_label": "Software"
+            }
+          ],
+          "depth": 1,
+          "filter": {
+            "property": "id",
+            "value": "S0339"
+          }
+        }
+      }
+    ],
+    "exit_code": 0,
+    "status": "answered",
+    "timings": {
+      "plan_ms": 115400.396,
+      "specialists": [
+        {
+          "sub_question": "q1",
+          "source": "attack",
+          "ms": 6.479
+        }
+      ],
+      "synthesis_ms": 7.874,
+      "total_ms": 115457.986
+    },
+    "registry_model": "gemma4-31b",
+    "drafter_used": "TypedDrafter",
+    "typed": [
+      {
+        "mode": "lazy",
+        "served_model": "gemma4-31b/106",
+        "model_calls": 3,
+        "catalog_calls": [
+          {
+            "name": "describe",
+            "args": {
+              "graph": "attack",
+              "target": "G1028"
+            },
+            "ok": false
+          },
+          {
+            "name": "resolve_entity",
+            "args": {
+              "graph": "attack",
+              "text": "APT-C-23"
+            },
+            "ok": true
+          },
+          {
+            "name": "resolve_entity",
+            "args": {
+              "graph": "attack",
+              "text": "Micropsia"
+            },
+            "ok": true
+          }
+        ],
+        "prompt_tokens": 10096,
+        "completion_tokens": 6399,
+        "emitted": true,
+        "parse_error": null,
+        "first_steps": 1,
+        "first_refused": 0,
+        "first_fixes": 0,
+        "valid_first": true,
+        "valid_first_raw": true,
+        "repair_used": false,
+        "fixed_by_repair": false,
+        "still_refused": 0,
+        "final_steps": 1,
+        "coercions": [],
+        "refusals": [],
+        "plan_problems": [],
+        "replies": [
+          {
+            "status": "ok",
+            "finish_reason": "tool_calls",
+            "calls": [
+              "describe"
+            ],
+            "text_chars": 0,
+            "repairs": []
+          },
+          {
+            "status": "ok",
+            "finish_reason": "tool_calls",
+            "calls": [
+              "resolve_entity",
+              "resolve_entity"
+            ],
+            "text_chars": 0,
+            "repairs": [
+              {
+                "kind": "args_closed_truncated",
+                "detail": "37 chars",
+                "call_id": "chatcmpl-tool-b3ea554181d5fa32"
+              }
+            ]
+          },
+          {
+            "status": "ok",
+            "finish_reason": "stop",
+            "calls": [],
+            "text_chars": 564,
+            "repairs": []
+          }
+        ],
+        "error": null,
+        "fallback": null,
+        "seconds": 115.388,
+        "n_catalog_calls": 3,
+        "fixed_by_coercion": false
+      }
+    ],
+    "seams": {
+      "planner_llm": true,
+      "drafter": "TypedDrafter",
+      "specialist_llm": false,
+      "synthesis_llm": false,
+      "generic_only": "true"
+    },
+    "wall_s": 115.462
+  },
+  "evidence_volume": {
+    "results": 1,
+    "records": 1,
+    "related": 0
+  }
+}

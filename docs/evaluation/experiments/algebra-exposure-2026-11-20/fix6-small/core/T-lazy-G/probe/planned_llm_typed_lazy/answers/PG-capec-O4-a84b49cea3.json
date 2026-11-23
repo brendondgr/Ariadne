@@ -1,0 +1,624 @@
+{
+  "id": "PG-capec-O4-a84b49cea3",
+  "kind": "capec",
+  "tier": "algebra-probe",
+  "category": "PG-capec",
+  "question": "Is attack pattern CAPEC-438 (Modification During Manufacture) directly connected to view CAPEC-703 (Industrial Control System (ICS) Patterns) in CAPEC, and if it is, what is the nature of that connection?",
+  "gold": {
+    "assertions": {
+      "min_records": 0,
+      "must_include_ids": [],
+      "must_include_related": []
+    },
+    "ex_gold": {
+      "pool": "algebra",
+      "scheme": "capec",
+      "kind": "value",
+      "expected": [],
+      "value": true
+    }
+  },
+  "answer": {
+    "headline": "Gathered 1 record(s) from 1 source(s); 1 question(s) the sources don't establish.",
+    "narrative": "Found 1 CAPEC record(s): CAPEC-438. CAPEC-438 (Modification During Manufacture): An attacker modifies a technology, product, or component during a stage in its manufacture for the purpose of carrying out an attack against some entity involved in the supply chain lifecycle. There are an almost limitless number of ways an attacker can modify a technology when they are involved in its manufacture, as the attacker has potential inroads to the software composition, hardware design and assembly, firmware, or basic design mechanics. Additionally, manufacturing of key components is often outsourced with the final product assembled by the primary manufacturer. CAPEC-438 (Modification During Manufacture) has Abstraction: Meta; Status: Draft. CAPEC-438 (Modification During Manufacture) has 1 View: CAPEC-703. The capec source doesn't establish this — the executed query ran cleanly and returned no matching records for:",
+    "composer": "deterministic",
+    "fallback_reason": null,
+    "claims": [
+      {
+        "text": "Found 1 CAPEC record(s): CAPEC-438.",
+        "kind": "fact",
+        "entity_ids": [
+          "CAPEC-438"
+        ],
+        "citations": [
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-438"
+          }
+        ]
+      },
+      {
+        "text": "CAPEC-438 (Modification During Manufacture): An attacker modifies a technology, product, or component during a stage in its manufacture for the purpose of carrying out an attack against some entity involved in the supply chain lifecycle. There are an almost limitless number of ways an attacker can modify a technology when they are involved in its manufacture, as the attacker has potential inroads to the software composition, hardware design and assembly, firmware, or basic design mechanics. Additionally, manufacturing of key components is often outsourced with the final product assembled by the primary manufacturer.",
+        "kind": "fact",
+        "entity_ids": [
+          "CAPEC-438"
+        ],
+        "citations": [
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-438"
+          }
+        ]
+      },
+      {
+        "text": "CAPEC-438 (Modification During Manufacture) has Abstraction: Meta; Status: Draft.",
+        "kind": "fact",
+        "entity_ids": [
+          "CAPEC-438"
+        ],
+        "citations": [
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-438"
+          }
+        ]
+      },
+      {
+        "text": "CAPEC-438 (Modification During Manufacture) has 1 View: CAPEC-703.",
+        "kind": "enumeration",
+        "entity_ids": [
+          "CAPEC-703"
+        ],
+        "citations": [
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-438"
+          }
+        ]
+      }
+    ],
+    "abstentions": [
+      {
+        "source": "capec",
+        "statement": "The capec source doesn't establish this — the executed query ran cleanly and returned no matching records for: ",
+        "query": "g.V().has('id', within(p0)).hasLabel('View').dedup().has('id', eq(p1)).order().by('id').fold().project('total', 'rows').by(__.count(local)).by(__.unfold().limit(1000).project('id', 'name').by('id').by(__.coalesce(__.values('name'), __.constant(null))).fold())"
+      }
+    ],
+    "notes": []
+  },
+  "logic_flow": {
+    "task": {
+      "sub_question_id": "PG-capec-O4-a84b49cea3",
+      "source": "capec",
+      "text": "Is attack pattern CAPEC-438 (Modification During Manufacture) directly connected to view CAPEC-703 (Industrial Control System (ICS) Patterns) in CAPEC, and if it is, what is the nature of that connection?",
+      "entities": [
+        "AttackPattern",
+        "IN_VIEW",
+        "View"
+      ],
+      "limits": {
+        "max_traversal_depth": 3,
+        "max_result_rows": 20000,
+        "query_timeout_ms": 60000
+      },
+      "join_key": null,
+      "seed_ids": [
+        "CAPEC-438",
+        "CAPEC-703"
+      ],
+      "rationale": "algebra probe set (Era 2 Step 9 Phase G)"
+    },
+    "results": [
+      {
+        "source": "capec",
+        "sub_question_id": "q1",
+        "sub_question": "",
+        "query": "g.V().has(\"id\", within(ids)).as(\"ap\").union(__.out(\"IN_VIEW\").hasLabel(\"View\")).as(\"nbr\").select(\"ap\",\"nbr\").by(elementMap()).limit(1000)",
+        "ok": true,
+        "partial": false,
+        "error": null,
+        "summary": "Found 1 CAPEC record(s): CAPEC-438.",
+        "traces": [
+          {
+            "step": "intake",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "source": "capec",
+              "card": "capec"
+            }
+          },
+          {
+            "step": "resolve",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "labels": [
+                "AttackPattern",
+                "View"
+              ],
+              "relationships": [
+                "IN_VIEW"
+              ],
+              "seed_ids": [
+                "CAPEC-438"
+              ],
+              "join_key": null
+            }
+          },
+          {
+            "step": "gate",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "attempt": 1,
+              "template": "typed_step",
+              "query": "g.V().has(\"id\", within(ids)).as(\"ap\").union(__.out(\"IN_VIEW\").hasLabel(\"View\")).as(\"nbr\").select(\"ap\",\"nbr\").by(elementMap()).limit(1000)",
+              "injected": [],
+              "timing_ms": 0.431
+            }
+          },
+          {
+            "step": "execute",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "row_count": 1,
+              "timing_ms": 7.7,
+              "row_ceiling": 1000,
+              "truncated": false
+            }
+          },
+          {
+            "step": "assess",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "row_count": 1,
+              "timing_ms": 0.007
+            }
+          },
+          {
+            "step": "normalize",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "record_count": 1,
+              "timing_ms": 0.066
+            }
+          }
+        ],
+        "records": [
+          {
+            "primary_id": "CAPEC-438",
+            "name": "Modification During Manufacture",
+            "label": "AttackPattern",
+            "description": "An attacker modifies a technology, product, or component during a stage in its manufacture for the purpose of carrying out an attack against some entity involved in the supply chain lifecycle. There are an almost limitless number of ways an attacker can modify a technology when they are involved in its manufacture, as the attacker has potential inroads to the software composition, hardware design and assembly, firmware, or basic design mechanics. Additionally, manufacturing of key components is often outsourced with the final product assembled by the primary manufacturer. The greatest risk, however, is deliberate manipulation of design specifications to produce malicious hardware or devices. There are billions of transistors in a single integrated circuit and studies have shown that fewer than 10 transistors are required to create malicious functionality.",
+            "properties": {
+              "Status": "Draft",
+              "name": "Modification During Manufacture",
+              "description": "An attacker modifies a technology, product, or component during a stage in its manufacture for the purpose of carrying out an attack against some entity involved in the supply chain lifecycle. There are an almost limitless number of ways an attacker can modify a technology when they are involved in its manufacture, as the attacker has potential inroads to the software composition, hardware design and assembly, firmware, or basic design mechanics. Additionally, manufacturing of key components is often outsourced with the final product assembled by the primary manufacturer. The greatest risk, however, is deliberate manipulation of design specifications to produce malicious hardware or devices. There are billions of transistors in a single integrated circuit and studies have shown that fewer than 10 transistors are required to create malicious functionality.",
+              "id": "capec:attack-pattern:438",
+              "Abstraction": "Meta"
+            },
+            "facets": [],
+            "join_values": [],
+            "related": [
+              {
+                "id": "CAPEC-703",
+                "name": "Industrial Control System (ICS) Patterns",
+                "label": "View",
+                "type": "IN_VIEW",
+                "Status": "Draft",
+                "Type": "Explicit",
+                "members": [
+                  "1",
+                  "57",
+                  "65",
+                  "70",
+                  "94",
+                  "98",
+                  "125",
+                  "130",
+                  "131",
+                  "141",
+                  "148",
+                  "158",
+                  "163",
+                  "165",
+                  "169",
+                  "177",
+                  "180",
+                  "184",
+                  "191",
+                  "227",
+                  "268",
+                  "292",
+                  "309",
+                  "312",
+                  "313",
+                  "438",
+                  "439",
+                  "441",
+                  "457",
+                  "473",
+                  "504",
+                  "540",
+                  "547",
+                  "552",
+                  "555",
+                  "560",
+                  "573",
+                  "580",
+                  "603",
+                  "607",
+                  "635",
+                  "648",
+                  "649",
+                  "690",
+                  "691",
+                  "692"
+                ],
+                "objective": "This view contains a listing of CAPECs that apply to industrial control systems (ICS). Some children of these attack patterns might also be applicable."
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "source": "capec",
+        "sub_question_id": "q2",
+        "sub_question": "",
+        "query": "g.V().has('id', within(p0)).hasLabel('View').dedup().has('id', eq(p1)).order().by('id').fold().project('total', 'rows').by(__.count(local)).by(__.unfold().limit(1000).project('id', 'name').by('id').by(__.coalesce(__.values('name'), __.constant(null))).fold())",
+        "ok": true,
+        "partial": false,
+        "error": null,
+        "summary": "0 entities match.",
+        "traces": [
+          {
+            "step": "intake",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "source": "capec",
+              "card": "capec"
+            }
+          },
+          {
+            "step": "resolve",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "labels": [
+                "View"
+              ],
+              "relationships": [],
+              "seed_ids": [
+                "CAPEC-703"
+              ],
+              "join_key": null
+            }
+          },
+          {
+            "step": "gate",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "attempt": 1,
+              "template": "algebra",
+              "query": "g.V().has('id', within(p0)).hasLabel('View').dedup().has('id', eq(p1)).order().by('id').fold().project('total', 'rows').by(__.count(local)).by(__.unfold().limit(1000).project('id', 'name').by('id').by(__.coalesce(__.values('name'), __.constant(null))).fold())",
+              "injected": [],
+              "note": "compiled by the operator algebra (validated against the card; read-only by construction)",
+              "id_map": {
+                "CAPEC-703": [
+                  "capec:view:703"
+                ]
+              }
+            }
+          },
+          {
+            "step": "execute",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "row_count": 0
+            }
+          },
+          {
+            "step": "algebra",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "result": {
+                "step": "q2",
+                "kind": "nodes",
+                "value": null,
+                "ids": [],
+                "rows": [],
+                "total": 0,
+                "complete": true,
+                "info": {}
+              },
+              "op": "filter",
+              "ir": {
+                "@": "Nodes",
+                "of": {
+                  "@": "Where",
+                  "conds": [
+                    {
+                      "@": "Cond",
+                      "cmp": null,
+                      "op": "=",
+                      "prop": "id",
+                      "value": "CAPEC-703"
+                    }
+                  ],
+                  "of": {
+                    "@": "FromStep",
+                    "labels": [
+                      "View"
+                    ],
+                    "step": "q1"
+                  }
+                },
+                "props": []
+              }
+            }
+          }
+        ],
+        "records": []
+      }
+    ]
+  },
+  "deterministic_scores": {
+    "correlation": null,
+    "mapping_recall": null,
+    "coverage": null,
+    "provenance": {
+      "citations": 4,
+      "compliant": 4,
+      "citation_provenance_rate": 1.0,
+      "abstention_proof_ok": true,
+      "fully_provenanced": true
+    },
+    "inspectability": {
+      "citation_coverage": 1.0,
+      "traceability": 1.0,
+      "abstention_proofs": 1.0,
+      "inspectability": 1.0
+    }
+  },
+  "arm": "planned_llm_typed_lazy",
+  "run_meta": {
+    "planner": "llm-typed-lazy",
+    "synthesis": "deterministic",
+    "use_llm": true,
+    "llm_synthesis": false,
+    "llm_specialist": false,
+    "rewrite": null,
+    "observed_plan": [
+      {
+        "sub_question_id": "q1",
+        "source": "capec",
+        "text": "",
+        "entities": [
+          "AttackPattern",
+          "IN_VIEW",
+          "View"
+        ],
+        "seed_ids": [
+          "CAPEC-438"
+        ],
+        "depends_on": null,
+        "limits": {
+          "max_traversal_depth": 3,
+          "max_result_rows": 1000,
+          "query_timeout_ms": 5000
+        },
+        "step": {
+          "kind": "expand",
+          "anchor_label": "AttackPattern",
+          "anchor_ids": [
+            "CAPEC-438"
+          ],
+          "hops": [
+            {
+              "relation": "IN_VIEW",
+              "direction": "out",
+              "target_label": "View"
+            }
+          ],
+          "depth": 1
+        }
+      },
+      {
+        "sub_question_id": "q2",
+        "source": "capec",
+        "text": "",
+        "entities": [
+          "View"
+        ],
+        "seed_ids": [],
+        "depends_on": null,
+        "limits": {
+          "max_traversal_depth": 3,
+          "max_result_rows": 1000,
+          "query_timeout_ms": 5000
+        },
+        "step": {
+          "kind": "algebra",
+          "anchor_label": "View",
+          "anchor_ids": [],
+          "hops": [],
+          "depth": 1,
+          "algebra": {
+            "ir": {
+              "@": "Nodes",
+              "of": {
+                "@": "Where",
+                "conds": [
+                  {
+                    "@": "Cond",
+                    "cmp": null,
+                    "op": "=",
+                    "prop": "id",
+                    "value": "CAPEC-703"
+                  }
+                ],
+                "of": {
+                  "@": "FromStep",
+                  "labels": [
+                    "View"
+                  ],
+                  "step": "q1"
+                }
+              },
+              "props": []
+            },
+            "labels": [
+              "View"
+            ],
+            "op": "filter"
+          },
+          "from_step": "q1"
+        }
+      }
+    ],
+    "exit_code": 0,
+    "status": "answered",
+    "timings": {
+      "plan_ms": 95581.241,
+      "specialists": [
+        {
+          "sub_question": "q1",
+          "source": "capec",
+          "ms": 9.611
+        },
+        {
+          "sub_question": "q2",
+          "source": "capec",
+          "ms": 17.915
+        }
+      ],
+      "synthesis_ms": 9.689,
+      "total_ms": 95661.263
+    },
+    "registry_model": "gemma4-31b",
+    "drafter_used": "TypedDrafter",
+    "typed": [
+      {
+        "mode": "lazy",
+        "served_model": "gemma4-31b/106",
+        "model_calls": 3,
+        "catalog_calls": [
+          {
+            "name": "find_schema",
+            "args": {
+              "graph": "capec",
+              "text": "IN_VIEW"
+            },
+            "ok": true
+          },
+          {
+            "name": "resolve_entity",
+            "args": {
+              "graph": "capec",
+              "label": "AttackPattern",
+              "text": "CAPEC-43"
+            },
+            "ok": true
+          },
+          {
+            "name": "resolve_entity",
+            "args": {
+              "graph": "capec",
+              "label": "View",
+              "text": "CAPEC-703"
+            },
+            "ok": true
+          }
+        ],
+        "prompt_tokens": 9886,
+        "completion_tokens": 4984,
+        "emitted": true,
+        "parse_error": null,
+        "first_steps": 2,
+        "first_refused": 0,
+        "first_fixes": 0,
+        "valid_first": true,
+        "valid_first_raw": true,
+        "repair_used": false,
+        "fixed_by_repair": false,
+        "still_refused": 0,
+        "final_steps": 2,
+        "coercions": [],
+        "refusals": [],
+        "plan_problems": [],
+        "replies": [
+          {
+            "status": "ok",
+            "finish_reason": "tool_calls",
+            "calls": [
+              "find_schema"
+            ],
+            "text_chars": 0,
+            "repairs": []
+          },
+          {
+            "status": "ok",
+            "finish_reason": "tool_calls",
+            "calls": [
+              "resolve_entity",
+              "resolve_entity"
+            ],
+            "text_chars": 0,
+            "repairs": [
+              {
+                "kind": "args_closed_truncated",
+                "detail": "62 chars",
+                "call_id": "chatcmpl-tool-a98119b1979a4b76"
+              }
+            ]
+          },
+          {
+            "status": "ok",
+            "finish_reason": "stop",
+            "calls": [],
+            "text_chars": 756,
+            "repairs": []
+          }
+        ],
+        "error": null,
+        "fallback": null,
+        "seconds": 95.568,
+        "n_catalog_calls": 3,
+        "fixed_by_coercion": false
+      }
+    ],
+    "seams": {
+      "planner_llm": true,
+      "drafter": "TypedDrafter",
+      "specialist_llm": false,
+      "synthesis_llm": false,
+      "generic_only": "true"
+    },
+    "wall_s": 95.664,
+    "algebra_results": [
+      {
+        "step": "q2",
+        "kind": "nodes",
+        "value": null,
+        "ids": [],
+        "rows": [],
+        "total": 0,
+        "complete": true,
+        "info": {}
+      }
+    ]
+  },
+  "evidence_volume": {
+    "results": 2,
+    "records": 1,
+    "related": 1
+  }
+}

@@ -1,0 +1,453 @@
+{
+  "id": "PX-attack-O4-a34812453c",
+  "kind": "attack",
+  "tier": "algebra-probe",
+  "category": "PX-attack",
+  "question": "Is technique T1611 (Escape to Host) one that mitigation M1042 (Disable or Remove Feature or Program) mitigates, and what does the record say about how it does so?",
+  "gold": {
+    "assertions": {
+      "min_records": 0,
+      "must_include_ids": [],
+      "must_include_related": []
+    },
+    "ex_gold": {
+      "pool": "algebra",
+      "scheme": "attack",
+      "kind": "value",
+      "expected": [],
+      "value": true
+    }
+  },
+  "answer": {
+    "headline": "Gathered 1 record(s) from 1 source(s); 1 part(s) unsupported.",
+    "narrative": "Yes: they are linked by MITIGATES (out).",
+    "composer": "deterministic",
+    "fallback_reason": null,
+    "claims": [
+      {
+        "text": "Yes: they are linked by MITIGATES (out).",
+        "kind": "fact",
+        "entity_ids": [],
+        "citations": [
+          {
+            "source": "attack",
+            "primary_id": ""
+          }
+        ]
+      }
+    ],
+    "abstentions": [],
+    "notes": [
+      "The available graph sources could not be matched to this request: 'Is technique T1611 (Escape to Host) one that mitigation M1042 (Disable or Remove Feature or Program) mitigates, and what does the record say about how it does so?'. If you meant a specific entity, name it or give its catalogue id."
+    ]
+  },
+  "logic_flow": {
+    "task": {
+      "sub_question_id": "PX-attack-O4-a34812453c",
+      "source": "attack",
+      "text": "Is technique T1611 (Escape to Host) one that mitigation M1042 (Disable or Remove Feature or Program) mitigates, and what does the record say about how it does so?",
+      "entities": [
+        "Mitigation",
+        "MITIGATES",
+        "Technique"
+      ],
+      "limits": {
+        "max_traversal_depth": 3,
+        "max_result_rows": 20000,
+        "query_timeout_ms": 60000
+      },
+      "join_key": null,
+      "seed_ids": [
+        "M1042",
+        "T1611"
+      ],
+      "rationale": "algebra probe set (Era 2 Step 9 Phase G)"
+    },
+    "results": [
+      {
+        "source": "attack",
+        "sub_question_id": "q1",
+        "sub_question": "",
+        "query": "CALL { MATCH (a1:Mitigation) WHERE a1.id IN $p0 RETURN count(a1) > 0 AS f6 } CALL { MATCH (b2:Technique) WHERE b2.id IN $p1 RETURN count(b2) > 0 AS f7 } CALL { MATCH (a3:Mitigation)-[r5:MITIGATES]->(b4:Technique) WHERE a3.id IN $p0 AND b4.id IN $p1 WITH DISTINCT a3, r5 ORDER BY type(r5), r5.id RETURN collect({relation: type(r5), direction: CASE WHEN startNode(r5) = a3 THEN 'out' ELSE 'in' END, properties: properties(r5)}) AS witness } RETURN f6 AS a_found, f7 AS b_found, witness",
+        "ok": true,
+        "partial": false,
+        "error": null,
+        "summary": "Found 1 record in MITRE ATT&CK: verify result.",
+        "traces": [
+          {
+            "step": "intake",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "source": "attack",
+              "card": "attack"
+            }
+          },
+          {
+            "step": "resolve",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "labels": [
+                "Mitigation",
+                "Technique"
+              ],
+              "relationships": [
+                "MITIGATES"
+              ],
+              "seed_ids": [
+                "M1042",
+                "T1611"
+              ],
+              "join_key": null
+            }
+          },
+          {
+            "step": "gate",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "attempt": 1,
+              "template": "algebra",
+              "query": "CALL { MATCH (a1:Mitigation) WHERE a1.id IN $p0 RETURN count(a1) > 0 AS f6 } CALL { MATCH (b2:Technique) WHERE b2.id IN $p1 RETURN count(b2) > 0 AS f7 } CALL { MATCH (a3:Mitigation)-[r5:MITIGATES]->(b4:Technique) WHERE a3.id IN $p0 AND b4.id IN $p1 WITH DISTINCT a3, r5 ORDER BY type(r5), r5.id RETURN collect({relation: type(r5), direction: CASE WHEN startNode(r5) = a3 THEN 'out' ELSE 'in' END, properties: properties(r5)}) AS witness } RETURN f6 AS a_found, f7 AS b_found, witness",
+              "injected": [],
+              "note": "compiled by the operator algebra (validated against the card; read-only by construction)",
+              "id_map": {
+                "M1042": [
+                  "course-of-action--eb88d97c-32f1-40be-80f0-d61a4b0b4b31"
+                ],
+                "T1611": [
+                  "attack-pattern--4a5b7ade-8bb5-4853-84ed-23f262002665"
+                ]
+              }
+            }
+          },
+          {
+            "step": "execute",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "row_count": 1
+            }
+          },
+          {
+            "step": "algebra",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "result": {
+                "step": "q1",
+                "kind": "verify",
+                "value": true,
+                "ids": [],
+                "rows": [
+                  {
+                    "relation": "MITIGATES",
+                    "direction": "out",
+                    "properties": {
+                      "stix_type": "relationship",
+                      "relationship_type": "mitigates",
+                      "description": "Remove unnecessary tools and software from containers.",
+                      "id": "relationship--f705286a-3372-4343-b74f-cab6ff672774"
+                    }
+                  }
+                ],
+                "total": 1,
+                "complete": true,
+                "info": {
+                  "a_found": true,
+                  "b_found": true,
+                  "exists": true,
+                  "anchor_not_found": []
+                }
+              },
+              "op": "verify",
+              "ir": {
+                "@": "Verify",
+                "a": {
+                  "@": "Anchors",
+                  "ids": [
+                    "M1042"
+                  ],
+                  "label": "Mitigation"
+                },
+                "b": {
+                  "@": "Anchors",
+                  "ids": [
+                    "T1611"
+                  ],
+                  "label": "Technique"
+                },
+                "direction": "out",
+                "relation": "MITIGATES"
+              }
+            }
+          }
+        ],
+        "records": [
+          {
+            "primary_id": "",
+            "name": "verify result",
+            "label": "Result",
+            "description": "",
+            "properties": {
+              "value": true,
+              "exists": true,
+              "anchor_not_found": []
+            },
+            "facets": [],
+            "join_values": [],
+            "related": []
+          }
+        ]
+      }
+    ]
+  },
+  "deterministic_scores": {
+    "correlation": null,
+    "mapping_recall": null,
+    "coverage": null,
+    "provenance": {
+      "citations": 1,
+      "compliant": 1,
+      "citation_provenance_rate": 1.0,
+      "abstention_proof_ok": true,
+      "fully_provenanced": true
+    },
+    "inspectability": {
+      "citation_coverage": 1.0,
+      "traceability": 1.0,
+      "abstention_proofs": 1.0,
+      "inspectability": 1.0
+    }
+  },
+  "arm": "planned_llm_typed_lazy",
+  "run_meta": {
+    "planner": "llm-typed-lazy",
+    "synthesis": "deterministic",
+    "use_llm": true,
+    "llm_synthesis": false,
+    "llm_specialist": false,
+    "rewrite": null,
+    "observed_plan": [
+      {
+        "sub_question_id": "q1",
+        "source": "attack",
+        "text": "",
+        "entities": [
+          "Mitigation",
+          "MITIGATES",
+          "Technique"
+        ],
+        "seed_ids": [
+          "M1042",
+          "T1611"
+        ],
+        "depends_on": null,
+        "limits": {
+          "max_traversal_depth": 3,
+          "max_result_rows": 1000,
+          "query_timeout_ms": 5000
+        },
+        "step": {
+          "kind": "algebra",
+          "anchor_label": "Mitigation",
+          "anchor_ids": [
+            "M1042",
+            "T1611"
+          ],
+          "hops": [],
+          "depth": 1,
+          "algebra": {
+            "ir": {
+              "@": "Verify",
+              "a": {
+                "@": "Anchors",
+                "ids": [
+                  "M1042"
+                ],
+                "label": "Mitigation"
+              },
+              "b": {
+                "@": "Anchors",
+                "ids": [
+                  "T1611"
+                ],
+                "label": "Technique"
+              },
+              "direction": "out",
+              "relation": "MITIGATES"
+            },
+            "labels": [],
+            "op": "verify"
+          }
+        }
+      }
+    ],
+    "exit_code": 1,
+    "status": "partial",
+    "timings": {
+      "plan_ms": 95850.138,
+      "specialists": [
+        {
+          "sub_question": "q1",
+          "source": "attack",
+          "ms": 12.472
+        }
+      ],
+      "synthesis_ms": 4.72,
+      "total_ms": 95914.173
+    },
+    "registry_model": "qwen38-27b",
+    "drafter_used": "TypedDrafter",
+    "typed": [
+      {
+        "mode": "lazy",
+        "served_model": "qwen38-27b/248046",
+        "model_calls": 3,
+        "catalog_calls": [
+          {
+            "name": "resolve_entity",
+            "args": {
+              "text": "T1611",
+              "label": "Technique",
+              "graph": "attack"
+            },
+            "ok": true
+          },
+          {
+            "name": "resolve_entity",
+            "args": {
+              "text": "M1042",
+              "label": "Mitigation",
+              "graph": "attack"
+            },
+            "ok": true
+          },
+          {
+            "name": "describe",
+            "args": {
+              "target": "MITIGATES",
+              "graph": "attack"
+            },
+            "ok": true
+          },
+          {
+            "name": "describe",
+            "args": {
+              "target": "MITIGATES",
+              "graph": "attack"
+            },
+            "ok": false
+          }
+        ],
+        "prompt_tokens": 10407,
+        "completion_tokens": 3213,
+        "emitted": true,
+        "parse_error": null,
+        "first_steps": 1,
+        "first_refused": 0,
+        "first_fixes": 2,
+        "valid_first": true,
+        "valid_first_raw": false,
+        "repair_used": false,
+        "fixed_by_repair": false,
+        "still_refused": 0,
+        "final_steps": 1,
+        "coercions": [
+          {
+            "step": "q1",
+            "field": "anchor.anchor_label",
+            "from": null,
+            "to": "Mitigation",
+            "filled_by": "id_scheme"
+          },
+          {
+            "step": "q1",
+            "field": "other.anchor_label",
+            "from": null,
+            "to": "Technique",
+            "filled_by": "id_scheme"
+          }
+        ],
+        "refusals": [],
+        "plan_problems": [],
+        "replies": [
+          {
+            "status": "ok",
+            "finish_reason": "tool_calls",
+            "calls": [
+              "resolve_entity",
+              "resolve_entity",
+              "describe"
+            ],
+            "text_chars": 0,
+            "repairs": []
+          },
+          {
+            "status": "ok",
+            "finish_reason": "tool_calls",
+            "calls": [
+              "describe"
+            ],
+            "text_chars": 198,
+            "repairs": []
+          },
+          {
+            "status": "ok",
+            "finish_reason": "stop",
+            "calls": [],
+            "text_chars": 607,
+            "repairs": []
+          }
+        ],
+        "error": null,
+        "fallback": null,
+        "seconds": 95.835,
+        "n_catalog_calls": 4,
+        "fixed_by_coercion": true
+      }
+    ],
+    "seams": {
+      "planner_llm": true,
+      "drafter": "TypedDrafter",
+      "specialist_llm": false,
+      "synthesis_llm": false,
+      "generic_only": "true"
+    },
+    "wall_s": 95.917,
+    "algebra_results": [
+      {
+        "step": "q1",
+        "kind": "verify",
+        "value": true,
+        "ids": [],
+        "rows": [
+          {
+            "relation": "MITIGATES",
+            "direction": "out",
+            "properties": {
+              "stix_type": "relationship",
+              "relationship_type": "mitigates",
+              "description": "Remove unnecessary tools and software from containers.",
+              "id": "relationship--f705286a-3372-4343-b74f-cab6ff672774"
+            }
+          }
+        ],
+        "total": 1,
+        "complete": true,
+        "info": {
+          "a_found": true,
+          "b_found": true,
+          "exists": true,
+          "anchor_not_found": []
+        }
+      }
+    ]
+  },
+  "evidence_volume": {
+    "results": 1,
+    "records": 1,
+    "related": 0
+  }
+}

@@ -1,0 +1,2335 @@
+{
+  "id": "PG-capec-O6-555093bdf7",
+  "kind": "capec",
+  "tier": "algebra-probe",
+  "category": "PG-capec",
+  "question": "Which attack patterns exploit at least 7 weaknesses?",
+  "gold": {
+    "assertions": {
+      "min_records": 0,
+      "must_include_ids": [],
+      "must_include_related": []
+    },
+    "ex_gold": {
+      "pool": "algebra",
+      "scheme": "capec",
+      "kind": "set",
+      "expected": [
+        "CAPEC-1",
+        "CAPEC-10",
+        "CAPEC-120",
+        "CAPEC-121",
+        "CAPEC-127",
+        "CAPEC-13",
+        "CAPEC-14",
+        "CAPEC-15",
+        "CAPEC-150",
+        "CAPEC-16",
+        "CAPEC-17",
+        "CAPEC-180",
+        "CAPEC-21",
+        "CAPEC-24",
+        "CAPEC-26",
+        "CAPEC-267",
+        "CAPEC-29",
+        "CAPEC-3",
+        "CAPEC-31",
+        "CAPEC-35",
+        "CAPEC-37",
+        "CAPEC-39",
+        "CAPEC-43",
+        "CAPEC-45",
+        "CAPEC-46",
+        "CAPEC-47",
+        "CAPEC-49",
+        "CAPEC-509",
+        "CAPEC-52",
+        "CAPEC-53",
+        "CAPEC-545",
+        "CAPEC-55",
+        "CAPEC-555",
+        "CAPEC-560",
+        "CAPEC-561",
+        "CAPEC-565",
+        "CAPEC-59",
+        "CAPEC-60",
+        "CAPEC-600",
+        "CAPEC-624",
+        "CAPEC-625",
+        "CAPEC-64",
+        "CAPEC-652",
+        "CAPEC-653",
+        "CAPEC-679",
+        "CAPEC-70",
+        "CAPEC-71",
+        "CAPEC-73",
+        "CAPEC-74",
+        "CAPEC-76",
+        "CAPEC-77",
+        "CAPEC-78",
+        "CAPEC-79",
+        "CAPEC-8",
+        "CAPEC-80",
+        "CAPEC-81",
+        "CAPEC-85",
+        "CAPEC-9",
+        "CAPEC-92"
+      ]
+    }
+  },
+  "answer": {
+    "headline": "Gathered 59 record(s) from 1 source(s).",
+    "narrative": "Found 59 CAPEC record(s): CAPEC-1, CAPEC-10, CAPEC-120, CAPEC-121, CAPEC-127 … (+54 more). 59 member(s), with their count: Accessing Functionality Not Properly Constrained by ACLs (CAPEC-1): 16; Buffer Overflow via Environment Variables (CAPEC-10): 10; Double Encoding (CAPEC-120): 10; Exploit Non-Production Interfaces (CAPEC-121): 10; Directory Indexing (CAPEC-127): 7; Subverting Environment Variable Values (CAPEC-13): 8; Client-side Injection-induced Buffer Overflow (CAPEC-14): 8; Command Delimiters (CAPEC-15): 11; Collect Data from Common Resource Locations (CAPEC-150): 7; Dictionary-based Password Attack (CAPEC-16): 7; Using Malicious Files (CAPEC-17): 7; Exploiting Incorrectly Configured Access Control Security Levels (CAPEC-180): 13; Exploitation of Trusted Identifiers (CAPEC-21): 9; Filter Failure through Buffer Overflow (CAPEC-24): 8; Leveraging Race Conditions (CAPEC-26): 12; Leverage Alternate Encoding (CAPEC-267): 9; Leveraging Time-of-Check and Time-of-Use (TOCTOU) Race Conditions (CAPEC-29): 9; Using Leading 'Ghost' Character Sequences to Bypass Input Filters (CAPEC-3): 12; Accessing/Intercepting/Modifying HTTP Cookies (CAPEC-31): 11; Leverage Executable Code in Non-Executable Files (CAPEC-35): 8; Retrieve Embedded Sensitive Data (CAPEC-37): 14; Manipulating Opaque Client-based Data Tokens (CAPEC-39): 9; Exploiting Multiple Input Interpretation Layers (CAPEC-43): 10; Buffer Overflow via Symbolic Links (CAPEC-45): 9; Overflow Variables and Tags (CAPEC-46): 8; and 25 more.",
+    "composer": "deterministic",
+    "fallback_reason": null,
+    "claims": [
+      {
+        "text": "Found 59 CAPEC record(s): CAPEC-1, CAPEC-10, CAPEC-120, CAPEC-121, CAPEC-127 … (+54 more).",
+        "kind": "fact",
+        "entity_ids": [
+          "CAPEC-1",
+          "CAPEC-10",
+          "CAPEC-120",
+          "CAPEC-121",
+          "CAPEC-127",
+          "CAPEC-13",
+          "CAPEC-14",
+          "CAPEC-15",
+          "CAPEC-150",
+          "CAPEC-16",
+          "CAPEC-17",
+          "CAPEC-180",
+          "CAPEC-21",
+          "CAPEC-24",
+          "CAPEC-26",
+          "CAPEC-267",
+          "CAPEC-29",
+          "CAPEC-3",
+          "CAPEC-31",
+          "CAPEC-35",
+          "CAPEC-37",
+          "CAPEC-39",
+          "CAPEC-43",
+          "CAPEC-45",
+          "CAPEC-46",
+          "CAPEC-47",
+          "CAPEC-49",
+          "CAPEC-509",
+          "CAPEC-52",
+          "CAPEC-53",
+          "CAPEC-545",
+          "CAPEC-55",
+          "CAPEC-555",
+          "CAPEC-560",
+          "CAPEC-561",
+          "CAPEC-565",
+          "CAPEC-59",
+          "CAPEC-60",
+          "CAPEC-600",
+          "CAPEC-624",
+          "CAPEC-625",
+          "CAPEC-64",
+          "CAPEC-652",
+          "CAPEC-653",
+          "CAPEC-679",
+          "CAPEC-70",
+          "CAPEC-71",
+          "CAPEC-73",
+          "CAPEC-74",
+          "CAPEC-76",
+          "CAPEC-77",
+          "CAPEC-78",
+          "CAPEC-79",
+          "CAPEC-8",
+          "CAPEC-80",
+          "CAPEC-81",
+          "CAPEC-85",
+          "CAPEC-9",
+          "CAPEC-92"
+        ],
+        "citations": [
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-1"
+          },
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-10"
+          },
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-120"
+          },
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-121"
+          },
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-127"
+          },
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-13"
+          },
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-14"
+          },
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-15"
+          },
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-150"
+          },
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-16"
+          },
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-17"
+          },
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-180"
+          },
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-21"
+          },
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-24"
+          },
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-26"
+          },
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-267"
+          },
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-29"
+          },
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-3"
+          },
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-31"
+          },
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-35"
+          },
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-37"
+          },
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-39"
+          },
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-43"
+          },
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-45"
+          },
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-46"
+          },
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-47"
+          },
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-49"
+          },
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-509"
+          },
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-52"
+          },
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-53"
+          },
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-545"
+          },
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-55"
+          },
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-555"
+          },
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-560"
+          },
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-561"
+          },
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-565"
+          },
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-59"
+          },
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-60"
+          },
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-600"
+          },
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-624"
+          },
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-625"
+          },
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-64"
+          },
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-652"
+          },
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-653"
+          },
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-679"
+          },
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-70"
+          },
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-71"
+          },
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-73"
+          },
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-74"
+          },
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-76"
+          },
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-77"
+          },
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-78"
+          },
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-79"
+          },
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-8"
+          },
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-80"
+          },
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-81"
+          },
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-85"
+          },
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-9"
+          },
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-92"
+          }
+        ]
+      },
+      {
+        "text": "59 member(s), with their count: Accessing Functionality Not Properly Constrained by ACLs (CAPEC-1): 16; Buffer Overflow via Environment Variables (CAPEC-10): 10; Double Encoding (CAPEC-120): 10; Exploit Non-Production Interfaces (CAPEC-121): 10; Directory Indexing (CAPEC-127): 7; Subverting Environment Variable Values (CAPEC-13): 8; Client-side Injection-induced Buffer Overflow (CAPEC-14): 8; Command Delimiters (CAPEC-15): 11; Collect Data from Common Resource Locations (CAPEC-150): 7; Dictionary-based Password Attack (CAPEC-16): 7; Using Malicious Files (CAPEC-17): 7; Exploiting Incorrectly Configured Access Control Security Levels (CAPEC-180): 13; Exploitation of Trusted Identifiers (CAPEC-21): 9; Filter Failure through Buffer Overflow (CAPEC-24): 8; Leveraging Race Conditions (CAPEC-26): 12; Leverage Alternate Encoding (CAPEC-267): 9; Leveraging Time-of-Check and Time-of-Use (TOCTOU) Race Conditions (CAPEC-29): 9; Using Leading 'Ghost' Character Sequences to Bypass Input Filters (CAPEC-3): 12; Accessing/Intercepting/Modifying HTTP Cookies (CAPEC-31): 11; Leverage Executable Code in Non-Executable Files (CAPEC-35): 8; Retrieve Embedded Sensitive Data (CAPEC-37): 14; Manipulating Opaque Client-based Data Tokens (CAPEC-39): 9; Exploiting Multiple Input Interpretation Layers (CAPEC-43): 10; Buffer Overflow via Symbolic Links (CAPEC-45): 9; Overflow Variables and Tags (CAPEC-46): 8; and 25 more.",
+        "kind": "fact",
+        "entity_ids": [
+          "CAPEC-1",
+          "CAPEC-10",
+          "CAPEC-120",
+          "CAPEC-121",
+          "CAPEC-127",
+          "CAPEC-13",
+          "CAPEC-14",
+          "CAPEC-15",
+          "CAPEC-150",
+          "CAPEC-16",
+          "CAPEC-17",
+          "CAPEC-180",
+          "CAPEC-21",
+          "CAPEC-24",
+          "CAPEC-26",
+          "CAPEC-267",
+          "CAPEC-29",
+          "CAPEC-3",
+          "CAPEC-31",
+          "CAPEC-35",
+          "CAPEC-37",
+          "CAPEC-39",
+          "CAPEC-43",
+          "CAPEC-45",
+          "CAPEC-46",
+          "CAPEC-47",
+          "CAPEC-49",
+          "CAPEC-509",
+          "CAPEC-52",
+          "CAPEC-53",
+          "CAPEC-545",
+          "CAPEC-55",
+          "CAPEC-555",
+          "CAPEC-560",
+          "CAPEC-561",
+          "CAPEC-565",
+          "CAPEC-59",
+          "CAPEC-60",
+          "CAPEC-600",
+          "CAPEC-624",
+          "CAPEC-625",
+          "CAPEC-64",
+          "CAPEC-652",
+          "CAPEC-653",
+          "CAPEC-679",
+          "CAPEC-70",
+          "CAPEC-71",
+          "CAPEC-73",
+          "CAPEC-74",
+          "CAPEC-76",
+          "CAPEC-77",
+          "CAPEC-78",
+          "CAPEC-79",
+          "CAPEC-8",
+          "CAPEC-80",
+          "CAPEC-81",
+          "CAPEC-85",
+          "CAPEC-9",
+          "CAPEC-92"
+        ],
+        "citations": [
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-1"
+          },
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-10"
+          },
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-120"
+          },
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-121"
+          },
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-127"
+          },
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-13"
+          },
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-14"
+          },
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-15"
+          },
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-150"
+          },
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-16"
+          },
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-17"
+          },
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-180"
+          },
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-21"
+          },
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-24"
+          },
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-26"
+          },
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-267"
+          },
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-29"
+          },
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-3"
+          },
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-31"
+          },
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-35"
+          },
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-37"
+          },
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-39"
+          },
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-43"
+          },
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-45"
+          },
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-46"
+          },
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-47"
+          },
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-49"
+          },
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-509"
+          },
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-52"
+          },
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-53"
+          },
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-545"
+          },
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-55"
+          },
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-555"
+          },
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-560"
+          },
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-561"
+          },
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-565"
+          },
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-59"
+          },
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-60"
+          },
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-600"
+          },
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-624"
+          },
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-625"
+          },
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-64"
+          },
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-652"
+          },
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-653"
+          },
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-679"
+          },
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-70"
+          },
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-71"
+          },
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-73"
+          },
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-74"
+          },
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-76"
+          },
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-77"
+          },
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-78"
+          },
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-79"
+          },
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-8"
+          },
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-80"
+          },
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-81"
+          },
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-85"
+          },
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-9"
+          },
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-92"
+          }
+        ]
+      }
+    ],
+    "abstentions": [],
+    "notes": []
+  },
+  "logic_flow": {
+    "task": {
+      "sub_question_id": "PG-capec-O6-555093bdf7",
+      "source": "capec",
+      "text": "Which attack patterns exploit at least 7 weaknesses?",
+      "entities": [
+        "AttackPattern",
+        "EXPLOITS_WEAKNESS",
+        "Weakness"
+      ],
+      "limits": {
+        "max_traversal_depth": 3,
+        "max_result_rows": 20000,
+        "query_timeout_ms": 60000
+      },
+      "join_key": null,
+      "seed_ids": [],
+      "rationale": "algebra probe set (Era 2 Step 9 Phase G)"
+    },
+    "results": [
+      {
+        "source": "capec",
+        "sub_question_id": "q1",
+        "sub_question": "",
+        "query": "g.V().hasLabel('AttackPattern').project('id', 'name', 'value').by('id').by(__.coalesce(__.values('name'), __.constant(null))).by(__.as('s1').out('EXPLOITS_WEAKNESS').hasLabel('Weakness').where(neq('s1')).dedup().count()).order().by(__.select('id')).fold().project('rows').by(__.identity())",
+        "ok": true,
+        "partial": false,
+        "error": null,
+        "summary": "Found 59 CAPEC record(s): CAPEC-1, CAPEC-10, CAPEC-120, CAPEC-121, CAPEC-127 … (+54 more).",
+        "traces": [
+          {
+            "step": "intake",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "source": "capec",
+              "card": "capec"
+            }
+          },
+          {
+            "step": "resolve",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "labels": [
+                "AttackPattern",
+                "Weakness"
+              ],
+              "relationships": [
+                "EXPLOITS_WEAKNESS"
+              ],
+              "seed_ids": [],
+              "join_key": null
+            }
+          },
+          {
+            "step": "gate",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "attempt": 1,
+              "template": "algebra",
+              "query": "g.V().hasLabel('AttackPattern').project('id', 'name', 'value').by('id').by(__.coalesce(__.values('name'), __.constant(null))).by(__.as('s1').out('EXPLOITS_WEAKNESS').hasLabel('Weakness').where(neq('s1')).dedup().count()).order().by(__.select('id')).fold().project('rows').by(__.identity())",
+              "injected": [],
+              "note": "compiled by the operator algebra (validated against the card; read-only by construction)",
+              "id_map": {}
+            }
+          },
+          {
+            "step": "execute",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "row_count": 59
+            }
+          },
+          {
+            "step": "algebra",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "result": {
+                "step": "q1",
+                "kind": "groupby",
+                "value": null,
+                "ids": [
+                  "CAPEC-1",
+                  "CAPEC-10",
+                  "CAPEC-120",
+                  "CAPEC-121",
+                  "CAPEC-127",
+                  "CAPEC-13",
+                  "CAPEC-14",
+                  "CAPEC-15",
+                  "CAPEC-150",
+                  "CAPEC-16",
+                  "CAPEC-17",
+                  "CAPEC-180",
+                  "CAPEC-21",
+                  "CAPEC-24",
+                  "CAPEC-26",
+                  "CAPEC-267",
+                  "CAPEC-29",
+                  "CAPEC-3",
+                  "CAPEC-31",
+                  "CAPEC-35",
+                  "CAPEC-37",
+                  "CAPEC-39",
+                  "CAPEC-43",
+                  "CAPEC-45",
+                  "CAPEC-46",
+                  "CAPEC-47",
+                  "CAPEC-49",
+                  "CAPEC-509",
+                  "CAPEC-52",
+                  "CAPEC-53",
+                  "CAPEC-545",
+                  "CAPEC-55",
+                  "CAPEC-555",
+                  "CAPEC-560",
+                  "CAPEC-561",
+                  "CAPEC-565",
+                  "CAPEC-59",
+                  "CAPEC-60",
+                  "CAPEC-600",
+                  "CAPEC-624",
+                  "CAPEC-625",
+                  "CAPEC-64",
+                  "CAPEC-652",
+                  "CAPEC-653",
+                  "CAPEC-679",
+                  "CAPEC-70",
+                  "CAPEC-71",
+                  "CAPEC-73",
+                  "CAPEC-74",
+                  "CAPEC-76",
+                  "CAPEC-77",
+                  "CAPEC-78",
+                  "CAPEC-79",
+                  "CAPEC-8",
+                  "CAPEC-80",
+                  "CAPEC-81",
+                  "CAPEC-85",
+                  "CAPEC-9",
+                  "CAPEC-92"
+                ],
+                "rows": [
+                  {
+                    "id": "CAPEC-1",
+                    "name": "Accessing Functionality Not Properly Constrained by ACLs",
+                    "value": 16
+                  },
+                  {
+                    "id": "CAPEC-10",
+                    "name": "Buffer Overflow via Environment Variables",
+                    "value": 10
+                  },
+                  {
+                    "id": "CAPEC-120",
+                    "name": "Double Encoding",
+                    "value": 10
+                  },
+                  {
+                    "id": "CAPEC-121",
+                    "name": "Exploit Non-Production Interfaces",
+                    "value": 10
+                  },
+                  {
+                    "id": "CAPEC-127",
+                    "name": "Directory Indexing",
+                    "value": 7
+                  },
+                  {
+                    "id": "CAPEC-13",
+                    "name": "Subverting Environment Variable Values",
+                    "value": 8
+                  },
+                  {
+                    "id": "CAPEC-14",
+                    "name": "Client-side Injection-induced Buffer Overflow",
+                    "value": 8
+                  },
+                  {
+                    "id": "CAPEC-15",
+                    "name": "Command Delimiters",
+                    "value": 11
+                  },
+                  {
+                    "id": "CAPEC-150",
+                    "name": "Collect Data from Common Resource Locations",
+                    "value": 7
+                  },
+                  {
+                    "id": "CAPEC-16",
+                    "name": "Dictionary-based Password Attack",
+                    "value": 7
+                  },
+                  {
+                    "id": "CAPEC-17",
+                    "name": "Using Malicious Files",
+                    "value": 7
+                  },
+                  {
+                    "id": "CAPEC-180",
+                    "name": "Exploiting Incorrectly Configured Access Control Security Levels",
+                    "value": 13
+                  },
+                  {
+                    "id": "CAPEC-21",
+                    "name": "Exploitation of Trusted Identifiers",
+                    "value": 9
+                  },
+                  {
+                    "id": "CAPEC-24",
+                    "name": "Filter Failure through Buffer Overflow",
+                    "value": 8
+                  },
+                  {
+                    "id": "CAPEC-26",
+                    "name": "Leveraging Race Conditions",
+                    "value": 12
+                  },
+                  {
+                    "id": "CAPEC-267",
+                    "name": "Leverage Alternate Encoding",
+                    "value": 9
+                  },
+                  {
+                    "id": "CAPEC-29",
+                    "name": "Leveraging Time-of-Check and Time-of-Use (TOCTOU) Race Conditions",
+                    "value": 9
+                  },
+                  {
+                    "id": "CAPEC-3",
+                    "name": "Using Leading 'Ghost' Character Sequences to Bypass Input Filters",
+                    "value": 12
+                  },
+                  {
+                    "id": "CAPEC-31",
+                    "name": "Accessing/Intercepting/Modifying HTTP Cookies",
+                    "value": 11
+                  },
+                  {
+                    "id": "CAPEC-35",
+                    "name": "Leverage Executable Code in Non-Executable Files",
+                    "value": 8
+                  },
+                  {
+                    "id": "CAPEC-37",
+                    "name": "Retrieve Embedded Sensitive Data",
+                    "value": 14
+                  },
+                  {
+                    "id": "CAPEC-39",
+                    "name": "Manipulating Opaque Client-based Data Tokens",
+                    "value": 9
+                  },
+                  {
+                    "id": "CAPEC-43",
+                    "name": "Exploiting Multiple Input Interpretation Layers",
+                    "value": 10
+                  },
+                  {
+                    "id": "CAPEC-45",
+                    "name": "Buffer Overflow via Symbolic Links",
+                    "value": 9
+                  },
+                  {
+                    "id": "CAPEC-46",
+                    "name": "Overflow Variables and Tags",
+                    "value": 8
+                  },
+                  {
+                    "id": "CAPEC-47",
+                    "name": "Buffer Overflow via Parameter Expansion",
+                    "value": 9
+                  },
+                  {
+                    "id": "CAPEC-49",
+                    "name": "Password Brute Forcing",
+                    "value": 8
+                  },
+                  {
+                    "id": "CAPEC-509",
+                    "name": "Kerberoasting",
+                    "value": 7
+                  },
+                  {
+                    "id": "CAPEC-52",
+                    "name": "Embedding NULL Bytes",
+                    "value": 7
+                  },
+                  {
+                    "id": "CAPEC-53",
+                    "name": "Postfix, Null Terminate, and Backslash",
+                    "value": 7
+                  },
+                  {
+                    "id": "CAPEC-545",
+                    "name": "Pull Data from System Resources",
+                    "value": 8
+                  },
+                  {
+                    "id": "CAPEC-55",
+                    "name": "Rainbow Table Password Cracking",
+                    "value": 8
+                  },
+                  {
+                    "id": "CAPEC-555",
+                    "name": "Remote Services with Stolen Credentials",
+                    "value": 7
+                  },
+                  {
+                    "id": "CAPEC-560",
+                    "name": "Use of Known Domain Credentials",
+                    "value": 8
+                  },
+                  {
+                    "id": "CAPEC-561",
+                    "name": "Windows Admin Shares with Stolen Credentials",
+                    "value": 7
+                  },
+                  {
+                    "id": "CAPEC-565",
+                    "name": "Password Spraying",
+                    "value": 7
+                  },
+                  {
+                    "id": "CAPEC-59",
+                    "name": "Session Credential Falsification through Prediction",
+                    "value": 11
+                  },
+                  {
+                    "id": "CAPEC-60",
+                    "name": "Reusing Session IDs (aka Session Replay)",
+                    "value": 10
+                  },
+                  {
+                    "id": "CAPEC-600",
+                    "name": "Credential Stuffing",
+                    "value": 7
+                  },
+                  {
+                    "id": "CAPEC-624",
+                    "name": "Hardware Fault Injection",
+                    "value": 8
+                  },
+                  {
+                    "id": "CAPEC-625",
+                    "name": "Mobile Device Fault Injection",
+                    "value": 8
+                  },
+                  {
+                    "id": "CAPEC-64",
+                    "name": "Using Slashes and URL Encoding Combined to Bypass Validation Logic",
+                    "value": 9
+                  },
+                  {
+                    "id": "CAPEC-652",
+                    "name": "Use of Known Kerberos Credentials",
+                    "value": 9
+                  },
+                  {
+                    "id": "CAPEC-653",
+                    "name": "Use of Known Operating System Credentials",
+                    "value": 7
+                  },
+                  {
+                    "id": "CAPEC-679",
+                    "name": "Exploitation of Improperly Configured or Implemented Memory Protections",
+                    "value": 9
+                  },
+                  {
+                    "id": "CAPEC-70",
+                    "name": "Try Common or Default Usernames and Passwords",
+                    "value": 7
+                  },
+                  {
+                    "id": "CAPEC-71",
+                    "name": "Using Unicode Encoding to Bypass Validation Logic",
+                    "value": 11
+                  },
+                  {
+                    "id": "CAPEC-73",
+                    "name": "User-Controlled Filename",
+                    "value": 8
+                  },
+                  {
+                    "id": "CAPEC-74",
+                    "name": "Manipulating State",
+                    "value": 8
+                  },
+                  {
+                    "id": "CAPEC-76",
+                    "name": "Manipulating Web Input to File System Calls",
+                    "value": 11
+                  }
+                ],
+                "total": 59,
+                "complete": true,
+                "info": {}
+              },
+              "op": "groupby",
+              "ir": {
+                "@": "GroupBy",
+                "end_conds": [],
+                "fn": "count",
+                "having": [
+                  ">=",
+                  7
+                ],
+                "hops": [
+                  {
+                    "@": "Hop",
+                    "direction": "out",
+                    "edge_conds": [],
+                    "relation": "EXPLOITS_WEAKNESS",
+                    "target": "Weakness"
+                  }
+                ],
+                "k": null,
+                "members": {
+                  "@": "Scan",
+                  "label": "AttackPattern"
+                },
+                "order": null,
+                "prop": null
+              },
+              "fn": "count",
+              "property": null,
+              "order": null
+            }
+          }
+        ],
+        "records": [
+          {
+            "primary_id": "CAPEC-1",
+            "name": "Accessing Functionality Not Properly Constrained by ACLs",
+            "label": "AttackPattern",
+            "description": "",
+            "properties": {
+              "value": 16
+            },
+            "facets": [],
+            "join_values": [],
+            "related": []
+          },
+          {
+            "primary_id": "CAPEC-10",
+            "name": "Buffer Overflow via Environment Variables",
+            "label": "AttackPattern",
+            "description": "",
+            "properties": {
+              "value": 10
+            },
+            "facets": [],
+            "join_values": [],
+            "related": []
+          },
+          {
+            "primary_id": "CAPEC-120",
+            "name": "Double Encoding",
+            "label": "AttackPattern",
+            "description": "",
+            "properties": {
+              "value": 10
+            },
+            "facets": [],
+            "join_values": [],
+            "related": []
+          },
+          {
+            "primary_id": "CAPEC-121",
+            "name": "Exploit Non-Production Interfaces",
+            "label": "AttackPattern",
+            "description": "",
+            "properties": {
+              "value": 10
+            },
+            "facets": [],
+            "join_values": [],
+            "related": []
+          },
+          {
+            "primary_id": "CAPEC-127",
+            "name": "Directory Indexing",
+            "label": "AttackPattern",
+            "description": "",
+            "properties": {
+              "value": 7
+            },
+            "facets": [],
+            "join_values": [],
+            "related": []
+          },
+          {
+            "primary_id": "CAPEC-13",
+            "name": "Subverting Environment Variable Values",
+            "label": "AttackPattern",
+            "description": "",
+            "properties": {
+              "value": 8
+            },
+            "facets": [],
+            "join_values": [],
+            "related": []
+          },
+          {
+            "primary_id": "CAPEC-14",
+            "name": "Client-side Injection-induced Buffer Overflow",
+            "label": "AttackPattern",
+            "description": "",
+            "properties": {
+              "value": 8
+            },
+            "facets": [],
+            "join_values": [],
+            "related": []
+          },
+          {
+            "primary_id": "CAPEC-15",
+            "name": "Command Delimiters",
+            "label": "AttackPattern",
+            "description": "",
+            "properties": {
+              "value": 11
+            },
+            "facets": [],
+            "join_values": [],
+            "related": []
+          },
+          {
+            "primary_id": "CAPEC-150",
+            "name": "Collect Data from Common Resource Locations",
+            "label": "AttackPattern",
+            "description": "",
+            "properties": {
+              "value": 7
+            },
+            "facets": [],
+            "join_values": [],
+            "related": []
+          },
+          {
+            "primary_id": "CAPEC-16",
+            "name": "Dictionary-based Password Attack",
+            "label": "AttackPattern",
+            "description": "",
+            "properties": {
+              "value": 7
+            },
+            "facets": [],
+            "join_values": [],
+            "related": []
+          },
+          {
+            "primary_id": "CAPEC-17",
+            "name": "Using Malicious Files",
+            "label": "AttackPattern",
+            "description": "",
+            "properties": {
+              "value": 7
+            },
+            "facets": [],
+            "join_values": [],
+            "related": []
+          },
+          {
+            "primary_id": "CAPEC-180",
+            "name": "Exploiting Incorrectly Configured Access Control Security Levels",
+            "label": "AttackPattern",
+            "description": "",
+            "properties": {
+              "value": 13
+            },
+            "facets": [],
+            "join_values": [],
+            "related": []
+          },
+          {
+            "primary_id": "CAPEC-21",
+            "name": "Exploitation of Trusted Identifiers",
+            "label": "AttackPattern",
+            "description": "",
+            "properties": {
+              "value": 9
+            },
+            "facets": [],
+            "join_values": [],
+            "related": []
+          },
+          {
+            "primary_id": "CAPEC-24",
+            "name": "Filter Failure through Buffer Overflow",
+            "label": "AttackPattern",
+            "description": "",
+            "properties": {
+              "value": 8
+            },
+            "facets": [],
+            "join_values": [],
+            "related": []
+          },
+          {
+            "primary_id": "CAPEC-26",
+            "name": "Leveraging Race Conditions",
+            "label": "AttackPattern",
+            "description": "",
+            "properties": {
+              "value": 12
+            },
+            "facets": [],
+            "join_values": [],
+            "related": []
+          },
+          {
+            "primary_id": "CAPEC-267",
+            "name": "Leverage Alternate Encoding",
+            "label": "AttackPattern",
+            "description": "",
+            "properties": {
+              "value": 9
+            },
+            "facets": [],
+            "join_values": [],
+            "related": []
+          },
+          {
+            "primary_id": "CAPEC-29",
+            "name": "Leveraging Time-of-Check and Time-of-Use (TOCTOU) Race Conditions",
+            "label": "AttackPattern",
+            "description": "",
+            "properties": {
+              "value": 9
+            },
+            "facets": [],
+            "join_values": [],
+            "related": []
+          },
+          {
+            "primary_id": "CAPEC-3",
+            "name": "Using Leading 'Ghost' Character Sequences to Bypass Input Filters",
+            "label": "AttackPattern",
+            "description": "",
+            "properties": {
+              "value": 12
+            },
+            "facets": [],
+            "join_values": [],
+            "related": []
+          },
+          {
+            "primary_id": "CAPEC-31",
+            "name": "Accessing/Intercepting/Modifying HTTP Cookies",
+            "label": "AttackPattern",
+            "description": "",
+            "properties": {
+              "value": 11
+            },
+            "facets": [],
+            "join_values": [],
+            "related": []
+          },
+          {
+            "primary_id": "CAPEC-35",
+            "name": "Leverage Executable Code in Non-Executable Files",
+            "label": "AttackPattern",
+            "description": "",
+            "properties": {
+              "value": 8
+            },
+            "facets": [],
+            "join_values": [],
+            "related": []
+          },
+          {
+            "primary_id": "CAPEC-37",
+            "name": "Retrieve Embedded Sensitive Data",
+            "label": "AttackPattern",
+            "description": "",
+            "properties": {
+              "value": 14
+            },
+            "facets": [],
+            "join_values": [],
+            "related": []
+          },
+          {
+            "primary_id": "CAPEC-39",
+            "name": "Manipulating Opaque Client-based Data Tokens",
+            "label": "AttackPattern",
+            "description": "",
+            "properties": {
+              "value": 9
+            },
+            "facets": [],
+            "join_values": [],
+            "related": []
+          },
+          {
+            "primary_id": "CAPEC-43",
+            "name": "Exploiting Multiple Input Interpretation Layers",
+            "label": "AttackPattern",
+            "description": "",
+            "properties": {
+              "value": 10
+            },
+            "facets": [],
+            "join_values": [],
+            "related": []
+          },
+          {
+            "primary_id": "CAPEC-45",
+            "name": "Buffer Overflow via Symbolic Links",
+            "label": "AttackPattern",
+            "description": "",
+            "properties": {
+              "value": 9
+            },
+            "facets": [],
+            "join_values": [],
+            "related": []
+          },
+          {
+            "primary_id": "CAPEC-46",
+            "name": "Overflow Variables and Tags",
+            "label": "AttackPattern",
+            "description": "",
+            "properties": {
+              "value": 8
+            },
+            "facets": [],
+            "join_values": [],
+            "related": []
+          },
+          {
+            "primary_id": "CAPEC-47",
+            "name": "Buffer Overflow via Parameter Expansion",
+            "label": "AttackPattern",
+            "description": "",
+            "properties": {
+              "value": 9
+            },
+            "facets": [],
+            "join_values": [],
+            "related": []
+          },
+          {
+            "primary_id": "CAPEC-49",
+            "name": "Password Brute Forcing",
+            "label": "AttackPattern",
+            "description": "",
+            "properties": {
+              "value": 8
+            },
+            "facets": [],
+            "join_values": [],
+            "related": []
+          },
+          {
+            "primary_id": "CAPEC-509",
+            "name": "Kerberoasting",
+            "label": "AttackPattern",
+            "description": "",
+            "properties": {
+              "value": 7
+            },
+            "facets": [],
+            "join_values": [],
+            "related": []
+          },
+          {
+            "primary_id": "CAPEC-52",
+            "name": "Embedding NULL Bytes",
+            "label": "AttackPattern",
+            "description": "",
+            "properties": {
+              "value": 7
+            },
+            "facets": [],
+            "join_values": [],
+            "related": []
+          },
+          {
+            "primary_id": "CAPEC-53",
+            "name": "Postfix, Null Terminate, and Backslash",
+            "label": "AttackPattern",
+            "description": "",
+            "properties": {
+              "value": 7
+            },
+            "facets": [],
+            "join_values": [],
+            "related": []
+          },
+          {
+            "primary_id": "CAPEC-545",
+            "name": "Pull Data from System Resources",
+            "label": "AttackPattern",
+            "description": "",
+            "properties": {
+              "value": 8
+            },
+            "facets": [],
+            "join_values": [],
+            "related": []
+          },
+          {
+            "primary_id": "CAPEC-55",
+            "name": "Rainbow Table Password Cracking",
+            "label": "AttackPattern",
+            "description": "",
+            "properties": {
+              "value": 8
+            },
+            "facets": [],
+            "join_values": [],
+            "related": []
+          },
+          {
+            "primary_id": "CAPEC-555",
+            "name": "Remote Services with Stolen Credentials",
+            "label": "AttackPattern",
+            "description": "",
+            "properties": {
+              "value": 7
+            },
+            "facets": [],
+            "join_values": [],
+            "related": []
+          },
+          {
+            "primary_id": "CAPEC-560",
+            "name": "Use of Known Domain Credentials",
+            "label": "AttackPattern",
+            "description": "",
+            "properties": {
+              "value": 8
+            },
+            "facets": [],
+            "join_values": [],
+            "related": []
+          },
+          {
+            "primary_id": "CAPEC-561",
+            "name": "Windows Admin Shares with Stolen Credentials",
+            "label": "AttackPattern",
+            "description": "",
+            "properties": {
+              "value": 7
+            },
+            "facets": [],
+            "join_values": [],
+            "related": []
+          },
+          {
+            "primary_id": "CAPEC-565",
+            "name": "Password Spraying",
+            "label": "AttackPattern",
+            "description": "",
+            "properties": {
+              "value": 7
+            },
+            "facets": [],
+            "join_values": [],
+            "related": []
+          },
+          {
+            "primary_id": "CAPEC-59",
+            "name": "Session Credential Falsification through Prediction",
+            "label": "AttackPattern",
+            "description": "",
+            "properties": {
+              "value": 11
+            },
+            "facets": [],
+            "join_values": [],
+            "related": []
+          },
+          {
+            "primary_id": "CAPEC-60",
+            "name": "Reusing Session IDs (aka Session Replay)",
+            "label": "AttackPattern",
+            "description": "",
+            "properties": {
+              "value": 10
+            },
+            "facets": [],
+            "join_values": [],
+            "related": []
+          },
+          {
+            "primary_id": "CAPEC-600",
+            "name": "Credential Stuffing",
+            "label": "AttackPattern",
+            "description": "",
+            "properties": {
+              "value": 7
+            },
+            "facets": [],
+            "join_values": [],
+            "related": []
+          },
+          {
+            "primary_id": "CAPEC-624",
+            "name": "Hardware Fault Injection",
+            "label": "AttackPattern",
+            "description": "",
+            "properties": {
+              "value": 8
+            },
+            "facets": [],
+            "join_values": [],
+            "related": []
+          },
+          {
+            "primary_id": "CAPEC-625",
+            "name": "Mobile Device Fault Injection",
+            "label": "AttackPattern",
+            "description": "",
+            "properties": {
+              "value": 8
+            },
+            "facets": [],
+            "join_values": [],
+            "related": []
+          },
+          {
+            "primary_id": "CAPEC-64",
+            "name": "Using Slashes and URL Encoding Combined to Bypass Validation Logic",
+            "label": "AttackPattern",
+            "description": "",
+            "properties": {
+              "value": 9
+            },
+            "facets": [],
+            "join_values": [],
+            "related": []
+          },
+          {
+            "primary_id": "CAPEC-652",
+            "name": "Use of Known Kerberos Credentials",
+            "label": "AttackPattern",
+            "description": "",
+            "properties": {
+              "value": 9
+            },
+            "facets": [],
+            "join_values": [],
+            "related": []
+          },
+          {
+            "primary_id": "CAPEC-653",
+            "name": "Use of Known Operating System Credentials",
+            "label": "AttackPattern",
+            "description": "",
+            "properties": {
+              "value": 7
+            },
+            "facets": [],
+            "join_values": [],
+            "related": []
+          },
+          {
+            "primary_id": "CAPEC-679",
+            "name": "Exploitation of Improperly Configured or Implemented Memory Protections",
+            "label": "AttackPattern",
+            "description": "",
+            "properties": {
+              "value": 9
+            },
+            "facets": [],
+            "join_values": [],
+            "related": []
+          },
+          {
+            "primary_id": "CAPEC-70",
+            "name": "Try Common or Default Usernames and Passwords",
+            "label": "AttackPattern",
+            "description": "",
+            "properties": {
+              "value": 7
+            },
+            "facets": [],
+            "join_values": [],
+            "related": []
+          },
+          {
+            "primary_id": "CAPEC-71",
+            "name": "Using Unicode Encoding to Bypass Validation Logic",
+            "label": "AttackPattern",
+            "description": "",
+            "properties": {
+              "value": 11
+            },
+            "facets": [],
+            "join_values": [],
+            "related": []
+          },
+          {
+            "primary_id": "CAPEC-73",
+            "name": "User-Controlled Filename",
+            "label": "AttackPattern",
+            "description": "",
+            "properties": {
+              "value": 8
+            },
+            "facets": [],
+            "join_values": [],
+            "related": []
+          },
+          {
+            "primary_id": "CAPEC-74",
+            "name": "Manipulating State",
+            "label": "AttackPattern",
+            "description": "",
+            "properties": {
+              "value": 8
+            },
+            "facets": [],
+            "join_values": [],
+            "related": []
+          },
+          {
+            "primary_id": "CAPEC-76",
+            "name": "Manipulating Web Input to File System Calls",
+            "label": "AttackPattern",
+            "description": "",
+            "properties": {
+              "value": 11
+            },
+            "facets": [],
+            "join_values": [],
+            "related": []
+          },
+          {
+            "primary_id": "CAPEC-77",
+            "name": "Manipulating User-Controlled Variables",
+            "label": "AttackPattern",
+            "description": "",
+            "properties": {
+              "value": 7
+            },
+            "facets": [],
+            "join_values": [],
+            "related": []
+          },
+          {
+            "primary_id": "CAPEC-78",
+            "name": "Using Escaped Slashes in Alternate Encoding",
+            "label": "AttackPattern",
+            "description": "",
+            "properties": {
+              "value": 10
+            },
+            "facets": [],
+            "join_values": [],
+            "related": []
+          },
+          {
+            "primary_id": "CAPEC-79",
+            "name": "Using Slashes in Alternate Encoding",
+            "label": "AttackPattern",
+            "description": "",
+            "properties": {
+              "value": 11
+            },
+            "facets": [],
+            "join_values": [],
+            "related": []
+          },
+          {
+            "primary_id": "CAPEC-8",
+            "name": "Buffer Overflow in an API Call",
+            "label": "AttackPattern",
+            "description": "",
+            "properties": {
+              "value": 8
+            },
+            "facets": [],
+            "join_values": [],
+            "related": []
+          },
+          {
+            "primary_id": "CAPEC-80",
+            "name": "Using UTF-8 Encoding to Bypass Validation Logic",
+            "label": "AttackPattern",
+            "description": "",
+            "properties": {
+              "value": 9
+            },
+            "facets": [],
+            "join_values": [],
+            "related": []
+          },
+          {
+            "primary_id": "CAPEC-81",
+            "name": "Web Server Logs Tampering",
+            "label": "AttackPattern",
+            "description": "",
+            "properties": {
+              "value": 10
+            },
+            "facets": [],
+            "join_values": [],
+            "related": []
+          },
+          {
+            "primary_id": "CAPEC-85",
+            "name": "AJAX Footprinting",
+            "label": "AttackPattern",
+            "description": "",
+            "properties": {
+              "value": 9
+            },
+            "facets": [],
+            "join_values": [],
+            "related": []
+          },
+          {
+            "primary_id": "CAPEC-9",
+            "name": "Buffer Overflow in Local Command-Line Utilities",
+            "label": "AttackPattern",
+            "description": "",
+            "properties": {
+              "value": 8
+            },
+            "facets": [],
+            "join_values": [],
+            "related": []
+          },
+          {
+            "primary_id": "CAPEC-92",
+            "name": "Forced Integer Overflow",
+            "label": "AttackPattern",
+            "description": "",
+            "properties": {
+              "value": 7
+            },
+            "facets": [],
+            "join_values": [],
+            "related": []
+          }
+        ]
+      }
+    ]
+  },
+  "deterministic_scores": {
+    "correlation": null,
+    "mapping_recall": null,
+    "coverage": null,
+    "provenance": {
+      "citations": 118,
+      "compliant": 118,
+      "citation_provenance_rate": 1.0,
+      "abstention_proof_ok": true,
+      "fully_provenanced": true
+    },
+    "inspectability": {
+      "citation_coverage": 1.0,
+      "traceability": 1.0,
+      "abstention_proofs": 1.0,
+      "inspectability": 1.0
+    }
+  },
+  "arm": "planned_llm_typed_full",
+  "run_meta": {
+    "planner": "llm-typed-full",
+    "synthesis": "deterministic",
+    "use_llm": true,
+    "llm_synthesis": false,
+    "llm_specialist": false,
+    "rewrite": null,
+    "observed_plan": [
+      {
+        "sub_question_id": "q1",
+        "source": "capec",
+        "text": "",
+        "entities": [
+          "AttackPattern",
+          "EXPLOITS_WEAKNESS",
+          "Weakness"
+        ],
+        "seed_ids": [],
+        "depends_on": null,
+        "limits": {
+          "max_traversal_depth": 3,
+          "max_result_rows": 1000,
+          "query_timeout_ms": 5000
+        },
+        "step": {
+          "kind": "algebra",
+          "anchor_label": "AttackPattern",
+          "anchor_ids": [],
+          "hops": [],
+          "depth": 1,
+          "algebra": {
+            "ir": {
+              "@": "GroupBy",
+              "end_conds": [],
+              "fn": "count",
+              "having": [
+                ">=",
+                7
+              ],
+              "hops": [
+                {
+                  "@": "Hop",
+                  "direction": "out",
+                  "edge_conds": [],
+                  "relation": "EXPLOITS_WEAKNESS",
+                  "target": "Weakness"
+                }
+              ],
+              "k": null,
+              "members": {
+                "@": "Scan",
+                "label": "AttackPattern"
+              },
+              "order": null,
+              "prop": null
+            },
+            "labels": [
+              "AttackPattern"
+            ],
+            "op": "groupby"
+          }
+        }
+      }
+    ],
+    "exit_code": 0,
+    "status": "answered",
+    "timings": {
+      "plan_ms": 12097.721,
+      "specialists": [
+        {
+          "sub_question": "q1",
+          "source": "capec",
+          "ms": 36.48
+        }
+      ],
+      "synthesis_ms": 17.772,
+      "total_ms": 12216.46
+    },
+    "registry_model": "qwen38-27b",
+    "drafter_used": "TypedDrafter",
+    "typed": [
+      {
+        "mode": "full",
+        "served_model": "qwen38-27b/248046",
+        "model_calls": 2,
+        "catalog_calls": [
+          {
+            "name": "find_schema",
+            "args": {
+              "text": "EXPLOITS_WEAKNESS",
+              "graph": "capec"
+            },
+            "ok": true
+          }
+        ],
+        "prompt_tokens": 14390,
+        "completion_tokens": 483,
+        "emitted": true,
+        "parse_error": null,
+        "first_steps": 1,
+        "first_refused": 0,
+        "first_fixes": 0,
+        "valid_first": true,
+        "valid_first_raw": true,
+        "repair_used": false,
+        "fixed_by_repair": false,
+        "still_refused": 0,
+        "final_steps": 1,
+        "coercions": [],
+        "refusals": [],
+        "plan_problems": [],
+        "replies": [
+          {
+            "status": "ok",
+            "finish_reason": "tool_calls",
+            "calls": [
+              "find_schema"
+            ],
+            "text_chars": 0,
+            "repairs": []
+          },
+          {
+            "status": "ok",
+            "finish_reason": "stop",
+            "calls": [],
+            "text_chars": 381,
+            "repairs": []
+          }
+        ],
+        "error": null,
+        "fallback": null,
+        "seconds": 12.084,
+        "n_catalog_calls": 1,
+        "fixed_by_coercion": false
+      }
+    ],
+    "seams": {
+      "planner_llm": true,
+      "drafter": "TypedDrafter",
+      "specialist_llm": false,
+      "synthesis_llm": false,
+      "generic_only": "true"
+    },
+    "wall_s": 12.225,
+    "algebra_results": [
+      {
+        "step": "q1",
+        "kind": "groupby",
+        "value": null,
+        "ids": [
+          "CAPEC-1",
+          "CAPEC-10",
+          "CAPEC-120",
+          "CAPEC-121",
+          "CAPEC-127",
+          "CAPEC-13",
+          "CAPEC-14",
+          "CAPEC-15",
+          "CAPEC-150",
+          "CAPEC-16",
+          "CAPEC-17",
+          "CAPEC-180",
+          "CAPEC-21",
+          "CAPEC-24",
+          "CAPEC-26",
+          "CAPEC-267",
+          "CAPEC-29",
+          "CAPEC-3",
+          "CAPEC-31",
+          "CAPEC-35",
+          "CAPEC-37",
+          "CAPEC-39",
+          "CAPEC-43",
+          "CAPEC-45",
+          "CAPEC-46",
+          "CAPEC-47",
+          "CAPEC-49",
+          "CAPEC-509",
+          "CAPEC-52",
+          "CAPEC-53",
+          "CAPEC-545",
+          "CAPEC-55",
+          "CAPEC-555",
+          "CAPEC-560",
+          "CAPEC-561",
+          "CAPEC-565",
+          "CAPEC-59",
+          "CAPEC-60",
+          "CAPEC-600",
+          "CAPEC-624",
+          "CAPEC-625",
+          "CAPEC-64",
+          "CAPEC-652",
+          "CAPEC-653",
+          "CAPEC-679",
+          "CAPEC-70",
+          "CAPEC-71",
+          "CAPEC-73",
+          "CAPEC-74",
+          "CAPEC-76",
+          "CAPEC-77",
+          "CAPEC-78",
+          "CAPEC-79",
+          "CAPEC-8",
+          "CAPEC-80",
+          "CAPEC-81",
+          "CAPEC-85",
+          "CAPEC-9",
+          "CAPEC-92"
+        ],
+        "rows": [
+          {
+            "id": "CAPEC-1",
+            "name": "Accessing Functionality Not Properly Constrained by ACLs",
+            "value": 16
+          },
+          {
+            "id": "CAPEC-10",
+            "name": "Buffer Overflow via Environment Variables",
+            "value": 10
+          },
+          {
+            "id": "CAPEC-120",
+            "name": "Double Encoding",
+            "value": 10
+          },
+          {
+            "id": "CAPEC-121",
+            "name": "Exploit Non-Production Interfaces",
+            "value": 10
+          },
+          {
+            "id": "CAPEC-127",
+            "name": "Directory Indexing",
+            "value": 7
+          },
+          {
+            "id": "CAPEC-13",
+            "name": "Subverting Environment Variable Values",
+            "value": 8
+          },
+          {
+            "id": "CAPEC-14",
+            "name": "Client-side Injection-induced Buffer Overflow",
+            "value": 8
+          },
+          {
+            "id": "CAPEC-15",
+            "name": "Command Delimiters",
+            "value": 11
+          },
+          {
+            "id": "CAPEC-150",
+            "name": "Collect Data from Common Resource Locations",
+            "value": 7
+          },
+          {
+            "id": "CAPEC-16",
+            "name": "Dictionary-based Password Attack",
+            "value": 7
+          },
+          {
+            "id": "CAPEC-17",
+            "name": "Using Malicious Files",
+            "value": 7
+          },
+          {
+            "id": "CAPEC-180",
+            "name": "Exploiting Incorrectly Configured Access Control Security Levels",
+            "value": 13
+          },
+          {
+            "id": "CAPEC-21",
+            "name": "Exploitation of Trusted Identifiers",
+            "value": 9
+          },
+          {
+            "id": "CAPEC-24",
+            "name": "Filter Failure through Buffer Overflow",
+            "value": 8
+          },
+          {
+            "id": "CAPEC-26",
+            "name": "Leveraging Race Conditions",
+            "value": 12
+          },
+          {
+            "id": "CAPEC-267",
+            "name": "Leverage Alternate Encoding",
+            "value": 9
+          },
+          {
+            "id": "CAPEC-29",
+            "name": "Leveraging Time-of-Check and Time-of-Use (TOCTOU) Race Conditions",
+            "value": 9
+          },
+          {
+            "id": "CAPEC-3",
+            "name": "Using Leading 'Ghost' Character Sequences to Bypass Input Filters",
+            "value": 12
+          },
+          {
+            "id": "CAPEC-31",
+            "name": "Accessing/Intercepting/Modifying HTTP Cookies",
+            "value": 11
+          },
+          {
+            "id": "CAPEC-35",
+            "name": "Leverage Executable Code in Non-Executable Files",
+            "value": 8
+          },
+          {
+            "id": "CAPEC-37",
+            "name": "Retrieve Embedded Sensitive Data",
+            "value": 14
+          },
+          {
+            "id": "CAPEC-39",
+            "name": "Manipulating Opaque Client-based Data Tokens",
+            "value": 9
+          },
+          {
+            "id": "CAPEC-43",
+            "name": "Exploiting Multiple Input Interpretation Layers",
+            "value": 10
+          },
+          {
+            "id": "CAPEC-45",
+            "name": "Buffer Overflow via Symbolic Links",
+            "value": 9
+          },
+          {
+            "id": "CAPEC-46",
+            "name": "Overflow Variables and Tags",
+            "value": 8
+          },
+          {
+            "id": "CAPEC-47",
+            "name": "Buffer Overflow via Parameter Expansion",
+            "value": 9
+          },
+          {
+            "id": "CAPEC-49",
+            "name": "Password Brute Forcing",
+            "value": 8
+          },
+          {
+            "id": "CAPEC-509",
+            "name": "Kerberoasting",
+            "value": 7
+          },
+          {
+            "id": "CAPEC-52",
+            "name": "Embedding NULL Bytes",
+            "value": 7
+          },
+          {
+            "id": "CAPEC-53",
+            "name": "Postfix, Null Terminate, and Backslash",
+            "value": 7
+          },
+          {
+            "id": "CAPEC-545",
+            "name": "Pull Data from System Resources",
+            "value": 8
+          },
+          {
+            "id": "CAPEC-55",
+            "name": "Rainbow Table Password Cracking",
+            "value": 8
+          },
+          {
+            "id": "CAPEC-555",
+            "name": "Remote Services with Stolen Credentials",
+            "value": 7
+          },
+          {
+            "id": "CAPEC-560",
+            "name": "Use of Known Domain Credentials",
+            "value": 8
+          },
+          {
+            "id": "CAPEC-561",
+            "name": "Windows Admin Shares with Stolen Credentials",
+            "value": 7
+          },
+          {
+            "id": "CAPEC-565",
+            "name": "Password Spraying",
+            "value": 7
+          },
+          {
+            "id": "CAPEC-59",
+            "name": "Session Credential Falsification through Prediction",
+            "value": 11
+          },
+          {
+            "id": "CAPEC-60",
+            "name": "Reusing Session IDs (aka Session Replay)",
+            "value": 10
+          },
+          {
+            "id": "CAPEC-600",
+            "name": "Credential Stuffing",
+            "value": 7
+          },
+          {
+            "id": "CAPEC-624",
+            "name": "Hardware Fault Injection",
+            "value": 8
+          },
+          {
+            "id": "CAPEC-625",
+            "name": "Mobile Device Fault Injection",
+            "value": 8
+          },
+          {
+            "id": "CAPEC-64",
+            "name": "Using Slashes and URL Encoding Combined to Bypass Validation Logic",
+            "value": 9
+          },
+          {
+            "id": "CAPEC-652",
+            "name": "Use of Known Kerberos Credentials",
+            "value": 9
+          },
+          {
+            "id": "CAPEC-653",
+            "name": "Use of Known Operating System Credentials",
+            "value": 7
+          },
+          {
+            "id": "CAPEC-679",
+            "name": "Exploitation of Improperly Configured or Implemented Memory Protections",
+            "value": 9
+          },
+          {
+            "id": "CAPEC-70",
+            "name": "Try Common or Default Usernames and Passwords",
+            "value": 7
+          },
+          {
+            "id": "CAPEC-71",
+            "name": "Using Unicode Encoding to Bypass Validation Logic",
+            "value": 11
+          },
+          {
+            "id": "CAPEC-73",
+            "name": "User-Controlled Filename",
+            "value": 8
+          },
+          {
+            "id": "CAPEC-74",
+            "name": "Manipulating State",
+            "value": 8
+          },
+          {
+            "id": "CAPEC-76",
+            "name": "Manipulating Web Input to File System Calls",
+            "value": 11
+          }
+        ],
+        "total": 59,
+        "complete": true,
+        "info": {}
+      }
+    ]
+  },
+  "evidence_volume": {
+    "results": 1,
+    "records": 59,
+    "related": 0
+  }
+}

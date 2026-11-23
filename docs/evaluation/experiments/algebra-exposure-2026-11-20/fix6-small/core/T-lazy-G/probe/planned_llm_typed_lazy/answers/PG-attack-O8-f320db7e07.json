@@ -1,0 +1,305 @@
+{
+  "id": "PG-attack-O8-f320db7e07",
+  "kind": "attack",
+  "tier": "algebra-probe",
+  "category": "PG-attack",
+  "question": "What is the shortest chain of connections, following any kind of link in either direction, between group G0019 (Naikon) and group G1051 (Medusa Group)?",
+  "gold": {
+    "assertions": {
+      "min_records": 0,
+      "must_include_ids": [],
+      "must_include_related": []
+    },
+    "ex_gold": {
+      "pool": "algebra",
+      "scheme": "attack",
+      "kind": "set",
+      "expected": [
+        "G0019",
+        "G1051",
+        "S0029",
+        "T1016",
+        "T1018",
+        "T1046",
+        "T1047",
+        "T1518.001"
+      ]
+    }
+  },
+  "answer": {
+    "headline": "No records were returned by the routed specialists; 2 question(s) the sources don't establish.",
+    "narrative": "I couldn't find 'CanFollow' or 'CanPrecede' or 'Category' or 'TaxonomyEntry' in the live capec and attack graphs. Check the name, or tell me the entity's catalogue id and I'll look it up.",
+    "composer": "deterministic",
+    "fallback_reason": null,
+    "claims": [],
+    "abstentions": [
+      {
+        "source": "capec",
+        "statement": "No entity named 'CanFollow' or 'CanPrecede' or 'Category' or 'TaxonomyEntry' was found in the capec source. Check the name, or give its catalogue id.",
+        "query": "g.V().hasLabel(\"AttackPattern\", \"View\", \"Category\").has(\"name\", TextP.regex(\"(?i).*(CanFollow|CanPrecede|TaxonomyEntry|Naikon).*\")).project(\"node\",\"out\",\"in\").by(elementMap()).by(outE().project(\"rel\",\"label\").by(label()).by(inV().label()).fold()).by(inE().project(\"rel\",\"label\").by(label()).by(outV().label()).fold()).limit(1000)"
+      },
+      {
+        "source": "attack",
+        "statement": "The attack source doesn't establish this — the sub-question it depends on (q2) produced no seed identifiers, so no query was executed for: In attack, identify Group relevant to: What is the shortest chain of connections, following any kind of link in either direction, between group G0019 (Naikon) and group G1051 (Medusa Group)?",
+        "query": ""
+      }
+    ],
+    "notes": []
+  },
+  "logic_flow": {
+    "task": {
+      "sub_question_id": "PG-attack-O8-f320db7e07",
+      "source": "attack",
+      "text": "What is the shortest chain of connections, following any kind of link in either direction, between group G0019 (Naikon) and group G1051 (Medusa Group)?",
+      "entities": [
+        "Group",
+        "Group"
+      ],
+      "limits": {
+        "max_traversal_depth": 3,
+        "max_result_rows": 20000,
+        "query_timeout_ms": 60000
+      },
+      "join_key": null,
+      "seed_ids": [
+        "G0019",
+        "G1051"
+      ],
+      "rationale": "algebra probe set (Era 2 Step 9 Phase G)"
+    },
+    "results": [
+      {
+        "source": "capec",
+        "sub_question_id": "q2",
+        "sub_question": "In capec, identify CanFollow, CanPrecede, Category, TaxonomyEntry relevant to: What is the shortest chain of connections, following any kind of link in either direction, between group G0019 (Naikon) and group G1051 (Medusa Group)?",
+        "query": "g.V().hasLabel(\"AttackPattern\", \"View\", \"Category\").has(\"name\", TextP.regex(\"(?i).*(CanFollow|CanPrecede|TaxonomyEntry|Naikon).*\")).project(\"node\",\"out\",\"in\").by(elementMap()).by(outE().project(\"rel\",\"label\").by(label()).by(inV().label()).fold()).by(inE().project(\"rel\",\"label\").by(label()).by(outV().label()).fold()).limit(1000)",
+        "ok": true,
+        "partial": false,
+        "error": null,
+        "summary": "No CAPEC records found.",
+        "traces": [
+          {
+            "step": "intake",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "source": "capec",
+              "card": "capec"
+            }
+          },
+          {
+            "step": "resolve",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "labels": [
+                "Category",
+                "TaxonomyEntry"
+              ],
+              "relationships": [
+                "CanFollow",
+                "CanPrecede"
+              ],
+              "seed_ids": [],
+              "join_key": "attack-technique-id"
+            }
+          },
+          {
+            "step": "gate",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "attempt": 1,
+              "template": "describe_by_name",
+              "query": "g.V().hasLabel(\"AttackPattern\", \"View\", \"Category\").has(\"name\", TextP.regex(\"(?i).*(CanFollow|CanPrecede|TaxonomyEntry|Naikon).*\")).project(\"node\",\"out\",\"in\").by(elementMap()).by(outE().project(\"rel\",\"label\").by(label()).by(inV().label()).fold()).by(inE().project(\"rel\",\"label\").by(label()).by(outV().label()).fold()).limit(1000)",
+              "injected": [],
+              "timing_ms": 0.326
+            }
+          },
+          {
+            "step": "execute",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "row_count": 0,
+              "timing_ms": 12.7,
+              "row_ceiling": 1000,
+              "truncated": false
+            }
+          },
+          {
+            "step": "assess",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "row_count": 0,
+              "timing_ms": 0.008
+            }
+          },
+          {
+            "step": "normalize",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "record_count": 0,
+              "timing_ms": 0.004
+            }
+          }
+        ],
+        "records": []
+      },
+      {
+        "source": "attack",
+        "sub_question_id": "q1",
+        "sub_question": "In attack, identify Group relevant to: What is the shortest chain of connections, following any kind of link in either direction, between group G0019 (Naikon) and group G1051 (Medusa Group)?",
+        "query": "",
+        "ok": true,
+        "partial": false,
+        "error": null,
+        "summary": "Skipped: this sub-question depends on q2 for its seed identifiers, but it returned no join values.",
+        "traces": [
+          {
+            "step": "dependency",
+            "ok": true,
+            "reasons": [
+              "producer q2: it returned no join values"
+            ],
+            "detail": {
+              "producer": "q2"
+            }
+          }
+        ],
+        "records": []
+      }
+    ]
+  },
+  "deterministic_scores": {
+    "correlation": null,
+    "mapping_recall": null,
+    "coverage": null,
+    "provenance": {
+      "citations": 0,
+      "compliant": 0,
+      "citation_provenance_rate": 1.0,
+      "abstention_proof_ok": true,
+      "fully_provenanced": true
+    },
+    "inspectability": {
+      "citation_coverage": 1.0,
+      "traceability": 1.0,
+      "abstention_proofs": 1.0,
+      "inspectability": 1.0
+    }
+  },
+  "arm": "planned_llm_typed_lazy",
+  "run_meta": {
+    "planner": "llm-typed-lazy",
+    "synthesis": "deterministic",
+    "use_llm": true,
+    "llm_synthesis": false,
+    "llm_specialist": false,
+    "rewrite": null,
+    "observed_plan": [
+      {
+        "sub_question_id": "q1",
+        "source": "attack",
+        "text": "In attack, identify Group relevant to: What is the shortest chain of connections, following any kind of link in either direction, between group G0019 (Naikon) and group G1051 (Medusa Group)?",
+        "entities": [
+          "Group"
+        ],
+        "seed_ids": [],
+        "depends_on": null,
+        "limits": {
+          "max_traversal_depth": 3,
+          "max_result_rows": 1000,
+          "query_timeout_ms": 5000
+        }
+      },
+      {
+        "sub_question_id": "q2",
+        "source": "capec",
+        "text": "In capec, identify CanFollow, CanPrecede, Category, TaxonomyEntry relevant to: What is the shortest chain of connections, following any kind of link in either direction, between group G0019 (Naikon) and group G1051 (Medusa Group)?",
+        "entities": [
+          "CanFollow",
+          "CanPrecede",
+          "Category",
+          "TaxonomyEntry"
+        ],
+        "seed_ids": [],
+        "depends_on": null,
+        "limits": {
+          "max_traversal_depth": 3,
+          "max_result_rows": 1000,
+          "query_timeout_ms": 5000
+        }
+      }
+    ],
+    "exit_code": 0,
+    "status": "answered",
+    "timings": {
+      "plan_ms": 64164.706,
+      "specialists": [
+        {
+          "sub_question": "q2",
+          "source": "capec",
+          "ms": 18.114
+        }
+      ],
+      "synthesis_ms": 9.278,
+      "total_ms": 64238.727
+    },
+    "registry_model": "gemma4-31b",
+    "drafter_used": "DeterministicDrafter",
+    "typed": [
+      {
+        "mode": "lazy",
+        "served_model": "gemma4-31b/106",
+        "model_calls": 1,
+        "catalog_calls": [],
+        "prompt_tokens": 2954,
+        "completion_tokens": 2723,
+        "emitted": true,
+        "parse_error": null,
+        "first_steps": 0,
+        "first_refused": 0,
+        "first_fixes": 0,
+        "valid_first": false,
+        "valid_first_raw": false,
+        "repair_used": false,
+        "fixed_by_repair": false,
+        "still_refused": 0,
+        "final_steps": 0,
+        "coercions": [],
+        "refusals": [],
+        "plan_problems": [],
+        "replies": [
+          {
+            "status": "ok",
+            "finish_reason": "stop",
+            "calls": [],
+            "text_chars": 488,
+            "repairs": []
+          }
+        ],
+        "error": null,
+        "fallback": "floor",
+        "seconds": 64.147,
+        "n_catalog_calls": 0,
+        "fixed_by_coercion": false
+      }
+    ],
+    "seams": {
+      "planner_llm": true,
+      "drafter": "TypedDrafter",
+      "specialist_llm": false,
+      "synthesis_llm": false,
+      "generic_only": "true"
+    },
+    "wall_s": 64.242
+  },
+  "evidence_volume": {
+    "results": 2,
+    "records": 0,
+    "related": 0
+  }
+}

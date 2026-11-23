@@ -1,0 +1,636 @@
+{
+  "id": "PG-attack-O4-5fe3b32caa",
+  "kind": "attack",
+  "tier": "algebra-probe",
+  "category": "PG-attack",
+  "question": "Is group G0120 (Evilnum) directly connected to software S0284 (More_eggs) in ATT&CK, and if it is, what is the nature of that connection?",
+  "gold": {
+    "assertions": {
+      "min_records": 0,
+      "must_include_ids": [],
+      "must_include_related": []
+    },
+    "ex_gold": {
+      "pool": "algebra",
+      "scheme": "attack",
+      "kind": "value",
+      "expected": [],
+      "value": true
+    }
+  },
+  "answer": {
+    "headline": "Gathered 2 record(s) from 1 source(s).",
+    "narrative": "Found 1 record in MITRE ATT&CK: Evilnum (G0120). G0120 (Evilnum): Evilnum is a financially motivated threat group that has been active since at least 2018.(Citation: ESET EvilNum July 2020). G0120 (Evilnum) has stix_type: intrusion-set; x_mitre_deprecated: False; x_mitre_version: 1.0; aliases: Evilnum; x_mitre_domains: enterprise-attack. Found 14 item(s) related to G0120 (e.g. S0349, S0284, S0568) in MITRE ATT&CK. G0120 (Evilnum) has 3 pieces of software: S0349, S0284, S0568. G0120 (Evilnum) has 8 used techniques: T1219.002, T1204.001, T1070.004, T1574.001, T1566.002, T1497.001, T1548.002, T1059.007. G0120 (Evilnum) has 3 used techniques: T1555, T1105, T1539.",
+    "composer": "deterministic",
+    "fallback_reason": null,
+    "claims": [
+      {
+        "text": "Found 1 record in MITRE ATT&CK: Evilnum (G0120).",
+        "kind": "fact",
+        "entity_ids": [
+          "G0120"
+        ],
+        "citations": [
+          {
+            "source": "attack",
+            "primary_id": "G0120"
+          }
+        ]
+      },
+      {
+        "text": "G0120 (Evilnum): Evilnum is a financially motivated threat group that has been active since at least 2018.(Citation: ESET EvilNum July 2020)",
+        "kind": "fact",
+        "entity_ids": [
+          "G0120"
+        ],
+        "citations": [
+          {
+            "source": "attack",
+            "primary_id": "G0120"
+          }
+        ]
+      },
+      {
+        "text": "G0120 (Evilnum) has stix_type: intrusion-set; x_mitre_deprecated: False; x_mitre_version: 1.0; aliases: Evilnum; x_mitre_domains: enterprise-attack.",
+        "kind": "fact",
+        "entity_ids": [
+          "G0120"
+        ],
+        "citations": [
+          {
+            "source": "attack",
+            "primary_id": "G0120"
+          }
+        ]
+      },
+      {
+        "text": "Found 14 item(s) related to G0120 (e.g. S0349, S0284, S0568) in MITRE ATT&CK.",
+        "kind": "fact",
+        "entity_ids": [
+          "G0120"
+        ],
+        "citations": [
+          {
+            "source": "attack",
+            "primary_id": "G0120"
+          }
+        ]
+      },
+      {
+        "text": "G0120 (Evilnum) has 3 pieces of software: S0349, S0284, S0568.",
+        "kind": "enumeration",
+        "entity_ids": [
+          "S0349",
+          "S0284",
+          "S0568"
+        ],
+        "citations": [
+          {
+            "source": "attack",
+            "primary_id": "G0120"
+          }
+        ]
+      },
+      {
+        "text": "G0120 (Evilnum) has 8 used techniques: T1219.002, T1204.001, T1070.004, T1574.001, T1566.002, T1497.001, T1548.002, T1059.007.",
+        "kind": "enumeration",
+        "entity_ids": [
+          "T1219.002",
+          "T1204.001",
+          "T1070.004",
+          "T1574.001",
+          "T1566.002",
+          "T1497.001",
+          "T1548.002",
+          "T1059.007"
+        ],
+        "citations": [
+          {
+            "source": "attack",
+            "primary_id": "G0120"
+          }
+        ]
+      },
+      {
+        "text": "G0120 (Evilnum) has 3 used techniques: T1555, T1105, T1539.",
+        "kind": "enumeration",
+        "entity_ids": [
+          "T1555",
+          "T1105",
+          "T1539"
+        ],
+        "citations": [
+          {
+            "source": "attack",
+            "primary_id": "G0120"
+          }
+        ]
+      }
+    ],
+    "abstentions": [],
+    "notes": []
+  },
+  "logic_flow": {
+    "task": {
+      "sub_question_id": "PG-attack-O4-5fe3b32caa",
+      "source": "attack",
+      "text": "Is group G0120 (Evilnum) directly connected to software S0284 (More_eggs) in ATT&CK, and if it is, what is the nature of that connection?",
+      "entities": [
+        "Group",
+        "USES",
+        "Software"
+      ],
+      "limits": {
+        "max_traversal_depth": 3,
+        "max_result_rows": 20000,
+        "query_timeout_ms": 60000
+      },
+      "join_key": null,
+      "seed_ids": [
+        "G0120",
+        "S0284"
+      ],
+      "rationale": "algebra probe set (Era 2 Step 9 Phase G)"
+    },
+    "results": [
+      {
+        "source": "attack",
+        "sub_question_id": "q1",
+        "sub_question": "",
+        "query": "MATCH (n:Group) WHERE coalesce(n.attack_id, n.id) IN $ids OPTIONAL MATCH (n)-[r]-(m) WITH n, CASE WHEN m IS NULL THEN NULL ELSE type(r) END AS rel, CASE WHEN m IS NULL THEN NULL ELSE startNode(r) = n END AS outgoing, CASE WHEN m IS NULL THEN NULL ELSE head(labels(m)) END AS neighbour_label, count(m) AS cnt WITH n, collect(CASE WHEN rel IS NULL THEN NULL ELSE {rel: rel, outgoing: outgoing, label: neighbour_label, count: cnt} END) AS raw WITH n, [f IN raw WHERE f IS NOT NULL] AS facets RETURN coalesce(n.attack_id, n.id) AS id, n.name AS name, n.properties_json AS properties_json, facets AS facets LIMIT 1000",
+        "ok": true,
+        "partial": false,
+        "error": null,
+        "summary": "Found 1 record in MITRE ATT&CK: Evilnum (G0120).",
+        "traces": [
+          {
+            "step": "intake",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "source": "attack",
+              "card": "attack"
+            }
+          },
+          {
+            "step": "resolve",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "labels": [
+                "Group"
+              ],
+              "relationships": [],
+              "seed_ids": [
+                "G0120"
+              ],
+              "join_key": null
+            }
+          },
+          {
+            "step": "gate",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "attempt": 1,
+              "template": "describe",
+              "query": "MATCH (n:Group) WHERE coalesce(n.attack_id, n.id) IN $ids OPTIONAL MATCH (n)-[r]-(m) WITH n, CASE WHEN m IS NULL THEN NULL ELSE type(r) END AS rel, CASE WHEN m IS NULL THEN NULL ELSE startNode(r) = n END AS outgoing, CASE WHEN m IS NULL THEN NULL ELSE head(labels(m)) END AS neighbour_label, count(m) AS cnt WITH n, collect(CASE WHEN rel IS NULL THEN NULL ELSE {rel: rel, outgoing: outgoing, label: neighbour_label, count: cnt} END) AS raw WITH n, [f IN raw WHERE f IS NOT NULL] AS facets RETURN coalesce(n.attack_id, n.id) AS id, n.name AS name, n.properties_json AS properties_json, facets AS facets LIMIT 1000",
+              "injected": [
+                "LIMIT 1000 appended (none present)"
+              ],
+              "timing_ms": 0.249
+            }
+          },
+          {
+            "step": "execute",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "row_count": 1,
+              "timing_ms": 3.7,
+              "row_ceiling": 1000,
+              "truncated": false
+            }
+          },
+          {
+            "step": "assess",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "row_count": 1,
+              "timing_ms": 0.007
+            }
+          },
+          {
+            "step": "normalize",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "record_count": 1,
+              "timing_ms": 0.146
+            }
+          }
+        ],
+        "records": [
+          {
+            "primary_id": "G0120",
+            "name": "Evilnum",
+            "label": "Group",
+            "description": "[Evilnum](https://attack.mitre.org/groups/G0120) is a financially motivated threat group that has been active since at least 2018.(Citation: ESET EvilNum July 2020)",
+            "properties": {
+              "aliases": [
+                "Evilnum"
+              ],
+              "attack_id": "G0120",
+              "created": "2021-01-22T16:46:17.790Z",
+              "description": "[Evilnum](https://attack.mitre.org/groups/G0120) is a financially motivated threat group that has been active since at least 2018.(Citation: ESET EvilNum July 2020)",
+              "id": "intrusion-set--1f0f9a14-11aa-49aa-9174-bcd0eaa979de",
+              "modified": "2025-04-25T14:49:26.766Z",
+              "name": "Evilnum",
+              "stix_type": "intrusion-set",
+              "x_mitre_deprecated": false,
+              "x_mitre_domains": [
+                "enterprise-attack"
+              ],
+              "x_mitre_version": "1.0",
+              "_omitted_properties": [
+                "external_references"
+              ]
+            },
+            "facets": [
+              {
+                "rel": "ATTRIBUTED_TO",
+                "direction": "in",
+                "neighbour_label": "Campaign",
+                "count": 0
+              },
+              {
+                "rel": "USES",
+                "direction": "out",
+                "neighbour_label": "Software",
+                "count": 3
+              },
+              {
+                "rel": "USES",
+                "direction": "out",
+                "neighbour_label": "SubTechnique",
+                "count": 8
+              },
+              {
+                "rel": "USES",
+                "direction": "out",
+                "neighbour_label": "Technique",
+                "count": 3
+              }
+            ],
+            "join_values": [],
+            "related": []
+          }
+        ]
+      },
+      {
+        "source": "attack",
+        "sub_question_id": "q2",
+        "sub_question": "In attack, list all Software reached from G0120 via USES",
+        "query": "MATCH (n) WHERE coalesce(n.attack_id, n.id) IN $ids OPTIONAL MATCH (n)-[r:USES]-(m) RETURN coalesce(n.attack_id, n.id) AS anchor_id, n.name AS anchor_name, labels(n)[0] AS anchor_label, coalesce(m.attack_id, m.id) AS neighbour_id, m.name AS neighbour_name, labels(m)[0] AS neighbour_label, type(r) AS rel_type LIMIT 1000",
+        "ok": true,
+        "partial": false,
+        "error": null,
+        "summary": "Found 14 item(s) related to G0120 (e.g. S0349, S0284, S0568) in MITRE ATT&CK.",
+        "traces": [
+          {
+            "step": "intake",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "source": "attack",
+              "card": "attack"
+            }
+          },
+          {
+            "step": "resolve",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "labels": [
+                "Software"
+              ],
+              "relationships": [
+                "USES"
+              ],
+              "seed_ids": [
+                "G0120"
+              ],
+              "join_key": null
+            }
+          },
+          {
+            "step": "gate",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "attempt": 1,
+              "template": "generic_neighbors",
+              "query": "MATCH (n) WHERE coalesce(n.attack_id, n.id) IN $ids OPTIONAL MATCH (n)-[r:USES]-(m) RETURN coalesce(n.attack_id, n.id) AS anchor_id, n.name AS anchor_name, labels(n)[0] AS anchor_label, coalesce(m.attack_id, m.id) AS neighbour_id, m.name AS neighbour_name, labels(m)[0] AS neighbour_label, type(r) AS rel_type LIMIT 1000",
+              "injected": [
+                "LIMIT 1000 appended (none present)"
+              ],
+              "timing_ms": 0.176
+            }
+          },
+          {
+            "step": "execute",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "row_count": 14,
+              "timing_ms": 3.3,
+              "row_ceiling": 1000,
+              "truncated": false
+            }
+          },
+          {
+            "step": "assess",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "row_count": 14,
+              "timing_ms": 0.006
+            }
+          },
+          {
+            "step": "normalize",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "record_count": 1,
+              "timing_ms": 2.631
+            }
+          }
+        ],
+        "records": [
+          {
+            "primary_id": "G0120",
+            "name": "Evilnum",
+            "label": "Group",
+            "description": "",
+            "properties": {},
+            "facets": [],
+            "join_values": [],
+            "related": [
+              {
+                "id": "S0349",
+                "name": "LaZagne",
+                "label": "Software",
+                "type": "USES",
+                "description": "[LaZagne](https://attack.mitre.org/software/S0349) is a post-exploitation, open-source tool used to recover stored passwords on a system. It has modules for Windows, Linux, and OSX, but is mainly focused on Windows systems. [LaZagne](https://attack.mitre.org/software/S0349) is publicly available on GitHub.(Citation: GitHub LaZagne Dec 2018)"
+              },
+              {
+                "id": "S0284",
+                "name": "More_eggs",
+                "label": "Software",
+                "type": "USES",
+                "description": "[More_eggs](https://attack.mitre.org/software/S0284) is a JScript backdoor used by [Cobalt Group](https://attack.mitre.org/groups/G0080) and [FIN6](https://attack.mitre.org/groups/G0037). Its name was given based on the variable \"More_eggs\" being present in its code. There are at least two different versions of the backdoor being used, version 2.0 and version 4.4. (Citation: Talos Cobalt Group July 2018)(Citation: Security Intelligence More Eggs Aug 2019)"
+              },
+              {
+                "id": "S0568",
+                "name": "EVILNUM",
+                "label": "Software",
+                "type": "USES",
+                "description": "[EVILNUM](https://attack.mitre.org/software/S0568) is fully capable backdoor that was first identified in 2018. [EVILNUM](https://attack.mitre.org/software/S0568) is used by the APT group [Evilnum](https://attack.mitre.org/groups/G0120) which has the same name.(Citation: ESET EvilNum July 2020)(Citation: Prevailion EvilNum May 2020)"
+              },
+              {
+                "id": "T1204.001",
+                "name": "Malicious Link",
+                "label": "SubTechnique",
+                "type": "USES",
+                "description": "An adversary may rely upon a user clicking a malicious link in order to gain execution. Users may be subjected to social engineering to get them to click on a link that will lead to code execution. This user action will typically be observed as follow-on behavior from [Spearphishing Link](https://attack.mitre.org/techniques/T1566/002). Clicking on a link may also lead to other execution techniques such as exploitation of a browser or application vulnerability via [Exploitation for Client Execution](https://attack.mitre.org/techniques/T1203). Links may also lead users to download files that require execution via [Malicious File](https://attack.mitre.org/techniques/T1204/002)."
+              },
+              {
+                "id": "T1105",
+                "name": "Ingress Tool Transfer",
+                "label": "Technique",
+                "type": "USES",
+                "description": "Adversaries may transfer tools or other files from an external system into a compromised environment. Tools or files may be copied from an external adversary-controlled system to the victim network through the command and control channel or through alternate protocols such as [ftp](https://attack.mitre.org/software/S0095). Once present, adversaries may also transfer/spread tools between victim devices within a compromised environment (i.e. [Lateral Tool Transfer](https://attack.mitre.org/techniques/T1570)). \n\nOn Windows, adversaries may use various utilities to download tools, such as `copy`, `finger`, [certutil](https://attack.mitre.org/software/S0160), and [PowerShell](https://attack.mitre.org/techniques/T1059/001) commands such as <code>IEX(New-Object Net.WebClient).downloadString()</code> and <code>Invoke-WebRequest</code>. On Linux and macOS systems, a variety of utilities also exist, such as `curl`, `scp`, `sftp`, `tftp`, `rsync`, `finger`, and `wget`.(Citation: t1105_lolbas)  A number of these tools, such as `wget`, `curl`, and `scp`, also exist on ESXi. After downloading a file, a threat actor may attempt to verify its integrity by checking its hash value (e.g., via `certutil -hashfile`).(Citation: Google Cloud Threat Intelligence COSCMICENERGY 2023)\n\nAdversaries may also abuse installers and package managers, such as `yum` or `winget`, to download tools to victim hosts. Adversaries have also abused file application features, such as the Windows `search-ms` protocol handler, to deliver malicious files to victims through remote file searches invoked by [User Execution](https://attack.mitre.org/techniques/T1204) (typically after interacting with [Phishing](https://attack.mitre.org/techniques/T1566) lures).(Citation: T1105: Trellix_search-ms)\n\nFiles can also be transferred using various [Web Service](https://attack.mitre.org/techniques/T1102)s as well as native or otherwise present tools on the victim system.(Citation: PTSecurity Cobalt Dec 2016) In some cases, adversaries may be able to leverage services that sync between a web-based and an on-premises client, such as Dropbox or OneDrive, to transfer files onto victim systems. For example, by compromising a cloud account and logging into the service's web portal, an adversary may be able to trigger an automatic syncing process that transfers the file onto the victim's machine.(Citation: Dropbox Malware Sync)"
+              },
+              {
+                "id": "T1070.004",
+                "name": "File Deletion",
+                "label": "SubTechnique",
+                "type": "USES",
+                "description": "Adversaries may delete files left behind by the actions of their intrusion activity. Malware, tools, or other non-native files dropped or created on a system by an adversary (ex: [Ingress Tool Transfer](https://attack.mitre.org/techniques/T1105)) may leave traces to indicate to what was done within a network and how. Removal of these files can occur during an intrusion, or as part of a post-intrusion process to minimize the adversary's footprint.\n\nThere are tools available from the host operating system to perform cleanup, but adversaries may use other tools as well.(Citation: Microsoft SDelete July 2016) Examples of built-in [Command and Scripting Interpreter](https://attack.mitre.org/techniques/T1059) functions include <code>del</code> on Windows, <code>rm</code> or <code>unlink</code> on Linux and macOS, and `rm` on ESXi."
+              },
+              {
+                "id": "T1219.002",
+                "name": "Remote Desktop Software",
+                "label": "SubTechnique",
+                "type": "USES",
+                "description": "An adversary may use legitimate desktop support software to establish an interactive command and control channel to target systems within networks. Desktop support software provides a graphical interface for remotely controlling another computer, transmitting the display output, keyboard input, and mouse control between devices using various protocols. Desktop support software, such as `VNC`, `Team Viewer`, `AnyDesk`, `ScreenConnect`, `LogMein`, `AmmyyAdmin`, and other remote monitoring and management (RMM) tools, are commonly used as legitimate technical support software and may be allowed by application control within a target environment.(Citation: Symantec Living off the Land)(Citation: CrowdStrike 2015 Global Threat Report)(Citation: CrySyS Blog TeamSpy) \n \nRemote access modules/features may also exist as part of otherwise existing software such as Zoom or Google Chrome’s Remote Desktop.(Citation: Google Chrome Remote Desktop)(Citation: Chrome Remote Desktop) "
+              },
+              {
+                "id": "T1555",
+                "name": "Credentials from Password Stores",
+                "label": "Technique",
+                "type": "USES",
+                "description": "Adversaries may search for common password storage locations to obtain user credentials.(Citation: F-Secure The Dukes) Passwords are stored in several places on a system, depending on the operating system or application holding the credentials. There are also specific applications and services that store passwords to make them easier for users to manage and maintain, such as password managers and cloud secrets vaults. Once credentials are obtained, they can be used to perform lateral movement and access restricted information."
+              },
+              {
+                "id": "T1574.001",
+                "name": "DLL",
+                "label": "SubTechnique",
+                "type": "USES",
+                "description": "Adversaries may abuse dynamic-link library files (DLLs) in order to achieve persistence, escalate privileges, and evade defenses. DLLs are libraries that contain code and data that can be simultaneously utilized by multiple programs. While DLLs are not malicious by nature, they can be abused through mechanisms such as side-loading, hijacking search order, and phantom DLL hijacking.(Citation: unit 42)\n\nSpecific ways DLLs are abused by adversaries include:\n\n### DLL Sideloading\nAdversaries may execute their own malicious payloads by side-loading DLLs. Side-loading involves hijacking which DLL a program loads by planting and then invoking a legitimate application that executes their payload(s).\n\nSide-loading positions both the victim application and malicious payload(s) alongside each other. Adversaries likely use side-loading as a means of masking actions they perform under a legitimate, trusted, and potentially elevated system or software process. Benign executables used to side-load payloads may not be flagged during delivery and/or execution. Adversary payloads may also be encrypted/packed or otherwise obfuscated until loaded into the memory of the trusted process.\n\nAdversaries may also side-load other packages, such as BPLs (Borland Package Library).(Citation: kroll bpl)\n\nAdversaries may chain DLL sideloading multiple times to fragment functionality hindering analysis. Adversaries using multiple DLL files can split the loader functions across different DLLs, with a main DLL loading the separated export functions. (Citation: Virus Bulletin) Spreading loader functions across multiple DLLs makes analysis harder, since all files must be collected to fully understand the malware’s behavior.  Another method implements a “loader-for-a-loader”, where a malicious DLL’s sole role is to load a second DLL (or a chain of DLLs) that contain the real payload. (Citation: Sophos)\n\n### DLL Search Order Hijacking\nAdversaries may execute their own malicious payloads by hijacking the search order that Windows uses to load DLLs. This search order is a sequence of special and standard search locations that a program checks when loading a DLL. An adversary can plant a trojan DLL in a directory that will be prioritized by the DLL search order over the location of a legitimate library. This will cause Windows to load the malicious DLL when it is called for by the victim program.(Citation: unit 42)\n\n### DLL Redirection\nAdversaries may directly modify the search order via DLL redirection, which after being enabled (in the Registry or via the creation of a redirection file) may cause a program to load a DLL from a different location.(Citation: Microsoft redirection)(Citation: Microsoft - manifests/assembly)\n\n### Phantom DLL Hijacking\nAdversaries may leverage phantom DLL hijacking by targeting references to non-existent DLL files. They may be able to load their own malicious DLL by planting it with the correct name in the location of the missing module.(Citation: Hexacorn DLL Hijacking)(Citation: Hijack DLLs CrowdStrike)\n\n### DLL Substitution\nAdversaries may target existing, valid DLL files and substitute them with their own malicious DLLs, planting them with the same name and in the same location as the valid DLL file.(Citation: Wietze Beukema DLL Hijacking)\n\nPrograms that fall victim to DLL hijacking may appear to behave normally because malicious DLLs may be configured to also load the legitimate DLLs they were meant to replace, evading defenses.\n\nRemote DLL hijacking can occur when a program sets its current directory to a remote location, such as a Web share, before loading a DLL.(Citation: dll pre load owasp)(Citation: microsoft remote preloading)\n\nIf a valid DLL is configured to run at a higher privilege level, then the adversary-controlled DLL that is loaded will also be executed at the higher level. In this case, the technique could be used for privilege escalation."
+              },
+              {
+                "id": "T1566.002",
+                "name": "Spearphishing Link",
+                "label": "SubTechnique",
+                "type": "USES",
+                "description": "Adversaries may send spearphishing emails with a malicious link in an attempt to gain access to victim systems. Spearphishing with a link is a specific variant of spearphishing. It is different from other forms of spearphishing in that it employs the use of links to download malware contained in email, instead of attaching malicious files to the email itself, to avoid defenses that may inspect email attachments. Spearphishing may also involve social engineering techniques, such as posing as a trusted source.\n\nAll forms of spearphishing are electronically delivered social engineering targeted at a specific individual, company, or industry. In this case, the malicious emails contain links. Generally, the links will be accompanied by social engineering text and require the user to actively click or copy and paste a URL into a browser, leveraging [User Execution](https://attack.mitre.org/techniques/T1204). The visited website may compromise the web browser using an exploit, or the user will be prompted to download applications, documents, zip files, or even executables depending on the pretext for the email in the first place.\n\nAdversaries may also include links that are intended to interact directly with an email reader, including embedded images intended to exploit the end system directly. Additionally, adversaries may use seemingly benign links that abuse special characters to mimic legitimate websites (known as an \"IDN homograph attack\").(Citation: CISA IDN ST05-016) URLs may also be obfuscated by taking advantage of quirks in the URL schema, such as the acceptance of integer- or hexadecimal-based hostname formats and the automatic discarding of text before an “@” symbol: for example, `hxxp://google.com@1157586937`.(Citation: Mandiant URL Obfuscation 2023)\n\nAdversaries may also utilize links to perform consent phishing/spearphishing campaigns to [Steal Application Access Token](https://attack.mitre.org/techniques/T1528)s that grant immediate access to the victim environment. For example, a user may be lured into granting adversaries permissions/access via a malicious OAuth 2.0 request URL that when accepted by the user provide permissions/access for malicious applications.(Citation: Trend Micro Pawn Storm OAuth 2017)(Citation: Microsoft OAuth 2.0 Consent Phishing 2021) These stolen access tokens allow the adversary to perform various actions on behalf of the user via API calls.(Citation: Microsoft OAuth 2.0 Consent Phishing 2021)\n\nSimilarly, malicious links may also target device-based authorization, such as OAuth 2.0 device authorization grant flow which is typically used to authenticate devices without UIs/browsers. Known as “device code phishing,” an adversary may send a link that directs the victim to a malicious authorization page where the user is tricked into entering a code/credentials that produces a device token.(Citation: SecureWorks Device Code Phishing 2021)(Citation: Netskope Device Code Phishing 2021)(Citation: Optiv Device Code Phishing 2021)"
+              },
+              {
+                "id": "T1497.001",
+                "name": "System Checks",
+                "label": "SubTechnique",
+                "type": "USES",
+                "description": "Adversaries may employ various system checks to detect and avoid virtualization and analysis environments. This may include changing behaviors based on the results of checks for the presence of artifacts indicative of a virtual machine environment (VME) or sandbox. If the adversary detects a VME, they may alter their malware to disengage from the victim or conceal the core functions of the implant. They may also search for VME artifacts before dropping secondary or additional payloads. Adversaries may use the information learned from [Virtualization/Sandbox Evasion](https://attack.mitre.org/techniques/T1497) during automated discovery to shape follow-on behaviors.(Citation: Deloitte Environment Awareness)\n\nSpecific checks will vary based on the target and/or adversary, but may involve behaviors such as [Windows Management Instrumentation](https://attack.mitre.org/techniques/T1047), [PowerShell](https://attack.mitre.org/techniques/T1059/001), [System Information Discovery](https://attack.mitre.org/techniques/T1082), and [Query Registry](https://attack.mitre.org/techniques/T1012) to obtain system information and search for VME artifacts. Adversaries may search for VME artifacts in memory, processes, file system, hardware, and/or the Registry. Adversaries may use scripting to automate these checks  into one script and then have the program exit if it determines the system to be a virtual environment. \n\nChecks could include generic system properties such as host/domain name and samples of network traffic. Adversaries may also check the network adapters addresses, CPU core count, and available memory/drive size. Once executed, malware may also use [File and Directory Discovery](https://attack.mitre.org/techniques/T1083) to check if it was saved in a folder or file with unexpected or even analysis-related naming artifacts such as `malware`, `sample`, or `hash`.\n\nOther common checks may enumerate services running that are unique to these applications, installed programs on the system, manufacturer/product fields for strings relating to virtual machine applications, and VME-specific hardware/processor instructions.(Citation: McAfee Virtual Jan 2017) In applications like VMWare, adversaries can also use a special I/O port to send commands and receive output. \n \nHardware checks, such as the presence of the fan, temperature, and audio devices, could also be used to gather evidence that can be indicative a virtual environment. Adversaries may also query for specific readings from these devices.(Citation: Unit 42 OilRig Sept 2018)"
+              },
+              {
+                "id": "T1548.002",
+                "name": "Bypass User Account Control",
+                "label": "SubTechnique",
+                "type": "USES",
+                "description": "Adversaries may bypass UAC mechanisms to elevate process privileges on system. Windows User Account Control (UAC) allows a program to elevate its privileges (tracked as integrity levels ranging from low to high) to perform a task under administrator-level permissions, possibly by prompting the user for confirmation. The impact to the user ranges from denying the operation under high enforcement to allowing the user to perform the action if they are in the local administrators group and click through the prompt or allowing them to enter an administrator password to complete the action.(Citation: TechNet How UAC Works)\n\nIf the UAC protection level of a computer is set to anything but the highest level, certain Windows programs can elevate privileges or execute some elevated [Component Object Model](https://attack.mitre.org/techniques/T1559/001) objects without prompting the user through the UAC notification box.(Citation: TechNet Inside UAC)(Citation: MSDN COM Elevation) An example of this is use of [Rundll32](https://attack.mitre.org/techniques/T1218/011) to load a specifically crafted DLL which loads an auto-elevated [Component Object Model](https://attack.mitre.org/techniques/T1559/001) object and performs a file operation in a protected directory which would typically require elevated access. Malicious software may also be injected into a trusted process to gain elevated privileges without prompting a user.(Citation: Davidson Windows)\n\nMany methods have been discovered to bypass UAC. The Github readme page for UACME contains an extensive list of methods(Citation: Github UACMe) that have been discovered and implemented, but may not be a comprehensive list of bypasses. Additional bypass methods are regularly discovered and some used in the wild, such as:\n\n* <code>eventvwr.exe</code> can auto-elevate and execute a specified binary or script.(Citation: enigma0x3 Fileless UAC Bypass)(Citation: Fortinet Fareit)\n\nAnother bypass is possible through some lateral movement techniques if credentials for an account with administrator privileges are known, since UAC is a single system security mechanism, and the privilege or integrity of a process running on one system will be unknown on remote systems and default to high integrity.(Citation: SANS UAC Bypass)"
+              },
+              {
+                "id": "T1539",
+                "name": "Steal Web Session Cookie",
+                "label": "Technique",
+                "type": "USES",
+                "description": "An adversary may steal web application or service session cookies and use them to gain access to web applications or Internet services as an authenticated user without needing credentials. Web applications and services often use session cookies as an authentication token after a user has authenticated to a website.\n\nCookies are often valid for an extended period of time, even if the web application is not actively used. Cookies can be found on disk, in the process memory of the browser, and in network traffic to remote systems. Additionally, other applications on the targets machine might store sensitive authentication cookies in memory (e.g. apps which authenticate to cloud services). Session cookies can be used to bypasses some multi-factor authentication protocols.(Citation: Pass The Cookie)\n\nThere are several examples of malware targeting cookies from web browsers on the local system.(Citation: Kaspersky TajMahal April 2019)(Citation: Unit 42 Mac Crypto Cookies January 2019) Adversaries may also steal cookies by injecting malicious JavaScript content into websites or relying on [User Execution](https://attack.mitre.org/techniques/T1204) by tricking victims into running malicious JavaScript in their browser.(Citation: Talos Roblox Scam 2023)(Citation: Krebs Discord Bookmarks 2023)\n\nThere are also open source frameworks such as `Evilginx2` and `Muraena` that can gather session cookies through a malicious proxy (e.g., [Adversary-in-the-Middle](https://attack.mitre.org/techniques/T1557)) that can be set up by an adversary and used in phishing campaigns.(Citation: Github evilginx2)(Citation: GitHub Mauraena)\n\nAfter an adversary acquires a valid cookie, they can then perform a [Web Session Cookie](https://attack.mitre.org/techniques/T1550/004) technique to login to the corresponding web application."
+              },
+              {
+                "id": "T1059.007",
+                "name": "JavaScript",
+                "label": "SubTechnique",
+                "type": "USES",
+                "description": "Adversaries may abuse various implementations of JavaScript for execution. JavaScript (JS) is a platform-independent scripting language (compiled just-in-time at runtime) commonly associated with scripts in webpages, though JS can be executed in runtime environments outside the browser.(Citation: NodeJS)\n\nJScript is the Microsoft implementation of the same scripting standard. JScript is interpreted via the Windows Script engine and thus integrated with many components of Windows such as the [Component Object Model](https://attack.mitre.org/techniques/T1559/001) and Internet Explorer HTML Application (HTA) pages.(Citation: JScrip May 2018)(Citation: Microsoft JScript 2007)(Citation: Microsoft Windows Scripts)\n\nJavaScript for Automation (JXA) is a macOS scripting language based on JavaScript, included as part of Apple’s Open Scripting Architecture (OSA), that was introduced in OSX 10.10. Apple’s OSA provides scripting capabilities to control applications, interface with the operating system, and bridge access into the rest of Apple’s internal APIs. As of OSX 10.10, OSA only supports two languages, JXA and [AppleScript](https://attack.mitre.org/techniques/T1059/002). Scripts can be executed via the command line utility <code>osascript</code>, they can be compiled into applications or script files via <code>osacompile</code>, and they can be compiled and executed in memory of other programs by leveraging the OSAKit Framework.(Citation: Apple About Mac Scripting 2016)(Citation: SpecterOps JXA 2020)(Citation: SentinelOne macOS Red Team)(Citation: Red Canary Silver Sparrow Feb2021)(Citation: MDSec macOS JXA and VSCode)\n\nAdversaries may abuse various implementations of JavaScript to execute various behaviors. Common uses include hosting malicious scripts on websites as part of a [Drive-by Compromise](https://attack.mitre.org/techniques/T1189) or downloading and executing these script files as secondary payloads. Since these payloads are text-based, it is also very common for adversaries to obfuscate their content as part of [Obfuscated Files or Information](https://attack.mitre.org/techniques/T1027)."
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "deterministic_scores": {
+    "correlation": null,
+    "mapping_recall": null,
+    "coverage": null,
+    "provenance": {
+      "citations": 7,
+      "compliant": 7,
+      "citation_provenance_rate": 1.0,
+      "abstention_proof_ok": true,
+      "fully_provenanced": true
+    },
+    "inspectability": {
+      "citation_coverage": 1.0,
+      "traceability": 1.0,
+      "abstention_proofs": 1.0,
+      "inspectability": 1.0
+    }
+  },
+  "arm": "planned_llm_typed_lazy",
+  "run_meta": {
+    "planner": "llm-typed-lazy",
+    "synthesis": "deterministic",
+    "use_llm": true,
+    "llm_synthesis": false,
+    "llm_specialist": false,
+    "rewrite": null,
+    "observed_plan": [
+      {
+        "sub_question_id": "q1",
+        "source": "attack",
+        "text": "",
+        "entities": [
+          "Group"
+        ],
+        "seed_ids": [
+          "G0120"
+        ],
+        "depends_on": null,
+        "limits": {
+          "max_traversal_depth": 3,
+          "max_result_rows": 1000,
+          "query_timeout_ms": 5000
+        },
+        "step": {
+          "kind": "describe",
+          "anchor_label": "Group",
+          "anchor_ids": [
+            "G0120"
+          ],
+          "hops": [],
+          "depth": 1
+        }
+      },
+      {
+        "sub_question_id": "q2",
+        "source": "attack",
+        "text": "In attack, list all Software reached from G0120 via USES",
+        "entities": [
+          "USES",
+          "Software"
+        ],
+        "seed_ids": [],
+        "depends_on": null,
+        "limits": {
+          "max_traversal_depth": 3,
+          "max_result_rows": 1000,
+          "query_timeout_ms": 5000
+        }
+      }
+    ],
+    "exit_code": 0,
+    "status": "answered",
+    "timings": {
+      "plan_ms": 81022.176,
+      "specialists": [
+        {
+          "sub_question": "q1",
+          "source": "attack",
+          "ms": 4.601
+        },
+        {
+          "sub_question": "q2",
+          "source": "attack",
+          "ms": 10.058
+        }
+      ],
+      "synthesis_ms": 9.234,
+      "total_ms": 81113.743
+    },
+    "registry_model": "gemma4-31b",
+    "drafter_used": "TypedDrafter",
+    "typed": [
+      {
+        "mode": "lazy",
+        "served_model": "gemma4-31b/106",
+        "model_calls": 1,
+        "catalog_calls": [],
+        "prompt_tokens": 2957,
+        "completion_tokens": 5107,
+        "emitted": true,
+        "parse_error": null,
+        "first_steps": 1,
+        "first_refused": 0,
+        "first_fixes": 1,
+        "valid_first": true,
+        "valid_first_raw": false,
+        "repair_used": false,
+        "fixed_by_repair": false,
+        "still_refused": 0,
+        "final_steps": 1,
+        "coercions": [
+          {
+            "step": "q1",
+            "field": "anchor_label",
+            "from": null,
+            "to": "Group",
+            "filled_by": "id_scheme"
+          }
+        ],
+        "refusals": [],
+        "plan_problems": [],
+        "replies": [
+          {
+            "status": "ok",
+            "finish_reason": "stop",
+            "calls": [],
+            "text_chars": 141,
+            "repairs": []
+          }
+        ],
+        "error": null,
+        "fallback": null,
+        "seconds": 81.01,
+        "n_catalog_calls": 0,
+        "fixed_by_coercion": true
+      }
+    ],
+    "seams": {
+      "planner_llm": true,
+      "drafter": "TypedDrafter",
+      "specialist_llm": false,
+      "synthesis_llm": false,
+      "generic_only": "true"
+    },
+    "wall_s": 81.116
+  },
+  "evidence_volume": {
+    "results": 2,
+    "records": 2,
+    "related": 14
+  }
+}

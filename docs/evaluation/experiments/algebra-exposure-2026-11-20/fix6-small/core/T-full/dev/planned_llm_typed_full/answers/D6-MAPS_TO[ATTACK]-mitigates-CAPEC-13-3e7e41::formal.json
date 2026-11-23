@@ -1,0 +1,1261 @@
+{
+  "id": "D6-MAPS_TO[ATTACK]-mitigates-CAPEC-13-3e7e41::formal",
+  "kind": "federated",
+  "tier": "hard",
+  "category": "D6-MAPS_TO[ATTACK]",
+  "question": "Which ATT&CK mitigations mitigate the ATT&CK techniques that correspond to CAPEC-13, Subverting Environment Variable Values?",
+  "gold": {
+    "assertions": {
+      "min_records": 1,
+      "must_include_ids": [
+        "CAPEC-13"
+      ],
+      "must_include_related": [
+        "M1022",
+        "M1028",
+        "M1038",
+        "M1047"
+      ]
+    },
+    "ex_gold": {
+      "pool": "join",
+      "expected": [
+        "M1022",
+        "M1028",
+        "M1038",
+        "M1047"
+      ],
+      "scheme": "attack",
+      "kind": "set"
+    },
+    "sources": [
+      "attack",
+      "capec"
+    ],
+    "hops": 2
+  },
+  "answer": {
+    "headline": "Gathered 9 record(s) from 2 source(s); 2 cross-source correlation(s) on shared identifiers.",
+    "narrative": "Found 1 CAPEC record(s) for CAPEC-13; ATT&CK mappings: T1562.003, T1574.006, T1574.007. CAPEC-13 (Subverting Environment Variable Values): The adversary directly or indirectly modifies environment variables used by or controlling the target software. The adversary's goal is to cause the target software to deviate from its expected operation in a manner that benefits the adversary. CAPEC-13 (Subverting Environment Variable Values) has Abstraction: Detailed; Likelihood_Of_Attack: High; Status: Stable; Typical_Severity: Very High. CAPEC-13 (Subverting Environment Variable Values) has 3 ATT&CK mappings: T1562.003, T1574.006, T1574.007. Found 2 record(s) in MITRE ATT&CK including T1574.007, T1574.006. T1574.007 (Path Interception by PATH Environment Variable) has 3 mitigations: M1047, M1022, M1038. T1574.006 (Dynamic Linker Hijacking) has 2 mitigations: M1038, M1028. Found 4 record(s) in MITRE ATT&CK including M1028, M1038, M1022 and more. 4 entities match. 2 identifiers are corroborated across both CAPEC and ATT&CK (T1574.006, T1574.007).",
+    "composer": "deterministic",
+    "fallback_reason": null,
+    "claims": [
+      {
+        "text": "Found 1 CAPEC record(s) for CAPEC-13; ATT&CK mappings: T1562.003, T1574.006, T1574.007.",
+        "kind": "fact",
+        "entity_ids": [
+          "CAPEC-13"
+        ],
+        "citations": [
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-13"
+          }
+        ]
+      },
+      {
+        "text": "CAPEC-13 (Subverting Environment Variable Values): The adversary directly or indirectly modifies environment variables used by or controlling the target software. The adversary's goal is to cause the target software to deviate from its expected operation in a manner that benefits the adversary.",
+        "kind": "fact",
+        "entity_ids": [
+          "CAPEC-13"
+        ],
+        "citations": [
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-13"
+          }
+        ]
+      },
+      {
+        "text": "CAPEC-13 (Subverting Environment Variable Values) has Abstraction: Detailed; Likelihood_Of_Attack: High; Status: Stable; Typical_Severity: Very High.",
+        "kind": "fact",
+        "entity_ids": [
+          "CAPEC-13"
+        ],
+        "citations": [
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-13"
+          }
+        ]
+      },
+      {
+        "text": "CAPEC-13 (Subverting Environment Variable Values) has 3 ATT&CK mappings: T1562.003, T1574.006, T1574.007.",
+        "kind": "enumeration",
+        "entity_ids": [
+          "T1562.003",
+          "T1574.006",
+          "T1574.007"
+        ],
+        "citations": [
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-13"
+          }
+        ]
+      },
+      {
+        "text": "Found 2 record(s) in MITRE ATT&CK including T1574.007, T1574.006.",
+        "kind": "fact",
+        "entity_ids": [
+          "T1574.007",
+          "T1574.006"
+        ],
+        "citations": [
+          {
+            "source": "attack",
+            "primary_id": "T1574.007"
+          },
+          {
+            "source": "attack",
+            "primary_id": "T1574.006"
+          }
+        ]
+      },
+      {
+        "text": "T1574.007 (Path Interception by PATH Environment Variable) has 3 mitigations: M1047, M1022, M1038.",
+        "kind": "enumeration",
+        "entity_ids": [
+          "M1047",
+          "M1022",
+          "M1038"
+        ],
+        "citations": [
+          {
+            "source": "attack",
+            "primary_id": "T1574.007"
+          }
+        ]
+      },
+      {
+        "text": "T1574.006 (Dynamic Linker Hijacking) has 2 mitigations: M1038, M1028.",
+        "kind": "enumeration",
+        "entity_ids": [
+          "M1038",
+          "M1028"
+        ],
+        "citations": [
+          {
+            "source": "attack",
+            "primary_id": "T1574.006"
+          }
+        ]
+      },
+      {
+        "text": "Found 4 record(s) in MITRE ATT&CK including M1028, M1038, M1022 and more.",
+        "kind": "fact",
+        "entity_ids": [
+          "M1028",
+          "M1038",
+          "M1022",
+          "M1047"
+        ],
+        "citations": [
+          {
+            "source": "attack",
+            "primary_id": "M1028"
+          },
+          {
+            "source": "attack",
+            "primary_id": "M1038"
+          },
+          {
+            "source": "attack",
+            "primary_id": "M1022"
+          },
+          {
+            "source": "attack",
+            "primary_id": "M1047"
+          }
+        ]
+      },
+      {
+        "text": "4 entities match.",
+        "kind": "fact",
+        "entity_ids": [
+          "M1028",
+          "M1038",
+          "M1022",
+          "M1047"
+        ],
+        "citations": [
+          {
+            "source": "attack",
+            "primary_id": "M1028"
+          },
+          {
+            "source": "attack",
+            "primary_id": "M1038"
+          },
+          {
+            "source": "attack",
+            "primary_id": "M1022"
+          },
+          {
+            "source": "attack",
+            "primary_id": "M1047"
+          }
+        ]
+      },
+      {
+        "text": "The identifier T1574.006 is corroborated across attack and capec (3 record(s) share it).",
+        "kind": "correlation",
+        "entity_ids": [
+          "T1574.006"
+        ],
+        "citations": [
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-13"
+          },
+          {
+            "source": "attack",
+            "primary_id": "T1574.006"
+          }
+        ]
+      },
+      {
+        "text": "The identifier T1574.007 is corroborated across attack and capec (3 record(s) share it).",
+        "kind": "correlation",
+        "entity_ids": [
+          "T1574.007"
+        ],
+        "citations": [
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-13"
+          },
+          {
+            "source": "attack",
+            "primary_id": "T1574.007"
+          }
+        ]
+      }
+    ],
+    "abstentions": [
+      {
+        "source": "attack",
+        "statement": "The attack source doesn't establish this — the executed query ran cleanly and returned M1028, M1038, M1022, M1047 with no linked records for: ",
+        "query": "CALL { MATCH (v2) WHERE v2.id IN $p0 AND (v2:Mitigation) WITH DISTINCT v2 RETURN v2 AS v1 UNION MATCH (v3) WHERE v3.id IN $p1 AND (v3:Mitigation) WITH DISTINCT v3 RETURN v3 AS v1 } WITH DISTINCT v1 WITH v1 ORDER BY v1.id WITH collect(v1) AS all_ RETURN size(all_) AS total, [x IN all_[0..1000] | {id: x.id, name: x.name}] AS rows"
+      }
+    ],
+    "notes": []
+  },
+  "logic_flow": {
+    "plan": [
+      {
+        "sub_question_id": null,
+        "source": "capec",
+        "text": "For CAPEC-13: the ATT&CK techniques it corresponds to.",
+        "seed_from": null
+      },
+      {
+        "sub_question_id": null,
+        "source": "attack",
+        "text": "For each of those: the ATT&CK mitigations that mitigate each of those.",
+        "seed_from": null
+      }
+    ],
+    "sequenced": true,
+    "partial_mode": null,
+    "results": [
+      {
+        "source": "capec",
+        "sub_question_id": "q1",
+        "sub_question": "",
+        "query": "g.V().has(\"id\", within(ids)).project(\"ap\",\"tax\").by(elementMap()).by(__.out(\"MAPS_TO\").hasLabel(\"TaxonomyEntry\").elementMap().fold()).limit(1000)",
+        "ok": true,
+        "partial": false,
+        "error": null,
+        "summary": "Found 1 CAPEC record(s) for CAPEC-13; ATT&CK mappings: T1562.003, T1574.006, T1574.007.",
+        "traces": [
+          {
+            "step": "intake",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "source": "capec",
+              "card": "capec"
+            }
+          },
+          {
+            "step": "resolve",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "labels": [
+                "AttackPattern",
+                "TaxonomyEntry"
+              ],
+              "relationships": [
+                "MAPS_TO"
+              ],
+              "seed_ids": [
+                "CAPEC-13"
+              ],
+              "join_key": "attack-technique-id"
+            }
+          },
+          {
+            "step": "gate",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "attempt": 1,
+              "template": "generic_bridge",
+              "query": "g.V().has(\"id\", within(ids)).project(\"ap\",\"tax\").by(elementMap()).by(__.out(\"MAPS_TO\").hasLabel(\"TaxonomyEntry\").elementMap().fold()).limit(1000)",
+              "injected": [],
+              "timing_ms": 0.499
+            }
+          },
+          {
+            "step": "execute",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "row_count": 1,
+              "timing_ms": 8.7,
+              "row_ceiling": 1000,
+              "truncated": false
+            }
+          },
+          {
+            "step": "assess",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "row_count": 1,
+              "timing_ms": 0.01
+            }
+          },
+          {
+            "step": "normalize",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "record_count": 1,
+              "timing_ms": 0.108
+            }
+          }
+        ],
+        "records": [
+          {
+            "primary_id": "CAPEC-13",
+            "name": "Subverting Environment Variable Values",
+            "label": "AttackPattern",
+            "description": "The adversary directly or indirectly modifies environment variables used by or controlling the target software. The adversary's goal is to cause the target software to deviate from its expected operation in a manner that benefits the adversary.",
+            "properties": {
+              "Status": "Stable",
+              "Likelihood_Of_Attack": "High",
+              "Typical_Severity": "Very High",
+              "name": "Subverting Environment Variable Values",
+              "description": "The adversary directly or indirectly modifies environment variables used by or controlling the target software. The adversary's goal is to cause the target software to deviate from its expected operation in a manner that benefits the adversary.",
+              "id": "capec:attack-pattern:13",
+              "Abstraction": "Detailed"
+            },
+            "facets": [],
+            "join_values": [
+              "T1562.003",
+              "T1574.006",
+              "T1574.007"
+            ],
+            "related": [
+              {
+                "id": "T1562.003",
+                "name": "Impair Defenses:Impair Command History Logging",
+                "label": "TaxonomyEntry",
+                "type": "MAPS_TO",
+                "entry_id": "1562.003",
+                "taxonomy_name": "ATTACK"
+              },
+              {
+                "id": "T1574.006",
+                "name": "Hijack Execution Flow:Dynamic Linker Hijacking",
+                "label": "TaxonomyEntry",
+                "type": "MAPS_TO",
+                "entry_id": "1574.006",
+                "taxonomy_name": "ATTACK"
+              },
+              {
+                "id": "T1574.007",
+                "name": "Hijack Execution Flow:Path Interception by PATH Environment Variable",
+                "label": "TaxonomyEntry",
+                "type": "MAPS_TO",
+                "entry_id": "1574.007",
+                "taxonomy_name": "ATTACK"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "source": "attack",
+        "sub_question_id": "q2",
+        "sub_question": "",
+        "query": "MATCH (n) WHERE coalesce(n.attack_id, n.id) IN $ids OPTIONAL MATCH (n)<-[:MITIGATES]-(t0:Mitigation) WITH n, collect(DISTINCT {m: t0, r: 'MITIGATES'}) AS k0 WITH n, [x IN k0 WHERE x.m IS NOT NULL] AS hops UNWIND (CASE WHEN size(hops) = 0 THEN [{m: null, r: null}] ELSE hops END) AS hop RETURN coalesce(n.attack_id, n.id) AS anchor_id, n.name AS anchor_name, labels(n)[0] AS anchor_label, coalesce(hop.m.attack_id, hop.m.id) AS neighbour_id, hop.m.name AS neighbour_name, labels(hop.m)[0] AS neighbour_label, hop.r AS rel_type LIMIT 1000",
+        "ok": true,
+        "partial": false,
+        "error": null,
+        "summary": "Found 2 record(s) in MITRE ATT&CK including T1574.007, T1574.006.",
+        "traces": [
+          {
+            "step": "intake",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "source": "attack",
+              "card": "attack"
+            }
+          },
+          {
+            "step": "resolve",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "labels": [
+                "Technique",
+                "Mitigation"
+              ],
+              "relationships": [
+                "MITIGATES"
+              ],
+              "seed_ids": [
+                "T1562.003",
+                "T1574.006",
+                "T1574.007"
+              ],
+              "join_key": "attack-technique-id"
+            }
+          },
+          {
+            "step": "gate",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "attempt": 1,
+              "template": "typed_step",
+              "query": "MATCH (n) WHERE coalesce(n.attack_id, n.id) IN $ids OPTIONAL MATCH (n)<-[:MITIGATES]-(t0:Mitigation) WITH n, collect(DISTINCT {m: t0, r: 'MITIGATES'}) AS k0 WITH n, [x IN k0 WHERE x.m IS NOT NULL] AS hops UNWIND (CASE WHEN size(hops) = 0 THEN [{m: null, r: null}] ELSE hops END) AS hop RETURN coalesce(n.attack_id, n.id) AS anchor_id, n.name AS anchor_name, labels(n)[0] AS anchor_label, coalesce(hop.m.attack_id, hop.m.id) AS neighbour_id, hop.m.name AS neighbour_name, labels(hop.m)[0] AS neighbour_label, hop.r AS rel_type LIMIT 1000",
+              "injected": [
+                "LIMIT 1000 appended (none present)"
+              ],
+              "timing_ms": 0.248
+            }
+          },
+          {
+            "step": "execute",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "row_count": 5,
+              "timing_ms": 5.2,
+              "row_ceiling": 1000,
+              "truncated": false
+            }
+          },
+          {
+            "step": "assess",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "row_count": 5,
+              "timing_ms": 0.004
+            }
+          },
+          {
+            "step": "normalize",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "record_count": 2,
+              "timing_ms": 2.29
+            }
+          }
+        ],
+        "records": [
+          {
+            "primary_id": "T1574.007",
+            "name": "Path Interception by PATH Environment Variable",
+            "label": "SubTechnique",
+            "description": "",
+            "properties": {},
+            "facets": [],
+            "join_values": [
+              "T1574.007"
+            ],
+            "related": [
+              {
+                "id": "M1047",
+                "name": "Audit",
+                "label": "Mitigation",
+                "type": "MITIGATES",
+                "description": "Auditing is the process of recording activity and systematically reviewing and analyzing the activity and system configurations. The primary purpose of auditing is to detect anomalies and identify potential threats or weaknesses in the environment. Proper auditing configurations can also help to meet compliance requirements. The process of auditing encompasses regular analysis of user behaviors and system logs in support of proactive security measures.\n\nAuditing is applicable to all systems used within an organization, from the front door of a building to accessing a file on a fileserver. It is considered more critical for regulated industries such as, healthcare, finance and government where compliance requirements demand stringent tracking of user and system activates.This mitigation can be implemented through the following measures: \n\nSystem Audit:\n\n- Use Case: Regularly assess system configurations to ensure compliance with organizational security policies.\n- Implementation: Use tools to scan for deviations from established benchmarks.\n\nPermission Audits:\n\n- Use Case: Review file and folder permissions to minimize the risk of unauthorized access or privilege escalation.\n- Implementation: Run access reviews to identify users or groups with excessive permissions.\n\nSoftware Audits:\n\n- Use Case: Identify outdated, unsupported, or insecure software that could serve as an attack vector.\n- Implementation: Use inventory and vulnerability scanning tools to detect outdated versions and recommend secure alternatives.\n\nConfiguration Audits:\n\n- Use Case: Evaluate system and network configurations to ensure secure settings (e.g., disabled SMBv1, enabled MFA).\n- Implementation: Implement automated configuration scanning tools like SCAP (Security Content Automation Protocol) to identify non-compliant systems.\n\nNetwork Audits:\n\n- Use Case: Examine network traffic, firewall rules, and endpoint communications to identify unauthorized or insecure connections.\n- Implementation: Utilize tools such as Wireshark, or Zeek to monitor and log suspicious network behavior."
+              },
+              {
+                "id": "M1022",
+                "name": "Restrict File and Directory Permissions",
+                "label": "Mitigation",
+                "type": "MITIGATES",
+                "description": "Restricting file and directory permissions involves setting access controls at the file system level to limit which users, groups, or processes can read, write, or execute files. By configuring permissions appropriately, organizations can reduce the attack surface for adversaries seeking to access sensitive data, plant malicious code, or tamper with system files.\n\nEnforce Least Privilege Permissions:\n\n- Remove unnecessary write permissions on sensitive files and directories.\n- Use file ownership and groups to control access for specific roles.\n\nExample (Windows): Right-click the shared folder → Properties → Security tab → Adjust permissions for NTFS ACLs.\n\nHarden File Shares:\n\n- Disable anonymous access to shared folders.\n- Enforce NTFS permissions for shared folders on Windows.\n\nExample: Set permissions to restrict write access to critical files, such as system executables (e.g., `/bin` or `/sbin` on Linux). Use tools like `chown` and `chmod` to assign file ownership and limit access.\n\nOn Linux, apply:\n`chmod 750 /etc/sensitive.conf`\n`chown root:admin /etc/sensitive.conf`\n\nFile Integrity Monitoring (FIM):\n\n- Use tools like Tripwire, Wazuh, or OSSEC to monitor changes to critical file permissions.\n\nAudit File System Access:\n\n- Enable auditing to track permission changes or unauthorized access attempts.\n- Use auditd (Linux) or Event Viewer (Windows) to log activities.\n\nRestrict Startup Directories:\n\n- Configure permissions to prevent unauthorized writes to directories like `C:\\ProgramData\\Microsoft\\Windows\\Start Menu`.\n\nExample: Restrict write access to critical directories like `/etc/`, `/usr/local/`, and Windows directories such as `C:\\Windows\\System32`.\n\n- On Windows, use icacls to modify permissions: `icacls \"C:\\Windows\\System32\" /inheritance:r /grant:r SYSTEM:(OI)(CI)F`\n- On Linux, monitor permissions using tools like `lsattr` or `auditd`."
+              },
+              {
+                "id": "M1038",
+                "name": "Execution Prevention",
+                "label": "Mitigation",
+                "type": "MITIGATES",
+                "description": "Prevent the execution of unauthorized or malicious code on systems by implementing application control, script blocking, and other execution prevention mechanisms. This ensures that only trusted and authorized code is executed, reducing the risk of malware and unauthorized actions. This mitigation can be implemented through the following measures:\n\nApplication Control:\n\n- Use Case: Use tools like AppLocker or Windows Defender Application Control (WDAC) to create whitelists of authorized applications and block unauthorized ones. On Linux, use tools like SELinux or AppArmor to define mandatory access control policies for application execution.\n- Implementation: Allow only digitally signed or pre-approved applications to execute on servers and endpoints. (e.g., `New-AppLockerPolicy -PolicyType Enforced -FilePath \"C:\\Policies\\AppLocker.xml\"`) \n\n\nScript Blocking:\n\n- Use Case: Use script control mechanisms to block unauthorized execution of scripts, such as PowerShell or JavaScript. Web Browsers: Use browser extensions or settings to block JavaScript execution from untrusted sources.\n- Implementation: Configure PowerShell to enforce Constrained Language Mode for non-administrator users. (e.g., `Set-ExecutionPolicy AllSigned`) \n\nExecutable Blocking:\n\n- Use Case: Prevent execution of binaries from suspicious locations, such as `%TEMP%` or `%APPDATA%` directories.\n- Implementation: Block execution of `.exe`, `.bat`, or `.ps1` files from user-writable directories.\n\nDynamic Analysis Prevention:\n- Use Case: Use behavior-based execution prevention tools to identify and block malicious activity in real time.\n- Implemenation: Employ EDR solutions that analyze runtime behavior and block suspicious code execution."
+              }
+            ]
+          },
+          {
+            "primary_id": "T1574.006",
+            "name": "Dynamic Linker Hijacking",
+            "label": "SubTechnique",
+            "description": "",
+            "properties": {},
+            "facets": [],
+            "join_values": [
+              "T1574.006"
+            ],
+            "related": [
+              {
+                "id": "M1038",
+                "name": "Execution Prevention",
+                "label": "Mitigation",
+                "type": "MITIGATES",
+                "description": "Prevent the execution of unauthorized or malicious code on systems by implementing application control, script blocking, and other execution prevention mechanisms. This ensures that only trusted and authorized code is executed, reducing the risk of malware and unauthorized actions. This mitigation can be implemented through the following measures:\n\nApplication Control:\n\n- Use Case: Use tools like AppLocker or Windows Defender Application Control (WDAC) to create whitelists of authorized applications and block unauthorized ones. On Linux, use tools like SELinux or AppArmor to define mandatory access control policies for application execution.\n- Implementation: Allow only digitally signed or pre-approved applications to execute on servers and endpoints. (e.g., `New-AppLockerPolicy -PolicyType Enforced -FilePath \"C:\\Policies\\AppLocker.xml\"`) \n\n\nScript Blocking:\n\n- Use Case: Use script control mechanisms to block unauthorized execution of scripts, such as PowerShell or JavaScript. Web Browsers: Use browser extensions or settings to block JavaScript execution from untrusted sources.\n- Implementation: Configure PowerShell to enforce Constrained Language Mode for non-administrator users. (e.g., `Set-ExecutionPolicy AllSigned`) \n\nExecutable Blocking:\n\n- Use Case: Prevent execution of binaries from suspicious locations, such as `%TEMP%` or `%APPDATA%` directories.\n- Implementation: Block execution of `.exe`, `.bat`, or `.ps1` files from user-writable directories.\n\nDynamic Analysis Prevention:\n- Use Case: Use behavior-based execution prevention tools to identify and block malicious activity in real time.\n- Implemenation: Employ EDR solutions that analyze runtime behavior and block suspicious code execution."
+              },
+              {
+                "id": "M1028",
+                "name": "Operating System Configuration",
+                "label": "Mitigation",
+                "type": "MITIGATES",
+                "description": "Operating System Configuration involves adjusting system settings and hardening the default configurations of an operating system (OS) to mitigate adversary exploitation and prevent abuse of system functionality. Proper OS configurations address security vulnerabilities, limit attack surfaces, and ensure robust defense against a wide range of techniques. This mitigation can be implemented through the following measures: \n\nDisable Unused Features:\n\n- Turn off SMBv1, LLMNR, and NetBIOS where not needed.\n- Disable remote registry and unnecessary services.\n\nEnforce OS-level Protections:\n\n- Enable Data Execution Prevention (DEP), Address Space Layout Randomization (ASLR), and Control Flow Guard (CFG) on Windows.\n- Use AppArmor or SELinux on Linux for mandatory access controls.\n\nSecure Access Settings:\n\n- Enable User Account Control (UAC) for Windows.\n- Restrict root/sudo access on Linux/macOS and enforce strong permissions using sudoers files.\n\nFile System Hardening:\n\n- Implement least-privilege access for critical files and system directories.\n- Audit permissions regularly using tools like icacls (Windows) or getfacl/chmod (Linux/macOS).\n\nSecure Remote Access:\n\n- Restrict RDP, SSH, and VNC to authorized IPs using firewall rules.\n- Enable NLA for RDP and enforce strong password/lockout policies.\n\nHarden Boot Configurations:\n\n- Enable Secure Boot and enforce UEFI/BIOS password protection.\n- Use BitLocker or LUKS to encrypt boot drives.\n\nRegular Audits:\n\n- Periodically audit OS configurations using tools like CIS Benchmarks or SCAP tools.\n\n*Tools for Implementation*\n\nWindows:\n\n- Microsoft Group Policy Objects (GPO): Centrally enforce OS security settings.\n- Windows Defender Exploit Guard: Built-in OS protection against exploits.\n- CIS-CAT Pro: Audit Windows security configurations based on CIS Benchmarks.\n\nLinux/macOS:\n\n- AppArmor/SELinux: Enforce mandatory access controls.\n- Lynis: Perform comprehensive security audits.\n- SCAP Security Guide: Automate configuration hardening using Security Content Automation Protocol.\n\nCross-Platform:\n\n- Ansible or Chef/Puppet: Automate configuration hardening at scale.\n- OpenSCAP: Perform compliance and configuration checks."
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "source": "attack",
+        "sub_question_id": "q3",
+        "sub_question": "",
+        "query": "MATCH (n) WHERE coalesce(n.attack_id, n.id) IN $ids OPTIONAL MATCH (n)<-[:MITIGATES]-(t0:Mitigation) WITH n, collect(DISTINCT {m: t0, r: 'MITIGATES'}) AS k0 WITH n, [x IN k0 WHERE x.m IS NOT NULL] AS hops UNWIND (CASE WHEN size(hops) = 0 THEN [{m: null, r: null}] ELSE hops END) AS hop RETURN coalesce(n.attack_id, n.id) AS anchor_id, n.name AS anchor_name, labels(n)[0] AS anchor_label, coalesce(hop.m.attack_id, hop.m.id) AS neighbour_id, hop.m.name AS neighbour_name, labels(hop.m)[0] AS neighbour_label, hop.r AS rel_type LIMIT 1000",
+        "ok": true,
+        "partial": false,
+        "error": null,
+        "summary": "Found 2 record(s) in MITRE ATT&CK including T1574.007, T1574.006.",
+        "traces": [
+          {
+            "step": "intake",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "source": "attack",
+              "card": "attack"
+            }
+          },
+          {
+            "step": "resolve",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "labels": [
+                "SubTechnique",
+                "Mitigation"
+              ],
+              "relationships": [
+                "MITIGATES"
+              ],
+              "seed_ids": [
+                "T1562.003",
+                "T1574.006",
+                "T1574.007"
+              ],
+              "join_key": "attack-technique-id"
+            }
+          },
+          {
+            "step": "gate",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "attempt": 1,
+              "template": "typed_step",
+              "query": "MATCH (n) WHERE coalesce(n.attack_id, n.id) IN $ids OPTIONAL MATCH (n)<-[:MITIGATES]-(t0:Mitigation) WITH n, collect(DISTINCT {m: t0, r: 'MITIGATES'}) AS k0 WITH n, [x IN k0 WHERE x.m IS NOT NULL] AS hops UNWIND (CASE WHEN size(hops) = 0 THEN [{m: null, r: null}] ELSE hops END) AS hop RETURN coalesce(n.attack_id, n.id) AS anchor_id, n.name AS anchor_name, labels(n)[0] AS anchor_label, coalesce(hop.m.attack_id, hop.m.id) AS neighbour_id, hop.m.name AS neighbour_name, labels(hop.m)[0] AS neighbour_label, hop.r AS rel_type LIMIT 1000",
+              "injected": [
+                "LIMIT 1000 appended (none present)"
+              ],
+              "timing_ms": 0.24
+            }
+          },
+          {
+            "step": "execute",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "row_count": 5,
+              "timing_ms": 5.1,
+              "row_ceiling": 1000,
+              "truncated": false
+            }
+          },
+          {
+            "step": "assess",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "row_count": 5,
+              "timing_ms": 0.006
+            }
+          },
+          {
+            "step": "normalize",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "record_count": 2,
+              "timing_ms": 2.199
+            }
+          }
+        ],
+        "records": [
+          {
+            "primary_id": "T1574.007",
+            "name": "Path Interception by PATH Environment Variable",
+            "label": "SubTechnique",
+            "description": "",
+            "properties": {},
+            "facets": [],
+            "join_values": [
+              "T1574.007"
+            ],
+            "related": [
+              {
+                "id": "M1047",
+                "name": "Audit",
+                "label": "Mitigation",
+                "type": "MITIGATES",
+                "description": "Auditing is the process of recording activity and systematically reviewing and analyzing the activity and system configurations. The primary purpose of auditing is to detect anomalies and identify potential threats or weaknesses in the environment. Proper auditing configurations can also help to meet compliance requirements. The process of auditing encompasses regular analysis of user behaviors and system logs in support of proactive security measures.\n\nAuditing is applicable to all systems used within an organization, from the front door of a building to accessing a file on a fileserver. It is considered more critical for regulated industries such as, healthcare, finance and government where compliance requirements demand stringent tracking of user and system activates.This mitigation can be implemented through the following measures: \n\nSystem Audit:\n\n- Use Case: Regularly assess system configurations to ensure compliance with organizational security policies.\n- Implementation: Use tools to scan for deviations from established benchmarks.\n\nPermission Audits:\n\n- Use Case: Review file and folder permissions to minimize the risk of unauthorized access or privilege escalation.\n- Implementation: Run access reviews to identify users or groups with excessive permissions.\n\nSoftware Audits:\n\n- Use Case: Identify outdated, unsupported, or insecure software that could serve as an attack vector.\n- Implementation: Use inventory and vulnerability scanning tools to detect outdated versions and recommend secure alternatives.\n\nConfiguration Audits:\n\n- Use Case: Evaluate system and network configurations to ensure secure settings (e.g., disabled SMBv1, enabled MFA).\n- Implementation: Implement automated configuration scanning tools like SCAP (Security Content Automation Protocol) to identify non-compliant systems.\n\nNetwork Audits:\n\n- Use Case: Examine network traffic, firewall rules, and endpoint communications to identify unauthorized or insecure connections.\n- Implementation: Utilize tools such as Wireshark, or Zeek to monitor and log suspicious network behavior."
+              },
+              {
+                "id": "M1022",
+                "name": "Restrict File and Directory Permissions",
+                "label": "Mitigation",
+                "type": "MITIGATES",
+                "description": "Restricting file and directory permissions involves setting access controls at the file system level to limit which users, groups, or processes can read, write, or execute files. By configuring permissions appropriately, organizations can reduce the attack surface for adversaries seeking to access sensitive data, plant malicious code, or tamper with system files.\n\nEnforce Least Privilege Permissions:\n\n- Remove unnecessary write permissions on sensitive files and directories.\n- Use file ownership and groups to control access for specific roles.\n\nExample (Windows): Right-click the shared folder → Properties → Security tab → Adjust permissions for NTFS ACLs.\n\nHarden File Shares:\n\n- Disable anonymous access to shared folders.\n- Enforce NTFS permissions for shared folders on Windows.\n\nExample: Set permissions to restrict write access to critical files, such as system executables (e.g., `/bin` or `/sbin` on Linux). Use tools like `chown` and `chmod` to assign file ownership and limit access.\n\nOn Linux, apply:\n`chmod 750 /etc/sensitive.conf`\n`chown root:admin /etc/sensitive.conf`\n\nFile Integrity Monitoring (FIM):\n\n- Use tools like Tripwire, Wazuh, or OSSEC to monitor changes to critical file permissions.\n\nAudit File System Access:\n\n- Enable auditing to track permission changes or unauthorized access attempts.\n- Use auditd (Linux) or Event Viewer (Windows) to log activities.\n\nRestrict Startup Directories:\n\n- Configure permissions to prevent unauthorized writes to directories like `C:\\ProgramData\\Microsoft\\Windows\\Start Menu`.\n\nExample: Restrict write access to critical directories like `/etc/`, `/usr/local/`, and Windows directories such as `C:\\Windows\\System32`.\n\n- On Windows, use icacls to modify permissions: `icacls \"C:\\Windows\\System32\" /inheritance:r /grant:r SYSTEM:(OI)(CI)F`\n- On Linux, monitor permissions using tools like `lsattr` or `auditd`."
+              },
+              {
+                "id": "M1038",
+                "name": "Execution Prevention",
+                "label": "Mitigation",
+                "type": "MITIGATES",
+                "description": "Prevent the execution of unauthorized or malicious code on systems by implementing application control, script blocking, and other execution prevention mechanisms. This ensures that only trusted and authorized code is executed, reducing the risk of malware and unauthorized actions. This mitigation can be implemented through the following measures:\n\nApplication Control:\n\n- Use Case: Use tools like AppLocker or Windows Defender Application Control (WDAC) to create whitelists of authorized applications and block unauthorized ones. On Linux, use tools like SELinux or AppArmor to define mandatory access control policies for application execution.\n- Implementation: Allow only digitally signed or pre-approved applications to execute on servers and endpoints. (e.g., `New-AppLockerPolicy -PolicyType Enforced -FilePath \"C:\\Policies\\AppLocker.xml\"`) \n\n\nScript Blocking:\n\n- Use Case: Use script control mechanisms to block unauthorized execution of scripts, such as PowerShell or JavaScript. Web Browsers: Use browser extensions or settings to block JavaScript execution from untrusted sources.\n- Implementation: Configure PowerShell to enforce Constrained Language Mode for non-administrator users. (e.g., `Set-ExecutionPolicy AllSigned`) \n\nExecutable Blocking:\n\n- Use Case: Prevent execution of binaries from suspicious locations, such as `%TEMP%` or `%APPDATA%` directories.\n- Implementation: Block execution of `.exe`, `.bat`, or `.ps1` files from user-writable directories.\n\nDynamic Analysis Prevention:\n- Use Case: Use behavior-based execution prevention tools to identify and block malicious activity in real time.\n- Implemenation: Employ EDR solutions that analyze runtime behavior and block suspicious code execution."
+              }
+            ]
+          },
+          {
+            "primary_id": "T1574.006",
+            "name": "Dynamic Linker Hijacking",
+            "label": "SubTechnique",
+            "description": "",
+            "properties": {},
+            "facets": [],
+            "join_values": [
+              "T1574.006"
+            ],
+            "related": [
+              {
+                "id": "M1038",
+                "name": "Execution Prevention",
+                "label": "Mitigation",
+                "type": "MITIGATES",
+                "description": "Prevent the execution of unauthorized or malicious code on systems by implementing application control, script blocking, and other execution prevention mechanisms. This ensures that only trusted and authorized code is executed, reducing the risk of malware and unauthorized actions. This mitigation can be implemented through the following measures:\n\nApplication Control:\n\n- Use Case: Use tools like AppLocker or Windows Defender Application Control (WDAC) to create whitelists of authorized applications and block unauthorized ones. On Linux, use tools like SELinux or AppArmor to define mandatory access control policies for application execution.\n- Implementation: Allow only digitally signed or pre-approved applications to execute on servers and endpoints. (e.g., `New-AppLockerPolicy -PolicyType Enforced -FilePath \"C:\\Policies\\AppLocker.xml\"`) \n\n\nScript Blocking:\n\n- Use Case: Use script control mechanisms to block unauthorized execution of scripts, such as PowerShell or JavaScript. Web Browsers: Use browser extensions or settings to block JavaScript execution from untrusted sources.\n- Implementation: Configure PowerShell to enforce Constrained Language Mode for non-administrator users. (e.g., `Set-ExecutionPolicy AllSigned`) \n\nExecutable Blocking:\n\n- Use Case: Prevent execution of binaries from suspicious locations, such as `%TEMP%` or `%APPDATA%` directories.\n- Implementation: Block execution of `.exe`, `.bat`, or `.ps1` files from user-writable directories.\n\nDynamic Analysis Prevention:\n- Use Case: Use behavior-based execution prevention tools to identify and block malicious activity in real time.\n- Implemenation: Employ EDR solutions that analyze runtime behavior and block suspicious code execution."
+              },
+              {
+                "id": "M1028",
+                "name": "Operating System Configuration",
+                "label": "Mitigation",
+                "type": "MITIGATES",
+                "description": "Operating System Configuration involves adjusting system settings and hardening the default configurations of an operating system (OS) to mitigate adversary exploitation and prevent abuse of system functionality. Proper OS configurations address security vulnerabilities, limit attack surfaces, and ensure robust defense against a wide range of techniques. This mitigation can be implemented through the following measures: \n\nDisable Unused Features:\n\n- Turn off SMBv1, LLMNR, and NetBIOS where not needed.\n- Disable remote registry and unnecessary services.\n\nEnforce OS-level Protections:\n\n- Enable Data Execution Prevention (DEP), Address Space Layout Randomization (ASLR), and Control Flow Guard (CFG) on Windows.\n- Use AppArmor or SELinux on Linux for mandatory access controls.\n\nSecure Access Settings:\n\n- Enable User Account Control (UAC) for Windows.\n- Restrict root/sudo access on Linux/macOS and enforce strong permissions using sudoers files.\n\nFile System Hardening:\n\n- Implement least-privilege access for critical files and system directories.\n- Audit permissions regularly using tools like icacls (Windows) or getfacl/chmod (Linux/macOS).\n\nSecure Remote Access:\n\n- Restrict RDP, SSH, and VNC to authorized IPs using firewall rules.\n- Enable NLA for RDP and enforce strong password/lockout policies.\n\nHarden Boot Configurations:\n\n- Enable Secure Boot and enforce UEFI/BIOS password protection.\n- Use BitLocker or LUKS to encrypt boot drives.\n\nRegular Audits:\n\n- Periodically audit OS configurations using tools like CIS Benchmarks or SCAP tools.\n\n*Tools for Implementation*\n\nWindows:\n\n- Microsoft Group Policy Objects (GPO): Centrally enforce OS security settings.\n- Windows Defender Exploit Guard: Built-in OS protection against exploits.\n- CIS-CAT Pro: Audit Windows security configurations based on CIS Benchmarks.\n\nLinux/macOS:\n\n- AppArmor/SELinux: Enforce mandatory access controls.\n- Lynis: Perform comprehensive security audits.\n- SCAP Security Guide: Automate configuration hardening using Security Content Automation Protocol.\n\nCross-Platform:\n\n- Ansible or Chef/Puppet: Automate configuration hardening at scale.\n- OpenSCAP: Perform compliance and configuration checks."
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "source": "attack",
+        "sub_question_id": "q4",
+        "sub_question": "",
+        "query": "CALL { MATCH (v2) WHERE v2.id IN $p0 AND (v2:Mitigation) WITH DISTINCT v2 RETURN v2 AS v1 UNION MATCH (v3) WHERE v3.id IN $p1 AND (v3:Mitigation) WITH DISTINCT v3 RETURN v3 AS v1 } WITH DISTINCT v1 WITH v1 ORDER BY v1.id WITH collect(v1) AS all_ RETURN size(all_) AS total, [x IN all_[0..1000] | {id: x.id, name: x.name}] AS rows",
+        "ok": true,
+        "partial": false,
+        "error": null,
+        "summary": "Found 4 record(s) in MITRE ATT&CK including M1028, M1038, M1022 and more.",
+        "traces": [
+          {
+            "step": "intake",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "source": "attack",
+              "card": "attack"
+            }
+          },
+          {
+            "step": "resolve",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "labels": [
+                "Mitigation"
+              ],
+              "relationships": [],
+              "seed_ids": [
+                "M1022",
+                "M1028",
+                "M1038",
+                "M1047"
+              ],
+              "join_key": "attack-technique-id"
+            }
+          },
+          {
+            "step": "gate",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "attempt": 1,
+              "template": "algebra",
+              "query": "CALL { MATCH (v2) WHERE v2.id IN $p0 AND (v2:Mitigation) WITH DISTINCT v2 RETURN v2 AS v1 UNION MATCH (v3) WHERE v3.id IN $p1 AND (v3:Mitigation) WITH DISTINCT v3 RETURN v3 AS v1 } WITH DISTINCT v1 WITH v1 ORDER BY v1.id WITH collect(v1) AS all_ RETURN size(all_) AS total, [x IN all_[0..1000] | {id: x.id, name: x.name}] AS rows",
+              "injected": [],
+              "note": "compiled by the operator algebra (validated against the card; read-only by construction)",
+              "id_map": {
+                "M1022": [
+                  "course-of-action--987988f0-cf86-4680-a875-2f6456ab2448"
+                ],
+                "M1028": [
+                  "course-of-action--2f316f6c-ae42-44fe-adf8-150989e0f6d3"
+                ],
+                "M1038": [
+                  "course-of-action--47e0e9fe-96ce-4f65-8bb1-8be1feacb5db"
+                ],
+                "M1047": [
+                  "course-of-action--cc2399fd-3cd3-4319-8d0a-fbd6420cdaf8"
+                ]
+              }
+            }
+          },
+          {
+            "step": "execute",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "row_count": 4
+            }
+          },
+          {
+            "step": "algebra",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "result": {
+                "step": "q4",
+                "kind": "nodes",
+                "value": null,
+                "ids": [
+                  "M1022",
+                  "M1028",
+                  "M1038",
+                  "M1047"
+                ],
+                "rows": [
+                  {
+                    "id": "M1028",
+                    "name": "Operating System Configuration"
+                  },
+                  {
+                    "id": "M1038",
+                    "name": "Execution Prevention"
+                  },
+                  {
+                    "id": "M1022",
+                    "name": "Restrict File and Directory Permissions"
+                  },
+                  {
+                    "id": "M1047",
+                    "name": "Audit"
+                  }
+                ],
+                "total": 4,
+                "complete": true,
+                "info": {}
+              },
+              "op": "union",
+              "ir": {
+                "@": "Nodes",
+                "of": {
+                  "@": "Union_",
+                  "parts": [
+                    {
+                      "@": "FromStep",
+                      "labels": [
+                        "Mitigation"
+                      ],
+                      "step": "q2"
+                    },
+                    {
+                      "@": "FromStep",
+                      "labels": [
+                        "Mitigation"
+                      ],
+                      "step": "q3"
+                    }
+                  ]
+                },
+                "props": []
+              }
+            }
+          }
+        ],
+        "records": [
+          {
+            "primary_id": "M1028",
+            "name": "Operating System Configuration",
+            "label": "Mitigation",
+            "description": "",
+            "properties": {},
+            "facets": [],
+            "join_values": [],
+            "related": []
+          },
+          {
+            "primary_id": "M1038",
+            "name": "Execution Prevention",
+            "label": "Mitigation",
+            "description": "",
+            "properties": {},
+            "facets": [],
+            "join_values": [],
+            "related": []
+          },
+          {
+            "primary_id": "M1022",
+            "name": "Restrict File and Directory Permissions",
+            "label": "Mitigation",
+            "description": "",
+            "properties": {},
+            "facets": [],
+            "join_values": [],
+            "related": []
+          },
+          {
+            "primary_id": "M1047",
+            "name": "Audit",
+            "label": "Mitigation",
+            "description": "",
+            "properties": {},
+            "facets": [],
+            "join_values": [],
+            "related": []
+          }
+        ]
+      }
+    ]
+  },
+  "deterministic_scores": {
+    "correlation": {
+      "negative": false,
+      "exact": false,
+      "precision": 0.0,
+      "recall": 0.0,
+      "f1": 0.0,
+      "n_expected": 0,
+      "n_got": 2
+    },
+    "mapping_recall": null,
+    "coverage": {
+      "gold": 5,
+      "found": 5,
+      "coverage": 1.0,
+      "missing": []
+    },
+    "provenance": {
+      "citations": 20,
+      "compliant": 20,
+      "citation_provenance_rate": 1.0,
+      "abstention_proof_ok": true,
+      "fully_provenanced": true
+    },
+    "inspectability": {
+      "citation_coverage": 1.0,
+      "traceability": 1.0,
+      "abstention_proofs": 1.0,
+      "inspectability": 1.0
+    }
+  },
+  "arm": "planned_llm_typed_full",
+  "run_meta": {
+    "planner": "llm-typed-full",
+    "synthesis": "deterministic",
+    "use_llm": true,
+    "llm_synthesis": false,
+    "llm_specialist": false,
+    "rewrite": null,
+    "observed_plan": [
+      {
+        "sub_question_id": "q1",
+        "source": "capec",
+        "text": "",
+        "entities": [
+          "AttackPattern",
+          "MAPS_TO",
+          "TaxonomyEntry"
+        ],
+        "seed_ids": [
+          "CAPEC-13"
+        ],
+        "depends_on": null,
+        "limits": {
+          "max_traversal_depth": 3,
+          "max_result_rows": 1000,
+          "query_timeout_ms": 5000
+        },
+        "step": {
+          "kind": "expand",
+          "anchor_label": "AttackPattern",
+          "anchor_ids": [
+            "CAPEC-13"
+          ],
+          "hops": [
+            {
+              "relation": "MAPS_TO",
+              "direction": "out",
+              "target_label": "TaxonomyEntry"
+            }
+          ],
+          "depth": 1,
+          "filter": {
+            "property": "taxonomy_name",
+            "value": "ATTACK"
+          }
+        }
+      },
+      {
+        "sub_question_id": "q2",
+        "source": "attack",
+        "text": "",
+        "entities": [
+          "Technique",
+          "MITIGATES",
+          "Mitigation"
+        ],
+        "seed_ids": [],
+        "depends_on": null,
+        "limits": {
+          "max_traversal_depth": 3,
+          "max_result_rows": 1000,
+          "query_timeout_ms": 5000
+        },
+        "step": {
+          "kind": "expand",
+          "anchor_label": "Technique",
+          "anchor_ids": [],
+          "hops": [
+            {
+              "relation": "MITIGATES",
+              "direction": "in",
+              "target_label": "Mitigation"
+            }
+          ],
+          "depth": 1,
+          "from_step": "q1"
+        }
+      },
+      {
+        "sub_question_id": "q3",
+        "source": "attack",
+        "text": "",
+        "entities": [
+          "SubTechnique",
+          "MITIGATES",
+          "Mitigation"
+        ],
+        "seed_ids": [],
+        "depends_on": null,
+        "limits": {
+          "max_traversal_depth": 3,
+          "max_result_rows": 1000,
+          "query_timeout_ms": 5000
+        },
+        "step": {
+          "kind": "expand",
+          "anchor_label": "SubTechnique",
+          "anchor_ids": [],
+          "hops": [
+            {
+              "relation": "MITIGATES",
+              "direction": "in",
+              "target_label": "Mitigation"
+            }
+          ],
+          "depth": 1,
+          "from_step": "q1"
+        }
+      },
+      {
+        "sub_question_id": "q4",
+        "source": "attack",
+        "text": "",
+        "entities": [
+          "Mitigation"
+        ],
+        "seed_ids": [],
+        "depends_on": null,
+        "limits": {
+          "max_traversal_depth": 3,
+          "max_result_rows": 1000,
+          "query_timeout_ms": 5000
+        },
+        "step": {
+          "kind": "algebra",
+          "anchor_label": "Mitigation",
+          "anchor_ids": [],
+          "hops": [],
+          "depth": 1,
+          "algebra": {
+            "ir": {
+              "@": "Nodes",
+              "of": {
+                "@": "Union_",
+                "parts": [
+                  {
+                    "@": "FromStep",
+                    "labels": [
+                      "Mitigation"
+                    ],
+                    "step": "q2"
+                  },
+                  {
+                    "@": "FromStep",
+                    "labels": [
+                      "Mitigation"
+                    ],
+                    "step": "q3"
+                  }
+                ]
+              },
+              "props": []
+            },
+            "labels": [
+              "Mitigation"
+            ],
+            "op": "union"
+          },
+          "from_step": "q2",
+          "from_steps": [
+            "q2",
+            "q3"
+          ]
+        }
+      }
+    ],
+    "exit_code": 0,
+    "status": "answered",
+    "timings": {
+      "plan_ms": 104058.306,
+      "specialists": [
+        {
+          "sub_question": "q1",
+          "source": "capec",
+          "ms": 10.481
+        },
+        {
+          "sub_question": "q2",
+          "source": "attack",
+          "ms": 8.186
+        },
+        {
+          "sub_question": "q3",
+          "source": "attack",
+          "ms": 7.929
+        },
+        {
+          "sub_question": "q4",
+          "source": "attack",
+          "ms": 11.747
+        }
+      ],
+      "synthesis_ms": 12.596,
+      "total_ms": 104648.057
+    },
+    "registry_model": "qwen38-27b",
+    "drafter_used": "TypedDrafter",
+    "typed": [
+      {
+        "mode": "full",
+        "served_model": "qwen38-27b/248046",
+        "model_calls": 4,
+        "catalog_calls": [
+          {
+            "name": "resolve_entity",
+            "args": {
+              "text": "CAPEC-13",
+              "label": "AttackPattern",
+              "graph": "capec"
+            },
+            "ok": true
+          },
+          {
+            "name": "resolve_entity",
+            "args": {
+              "text": "Subverting Environment Variable Values",
+              "label": "AttackPattern",
+              "graph": "capec"
+            },
+            "ok": true
+          },
+          {
+            "name": "describe",
+            "args": {
+              "target": "TaxonomyEntry",
+              "graph": "capec"
+            },
+            "ok": true
+          },
+          {
+            "name": "describe",
+            "args": {
+              "target": "Mitigation",
+              "graph": "attack"
+            },
+            "ok": true
+          }
+        ],
+        "prompt_tokens": 29204,
+        "completion_tokens": 4060,
+        "emitted": true,
+        "parse_error": null,
+        "first_steps": 4,
+        "first_refused": 0,
+        "first_fixes": 2,
+        "valid_first": true,
+        "valid_first_raw": false,
+        "repair_used": false,
+        "fixed_by_repair": false,
+        "still_refused": 0,
+        "final_steps": 4,
+        "coercions": [
+          {
+            "step": "q4",
+            "field": "parts[0]",
+            "from": "q2",
+            "to": {
+              "from_step": "q2"
+            },
+            "filled_by": "step_id_as_set"
+          },
+          {
+            "step": "q4",
+            "field": "parts[1]",
+            "from": "q3",
+            "to": {
+              "from_step": "q3"
+            },
+            "filled_by": "step_id_as_set"
+          }
+        ],
+        "refusals": [],
+        "plan_problems": [],
+        "replies": [
+          {
+            "status": "ok",
+            "finish_reason": "tool_calls",
+            "calls": [
+              "resolve_entity",
+              "resolve_entity"
+            ],
+            "text_chars": 0,
+            "repairs": []
+          },
+          {
+            "status": "ok",
+            "finish_reason": "tool_calls",
+            "calls": [
+              "describe"
+            ],
+            "text_chars": 0,
+            "repairs": []
+          },
+          {
+            "status": "ok",
+            "finish_reason": "tool_calls",
+            "calls": [
+              "describe"
+            ],
+            "text_chars": 0,
+            "repairs": []
+          },
+          {
+            "status": "ok",
+            "finish_reason": "stop",
+            "calls": [],
+            "text_chars": 959,
+            "repairs": []
+          }
+        ],
+        "error": null,
+        "fallback": null,
+        "seconds": 103.787,
+        "n_catalog_calls": 4,
+        "fixed_by_coercion": true
+      }
+    ],
+    "seams": {
+      "planner_llm": true,
+      "drafter": "TypedDrafter",
+      "specialist_llm": false,
+      "synthesis_llm": false,
+      "generic_only": "true"
+    },
+    "wall_s": 105.313,
+    "algebra_results": [
+      {
+        "step": "q4",
+        "kind": "nodes",
+        "value": null,
+        "ids": [
+          "M1022",
+          "M1028",
+          "M1038",
+          "M1047"
+        ],
+        "rows": [
+          {
+            "id": "M1028",
+            "name": "Operating System Configuration"
+          },
+          {
+            "id": "M1038",
+            "name": "Execution Prevention"
+          },
+          {
+            "id": "M1022",
+            "name": "Restrict File and Directory Permissions"
+          },
+          {
+            "id": "M1047",
+            "name": "Audit"
+          }
+        ],
+        "total": 4,
+        "complete": true,
+        "info": {}
+      }
+    ]
+  },
+  "evidence_volume": {
+    "results": 4,
+    "records": 9,
+    "related": 13
+  }
+}

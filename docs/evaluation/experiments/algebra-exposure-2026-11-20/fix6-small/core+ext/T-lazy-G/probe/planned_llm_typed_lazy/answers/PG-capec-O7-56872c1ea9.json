@@ -1,0 +1,771 @@
+{
+  "id": "PG-capec-O7-56872c1ea9",
+  "kind": "capec",
+  "tier": "algebra-probe",
+  "category": "PG-capec",
+  "question": "Of the attack patterns that belong to category CAPEC-688 (Sustainment), which have no taxonomy mapping?",
+  "gold": {
+    "assertions": {
+      "min_records": 0,
+      "must_include_ids": [],
+      "must_include_related": []
+    },
+    "ex_gold": {
+      "pool": "algebra",
+      "scheme": "capec",
+      "kind": "set",
+      "expected": [
+        "CAPEC-184",
+        "CAPEC-444",
+        "CAPEC-536",
+        "CAPEC-690"
+      ]
+    }
+  },
+  "answer": {
+    "headline": "Gathered 5 record(s) from 1 source(s).",
+    "narrative": "Found 1 CAPEC record(s): CAPEC-688. CAPEC-688 (Sustainment) has Status: Draft. CAPEC-688 (Sustainment) has 5 attack patterns: CAPEC-184, CAPEC-444, CAPEC-690, CAPEC-536, CAPEC-440. Found 4 CAPEC record(s): CAPEC-184, CAPEC-444, CAPEC-536, CAPEC-690. 4 entities match.",
+    "composer": "deterministic",
+    "fallback_reason": null,
+    "claims": [
+      {
+        "text": "Found 1 CAPEC record(s): CAPEC-688.",
+        "kind": "fact",
+        "entity_ids": [
+          "CAPEC-688"
+        ],
+        "citations": [
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-688"
+          }
+        ]
+      },
+      {
+        "text": "CAPEC-688 (Sustainment) has Status: Draft.",
+        "kind": "fact",
+        "entity_ids": [
+          "CAPEC-688"
+        ],
+        "citations": [
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-688"
+          }
+        ]
+      },
+      {
+        "text": "CAPEC-688 (Sustainment) has 5 attack patterns: CAPEC-184, CAPEC-444, CAPEC-690, CAPEC-536, CAPEC-440.",
+        "kind": "enumeration",
+        "entity_ids": [
+          "CAPEC-184",
+          "CAPEC-444",
+          "CAPEC-690",
+          "CAPEC-536",
+          "CAPEC-440"
+        ],
+        "citations": [
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-688"
+          }
+        ]
+      },
+      {
+        "text": "Found 4 CAPEC record(s): CAPEC-184, CAPEC-444, CAPEC-536, CAPEC-690.",
+        "kind": "fact",
+        "entity_ids": [
+          "CAPEC-184",
+          "CAPEC-444",
+          "CAPEC-536",
+          "CAPEC-690"
+        ],
+        "citations": [
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-184"
+          },
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-444"
+          },
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-536"
+          },
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-690"
+          }
+        ]
+      },
+      {
+        "text": "4 entities match.",
+        "kind": "fact",
+        "entity_ids": [
+          "CAPEC-184",
+          "CAPEC-444",
+          "CAPEC-536",
+          "CAPEC-690"
+        ],
+        "citations": [
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-184"
+          },
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-444"
+          },
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-536"
+          },
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-690"
+          }
+        ]
+      }
+    ],
+    "abstentions": [],
+    "notes": []
+  },
+  "logic_flow": {
+    "task": {
+      "sub_question_id": "PG-capec-O7-56872c1ea9",
+      "source": "capec",
+      "text": "Of the attack patterns that belong to category CAPEC-688 (Sustainment), which have no taxonomy mapping?",
+      "entities": [
+        "Category",
+        "AttackPattern",
+        "MAPS_TO"
+      ],
+      "limits": {
+        "max_traversal_depth": 3,
+        "max_result_rows": 20000,
+        "query_timeout_ms": 60000
+      },
+      "join_key": null,
+      "seed_ids": [
+        "CAPEC-688"
+      ],
+      "rationale": "algebra probe set (Era 2 Step 9 Phase G)"
+    },
+    "results": [
+      {
+        "source": "capec",
+        "sub_question_id": "q1",
+        "sub_question": "",
+        "query": "g.V().has(\"id\", within(ids)).as(\"ap\").union(__.in(\"MEMBER_OF\").hasLabel(\"AttackPattern\")).as(\"nbr\").select(\"ap\",\"nbr\").by(elementMap()).limit(1000)",
+        "ok": true,
+        "partial": false,
+        "error": null,
+        "summary": "Found 1 CAPEC record(s): CAPEC-688.",
+        "traces": [
+          {
+            "step": "intake",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "source": "capec",
+              "card": "capec"
+            }
+          },
+          {
+            "step": "resolve",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "labels": [
+                "Category",
+                "AttackPattern"
+              ],
+              "relationships": [
+                "MEMBER_OF"
+              ],
+              "seed_ids": [
+                "CAPEC-688"
+              ],
+              "join_key": null
+            }
+          },
+          {
+            "step": "gate",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "attempt": 1,
+              "template": "typed_step",
+              "query": "g.V().has(\"id\", within(ids)).as(\"ap\").union(__.in(\"MEMBER_OF\").hasLabel(\"AttackPattern\")).as(\"nbr\").select(\"ap\",\"nbr\").by(elementMap()).limit(1000)",
+              "injected": [],
+              "timing_ms": 0.404
+            }
+          },
+          {
+            "step": "execute",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "row_count": 5,
+              "timing_ms": 7.1,
+              "row_ceiling": 1000,
+              "truncated": false
+            }
+          },
+          {
+            "step": "assess",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "row_count": 5,
+              "timing_ms": 0.011
+            }
+          },
+          {
+            "step": "normalize",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "record_count": 1,
+              "timing_ms": 0.151
+            }
+          }
+        ],
+        "records": [
+          {
+            "primary_id": "CAPEC-688",
+            "name": "Sustainment",
+            "label": "Category",
+            "description": "",
+            "properties": {
+              "Status": "Draft",
+              "summary": "Attack patterns within this category focus on the exploitation of weaknesses within the Sustainment phase of the CISA Supply Chain Lifecycle.",
+              "name": "Sustainment",
+              "id": "capec:category:688"
+            },
+            "facets": [],
+            "join_values": [],
+            "related": [
+              {
+                "id": "CAPEC-184",
+                "name": "Software Integrity Attack",
+                "label": "AttackPattern",
+                "type": "MEMBER_OF",
+                "Status": "Draft",
+                "Typical_Severity": "Low",
+                "description": "An attacker initiates a series of events designed to cause a user, program, server, or device to perform actions which undermine the integrity of software code, device data structures, or device firmware, achieving the modification of the target's integrity to achieve an insecure state.",
+                "Abstraction": "Meta"
+              },
+              {
+                "id": "CAPEC-444",
+                "name": "Development Alteration",
+                "label": "AttackPattern",
+                "type": "MEMBER_OF",
+                "Status": "Stable",
+                "Likelihood_Of_Attack": "Medium",
+                "Typical_Severity": "High",
+                "description": "An adversary modifies a technology, product, or component during its development to acheive a negative impact once the system is deployed. The goal of the adversary is to modify the system in such a way that the negative impact can be leveraged when the system is later deployed. Development alteration attacks may include attacks that insert malicious logic into the system's software, modify or replace hardware components, and other attacks which negatively impact the system during development. These attacks generally require insider access to modify source code or to tamper with hardware components. The product is then delivered to the user where the negative impact can be leveraged at a later time.",
+                "Abstraction": "Standard"
+              },
+              {
+                "id": "CAPEC-690",
+                "name": "Metadata Spoofing",
+                "label": "AttackPattern",
+                "type": "MEMBER_OF",
+                "Status": "Stable",
+                "Likelihood_Of_Attack": "Medium",
+                "Typical_Severity": "High",
+                "description": "An adversary alters the metadata of a resource (e.g., file, directory, repository, etc.) to present a malicious resource as legitimate/credible.",
+                "Abstraction": "Meta"
+              },
+              {
+                "id": "CAPEC-536",
+                "name": "Data Injected During Configuration",
+                "label": "AttackPattern",
+                "type": "MEMBER_OF",
+                "Status": "Stable",
+                "Likelihood_Of_Attack": "Low",
+                "Typical_Severity": "High",
+                "description": "An attacker with access to data files and processes on a victim's system injects malicious data into critical operational data during configuration or recalibration, causing the victim's system to perform in a suboptimal manner that benefits the adversary.",
+                "Abstraction": "Standard"
+              },
+              {
+                "id": "CAPEC-440",
+                "name": "Hardware Integrity Attack",
+                "label": "AttackPattern",
+                "type": "MEMBER_OF",
+                "Status": "Stable",
+                "Likelihood_Of_Attack": "Low",
+                "Typical_Severity": "High",
+                "description": "An adversary exploits a weakness in the system maintenance process and causes a change to be made to a technology, product, component, or sub-component or a new one installed during its deployed use at the victim location for the purpose of carrying out an attack.",
+                "Abstraction": "Meta"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "source": "capec",
+        "sub_question_id": "q2",
+        "sub_question": "",
+        "query": "g.V().has('id', within(p0)).hasLabel('AttackPattern').dedup().not(__.as('s1').out('MAPS_TO').hasLabel('TaxonomyEntry').where(neq('s1'))).order().by('id').fold().project('total', 'rows').by(__.count(local)).by(__.unfold().limit(1000).project('id', 'name').by('id').by(__.coalesce(__.values('name'), __.constant(null))).fold())",
+        "ok": true,
+        "partial": false,
+        "error": null,
+        "summary": "Found 4 CAPEC record(s): CAPEC-184, CAPEC-444, CAPEC-536, CAPEC-690.",
+        "traces": [
+          {
+            "step": "intake",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "source": "capec",
+              "card": "capec"
+            }
+          },
+          {
+            "step": "resolve",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "labels": [
+                "AttackPattern",
+                "TaxonomyEntry"
+              ],
+              "relationships": [
+                "MAPS_TO"
+              ],
+              "seed_ids": [
+                "CAPEC-184",
+                "CAPEC-440",
+                "CAPEC-444",
+                "CAPEC-536",
+                "CAPEC-690"
+              ],
+              "join_key": null
+            }
+          },
+          {
+            "step": "gate",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "attempt": 1,
+              "template": "algebra",
+              "query": "g.V().has('id', within(p0)).hasLabel('AttackPattern').dedup().not(__.as('s1').out('MAPS_TO').hasLabel('TaxonomyEntry').where(neq('s1'))).order().by('id').fold().project('total', 'rows').by(__.count(local)).by(__.unfold().limit(1000).project('id', 'name').by('id').by(__.coalesce(__.values('name'), __.constant(null))).fold())",
+              "injected": [],
+              "note": "compiled by the operator algebra (validated against the card; read-only by construction)",
+              "id_map": {
+                "CAPEC-184": [
+                  "capec:attack-pattern:184"
+                ],
+                "CAPEC-440": [
+                  "capec:attack-pattern:440"
+                ],
+                "CAPEC-444": [
+                  "capec:attack-pattern:444"
+                ],
+                "CAPEC-536": [
+                  "capec:attack-pattern:536"
+                ],
+                "CAPEC-690": [
+                  "capec:attack-pattern:690"
+                ]
+              }
+            }
+          },
+          {
+            "step": "execute",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "row_count": 4
+            }
+          },
+          {
+            "step": "algebra",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "result": {
+                "step": "q2",
+                "kind": "nodes",
+                "value": null,
+                "ids": [
+                  "CAPEC-184",
+                  "CAPEC-444",
+                  "CAPEC-536",
+                  "CAPEC-690"
+                ],
+                "rows": [
+                  {
+                    "id": "CAPEC-184",
+                    "name": "Software Integrity Attack"
+                  },
+                  {
+                    "id": "CAPEC-444",
+                    "name": "Development Alteration"
+                  },
+                  {
+                    "id": "CAPEC-536",
+                    "name": "Data Injected During Configuration"
+                  },
+                  {
+                    "id": "CAPEC-690",
+                    "name": "Metadata Spoofing"
+                  }
+                ],
+                "total": 4,
+                "complete": true,
+                "info": {}
+              },
+              "op": "absence",
+              "ir": {
+                "@": "Nodes",
+                "of": {
+                  "@": "Having",
+                  "exists": false,
+                  "hop": {
+                    "@": "Hop",
+                    "direction": "out",
+                    "edge_conds": [],
+                    "relation": "MAPS_TO",
+                    "target": "TaxonomyEntry"
+                  },
+                  "of": {
+                    "@": "FromStep",
+                    "labels": [
+                      "AttackPattern"
+                    ],
+                    "step": "q1"
+                  },
+                  "target": null,
+                  "target_conds": []
+                },
+                "props": []
+              }
+            }
+          }
+        ],
+        "records": [
+          {
+            "primary_id": "CAPEC-184",
+            "name": "Software Integrity Attack",
+            "label": "AttackPattern",
+            "description": "",
+            "properties": {},
+            "facets": [],
+            "join_values": [],
+            "related": []
+          },
+          {
+            "primary_id": "CAPEC-444",
+            "name": "Development Alteration",
+            "label": "AttackPattern",
+            "description": "",
+            "properties": {},
+            "facets": [],
+            "join_values": [],
+            "related": []
+          },
+          {
+            "primary_id": "CAPEC-536",
+            "name": "Data Injected During Configuration",
+            "label": "AttackPattern",
+            "description": "",
+            "properties": {},
+            "facets": [],
+            "join_values": [],
+            "related": []
+          },
+          {
+            "primary_id": "CAPEC-690",
+            "name": "Metadata Spoofing",
+            "label": "AttackPattern",
+            "description": "",
+            "properties": {},
+            "facets": [],
+            "join_values": [],
+            "related": []
+          }
+        ]
+      }
+    ]
+  },
+  "deterministic_scores": {
+    "correlation": null,
+    "mapping_recall": null,
+    "coverage": null,
+    "provenance": {
+      "citations": 11,
+      "compliant": 11,
+      "citation_provenance_rate": 1.0,
+      "abstention_proof_ok": true,
+      "fully_provenanced": true
+    },
+    "inspectability": {
+      "citation_coverage": 1.0,
+      "traceability": 1.0,
+      "abstention_proofs": 1.0,
+      "inspectability": 1.0
+    }
+  },
+  "arm": "planned_llm_typed_lazy",
+  "run_meta": {
+    "planner": "llm-typed-lazy",
+    "synthesis": "deterministic",
+    "use_llm": true,
+    "llm_synthesis": false,
+    "llm_specialist": false,
+    "rewrite": null,
+    "observed_plan": [
+      {
+        "sub_question_id": "q1",
+        "source": "capec",
+        "text": "",
+        "entities": [
+          "Category",
+          "MEMBER_OF",
+          "AttackPattern"
+        ],
+        "seed_ids": [
+          "CAPEC-688"
+        ],
+        "depends_on": null,
+        "limits": {
+          "max_traversal_depth": 3,
+          "max_result_rows": 1000,
+          "query_timeout_ms": 5000
+        },
+        "step": {
+          "kind": "expand",
+          "anchor_label": "Category",
+          "anchor_ids": [
+            "CAPEC-688"
+          ],
+          "hops": [
+            {
+              "relation": "MEMBER_OF",
+              "direction": "in",
+              "target_label": "AttackPattern"
+            }
+          ],
+          "depth": 1
+        }
+      },
+      {
+        "sub_question_id": "q2",
+        "source": "capec",
+        "text": "",
+        "entities": [
+          "AttackPattern",
+          "MAPS_TO",
+          "TaxonomyEntry"
+        ],
+        "seed_ids": [],
+        "depends_on": null,
+        "limits": {
+          "max_traversal_depth": 3,
+          "max_result_rows": 1000,
+          "query_timeout_ms": 5000
+        },
+        "step": {
+          "kind": "algebra",
+          "anchor_label": "AttackPattern",
+          "anchor_ids": [],
+          "hops": [],
+          "depth": 1,
+          "algebra": {
+            "ir": {
+              "@": "Nodes",
+              "of": {
+                "@": "Having",
+                "exists": false,
+                "hop": {
+                  "@": "Hop",
+                  "direction": "out",
+                  "edge_conds": [],
+                  "relation": "MAPS_TO",
+                  "target": "TaxonomyEntry"
+                },
+                "of": {
+                  "@": "FromStep",
+                  "labels": [
+                    "AttackPattern"
+                  ],
+                  "step": "q1"
+                },
+                "target": null,
+                "target_conds": []
+              },
+              "props": []
+            },
+            "labels": [
+              "AttackPattern"
+            ],
+            "op": "absence"
+          },
+          "from_step": "q1"
+        }
+      }
+    ],
+    "exit_code": 0,
+    "status": "answered",
+    "timings": {
+      "plan_ms": 54738.272,
+      "specialists": [
+        {
+          "sub_question": "q1",
+          "source": "capec",
+          "ms": 8.818
+        },
+        {
+          "sub_question": "q2",
+          "source": "capec",
+          "ms": 22.289
+        }
+      ],
+      "synthesis_ms": 7.501,
+      "total_ms": 54822.259
+    },
+    "registry_model": "gemma4-31b",
+    "drafter_used": "TypedDrafter",
+    "typed": [
+      {
+        "mode": "lazy",
+        "served_model": "gemma4-31b/106",
+        "model_calls": 3,
+        "catalog_calls": [
+          {
+            "name": "resolve_entity",
+            "args": {
+              "graph": "capec",
+              "label": "Category",
+              "text": "CAPEC-688"
+            },
+            "ok": true
+          },
+          {
+            "name": "describe",
+            "args": {
+              "graph": "capec",
+              "target": "MEMBER_OF"
+            },
+            "ok": true
+          },
+          {
+            "name": "describe",
+            "args": {
+              "graph": "capec",
+              "target": "MAPS_TO"
+            },
+            "ok": true
+          }
+        ],
+        "prompt_tokens": 9825,
+        "completion_tokens": 3241,
+        "emitted": true,
+        "parse_error": null,
+        "first_steps": 2,
+        "first_refused": 0,
+        "first_fixes": 0,
+        "valid_first": true,
+        "valid_first_raw": true,
+        "repair_used": false,
+        "fixed_by_repair": false,
+        "still_refused": 0,
+        "final_steps": 2,
+        "coercions": [],
+        "refusals": [],
+        "plan_problems": [],
+        "replies": [
+          {
+            "status": "ok",
+            "finish_reason": "tool_calls",
+            "calls": [
+              "resolve_entity"
+            ],
+            "text_chars": 0,
+            "repairs": []
+          },
+          {
+            "status": "ok",
+            "finish_reason": "tool_calls",
+            "calls": [
+              "describe",
+              "describe"
+            ],
+            "text_chars": 0,
+            "repairs": [
+              {
+                "kind": "args_closed_truncated",
+                "detail": "39 chars",
+                "call_id": "chatcmpl-tool-bdeaccd46a3d256e"
+              }
+            ]
+          },
+          {
+            "status": "ok",
+            "finish_reason": "stop",
+            "calls": [],
+            "text_chars": 657,
+            "repairs": []
+          }
+        ],
+        "error": null,
+        "fallback": null,
+        "seconds": 54.726,
+        "n_catalog_calls": 3,
+        "fixed_by_coercion": false
+      }
+    ],
+    "seams": {
+      "planner_llm": true,
+      "drafter": "TypedDrafter",
+      "specialist_llm": false,
+      "synthesis_llm": false,
+      "generic_only": "true"
+    },
+    "wall_s": 54.825,
+    "algebra_results": [
+      {
+        "step": "q2",
+        "kind": "nodes",
+        "value": null,
+        "ids": [
+          "CAPEC-184",
+          "CAPEC-444",
+          "CAPEC-536",
+          "CAPEC-690"
+        ],
+        "rows": [
+          {
+            "id": "CAPEC-184",
+            "name": "Software Integrity Attack"
+          },
+          {
+            "id": "CAPEC-444",
+            "name": "Development Alteration"
+          },
+          {
+            "id": "CAPEC-536",
+            "name": "Data Injected During Configuration"
+          },
+          {
+            "id": "CAPEC-690",
+            "name": "Metadata Spoofing"
+          }
+        ],
+        "total": 4,
+        "complete": true,
+        "info": {}
+      }
+    ]
+  },
+  "evidence_volume": {
+    "results": 2,
+    "records": 5,
+    "related": 5
+  }
+}

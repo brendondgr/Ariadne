@@ -1,0 +1,429 @@
+{
+  "id": "PG-attack-O4-d52cf96fab",
+  "kind": "attack",
+  "tier": "algebra-probe",
+  "category": "PG-attack",
+  "question": "Is mitigation M1024 (Restrict Registry Permissions) directly connected to technique T1677 (Poisoned Pipeline Execution) in ATT&CK, and if it is, what is the nature of that connection?",
+  "gold": {
+    "assertions": {
+      "min_records": 0,
+      "must_include_ids": [],
+      "must_include_related": []
+    },
+    "ex_gold": {
+      "pool": "algebra",
+      "scheme": "attack",
+      "kind": "value",
+      "expected": [],
+      "value": false
+    }
+  },
+  "answer": {
+    "headline": "Gathered 1 record(s) from 1 source(s).",
+    "narrative": "No: no link between them was found.",
+    "composer": "deterministic",
+    "fallback_reason": null,
+    "claims": [
+      {
+        "text": "No: no link between them was found.",
+        "kind": "fact",
+        "entity_ids": [],
+        "citations": [
+          {
+            "source": "attack",
+            "primary_id": ""
+          }
+        ]
+      }
+    ],
+    "abstentions": [],
+    "notes": []
+  },
+  "logic_flow": {
+    "task": {
+      "sub_question_id": "PG-attack-O4-d52cf96fab",
+      "source": "attack",
+      "text": "Is mitigation M1024 (Restrict Registry Permissions) directly connected to technique T1677 (Poisoned Pipeline Execution) in ATT&CK, and if it is, what is the nature of that connection?",
+      "entities": [
+        "Mitigation",
+        "MITIGATES",
+        "Technique"
+      ],
+      "limits": {
+        "max_traversal_depth": 3,
+        "max_result_rows": 20000,
+        "query_timeout_ms": 60000
+      },
+      "join_key": null,
+      "seed_ids": [
+        "M1024",
+        "T1677"
+      ],
+      "rationale": "algebra probe set (Era 2 Step 9 Phase G)"
+    },
+    "results": [
+      {
+        "source": "attack",
+        "sub_question_id": "q1",
+        "sub_question": "",
+        "query": "CALL { MATCH (a1:Mitigation) WHERE a1.id IN $p0 RETURN count(a1) > 0 AS f6 } CALL { MATCH (b2:Technique) WHERE b2.id IN $p1 RETURN count(b2) > 0 AS f7 } CALL { MATCH (a3:Mitigation)-[r5:MITIGATES]->(b4:Technique) WHERE a3.id IN $p0 AND b4.id IN $p1 WITH DISTINCT a3, r5 ORDER BY type(r5), r5.id RETURN collect({relation: type(r5), direction: CASE WHEN startNode(r5) = a3 THEN 'out' ELSE 'in' END, properties: properties(r5)}) AS witness } RETURN f6 AS a_found, f7 AS b_found, witness",
+        "ok": true,
+        "partial": false,
+        "error": null,
+        "summary": "Found 1 record in MITRE ATT&CK: verify result.",
+        "traces": [
+          {
+            "step": "intake",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "source": "attack",
+              "card": "attack"
+            }
+          },
+          {
+            "step": "resolve",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "labels": [
+                "Mitigation",
+                "Technique"
+              ],
+              "relationships": [
+                "MITIGATES"
+              ],
+              "seed_ids": [
+                "M1024",
+                "T1677"
+              ],
+              "join_key": null
+            }
+          },
+          {
+            "step": "gate",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "attempt": 1,
+              "template": "algebra",
+              "query": "CALL { MATCH (a1:Mitigation) WHERE a1.id IN $p0 RETURN count(a1) > 0 AS f6 } CALL { MATCH (b2:Technique) WHERE b2.id IN $p1 RETURN count(b2) > 0 AS f7 } CALL { MATCH (a3:Mitigation)-[r5:MITIGATES]->(b4:Technique) WHERE a3.id IN $p0 AND b4.id IN $p1 WITH DISTINCT a3, r5 ORDER BY type(r5), r5.id RETURN collect({relation: type(r5), direction: CASE WHEN startNode(r5) = a3 THEN 'out' ELSE 'in' END, properties: properties(r5)}) AS witness } RETURN f6 AS a_found, f7 AS b_found, witness",
+              "injected": [],
+              "note": "compiled by the operator algebra (validated against the card; read-only by construction)",
+              "id_map": {
+                "M1024": [
+                  "course-of-action--a2c36a5d-4058-475e-8e77-fff75e50d3b9"
+                ],
+                "T1677": [
+                  "attack-pattern--7655ac3b-dfde-49c5-a967-242856174434"
+                ]
+              }
+            }
+          },
+          {
+            "step": "execute",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "row_count": 0
+            }
+          },
+          {
+            "step": "algebra",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "result": {
+                "step": "q1",
+                "kind": "verify",
+                "value": false,
+                "ids": [],
+                "rows": [],
+                "total": 0,
+                "complete": true,
+                "info": {
+                  "a_found": true,
+                  "b_found": true,
+                  "exists": false,
+                  "anchor_not_found": []
+                }
+              },
+              "op": "verify",
+              "ir": {
+                "@": "Verify",
+                "a": {
+                  "@": "Anchors",
+                  "ids": [
+                    "M1024"
+                  ],
+                  "label": "Mitigation"
+                },
+                "b": {
+                  "@": "Anchors",
+                  "ids": [
+                    "T1677"
+                  ],
+                  "label": "Technique"
+                },
+                "direction": "out",
+                "relation": "MITIGATES"
+              }
+            }
+          }
+        ],
+        "records": [
+          {
+            "primary_id": "",
+            "name": "verify result",
+            "label": "Result",
+            "description": "",
+            "properties": {
+              "value": false,
+              "exists": false,
+              "anchor_not_found": []
+            },
+            "facets": [],
+            "join_values": [],
+            "related": []
+          }
+        ]
+      }
+    ]
+  },
+  "deterministic_scores": {
+    "correlation": null,
+    "mapping_recall": null,
+    "coverage": null,
+    "provenance": {
+      "citations": 1,
+      "compliant": 1,
+      "citation_provenance_rate": 1.0,
+      "abstention_proof_ok": true,
+      "fully_provenanced": true
+    },
+    "inspectability": {
+      "citation_coverage": 1.0,
+      "traceability": 1.0,
+      "abstention_proofs": 1.0,
+      "inspectability": 1.0
+    }
+  },
+  "arm": "planned_llm_typed_lazy",
+  "run_meta": {
+    "planner": "llm-typed-lazy",
+    "synthesis": "deterministic",
+    "use_llm": true,
+    "llm_synthesis": false,
+    "llm_specialist": false,
+    "rewrite": null,
+    "observed_plan": [
+      {
+        "sub_question_id": "q1",
+        "source": "attack",
+        "text": "",
+        "entities": [
+          "Mitigation",
+          "MITIGATES",
+          "Technique"
+        ],
+        "seed_ids": [
+          "M1024",
+          "T1677"
+        ],
+        "depends_on": null,
+        "limits": {
+          "max_traversal_depth": 3,
+          "max_result_rows": 1000,
+          "query_timeout_ms": 5000
+        },
+        "step": {
+          "kind": "algebra",
+          "anchor_label": "Mitigation",
+          "anchor_ids": [
+            "M1024",
+            "T1677"
+          ],
+          "hops": [],
+          "depth": 1,
+          "algebra": {
+            "ir": {
+              "@": "Verify",
+              "a": {
+                "@": "Anchors",
+                "ids": [
+                  "M1024"
+                ],
+                "label": "Mitigation"
+              },
+              "b": {
+                "@": "Anchors",
+                "ids": [
+                  "T1677"
+                ],
+                "label": "Technique"
+              },
+              "direction": "out",
+              "relation": "MITIGATES"
+            },
+            "labels": [],
+            "op": "verify"
+          }
+        }
+      }
+    ],
+    "exit_code": 0,
+    "status": "answered",
+    "timings": {
+      "plan_ms": 27254.275,
+      "specialists": [
+        {
+          "sub_question": "q1",
+          "source": "attack",
+          "ms": 10.344
+        }
+      ],
+      "synthesis_ms": 9.788,
+      "total_ms": 27322.068
+    },
+    "registry_model": "qwen38-27b",
+    "drafter_used": "TypedDrafter",
+    "typed": [
+      {
+        "mode": "lazy",
+        "served_model": "qwen38-27b/248046",
+        "model_calls": 3,
+        "catalog_calls": [
+          {
+            "name": "resolve_entity",
+            "args": {
+              "text": "M1024",
+              "label": "Mitigation",
+              "graph": "attack"
+            },
+            "ok": true
+          },
+          {
+            "name": "resolve_entity",
+            "args": {
+              "text": "T1677",
+              "label": "Technique",
+              "graph": "attack"
+            },
+            "ok": true
+          },
+          {
+            "name": "describe",
+            "args": {
+              "target": "MITIGATES",
+              "graph": "attack"
+            },
+            "ok": true
+          },
+          {
+            "name": "describe",
+            "args": {
+              "target": "M1024",
+              "graph": "attack"
+            },
+            "ok": false
+          }
+        ],
+        "prompt_tokens": 10160,
+        "completion_tokens": 853,
+        "emitted": true,
+        "parse_error": null,
+        "first_steps": 1,
+        "first_refused": 0,
+        "first_fixes": 2,
+        "valid_first": true,
+        "valid_first_raw": false,
+        "repair_used": false,
+        "fixed_by_repair": false,
+        "still_refused": 0,
+        "final_steps": 1,
+        "coercions": [
+          {
+            "step": "q1",
+            "field": "anchor.anchor_label",
+            "from": null,
+            "to": "Mitigation",
+            "filled_by": "id_scheme"
+          },
+          {
+            "step": "q1",
+            "field": "other.anchor_label",
+            "from": null,
+            "to": "Technique",
+            "filled_by": "id_scheme"
+          }
+        ],
+        "refusals": [],
+        "plan_problems": [],
+        "replies": [
+          {
+            "status": "ok",
+            "finish_reason": "tool_calls",
+            "calls": [
+              "resolve_entity",
+              "resolve_entity",
+              "describe"
+            ],
+            "text_chars": 0,
+            "repairs": []
+          },
+          {
+            "status": "ok",
+            "finish_reason": "tool_calls",
+            "calls": [
+              "describe"
+            ],
+            "text_chars": 0,
+            "repairs": []
+          },
+          {
+            "status": "ok",
+            "finish_reason": "stop",
+            "calls": [],
+            "text_chars": 489,
+            "repairs": []
+          }
+        ],
+        "error": null,
+        "fallback": null,
+        "seconds": 27.242,
+        "n_catalog_calls": 4,
+        "fixed_by_coercion": true
+      }
+    ],
+    "seams": {
+      "planner_llm": true,
+      "drafter": "TypedDrafter",
+      "specialist_llm": false,
+      "synthesis_llm": false,
+      "generic_only": "true"
+    },
+    "wall_s": 27.325,
+    "algebra_results": [
+      {
+        "step": "q1",
+        "kind": "verify",
+        "value": false,
+        "ids": [],
+        "rows": [],
+        "total": 0,
+        "complete": true,
+        "info": {
+          "a_found": true,
+          "b_found": true,
+          "exists": false,
+          "anchor_not_found": []
+        }
+      }
+    ]
+  },
+  "evidence_volume": {
+    "results": 1,
+    "records": 1,
+    "related": 0
+  }
+}
