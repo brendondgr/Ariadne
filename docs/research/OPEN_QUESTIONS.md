@@ -49,6 +49,8 @@ kind; their detail is kept privately with the rest of the positioning material (
 | Q62 | No model, the reasoning baseline included, reliably says "none of these" when the right entity or relation is not offered | EXP-2026-11-013 | the grounding and relation-choice gates in era 2's agent *(open)* |
 | Q63 | The exit decision cannot be left to a model: even the reasoning baseline misses most ambiguity and path-search or similarity requests | EXP-2026-11-013 | the agent's four exits (plan v2 Steps 8 onward) *(open)* |
 | Q64 | The fast decision models' D4 picks move when the options are shuffled; d3 with plain readings misses a relation-choice gate on its flip rate alone | EXP-2026-11-014 | whether any fast model gates relation choice in era 2's agent *(answered by EXP-2026-11-014 round 2: averaging over two orders makes d3 with readings a D4 gate)* |
+| Q65 | Gemma loses about 3 points of exact variant answers when the planner is shown the operators; Qwen does not | EXP-2026-11-022 | turning `ARIADNE_ALGEBRA_CORE` on by default *(open)* |
+| Q66 | A union that reads through describe steps keeps them, so their facet blocks add entities nobody asked for | EXP-2026-11-022 | any new sitting with the operators on *(open)* |
 
 ---
 
@@ -1180,4 +1182,43 @@ to EXP-2026-11-014, before any call.
 The gated items are ones Qwen already answers the same way, so these gates save calls. The
 two results that were not pre-registered (the grounding two-model gate and pplx on its
 readings shortlist as a D4 gate) still need confirming on held-out data.
+
+### Q65 — Gemma loses about 3 points of exact variant answers when it sees the operators
+
+**Opened 2026-11-23** by `EXP-2026-11-022`. With `ARIADNE_ALGEBRA_CORE` on:
+- **Gemma's exact variant answers** fell 354 → 338 and 354 → 335 against off-A. Its off runs on
+  this bank are 350 and 354.
+- **The provisional interval** is −0.0272 [−0.0519, −0.0015], against a margin of −0.03.
+- **Both Qwen arms** are inside every margin.
+- **The losses** concentrate on T4/T5 questions that describe an entity, where Gemma writes a
+  scan. Eleven items are exact in both off runs and lost in both core runs.
+- **Three fix rounds** (text scans, last-turn refusals, narrowed seeds) each removed their
+  defect. The cap on rounds was reached, and both switches stay off.
+
+- **Why it matters:** the operators answer 0.82–0.91 of the core probe items that today's step
+  kinds answer none of. That capability is unused while the switch is off.
+
+**To settle:**
+1. Inventory Gemma's plan shapes on the 11 stable losses.
+2. Replay the saved plans model-free through the algebra path, to separate planner choice from
+   compilation.
+3. Then run one pre-registered sitting with both off-A and off-B, so the final bar can be computed.
+
+### Q66 — A union that reads through describe steps keeps them
+
+**Opened 2026-11-23** by `EXP-2026-11-022` (fix-6 proving set).
+- **The plan shape:** describe Technique and describe SubTechnique from a CAPEC step, union the
+  two, expand mitigations from the union.
+- **What goes wrong:** the union reads through the describes (`through_describe`), but
+  `redundant_describes` drops a describe only beside a today-kind expand twin. Both describes
+  stay, and their facet blocks add parent techniques and tactics: F-FAN-01 T2 and F-CTM-04 T0
+  overshoot by those entities.
+- **Why it matters:** fix round 3 meant to remove exactly this. It held only for the plan shape
+  it was found on.
+
+**To settle:**
+1. Drop a describe whose every reader reads through it.
+2. Prove it model-free on the saved fix-6 plans before any sitting.
+3. Generally: list every plan shape the typed planner has emitted with the switch on, and
+   replay each through both paths.
 

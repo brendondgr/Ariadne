@@ -136,5 +136,6 @@ this file says which number is *current*.
 | [`EXP-2026-11-019`](experiments/EXP-2026-11-019-era2-written-id-guard/) | 2026-11-20 | `guard_fired_on_controls` | 0.0000 ± 0.0000 (n=54) | — | — |
 | [`EXP-2026-11-020`](experiments/EXP-2026-11-020-era2-shape-count/) | 2026-11-20 | `external_retrieval_today_coverage` | 0.6082 ± 0.0000 (n=564) | — | — |
 | [`EXP-2026-11-021`](experiments/EXP-2026-11-021-era2-algebra-engine-check/) | 2026-11-20 | `differential_disagreements` | 0.0000 ± 0.0000 (n=9391) | — | — |
+| [`EXP-2026-11-022`](experiments/EXP-2026-11-022-era2-algebra-exposure/) | 2026-11-23 | `variants_exact_delta_core2_T_lazy_G` | -0.0272 ± 0.0000 (n=699) | — | — |
 
-**25 withdrawn figure(s), 6 superseded experiment(s), 77 current headline(s).**
+**25 withdrawn figure(s), 6 superseded experiment(s), 78 current headline(s).**

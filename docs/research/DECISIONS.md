@@ -1105,3 +1105,25 @@ models.
 
 **Reversible.** The decision model is one setting. If both servers become reliably available
 together, the combined cells can be reconsidered.
+
+## D-040 — The operator algebra stays behind its switches, both off by default (2026-11-23)
+
+**By protocol (EXP-2026-11-022, Amendments 2 and 5), recorded 2026-11-23.**
+`ARIADNE_ALGEBRA_CORE` and `ARIADNE_ALGEBRA_EXTENDED` stay off by default. Their code stays in the tree.
+
+**Why:**
+- The exposure helps on the probe: 0.82–0.91 of the core items exact, against 0 with the
+  switches off.
+- It is not shown to be harmless. Gemma's exact variant answers fell about 3 points on both core
+  sittings, and the stop rule fired both times.
+- The two further fix rounds Amendment 2 allowed each failed their proving bar.
+- Extended was never sat in Phase H.
+
+**What off guarantees:**
+- the planner's messages and tool specs hash equal to the pre-exposure reference;
+- the recorded steps compile byte-identically.
+
+So everything after Step 9, Step 10 included, builds on today's typed planner unchanged.
+
+**To revisit:** Q65 (Gemma's loss) and Q66 (describes kept under a union). Any revisit is a new
+pre-registered experiment, with off-A and off-B both sat.

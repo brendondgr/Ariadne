@@ -5,71 +5,82 @@
 id: EXP-2026-11-022
 slug: era2-algebra-exposure
 title: "Era 2 Step 9 Phases G-H: does showing the operator algebra to the typed planner help on questions that need it, without harm on today's?"
-status: planned            # planned | running | complete | failed | superseded
+status: complete            # planned | running | complete | failed | superseded
 date_started: 2026-11-20
-date_completed: null       # null until status is complete/failed
+date_completed: 2026-11-23
 authors: ["brendondgr", "Claude Opus 5.5"]
 
 purpose: >
-  One paragraph. What question does this answer, and which paper claim
-  does it support or refute?
+  Step 9's exposure gate. Show the operator algebra to the typed planner behind two switches (ARIADNE_ALGEBRA_CORE, ARIADNE_ALGEBRA_EXTENDED) and ask whether it answers the probe questions that need the operators, and whether it keeps answering today's variant and dev questions as well as with the switches off. Decides whether either switch is on by default; no paper claim moves until Q65 is answered.
 
 hypothesis: >
-  Stated before the run. If exploratory, write "exploratory — no prior hypothesis".
+  Stated in PROTOCOL before any model ran with the operators visible: core reaches >= 0.5 exact on the core probe items (Qwen) where off reaches near zero, and today's banks stay within noise of off. Outcome: the probe prediction held (0.82-0.91 on all three arms); the no-harm prediction did not hold for Gemma (stop rule on both core sittings; two capped fix rounds failed their proving bars), so both switches stay off.
 
 # --- Reproducibility block (all fields mandatory) ---
 code:
-  commit: ea7a7e599083d6b8501a7008002da61caa02f5b1          # 40-char sha, or "unknown" for a back-filled experiment
+  commit: c998650a2d0f17e357da17241260da628c7afdaa          # last tree run (fix-6 proving set); off-A and core-1 ran on f7b908ab, core-2 on 840f20da (PROTOCOL amendments; ISSUES)
   branch: main
-  entrypoint: "<exact command>"
-  dirty: true             # uncommitted changes at run time? if true, explain in ISSUES.md
+  entrypoint: "bash docs/research/experiments/EXP-2026-11-022-era2-algebra-exposure/data/phase_h.sh off-A (then core) ; data/fix{4,5,6}_prove.sh ; data/close_metrics.py (RESULTS 8)"
+  dirty: false            # every sitting records its tree (TREE) and a STATUS holding only its own untracked outputs
 config:
   path: null               # repo-relative path, or null if the run takes no config file
   hash: null               # sha256:... of that file
 data:
-  name: <dataset>
-  version: <version>
-  split: <split>
-  n_examples: 0
+  name: "variant bank (699 over 120 gold questions), dev 284, algebra probe set (232: tune 117 / measure 115), 60 controls; ATT&CK v19.0 and CAPEC 3.9 on Neo4j and Gremlin"
+  version: "banks and probe of 2026-11-20 (docs/evaluation/algebra-2026-11/)"
+  split: "probe measure half for Phase H, tune half for the stages and proving sets"
+  n_examples: 1098
   dvc_path: null           # this repository does not use DVC; leave null
   hash: null               # md5:... or sha256:... of the dataset artifact
-seeds: []                  # [] means seeds were not recorded — say so in ISSUES.md
+seeds: [20261120, 20261118]   # control draw; bootstrap
 n_runs: 1                  # SYSTEM runs over the question set — grading passes are not runs
 environment:
   python: "3.13"
   lockfile: env/requirements.lock
   container: null
 compute:
-  hardware: "<cpu/gpu, ram>"
-  wall_clock_hours: 0.0
+  hardware: "32-core x86_64 host, 121 GB RAM; local LLM server on :9090 (Qwen 3.8 27B and Gemma 4 31B)"
+  wall_clock_hours: 22.0
   estimated_cost_usd: 0.0
 
 # --- LLM / agentic block (delete entirely if no model was in the loop) ---
 llm:
-  model: "<provider>/<model>@<version-or-date>"
+  model: "Qwen 3.8 27B (:9090 default-model-2, token 248046) for T-lazy and T-full; Gemma 4 31B (:9090 default-model, token 106) for T-lazy-G; identity checked by token id each sitting"
   temperature: 0.0
   top_p: 1.0
-  max_tokens: 2048
+  max_tokens: 16384
   prompt_files: []
   prompt_hash: null
   tool_schema_hash: null
   total_input_tokens: null
   total_output_tokens: null
   nondeterminism_note: >
-    Provider-side nondeterminism remains even at temperature 0; results
-    are reported as mean ± std over n_runs.
+    Temperature 0 on a local server, but item churn between two runs of one arm is about
+    50 discordant variants of 699 (Amendment 3). Each sitting is one run; the off-run spread
+    (Gemma 350 in EXP-2026-11-018, 354 in off-A) is the only replicate.
 
 # --- Results block ---
 metrics:
-  primary: <metric name>
-  values: {}               # {metric: {mean: 0.0, std: 0.0, n: 1}} — must be non-empty when status: complete
+  primary: variants_exact_delta_core2_T_lazy_G
+  values:
+    variants_exact_delta_core2_T_lazy: {mean: -0.0057, std: 0.0, n: 699}
+    variants_exact_delta_core2_T_full: {mean: -0.0043, std: 0.0, n: 699}
+    variants_exact_delta_core2_T_lazy_G: {mean: -0.0272, std: 0.0, n: 699}
+    variants_exact_delta_core2_T_lazy_G_ci_lo: {mean: -0.0519, std: 0.0, n: 699}
+    probe_core_delta_core2_T_lazy: {mean: 0.8788, std: 0.0, n: 99}
+    probe_core_delta_core2_T_full: {mean: 0.9091, std: 0.0, n: 99}
+    probe_core_delta_core2_T_lazy_G: {mean: 0.8182, std: 0.0, n: 99}
+    variants_exact_offA_T_lazy_G: {mean: 354, std: 0.0, n: 699}
+    variants_exact_core1_T_lazy_G: {mean: 338, std: 0.0, n: 699}
+    variants_exact_core2_T_lazy_G: {mean: 335, std: 0.0, n: 699}
+    fix6_controls_lost_to_operator: {mean: 3, std: 0.0, n: 360}
   withdrawn: {}            # values later retracted by amendment: {metric: {mean, std, n, withdrawn_on, reason, replaced_by}}
-baselines_compared: []
-statistical_test: null
+baselines_compared: ["off-A (switches off, same tree as core-1)"]
+statistical_test: "paired 95% percentile bootstrap, 2,000 resamples, seed 20261118; variants clustered by gold question (Amendments 2-3); provisional, against off-A only"
 
 # --- Linkage ---
 supports_claims: []        # every ID here must exist in ../../CLAIMS.md
 figures: []                # every name here must have a file in figures/ and vice versa
 supersedes: null           # set in BOTH manifests or in neither; the validator checks symmetry
 superseded_by: null
-related: []
+related: ["EXP-2026-11-021", "EXP-2026-11-018", "EXP-2026-11-019"]
