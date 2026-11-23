@@ -289,20 +289,37 @@ def _refuse_empty_text_scan(node: Any, sid: str, graph: str, ctx: Any) -> None:
         return
     from utils.specialists.algebra.runtime import scan_total
 
+    if getattr(ctx, "last_turn", False):
+        return  # the repair turn: no turn follows, so an empty answer is the answer (fix round 5)
     if scan_total(graph, card_view, node) != 0:
         return
     seen.add(key)
     said = "; ".join(f"{c.prop} {c.op} {c.value!r}" for c in texts)
     label = node.of.label
+    found = _resolve_candidates(ctx, graph, label, " ".join(str(c.value) for c in texts))
+    ranked = (f"resolve_entity on those words ranks these {label} entities first: {found}. Anchor on the one "
+              "the question means, if any; " if found else "")
     raise Refused(E.refusal(
         "invalid_request",
         f"step {sid}: no {label} meets {said}. A text condition matches the stored characters exactly "
         "(case included), not a meaning.",
-        "if the question describes one entity without its id or name, name it if you know it, or call "
+        ranked + "if the question describes one entity without its id or name, name it if you know it, or call "
         "resolve_entity with words from the question, and anchor the step on the id found; if it asks for "
         f"every {label} whose {texts[0].prop} holds some text, use a shorter word the graph stores. Send "
         "this same step again only if an empty answer is right.",
         [E.problem("where", said, [])]))
+
+
+def _resolve_candidates(ctx: Any, graph: str, label: str, text: str, k: int = 3) -> str:
+    """The resolver's top ``k`` entities of ``label`` for ``text``, as ``id (name)``; ``""`` if none (fix round 5)."""
+    try:
+        from utils.planner.typed import _run_tool_inner
+
+        res = _run_tool_inner(ctx, "resolve_entity", {"text": text, "graph": graph})
+    except Exception:  # noqa: BLE001 — candidates are advice; the refusal stands without them
+        return ""
+    cands = [c for c in (res or {}).get("candidates") or [] if isinstance(c, dict) and c.get("label") == label]
+    return "; ".join(f"{c.get('id')} ({c.get('name')})" for c in cands[:k] if c.get("id"))
 
 
 def _result_labels(node: Any, card: Any) -> list[str]:
@@ -690,23 +707,29 @@ class _Parser:
     def build(self, kind: str) -> Any:
         node = self._build(kind)
         if kind in ("filter", "typescan"):
-            self._refuse_lookup(node)
+            node = self._refuse_lookup(node) or node
         return node
 
-    def _refuse_lookup(self, node: Any) -> None:
-        """A whole-label scan pinned to one entity by its identifying property: anchor on it instead."""
-        from utils.specialists.algebra.base import Nodes
+    def _refuse_lookup(self, node: Any) -> Any:
+        """A whole-label scan pinned to one entity by its identifying property: anchor on it instead.
+
+        On the repair turn (``ctx.last_turn``) nothing follows a refusal, so the
+        step is not refused: it becomes the anchor the refusal would name, when
+        one resolves and the scan has no other condition, else it passes as
+        written (fix round 5). Returns the replacement node, or ``None``.
+        """
+        from utils.specialists.algebra.base import Anchors, Nodes
         from utils.specialists.algebra.typescan import TypeScan
 
         ts = node.of if isinstance(node, Nodes) else None
         if not isinstance(ts, TypeScan):
-            return
+            return None
         lab = self.card.labels.get(ts.label)
         key = getattr(lab, "key", "") or ""
         pins = [c for c in ts.conds if c.op == "=" and isinstance(c.value, str)
                 and (c.prop in ("name", "id", key) or c.prop.endswith("_id"))]
         if not pins:
-            return
+            return None
         c = pins[0]
         cands = [c.value]
         other = {x.prop: x.value for x in ts.conds if x is not c and x.op == "="}
@@ -717,14 +740,21 @@ class _Parser:
                 pub = taxonomy_public_id(str(v), c.value)
                 if pub and pub not in cands:
                     cands.insert(0, pub)
-        anchor = None
+        anchor = found = None
         for cand in cands:
             if self.ctx.id_labels(self.graph, cand):
-                anchor = f"\"anchor\": {{\"id\": \"{cand}\"}}"
+                anchor, found = f"\"anchor\": {{\"id\": \"{cand}\"}}", cand
                 break
             if self.ctx.foreign_id(self.graph, cand):
-                anchor = f"\"anchor\": {{\"id\": \"{cand}\"}}, \"anchor_label\": \"{ts.label}\" (an id the join key bridges)"
+                anchor, found = (f"\"anchor\": {{\"id\": \"{cand}\"}}, \"anchor_label\": \"{ts.label}\" "
+                                 "(an id the join key bridges)"), cand
                 break
+        if getattr(self.ctx, "last_turn", False):
+            consumed = len(ts.conds) == 1 or (found is not None and found != c.value)
+            if found is None or not consumed:
+                return None
+            self.log.add("where", f"{c.prop} = {c.value!r}", found, "lookup_scan_to_anchor")
+            return Nodes(Anchors((found,), ts.label), node.props)
         if anchor is None:
             anchor = (f"\"anchor\": {{\"name\": \"{c.value}\", \"label\": \"{ts.label}\"}}" if c.prop == "name"
                       else f"\"anchor\": {{\"id\": \"{c.value}\"}}")

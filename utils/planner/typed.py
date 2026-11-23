@@ -244,6 +244,10 @@ class PlanContext:
         self._written: list[str] | None = None
         #: whole-label text scans refused once for matching nothing (fix round 4); a re-sent one passes
         self.empty_text_scans: set[str] = set()
+        #: set while the repair turn is checked: no turn follows, so a refusal there is final, and the
+        #: teaching refusals of a valid step (a one-entity scan, an empty text scan) apply their own
+        #: fix or let the step pass instead (fix round 5)
+        self.last_turn: bool = False
 
     def close(self) -> None:
         self.handles.close()
@@ -1181,6 +1185,7 @@ class TypedPlanner:
                     log.repair_used = True
                     messages.append({"role": "user", "content": self._repair_message(data, checks, log)})
                     reply = self._ask(messages, [], log)
+                    ctx.last_turn = True
                     data2, checks2 = self._parse_and_check(reply, ctx, log)
                     if data2 is None:
                         if data is None:

@@ -221,3 +221,40 @@ half the time. Qwen T-full is an example: estimate −0.007, lower bound −0.03
 
 The new bar still catches the harm the stop rule found. On the superseded sitting, Gemma's
 variants-exact lower bound is −0.045 and its dev-lost upper bound is +11, and both fail.
+
+## Amendment 4 (2026-11-23, before any fix-round-5 run): fix round 5, the last turn
+
+Written after the stop rule fired on the fixed core sitting (ISSUES, 2026-11-23). This is the first
+of the two further fix rounds that Amendment 2 allows.
+
+**The fix (CORE only):** the planner has one repair turn and nothing after it, so a refusal on
+that turn is final. Two teaching refusals refuse a step that is valid: the one-entity scan, and
+the empty text scan of fix round 4.
+1. **On the repair turn,**
+   - **a one-entity scan** becomes the anchor its refusal would have named. That happens only
+     when that anchor resolves and the scan has no condition the anchor does not account for;
+     otherwise the scan passes as written. The change is logged as a coercion
+     (`lookup_scan_to_anchor`).
+   - **an empty text scan is not counted, and it passes:** an empty answer is then the answer.
+2. **On the first turn,** the empty-text-scan refusal also lists the resolver's top three
+   entities of the scan's label for the scan's words, so the model can anchor without calling
+   `resolve_entity` itself.
+
+Switches off: unchanged (the planner sets the flag, but no off path reads it; the hash test
+passes).
+
+**Prove small first** (`fix5-small`, stage runner, core and core+ext, all three arms). The items:
+- every variant item a typed arm lost in the second core sitting;
+- the 60 controls;
+- the probe tune half.
+
+It goes ahead to the core sitting if:
+- no teaching refusal is final on any arm;
+- no control is lost to an operator step on an arm that lost none in the fix-4 proving set;
+- probe tune exact per arm stays within 5 of the fix-4 proving set.
+
+Gemma's recovered items are reported, not gated: a recovery on a re-run is partly churn.
+
+**Then:** the Stage 3 chain re-runs core (moved aside as `core-superseded-2`), with the stop rule
+against off-A, then core+ext and off-B, all on the fix-5 tree. If the stop rule fires again, one round is left
+(Amendment 2). After that, the switches stay off.

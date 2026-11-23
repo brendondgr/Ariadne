@@ -686,3 +686,95 @@ def test_the_live_count_refuses_a_paraphrase_and_passes_a_stored_word(cards, cor
         pytest.skip("live Neo4j not reachable")
     assert para == 0
     assert scan_total("attack", cards["attack"], Nodes(TypeScan("Software", (Cond("name", "contains_text", "Cobalt"),)))) >= 1
+
+
+# --------------------------------------------------------------------------- #
+# Fix round 5: the repair turn is the last turn (EXP-2026-11-022 Amendment 4)
+# --------------------------------------------------------------------------- #
+
+def _lookup_ctx(cards, last_turn):
+    from utils.planner.typed import PlanContext, catalogs_for
+
+    d = tempfile.mkdtemp()
+    ctx = PlanContext(cards, catalogs_for(cards), Path(d))
+    ctx.last_turn = last_turn
+    return ctx
+
+
+def test_a_one_entity_scan_is_refused_first_and_becomes_its_anchor_on_the_last_turn(cards, core, monkeypatch):
+    step = [{"id": "q1", "graph": "capec", "kind": "typescan", "anchor_label": "AttackPattern",
+             "where": [{"property": "id", "op": "=", "value": "CAPEC-98"}]}]
+    first = _lookup_ctx(cards, False)
+    last = _lookup_ctx(cards, True)
+    try:
+        monkeypatch.setattr(type(first), "id_labels", lambda self, g, v: ["AttackPattern"] if v == "CAPEC-98" else [])
+        c1 = _check_ctx(cards, first, step)[0]
+        c2 = _check_ctx(cards, last, step)[0]
+    finally:
+        first.close()
+        last.close()
+    assert not c1.ok and "looks up one named entity" in c1.refusals[0]["detail"]
+    assert c2.ok, c2.refusals
+    spec = json.loads(c2.step.algebra)
+    assert spec["ir"]["of"] == {"@": "Anchors", "ids": ["CAPEC-98"], "label": "AttackPattern"}
+    assert any(f["filled_by"] == "lookup_scan_to_anchor" for f in c2.fixes)
+
+
+def test_a_one_entity_scan_with_no_anchor_passes_as_written_on_the_last_turn(cards, core, monkeypatch):
+    step = [{"id": "q1", "graph": "capec", "kind": "typescan", "anchor_label": "AttackPattern",
+             "where": [{"property": "id", "op": "=", "value": "CAPEC-NOPE"}]}]
+    ctx = _lookup_ctx(cards, True)
+    try:
+        monkeypatch.setattr(type(ctx), "id_labels", lambda self, g, v: [])
+        monkeypatch.setattr(type(ctx), "foreign_id", lambda self, g, v: None)
+        c = _check_ctx(cards, ctx, step)[0]
+    finally:
+        ctx.close()
+    assert c.ok, c.refusals
+    assert json.loads(c.step.algebra)["ir"]["of"]["@"] == "TypeScan"
+
+
+def test_an_empty_text_scan_passes_uncounted_on_the_last_turn(cards, core, monkeypatch):
+    from utils.specialists.algebra import runtime
+
+    monkeypatch.setattr(runtime, "scan_total", lambda *a, **k: pytest.fail("no count on the last turn"))
+    ctx = _lookup_ctx(cards, True)
+    try:
+        c = _check_ctx(cards, ctx, _PARAPHRASE)[0]
+    finally:
+        ctx.close()
+    assert c.ok, c.refusals
+
+
+def test_the_empty_text_scan_refusal_lists_the_resolver_candidates_of_its_label(cards, core, monkeypatch):
+    from utils.planner import typed as T
+    from utils.specialists.algebra import runtime
+
+    monkeypatch.setattr(runtime, "scan_total", lambda *a, **k: 0)
+    monkeypatch.setattr(T, "_run_tool_inner", lambda ctx, name, args: {"ok": True, "status": "candidates", "candidates": [
+        {"id": "T1059", "label": "Technique", "name": "Command and Scripting Interpreter"},
+        {"id": "S0154", "label": "Software", "name": "Cobalt Strike"},
+        {"id": "S0002", "label": "Software", "name": "Mimikatz"}]})
+    ctx = _lookup_ctx(cards, False)
+    try:
+        c = _check_ctx(cards, ctx, _PARAPHRASE)[0]
+    finally:
+        ctx.close()
+    assert not c.ok
+    fix = c.refusals[0]["fix"]
+    assert "S0154 (Cobalt Strike); S0002 (Mimikatz)" in fix and "T1059" not in fix
+
+
+def test_the_planner_checks_the_repair_turn_as_the_last_turn(cards, core, monkeypatch):
+    """A one-entity scan refused on the first turn and sent again on the repair turn becomes the anchor."""
+    from utils.agent.tests.scripted import ScriptedModel
+    from utils.planner.typed import PlanContext, TypedPlanner
+
+    monkeypatch.setattr(PlanContext, "id_labels", lambda self, g, v: ["AttackPattern"] if v == "CAPEC-98" else [])
+    step = {"id": "q1", "graph": "capec", "kind": "typescan", "anchor_label": "AttackPattern",
+            "where": [{"property": "id", "op": "=", "value": "CAPEC-98"}]}
+    plan_json = json.dumps({"steps": [step], "unsupported": [], "assumptions": []})
+    model = ScriptedModel([plan_json, plan_json])
+    plan, log = TypedPlanner(model, "lazy").plan("What is CAPEC-98?", cards, {"attack", "capec"})
+    assert log.repair_used and log.fixed_by_repair and log.still_refused == 0
+    assert any(f.get("filled_by") == "lookup_scan_to_anchor" for f in log.coercions)
