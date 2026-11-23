@@ -198,3 +198,26 @@ EXP-2026-11-018; dev and the probe resample items.
 - **If core is still not confident after that,** the switches stay off by default. Step 9 closes
   with the engine result and the exposure result as measured, and Step 10 starts from there,
   since it does not depend on the operators.
+
+## Amendment 3 (2026-11-22, before any fixed-tree sitting): the margins are recalibrated for power
+
+Amendment 2's margins were checked against the superseded first core sitting (off-A only; that
+sitting is not a result under test), and they cannot be passed reliably. Item churn between two
+runs of one arm is about 50 discordant variants of 699. Even with no true effect, that puts the
+half-width of the 95% interval near 0.02, so a 2-point margin fails a no-effect treatment about
+half the time. Qwen T-full is an example: estimate −0.007, lower bound −0.030.
+
+**The margins, set for about 85% power at no effect:**
+
+| Check | Amendment 2 | Amendment 3 |
+|---|---|---|
+| Variants, exact | lower bound ≥ −0.02 | lower bound ≥ −0.03 (about 21 of 699) |
+| Variants, confidently wrong | upper bound ≤ +0.015 | upper bound ≤ +0.02 |
+| Dev, lost | upper bound ≤ +6 | upper bound ≤ +8 |
+| Dev, confidently wrong | ≤ +3 | ≤ +3 (unchanged) |
+| Probe | lower bound > 0 | unchanged |
+
+**Decisions follow Amendment 3; both bars are reported.**
+
+The new bar still catches the harm the stop rule found. On the superseded sitting, Gemma's
+variants-exact lower bound is −0.045 and its dev-lost upper bound is +11, and both fail.

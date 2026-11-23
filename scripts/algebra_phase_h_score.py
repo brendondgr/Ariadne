@@ -24,6 +24,9 @@ Per typed arm (T-lazy, T-full: Qwen; T-lazy-G: Gemma):
 bank: confidently wrong rises by more than 5, or exact falls by more than 10 (dev: lost rises by
 more than 10).
 
+**Confidence bar** (PROTOCOL Amendments 2-3): paired 95% bootstrap intervals against the mean of
+off-A and off-B; decisions use Amendment 3's margins (``BAR``), Amendment 2's are reported.
+
 **Gates** (PROTOCOL "Gates"), per arm and switch-on configuration, each bank:
 exact >= min(off-A, off-B) - |off-A - off-B|; confidently wrong <= max(off-A, off-B);
 probe exact (per switch group) > off's; ``extended`` stays on only if its probe items gain over
@@ -42,7 +45,8 @@ from typing import Any
 
 REPO = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(REPO / "scripts"))
-from era2_catalog_score import AUTHORED, confidently_wrong_variant, dev_summary, load_dev  # noqa: E402
+from era2_catalog_score import (AUTHORED, bootstrap, confidently_wrong_variant, dev_outcome,  # noqa: E402
+                                dev_summary, load_dev)
 
 SITTINGS = ("off-A", "core", "core+ext", "off-B")
 ARMS = {
@@ -190,6 +194,108 @@ def gates(m: dict[str, Any]) -> dict[str, Any]:
     return g
 
 
+# --------------------------------------------------------------------------- #
+# PROTOCOL Amendment 2: the confidence bar
+# --------------------------------------------------------------------------- #
+
+BAR = {"variants_exact_lo": -0.03, "variants_cw_hi": 0.02, "dev_lost_hi": 8.0, "dev_cw_hi": 3.0, "probe_lo": 0.0}
+#: Amendment 2's margins, reported beside the decision bar
+BAR_A2 = {"variants_exact_lo": -0.02, "variants_cw_hi": 0.015, "dev_lost_hi": 6.0, "dev_cw_hi": 3.0, "probe_lo": 0.0}
+
+
+def _var_rows(root: Path, arm: str) -> dict[tuple[str, str, str], dict[str, Any]]:
+    p = root / ARMS[arm]["var"]
+    if not p.exists():
+        return {}
+    return {(str(r.get("case_id")), str(r.get("tier")), str(r.get("question"))): r
+            for r in json.loads(p.read_text()) if "records_exact" in r}
+
+
+def _paired_var(on: dict, offs: list[dict], value: Any) -> dict[str, Any]:
+    from collections import defaultdict
+
+    by_case: dict[str, list[float]] = defaultdict(list)
+    for k, r in on.items():
+        if not all(k in o for o in offs):
+            continue
+        ref = sum(value(o[k]) for o in offs) / len(offs)
+        by_case[k[0]].append(value(r) - ref)
+    return bootstrap(list(by_case.values()), stat="mean")
+
+
+def _paired_dev(on: dict, offs: list[dict], authored: dict, key: str) -> dict[str, Any]:
+    clusters = []
+    for i in sorted(authored):
+        ref = sum(float(dev_outcome(o.get(i), authored[i])[key]) for o in offs) / len(offs)
+        clusters.append([float(dev_outcome(on.get(i), authored[i])[key]) - ref])
+    return bootstrap(clusters, stat="sum")
+
+
+def _probe_items(root: Path, arm: str) -> dict[str, dict[str, Any]]:
+    p = root / ARMS[arm]["probe"]
+    if not p.exists():
+        return {}
+    return {it["id"]: it for it in json.loads(p.read_text()).get("items") or []}
+
+
+def confidence(runs: Path, sit: str, authored: dict) -> dict[str, Any]:
+    """Amendment 2's paired intervals for one switch-on sitting, every typed arm."""
+    offs_present = [s for s in ("off-A", "off-B") if (runs / s).exists()]
+    out: dict[str, Any] = {"sitting": sit, "off_reference": offs_present,
+                           "provisional": offs_present != ["off-A", "off-B"], "bar": BAR, "arms": {}}
+    for arm, p in ARMS.items():
+        a: dict[str, Any] = {}
+        on = _var_rows(runs / sit, arm)
+        offs = [_var_rows(runs / s, arm) for s in offs_present]
+        if on and all(offs):
+            a["variants_exact"] = _paired_var(on, offs, lambda r: float(bool(r["records_exact"])))
+            a["variants_cw"] = _paired_var(on, offs, lambda r: float(confidently_wrong_variant(r)))
+        dp = runs / sit / p["dev"] / "answers"
+        if dp.exists():
+            don = load_dev(dp)
+            doffs = [load_dev(runs / s / p["dev"] / "answers") for s in offs_present]
+            a["dev_lost"] = _paired_dev(don, doffs, authored, "lost")
+            a["dev_cw"] = _paired_dev(don, doffs, authored, "confidently_wrong")
+        pon = _probe_items(runs / sit, arm)
+        poffs = [_probe_items(runs / s, arm) for s in offs_present]
+        if pon and all(poffs):
+            for grp in ("core", "extended"):
+                cl = [[float(it["verdict"] == "exact")
+                       - sum(float(o[i]["verdict"] == "exact") for o in poffs) / len(poffs)]
+                      for i, it in pon.items() if it.get("switch") == grp and all(i in o for o in poffs)]
+                a[f"probe_{grp}"] = bootstrap(cl, stat="mean")
+        checks = {
+            "variants_exact": (a.get("variants_exact") or {}).get("lo") is not None
+                              and a["variants_exact"]["lo"] >= BAR["variants_exact_lo"],
+            "variants_cw": (a.get("variants_cw") or {}).get("hi") is not None
+                           and a["variants_cw"]["hi"] <= BAR["variants_cw_hi"],
+            "dev_lost": (a.get("dev_lost") or {}).get("hi") is not None and a["dev_lost"]["hi"] <= BAR["dev_lost_hi"],
+            "dev_cw": (a.get("dev_cw") or {}).get("hi") is not None and a["dev_cw"]["hi"] <= BAR["dev_cw_hi"],
+            "probe_core": (a.get("probe_core") or {}).get("lo") is not None and a["probe_core"]["lo"] > BAR["probe_lo"],
+        }
+        a["checks"] = checks
+        a["confident"] = all(checks.values())
+        lo = lambda k: (a.get(k) or {}).get("lo")  # noqa: E731
+        hi = lambda k: (a.get(k) or {}).get("hi")  # noqa: E731
+        a["confident_amendment2"] = bool(
+            lo("variants_exact") is not None and lo("variants_exact") >= BAR_A2["variants_exact_lo"]
+            and hi("variants_cw") is not None and hi("variants_cw") <= BAR_A2["variants_cw_hi"]
+            and hi("dev_lost") is not None and hi("dev_lost") <= BAR_A2["dev_lost_hi"]
+            and hi("dev_cw") is not None and hi("dev_cw") <= BAR_A2["dev_cw_hi"] and checks["probe_core"])
+        out["arms"][arm] = a
+    out["confident"] = bool(out["arms"]) and all(x["confident"] for x in out["arms"].values())
+    if sit == "core+ext" and (runs / "core").exists():
+        ext = {}
+        for arm in ARMS:
+            pon, pcore = _probe_items(runs / sit, arm), _probe_items(runs / "core", arm)
+            cl = [[float(it["verdict"] == "exact") - float(pcore[i]["verdict"] == "exact")]
+                  for i, it in pon.items() if it.get("switch") == "extended" and i in pcore]
+            ext[arm] = bootstrap(cl, stat="mean") if cl else None
+        out["extended_over_core"] = ext
+        out["extended_gains"] = all(v and v["lo"] is not None and v["lo"] > 0 for v in ext.values())
+    return out
+
+
 def main(argv: list[str] | None = None) -> int:
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--runs", required=True)
@@ -206,13 +312,19 @@ def main(argv: list[str] | None = None) -> int:
     elif "core" in m and "off-A" in m:
         result["stop_rule"] = stop_rule(m, "core")
     result["gates"] = gates(m)
+    result["confidence"] = {sit: confidence(runs, sit, authored) for sit in ("core", "core+ext") if sit in m}
     if a.out:
         Path(a.out).write_text(json.dumps(result, indent=1, sort_keys=True) + "\n")
     brief = {s: {arm: {k: (v.get("exact", v.get("kept")), v.get("confidently_wrong"))
                        for k, v in d.items() if k in ("variants", "dev")}
                  for arm, d in arms.items()} for s, arms in m.items()}
     print(json.dumps({"brief (exact|kept, cw)": brief, "stop_rule": result.get("stop_rule"),
-                      "gates": {k: v for k, v in result["gates"].items() if k != "rows"}}, indent=1))
+                      "gates": {k: v for k, v in result["gates"].items() if k != "rows"},
+                      "confidence": {s: {"confident": c["confident"], "provisional": c["provisional"],
+                                         **{a: {k: (v.get("estimate"), v.get("lo"), v.get("hi"))
+                                                for k, v in x.items() if isinstance(v, dict) and "lo" in v}
+                                            | {"checks": x["checks"]} for a, x in c["arms"].items()}}
+                                     for s, c in result["confidence"].items()}}, indent=1, default=str))
     return 0
 
 
