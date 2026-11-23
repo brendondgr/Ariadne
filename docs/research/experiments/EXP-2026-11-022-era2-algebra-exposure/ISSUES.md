@@ -32,3 +32,12 @@ less often (2–3 text scans; 11–12 operator losses against 3–6 operator win
 fix rounds are spent, so a further fix is the operator's decision.
 **Paper implication:** a literal text-condition operator displaces fuzzy entity resolution on
 paraphrased questions unless the planner is told the difference; report as an exposure cost.
+
+## 2026-11-22 — Fix round 4 (a deviation), on the operator's decision
+**Impact:** the measured core configuration is the fixed one. The first core sitting stays on
+record (`phase-h/core/`) as the stop-rule evidence. off-A is reused across the fix.
+**Cause:** the stop rule (entry above).
+**Resolution:** PROTOCOL Amendment 1: literal-text teaching, and an empty whole-label text scan
+refused once, counted live at planning time.
+**Paper implication:** report that core passed only after a fourth teaching fix, which Stage 1 did
+not allow, and report the first core sitting's numbers beside the fixed ones.

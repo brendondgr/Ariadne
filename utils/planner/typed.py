@@ -242,6 +242,8 @@ class PlanContext:
         #: ``(graph, id, label, text)`` of every entity ``resolve_entity`` found during this draft
         self.found_lookups: list[tuple[str, str, str, str]] = []
         self._written: list[str] | None = None
+        #: whole-label text scans refused once for matching nothing (fix round 4); a re-sent one passes
+        self.empty_text_scans: set[str] = set()
 
     def close(self) -> None:
         self.handles.close()

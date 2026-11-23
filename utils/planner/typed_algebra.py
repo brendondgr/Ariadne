@@ -88,6 +88,10 @@ def system_section(catalogs: dict[str, Any]) -> str:
         "named entity. \"union\" \"parts\" may name earlier steps: \"parts\": [\"q1\", \"q2\"].",
         "- \"filter\": the members of a set that meet \"where\".",
         "- \"typescan\": every entity of \"anchor_label\" that meets \"where\", with the exact total.",
+        "Text ops (contains_text, starts_with, ends_with) match the stored characters exactly, case "
+        "included, not a meaning: use them for words the question quotes or the graph stores, never to "
+        "find an entity the question only describes. For that, name it if you know it, or call "
+        "resolve_entity with words from the question, and anchor on the id found.",
         f"- \"aggregate\": one value over a set: \"fn\" is one of {', '.join(AGG_FNS)}; every fn but "
         "count needs \"property\".",
         "- \"rank\": the first \"k\" members of a set by \"property\", or by how many entities \"by_path\" "
@@ -240,6 +244,8 @@ def check_algebra_step(raw: dict[str, Any], sid: str, kind: str, graph: str, ctx
             labels = _result_labels(node, p.card)
         except InvalidOp as exc:
             raise Refused(_teach(sid, exc, p.card)) from None
+        if kind in ("filter", "typescan"):
+            _refuse_empty_text_scan(node, sid, graph, ctx)
         spec = {"op": kind, "ir": to_dict(node), "labels": labels}
         out.step = TypedStep(kind=ALGEBRA_KIND, anchor_label=_first_label(node),
                              anchor_ids=tuple(_ids_in(node)),
@@ -250,6 +256,53 @@ def check_algebra_step(raw: dict[str, Any], sid: str, kind: str, graph: str, ctx
         out.refusals.append(r.envelope)
         out.fixes = list(log.fixes)
         return out
+
+
+def _refuse_empty_text_scan(node: Any, sid: str, graph: str, ctx: Any) -> None:
+    """Refuse, once, a whole-label scan whose text condition matches nothing (fix round 4).
+
+    Phase H found the planner scanning ``description``/``name`` with
+    ``contains_text`` and its own paraphrase of an entity it could not name: a
+    literal match for a paraphrase finds nothing, and the answer abstains where
+    ``resolve_entity`` would have found the entity. The count runs on the live
+    store (:func:`~utils.specialists.algebra.runtime.scan_total`). The same step
+    sent again passes, so a question whose right answer is empty still gets it.
+    No count (no store, an error): the step passes unchanged.
+    """
+    from utils.agent import errors as E
+    from utils.agent.tools import Refused
+    from utils.specialists.algebra.base import TEXT, Nodes
+    from utils.specialists.algebra.ir import to_dict
+    from utils.specialists.algebra.typescan import TypeScan
+
+    if not (isinstance(node, Nodes) and isinstance(node.of, TypeScan)):
+        return
+    texts = [c for c in node.of.conds if c.op in TEXT]
+    if not texts:
+        return
+    key = json.dumps([graph, to_dict(node)], sort_keys=True, ensure_ascii=False)
+    seen = getattr(ctx, "empty_text_scans", None)
+    if seen is None or key in seen:
+        return
+    card_view = (getattr(ctx, "cards", None) or {}).get(graph)
+    if card_view is None:
+        return
+    from utils.specialists.algebra.runtime import scan_total
+
+    if scan_total(graph, card_view, node) != 0:
+        return
+    seen.add(key)
+    said = "; ".join(f"{c.prop} {c.op} {c.value!r}" for c in texts)
+    label = node.of.label
+    raise Refused(E.refusal(
+        "invalid_request",
+        f"step {sid}: no {label} meets {said}. A text condition matches the stored characters exactly "
+        "(case included), not a meaning.",
+        "if the question describes one entity without its id or name, name it if you know it, or call "
+        "resolve_entity with words from the question, and anchor the step on the id found; if it asks for "
+        f"every {label} whose {texts[0].prop} holds some text, use a shorter word the graph stores. Send "
+        "this same step again only if an empty answer is right.",
+        [E.problem("where", said, [])]))
 
 
 def _result_labels(node: Any, card: Any) -> list[str]:

@@ -127,3 +127,41 @@ E and R run once, in off-A, since they do not use the catalog.
   operators stay off for Step 11 until the planner prompt is reworked.
 - **Harm:** core fails the existing-bank gates. The new prompt text costs today's questions, and
   the step stops (stop rule).
+
+## Amendment 1 (2026-11-22, before any re-run): fix round 4 and the Stage 3 re-run
+
+Written after the stop rule fired on the core sitting (ISSUES, 2026-11-22). The operator chose to
+fix and re-run. This is a deviation: Stage 1 allowed three fix rounds, and this is a fourth.
+
+**The fix (CORE only):**
+1. **Teaching text.** The operator section of the system prompt now says that the text ops
+   (`contains_text`, `starts_with`, `ends_with`) match the stored characters exactly, case
+   included, and are not for finding an entity the question only describes. For that, the model
+   names the entity if it knows it, or calls `resolve_entity`, and anchors on the id found.
+2. **An empty text scan is refused once.** When a `typescan` or whole-label `filter` has a text
+   condition, the planner counts it on the live store while checking the step
+   (`runtime.scan_total`). If it matches nothing, the step is refused with that same advice. The
+   same step sent again passes, so a question whose right answer is empty still gets it. If no
+   count can be had, the step passes unchanged.
+
+Switches off: the prompt, the tool specs and the check path are unchanged (the hash test passes).
+
+**Prove small first** (stage runner, configurations core and core+ext; Qwen T-lazy, Qwen T-full,
+Gemma T-lazy-G). The items are:
+- every variant item that any typed arm lost under core in Phase H;
+- the 60 controls;
+- the probe tune half.
+
+It goes ahead to Stage 3 if:
+- Gemma's operator-attributed variant losses fall well below 17;
+- no control is lost to an operator step on an arm that lost none in round 4;
+- probe tune exact per arm stays within 5 of round 4.
+
+**Stage 3 re-run:**
+- **off-A is kept, not re-run:** with the switches off, the code paths and prompt bytes are
+  unchanged.
+- **core, core+ext and off-B** run on the fixed tree, in that order, with the same stop rule
+  against off-A.
+- **off-B, now on the new tree,** is also the check that off did not move. If off-B differs from
+  off-A by more than the stop-rule margins on any arm, that is reported as drift, and the gates
+  use both off runs as written.

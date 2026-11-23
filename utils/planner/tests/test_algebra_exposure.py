@@ -618,3 +618,71 @@ def test_a_describe_used_by_a_union_is_not_dropped_as_redundant(cards, core):
     assert redundant_describes([d, twin, u]) == {"q2": "q3"}
     u.from_steps = ["q9", "q2"]
     assert redundant_describes([d, twin, u]) == {}
+
+
+# --------------------------------------------------------------------------- #
+# Fix round 4 (Phase H): a text scan that matches nothing is refused once
+# --------------------------------------------------------------------------- #
+
+_PARAPHRASE = [{"id": "q1", "graph": "attack", "kind": "typescan", "anchor_label": "Software",
+                "where": [{"property": "description", "op": "contains_text",
+                           "value": "commercial red-team post-exploitation tool"}]}]
+
+
+def _check_ctx(cards, ctx, steps):
+    from utils.planner.typed import check_plan
+
+    checks, _ = check_plan({"steps": steps}, ctx)
+    return checks
+
+
+@pytest.mark.parametrize("total,refused", [(0, True), (3, False), (None, False)])
+def test_an_empty_text_scan_is_refused_once_with_the_way_to_find_one_entity(cards, core, monkeypatch, total, refused):
+    from utils.planner.typed import PlanContext, catalogs_for
+    from utils.specialists.algebra import runtime
+
+    calls = []
+    monkeypatch.setattr(runtime, "scan_total", lambda g, cv, node, **k: calls.append(node) or total)
+    with tempfile.TemporaryDirectory() as d:
+        ctx = PlanContext(cards, catalogs_for(cards), Path(d))
+        try:
+            first = _check_ctx(cards, ctx, _PARAPHRASE)[0]
+            again = _check_ctx(cards, ctx, _PARAPHRASE)[0]
+        finally:
+            ctx.close()
+    assert calls, "the count was asked"
+    assert first.ok is (not refused)
+    assert again.ok, "the same step sent again passes"
+    if refused:
+        text = first.refusals[0]["detail"] + " " + first.refusals[0]["fix"]
+        assert "matches the stored characters exactly" in text and "resolve_entity" in text
+
+
+def test_a_scan_without_a_text_condition_asks_no_count(cards, core, monkeypatch):
+    from utils.specialists.algebra import runtime
+
+    monkeypatch.setattr(runtime, "scan_total", lambda *a, **k: pytest.fail("no count for a non-text scan"))
+    c = _check(cards, [{"id": "q1", "graph": "capec", "kind": "typescan", "anchor_label": "TaxonomyEntry",
+                        "where": [{"property": "taxonomy_name", "op": "=", "value": "ATTACK"}]}])[0]
+    assert c.ok, c.refusals
+
+
+def test_the_prompt_says_text_ops_are_literal_only_when_on(cards, monkeypatch):
+    monkeypatch.setenv("ARIADNE_ALGEBRA_CORE", "1")
+    assert "match the stored characters exactly" in _system(cards)
+    monkeypatch.delenv("ARIADNE_ALGEBRA_CORE")
+    assert "match the stored characters exactly" not in _system(cards)
+
+
+def test_the_live_count_refuses_a_paraphrase_and_passes_a_stored_word(cards, core):
+    """Live stores (skips without them): the Phase H case and a word Neo4j stores."""
+    from utils.specialists.algebra.base import Cond, Nodes
+    from utils.specialists.algebra.runtime import scan_total
+    from utils.specialists.algebra.typescan import TypeScan
+
+    para = scan_total("attack", cards["attack"], Nodes(TypeScan("Software", (Cond(
+        "description", "contains_text", "commercial red-team post-exploitation tool"),))))
+    if para is None:
+        pytest.skip("live Neo4j not reachable")
+    assert para == 0
+    assert scan_total("attack", cards["attack"], Nodes(TypeScan("Software", (Cond("name", "contains_text", "Cobalt"),)))) >= 1

@@ -221,6 +221,65 @@ def draft(resolved: Any, backend: str) -> Any:
 
 
 # --------------------------------------------------------------------------- #
+# A planning-time count (Phase H, fix round 4)
+# --------------------------------------------------------------------------- #
+
+_SCAN_TOTALS: dict[tuple[str, str, str], int] = {}
+
+
+def scan_total(graph: str, card_view: Any, node: Any, *, timeout_ms: int = 5000) -> int | None:
+    """The exact total of a whole-label scan on the live store, or ``None``.
+
+    Only for ``Nodes(TypeScan)``: no anchors and no earlier step, so the tree runs
+    as written with no id mapping. The typed planner asks this while it checks a
+    step, to refuse a text condition that matches nothing (fix round 4).
+    ``None`` whenever the count cannot be had (no store, a timeout, any error):
+    the caller then lets the step through unchanged. Totals are cached per query.
+    """
+    from utils.specialists import build_specialist
+    from utils.specialists.config import SpecialistConfig
+
+    from .base import Nodes
+    from .compiled import Backend
+    from .typescan import TypeScan
+
+    if not (isinstance(node, Nodes) and isinstance(node.of, TypeScan)):
+        return None
+    specialist = None
+    try:
+        card = card_model(graph)
+        specialist = build_specialist(graph, card_view, SpecialistConfig.from_env())
+        backend = backend_name(specialist.card)
+        if backend == "cypher":
+            from utils.specialists.cypher.compile import compile_cypher
+
+            compiled = compile_cypher(node, Backend.cypher(card, row_cap=1))
+        else:
+            from utils.specialists.gremlin.compile import compile_gremlin
+
+            compiled = compile_gremlin(node, Backend.gremlin(card, row_cap=1))
+        key = (graph, compiled.text, json.dumps(compiled.params, sort_keys=True, default=str))
+        if key in _SCAN_TOTALS:
+            return _SCAN_TOTALS[key]
+        specialist.connector.connect()
+        rows = specialist.connector.run(compiled.text, dict(compiled.params),
+                                        {"max_result_rows": 2, "query_timeout_ms": timeout_ms})
+        total = finish(rows, compiled).total
+        if total is None:
+            return None
+        _SCAN_TOTALS[key] = int(total)
+        return int(total)
+    except Exception:  # noqa: BLE001 - a planning aid; never blocks a step
+        return None
+    finally:
+        if specialist is not None:
+            try:
+                specialist.connector.close()
+            except Exception:  # noqa: BLE001
+                pass
+
+
+# --------------------------------------------------------------------------- #
 # Running (the specialist's path)
 # --------------------------------------------------------------------------- #
 
