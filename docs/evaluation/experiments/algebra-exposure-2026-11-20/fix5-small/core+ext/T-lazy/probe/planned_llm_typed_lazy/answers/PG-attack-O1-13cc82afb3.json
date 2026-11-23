@@ -1,0 +1,855 @@
+{
+  "id": "PG-attack-O1-13cc82afb3",
+  "kind": "attack",
+  "tier": "algebra-probe",
+  "category": "PG-attack",
+  "question": "Within the Collection tactic TA0009, which top-level techniques (excluding sub-techniques) are listed as applying to both SaaS and Windows?",
+  "gold": {
+    "assertions": {
+      "min_records": 0,
+      "must_include_ids": [],
+      "must_include_related": []
+    },
+    "ex_gold": {
+      "pool": "algebra",
+      "scheme": "attack",
+      "kind": "set",
+      "expected": [
+        "T1119",
+        "T1213"
+      ]
+    }
+  },
+  "answer": {
+    "headline": "Gathered 3 record(s) from 1 source(s).",
+    "narrative": "Found 17 item(s) related to TA0009 (e.g. T1213, T1056, T1039) in MITRE ATT&CK. TA0009 (Collection) has 17 techniques: T1213, T1056, T1039, T1074, T1125, T1185, T1560, T1005, T1530, T1115, T1119, T1025, T1114, T1123, T1602, T1557, T1113. Found 2 record(s) in MITRE ATT&CK including T1119, T1213. 2 entities match.",
+    "composer": "deterministic",
+    "fallback_reason": null,
+    "claims": [
+      {
+        "text": "Found 17 item(s) related to TA0009 (e.g. T1213, T1056, T1039) in MITRE ATT&CK.",
+        "kind": "fact",
+        "entity_ids": [
+          "TA0009"
+        ],
+        "citations": [
+          {
+            "source": "attack",
+            "primary_id": "TA0009"
+          }
+        ]
+      },
+      {
+        "text": "TA0009 (Collection) has 17 techniques: T1213, T1056, T1039, T1074, T1125, T1185, T1560, T1005, T1530, T1115, T1119, T1025, T1114, T1123, T1602, T1557, T1113.",
+        "kind": "enumeration",
+        "entity_ids": [
+          "T1213",
+          "T1056",
+          "T1039",
+          "T1074",
+          "T1125",
+          "T1185",
+          "T1560",
+          "T1005",
+          "T1530",
+          "T1115",
+          "T1119",
+          "T1025",
+          "T1114",
+          "T1123",
+          "T1602",
+          "T1557",
+          "T1113"
+        ],
+        "citations": [
+          {
+            "source": "attack",
+            "primary_id": "TA0009"
+          }
+        ]
+      },
+      {
+        "text": "Found 2 record(s) in MITRE ATT&CK including T1119, T1213.",
+        "kind": "fact",
+        "entity_ids": [
+          "T1119",
+          "T1213"
+        ],
+        "citations": [
+          {
+            "source": "attack",
+            "primary_id": "T1119"
+          },
+          {
+            "source": "attack",
+            "primary_id": "T1213"
+          }
+        ]
+      },
+      {
+        "text": "2 entities match.",
+        "kind": "fact",
+        "entity_ids": [
+          "T1119",
+          "T1213"
+        ],
+        "citations": [
+          {
+            "source": "attack",
+            "primary_id": "T1119"
+          },
+          {
+            "source": "attack",
+            "primary_id": "T1213"
+          }
+        ]
+      }
+    ],
+    "abstentions": [],
+    "notes": []
+  },
+  "logic_flow": {
+    "task": {
+      "sub_question_id": "PG-attack-O1-13cc82afb3",
+      "source": "attack",
+      "text": "Within the Collection tactic TA0009, which top-level techniques (excluding sub-techniques) are listed as applying to both SaaS and Windows?",
+      "entities": [
+        "Tactic",
+        "HAS_TECHNIQUE",
+        "Technique"
+      ],
+      "limits": {
+        "max_traversal_depth": 3,
+        "max_result_rows": 20000,
+        "query_timeout_ms": 60000
+      },
+      "join_key": null,
+      "seed_ids": [
+        "TA0009"
+      ],
+      "rationale": "algebra probe set (Era 2 Step 9 Phase G)"
+    },
+    "results": [
+      {
+        "source": "attack",
+        "sub_question_id": "q1",
+        "sub_question": "",
+        "query": "MATCH (n) WHERE coalesce(n.attack_id, n.id) IN $ids OPTIONAL MATCH (n)-[:HAS_TECHNIQUE]->(t0:Technique) WITH n, collect(DISTINCT {m: t0, r: 'HAS_TECHNIQUE'}) AS k0 WITH n, [x IN k0 WHERE x.m IS NOT NULL] AS hops UNWIND (CASE WHEN size(hops) = 0 THEN [{m: null, r: null}] ELSE hops END) AS hop RETURN coalesce(n.attack_id, n.id) AS anchor_id, n.name AS anchor_name, labels(n)[0] AS anchor_label, coalesce(hop.m.attack_id, hop.m.id) AS neighbour_id, hop.m.name AS neighbour_name, labels(hop.m)[0] AS neighbour_label, hop.r AS rel_type LIMIT 1000",
+        "ok": true,
+        "partial": false,
+        "error": null,
+        "summary": "Found 17 item(s) related to TA0009 (e.g. T1213, T1056, T1039) in MITRE ATT&CK.",
+        "traces": [
+          {
+            "step": "intake",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "source": "attack",
+              "card": "attack"
+            }
+          },
+          {
+            "step": "resolve",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "labels": [
+                "Tactic",
+                "Technique"
+              ],
+              "relationships": [
+                "HAS_TECHNIQUE"
+              ],
+              "seed_ids": [
+                "TA0009"
+              ],
+              "join_key": null
+            }
+          },
+          {
+            "step": "gate",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "attempt": 1,
+              "template": "typed_step",
+              "query": "MATCH (n) WHERE coalesce(n.attack_id, n.id) IN $ids OPTIONAL MATCH (n)-[:HAS_TECHNIQUE]->(t0:Technique) WITH n, collect(DISTINCT {m: t0, r: 'HAS_TECHNIQUE'}) AS k0 WITH n, [x IN k0 WHERE x.m IS NOT NULL] AS hops UNWIND (CASE WHEN size(hops) = 0 THEN [{m: null, r: null}] ELSE hops END) AS hop RETURN coalesce(n.attack_id, n.id) AS anchor_id, n.name AS anchor_name, labels(n)[0] AS anchor_label, coalesce(hop.m.attack_id, hop.m.id) AS neighbour_id, hop.m.name AS neighbour_name, labels(hop.m)[0] AS neighbour_label, hop.r AS rel_type LIMIT 1000",
+              "injected": [
+                "LIMIT 1000 appended (none present)"
+              ],
+              "timing_ms": 0.262
+            }
+          },
+          {
+            "step": "execute",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "row_count": 17,
+              "timing_ms": 7.9,
+              "row_ceiling": 1000,
+              "truncated": false
+            }
+          },
+          {
+            "step": "assess",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "row_count": 17,
+              "timing_ms": 0.008
+            }
+          },
+          {
+            "step": "normalize",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "record_count": 1,
+              "timing_ms": 3.136
+            }
+          }
+        ],
+        "records": [
+          {
+            "primary_id": "TA0009",
+            "name": "Collection",
+            "label": "Tactic",
+            "description": "",
+            "properties": {},
+            "facets": [],
+            "join_values": [],
+            "related": [
+              {
+                "id": "T1213",
+                "name": "Data from Information Repositories",
+                "label": "Technique",
+                "type": "HAS_TECHNIQUE",
+                "description": "Adversaries may leverage information repositories to mine valuable information. Information repositories are tools that allow for storage of information, typically to facilitate collaboration or information sharing between users, and can store a wide variety of data that may aid adversaries in further objectives, such as Credential Access, Lateral Movement, or Defense Evasion, or direct access to the target information. Adversaries may also abuse external sharing features to share sensitive documents with recipients outside of the organization (i.e., [Transfer Data to Cloud Account](https://attack.mitre.org/techniques/T1537)). \n\nThe following is a brief list of example information that may hold potential value to an adversary and may also be found on an information repository:\n\n* Policies, procedures, and standards\n* Physical / logical network diagrams\n* System architecture diagrams\n* Technical system documentation\n* Testing / development credentials (i.e., [Unsecured Credentials](https://attack.mitre.org/techniques/T1552)) \n* Work / project schedules\n* Source code snippets\n* Links to network shares and other internal resources\n* Contact or other sensitive information about business partners and customers, including personally identifiable information (PII) \n\nInformation stored in a repository may vary based on the specific instance or environment. Specific common information repositories include the following:\n\n* Storage services such as IaaS databases, enterprise databases, and more specialized platforms such as customer relationship management (CRM) databases \n* Collaboration platforms such as SharePoint, Confluence, and code repositories\n* Messaging platforms such as Slack and Microsoft Teams \n\nIn some cases, information repositories have been improperly secured, typically by unintentionally allowing for overly-broad access by all users or even public access to unauthenticated users. This is particularly common with cloud-native or cloud-hosted services, such as AWS Relational Database Service (RDS), Redis, or ElasticSearch.(Citation: Mitiga)(Citation: TrendMicro Exposed Redis 2020)(Citation: Cybernews Reuters Leak 2022)"
+              },
+              {
+                "id": "T1056",
+                "name": "Input Capture",
+                "label": "Technique",
+                "type": "HAS_TECHNIQUE",
+                "description": "Adversaries may use methods of capturing user input to obtain credentials or collect information. During normal system usage, users often provide credentials to various different locations, such as login pages/portals or system dialog boxes. Input capture mechanisms may be transparent to the user (e.g. [Credential API Hooking](https://attack.mitre.org/techniques/T1056/004)) or rely on deceiving the user into providing input into what they believe to be a genuine service (e.g. [Web Portal Capture](https://attack.mitre.org/techniques/T1056/003))."
+              },
+              {
+                "id": "T1039",
+                "name": "Data from Network Shared Drive",
+                "label": "Technique",
+                "type": "HAS_TECHNIQUE",
+                "description": "Adversaries may search network shares on computers they have compromised to find files of interest. Sensitive data can be collected from remote systems via shared network drives (host shared directory, network file server, etc.) that are accessible from the current system prior to Exfiltration. Interactive command shells may be in use, and common functionality within [cmd](https://attack.mitre.org/software/S0106) may be used to gather information."
+              },
+              {
+                "id": "T1074",
+                "name": "Data Staged",
+                "label": "Technique",
+                "type": "HAS_TECHNIQUE",
+                "description": "Adversaries may stage collected data in a central location or directory prior to Exfiltration. Data may be kept in separate files or combined into one file through techniques such as [Archive Collected Data](https://attack.mitre.org/techniques/T1560). Interactive command shells may be used, and common functionality within [cmd](https://attack.mitre.org/software/S0106) and bash may be used to copy data into a staging location.(Citation: PWC Cloud Hopper April 2017)\n\nIn cloud environments, adversaries may stage data within a particular instance or virtual machine before exfiltration. An adversary may [Create Cloud Instance](https://attack.mitre.org/techniques/T1578/002) and stage data in that instance.(Citation: Mandiant M-Trends 2020)\n\nAdversaries may choose to stage data from a victim network in a centralized location prior to Exfiltration to minimize the number of connections made to their C2 server and better evade detection."
+              },
+              {
+                "id": "T1125",
+                "name": "Video Capture",
+                "label": "Technique",
+                "type": "HAS_TECHNIQUE",
+                "description": "An adversary can leverage a computer's peripheral devices (e.g., integrated cameras or webcams) or applications (e.g., video call services) to capture video recordings for the purpose of gathering information. Images may also be captured from devices or applications, potentially in specified intervals, in lieu of video files.\n\nMalware or scripts may be used to interact with the devices through an available API provided by the operating system or an application to capture video or images. Video or image files may be written to disk and exfiltrated later. This technique differs from [Screen Capture](https://attack.mitre.org/techniques/T1113) due to use of specific devices or applications for video recording rather than capturing the victim's screen.\n\nIn macOS, there are a few different malware samples that record the user's webcam such as FruitFly and Proton. (Citation: objective-see 2017 review)"
+              },
+              {
+                "id": "T1185",
+                "name": "Browser Session Hijacking",
+                "label": "Technique",
+                "type": "HAS_TECHNIQUE",
+                "description": "Adversaries may take advantage of security vulnerabilities and inherent functionality in browser software to change content, modify user-behaviors, and intercept information as part of various browser session hijacking techniques.(Citation: Wikipedia Man in the Browser)\n\nA specific example is when an adversary injects software into a browser that allows them to inherit cookies, HTTP sessions, and SSL client certificates of a user then use the browser as a way to pivot into an authenticated intranet.(Citation: Cobalt Strike Browser Pivot)(Citation: ICEBRG Chrome Extensions) Executing browser-based behaviors such as pivoting may require specific process permissions, such as <code>SeDebugPrivilege</code> and/or high-integrity/administrator rights.\n\nAnother example involves pivoting browser traffic from the adversary's browser through the user's browser by setting up a proxy which will redirect web traffic. This does not alter the user's traffic in any way, and the proxy connection can be severed as soon as the browser is closed. The adversary assumes the security context of whichever browser process the proxy is injected into. Browsers typically create a new process for each tab that is opened and permissions and certificates are separated accordingly. With these permissions, an adversary could potentially browse to any resource on an intranet, such as [Sharepoint](https://attack.mitre.org/techniques/T1213/002) or webmail, that is accessible through the browser and which the browser has sufficient permissions. Browser pivoting may also bypass security provided by 2-factor authentication.(Citation: cobaltstrike manual)"
+              },
+              {
+                "id": "T1560",
+                "name": "Archive Collected Data",
+                "label": "Technique",
+                "type": "HAS_TECHNIQUE",
+                "description": "An adversary may compress and/or encrypt data that is collected prior to exfiltration. Compressing the data can help to obfuscate the collected data and minimize the amount of data sent over the network.(Citation: DOJ GRU Indictment Jul 2018) Encryption can be used to hide information that is being exfiltrated from detection or make exfiltration less conspicuous upon inspection by a defender.\n\nBoth compression and encryption are done prior to exfiltration, and can be performed using a utility, 3rd party library, or custom method."
+              },
+              {
+                "id": "T1005",
+                "name": "Data from Local System",
+                "label": "Technique",
+                "type": "HAS_TECHNIQUE",
+                "description": "Adversaries may search local system sources, such as file systems, configuration files, local databases, virtual machine files, or process memory, to find files of interest and sensitive data prior to Exfiltration.\n\nAdversaries may do this using a [Command and Scripting Interpreter](https://attack.mitre.org/techniques/T1059), such as [cmd](https://attack.mitre.org/software/S0106) as well as a [Network Device CLI](https://attack.mitre.org/techniques/T1059/008), which have functionality to interact with the file system to gather information.(Citation: show_run_config_cmd_cisco) Adversaries may also use [Automated Collection](https://attack.mitre.org/techniques/T1119) on the local system.\n"
+              },
+              {
+                "id": "T1530",
+                "name": "Data from Cloud Storage",
+                "label": "Technique",
+                "type": "HAS_TECHNIQUE",
+                "description": "Adversaries may access data from cloud storage.\n\nMany IaaS providers offer solutions for online data object storage such as Amazon S3, Azure Storage, and Google Cloud Storage. Similarly, SaaS enterprise platforms such as Office 365 and Google Workspace provide cloud-based document storage to users through services such as OneDrive and Google Drive, while SaaS application providers such as Slack, Confluence, Salesforce, and Dropbox may provide cloud storage solutions as a peripheral or primary use case of their platform. \n\nIn some cases, as with IaaS-based cloud storage, there exists no overarching application (such as SQL or Elasticsearch) with which to interact with the stored objects: instead, data from these solutions is retrieved directly though the [Cloud API](https://attack.mitre.org/techniques/T1059/009). In SaaS applications, adversaries may be able to collect this data directly from APIs or backend cloud storage objects, rather than through their front-end application or interface (i.e., [Data from Information Repositories](https://attack.mitre.org/techniques/T1213)). \n\nAdversaries may collect sensitive data from these cloud storage solutions. Providers typically offer security guides to help end users configure systems, though misconfigurations are a common problem.(Citation: Amazon S3 Security, 2019)(Citation: Microsoft Azure Storage Security, 2019)(Citation: Google Cloud Storage Best Practices, 2019) There have been numerous incidents where cloud storage has been improperly secured, typically by unintentionally allowing public access to unauthenticated users, overly-broad access by all users, or even access for any anonymous person outside the control of the Identity Access Management system without even needing basic user permissions.\n\nThis open access may expose various types of sensitive data, such as credit cards, personally identifiable information, or medical records.(Citation: Trend Micro S3 Exposed PII, 2017)(Citation: Wired Magecart S3 Buckets, 2019)(Citation: HIPAA Journal S3 Breach, 2017)(Citation: Rclone-mega-extortion_05_2021)\n\nAdversaries may also obtain then abuse leaked credentials from source repositories, logs, or other means as a way to gain access to cloud storage objects."
+              },
+              {
+                "id": "T1115",
+                "name": "Clipboard Data",
+                "label": "Technique",
+                "type": "HAS_TECHNIQUE",
+                "description": "Adversaries may collect data stored in the clipboard from users copying information within or between applications. \n\nFor example, on Windows adversaries can access clipboard data by using <code>clip.exe</code> or <code>Get-Clipboard</code>.(Citation: MSDN Clipboard)(Citation: clip_win_server)(Citation: CISA_AA21_200B) Additionally, adversaries may monitor then replace users’ clipboard with their data (e.g., [Transmitted Data Manipulation](https://attack.mitre.org/techniques/T1565/002)).(Citation: mining_ruby_reversinglabs)\n\nmacOS and Linux also have commands, such as <code>pbpaste</code>, to grab clipboard contents.(Citation: Operating with EmPyre)"
+              },
+              {
+                "id": "T1119",
+                "name": "Automated Collection",
+                "label": "Technique",
+                "type": "HAS_TECHNIQUE",
+                "description": "Once established within a system or network, an adversary may use automated techniques for collecting internal data. Methods for performing this technique could include use of a [Command and Scripting Interpreter](https://attack.mitre.org/techniques/T1059) to search for and copy information fitting set criteria such as file type, location, or name at specific time intervals. \n\nIn cloud-based environments, adversaries may also use cloud APIs, data pipelines, command line interfaces, or extract, transform, and load (ETL) services to automatically collect data.(Citation: Mandiant UNC3944 SMS Phishing 2023) \n\nThis functionality could also be built into remote access tools. \n\nThis technique may incorporate use of other techniques such as [File and Directory Discovery](https://attack.mitre.org/techniques/T1083) and [Lateral Tool Transfer](https://attack.mitre.org/techniques/T1570) to identify and move files, as well as [Cloud Service Dashboard](https://attack.mitre.org/techniques/T1538) and [Cloud Storage Object Discovery](https://attack.mitre.org/techniques/T1619) to identify resources in cloud environments."
+              },
+              {
+                "id": "T1025",
+                "name": "Data from Removable Media",
+                "label": "Technique",
+                "type": "HAS_TECHNIQUE",
+                "description": "Adversaries may search connected removable media on computers they have compromised to find files of interest. Sensitive data can be collected from any removable media (optical disk drive, USB memory, etc.) connected to the compromised system prior to Exfiltration. Interactive command shells may be in use, and common functionality within [cmd](https://attack.mitre.org/software/S0106) may be used to gather information. \n\nSome adversaries may also use [Automated Collection](https://attack.mitre.org/techniques/T1119) on removable media."
+              },
+              {
+                "id": "T1114",
+                "name": "Email Collection",
+                "label": "Technique",
+                "type": "HAS_TECHNIQUE",
+                "description": "Adversaries may target user email to collect sensitive information. Emails may contain sensitive data, including trade secrets or personal information, that can prove valuable to adversaries. Emails may also contain details of ongoing incident response operations, which may allow adversaries to adjust their techniques in order to maintain persistence or evade defenses.(Citation: TrustedSec OOB Communications)(Citation: CISA AA20-352A 2021) Adversaries can collect or forward email from mail servers or clients. "
+              },
+              {
+                "id": "T1123",
+                "name": "Audio Capture",
+                "label": "Technique",
+                "type": "HAS_TECHNIQUE",
+                "description": "An adversary can leverage a computer's peripheral devices (e.g., microphones and webcams) or applications (e.g., voice and video call services) to capture audio recordings for the purpose of listening into sensitive conversations to gather information.(Citation: ESET Attor Oct 2019)\n\nMalware or scripts may be used to interact with the devices through an available API provided by the operating system or an application to capture audio. Audio files may be written to disk and exfiltrated later."
+              },
+              {
+                "id": "T1602",
+                "name": "Data from Configuration Repository",
+                "label": "Technique",
+                "type": "HAS_TECHNIQUE",
+                "description": "Adversaries may collect data related to managed devices from configuration repositories. Configuration repositories are used by management systems in order to configure, manage, and control data on remote systems. Configuration repositories may also facilitate remote access and administration of devices.\n\nAdversaries may target these repositories in order to collect large quantities of sensitive system administration data. Data from configuration repositories may be exposed by various protocols and software and can store a wide variety of data, much of which may align with adversary Discovery objectives.(Citation: US-CERT-TA18-106A)(Citation: US-CERT TA17-156A SNMP Abuse 2017)"
+              },
+              {
+                "id": "T1557",
+                "name": "Adversary-in-the-Middle",
+                "label": "Technique",
+                "type": "HAS_TECHNIQUE",
+                "description": "Adversaries may attempt to position themselves between two or more networked devices using an adversary-in-the-middle (AiTM) technique to support follow-on behaviors such as [Network Sniffing](https://attack.mitre.org/techniques/T1040), [Transmitted Data Manipulation](https://attack.mitre.org/techniques/T1565/002), or replay attacks ([Exploitation for Credential Access](https://attack.mitre.org/techniques/T1212)). By abusing features of common networking protocols that can determine the flow of network traffic (e.g. ARP, DNS, LLMNR, etc.), adversaries may force a device to communicate through an adversary controlled system so they can collect information or perform additional actions.(Citation: Rapid7 MiTM Basics)\n\nFor example, adversaries may manipulate victim DNS settings to enable other malicious activities such as preventing/redirecting users from accessing legitimate sites and/or pushing additional malware.(Citation: ttint_rat)(Citation: dns_changer_trojans)(Citation: ad_blocker_with_miner) Adversaries may also manipulate DNS and leverage their position in order to intercept user credentials, including access tokens ([Steal Application Access Token](https://attack.mitre.org/techniques/T1528)) and session cookies ([Steal Web Session Cookie](https://attack.mitre.org/techniques/T1539)).(Citation: volexity_0day_sophos_FW)(Citation: Token tactics) [Downgrade Attack](https://attack.mitre.org/techniques/T1689)s can also be used to establish an AiTM position, such as by negotiating a less secure, deprecated, or weaker version of communication protocol (SSL/TLS) or encryption algorithm.(Citation: mitm_tls_downgrade_att)(Citation: taxonomy_downgrade_att_tls)(Citation: tlseminar_downgrade_att)\n\nAdversaries may also leverage the AiTM position to attempt to monitor and/or modify traffic, such as in [Transmitted Data Manipulation](https://attack.mitre.org/techniques/T1565/002). Adversaries can setup a position similar to AiTM to prevent traffic from flowing to the appropriate destination, potentially to impair defenses and/or in support of a [Network Denial of Service](https://attack.mitre.org/techniques/T1498)."
+              },
+              {
+                "id": "T1113",
+                "name": "Screen Capture",
+                "label": "Technique",
+                "type": "HAS_TECHNIQUE",
+                "description": "Adversaries may attempt to take screen captures of the desktop to gather information over the course of an operation. Screen capturing functionality may be included as a feature of a remote access tool used in post-compromise operations. Taking a screenshot is also typically possible through native utilities or API calls, such as <code>CopyFromScreen</code>, <code>xwd</code>, or <code>screencapture</code>.(Citation: CopyFromScreen .NET)(Citation: Antiquated Mac Malware)\n"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "source": "attack",
+        "sub_question_id": "q2",
+        "sub_question": "",
+        "query": "MATCH (v2) WHERE v2.id IN $p0 AND (v2:Technique) WITH DISTINCT v2 WITH v2 WHERE (v2.`x_mitre_platforms` IS NOT NULL AND $p1 IN v2.`x_mitre_platforms`) AND (v2.`x_mitre_platforms` IS NOT NULL AND $p2 IN v2.`x_mitre_platforms`) WITH v2 ORDER BY v2.id WITH collect(v2) AS all_ RETURN size(all_) AS total, [x IN all_[0..1000] | {id: x.id, name: x.name}] AS rows",
+        "ok": true,
+        "partial": false,
+        "error": null,
+        "summary": "Found 2 record(s) in MITRE ATT&CK including T1119, T1213.",
+        "traces": [
+          {
+            "step": "intake",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "source": "attack",
+              "card": "attack"
+            }
+          },
+          {
+            "step": "resolve",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "labels": [
+                "Technique"
+              ],
+              "relationships": [],
+              "seed_ids": [
+                "T1005",
+                "T1025",
+                "T1039",
+                "T1056",
+                "T1074",
+                "T1113",
+                "T1114",
+                "T1115",
+                "T1119",
+                "T1123",
+                "T1125",
+                "T1185",
+                "T1213",
+                "T1530",
+                "T1557",
+                "T1560",
+                "T1602"
+              ],
+              "join_key": null
+            }
+          },
+          {
+            "step": "gate",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "attempt": 1,
+              "template": "algebra",
+              "query": "MATCH (v2) WHERE v2.id IN $p0 AND (v2:Technique) WITH DISTINCT v2 WITH v2 WHERE (v2.`x_mitre_platforms` IS NOT NULL AND $p1 IN v2.`x_mitre_platforms`) AND (v2.`x_mitre_platforms` IS NOT NULL AND $p2 IN v2.`x_mitre_platforms`) WITH v2 ORDER BY v2.id WITH collect(v2) AS all_ RETURN size(all_) AS total, [x IN all_[0..1000] | {id: x.id, name: x.name}] AS rows",
+              "injected": [],
+              "note": "compiled by the operator algebra (validated against the card; read-only by construction)",
+              "id_map": {
+                "T1005": [
+                  "attack-pattern--3c4a2599-71ee-4405-ba1e-0e28414b4bc5"
+                ],
+                "T1025": [
+                  "attack-pattern--1b7ba276-eedc-4951-a762-0ceea2c030ec"
+                ],
+                "T1039": [
+                  "attack-pattern--ae676644-d2d2-41b7-af7e-9bed1b55898c"
+                ],
+                "T1056": [
+                  "attack-pattern--bb5a00de-e086-4859-a231-fa793f6797e2"
+                ],
+                "T1074": [
+                  "attack-pattern--7dd95ff6-712e-4056-9626-312ea4ab4c5e"
+                ],
+                "T1113": [
+                  "attack-pattern--0259baeb-9f63-4c69-bf10-eb038c390688"
+                ],
+                "T1114": [
+                  "attack-pattern--1608f3e1-598a-42f4-a01a-2e252e81728f"
+                ],
+                "T1115": [
+                  "attack-pattern--30973a08-aed9-4edf-8604-9084ce1b5c4f"
+                ],
+                "T1119": [
+                  "attack-pattern--30208d3e-0d6b-43c8-883e-44462a514619"
+                ],
+                "T1123": [
+                  "attack-pattern--1035cdf2-3e5f-446f-a7a7-e8f6d7925967"
+                ],
+                "T1125": [
+                  "attack-pattern--6faf650d-bf31-4eb4-802d-1000cf38efaf"
+                ],
+                "T1185": [
+                  "attack-pattern--544b0346-29ad-41e1-a808-501bb4193f47"
+                ],
+                "T1213": [
+                  "attack-pattern--d28ef391-8ed4-45dc-bc4a-2f43abf54416"
+                ],
+                "T1530": [
+                  "attack-pattern--3298ce88-1628-43b1-87d9-0b5336b193d7"
+                ],
+                "T1557": [
+                  "attack-pattern--035bb001-ab69-4a0b-9f6c-2de8b09e1b9d"
+                ],
+                "T1560": [
+                  "attack-pattern--53ac20cd-aca3-406e-9aa0-9fc7fdc60a5a"
+                ],
+                "T1602": [
+                  "attack-pattern--0ad7bc5c-235a-4048-944b-3b286676cb74"
+                ]
+              }
+            }
+          },
+          {
+            "step": "execute",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "row_count": 2
+            }
+          },
+          {
+            "step": "algebra",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "result": {
+                "step": "q2",
+                "kind": "nodes",
+                "value": null,
+                "ids": [
+                  "T1119",
+                  "T1213"
+                ],
+                "rows": [
+                  {
+                    "id": "T1119",
+                    "name": "Automated Collection"
+                  },
+                  {
+                    "id": "T1213",
+                    "name": "Data from Information Repositories"
+                  }
+                ],
+                "total": 2,
+                "complete": true,
+                "info": {}
+              },
+              "op": "filter",
+              "ir": {
+                "@": "Nodes",
+                "of": {
+                  "@": "Where",
+                  "conds": [
+                    {
+                      "@": "Cond",
+                      "cmp": null,
+                      "op": "contains",
+                      "prop": "x_mitre_platforms",
+                      "value": "SaaS"
+                    },
+                    {
+                      "@": "Cond",
+                      "cmp": null,
+                      "op": "contains",
+                      "prop": "x_mitre_platforms",
+                      "value": "Windows"
+                    }
+                  ],
+                  "of": {
+                    "@": "FromStep",
+                    "labels": [
+                      "Technique"
+                    ],
+                    "step": "q1"
+                  }
+                },
+                "props": []
+              }
+            }
+          }
+        ],
+        "records": [
+          {
+            "primary_id": "T1119",
+            "name": "Automated Collection",
+            "label": "Technique",
+            "description": "",
+            "properties": {},
+            "facets": [],
+            "join_values": [
+              "T1119"
+            ],
+            "related": []
+          },
+          {
+            "primary_id": "T1213",
+            "name": "Data from Information Repositories",
+            "label": "Technique",
+            "description": "",
+            "properties": {},
+            "facets": [],
+            "join_values": [
+              "T1213"
+            ],
+            "related": []
+          }
+        ]
+      }
+    ]
+  },
+  "deterministic_scores": {
+    "correlation": null,
+    "mapping_recall": null,
+    "coverage": null,
+    "provenance": {
+      "citations": 6,
+      "compliant": 6,
+      "citation_provenance_rate": 1.0,
+      "abstention_proof_ok": true,
+      "fully_provenanced": true
+    },
+    "inspectability": {
+      "citation_coverage": 1.0,
+      "traceability": 1.0,
+      "abstention_proofs": 1.0,
+      "inspectability": 1.0
+    }
+  },
+  "arm": "planned_llm_typed_lazy",
+  "run_meta": {
+    "planner": "llm-typed-lazy",
+    "synthesis": "deterministic",
+    "use_llm": true,
+    "llm_synthesis": false,
+    "llm_specialist": false,
+    "rewrite": null,
+    "observed_plan": [
+      {
+        "sub_question_id": "q1",
+        "source": "attack",
+        "text": "",
+        "entities": [
+          "Tactic",
+          "HAS_TECHNIQUE",
+          "Technique"
+        ],
+        "seed_ids": [
+          "TA0009"
+        ],
+        "depends_on": null,
+        "limits": {
+          "max_traversal_depth": 3,
+          "max_result_rows": 1000,
+          "query_timeout_ms": 5000
+        },
+        "step": {
+          "kind": "expand",
+          "anchor_label": "Tactic",
+          "anchor_ids": [
+            "TA0009"
+          ],
+          "hops": [
+            {
+              "relation": "HAS_TECHNIQUE",
+              "direction": "out",
+              "target_label": "Technique"
+            }
+          ],
+          "depth": 1
+        }
+      },
+      {
+        "sub_question_id": "q2",
+        "source": "attack",
+        "text": "",
+        "entities": [
+          "Technique"
+        ],
+        "seed_ids": [],
+        "depends_on": null,
+        "limits": {
+          "max_traversal_depth": 3,
+          "max_result_rows": 1000,
+          "query_timeout_ms": 5000
+        },
+        "step": {
+          "kind": "algebra",
+          "anchor_label": "Technique",
+          "anchor_ids": [],
+          "hops": [],
+          "depth": 1,
+          "algebra": {
+            "ir": {
+              "@": "Nodes",
+              "of": {
+                "@": "Where",
+                "conds": [
+                  {
+                    "@": "Cond",
+                    "cmp": null,
+                    "op": "contains",
+                    "prop": "x_mitre_platforms",
+                    "value": "SaaS"
+                  },
+                  {
+                    "@": "Cond",
+                    "cmp": null,
+                    "op": "contains",
+                    "prop": "x_mitre_platforms",
+                    "value": "Windows"
+                  }
+                ],
+                "of": {
+                  "@": "FromStep",
+                  "labels": [
+                    "Technique"
+                  ],
+                  "step": "q1"
+                }
+              },
+              "props": []
+            },
+            "labels": [
+              "Technique"
+            ],
+            "op": "filter"
+          },
+          "from_step": "q1"
+        }
+      }
+    ],
+    "exit_code": 0,
+    "status": "answered",
+    "timings": {
+      "plan_ms": 64599.525,
+      "specialists": [
+        {
+          "sub_question": "q1",
+          "source": "attack",
+          "ms": 11.908
+        },
+        {
+          "sub_question": "q2",
+          "source": "attack",
+          "ms": 38.255
+        }
+      ],
+      "synthesis_ms": 11.387,
+      "total_ms": 65259.527
+    },
+    "registry_model": "qwen38-27b",
+    "drafter_used": "TypedDrafter",
+    "typed": [
+      {
+        "mode": "lazy",
+        "served_model": "qwen38-27b/248046",
+        "model_calls": 4,
+        "catalog_calls": [
+          {
+            "name": "describe",
+            "args": {
+              "target": "Tactic",
+              "graph": "attack"
+            },
+            "ok": true
+          },
+          {
+            "name": "describe",
+            "args": {
+              "target": "Technique",
+              "graph": "attack"
+            },
+            "ok": true
+          },
+          {
+            "name": "resolve_entity",
+            "args": {
+              "text": "Collection",
+              "label": "Tactic",
+              "graph": "attack"
+            },
+            "ok": true
+          },
+          {
+            "name": "describe",
+            "args": {
+              "target": "Tactic",
+              "graph": "attack"
+            },
+            "ok": false
+          }
+        ],
+        "prompt_tokens": 18962,
+        "completion_tokens": 2139,
+        "emitted": true,
+        "parse_error": null,
+        "first_steps": 2,
+        "first_refused": 0,
+        "first_fixes": 1,
+        "valid_first": true,
+        "valid_first_raw": false,
+        "repair_used": false,
+        "fixed_by_repair": false,
+        "still_refused": 0,
+        "final_steps": 2,
+        "coercions": [
+          {
+            "step": "q1",
+            "field": "anchor",
+            "from": {
+              "name": "Collection"
+            },
+            "to": {
+              "id": [
+                "TA0009"
+              ]
+            },
+            "filled_by": "resolve_entity"
+          }
+        ],
+        "refusals": [],
+        "plan_problems": [],
+        "replies": [
+          {
+            "status": "ok",
+            "finish_reason": "tool_calls",
+            "calls": [
+              "describe",
+              "describe"
+            ],
+            "text_chars": 0,
+            "repairs": []
+          },
+          {
+            "status": "ok",
+            "finish_reason": "tool_calls",
+            "calls": [
+              "resolve_entity"
+            ],
+            "text_chars": 198,
+            "repairs": []
+          },
+          {
+            "status": "ok",
+            "finish_reason": "tool_calls",
+            "calls": [
+              "describe",
+              "find_schema"
+            ],
+            "text_chars": 164,
+            "repairs": []
+          },
+          {
+            "status": "ok",
+            "finish_reason": "stop",
+            "calls": [],
+            "text_chars": 741,
+            "repairs": []
+          }
+        ],
+        "error": null,
+        "fallback": null,
+        "seconds": 64.341,
+        "n_catalog_calls": 4,
+        "fixed_by_coercion": true
+      }
+    ],
+    "seams": {
+      "planner_llm": true,
+      "drafter": "TypedDrafter",
+      "specialist_llm": false,
+      "synthesis_llm": false,
+      "generic_only": "true"
+    },
+    "wall_s": 65.9,
+    "algebra_results": [
+      {
+        "step": "q2",
+        "kind": "nodes",
+        "value": null,
+        "ids": [
+          "T1119",
+          "T1213"
+        ],
+        "rows": [
+          {
+            "id": "T1119",
+            "name": "Automated Collection"
+          },
+          {
+            "id": "T1213",
+            "name": "Data from Information Repositories"
+          }
+        ],
+        "total": 2,
+        "complete": true,
+        "info": {}
+      }
+    ]
+  },
+  "evidence_volume": {
+    "results": 2,
+    "records": 3,
+    "related": 17
+  }
+}

@@ -1,0 +1,370 @@
+{
+  "id": "PG-attack-O8-c8334f2b6d",
+  "kind": "attack",
+  "tier": "algebra-probe",
+  "category": "PG-attack",
+  "question": "What is the shortest chain of connections, following any kind of link in either direction, between group G1020 (Mustard Tempest) and group G1009 (Moses Staff)?",
+  "gold": {
+    "assertions": {
+      "min_records": 0,
+      "must_include_ids": [],
+      "must_include_related": []
+    },
+    "ex_gold": {
+      "pool": "algebra",
+      "scheme": "attack",
+      "kind": "set",
+      "expected": [
+        "G1009",
+        "G1020",
+        "T1082",
+        "T1105"
+      ]
+    }
+  },
+  "answer": {
+    "headline": "No records were returned by the routed specialists.",
+    "narrative": "I couldn't find 'Mustard Tempest' or 'Moses Staff' in the live attack graph. Check the name, or tell me the entity's catalogue id and I'll look it up.",
+    "composer": "deterministic",
+    "fallback_reason": null,
+    "claims": [],
+    "abstentions": [],
+    "notes": [
+      "The attack specialist failed and contributed no evidence: ExecutionError: {neo4j_code: Neo.ClientError.Transaction.TransactionTimedOutClientConfiguration} {message: The transaction has been terminated. Retry your operation in a new transaction, and you should see a successful result. The transaction has not completed within the timeout specified at its start by the client. You may want to retry with a longer timeout. } {gql_status: 50N42} {gql_status_description: error: general processing exception - unexpected error. Unexpected error has occurred. See debug log for details.}"
+    ]
+  },
+  "logic_flow": {
+    "task": {
+      "sub_question_id": "PG-attack-O8-c8334f2b6d",
+      "source": "attack",
+      "text": "What is the shortest chain of connections, following any kind of link in either direction, between group G1020 (Mustard Tempest) and group G1009 (Moses Staff)?",
+      "entities": [
+        "Group",
+        "Group"
+      ],
+      "limits": {
+        "max_traversal_depth": 3,
+        "max_result_rows": 20000,
+        "query_timeout_ms": 60000
+      },
+      "join_key": null,
+      "seed_ids": [
+        "G1020",
+        "G1009"
+      ],
+      "rationale": "algebra probe set (Era 2 Step 9 Phase G)"
+    },
+    "results": [
+      {
+        "source": "attack",
+        "sub_question_id": "q1",
+        "sub_question": "",
+        "query": "CALL { MATCH (a1:Group) WHERE a1.id IN $p0 RETURN count(a1) > 0 AS f9 } CALL { MATCH (b2:Group) WHERE b2.id IN $p1 RETURN count(b2) > 0 AS f10 } CALL { MATCH (a3:Group) WHERE a3.id IN $p0 MATCH (b4:Group) WHERE b4.id IN $p1 MATCH p7 = ALL SHORTEST (a3)((a12)-[r13:ATTRIBUTED_TO|DETECTS|HAS_ANALYTIC|HAS_SUBTECHNIQUE|HAS_TACTIC|HAS_TECHNIQUE|MITIGATES|MONITORS|USES]-(b14)){1,10}(b4) RETURN collect({nodes: [n IN nodes(p7) | n.id], rels: [e IN relationships(p7) | type(e)]}) AS paths } CALL { MATCH (a5:Group) WHERE a5.id IN $p0 MATCH p8 = ANY SHORTEST (a5)((a15)-[r16:ATTRIBUTED_TO|DETECTS|HAS_ANALYTIC|HAS_SUBTECHNIQUE|HAS_TACTIC|HAS_TECHNIQUE|MITIGATES|MONITORS|USES]-(b17)){1,11}(z6) WHERE z6 <> a5 WITH z6, min(length(p8)) AS d11 RETURN count(CASE WHEN d11 > 10 THEN 1 END) > 0 AS beyond } RETURN f9 AS a_found, f10 AS b_found, paths, beyond",
+        "ok": false,
+        "partial": true,
+        "error": "ExecutionError: {neo4j_code: Neo.ClientError.Transaction.TransactionTimedOutClientConfiguration} {message: The transaction has been terminated. Retry your operation in a new transaction, and you should see a successful result. The transaction has not completed within the timeout specified at its start by the client. You may want to retry with a longer timeout. } {gql_status: 50N42} {gql_status_description: error: general processing exception - unexpected error. Unexpected error has occurred. See debug log for details.}",
+        "summary": "",
+        "traces": [
+          {
+            "step": "intake",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "source": "attack",
+              "card": "attack"
+            }
+          },
+          {
+            "step": "resolve",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "labels": [
+                "Group"
+              ],
+              "relationships": [],
+              "seed_ids": [
+                "G1020",
+                "G1009"
+              ],
+              "join_key": null
+            }
+          },
+          {
+            "step": "gate",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "attempt": 1,
+              "template": "algebra",
+              "query": "CALL { MATCH (a1:Group) WHERE a1.id IN $p0 RETURN count(a1) > 0 AS f9 } CALL { MATCH (b2:Group) WHERE b2.id IN $p1 RETURN count(b2) > 0 AS f10 } CALL { MATCH (a3:Group) WHERE a3.id IN $p0 MATCH (b4:Group) WHERE b4.id IN $p1 MATCH p7 = ALL SHORTEST (a3)((a12)-[r13:ATTRIBUTED_TO|DETECTS|HAS_ANALYTIC|HAS_SUBTECHNIQUE|HAS_TACTIC|HAS_TECHNIQUE|MITIGATES|MONITORS|USES]-(b14)){1,10}(b4) RETURN collect({nodes: [n IN nodes(p7) | n.id], rels: [e IN relationships(p7) | type(e)]}) AS paths } CALL { MATCH (a5:Group) WHERE a5.id IN $p0 MATCH p8 = ANY SHORTEST (a5)((a15)-[r16:ATTRIBUTED_TO|DETECTS|HAS_ANALYTIC|HAS_SUBTECHNIQUE|HAS_TACTIC|HAS_TECHNIQUE|MITIGATES|MONITORS|USES]-(b17)){1,11}(z6) WHERE z6 <> a5 WITH z6, min(length(p8)) AS d11 RETURN count(CASE WHEN d11 > 10 THEN 1 END) > 0 AS beyond } RETURN f9 AS a_found, f10 AS b_found, paths, beyond",
+              "injected": [],
+              "note": "compiled by the operator algebra (validated against the card; read-only by construction)",
+              "id_map": {
+                "G1020": [
+                  "intrusion-set--0d4ac089-ced4-4cc4-a989-174d08e6d030"
+                ],
+                "G1009": [
+                  "intrusion-set--4c4a7846-45d5-4761-8eea-725fa989914c"
+                ]
+              }
+            }
+          },
+          {
+            "step": "algebra",
+            "ok": false,
+            "reasons": [
+              "ExecutionError: {neo4j_code: Neo.ClientError.Transaction.TransactionTimedOutClientConfiguration} {message: The transaction has been terminated. Retry your operation in a new transaction, and you should see a successful result. The transaction has not completed within the timeout specified at its start by the client. You may want to retry with a longer timeout. } {gql_status: 50N42} {gql_status_description: error: general processing exception - unexpected error. Unexpected error has occurred. See debug log for details.}"
+            ],
+            "detail": {
+              "result": {
+                "step": "q1",
+                "kind": null,
+                "value": null,
+                "ids": [],
+                "rows": [],
+                "total": null,
+                "complete": false,
+                "info": {
+                  "error": "ExecutionError: {neo4j_code: Neo.ClientError.Transaction.TransactionTimedOutClientConfiguration} {message: The transaction has been terminated. Retry your operation in a new transaction, and you should see a successful result. The transaction has not completed within the timeout specified at its start by the client. You may want to retry with a longer timeout. } {gql_status: 50N42} {gql_status_description: error: general processing exception - unexpected error. Unexpected error has occurred. See debug log for details.}"
+                }
+              }
+            }
+          }
+        ],
+        "records": []
+      }
+    ]
+  },
+  "deterministic_scores": {
+    "correlation": null,
+    "mapping_recall": null,
+    "coverage": null,
+    "provenance": {
+      "citations": 0,
+      "compliant": 0,
+      "citation_provenance_rate": 1.0,
+      "abstention_proof_ok": true,
+      "fully_provenanced": true
+    },
+    "inspectability": {
+      "citation_coverage": 1.0,
+      "traceability": 1.0,
+      "abstention_proofs": 1.0,
+      "inspectability": 1.0
+    }
+  },
+  "arm": "planned_llm_typed_full",
+  "run_meta": {
+    "planner": "llm-typed-full",
+    "synthesis": "deterministic",
+    "use_llm": true,
+    "llm_synthesis": false,
+    "llm_specialist": false,
+    "rewrite": null,
+    "observed_plan": [
+      {
+        "sub_question_id": "q1",
+        "source": "attack",
+        "text": "",
+        "entities": [
+          "Group"
+        ],
+        "seed_ids": [
+          "G1020",
+          "G1009"
+        ],
+        "depends_on": null,
+        "limits": {
+          "max_traversal_depth": 3,
+          "max_result_rows": 1000,
+          "query_timeout_ms": 5000
+        },
+        "step": {
+          "kind": "algebra",
+          "anchor_label": "Group",
+          "anchor_ids": [
+            "G1020",
+            "G1009"
+          ],
+          "hops": [],
+          "depth": 1,
+          "algebra": {
+            "ir": {
+              "@": "Shortest",
+              "a": {
+                "@": "Anchors",
+                "ids": [
+                  "G1020"
+                ],
+                "label": "Group"
+              },
+              "b": {
+                "@": "Anchors",
+                "ids": [
+                  "G1009"
+                ],
+                "label": "Group"
+              },
+              "depth": 10,
+              "rels": []
+            },
+            "labels": [],
+            "op": "shortest"
+          }
+        }
+      }
+    ],
+    "exit_code": 1,
+    "status": "partial",
+    "timings": {
+      "plan_ms": 22669.016,
+      "specialists": [
+        {
+          "sub_question": "q1",
+          "source": "attack",
+          "ms": 11894.127
+        }
+      ],
+      "synthesis_ms": 5.344,
+      "total_ms": 34614.581
+    },
+    "registry_model": "qwen38-27b",
+    "drafter_used": "TypedDrafter",
+    "typed": [
+      {
+        "mode": "full",
+        "served_model": "qwen38-27b/248046",
+        "model_calls": 4,
+        "catalog_calls": [
+          {
+            "name": "resolve_entity",
+            "args": {
+              "text": "G1020",
+              "label": "Group",
+              "graph": "attack"
+            },
+            "ok": true
+          },
+          {
+            "name": "resolve_entity",
+            "args": {
+              "text": "G1009",
+              "label": "Group",
+              "graph": "attack"
+            },
+            "ok": true
+          },
+          {
+            "name": "describe",
+            "args": {
+              "target": "shortest"
+            },
+            "ok": false
+          },
+          {
+            "name": "describe",
+            "args": {
+              "target": "G1020",
+              "graph": "attack"
+            },
+            "ok": false
+          }
+        ],
+        "prompt_tokens": 29182,
+        "completion_tokens": 902,
+        "emitted": true,
+        "parse_error": null,
+        "first_steps": 1,
+        "first_refused": 0,
+        "first_fixes": 1,
+        "valid_first": true,
+        "valid_first_raw": false,
+        "repair_used": false,
+        "fixed_by_repair": false,
+        "still_refused": 0,
+        "final_steps": 1,
+        "coercions": [
+          {
+            "step": "q1",
+            "field": "other.anchor_label",
+            "from": null,
+            "to": "Group",
+            "filled_by": "id_scheme"
+          }
+        ],
+        "refusals": [],
+        "plan_problems": [],
+        "replies": [
+          {
+            "status": "ok",
+            "finish_reason": "tool_calls",
+            "calls": [
+              "resolve_entity",
+              "resolve_entity"
+            ],
+            "text_chars": 0,
+            "repairs": []
+          },
+          {
+            "status": "ok",
+            "finish_reason": "tool_calls",
+            "calls": [
+              "describe"
+            ],
+            "text_chars": 174,
+            "repairs": []
+          },
+          {
+            "status": "ok",
+            "finish_reason": "tool_calls",
+            "calls": [
+              "describe"
+            ],
+            "text_chars": 161,
+            "repairs": []
+          },
+          {
+            "status": "ok",
+            "finish_reason": "stop",
+            "calls": [],
+            "text_chars": 326,
+            "repairs": []
+          }
+        ],
+        "error": null,
+        "fallback": null,
+        "seconds": 22.656,
+        "n_catalog_calls": 4,
+        "fixed_by_coercion": true
+      }
+    ],
+    "seams": {
+      "planner_llm": true,
+      "drafter": "TypedDrafter",
+      "specialist_llm": false,
+      "synthesis_llm": false,
+      "generic_only": "true"
+    },
+    "wall_s": 34.618,
+    "algebra_results": [
+      {
+        "step": "q1",
+        "kind": null,
+        "value": null,
+        "ids": [],
+        "rows": [],
+        "total": null,
+        "complete": false,
+        "info": {
+          "error": "ExecutionError: {neo4j_code: Neo.ClientError.Transaction.TransactionTimedOutClientConfiguration} {message: The transaction has been terminated. Retry your operation in a new transaction, and you should see a successful result. The transaction has not completed within the timeout specified at its start by the client. You may want to retry with a longer timeout. } {gql_status: 50N42} {gql_status_description: error: general processing exception - unexpected error. Unexpected error has occurred. See debug log for details.}"
+        }
+      }
+    ]
+  },
+  "evidence_volume": {
+    "results": 1,
+    "records": 0,
+    "related": 0
+  }
+}

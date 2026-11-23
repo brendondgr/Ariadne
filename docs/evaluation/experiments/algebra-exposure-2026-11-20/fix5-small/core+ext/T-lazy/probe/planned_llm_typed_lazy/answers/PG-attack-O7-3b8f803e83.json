@@ -1,0 +1,270 @@
+{
+  "id": "PG-attack-O7-3b8f803e83",
+  "kind": "attack",
+  "tier": "algebra-probe",
+  "category": "PG-attack",
+  "question": "Which analytics monitor some data component by way of the auditd:EXECVE log source?",
+  "gold": {
+    "assertions": {
+      "min_records": 0,
+      "must_include_ids": [],
+      "must_include_related": []
+    },
+    "ex_gold": {
+      "pool": "algebra",
+      "scheme": "attack",
+      "kind": "set",
+      "expected": [
+        "AN0887",
+        "AN0053",
+        "AN0437",
+        "AN1247",
+        "AN0775",
+        "AN1085",
+        "AN0537",
+        "AN1281",
+        "AN1326",
+        "AN1418",
+        "AN1385",
+        "AN0473",
+        "AN0710",
+        "AN1517",
+        "AN1002",
+        "AN0059",
+        "AN0171",
+        "AN1572",
+        "AN0056",
+        "AN0828",
+        "AN2037",
+        "AN0272",
+        "AN1199",
+        "AN1062",
+        "AN0560",
+        "AN0200",
+        "AN0154",
+        "AN1096",
+        "AN0361",
+        "AN0857",
+        "AN0896",
+        "AN1512",
+        "AN0505",
+        "AN0950",
+        "AN0157",
+        "AN2064",
+        "AN0883",
+        "AN1638",
+        "AN1016",
+        "AN0092",
+        "AN2039",
+        "AN0385",
+        "AN0788",
+        "AN1135",
+        "AN1584"
+      ]
+    }
+  },
+  "answer": {
+    "headline": "No records were returned by the routed specialists; 1 part(s) unsupported.",
+    "narrative": "None of the live graph sources cover this request. If you meant a specific entity, name it.",
+    "composer": "deterministic",
+    "fallback_reason": null,
+    "claims": [],
+    "abstentions": [],
+    "notes": [
+      "The available graph sources could not be matched to this request: 'Which analytics monitor some data component by way of the auditd:EXECVE log source?'. If you meant a specific entity, name it or give its catalogue id."
+    ]
+  },
+  "logic_flow": {
+    "task": {
+      "sub_question_id": "PG-attack-O7-3b8f803e83",
+      "source": "attack",
+      "text": "Which analytics monitor some data component by way of the auditd:EXECVE log source?",
+      "entities": [
+        "Analytic",
+        "MONITORS",
+        "DataComponent"
+      ],
+      "limits": {
+        "max_traversal_depth": 3,
+        "max_result_rows": 20000,
+        "query_timeout_ms": 60000
+      },
+      "join_key": null,
+      "seed_ids": [],
+      "rationale": "algebra probe set (Era 2 Step 9 Phase G)"
+    },
+    "results": []
+  },
+  "deterministic_scores": {
+    "correlation": null,
+    "mapping_recall": null,
+    "coverage": null,
+    "provenance": {
+      "citations": 0,
+      "compliant": 0,
+      "citation_provenance_rate": 1.0,
+      "abstention_proof_ok": true,
+      "fully_provenanced": true
+    },
+    "inspectability": {
+      "citation_coverage": 1.0,
+      "traceability": 1.0,
+      "abstention_proofs": 1.0,
+      "inspectability": 1.0
+    }
+  },
+  "arm": "planned_llm_typed_lazy",
+  "run_meta": {
+    "planner": "llm-typed-lazy",
+    "synthesis": "deterministic",
+    "use_llm": true,
+    "llm_synthesis": false,
+    "llm_specialist": false,
+    "rewrite": null,
+    "observed_plan": [],
+    "exit_code": 1,
+    "status": "partial",
+    "timings": {
+      "plan_ms": 85540.767,
+      "specialists": [],
+      "synthesis_ms": 3.869,
+      "total_ms": 85601.524
+    },
+    "registry_model": "qwen38-27b",
+    "drafter_used": "TypedDrafter",
+    "typed": [
+      {
+        "mode": "lazy",
+        "served_model": "qwen38-27b/248046",
+        "model_calls": 4,
+        "catalog_calls": [
+          {
+            "name": "find_schema",
+            "args": {
+              "text": "auditd EXECVE",
+              "graph": "attack"
+            },
+            "ok": false
+          },
+          {
+            "name": "find_schema",
+            "args": {
+              "text": "MONITORS",
+              "graph": "attack"
+            },
+            "ok": true
+          },
+          {
+            "name": "find_schema",
+            "args": {
+              "text": "HAS_ANALYTIC",
+              "graph": "attack"
+            },
+            "ok": true
+          },
+          {
+            "name": "describe",
+            "args": {
+              "target": "DataComponent",
+              "graph": "attack"
+            },
+            "ok": true
+          }
+        ],
+        "prompt_tokens": 15884,
+        "completion_tokens": 3126,
+        "emitted": true,
+        "parse_error": null,
+        "first_steps": 1,
+        "first_refused": 1,
+        "first_fixes": 0,
+        "valid_first": false,
+        "valid_first_raw": false,
+        "repair_used": true,
+        "fixed_by_repair": false,
+        "still_refused": 1,
+        "final_steps": 0,
+        "coercions": [],
+        "refusals": [
+          {
+            "step": "q1",
+            "final": false,
+            "code": "ambiguous_anchor",
+            "detail": "step q1: no confident match for 'auditd:EXECVE'",
+            "fix": "anchor by one candidate's id: DC0039 File Creation (DataComponent), DC0060 Service Creation (DataComponent), DC0043 Firewall Disable (DataComponent), DC0004 Firmware Modification (DataComponent), DC0074 Driver Metadata (DataComponent)"
+          },
+          {
+            "step": "q1",
+            "final": false,
+            "code": "invalid_request",
+            "detail": "step q1: the step has no anchor",
+            "fix": "give anchor {\"id\": ...} (the id the question writes, even if resolve_entity did not find it) or {\"name\": ..., \"label\": ...}"
+          },
+          {
+            "step": "q1",
+            "final": true,
+            "code": "invalid_request",
+            "detail": "step q1: the step has no anchor",
+            "fix": "give anchor {\"id\": ...} (the id the question writes, even if resolve_entity did not find it) or {\"name\": ..., \"label\": ...}"
+          }
+        ],
+        "plan_problems": [],
+        "replies": [
+          {
+            "status": "ok",
+            "finish_reason": "tool_calls",
+            "calls": [
+              "find_schema",
+              "find_schema",
+              "find_schema"
+            ],
+            "text_chars": 0,
+            "repairs": []
+          },
+          {
+            "status": "ok",
+            "finish_reason": "tool_calls",
+            "calls": [
+              "describe",
+              "resolve_entity"
+            ],
+            "text_chars": 0,
+            "repairs": []
+          },
+          {
+            "status": "ok",
+            "finish_reason": "stop",
+            "calls": [],
+            "text_chars": 449,
+            "repairs": []
+          },
+          {
+            "status": "ok",
+            "finish_reason": "stop",
+            "calls": [],
+            "text_chars": 478,
+            "repairs": []
+          }
+        ],
+        "error": null,
+        "fallback": null,
+        "seconds": 85.527,
+        "n_catalog_calls": 4,
+        "fixed_by_coercion": false
+      }
+    ],
+    "seams": {
+      "planner_llm": true,
+      "drafter": "TypedDrafter",
+      "specialist_llm": false,
+      "synthesis_llm": false,
+      "generic_only": "true"
+    },
+    "wall_s": 85.605
+  },
+  "evidence_volume": {
+    "results": 0,
+    "records": 0,
+    "related": 0
+  }
+}

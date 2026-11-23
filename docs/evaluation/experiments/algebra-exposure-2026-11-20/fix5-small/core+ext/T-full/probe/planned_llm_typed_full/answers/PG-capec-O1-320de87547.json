@@ -1,0 +1,856 @@
+{
+  "id": "PG-capec-O1-320de87547",
+  "kind": "capec",
+  "tier": "algebra-probe",
+  "category": "PG-capec",
+  "question": "Of the attack patterns that are children of CAPEC-212 (Functionality Misuse), which have a typical severity other than 'Medium'?",
+  "gold": {
+    "assertions": {
+      "min_records": 0,
+      "must_include_ids": [],
+      "must_include_related": []
+    },
+    "ex_gold": {
+      "pool": "algebra",
+      "scheme": "capec",
+      "kind": "set",
+      "expected": [
+        "CAPEC-111",
+        "CAPEC-48",
+        "CAPEC-50",
+        "CAPEC-620",
+        "CAPEC-682"
+      ]
+    }
+  },
+  "answer": {
+    "headline": "Gathered 6 record(s) from 1 source(s).",
+    "narrative": "Found 1 CAPEC record(s): CAPEC-212. CAPEC-212 (Functionality Misuse): An adversary leverages a legitimate capability of an application in such a way as to achieve a negative technical impact. The system functionality is not altered or modified but used in a way that was not intended. This is often accomplished through the overuse of a specific functionality or by leveraging functionality with design flaws that enables the adversary to gain access to unauthorized, sensitive data. CAPEC-212 (Functionality Misuse) has Abstraction: Meta; Likelihood_Of_Attack: Medium; Status: Stable; Typical_Severity: Medium. CAPEC-212 (Functionality Misuse) has 6 ChildOf parents: CAPEC-682, CAPEC-48, CAPEC-111, CAPEC-50, CAPEC-620, CAPEC-2. Found 5 CAPEC record(s): CAPEC-111, CAPEC-48, CAPEC-50, CAPEC-620, CAPEC-682. 5 entities match.",
+    "composer": "deterministic",
+    "fallback_reason": null,
+    "claims": [
+      {
+        "text": "Found 1 CAPEC record(s): CAPEC-212.",
+        "kind": "fact",
+        "entity_ids": [
+          "CAPEC-212"
+        ],
+        "citations": [
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-212"
+          }
+        ]
+      },
+      {
+        "text": "CAPEC-212 (Functionality Misuse): An adversary leverages a legitimate capability of an application in such a way as to achieve a negative technical impact. The system functionality is not altered or modified but used in a way that was not intended. This is often accomplished through the overuse of a specific functionality or by leveraging functionality with design flaws that enables the adversary to gain access to unauthorized, sensitive data.",
+        "kind": "fact",
+        "entity_ids": [
+          "CAPEC-212"
+        ],
+        "citations": [
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-212"
+          }
+        ]
+      },
+      {
+        "text": "CAPEC-212 (Functionality Misuse) has Abstraction: Meta; Likelihood_Of_Attack: Medium; Status: Stable; Typical_Severity: Medium.",
+        "kind": "fact",
+        "entity_ids": [
+          "CAPEC-212"
+        ],
+        "citations": [
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-212"
+          }
+        ]
+      },
+      {
+        "text": "CAPEC-212 (Functionality Misuse) has 6 ChildOf parents: CAPEC-682, CAPEC-48, CAPEC-111, CAPEC-50, CAPEC-620, CAPEC-2.",
+        "kind": "enumeration",
+        "entity_ids": [
+          "CAPEC-682",
+          "CAPEC-48",
+          "CAPEC-111",
+          "CAPEC-50",
+          "CAPEC-620",
+          "CAPEC-2"
+        ],
+        "citations": [
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-212"
+          }
+        ]
+      },
+      {
+        "text": "Found 5 CAPEC record(s): CAPEC-111, CAPEC-48, CAPEC-50, CAPEC-620, CAPEC-682.",
+        "kind": "fact",
+        "entity_ids": [
+          "CAPEC-111",
+          "CAPEC-48",
+          "CAPEC-50",
+          "CAPEC-620",
+          "CAPEC-682"
+        ],
+        "citations": [
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-111"
+          },
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-48"
+          },
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-50"
+          },
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-620"
+          },
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-682"
+          }
+        ]
+      },
+      {
+        "text": "5 entities match.",
+        "kind": "fact",
+        "entity_ids": [
+          "CAPEC-111",
+          "CAPEC-48",
+          "CAPEC-50",
+          "CAPEC-620",
+          "CAPEC-682"
+        ],
+        "citations": [
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-111"
+          },
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-48"
+          },
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-50"
+          },
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-620"
+          },
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-682"
+          }
+        ]
+      }
+    ],
+    "abstentions": [],
+    "notes": []
+  },
+  "logic_flow": {
+    "task": {
+      "sub_question_id": "PG-capec-O1-320de87547",
+      "source": "capec",
+      "text": "Of the attack patterns that are children of CAPEC-212 (Functionality Misuse), which have a typical severity other than 'Medium'?",
+      "entities": [
+        "AttackPattern",
+        "AttackPattern"
+      ],
+      "limits": {
+        "max_traversal_depth": 3,
+        "max_result_rows": 20000,
+        "query_timeout_ms": 60000
+      },
+      "join_key": null,
+      "seed_ids": [
+        "CAPEC-212"
+      ],
+      "rationale": "algebra probe set (Era 2 Step 9 Phase G)"
+    },
+    "results": [
+      {
+        "source": "capec",
+        "sub_question_id": "q1",
+        "sub_question": "",
+        "query": "g.V().has(\"id\", within(ids)).as(\"ap\").union(__.in(\"CHILD_OF\").hasLabel(\"AttackPattern\")).as(\"nbr\").select(\"ap\",\"nbr\").by(elementMap()).limit(1000)",
+        "ok": true,
+        "partial": false,
+        "error": null,
+        "summary": "Found 1 CAPEC record(s): CAPEC-212.",
+        "traces": [
+          {
+            "step": "intake",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "source": "capec",
+              "card": "capec"
+            }
+          },
+          {
+            "step": "resolve",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "labels": [
+                "AttackPattern"
+              ],
+              "relationships": [
+                "ChildOf"
+              ],
+              "seed_ids": [
+                "CAPEC-212"
+              ],
+              "join_key": null
+            }
+          },
+          {
+            "step": "gate",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "attempt": 1,
+              "template": "typed_step",
+              "query": "g.V().has(\"id\", within(ids)).as(\"ap\").union(__.in(\"CHILD_OF\").hasLabel(\"AttackPattern\")).as(\"nbr\").select(\"ap\",\"nbr\").by(elementMap()).limit(1000)",
+              "injected": [],
+              "timing_ms": 5.375
+            }
+          },
+          {
+            "step": "execute",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "row_count": 6,
+              "timing_ms": 8.8,
+              "row_ceiling": 1000,
+              "truncated": false
+            }
+          },
+          {
+            "step": "assess",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "row_count": 6,
+              "timing_ms": 0.006
+            }
+          },
+          {
+            "step": "normalize",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "record_count": 1,
+              "timing_ms": 0.307
+            }
+          }
+        ],
+        "records": [
+          {
+            "primary_id": "CAPEC-212",
+            "name": "Functionality Misuse",
+            "label": "AttackPattern",
+            "description": "An adversary leverages a legitimate capability of an application in such a way as to achieve a negative technical impact. The system functionality is not altered or modified but used in a way that was not intended. This is often accomplished through the overuse of a specific functionality or by leveraging functionality with design flaws that enables the adversary to gain access to unauthorized, sensitive data.",
+            "properties": {
+              "Status": "Stable",
+              "Likelihood_Of_Attack": "Medium",
+              "Typical_Severity": "Medium",
+              "name": "Functionality Misuse",
+              "description": "An adversary leverages a legitimate capability of an application in such a way as to achieve a negative technical impact. The system functionality is not altered or modified but used in a way that was not intended. This is often accomplished through the overuse of a specific functionality or by leveraging functionality with design flaws that enables the adversary to gain access to unauthorized, sensitive data.",
+              "id": "capec:attack-pattern:212",
+              "Abstraction": "Meta"
+            },
+            "facets": [],
+            "join_values": [],
+            "related": [
+              {
+                "id": "CAPEC-682",
+                "name": "Exploitation of Firmware or ROM Code with Unpatchable Vulnerabilities",
+                "label": "AttackPattern",
+                "type": "CHILD_OF",
+                "Status": "Draft",
+                "Likelihood_Of_Attack": "Medium",
+                "Typical_Severity": "High",
+                "description": "An adversary may exploit vulnerable code (i.e., firmware or ROM) that is unpatchable. Unpatchable devices exist due to manufacturers intentionally or inadvertently designing devices incapable of updating their software. Additionally, with updatable devices, the manufacturer may decide not to support the device and stop making updates to their software.",
+                "Abstraction": "Standard"
+              },
+              {
+                "id": "CAPEC-48",
+                "name": "Passing Local Filenames to Functions That Expect a URL",
+                "label": "AttackPattern",
+                "type": "CHILD_OF",
+                "Status": "Draft",
+                "Likelihood_Of_Attack": "High",
+                "Typical_Severity": "High",
+                "description": "This attack relies on client side code to access local files and resources instead of URLs. When the client browser is expecting a URL string, but instead receives a request for a local file, that execution is likely to occur in the browser process space with the browser's authority to local files. The attacker can send the results of this request to the local files out to a site that they control. This attack may be used to steal sensitive authentication data (either local or remote), or to gain system profile information to launch further attacks.",
+                "Abstraction": "Standard"
+              },
+              {
+                "id": "CAPEC-111",
+                "name": "JSON Hijacking (aka JavaScript Hijacking)",
+                "label": "AttackPattern",
+                "type": "CHILD_OF",
+                "Status": "Draft",
+                "Likelihood_Of_Attack": "High",
+                "Typical_Severity": "High",
+                "description": "An attacker targets a system that uses JavaScript Object Notation (JSON) as a transport mechanism between the client and the server (common in Web 2.0 systems using AJAX) to steal possibly confidential information transmitted from the server back to the client inside the JSON object by taking advantage of the loophole in the browser's Same Origin Policy that does not prohibit JavaScript from one website to be included and executed in the context of another website.",
+                "Abstraction": "Standard"
+              },
+              {
+                "id": "CAPEC-50",
+                "name": "Password Recovery Exploitation",
+                "label": "AttackPattern",
+                "type": "CHILD_OF",
+                "Status": "Draft",
+                "Likelihood_Of_Attack": "Medium",
+                "Typical_Severity": "High",
+                "description": "An attacker may take advantage of the application feature to help users recover their forgotten passwords in order to gain access into the system with the same privileges as the original user. Generally password recovery schemes tend to be weak and insecure.",
+                "Abstraction": "Standard"
+              },
+              {
+                "id": "CAPEC-620",
+                "name": "Drop Encryption Level",
+                "label": "AttackPattern",
+                "type": "CHILD_OF",
+                "Status": "Draft",
+                "Typical_Severity": "High",
+                "description": "An attacker forces the encryption level to be lowered, thus enabling a successful attack against the encrypted data.",
+                "Abstraction": "Standard"
+              },
+              {
+                "id": "CAPEC-2",
+                "name": "Inducing Account Lockout",
+                "label": "AttackPattern",
+                "type": "CHILD_OF",
+                "Status": "Draft",
+                "Likelihood_Of_Attack": "High",
+                "Typical_Severity": "Medium",
+                "description": "An attacker leverages the security functionality of the system aimed at thwarting potential attacks to launch a denial of service attack against a legitimate system user. Many systems, for instance, implement a password throttling mechanism that locks an account after a certain number of incorrect log in attempts. An attacker can leverage this throttling mechanism to lock a legitimate user out of their own account. The weakness that is being leveraged by an attacker is the very security feature that has been put in place to counteract attacks.",
+                "Abstraction": "Standard"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "source": "capec",
+        "sub_question_id": "q2",
+        "sub_question": "",
+        "query": "g.V().has('id', within(p0)).hasLabel('AttackPattern').dedup().has('Typical_Severity', neq(p1)).order().by('id').fold().project('total', 'rows').by(__.count(local)).by(__.unfold().limit(1000).project('id', 'name').by('id').by(__.coalesce(__.values('name'), __.constant(null))).fold())",
+        "ok": true,
+        "partial": false,
+        "error": null,
+        "summary": "Found 5 CAPEC record(s): CAPEC-111, CAPEC-48, CAPEC-50, CAPEC-620, CAPEC-682.",
+        "traces": [
+          {
+            "step": "intake",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "source": "capec",
+              "card": "capec"
+            }
+          },
+          {
+            "step": "resolve",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "labels": [
+                "AttackPattern"
+              ],
+              "relationships": [],
+              "seed_ids": [
+                "CAPEC-111",
+                "CAPEC-2",
+                "CAPEC-212",
+                "CAPEC-48",
+                "CAPEC-50",
+                "CAPEC-620",
+                "CAPEC-682"
+              ],
+              "join_key": null
+            }
+          },
+          {
+            "step": "gate",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "attempt": 1,
+              "template": "algebra",
+              "query": "g.V().has('id', within(p0)).hasLabel('AttackPattern').dedup().has('Typical_Severity', neq(p1)).order().by('id').fold().project('total', 'rows').by(__.count(local)).by(__.unfold().limit(1000).project('id', 'name').by('id').by(__.coalesce(__.values('name'), __.constant(null))).fold())",
+              "injected": [],
+              "note": "compiled by the operator algebra (validated against the card; read-only by construction)",
+              "id_map": {
+                "CAPEC-111": [
+                  "capec:attack-pattern:111"
+                ],
+                "CAPEC-2": [
+                  "capec:attack-pattern:2"
+                ],
+                "CAPEC-212": [
+                  "capec:attack-pattern:212"
+                ],
+                "CAPEC-48": [
+                  "capec:attack-pattern:48"
+                ],
+                "CAPEC-50": [
+                  "capec:attack-pattern:50"
+                ],
+                "CAPEC-620": [
+                  "capec:attack-pattern:620"
+                ],
+                "CAPEC-682": [
+                  "capec:attack-pattern:682"
+                ]
+              }
+            }
+          },
+          {
+            "step": "execute",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "row_count": 5
+            }
+          },
+          {
+            "step": "algebra",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "result": {
+                "step": "q2",
+                "kind": "nodes",
+                "value": null,
+                "ids": [
+                  "CAPEC-111",
+                  "CAPEC-48",
+                  "CAPEC-50",
+                  "CAPEC-620",
+                  "CAPEC-682"
+                ],
+                "rows": [
+                  {
+                    "id": "CAPEC-111",
+                    "name": "JSON Hijacking (aka JavaScript Hijacking)"
+                  },
+                  {
+                    "id": "CAPEC-48",
+                    "name": "Passing Local Filenames to Functions That Expect a URL"
+                  },
+                  {
+                    "id": "CAPEC-50",
+                    "name": "Password Recovery Exploitation"
+                  },
+                  {
+                    "id": "CAPEC-620",
+                    "name": "Drop Encryption Level"
+                  },
+                  {
+                    "id": "CAPEC-682",
+                    "name": "Exploitation of Firmware or ROM Code with Unpatchable Vulnerabilities"
+                  }
+                ],
+                "total": 5,
+                "complete": true,
+                "info": {}
+              },
+              "op": "filter",
+              "ir": {
+                "@": "Nodes",
+                "of": {
+                  "@": "Where",
+                  "conds": [
+                    {
+                      "@": "Cond",
+                      "cmp": null,
+                      "op": "<>",
+                      "prop": "Typical_Severity",
+                      "value": "Medium"
+                    }
+                  ],
+                  "of": {
+                    "@": "FromStep",
+                    "labels": [
+                      "AttackPattern"
+                    ],
+                    "step": "q1"
+                  }
+                },
+                "props": []
+              }
+            }
+          }
+        ],
+        "records": [
+          {
+            "primary_id": "CAPEC-111",
+            "name": "JSON Hijacking (aka JavaScript Hijacking)",
+            "label": "AttackPattern",
+            "description": "",
+            "properties": {},
+            "facets": [],
+            "join_values": [],
+            "related": []
+          },
+          {
+            "primary_id": "CAPEC-48",
+            "name": "Passing Local Filenames to Functions That Expect a URL",
+            "label": "AttackPattern",
+            "description": "",
+            "properties": {},
+            "facets": [],
+            "join_values": [],
+            "related": []
+          },
+          {
+            "primary_id": "CAPEC-50",
+            "name": "Password Recovery Exploitation",
+            "label": "AttackPattern",
+            "description": "",
+            "properties": {},
+            "facets": [],
+            "join_values": [],
+            "related": []
+          },
+          {
+            "primary_id": "CAPEC-620",
+            "name": "Drop Encryption Level",
+            "label": "AttackPattern",
+            "description": "",
+            "properties": {},
+            "facets": [],
+            "join_values": [],
+            "related": []
+          },
+          {
+            "primary_id": "CAPEC-682",
+            "name": "Exploitation of Firmware or ROM Code with Unpatchable Vulnerabilities",
+            "label": "AttackPattern",
+            "description": "",
+            "properties": {},
+            "facets": [],
+            "join_values": [],
+            "related": []
+          }
+        ]
+      }
+    ]
+  },
+  "deterministic_scores": {
+    "correlation": null,
+    "mapping_recall": null,
+    "coverage": null,
+    "provenance": {
+      "citations": 14,
+      "compliant": 14,
+      "citation_provenance_rate": 1.0,
+      "abstention_proof_ok": true,
+      "fully_provenanced": true
+    },
+    "inspectability": {
+      "citation_coverage": 1.0,
+      "traceability": 1.0,
+      "abstention_proofs": 1.0,
+      "inspectability": 1.0
+    }
+  },
+  "arm": "planned_llm_typed_full",
+  "run_meta": {
+    "planner": "llm-typed-full",
+    "synthesis": "deterministic",
+    "use_llm": true,
+    "llm_synthesis": false,
+    "llm_specialist": false,
+    "rewrite": null,
+    "observed_plan": [
+      {
+        "sub_question_id": "q1",
+        "source": "capec",
+        "text": "",
+        "entities": [
+          "AttackPattern",
+          "ChildOf"
+        ],
+        "seed_ids": [
+          "CAPEC-212"
+        ],
+        "depends_on": null,
+        "limits": {
+          "max_traversal_depth": 3,
+          "max_result_rows": 1000,
+          "query_timeout_ms": 5000
+        },
+        "step": {
+          "kind": "expand",
+          "anchor_label": "AttackPattern",
+          "anchor_ids": [
+            "CAPEC-212"
+          ],
+          "hops": [
+            {
+              "relation": "ChildOf",
+              "direction": "in",
+              "target_label": "AttackPattern"
+            }
+          ],
+          "depth": 1
+        }
+      },
+      {
+        "sub_question_id": "q2",
+        "source": "capec",
+        "text": "",
+        "entities": [
+          "AttackPattern"
+        ],
+        "seed_ids": [],
+        "depends_on": null,
+        "limits": {
+          "max_traversal_depth": 3,
+          "max_result_rows": 1000,
+          "query_timeout_ms": 5000
+        },
+        "step": {
+          "kind": "algebra",
+          "anchor_label": "AttackPattern",
+          "anchor_ids": [],
+          "hops": [],
+          "depth": 1,
+          "algebra": {
+            "ir": {
+              "@": "Nodes",
+              "of": {
+                "@": "Where",
+                "conds": [
+                  {
+                    "@": "Cond",
+                    "cmp": null,
+                    "op": "<>",
+                    "prop": "Typical_Severity",
+                    "value": "Medium"
+                  }
+                ],
+                "of": {
+                  "@": "FromStep",
+                  "labels": [
+                    "AttackPattern"
+                  ],
+                  "step": "q1"
+                }
+              },
+              "props": []
+            },
+            "labels": [
+              "AttackPattern"
+            ],
+            "op": "filter"
+          },
+          "from_step": "q1"
+        }
+      }
+    ],
+    "exit_code": 0,
+    "status": "answered",
+    "timings": {
+      "plan_ms": 46628.694,
+      "specialists": [
+        {
+          "sub_question": "q1",
+          "source": "capec",
+          "ms": 15.676
+        },
+        {
+          "sub_question": "q2",
+          "source": "capec",
+          "ms": 26.655
+        }
+      ],
+      "synthesis_ms": 9.122,
+      "total_ms": 46740.103
+    },
+    "registry_model": "qwen38-27b",
+    "drafter_used": "TypedDrafter",
+    "typed": [
+      {
+        "mode": "full",
+        "served_model": "qwen38-27b/248046",
+        "model_calls": 5,
+        "catalog_calls": [
+          {
+            "name": "resolve_entity",
+            "args": {
+              "text": "CAPEC-212",
+              "label": "AttackPattern",
+              "graph": "capec"
+            },
+            "ok": true
+          },
+          {
+            "name": "describe",
+            "args": {
+              "target": "ChildOf",
+              "graph": "capec"
+            },
+            "ok": true
+          },
+          {
+            "name": "describe",
+            "args": {
+              "target": "CAPEC-212",
+              "graph": "capec"
+            },
+            "ok": false
+          },
+          {
+            "name": "resolve_entity",
+            "args": {
+              "text": "Functionality Misuse",
+              "label": "AttackPattern",
+              "graph": "capec"
+            },
+            "ok": true
+          }
+        ],
+        "prompt_tokens": 36762,
+        "completion_tokens": 2027,
+        "emitted": true,
+        "parse_error": null,
+        "first_steps": 2,
+        "first_refused": 0,
+        "first_fixes": 1,
+        "valid_first": true,
+        "valid_first_raw": false,
+        "repair_used": false,
+        "fixed_by_repair": false,
+        "still_refused": 0,
+        "final_steps": 2,
+        "coercions": [
+          {
+            "step": "q1",
+            "field": "anchor_label",
+            "from": null,
+            "to": "AttackPattern",
+            "filled_by": "id_scheme"
+          }
+        ],
+        "refusals": [],
+        "plan_problems": [],
+        "replies": [
+          {
+            "status": "ok",
+            "finish_reason": "tool_calls",
+            "calls": [
+              "resolve_entity"
+            ],
+            "text_chars": 0,
+            "repairs": []
+          },
+          {
+            "status": "ok",
+            "finish_reason": "tool_calls",
+            "calls": [
+              "describe"
+            ],
+            "text_chars": 0,
+            "repairs": []
+          },
+          {
+            "status": "ok",
+            "finish_reason": "tool_calls",
+            "calls": [
+              "describe"
+            ],
+            "text_chars": 0,
+            "repairs": []
+          },
+          {
+            "status": "ok",
+            "finish_reason": "tool_calls",
+            "calls": [
+              "resolve_entity"
+            ],
+            "text_chars": 206,
+            "repairs": []
+          },
+          {
+            "status": "ok",
+            "finish_reason": "stop",
+            "calls": [],
+            "text_chars": 536,
+            "repairs": []
+          }
+        ],
+        "error": null,
+        "fallback": null,
+        "seconds": 46.615,
+        "n_catalog_calls": 4,
+        "fixed_by_coercion": true
+      }
+    ],
+    "seams": {
+      "planner_llm": true,
+      "drafter": "TypedDrafter",
+      "specialist_llm": false,
+      "synthesis_llm": false,
+      "generic_only": "true"
+    },
+    "wall_s": 46.744,
+    "algebra_results": [
+      {
+        "step": "q2",
+        "kind": "nodes",
+        "value": null,
+        "ids": [
+          "CAPEC-111",
+          "CAPEC-48",
+          "CAPEC-50",
+          "CAPEC-620",
+          "CAPEC-682"
+        ],
+        "rows": [
+          {
+            "id": "CAPEC-111",
+            "name": "JSON Hijacking (aka JavaScript Hijacking)"
+          },
+          {
+            "id": "CAPEC-48",
+            "name": "Passing Local Filenames to Functions That Expect a URL"
+          },
+          {
+            "id": "CAPEC-50",
+            "name": "Password Recovery Exploitation"
+          },
+          {
+            "id": "CAPEC-620",
+            "name": "Drop Encryption Level"
+          },
+          {
+            "id": "CAPEC-682",
+            "name": "Exploitation of Firmware or ROM Code with Unpatchable Vulnerabilities"
+          }
+        ],
+        "total": 5,
+        "complete": true,
+        "info": {}
+      }
+    ]
+  },
+  "evidence_volume": {
+    "results": 2,
+    "records": 6,
+    "related": 6
+  }
+}

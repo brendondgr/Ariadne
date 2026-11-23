@@ -1,0 +1,632 @@
+{
+  "id": "PG-capec-O4-59240afc39",
+  "kind": "capec",
+  "tier": "algebra-probe",
+  "category": "PG-capec",
+  "question": "Is attack pattern CAPEC-27 (Leveraging Race Conditions via Symbolic Links) directly connected to weakness CWE-61 in CAPEC, and if it is, what is the nature of that connection?",
+  "gold": {
+    "assertions": {
+      "min_records": 0,
+      "must_include_ids": [],
+      "must_include_related": []
+    },
+    "ex_gold": {
+      "pool": "algebra",
+      "scheme": "capec",
+      "kind": "value",
+      "expected": [],
+      "value": true
+    }
+  },
+  "answer": {
+    "headline": "Gathered 1 record(s) from 1 source(s); 1 question(s) the sources don't establish.",
+    "narrative": "Found 1 CAPEC record(s): CAPEC-27. CAPEC-27 (Leveraging Race Conditions via Symbolic Links): This attack leverages the use of symbolic links (Symlinks) in order to write to sensitive files. An attacker can create a Symlink link to a target file not otherwise accessible to them. When the privileged program tries to create a temporary file with the same name as the Symlink link, it will actually write to the target file pointed to by the attackers' Symlink link. If the attacker can insert malicious content in the temporary file they will be writing to the sensitive file by using the Symlink. The race occurs because the system checks if the temporary file exists, then creates the file. CAPEC-27 (Leveraging Race Conditions via Symbolic Links) has Abstraction: Detailed; Likelihood_Of_Attack: Medium; Status: Draft; Typical_Severity: High. CAPEC-27 (Leveraging Race Conditions via Symbolic Links) has 5 exploited weaknesses: CWE-367, CWE-61, CWE-662, CWE-667, CWE-689. The capec source doesn't establish this — the executed query ran cleanly and returned no matching records for:",
+    "composer": "deterministic",
+    "fallback_reason": null,
+    "claims": [
+      {
+        "text": "Found 1 CAPEC record(s): CAPEC-27.",
+        "kind": "fact",
+        "entity_ids": [
+          "CAPEC-27"
+        ],
+        "citations": [
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-27"
+          }
+        ]
+      },
+      {
+        "text": "CAPEC-27 (Leveraging Race Conditions via Symbolic Links): This attack leverages the use of symbolic links (Symlinks) in order to write to sensitive files. An attacker can create a Symlink link to a target file not otherwise accessible to them. When the privileged program tries to create a temporary file with the same name as the Symlink link, it will actually write to the target file pointed to by the attackers' Symlink link. If the attacker can insert malicious content in the temporary file they will be writing to the sensitive file by using the Symlink. The race occurs because the system checks if the temporary file exists, then creates the file.",
+        "kind": "fact",
+        "entity_ids": [
+          "CAPEC-27"
+        ],
+        "citations": [
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-27"
+          }
+        ]
+      },
+      {
+        "text": "CAPEC-27 (Leveraging Race Conditions via Symbolic Links) has Abstraction: Detailed; Likelihood_Of_Attack: Medium; Status: Draft; Typical_Severity: High.",
+        "kind": "fact",
+        "entity_ids": [
+          "CAPEC-27"
+        ],
+        "citations": [
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-27"
+          }
+        ]
+      },
+      {
+        "text": "CAPEC-27 (Leveraging Race Conditions via Symbolic Links) has 5 exploited weaknesses: CWE-367, CWE-61, CWE-662, CWE-667, CWE-689.",
+        "kind": "enumeration",
+        "entity_ids": [
+          "CWE-367",
+          "CWE-61",
+          "CWE-662",
+          "CWE-667",
+          "CWE-689"
+        ],
+        "citations": [
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-27"
+          }
+        ]
+      }
+    ],
+    "abstentions": [
+      {
+        "source": "capec",
+        "statement": "The capec source doesn't establish this — the executed query ran cleanly and returned no matching records for: ",
+        "query": "g.V().has('id', within(p0)).hasLabel('Weakness').dedup().has('id', eq(p1)).order().by('id').fold().project('total', 'rows').by(__.count(local)).by(__.unfold().limit(1000).project('id', 'name').by('id').by(__.coalesce(__.values('name'), __.constant(null))).fold())"
+      }
+    ],
+    "notes": []
+  },
+  "logic_flow": {
+    "task": {
+      "sub_question_id": "PG-capec-O4-59240afc39",
+      "source": "capec",
+      "text": "Is attack pattern CAPEC-27 (Leveraging Race Conditions via Symbolic Links) directly connected to weakness CWE-61 in CAPEC, and if it is, what is the nature of that connection?",
+      "entities": [
+        "AttackPattern",
+        "EXPLOITS_WEAKNESS",
+        "Weakness"
+      ],
+      "limits": {
+        "max_traversal_depth": 3,
+        "max_result_rows": 20000,
+        "query_timeout_ms": 60000
+      },
+      "join_key": null,
+      "seed_ids": [
+        "CAPEC-27",
+        "CWE-61"
+      ],
+      "rationale": "algebra probe set (Era 2 Step 9 Phase G)"
+    },
+    "results": [
+      {
+        "source": "capec",
+        "sub_question_id": "q1",
+        "sub_question": "",
+        "query": "g.V().has(\"id\", within(ids)).as(\"ap\").union(__.out(\"EXPLOITS_WEAKNESS\").hasLabel(\"Weakness\")).as(\"nbr\").select(\"ap\",\"nbr\").by(elementMap()).limit(1000)",
+        "ok": true,
+        "partial": false,
+        "error": null,
+        "summary": "Found 1 CAPEC record(s): CAPEC-27.",
+        "traces": [
+          {
+            "step": "intake",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "source": "capec",
+              "card": "capec"
+            }
+          },
+          {
+            "step": "resolve",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "labels": [
+                "AttackPattern",
+                "Weakness"
+              ],
+              "relationships": [
+                "EXPLOITS_WEAKNESS"
+              ],
+              "seed_ids": [
+                "CAPEC-27"
+              ],
+              "join_key": null
+            }
+          },
+          {
+            "step": "gate",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "attempt": 1,
+              "template": "typed_step",
+              "query": "g.V().has(\"id\", within(ids)).as(\"ap\").union(__.out(\"EXPLOITS_WEAKNESS\").hasLabel(\"Weakness\")).as(\"nbr\").select(\"ap\",\"nbr\").by(elementMap()).limit(1000)",
+              "injected": [],
+              "timing_ms": 0.465
+            }
+          },
+          {
+            "step": "execute",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "row_count": 5,
+              "timing_ms": 8.4,
+              "row_ceiling": 1000,
+              "truncated": false
+            }
+          },
+          {
+            "step": "assess",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "row_count": 5,
+              "timing_ms": 0.009
+            }
+          },
+          {
+            "step": "normalize",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "record_count": 1,
+              "timing_ms": 0.124
+            }
+          }
+        ],
+        "records": [
+          {
+            "primary_id": "CAPEC-27",
+            "name": "Leveraging Race Conditions via Symbolic Links",
+            "label": "AttackPattern",
+            "description": "This attack leverages the use of symbolic links (Symlinks) in order to write to sensitive files. An attacker can create a Symlink link to a target file not otherwise accessible to them. When the privileged program tries to create a temporary file with the same name as the Symlink link, it will actually write to the target file pointed to by the attackers' Symlink link. If the attacker can insert malicious content in the temporary file they will be writing to the sensitive file by using the Symlink. The race occurs because the system checks if the temporary file exists, then creates the file. The attacker would typically create the Symlink during the interval between the check and the creation of the temporary file.",
+            "properties": {
+              "Status": "Draft",
+              "Likelihood_Of_Attack": "Medium",
+              "Typical_Severity": "High",
+              "name": "Leveraging Race Conditions via Symbolic Links",
+              "description": "This attack leverages the use of symbolic links (Symlinks) in order to write to sensitive files. An attacker can create a Symlink link to a target file not otherwise accessible to them. When the privileged program tries to create a temporary file with the same name as the Symlink link, it will actually write to the target file pointed to by the attackers' Symlink link. If the attacker can insert malicious content in the temporary file they will be writing to the sensitive file by using the Symlink. The race occurs because the system checks if the temporary file exists, then creates the file. The attacker would typically create the Symlink during the interval between the check and the creation of the temporary file.",
+              "id": "capec:attack-pattern:27",
+              "Abstraction": "Detailed"
+            },
+            "facets": [],
+            "join_values": [],
+            "related": [
+              {
+                "id": "CWE-367",
+                "name": "CWE-367",
+                "label": "Weakness",
+                "type": "EXPLOITS_WEAKNESS",
+                "cwe_id": "367"
+              },
+              {
+                "id": "CWE-61",
+                "name": "CWE-61",
+                "label": "Weakness",
+                "type": "EXPLOITS_WEAKNESS",
+                "cwe_id": "61"
+              },
+              {
+                "id": "CWE-662",
+                "name": "CWE-662",
+                "label": "Weakness",
+                "type": "EXPLOITS_WEAKNESS",
+                "cwe_id": "662"
+              },
+              {
+                "id": "CWE-667",
+                "name": "CWE-667",
+                "label": "Weakness",
+                "type": "EXPLOITS_WEAKNESS",
+                "cwe_id": "667"
+              },
+              {
+                "id": "CWE-689",
+                "name": "CWE-689",
+                "label": "Weakness",
+                "type": "EXPLOITS_WEAKNESS",
+                "cwe_id": "689"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "source": "capec",
+        "sub_question_id": "q2",
+        "sub_question": "",
+        "query": "g.V().has('id', within(p0)).hasLabel('Weakness').dedup().has('id', eq(p1)).order().by('id').fold().project('total', 'rows').by(__.count(local)).by(__.unfold().limit(1000).project('id', 'name').by('id').by(__.coalesce(__.values('name'), __.constant(null))).fold())",
+        "ok": true,
+        "partial": false,
+        "error": null,
+        "summary": "0 entities match.",
+        "traces": [
+          {
+            "step": "intake",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "source": "capec",
+              "card": "capec"
+            }
+          },
+          {
+            "step": "resolve",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "labels": [
+                "Weakness"
+              ],
+              "relationships": [],
+              "seed_ids": [
+                "CWE-367",
+                "CWE-61",
+                "CWE-662",
+                "CWE-667",
+                "CWE-689"
+              ],
+              "join_key": null
+            }
+          },
+          {
+            "step": "gate",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "attempt": 1,
+              "template": "algebra",
+              "query": "g.V().has('id', within(p0)).hasLabel('Weakness').dedup().has('id', eq(p1)).order().by('id').fold().project('total', 'rows').by(__.count(local)).by(__.unfold().limit(1000).project('id', 'name').by('id').by(__.coalesce(__.values('name'), __.constant(null))).fold())",
+              "injected": [],
+              "note": "compiled by the operator algebra (validated against the card; read-only by construction)",
+              "id_map": {
+                "CWE-367": [
+                  "cwe:367"
+                ],
+                "CWE-61": [
+                  "cwe:61"
+                ],
+                "CWE-662": [
+                  "cwe:662"
+                ],
+                "CWE-667": [
+                  "cwe:667"
+                ],
+                "CWE-689": [
+                  "cwe:689"
+                ]
+              }
+            }
+          },
+          {
+            "step": "execute",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "row_count": 0
+            }
+          },
+          {
+            "step": "algebra",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "result": {
+                "step": "q2",
+                "kind": "nodes",
+                "value": null,
+                "ids": [],
+                "rows": [],
+                "total": 0,
+                "complete": true,
+                "info": {}
+              },
+              "op": "filter",
+              "ir": {
+                "@": "Nodes",
+                "of": {
+                  "@": "Where",
+                  "conds": [
+                    {
+                      "@": "Cond",
+                      "cmp": null,
+                      "op": "=",
+                      "prop": "id",
+                      "value": "CWE-61"
+                    }
+                  ],
+                  "of": {
+                    "@": "FromStep",
+                    "labels": [
+                      "Weakness"
+                    ],
+                    "step": "q1"
+                  }
+                },
+                "props": []
+              }
+            }
+          }
+        ],
+        "records": []
+      }
+    ]
+  },
+  "deterministic_scores": {
+    "correlation": null,
+    "mapping_recall": null,
+    "coverage": null,
+    "provenance": {
+      "citations": 4,
+      "compliant": 4,
+      "citation_provenance_rate": 1.0,
+      "abstention_proof_ok": true,
+      "fully_provenanced": true
+    },
+    "inspectability": {
+      "citation_coverage": 1.0,
+      "traceability": 1.0,
+      "abstention_proofs": 1.0,
+      "inspectability": 1.0
+    }
+  },
+  "arm": "planned_llm_typed_lazy",
+  "run_meta": {
+    "planner": "llm-typed-lazy",
+    "synthesis": "deterministic",
+    "use_llm": true,
+    "llm_synthesis": false,
+    "llm_specialist": false,
+    "rewrite": null,
+    "observed_plan": [
+      {
+        "sub_question_id": "q1",
+        "source": "capec",
+        "text": "",
+        "entities": [
+          "AttackPattern",
+          "EXPLOITS_WEAKNESS",
+          "Weakness"
+        ],
+        "seed_ids": [
+          "CAPEC-27"
+        ],
+        "depends_on": null,
+        "limits": {
+          "max_traversal_depth": 3,
+          "max_result_rows": 1000,
+          "query_timeout_ms": 5000
+        },
+        "step": {
+          "kind": "expand",
+          "anchor_label": "AttackPattern",
+          "anchor_ids": [
+            "CAPEC-27"
+          ],
+          "hops": [
+            {
+              "relation": "EXPLOITS_WEAKNESS",
+              "direction": "out",
+              "target_label": "Weakness"
+            }
+          ],
+          "depth": 1
+        }
+      },
+      {
+        "sub_question_id": "q2",
+        "source": "capec",
+        "text": "",
+        "entities": [
+          "Weakness"
+        ],
+        "seed_ids": [],
+        "depends_on": null,
+        "limits": {
+          "max_traversal_depth": 3,
+          "max_result_rows": 1000,
+          "query_timeout_ms": 5000
+        },
+        "step": {
+          "kind": "algebra",
+          "anchor_label": "Weakness",
+          "anchor_ids": [],
+          "hops": [],
+          "depth": 1,
+          "algebra": {
+            "ir": {
+              "@": "Nodes",
+              "of": {
+                "@": "Where",
+                "conds": [
+                  {
+                    "@": "Cond",
+                    "cmp": null,
+                    "op": "=",
+                    "prop": "id",
+                    "value": "CWE-61"
+                  }
+                ],
+                "of": {
+                  "@": "FromStep",
+                  "labels": [
+                    "Weakness"
+                  ],
+                  "step": "q1"
+                }
+              },
+              "props": []
+            },
+            "labels": [
+              "Weakness"
+            ],
+            "op": "filter"
+          },
+          "from_step": "q1"
+        }
+      }
+    ],
+    "exit_code": 0,
+    "status": "answered",
+    "timings": {
+      "plan_ms": 120887.414,
+      "specialists": [
+        {
+          "sub_question": "q1",
+          "source": "capec",
+          "ms": 10.916
+        },
+        {
+          "sub_question": "q2",
+          "source": "capec",
+          "ms": 21.771
+        }
+      ],
+      "synthesis_ms": 8.777,
+      "total_ms": 120973.385
+    },
+    "registry_model": "gemma4-31b",
+    "drafter_used": "TypedDrafter",
+    "typed": [
+      {
+        "mode": "lazy",
+        "served_model": "gemma4-31b/106",
+        "model_calls": 3,
+        "catalog_calls": [
+          {
+            "name": "resolve_entity",
+            "args": {
+              "graph": "capec",
+              "label": "AttackPattern",
+              "text": "CAPEC-2"
+            },
+            "ok": true
+          },
+          {
+            "name": "resolve_entity",
+            "args": {
+              "graph": "capec",
+              "label": "Weakness",
+              "text": "CWE-61"
+            },
+            "ok": true
+          },
+          {
+            "name": "find_schema",
+            "args": {
+              "graph": "capec",
+              "text": "AttackPattern Weakness"
+            },
+            "ok": true
+          }
+        ],
+        "prompt_tokens": 9769,
+        "completion_tokens": 6311,
+        "emitted": true,
+        "parse_error": null,
+        "first_steps": 2,
+        "first_refused": 0,
+        "first_fixes": 1,
+        "valid_first": true,
+        "valid_first_raw": false,
+        "repair_used": false,
+        "fixed_by_repair": false,
+        "still_refused": 0,
+        "final_steps": 2,
+        "coercions": [
+          {
+            "step": "q1",
+            "field": "anchor_label",
+            "from": null,
+            "to": "AttackPattern",
+            "filled_by": "id_scheme"
+          }
+        ],
+        "refusals": [],
+        "plan_problems": [],
+        "replies": [
+          {
+            "status": "ok",
+            "finish_reason": "tool_calls",
+            "calls": [
+              "resolve_entity",
+              "resolve_entity"
+            ],
+            "text_chars": 0,
+            "repairs": [
+              {
+                "kind": "args_closed_truncated",
+                "detail": "61 chars",
+                "call_id": "chatcmpl-tool-ada1a8e2069b26d6"
+              }
+            ]
+          },
+          {
+            "status": "ok",
+            "finish_reason": "tool_calls",
+            "calls": [
+              "find_schema"
+            ],
+            "text_chars": 0,
+            "repairs": []
+          },
+          {
+            "status": "ok",
+            "finish_reason": "stop",
+            "calls": [],
+            "text_chars": 683,
+            "repairs": []
+          }
+        ],
+        "error": null,
+        "fallback": null,
+        "seconds": 120.874,
+        "n_catalog_calls": 3,
+        "fixed_by_coercion": true
+      }
+    ],
+    "seams": {
+      "planner_llm": true,
+      "drafter": "TypedDrafter",
+      "specialist_llm": false,
+      "synthesis_llm": false,
+      "generic_only": "true"
+    },
+    "wall_s": 120.977,
+    "algebra_results": [
+      {
+        "step": "q2",
+        "kind": "nodes",
+        "value": null,
+        "ids": [],
+        "rows": [],
+        "total": 0,
+        "complete": true,
+        "info": {}
+      }
+    ]
+  },
+  "evidence_volume": {
+    "results": 2,
+    "records": 1,
+    "related": 5
+  }
+}

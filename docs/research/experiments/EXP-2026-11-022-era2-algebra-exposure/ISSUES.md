@@ -75,3 +75,36 @@ an entity, where Gemma reaches for a scan.
 **Resolution:** fix round 5 (PROTOCOL Amendment 4), the first of the two Amendment 2 allows.
 **Paper implication:** a teaching refusal costs an answer when it lands on the last turn; any
 refuse-and-teach guard needs a last-turn policy.
+
+## 2026-11-23 — The fix-5 proving set fails Amendment 4's bar on two counts
+**Impact:** the Stage 3 chain was not started on the fix-5 tree (18702758). Scores: `fix5-small/score.json`.
+- **Teaching refusal final: 1** (Gemma core, C-CWE-02 T4). The repair reply ran away and came back
+  empty (`parse_error: empty model response`). The planner then keeps the first plan, and so
+  the first turn's empty-text-scan refusal became final. Fix 5 checked only a repair turn that
+  returned a plan.
+- **Controls lost to an operator step, on arms that lost none in the fix-4 set: 2.**
+  - **T-lazy core, F-CTM-04 T0.** The model unions Technique and SubTechnique, then expands
+    mitigations `from_step` the union with `anchor_label` Technique. The `algebra_producer`
+    coercion narrowed the start to Technique, so every sub-technique was dropped (Jaccard 0.4).
+  - **T-lazy core+ext, dev control D5-mitigates-x_mitre_platforms-M1042.** The model filtered
+    `x_mitre_domains contains 'SaaS'` where it meant `x_mitre_platforms`. That is a choice of
+    property, not an operator defect. Off-A lost the same item with no operator, and so did the
+    first core sitting. 0 of the 105 filter conditions in the variant runs (core sitting 2 and
+    fix-5) use a value absent from their own property, so no guard was written for it.
+- **Probe tune exact:** within 5 of fix-4 on every arm (largest gap 3). This clause passes.
+- **Recovered core-sitting losses:** core 7/32, 6/20, 23/40; core+ext 12/32, 11/20, 16/40
+  (T-lazy, T-full, Gemma).
+
+**Cause, by a sweep of every operator loss vs off-A in the set:** besides the two refusal cases, the
+main operator loss is one shape: a step whose start is narrower than today's step would be.
+- **A cross-graph `from_step`** compiles to `FromStep(q, [named label])`, which matches
+  `(v:Technique)`. Today's cross-graph step matches its seed ids with no label
+  (`MATCH (n) WHERE coalesce(n.attack_id, n.id) IN $ids`), and the join key declares that
+  Technique *and* SubTechnique carry the key. Examples: F-FAN-02/03 T0–T1 (T-full, both
+  configurations) and F-CTM-06.
+- **A step from an operator step that holds several labels** is narrowed to its one
+  `anchor_label`. Across every sitting, 11 such narrowings exist; 10 lost their item.
+
+**Resolution:** fix round 6 (PROTOCOL Amendment 5), the last that Amendment 2 allows.
+**Paper implication:** an operator IR that types its seeds must not be stricter than the
+untyped path it replaces. A label filter the old path never applied silently drops rows.

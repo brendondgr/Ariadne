@@ -1,0 +1,401 @@
+{
+  "id": "D0-Category-CanAlsoBe-CAPEC-223-85585c::indirect",
+  "kind": "capec",
+  "tier": "adversarial",
+  "category": "D0-Category",
+  "question": "Which CAPEC attack patterns can CAPEC-223, Employ Probabilistic Techniques, also be carried out as?",
+  "gold": {
+    "assertions": {
+      "min_records": 0,
+      "must_include_ids": [
+        "CAPEC-223"
+      ],
+      "must_include_related": []
+    },
+    "ex_gold": {
+      "pool": "neighbors",
+      "expected": [],
+      "scheme": "capec",
+      "kind": "set"
+    }
+  },
+  "answer": {
+    "headline": "Gathered 1 record(s) from 1 source(s).",
+    "narrative": "Found 1 CAPEC record(s): CAPEC-223. CAPEC-223 (Employ Probabilistic Techniques) has Status: Stable. CAPEC-223 (Employ Probabilistic Techniques) has 2 attack patterns: CAPEC-112, CAPEC-28.",
+    "composer": "deterministic",
+    "fallback_reason": null,
+    "claims": [
+      {
+        "text": "Found 1 CAPEC record(s): CAPEC-223.",
+        "kind": "fact",
+        "entity_ids": [
+          "CAPEC-223"
+        ],
+        "citations": [
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-223"
+          }
+        ]
+      },
+      {
+        "text": "CAPEC-223 (Employ Probabilistic Techniques) has Status: Stable.",
+        "kind": "fact",
+        "entity_ids": [
+          "CAPEC-223"
+        ],
+        "citations": [
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-223"
+          }
+        ]
+      },
+      {
+        "text": "CAPEC-223 (Employ Probabilistic Techniques) has 2 attack patterns: CAPEC-112, CAPEC-28.",
+        "kind": "enumeration",
+        "entity_ids": [
+          "CAPEC-112",
+          "CAPEC-28"
+        ],
+        "citations": [
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-223"
+          }
+        ]
+      }
+    ],
+    "abstentions": [],
+    "notes": []
+  },
+  "logic_flow": {
+    "task": {
+      "sub_question_id": "q1",
+      "source": "capec",
+      "text": "Which CAPEC attack patterns can CAPEC-223, Employ Probabilistic Techniques, also be carried out as?",
+      "entities": [
+        "Category",
+        "CanAlsoBe",
+        "AttackPattern"
+      ],
+      "limits": {
+        "max_traversal_depth": 3,
+        "max_result_rows": 20000,
+        "query_timeout_ms": 5000
+      },
+      "join_key": null,
+      "seed_ids": [
+        "CAPEC-223"
+      ],
+      "rationale": "generated from the schema census"
+    },
+    "results": [
+      {
+        "source": "capec",
+        "sub_question_id": "q1",
+        "sub_question": "",
+        "query": "g.V().has(\"id\", within(ids)).as(\"ap\").union(__.in(\"MEMBER_OF\").hasLabel(\"AttackPattern\")).as(\"nbr\").select(\"ap\",\"nbr\").by(elementMap()).limit(1000)",
+        "ok": true,
+        "partial": false,
+        "error": null,
+        "summary": "Found 1 CAPEC record(s): CAPEC-223.",
+        "traces": [
+          {
+            "step": "intake",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "source": "capec",
+              "card": "capec"
+            }
+          },
+          {
+            "step": "resolve",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "labels": [
+                "Category",
+                "AttackPattern"
+              ],
+              "relationships": [
+                "MEMBER_OF"
+              ],
+              "seed_ids": [
+                "CAPEC-223"
+              ],
+              "join_key": null
+            }
+          },
+          {
+            "step": "gate",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "attempt": 1,
+              "template": "typed_step",
+              "query": "g.V().has(\"id\", within(ids)).as(\"ap\").union(__.in(\"MEMBER_OF\").hasLabel(\"AttackPattern\")).as(\"nbr\").select(\"ap\",\"nbr\").by(elementMap()).limit(1000)",
+              "injected": [],
+              "timing_ms": 0.44
+            }
+          },
+          {
+            "step": "execute",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "row_count": 2,
+              "timing_ms": 8.5,
+              "row_ceiling": 1000,
+              "truncated": false
+            }
+          },
+          {
+            "step": "assess",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "row_count": 2,
+              "timing_ms": 0.01
+            }
+          },
+          {
+            "step": "normalize",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "record_count": 1,
+              "timing_ms": 0.122
+            }
+          }
+        ],
+        "records": [
+          {
+            "primary_id": "CAPEC-223",
+            "name": "Employ Probabilistic Techniques",
+            "label": "Category",
+            "description": "",
+            "properties": {
+              "Status": "Stable",
+              "summary": "An attacker utilizes probabilistic techniques to explore and overcome security properties of the target that are based on an assumption of strength due to the extremely low mathematical probability that an attacker would be able to identify and exploit the very rare specific conditions under which those security properties do not hold.",
+              "name": "Employ Probabilistic Techniques",
+              "id": "capec:category:223"
+            },
+            "facets": [],
+            "join_values": [],
+            "related": [
+              {
+                "id": "CAPEC-112",
+                "name": "Brute Force",
+                "label": "AttackPattern",
+                "type": "MEMBER_OF",
+                "Status": "Draft",
+                "Typical_Severity": "High",
+                "description": "In this attack, some asset (information, functionality, identity, etc.) is protected by a finite secret value. The attacker attempts to gain access to this asset by using trial-and-error to exhaustively explore all the possible secret values in the hope of finding the secret (or a value that is functionally equivalent) that will unlock the asset.",
+                "Abstraction": "Meta"
+              },
+              {
+                "id": "CAPEC-28",
+                "name": "Fuzzing",
+                "label": "AttackPattern",
+                "type": "MEMBER_OF",
+                "Status": "Draft",
+                "Likelihood_Of_Attack": "High",
+                "Typical_Severity": "Medium",
+                "description": "In this attack pattern, the adversary leverages fuzzing to try to identify weaknesses in the system. Fuzzing is a software security and functionality testing method that feeds randomly constructed input to the system and looks for an indication that a failure in response to that input has occurred. Fuzzing treats the system as a black box and is totally free from any preconceptions or assumptions about the system. Fuzzing can help an attacker discover certain assumptions made about user input in the system. Fuzzing gives an attacker a quick way of potentially uncovering some of these assumptions despite not necessarily knowing anything about the internals of the system. These assumptions can then be turned against the system by specially crafting user input that may allow an attacker to achieve their goals.",
+                "Abstraction": "Meta"
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "deterministic_scores": {
+    "correlation": null,
+    "mapping_recall": null,
+    "coverage": {
+      "gold": 1,
+      "found": 1,
+      "coverage": 1.0,
+      "missing": []
+    },
+    "provenance": {
+      "citations": 3,
+      "compliant": 3,
+      "citation_provenance_rate": 1.0,
+      "abstention_proof_ok": true,
+      "fully_provenanced": true
+    },
+    "inspectability": {
+      "citation_coverage": 1.0,
+      "traceability": 1.0,
+      "abstention_proofs": 1.0,
+      "inspectability": 1.0
+    }
+  },
+  "arm": "planned_llm_typed_lazy",
+  "run_meta": {
+    "planner": "llm-typed-lazy",
+    "synthesis": "deterministic",
+    "use_llm": true,
+    "llm_synthesis": false,
+    "llm_specialist": false,
+    "rewrite": null,
+    "observed_plan": [
+      {
+        "sub_question_id": "q1",
+        "source": "capec",
+        "text": "",
+        "entities": [
+          "Category",
+          "MEMBER_OF",
+          "AttackPattern"
+        ],
+        "seed_ids": [
+          "CAPEC-223"
+        ],
+        "depends_on": null,
+        "limits": {
+          "max_traversal_depth": 3,
+          "max_result_rows": 1000,
+          "query_timeout_ms": 5000
+        },
+        "step": {
+          "kind": "expand",
+          "anchor_label": "Category",
+          "anchor_ids": [
+            "CAPEC-223"
+          ],
+          "hops": [
+            {
+              "relation": "MEMBER_OF",
+              "direction": "in",
+              "target_label": "AttackPattern"
+            }
+          ],
+          "depth": 1
+        }
+      }
+    ],
+    "exit_code": 0,
+    "status": "answered",
+    "timings": {
+      "plan_ms": 45853.258,
+      "specialists": [
+        {
+          "sub_question": "q1",
+          "source": "capec",
+          "ms": 10.239
+        }
+      ],
+      "synthesis_ms": 8.388,
+      "total_ms": 45917.391
+    },
+    "registry_model": "gemma4-31b",
+    "drafter_used": "TypedDrafter",
+    "typed": [
+      {
+        "mode": "lazy",
+        "served_model": "gemma4-31b/106",
+        "model_calls": 4,
+        "catalog_calls": [
+          {
+            "name": "describe",
+            "args": {
+              "graph": "capec",
+              "target": "CanAlsoBe"
+            },
+            "ok": true
+          },
+          {
+            "name": "resolve_entity",
+            "args": {
+              "graph": "capec",
+              "label": "AttackPattern",
+              "text": "CAPEC-223, Employ Probabilistic Techniques"
+            },
+            "ok": true
+          }
+        ],
+        "prompt_tokens": 13025,
+        "completion_tokens": 2628,
+        "emitted": true,
+        "parse_error": null,
+        "first_steps": 1,
+        "first_refused": 1,
+        "first_fixes": 1,
+        "valid_first": false,
+        "valid_first_raw": false,
+        "repair_used": true,
+        "fixed_by_repair": true,
+        "still_refused": 0,
+        "final_steps": 1,
+        "coercions": [],
+        "refusals": [
+          {
+            "step": "q1",
+            "final": false,
+            "code": "invalid_request",
+            "detail": "step q1, hop 1: Category has no CanAlsoBe relation",
+            "fix": "choose a relation Category has from: HAS_REFERENCE out -> ExternalReference (the external reference that this category has reference), IN_VIEW out -> View (the views this category appears in), MEMBER_OF in -> AttackPattern (the attack patterns that are members of this category)"
+          }
+        ],
+        "plan_problems": [],
+        "replies": [
+          {
+            "status": "ok",
+            "finish_reason": "tool_calls",
+            "calls": [
+              "describe"
+            ],
+            "text_chars": 0,
+            "repairs": []
+          },
+          {
+            "status": "ok",
+            "finish_reason": "tool_calls",
+            "calls": [
+              "resolve_entity"
+            ],
+            "text_chars": 0,
+            "repairs": []
+          },
+          {
+            "status": "ok",
+            "finish_reason": "stop",
+            "calls": [],
+            "text_chars": 265,
+            "repairs": []
+          },
+          {
+            "status": "ok",
+            "finish_reason": "stop",
+            "calls": [],
+            "text_chars": 428,
+            "repairs": []
+          }
+        ],
+        "error": null,
+        "fallback": null,
+        "seconds": 45.84,
+        "n_catalog_calls": 2,
+        "fixed_by_coercion": false
+      }
+    ],
+    "seams": {
+      "planner_llm": true,
+      "drafter": "TypedDrafter",
+      "specialist_llm": false,
+      "synthesis_llm": false,
+      "generic_only": "true"
+    },
+    "wall_s": 45.92
+  },
+  "evidence_volume": {
+    "results": 1,
+    "records": 1,
+    "related": 2
+  }
+}

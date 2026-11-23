@@ -1,0 +1,584 @@
+{
+  "id": "D6-MAPS_TO[ATTACK]-subtechnique-of-CAPEC-560-e943a6::indirect",
+  "kind": "federated",
+  "tier": "hard",
+  "category": "D6-MAPS_TO[ATTACK]",
+  "question": "Which ATT&CK techniques does Use of Known Domain Credentials (CAPEC-560) correspond to, and what sub-techniques sit under each of those?",
+  "gold": {
+    "assertions": {
+      "min_records": 1,
+      "must_include_ids": [
+        "CAPEC-560"
+      ],
+      "must_include_related": [
+        "T1078.001",
+        "T1078.002",
+        "T1078.003",
+        "T1078.004"
+      ]
+    },
+    "ex_gold": {
+      "pool": "join",
+      "expected": [
+        "T1078.001",
+        "T1078.002",
+        "T1078.003",
+        "T1078.004"
+      ],
+      "scheme": "attack",
+      "kind": "set"
+    },
+    "sources": [
+      "attack",
+      "capec"
+    ],
+    "hops": 2
+  },
+  "answer": {
+    "headline": "Gathered 2 record(s) from 2 source(s); 1 cross-source correlation(s) on shared identifiers.",
+    "narrative": "Found 1 CAPEC record(s) for CAPEC-560; ATT&CK mappings: T1078. CAPEC-560 (Use of Known Domain Credentials): An adversary guesses or obtains (i.e. steals or purchases) legitimate credentials (e.g. userID/password) to achieve authentication and to perform authorized actions under the guise of an authenticated user or service. CAPEC-560 (Use of Known Domain Credentials) has Abstraction: Meta; Likelihood_Of_Attack: High; Status: Stable; Typical_Severity: High. CAPEC-560 (Use of Known Domain Credentials) has 1 ATT&CK mapping: T1078. Found 4 item(s) related to T1078 (e.g. T1078.001, T1078.002, T1078.004) in MITRE ATT&CK. T1078 (Valid Accounts) has 4 sub-techniques: T1078.001, T1078.002, T1078.004, T1078.003. 1 identifier are corroborated across both CAPEC and ATT&CK (T1078).",
+    "composer": "deterministic",
+    "fallback_reason": null,
+    "claims": [
+      {
+        "text": "Found 1 CAPEC record(s) for CAPEC-560; ATT&CK mappings: T1078.",
+        "kind": "fact",
+        "entity_ids": [
+          "CAPEC-560"
+        ],
+        "citations": [
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-560"
+          }
+        ]
+      },
+      {
+        "text": "CAPEC-560 (Use of Known Domain Credentials): An adversary guesses or obtains (i.e. steals or purchases) legitimate credentials (e.g. userID/password) to achieve authentication and to perform authorized actions under the guise of an authenticated user or service.",
+        "kind": "fact",
+        "entity_ids": [
+          "CAPEC-560"
+        ],
+        "citations": [
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-560"
+          }
+        ]
+      },
+      {
+        "text": "CAPEC-560 (Use of Known Domain Credentials) has Abstraction: Meta; Likelihood_Of_Attack: High; Status: Stable; Typical_Severity: High.",
+        "kind": "fact",
+        "entity_ids": [
+          "CAPEC-560"
+        ],
+        "citations": [
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-560"
+          }
+        ]
+      },
+      {
+        "text": "CAPEC-560 (Use of Known Domain Credentials) has 1 ATT&CK mapping: T1078.",
+        "kind": "enumeration",
+        "entity_ids": [
+          "T1078"
+        ],
+        "citations": [
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-560"
+          }
+        ]
+      },
+      {
+        "text": "Found 4 item(s) related to T1078 (e.g. T1078.001, T1078.002, T1078.004) in MITRE ATT&CK.",
+        "kind": "fact",
+        "entity_ids": [
+          "T1078"
+        ],
+        "citations": [
+          {
+            "source": "attack",
+            "primary_id": "T1078"
+          }
+        ]
+      },
+      {
+        "text": "T1078 (Valid Accounts) has 4 sub-techniques: T1078.001, T1078.002, T1078.004, T1078.003.",
+        "kind": "enumeration",
+        "entity_ids": [
+          "T1078.001",
+          "T1078.002",
+          "T1078.004",
+          "T1078.003"
+        ],
+        "citations": [
+          {
+            "source": "attack",
+            "primary_id": "T1078"
+          }
+        ]
+      },
+      {
+        "text": "The identifier T1078 is corroborated across attack and capec (2 record(s) share it).",
+        "kind": "correlation",
+        "entity_ids": [
+          "T1078"
+        ],
+        "citations": [
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-560"
+          },
+          {
+            "source": "attack",
+            "primary_id": "T1078"
+          }
+        ]
+      }
+    ],
+    "abstentions": [],
+    "notes": []
+  },
+  "logic_flow": {
+    "plan": [
+      {
+        "sub_question_id": null,
+        "source": "capec",
+        "text": "For CAPEC-560: the ATT&CK techniques it corresponds to.",
+        "seed_from": null
+      },
+      {
+        "sub_question_id": null,
+        "source": "attack",
+        "text": "For each of those: the ATT&CK techniques that are sub-techniques of each of those.",
+        "seed_from": null
+      }
+    ],
+    "sequenced": true,
+    "partial_mode": null,
+    "results": [
+      {
+        "source": "capec",
+        "sub_question_id": "q1",
+        "sub_question": "",
+        "query": "g.V().has(\"id\", within(ids)).project(\"ap\",\"tax\").by(elementMap()).by(__.out(\"MAPS_TO\").hasLabel(\"TaxonomyEntry\").elementMap().fold()).limit(1000)",
+        "ok": true,
+        "partial": false,
+        "error": null,
+        "summary": "Found 1 CAPEC record(s) for CAPEC-560; ATT&CK mappings: T1078.",
+        "traces": [
+          {
+            "step": "intake",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "source": "capec",
+              "card": "capec"
+            }
+          },
+          {
+            "step": "resolve",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "labels": [
+                "AttackPattern",
+                "TaxonomyEntry"
+              ],
+              "relationships": [
+                "MAPS_TO"
+              ],
+              "seed_ids": [
+                "CAPEC-560"
+              ],
+              "join_key": "attack-technique-id"
+            }
+          },
+          {
+            "step": "gate",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "attempt": 1,
+              "template": "generic_bridge",
+              "query": "g.V().has(\"id\", within(ids)).project(\"ap\",\"tax\").by(elementMap()).by(__.out(\"MAPS_TO\").hasLabel(\"TaxonomyEntry\").elementMap().fold()).limit(1000)",
+              "injected": [],
+              "timing_ms": 0.486
+            }
+          },
+          {
+            "step": "execute",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "row_count": 1,
+              "timing_ms": 7.8,
+              "row_ceiling": 1000,
+              "truncated": false
+            }
+          },
+          {
+            "step": "assess",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "row_count": 1,
+              "timing_ms": 0.007
+            }
+          },
+          {
+            "step": "normalize",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "record_count": 1,
+              "timing_ms": 0.059
+            }
+          }
+        ],
+        "records": [
+          {
+            "primary_id": "CAPEC-560",
+            "name": "Use of Known Domain Credentials",
+            "label": "AttackPattern",
+            "description": "An adversary guesses or obtains (i.e. steals or purchases) legitimate credentials (e.g. userID/password) to achieve authentication and to perform authorized actions under the guise of an authenticated user or service.",
+            "properties": {
+              "Status": "Stable",
+              "Likelihood_Of_Attack": "High",
+              "Typical_Severity": "High",
+              "name": "Use of Known Domain Credentials",
+              "description": "An adversary guesses or obtains (i.e. steals or purchases) legitimate credentials (e.g. userID/password) to achieve authentication and to perform authorized actions under the guise of an authenticated user or service.",
+              "id": "capec:attack-pattern:560",
+              "Abstraction": "Meta"
+            },
+            "facets": [],
+            "join_values": [
+              "T1078"
+            ],
+            "related": [
+              {
+                "id": "T1078",
+                "name": "Valid Accounts",
+                "label": "TaxonomyEntry",
+                "type": "MAPS_TO",
+                "entry_id": "1078",
+                "taxonomy_name": "ATTACK"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "source": "attack",
+        "sub_question_id": "q2",
+        "sub_question": "",
+        "query": "MATCH (n) WHERE coalesce(n.attack_id, n.id) IN $ids OPTIONAL MATCH (n)-[:HAS_SUBTECHNIQUE]->(t0:SubTechnique) WITH n, collect(DISTINCT {m: t0, r: 'HAS_SUBTECHNIQUE'}) AS k0 WITH n, [x IN k0 WHERE x.m IS NOT NULL] AS hops UNWIND (CASE WHEN size(hops) = 0 THEN [{m: null, r: null}] ELSE hops END) AS hop RETURN coalesce(n.attack_id, n.id) AS anchor_id, n.name AS anchor_name, labels(n)[0] AS anchor_label, coalesce(hop.m.attack_id, hop.m.id) AS neighbour_id, hop.m.name AS neighbour_name, labels(hop.m)[0] AS neighbour_label, hop.r AS rel_type LIMIT 1000",
+        "ok": true,
+        "partial": false,
+        "error": null,
+        "summary": "Found 4 item(s) related to T1078 (e.g. T1078.001, T1078.002, T1078.004) in MITRE ATT&CK.",
+        "traces": [
+          {
+            "step": "intake",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "source": "attack",
+              "card": "attack"
+            }
+          },
+          {
+            "step": "resolve",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "labels": [
+                "Technique",
+                "SubTechnique"
+              ],
+              "relationships": [
+                "HAS_SUBTECHNIQUE"
+              ],
+              "seed_ids": [
+                "T1078"
+              ],
+              "join_key": "attack-technique-id"
+            }
+          },
+          {
+            "step": "gate",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "attempt": 1,
+              "template": "typed_step",
+              "query": "MATCH (n) WHERE coalesce(n.attack_id, n.id) IN $ids OPTIONAL MATCH (n)-[:HAS_SUBTECHNIQUE]->(t0:SubTechnique) WITH n, collect(DISTINCT {m: t0, r: 'HAS_SUBTECHNIQUE'}) AS k0 WITH n, [x IN k0 WHERE x.m IS NOT NULL] AS hops UNWIND (CASE WHEN size(hops) = 0 THEN [{m: null, r: null}] ELSE hops END) AS hop RETURN coalesce(n.attack_id, n.id) AS anchor_id, n.name AS anchor_name, labels(n)[0] AS anchor_label, coalesce(hop.m.attack_id, hop.m.id) AS neighbour_id, hop.m.name AS neighbour_name, labels(hop.m)[0] AS neighbour_label, hop.r AS rel_type LIMIT 1000",
+              "injected": [
+                "LIMIT 1000 appended (none present)"
+              ],
+              "timing_ms": 0.245
+            }
+          },
+          {
+            "step": "execute",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "row_count": 4,
+              "timing_ms": 5.3,
+              "row_ceiling": 1000,
+              "truncated": false
+            }
+          },
+          {
+            "step": "assess",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "row_count": 4,
+              "timing_ms": 0.034
+            }
+          },
+          {
+            "step": "normalize",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "record_count": 1,
+              "timing_ms": 2.276
+            }
+          }
+        ],
+        "records": [
+          {
+            "primary_id": "T1078",
+            "name": "Valid Accounts",
+            "label": "Technique",
+            "description": "",
+            "properties": {},
+            "facets": [],
+            "join_values": [
+              "T1078"
+            ],
+            "related": [
+              {
+                "id": "T1078.001",
+                "name": "Default Accounts",
+                "label": "SubTechnique",
+                "type": "HAS_SUBTECHNIQUE",
+                "description": "Adversaries may obtain and abuse credentials of a default account as a means of gaining Initial Access, Persistence, Privilege Escalation, or Defense Evasion. Default accounts are those that are built-into an OS, such as the Guest or Administrator accounts on Windows systems. Default accounts also include default factory/provider set accounts on other types of systems, software, or devices, including the root user account in AWS, the root user account in ESXi, and the default service account in Kubernetes.(Citation: Microsoft Local Accounts Feb 2019)(Citation: AWS Root User)(Citation: Threat Matrix for Kubernetes)\n\nDefault accounts are not limited to client machines; rather, they also include accounts that are preset for equipment such as network devices and computer applications, whether they are internal, open source, or commercial. Appliances that come preset with a username and password combination pose a serious threat to organizations that do not change it post installation, as they are easy targets for an adversary. Similarly, adversaries may also utilize publicly disclosed or stolen [Private Keys](https://attack.mitre.org/techniques/T1552/004) or credential materials to legitimately connect to remote environments via [Remote Services](https://attack.mitre.org/techniques/T1021).(Citation: Metasploit SSH Module)\n\nDefault accounts may be created on a system after initial setup by connecting or integrating it with another application. For example, when an ESXi server is connected to a vCenter server, a default privileged account called `vpxuser` is created on the ESXi server. If a threat actor is able to compromise this account’s credentials (for example, via [Exploitation for Credential Access](https://attack.mitre.org/techniques/T1212) on the vCenter host), they will then have access to the ESXi server.(Citation: Google Cloud Threat Intelligence VMWare ESXi Zero-Day 2023)(Citation: Pentera vCenter Information Disclosure)"
+              },
+              {
+                "id": "T1078.002",
+                "name": "Domain Accounts",
+                "label": "SubTechnique",
+                "type": "HAS_SUBTECHNIQUE",
+                "description": "Adversaries may obtain and abuse credentials of a domain account as a means of gaining Initial Access, Persistence, Privilege Escalation, or Defense Evasion.(Citation: TechNet Credential Theft) Domain accounts are those managed by Active Directory Domain Services where access and permissions are configured across systems and services that are part of that domain. Domain accounts can cover users, administrators, and services.(Citation: Microsoft AD Accounts)\n\nAdversaries may compromise domain accounts, some with a high level of privileges, through various means such as [OS Credential Dumping](https://attack.mitre.org/techniques/T1003) or password reuse, allowing access to privileged resources of the domain."
+              },
+              {
+                "id": "T1078.004",
+                "name": "Cloud Accounts",
+                "label": "SubTechnique",
+                "type": "HAS_SUBTECHNIQUE",
+                "description": "Valid accounts in cloud environments may allow adversaries to perform actions to achieve Initial Access, Persistence, Privilege Escalation, or Defense Evasion. Cloud accounts are those created and configured by an organization for use by users, remote support, services, or for administration of resources within a cloud service provider or SaaS application. Cloud Accounts can exist solely in the cloud; alternatively, they may be hybrid-joined between on-premises systems and the cloud through syncing or federation with other identity sources such as Windows Active Directory.(Citation: AWS Identity Federation)(Citation: Google Federating GC)(Citation: Microsoft Deploying AD Federation)\n\nService or user accounts may be targeted by adversaries through [Brute Force](https://attack.mitre.org/techniques/T1110), [Phishing](https://attack.mitre.org/techniques/T1566), or various other means to gain access to the environment. Federated or synced accounts may be a pathway for the adversary to affect both on-premises systems and cloud environments - for example, by leveraging shared credentials to log onto [Remote Services](https://attack.mitre.org/techniques/T1021). High privileged cloud accounts, whether federated, synced, or cloud-only, may also allow pivoting to on-premises environments by leveraging SaaS-based [Software Deployment Tools](https://attack.mitre.org/techniques/T1072) to run commands on hybrid-joined devices.\n\nAn adversary may create long lasting [Additional Cloud Credentials](https://attack.mitre.org/techniques/T1098/001) on a compromised cloud account to maintain persistence in the environment. Such credentials may also be used to bypass security controls such as multi-factor authentication. \n\nCloud accounts may also be able to assume [Temporary Elevated Cloud Access](https://attack.mitre.org/techniques/T1548/005) or other privileges through various means within the environment. Misconfigurations in role assignments or role assumption policies may allow an adversary to use these mechanisms to leverage permissions outside the intended scope of the account. Such over privileged accounts may be used to harvest sensitive data from online storage accounts and databases through [Cloud API](https://attack.mitre.org/techniques/T1059/009) or other methods. For example, in Azure environments, adversaries may target Azure Managed Identities, which allow associated Azure resources to request access tokens. By compromising a resource with an attached Managed Identity, such as an Azure VM, adversaries may be able to [Steal Application Access Token](https://attack.mitre.org/techniques/T1528)s to move laterally across the cloud environment.(Citation: SpecterOps Managed Identity 2022)"
+              },
+              {
+                "id": "T1078.003",
+                "name": "Local Accounts",
+                "label": "SubTechnique",
+                "type": "HAS_SUBTECHNIQUE",
+                "description": "Adversaries may obtain and abuse credentials of a local account as a means of gaining Initial Access, Persistence, Privilege Escalation, or Defense Evasion. Local accounts are those configured by an organization for use by users, remote support, services, or for administration on a single system or service.\n\nLocal Accounts may also be abused to elevate privileges and harvest credentials through [OS Credential Dumping](https://attack.mitre.org/techniques/T1003). Password reuse may allow the abuse of local accounts across a set of machines on a network for the purposes of Privilege Escalation and Lateral Movement. "
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "deterministic_scores": {
+    "correlation": {
+      "negative": false,
+      "exact": false,
+      "precision": 0.0,
+      "recall": 0.0,
+      "f1": 0.0,
+      "n_expected": 0,
+      "n_got": 1
+    },
+    "mapping_recall": null,
+    "coverage": {
+      "gold": 5,
+      "found": 5,
+      "coverage": 1.0,
+      "missing": []
+    },
+    "provenance": {
+      "citations": 8,
+      "compliant": 8,
+      "citation_provenance_rate": 1.0,
+      "abstention_proof_ok": true,
+      "fully_provenanced": true
+    },
+    "inspectability": {
+      "citation_coverage": 1.0,
+      "traceability": 1.0,
+      "abstention_proofs": 1.0,
+      "inspectability": 1.0
+    }
+  },
+  "arm": "planned_llm_typed_lazy",
+  "run_meta": {
+    "planner": "llm-typed-lazy",
+    "synthesis": "deterministic",
+    "use_llm": true,
+    "llm_synthesis": false,
+    "llm_specialist": false,
+    "rewrite": null,
+    "observed_plan": [
+      {
+        "sub_question_id": "q1",
+        "source": "capec",
+        "text": "",
+        "entities": [
+          "AttackPattern",
+          "MAPS_TO",
+          "TaxonomyEntry"
+        ],
+        "seed_ids": [
+          "CAPEC-560"
+        ],
+        "depends_on": null,
+        "limits": {
+          "max_traversal_depth": 3,
+          "max_result_rows": 1000,
+          "query_timeout_ms": 5000
+        },
+        "step": {
+          "kind": "expand",
+          "anchor_label": "AttackPattern",
+          "anchor_ids": [
+            "CAPEC-560"
+          ],
+          "hops": [
+            {
+              "relation": "MAPS_TO",
+              "direction": "out",
+              "target_label": "TaxonomyEntry"
+            }
+          ],
+          "depth": 1,
+          "filter": {
+            "property": "taxonomy_name",
+            "value": "ATTACK"
+          }
+        }
+      },
+      {
+        "sub_question_id": "q2",
+        "source": "attack",
+        "text": "",
+        "entities": [
+          "Technique",
+          "HAS_SUBTECHNIQUE",
+          "SubTechnique"
+        ],
+        "seed_ids": [],
+        "depends_on": null,
+        "limits": {
+          "max_traversal_depth": 3,
+          "max_result_rows": 1000,
+          "query_timeout_ms": 5000
+        },
+        "step": {
+          "kind": "expand",
+          "anchor_label": "Technique",
+          "anchor_ids": [],
+          "hops": [
+            {
+              "relation": "HAS_SUBTECHNIQUE",
+              "direction": "out",
+              "target_label": "SubTechnique"
+            }
+          ],
+          "depth": 1,
+          "from_step": "q1"
+        }
+      }
+    ],
+    "exit_code": 0,
+    "status": "answered",
+    "timings": {
+      "plan_ms": 51896.821,
+      "specialists": [
+        {
+          "sub_question": "q1",
+          "source": "capec",
+          "ms": 9.43
+        },
+        {
+          "sub_question": "q2",
+          "source": "attack",
+          "ms": 8.317
+        }
+      ],
+      "synthesis_ms": 8.936,
+      "total_ms": 52498.986
+    },
+    "registry_model": "gemma4-31b",
+    "drafter_used": "TypedDrafter",
+    "typed": [
+      {
+        "mode": "lazy",
+        "served_model": "gemma4-31b/106",
+        "model_calls": 1,
+        "catalog_calls": [],
+        "prompt_tokens": 3075,
+        "completion_tokens": 3291,
+        "emitted": true,
+        "parse_error": null,
+        "first_steps": 2,
+        "first_refused": 0,
+        "first_fixes": 0,
+        "valid_first": true,
+        "valid_first_raw": true,
+        "repair_used": false,
+        "fixed_by_repair": false,
+        "still_refused": 0,
+        "final_steps": 2,
+        "coercions": [],
+        "refusals": [],
+        "plan_problems": [],
+        "replies": [
+          {
+            "status": "ok",
+            "finish_reason": "stop",
+            "calls": [],
+            "text_chars": 1101,
+            "repairs": []
+          }
+        ],
+        "error": null,
+        "fallback": null,
+        "seconds": 51.841,
+        "n_catalog_calls": 0,
+        "fixed_by_coercion": false
+      }
+    ],
+    "seams": {
+      "planner_llm": true,
+      "drafter": "TypedDrafter",
+      "specialist_llm": false,
+      "synthesis_llm": false,
+      "generic_only": "true"
+    },
+    "wall_s": 53.312
+  },
+  "evidence_volume": {
+    "results": 2,
+    "records": 2,
+    "related": 5
+  }
+}

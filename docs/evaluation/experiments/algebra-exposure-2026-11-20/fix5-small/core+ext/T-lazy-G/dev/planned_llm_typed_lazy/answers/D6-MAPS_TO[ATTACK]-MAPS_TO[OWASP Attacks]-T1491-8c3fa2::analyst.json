@@ -1,0 +1,1120 @@
+{
+  "id": "D6-MAPS_TO[ATTACK]-MAPS_TO[OWASP Attacks]-T1491-8c3fa2::analyst",
+  "kind": "federated",
+  "tier": "hard",
+  "category": "D6-MAPS_TO[ATTACK]",
+  "question": "Which CAPEC attack patterns correspond to Defacement (T1491), and which OWASP taxonomy entries do those correspond to?",
+  "gold": {
+    "assertions": {
+      "min_records": 1,
+      "must_include_ids": [
+        "T1491"
+      ],
+      "must_include_related": [
+        "OWASP Attacks:Content Spoofing"
+      ]
+    },
+    "ex_gold": {
+      "pool": "join",
+      "expected": [
+        "OWASP Attacks:Content Spoofing"
+      ],
+      "scheme": "capec",
+      "kind": "set"
+    },
+    "sources": [
+      "attack",
+      "capec"
+    ],
+    "hops": 2
+  },
+  "answer": {
+    "headline": "Gathered 5 record(s) from 1 source(s); 1 question(s) the sources don't establish.",
+    "narrative": "Found 1 CAPEC record(s) for T1491; ATT&CK mappings: T1491. 1 entity match. Found 1 CAPEC record(s): CAPEC-148. Found 3 CAPEC record(s) for OWASP Attacks:Content Spoofing, T1491, WASC:12; ATT&CK mappings: T1491. 3 entities match. The capec source doesn't establish this — the executed query ran cleanly and returned no matching records for:",
+    "composer": "deterministic",
+    "fallback_reason": null,
+    "claims": [
+      {
+        "text": "Found 1 CAPEC record(s) for T1491; ATT&CK mappings: T1491.",
+        "kind": "fact",
+        "entity_ids": [
+          "T1491"
+        ],
+        "citations": [
+          {
+            "source": "capec",
+            "primary_id": "T1491"
+          }
+        ]
+      },
+      {
+        "text": "1 entity match.",
+        "kind": "fact",
+        "entity_ids": [
+          "T1491"
+        ],
+        "citations": [
+          {
+            "source": "capec",
+            "primary_id": "T1491"
+          }
+        ]
+      },
+      {
+        "text": "Found 1 CAPEC record(s): CAPEC-148.",
+        "kind": "fact",
+        "entity_ids": [
+          "CAPEC-148"
+        ],
+        "citations": [
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-148"
+          }
+        ]
+      },
+      {
+        "text": "Found 3 CAPEC record(s) for OWASP Attacks:Content Spoofing, T1491, WASC:12; ATT&CK mappings: T1491.",
+        "kind": "fact",
+        "entity_ids": [
+          "T1491",
+          "OWASP Attacks:Content Spoofing",
+          "WASC:12"
+        ],
+        "citations": [
+          {
+            "source": "capec",
+            "primary_id": "T1491"
+          },
+          {
+            "source": "capec",
+            "primary_id": "OWASP Attacks:Content Spoofing"
+          },
+          {
+            "source": "capec",
+            "primary_id": "WASC:12"
+          }
+        ]
+      },
+      {
+        "text": "3 entities match.",
+        "kind": "fact",
+        "entity_ids": [
+          "T1491",
+          "OWASP Attacks:Content Spoofing",
+          "WASC:12"
+        ],
+        "citations": [
+          {
+            "source": "capec",
+            "primary_id": "T1491"
+          },
+          {
+            "source": "capec",
+            "primary_id": "OWASP Attacks:Content Spoofing"
+          },
+          {
+            "source": "capec",
+            "primary_id": "WASC:12"
+          }
+        ]
+      }
+    ],
+    "abstentions": [
+      {
+        "source": "capec",
+        "statement": "The capec source doesn't establish this — the executed query ran cleanly and returned no matching records for: ",
+        "query": "g.V().has('id', within(p0)).hasLabel('TaxonomyEntry').dedup().has('taxonomy_name', eq(p1)).order().by('id').fold().project('total', 'rows').by(__.count(local)).by(__.unfold().limit(1000).project('id', 'name').by('id').by(__.coalesce(__.values('name'), __.constant(null))).fold())"
+      }
+    ],
+    "notes": []
+  },
+  "logic_flow": {
+    "plan": [
+      {
+        "sub_question_id": null,
+        "source": "attack",
+        "text": "For T1491: the CAPEC attack patterns that correspond to it.",
+        "seed_from": null
+      },
+      {
+        "sub_question_id": null,
+        "source": "capec",
+        "text": "For each of those: the OWASP taxonomy entries each of those corresponds to.",
+        "seed_from": null
+      }
+    ],
+    "sequenced": true,
+    "partial_mode": null,
+    "results": [
+      {
+        "source": "capec",
+        "sub_question_id": "q1",
+        "sub_question": "",
+        "query": "g.V().has('id', within(p0)).hasLabel('TaxonomyEntry').dedup().order().by('id').fold().project('total', 'rows', 'found_0').by(__.count(local)).by(__.unfold().limit(1000).project('id', 'name').by('id').by(__.coalesce(__.values('name'), __.constant(null))).fold()).by(__.V().has('id', within(p0)).hasLabel('TaxonomyEntry').values('id').dedup().fold())",
+        "ok": true,
+        "partial": false,
+        "error": null,
+        "summary": "Found 1 CAPEC record(s) for T1491; ATT&CK mappings: T1491.",
+        "traces": [
+          {
+            "step": "intake",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "source": "capec",
+              "card": "capec"
+            }
+          },
+          {
+            "step": "resolve",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "labels": [
+                "TaxonomyEntry"
+              ],
+              "relationships": [],
+              "seed_ids": [
+                "T1491"
+              ],
+              "join_key": null
+            }
+          },
+          {
+            "step": "gate",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "attempt": 1,
+              "template": "algebra",
+              "query": "g.V().has('id', within(p0)).hasLabel('TaxonomyEntry').dedup().order().by('id').fold().project('total', 'rows', 'found_0').by(__.count(local)).by(__.unfold().limit(1000).project('id', 'name').by('id').by(__.coalesce(__.values('name'), __.constant(null))).fold()).by(__.V().has('id', within(p0)).hasLabel('TaxonomyEntry').values('id').dedup().fold())",
+              "injected": [],
+              "note": "compiled by the operator algebra (validated against the card; read-only by construction)",
+              "id_map": {
+                "T1491": [
+                  "capec:taxonomy:ATTACK:1491"
+                ]
+              }
+            }
+          },
+          {
+            "step": "execute",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "row_count": 1
+            }
+          },
+          {
+            "step": "algebra",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "result": {
+                "step": "q1",
+                "kind": "nodes",
+                "value": null,
+                "ids": [
+                  "T1491"
+                ],
+                "rows": [
+                  {
+                    "id": "T1491",
+                    "name": "Defacement"
+                  }
+                ],
+                "total": 1,
+                "complete": true,
+                "info": {
+                  "anchor_not_found": []
+                }
+              },
+              "op": "typescan",
+              "ir": {
+                "@": "Nodes",
+                "of": {
+                  "@": "Anchors",
+                  "ids": [
+                    "T1491"
+                  ],
+                  "label": "TaxonomyEntry"
+                },
+                "props": []
+              }
+            }
+          }
+        ],
+        "records": [
+          {
+            "primary_id": "T1491",
+            "name": "Defacement",
+            "label": "TaxonomyEntry",
+            "description": "",
+            "properties": {},
+            "facets": [],
+            "join_values": [
+              "T1491"
+            ],
+            "related": []
+          }
+        ]
+      },
+      {
+        "source": "capec",
+        "sub_question_id": "q2",
+        "sub_question": "",
+        "query": "g.V().has('id', within(p0)).hasLabel('TaxonomyEntry').dedup().as('s1').in('MAPS_TO').hasLabel('AttackPattern').where(neq('s1')).dedup().order().by('id').fold().project('total', 'rows').by(__.count(local)).by(__.unfold().limit(1000).project('id', 'name').by('id').by(__.coalesce(__.values('name'), __.constant(null))).fold())",
+        "ok": true,
+        "partial": false,
+        "error": null,
+        "summary": "Found 1 CAPEC record(s): CAPEC-148.",
+        "traces": [
+          {
+            "step": "intake",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "source": "capec",
+              "card": "capec"
+            }
+          },
+          {
+            "step": "resolve",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "labels": [
+                "TaxonomyEntry",
+                "AttackPattern"
+              ],
+              "relationships": [
+                "MAPS_TO"
+              ],
+              "seed_ids": [
+                "T1491"
+              ],
+              "join_key": null
+            }
+          },
+          {
+            "step": "gate",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "attempt": 1,
+              "template": "algebra",
+              "query": "g.V().has('id', within(p0)).hasLabel('TaxonomyEntry').dedup().as('s1').in('MAPS_TO').hasLabel('AttackPattern').where(neq('s1')).dedup().order().by('id').fold().project('total', 'rows').by(__.count(local)).by(__.unfold().limit(1000).project('id', 'name').by('id').by(__.coalesce(__.values('name'), __.constant(null))).fold())",
+              "injected": [],
+              "note": "compiled by the operator algebra (validated against the card; read-only by construction)",
+              "id_map": {
+                "T1491": [
+                  "capec:taxonomy:ATTACK:1491"
+                ]
+              }
+            }
+          },
+          {
+            "step": "execute",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "row_count": 1
+            }
+          },
+          {
+            "step": "algebra",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "result": {
+                "step": "q2",
+                "kind": "nodes",
+                "value": null,
+                "ids": [
+                  "CAPEC-148"
+                ],
+                "rows": [
+                  {
+                    "id": "CAPEC-148",
+                    "name": "Content Spoofing"
+                  }
+                ],
+                "total": 1,
+                "complete": true,
+                "info": {}
+              },
+              "op": "expand",
+              "ir": {
+                "@": "Expand",
+                "walk": {
+                  "@": "Walk",
+                  "depth": 1,
+                  "hops": [
+                    {
+                      "@": "Hop",
+                      "direction": "in",
+                      "edge_conds": [],
+                      "relation": "MAPS_TO",
+                      "target": "AttackPattern"
+                    }
+                  ],
+                  "last_conds": [],
+                  "start": {
+                    "@": "FromStep",
+                    "labels": [
+                      "TaxonomyEntry"
+                    ],
+                    "step": "q1"
+                  }
+                }
+              }
+            }
+          }
+        ],
+        "records": [
+          {
+            "primary_id": "CAPEC-148",
+            "name": "Content Spoofing",
+            "label": "AttackPattern",
+            "description": "",
+            "properties": {},
+            "facets": [],
+            "join_values": [],
+            "related": []
+          }
+        ]
+      },
+      {
+        "source": "capec",
+        "sub_question_id": "q3",
+        "sub_question": "",
+        "query": "g.V().has('id', within(p0)).hasLabel('AttackPattern').dedup().as('s1').out('MAPS_TO').hasLabel('TaxonomyEntry').where(neq('s1')).dedup().order().by('id').fold().project('total', 'rows').by(__.count(local)).by(__.unfold().limit(1000).project('id', 'name').by('id').by(__.coalesce(__.values('name'), __.constant(null))).fold())",
+        "ok": true,
+        "partial": false,
+        "error": null,
+        "summary": "Found 3 CAPEC record(s) for OWASP Attacks:Content Spoofing, T1491, WASC:12; ATT&CK mappings: T1491.",
+        "traces": [
+          {
+            "step": "intake",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "source": "capec",
+              "card": "capec"
+            }
+          },
+          {
+            "step": "resolve",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "labels": [
+                "AttackPattern",
+                "TaxonomyEntry"
+              ],
+              "relationships": [
+                "MAPS_TO"
+              ],
+              "seed_ids": [
+                "CAPEC-148"
+              ],
+              "join_key": null
+            }
+          },
+          {
+            "step": "gate",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "attempt": 1,
+              "template": "algebra",
+              "query": "g.V().has('id', within(p0)).hasLabel('AttackPattern').dedup().as('s1').out('MAPS_TO').hasLabel('TaxonomyEntry').where(neq('s1')).dedup().order().by('id').fold().project('total', 'rows').by(__.count(local)).by(__.unfold().limit(1000).project('id', 'name').by('id').by(__.coalesce(__.values('name'), __.constant(null))).fold())",
+              "injected": [],
+              "note": "compiled by the operator algebra (validated against the card; read-only by construction)",
+              "id_map": {
+                "CAPEC-148": [
+                  "capec:attack-pattern:148"
+                ]
+              }
+            }
+          },
+          {
+            "step": "execute",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "row_count": 3
+            }
+          },
+          {
+            "step": "algebra",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "result": {
+                "step": "q3",
+                "kind": "nodes",
+                "value": null,
+                "ids": [
+                  "OWASP Attacks:Content Spoofing",
+                  "T1491",
+                  "WASC:12"
+                ],
+                "rows": [
+                  {
+                    "id": "T1491",
+                    "name": "Defacement"
+                  },
+                  {
+                    "id": "OWASP Attacks:Content Spoofing",
+                    "name": "Content Spoofing"
+                  },
+                  {
+                    "id": "WASC:12",
+                    "name": "Content Spoofing"
+                  }
+                ],
+                "total": 3,
+                "complete": true,
+                "info": {}
+              },
+              "op": "expand",
+              "ir": {
+                "@": "Expand",
+                "walk": {
+                  "@": "Walk",
+                  "depth": 1,
+                  "hops": [
+                    {
+                      "@": "Hop",
+                      "direction": "out",
+                      "edge_conds": [],
+                      "relation": "MAPS_TO",
+                      "target": "TaxonomyEntry"
+                    }
+                  ],
+                  "last_conds": [],
+                  "start": {
+                    "@": "FromStep",
+                    "labels": [
+                      "AttackPattern"
+                    ],
+                    "step": "q2"
+                  }
+                }
+              }
+            }
+          }
+        ],
+        "records": [
+          {
+            "primary_id": "T1491",
+            "name": "Defacement",
+            "label": "TaxonomyEntry",
+            "description": "",
+            "properties": {},
+            "facets": [],
+            "join_values": [
+              "T1491"
+            ],
+            "related": []
+          },
+          {
+            "primary_id": "OWASP Attacks:Content Spoofing",
+            "name": "Content Spoofing",
+            "label": "TaxonomyEntry",
+            "description": "",
+            "properties": {},
+            "facets": [],
+            "join_values": [],
+            "related": []
+          },
+          {
+            "primary_id": "WASC:12",
+            "name": "Content Spoofing",
+            "label": "TaxonomyEntry",
+            "description": "",
+            "properties": {},
+            "facets": [],
+            "join_values": [],
+            "related": []
+          }
+        ]
+      },
+      {
+        "source": "capec",
+        "sub_question_id": "q4",
+        "sub_question": "",
+        "query": "g.V().has('id', within(p0)).hasLabel('TaxonomyEntry').dedup().has('taxonomy_name', eq(p1)).order().by('id').fold().project('total', 'rows').by(__.count(local)).by(__.unfold().limit(1000).project('id', 'name').by('id').by(__.coalesce(__.values('name'), __.constant(null))).fold())",
+        "ok": true,
+        "partial": false,
+        "error": null,
+        "summary": "0 entities match.",
+        "traces": [
+          {
+            "step": "intake",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "source": "capec",
+              "card": "capec"
+            }
+          },
+          {
+            "step": "resolve",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "labels": [
+                "TaxonomyEntry"
+              ],
+              "relationships": [],
+              "seed_ids": [
+                "OWASP Attacks:Content Spoofing",
+                "T1491",
+                "WASC:12"
+              ],
+              "join_key": null
+            }
+          },
+          {
+            "step": "gate",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "attempt": 1,
+              "template": "algebra",
+              "query": "g.V().has('id', within(p0)).hasLabel('TaxonomyEntry').dedup().has('taxonomy_name', eq(p1)).order().by('id').fold().project('total', 'rows').by(__.count(local)).by(__.unfold().limit(1000).project('id', 'name').by('id').by(__.coalesce(__.values('name'), __.constant(null))).fold())",
+              "injected": [],
+              "note": "compiled by the operator algebra (validated against the card; read-only by construction)",
+              "id_map": {
+                "OWASP Attacks:Content Spoofing": [
+                  "capec:taxonomy:OWASP_Attacks:Content_Spoofing"
+                ],
+                "T1491": [
+                  "capec:taxonomy:ATTACK:1491"
+                ],
+                "WASC:12": [
+                  "capec:taxonomy:WASC:12"
+                ]
+              }
+            }
+          },
+          {
+            "step": "execute",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "row_count": 0
+            }
+          },
+          {
+            "step": "algebra",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "result": {
+                "step": "q4",
+                "kind": "nodes",
+                "value": null,
+                "ids": [],
+                "rows": [],
+                "total": 0,
+                "complete": true,
+                "info": {}
+              },
+              "op": "filter",
+              "ir": {
+                "@": "Nodes",
+                "of": {
+                  "@": "Where",
+                  "conds": [
+                    {
+                      "@": "Cond",
+                      "cmp": null,
+                      "op": "=",
+                      "prop": "taxonomy_name",
+                      "value": "OWASP"
+                    }
+                  ],
+                  "of": {
+                    "@": "FromStep",
+                    "labels": [
+                      "TaxonomyEntry"
+                    ],
+                    "step": "q3"
+                  }
+                },
+                "props": []
+              }
+            }
+          }
+        ],
+        "records": []
+      }
+    ]
+  },
+  "deterministic_scores": {
+    "correlation": {
+      "negative": false,
+      "exact": true,
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "n_expected": 0,
+      "n_got": 0
+    },
+    "mapping_recall": null,
+    "coverage": {
+      "gold": 2,
+      "found": 2,
+      "coverage": 1.0,
+      "missing": []
+    },
+    "provenance": {
+      "citations": 9,
+      "compliant": 9,
+      "citation_provenance_rate": 1.0,
+      "abstention_proof_ok": true,
+      "fully_provenanced": true
+    },
+    "inspectability": {
+      "citation_coverage": 1.0,
+      "traceability": 1.0,
+      "abstention_proofs": 1.0,
+      "inspectability": 1.0
+    }
+  },
+  "arm": "planned_llm_typed_lazy",
+  "run_meta": {
+    "planner": "llm-typed-lazy",
+    "synthesis": "deterministic",
+    "use_llm": true,
+    "llm_synthesis": false,
+    "llm_specialist": false,
+    "rewrite": null,
+    "observed_plan": [
+      {
+        "sub_question_id": "q1",
+        "source": "capec",
+        "text": "",
+        "entities": [
+          "TaxonomyEntry"
+        ],
+        "seed_ids": [
+          "T1491"
+        ],
+        "depends_on": null,
+        "limits": {
+          "max_traversal_depth": 3,
+          "max_result_rows": 1000,
+          "query_timeout_ms": 5000
+        },
+        "step": {
+          "kind": "algebra",
+          "anchor_label": "TaxonomyEntry",
+          "anchor_ids": [
+            "T1491"
+          ],
+          "hops": [],
+          "depth": 1,
+          "algebra": {
+            "ir": {
+              "@": "Nodes",
+              "of": {
+                "@": "Anchors",
+                "ids": [
+                  "T1491"
+                ],
+                "label": "TaxonomyEntry"
+              },
+              "props": []
+            },
+            "labels": [
+              "TaxonomyEntry"
+            ],
+            "op": "typescan"
+          }
+        }
+      },
+      {
+        "sub_question_id": "q2",
+        "source": "capec",
+        "text": "",
+        "entities": [
+          "TaxonomyEntry",
+          "MAPS_TO",
+          "AttackPattern"
+        ],
+        "seed_ids": [],
+        "depends_on": null,
+        "limits": {
+          "max_traversal_depth": 3,
+          "max_result_rows": 1000,
+          "query_timeout_ms": 5000
+        },
+        "step": {
+          "kind": "algebra",
+          "anchor_label": "TaxonomyEntry",
+          "anchor_ids": [],
+          "hops": [],
+          "depth": 1,
+          "algebra": {
+            "ir": {
+              "@": "Expand",
+              "walk": {
+                "@": "Walk",
+                "depth": 1,
+                "hops": [
+                  {
+                    "@": "Hop",
+                    "direction": "in",
+                    "edge_conds": [],
+                    "relation": "MAPS_TO",
+                    "target": "AttackPattern"
+                  }
+                ],
+                "last_conds": [],
+                "start": {
+                  "@": "FromStep",
+                  "labels": [
+                    "TaxonomyEntry"
+                  ],
+                  "step": "q1"
+                }
+              }
+            },
+            "labels": [
+              "AttackPattern"
+            ],
+            "op": "expand"
+          },
+          "from_step": "q1"
+        }
+      },
+      {
+        "sub_question_id": "q3",
+        "source": "capec",
+        "text": "",
+        "entities": [
+          "AttackPattern",
+          "MAPS_TO",
+          "TaxonomyEntry"
+        ],
+        "seed_ids": [],
+        "depends_on": null,
+        "limits": {
+          "max_traversal_depth": 3,
+          "max_result_rows": 1000,
+          "query_timeout_ms": 5000
+        },
+        "step": {
+          "kind": "algebra",
+          "anchor_label": "AttackPattern",
+          "anchor_ids": [],
+          "hops": [],
+          "depth": 1,
+          "algebra": {
+            "ir": {
+              "@": "Expand",
+              "walk": {
+                "@": "Walk",
+                "depth": 1,
+                "hops": [
+                  {
+                    "@": "Hop",
+                    "direction": "out",
+                    "edge_conds": [],
+                    "relation": "MAPS_TO",
+                    "target": "TaxonomyEntry"
+                  }
+                ],
+                "last_conds": [],
+                "start": {
+                  "@": "FromStep",
+                  "labels": [
+                    "AttackPattern"
+                  ],
+                  "step": "q2"
+                }
+              }
+            },
+            "labels": [
+              "TaxonomyEntry"
+            ],
+            "op": "expand"
+          },
+          "from_step": "q2"
+        }
+      },
+      {
+        "sub_question_id": "q4",
+        "source": "capec",
+        "text": "",
+        "entities": [
+          "TaxonomyEntry"
+        ],
+        "seed_ids": [],
+        "depends_on": null,
+        "limits": {
+          "max_traversal_depth": 3,
+          "max_result_rows": 1000,
+          "query_timeout_ms": 5000
+        },
+        "step": {
+          "kind": "algebra",
+          "anchor_label": "TaxonomyEntry",
+          "anchor_ids": [],
+          "hops": [],
+          "depth": 1,
+          "algebra": {
+            "ir": {
+              "@": "Nodes",
+              "of": {
+                "@": "Where",
+                "conds": [
+                  {
+                    "@": "Cond",
+                    "cmp": null,
+                    "op": "=",
+                    "prop": "taxonomy_name",
+                    "value": "OWASP"
+                  }
+                ],
+                "of": {
+                  "@": "FromStep",
+                  "labels": [
+                    "TaxonomyEntry"
+                  ],
+                  "step": "q3"
+                }
+              },
+              "props": []
+            },
+            "labels": [
+              "TaxonomyEntry"
+            ],
+            "op": "filter"
+          },
+          "from_step": "q3"
+        }
+      }
+    ],
+    "exit_code": 0,
+    "status": "answered",
+    "timings": {
+      "plan_ms": 105974.393,
+      "specialists": [
+        {
+          "sub_question": "q1",
+          "source": "capec",
+          "ms": 24.64
+        },
+        {
+          "sub_question": "q2",
+          "source": "capec",
+          "ms": 20.074
+        },
+        {
+          "sub_question": "q3",
+          "source": "capec",
+          "ms": 19.852
+        },
+        {
+          "sub_question": "q4",
+          "source": "capec",
+          "ms": 13.997
+        }
+      ],
+      "synthesis_ms": 10.822,
+      "total_ms": 106539.634
+    },
+    "registry_model": "gemma4-31b",
+    "drafter_used": "TypedDrafter",
+    "typed": [
+      {
+        "mode": "lazy",
+        "served_model": "gemma4-31b/106",
+        "model_calls": 2,
+        "catalog_calls": [],
+        "prompt_tokens": 6899,
+        "completion_tokens": 8477,
+        "emitted": true,
+        "parse_error": null,
+        "first_steps": 4,
+        "first_refused": 4,
+        "first_fixes": 0,
+        "valid_first": false,
+        "valid_first_raw": false,
+        "repair_used": true,
+        "fixed_by_repair": true,
+        "still_refused": 0,
+        "final_steps": 4,
+        "coercions": [
+          {
+            "step": "q1",
+            "field": "where",
+            "from": "entry_id = 'T1491'",
+            "to": "T1491",
+            "filled_by": "lookup_scan_to_anchor"
+          },
+          {
+            "step": "q2",
+            "field": "from_step",
+            "from": "q1",
+            "to": "FromStep(q1)",
+            "filled_by": "algebra_producer"
+          },
+          {
+            "step": "q3",
+            "field": "from_step",
+            "from": "q2",
+            "to": "FromStep(q2)",
+            "filled_by": "algebra_producer"
+          }
+        ],
+        "refusals": [
+          {
+            "step": "q1",
+            "final": false,
+            "code": "empty",
+            "detail": "no entity of this graph matches 'Defacement'",
+            "fix": "try other words, a label from: AlternateTerm, AttackPattern, Category, Consequence, Example, ExecutionStep, ExternalReference, Indicator, Mitigation, Prerequisite, Resource, Skill, TaxonomyEntry, View, Weakness"
+          },
+          {
+            "step": "q2",
+            "final": false,
+            "code": "invalid_request",
+            "detail": "step q2: from_step 'q1' is not an earlier accepted step",
+            "fix": "choose from_step from: an anchor id or name"
+          },
+          {
+            "step": "q3",
+            "final": false,
+            "code": "invalid_request",
+            "detail": "step q3: from_step 'q2' is not an earlier accepted step",
+            "fix": "choose from_step from: an anchor id or name"
+          },
+          {
+            "step": "q4",
+            "final": false,
+            "code": "invalid_request",
+            "detail": "step q4: from_step 'q3' is not an earlier accepted step",
+            "fix": "choose from_step from: an anchor"
+          }
+        ],
+        "plan_problems": [],
+        "replies": [
+          {
+            "status": "ok",
+            "finish_reason": "stop",
+            "calls": [],
+            "text_chars": 1271,
+            "repairs": []
+          },
+          {
+            "status": "ok",
+            "finish_reason": "stop",
+            "calls": [],
+            "text_chars": 1275,
+            "repairs": []
+          }
+        ],
+        "error": null,
+        "fallback": null,
+        "seconds": 105.844,
+        "n_catalog_calls": 0,
+        "fixed_by_coercion": false
+      }
+    ],
+    "seams": {
+      "planner_llm": true,
+      "drafter": "TypedDrafter",
+      "specialist_llm": false,
+      "synthesis_llm": false,
+      "generic_only": "true"
+    },
+    "wall_s": 107.363,
+    "algebra_results": [
+      {
+        "step": "q1",
+        "kind": "nodes",
+        "value": null,
+        "ids": [
+          "T1491"
+        ],
+        "rows": [
+          {
+            "id": "T1491",
+            "name": "Defacement"
+          }
+        ],
+        "total": 1,
+        "complete": true,
+        "info": {
+          "anchor_not_found": []
+        }
+      },
+      {
+        "step": "q2",
+        "kind": "nodes",
+        "value": null,
+        "ids": [
+          "CAPEC-148"
+        ],
+        "rows": [
+          {
+            "id": "CAPEC-148",
+            "name": "Content Spoofing"
+          }
+        ],
+        "total": 1,
+        "complete": true,
+        "info": {}
+      },
+      {
+        "step": "q3",
+        "kind": "nodes",
+        "value": null,
+        "ids": [
+          "OWASP Attacks:Content Spoofing",
+          "T1491",
+          "WASC:12"
+        ],
+        "rows": [
+          {
+            "id": "T1491",
+            "name": "Defacement"
+          },
+          {
+            "id": "OWASP Attacks:Content Spoofing",
+            "name": "Content Spoofing"
+          },
+          {
+            "id": "WASC:12",
+            "name": "Content Spoofing"
+          }
+        ],
+        "total": 3,
+        "complete": true,
+        "info": {}
+      },
+      {
+        "step": "q4",
+        "kind": "nodes",
+        "value": null,
+        "ids": [],
+        "rows": [],
+        "total": 0,
+        "complete": true,
+        "info": {}
+      }
+    ]
+  },
+  "evidence_volume": {
+    "results": 4,
+    "records": 5,
+    "related": 0
+  }
+}

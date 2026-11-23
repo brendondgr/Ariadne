@@ -1,0 +1,502 @@
+{
+  "id": "PG-capec-O6-fc60179e07",
+  "kind": "capec",
+  "tier": "algebra-probe",
+  "category": "PG-capec",
+  "question": "Which attack patterns call for at least 2 skills rated at the 'Low' level?",
+  "gold": {
+    "assertions": {
+      "min_records": 0,
+      "must_include_ids": [],
+      "must_include_related": []
+    },
+    "ex_gold": {
+      "pool": "algebra",
+      "scheme": "capec",
+      "kind": "set",
+      "expected": [
+        "CAPEC-548",
+        "CAPEC-667",
+        "CAPEC-695"
+      ]
+    }
+  },
+  "answer": {
+    "headline": "Gathered 3 record(s) from 1 source(s).",
+    "narrative": "Found 3 CAPEC record(s): CAPEC-548, CAPEC-667, CAPEC-695. CAPEC-548 (Contaminate Resource) has value: 2. CAPEC-667 (Bluetooth Impersonation AttackS (BIAS)) has value: 2. CAPEC-695 (Repo Jacking) has value: 2. 3 member(s), with their count: Contaminate Resource (CAPEC-548): 2; Bluetooth Impersonation AttackS (BIAS) (CAPEC-667): 2; Repo Jacking (CAPEC-695): 2.",
+    "composer": "deterministic",
+    "fallback_reason": null,
+    "claims": [
+      {
+        "text": "Found 3 CAPEC record(s): CAPEC-548, CAPEC-667, CAPEC-695.",
+        "kind": "fact",
+        "entity_ids": [
+          "CAPEC-548",
+          "CAPEC-667",
+          "CAPEC-695"
+        ],
+        "citations": [
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-548"
+          },
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-667"
+          },
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-695"
+          }
+        ]
+      },
+      {
+        "text": "CAPEC-548 (Contaminate Resource) has value: 2.",
+        "kind": "fact",
+        "entity_ids": [
+          "CAPEC-548"
+        ],
+        "citations": [
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-548"
+          }
+        ]
+      },
+      {
+        "text": "CAPEC-667 (Bluetooth Impersonation AttackS (BIAS)) has value: 2.",
+        "kind": "fact",
+        "entity_ids": [
+          "CAPEC-667"
+        ],
+        "citations": [
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-667"
+          }
+        ]
+      },
+      {
+        "text": "CAPEC-695 (Repo Jacking) has value: 2.",
+        "kind": "fact",
+        "entity_ids": [
+          "CAPEC-695"
+        ],
+        "citations": [
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-695"
+          }
+        ]
+      },
+      {
+        "text": "3 member(s), with their count: Contaminate Resource (CAPEC-548): 2; Bluetooth Impersonation AttackS (BIAS) (CAPEC-667): 2; Repo Jacking (CAPEC-695): 2.",
+        "kind": "fact",
+        "entity_ids": [
+          "CAPEC-548",
+          "CAPEC-667",
+          "CAPEC-695"
+        ],
+        "citations": [
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-548"
+          },
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-667"
+          },
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-695"
+          }
+        ]
+      }
+    ],
+    "abstentions": [],
+    "notes": []
+  },
+  "logic_flow": {
+    "task": {
+      "sub_question_id": "PG-capec-O6-fc60179e07",
+      "source": "capec",
+      "text": "Which attack patterns call for at least 2 skills rated at the 'Low' level?",
+      "entities": [
+        "AttackPattern",
+        "REQUIRES_SKILL",
+        "Skill"
+      ],
+      "limits": {
+        "max_traversal_depth": 3,
+        "max_result_rows": 20000,
+        "query_timeout_ms": 60000
+      },
+      "join_key": null,
+      "seed_ids": [],
+      "rationale": "algebra probe set (Era 2 Step 9 Phase G)"
+    },
+    "results": [
+      {
+        "source": "capec",
+        "sub_question_id": "q1",
+        "sub_question": "",
+        "query": "g.V().hasLabel('AttackPattern').project('id', 'name', 'value').by('id').by(__.coalesce(__.values('name'), __.constant(null))).by(__.as('s1').out('REQUIRES_SKILL').hasLabel('Skill').where(neq('s1')).has('level', eq(p0)).dedup().count()).order().by(__.select('id')).fold().project('rows').by(__.identity())",
+        "ok": true,
+        "partial": false,
+        "error": null,
+        "summary": "Found 3 CAPEC record(s): CAPEC-548, CAPEC-667, CAPEC-695.",
+        "traces": [
+          {
+            "step": "intake",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "source": "capec",
+              "card": "capec"
+            }
+          },
+          {
+            "step": "resolve",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "labels": [
+                "AttackPattern",
+                "Skill"
+              ],
+              "relationships": [
+                "REQUIRES_SKILL"
+              ],
+              "seed_ids": [],
+              "join_key": null
+            }
+          },
+          {
+            "step": "gate",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "attempt": 1,
+              "template": "algebra",
+              "query": "g.V().hasLabel('AttackPattern').project('id', 'name', 'value').by('id').by(__.coalesce(__.values('name'), __.constant(null))).by(__.as('s1').out('REQUIRES_SKILL').hasLabel('Skill').where(neq('s1')).has('level', eq(p0)).dedup().count()).order().by(__.select('id')).fold().project('rows').by(__.identity())",
+              "injected": [],
+              "note": "compiled by the operator algebra (validated against the card; read-only by construction)",
+              "id_map": {}
+            }
+          },
+          {
+            "step": "execute",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "row_count": 3
+            }
+          },
+          {
+            "step": "algebra",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "result": {
+                "step": "q1",
+                "kind": "groupby",
+                "value": null,
+                "ids": [
+                  "CAPEC-548",
+                  "CAPEC-667",
+                  "CAPEC-695"
+                ],
+                "rows": [
+                  {
+                    "id": "CAPEC-548",
+                    "name": "Contaminate Resource",
+                    "value": 2
+                  },
+                  {
+                    "id": "CAPEC-667",
+                    "name": "Bluetooth Impersonation AttackS (BIAS)",
+                    "value": 2
+                  },
+                  {
+                    "id": "CAPEC-695",
+                    "name": "Repo Jacking",
+                    "value": 2
+                  }
+                ],
+                "total": 3,
+                "complete": true,
+                "info": {}
+              },
+              "op": "groupby",
+              "ir": {
+                "@": "GroupBy",
+                "end_conds": [
+                  {
+                    "@": "Cond",
+                    "cmp": null,
+                    "op": "=",
+                    "prop": "level",
+                    "value": "Low"
+                  }
+                ],
+                "fn": "count",
+                "having": [
+                  ">=",
+                  2
+                ],
+                "hops": [
+                  {
+                    "@": "Hop",
+                    "direction": "out",
+                    "edge_conds": [],
+                    "relation": "REQUIRES_SKILL",
+                    "target": "Skill"
+                  }
+                ],
+                "k": null,
+                "members": {
+                  "@": "Scan",
+                  "label": "AttackPattern"
+                },
+                "order": null,
+                "prop": null
+              },
+              "fn": "count",
+              "property": null,
+              "order": null
+            }
+          }
+        ],
+        "records": [
+          {
+            "primary_id": "CAPEC-548",
+            "name": "Contaminate Resource",
+            "label": "AttackPattern",
+            "description": "",
+            "properties": {
+              "value": 2
+            },
+            "facets": [],
+            "join_values": [],
+            "related": []
+          },
+          {
+            "primary_id": "CAPEC-667",
+            "name": "Bluetooth Impersonation AttackS (BIAS)",
+            "label": "AttackPattern",
+            "description": "",
+            "properties": {
+              "value": 2
+            },
+            "facets": [],
+            "join_values": [],
+            "related": []
+          },
+          {
+            "primary_id": "CAPEC-695",
+            "name": "Repo Jacking",
+            "label": "AttackPattern",
+            "description": "",
+            "properties": {
+              "value": 2
+            },
+            "facets": [],
+            "join_values": [],
+            "related": []
+          }
+        ]
+      }
+    ]
+  },
+  "deterministic_scores": {
+    "correlation": null,
+    "mapping_recall": null,
+    "coverage": null,
+    "provenance": {
+      "citations": 9,
+      "compliant": 9,
+      "citation_provenance_rate": 1.0,
+      "abstention_proof_ok": true,
+      "fully_provenanced": true
+    },
+    "inspectability": {
+      "citation_coverage": 1.0,
+      "traceability": 1.0,
+      "abstention_proofs": 1.0,
+      "inspectability": 1.0
+    }
+  },
+  "arm": "planned_llm_typed_lazy",
+  "run_meta": {
+    "planner": "llm-typed-lazy",
+    "synthesis": "deterministic",
+    "use_llm": true,
+    "llm_synthesis": false,
+    "llm_specialist": false,
+    "rewrite": null,
+    "observed_plan": [
+      {
+        "sub_question_id": "q1",
+        "source": "capec",
+        "text": "",
+        "entities": [
+          "AttackPattern",
+          "REQUIRES_SKILL",
+          "Skill"
+        ],
+        "seed_ids": [],
+        "depends_on": null,
+        "limits": {
+          "max_traversal_depth": 3,
+          "max_result_rows": 1000,
+          "query_timeout_ms": 5000
+        },
+        "step": {
+          "kind": "algebra",
+          "anchor_label": "AttackPattern",
+          "anchor_ids": [],
+          "hops": [],
+          "depth": 1,
+          "algebra": {
+            "ir": {
+              "@": "GroupBy",
+              "end_conds": [
+                {
+                  "@": "Cond",
+                  "cmp": null,
+                  "op": "=",
+                  "prop": "level",
+                  "value": "Low"
+                }
+              ],
+              "fn": "count",
+              "having": [
+                ">=",
+                2
+              ],
+              "hops": [
+                {
+                  "@": "Hop",
+                  "direction": "out",
+                  "edge_conds": [],
+                  "relation": "REQUIRES_SKILL",
+                  "target": "Skill"
+                }
+              ],
+              "k": null,
+              "members": {
+                "@": "Scan",
+                "label": "AttackPattern"
+              },
+              "order": null,
+              "prop": null
+            },
+            "labels": [
+              "AttackPattern"
+            ],
+            "op": "groupby"
+          }
+        }
+      }
+    ],
+    "exit_code": 0,
+    "status": "answered",
+    "timings": {
+      "plan_ms": 27142.442,
+      "specialists": [
+        {
+          "sub_question": "q1",
+          "source": "capec",
+          "ms": 23.12
+        }
+      ],
+      "synthesis_ms": 6.374,
+      "total_ms": 27218.065
+    },
+    "registry_model": "gemma4-31b",
+    "drafter_used": "TypedDrafter",
+    "typed": [
+      {
+        "mode": "lazy",
+        "served_model": "gemma4-31b/106",
+        "model_calls": 1,
+        "catalog_calls": [],
+        "prompt_tokens": 2932,
+        "completion_tokens": 1632,
+        "emitted": true,
+        "parse_error": null,
+        "first_steps": 1,
+        "first_refused": 0,
+        "first_fixes": 0,
+        "valid_first": true,
+        "valid_first_raw": true,
+        "repair_used": false,
+        "fixed_by_repair": false,
+        "still_refused": 0,
+        "final_steps": 1,
+        "coercions": [],
+        "refusals": [],
+        "plan_problems": [],
+        "replies": [
+          {
+            "status": "ok",
+            "finish_reason": "stop",
+            "calls": [],
+            "text_chars": 346,
+            "repairs": []
+          }
+        ],
+        "error": null,
+        "fallback": null,
+        "seconds": 27.129,
+        "n_catalog_calls": 0,
+        "fixed_by_coercion": false
+      }
+    ],
+    "seams": {
+      "planner_llm": true,
+      "drafter": "TypedDrafter",
+      "specialist_llm": false,
+      "synthesis_llm": false,
+      "generic_only": "true"
+    },
+    "wall_s": 27.222,
+    "algebra_results": [
+      {
+        "step": "q1",
+        "kind": "groupby",
+        "value": null,
+        "ids": [
+          "CAPEC-548",
+          "CAPEC-667",
+          "CAPEC-695"
+        ],
+        "rows": [
+          {
+            "id": "CAPEC-548",
+            "name": "Contaminate Resource",
+            "value": 2
+          },
+          {
+            "id": "CAPEC-667",
+            "name": "Bluetooth Impersonation AttackS (BIAS)",
+            "value": 2
+          },
+          {
+            "id": "CAPEC-695",
+            "name": "Repo Jacking",
+            "value": 2
+          }
+        ],
+        "total": 3,
+        "complete": true,
+        "info": {}
+      }
+    ]
+  },
+  "evidence_volume": {
+    "results": 1,
+    "records": 3,
+    "related": 0
+  }
+}

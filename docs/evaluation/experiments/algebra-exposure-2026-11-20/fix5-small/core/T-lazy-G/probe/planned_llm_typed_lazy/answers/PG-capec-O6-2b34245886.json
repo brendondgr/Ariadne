@@ -1,0 +1,408 @@
+{
+  "id": "PG-capec-O6-2b34245886",
+  "kind": "capec",
+  "tier": "algebra-probe",
+  "category": "PG-capec",
+  "question": "Which views directly contain at least 5 attack patterns?",
+  "gold": {
+    "assertions": {
+      "min_records": 0,
+      "must_include_ids": [],
+      "must_include_related": []
+    },
+    "ex_gold": {
+      "pool": "algebra",
+      "scheme": "capec",
+      "kind": "set",
+      "expected": [
+        "CAPEC-703"
+      ]
+    }
+  },
+  "answer": {
+    "headline": "Gathered 1 record(s) from 1 source(s).",
+    "narrative": "Found 1 CAPEC record(s): CAPEC-703. CAPEC-703 (Industrial Control System (ICS) Patterns) has value: 46. 1 member(s), with their count: Industrial Control System (ICS) Patterns (CAPEC-703): 46.",
+    "composer": "deterministic",
+    "fallback_reason": null,
+    "claims": [
+      {
+        "text": "Found 1 CAPEC record(s): CAPEC-703.",
+        "kind": "fact",
+        "entity_ids": [
+          "CAPEC-703"
+        ],
+        "citations": [
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-703"
+          }
+        ]
+      },
+      {
+        "text": "CAPEC-703 (Industrial Control System (ICS) Patterns) has value: 46.",
+        "kind": "fact",
+        "entity_ids": [
+          "CAPEC-703"
+        ],
+        "citations": [
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-703"
+          }
+        ]
+      },
+      {
+        "text": "1 member(s), with their count: Industrial Control System (ICS) Patterns (CAPEC-703): 46.",
+        "kind": "fact",
+        "entity_ids": [
+          "CAPEC-703"
+        ],
+        "citations": [
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-703"
+          }
+        ]
+      }
+    ],
+    "abstentions": [],
+    "notes": []
+  },
+  "logic_flow": {
+    "task": {
+      "sub_question_id": "PG-capec-O6-2b34245886",
+      "source": "capec",
+      "text": "Which views directly contain at least 5 attack patterns?",
+      "entities": [
+        "View",
+        "IN_VIEW",
+        "AttackPattern"
+      ],
+      "limits": {
+        "max_traversal_depth": 3,
+        "max_result_rows": 20000,
+        "query_timeout_ms": 60000
+      },
+      "join_key": null,
+      "seed_ids": [],
+      "rationale": "algebra probe set (Era 2 Step 9 Phase G)"
+    },
+    "results": [
+      {
+        "source": "capec",
+        "sub_question_id": "q1",
+        "sub_question": "",
+        "query": "g.V().hasLabel('View').project('id', 'name', 'value').by('id').by(__.coalesce(__.values('name'), __.constant(null))).by(__.as('s1').in('IN_VIEW').hasLabel('AttackPattern').where(neq('s1')).dedup().count()).order().by(__.select('id')).fold().project('rows').by(__.identity())",
+        "ok": true,
+        "partial": false,
+        "error": null,
+        "summary": "Found 1 CAPEC record(s): CAPEC-703.",
+        "traces": [
+          {
+            "step": "intake",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "source": "capec",
+              "card": "capec"
+            }
+          },
+          {
+            "step": "resolve",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "labels": [
+                "View",
+                "AttackPattern"
+              ],
+              "relationships": [
+                "IN_VIEW"
+              ],
+              "seed_ids": [],
+              "join_key": null
+            }
+          },
+          {
+            "step": "gate",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "attempt": 1,
+              "template": "algebra",
+              "query": "g.V().hasLabel('View').project('id', 'name', 'value').by('id').by(__.coalesce(__.values('name'), __.constant(null))).by(__.as('s1').in('IN_VIEW').hasLabel('AttackPattern').where(neq('s1')).dedup().count()).order().by(__.select('id')).fold().project('rows').by(__.identity())",
+              "injected": [],
+              "note": "compiled by the operator algebra (validated against the card; read-only by construction)",
+              "id_map": {}
+            }
+          },
+          {
+            "step": "execute",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "row_count": 1
+            }
+          },
+          {
+            "step": "algebra",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "result": {
+                "step": "q1",
+                "kind": "groupby",
+                "value": null,
+                "ids": [
+                  "CAPEC-703"
+                ],
+                "rows": [
+                  {
+                    "id": "CAPEC-703",
+                    "name": "Industrial Control System (ICS) Patterns",
+                    "value": 46
+                  }
+                ],
+                "total": 1,
+                "complete": true,
+                "info": {}
+              },
+              "op": "groupby",
+              "ir": {
+                "@": "GroupBy",
+                "end_conds": [],
+                "fn": "count",
+                "having": [
+                  ">=",
+                  5
+                ],
+                "hops": [
+                  {
+                    "@": "Hop",
+                    "direction": "in",
+                    "edge_conds": [],
+                    "relation": "IN_VIEW",
+                    "target": "AttackPattern"
+                  }
+                ],
+                "k": null,
+                "members": {
+                  "@": "Scan",
+                  "label": "View"
+                },
+                "order": null,
+                "prop": null
+              },
+              "fn": "count",
+              "property": null,
+              "order": null
+            }
+          }
+        ],
+        "records": [
+          {
+            "primary_id": "CAPEC-703",
+            "name": "Industrial Control System (ICS) Patterns",
+            "label": "View",
+            "description": "",
+            "properties": {
+              "value": 46
+            },
+            "facets": [],
+            "join_values": [],
+            "related": []
+          }
+        ]
+      }
+    ]
+  },
+  "deterministic_scores": {
+    "correlation": null,
+    "mapping_recall": null,
+    "coverage": null,
+    "provenance": {
+      "citations": 3,
+      "compliant": 3,
+      "citation_provenance_rate": 1.0,
+      "abstention_proof_ok": true,
+      "fully_provenanced": true
+    },
+    "inspectability": {
+      "citation_coverage": 1.0,
+      "traceability": 1.0,
+      "abstention_proofs": 1.0,
+      "inspectability": 1.0
+    }
+  },
+  "arm": "planned_llm_typed_lazy",
+  "run_meta": {
+    "planner": "llm-typed-lazy",
+    "synthesis": "deterministic",
+    "use_llm": true,
+    "llm_synthesis": false,
+    "llm_specialist": false,
+    "rewrite": null,
+    "observed_plan": [
+      {
+        "sub_question_id": "q1",
+        "source": "capec",
+        "text": "",
+        "entities": [
+          "View",
+          "IN_VIEW",
+          "AttackPattern"
+        ],
+        "seed_ids": [],
+        "depends_on": null,
+        "limits": {
+          "max_traversal_depth": 3,
+          "max_result_rows": 1000,
+          "query_timeout_ms": 5000
+        },
+        "step": {
+          "kind": "algebra",
+          "anchor_label": "View",
+          "anchor_ids": [],
+          "hops": [],
+          "depth": 1,
+          "algebra": {
+            "ir": {
+              "@": "GroupBy",
+              "end_conds": [],
+              "fn": "count",
+              "having": [
+                ">=",
+                5
+              ],
+              "hops": [
+                {
+                  "@": "Hop",
+                  "direction": "in",
+                  "edge_conds": [],
+                  "relation": "IN_VIEW",
+                  "target": "AttackPattern"
+                }
+              ],
+              "k": null,
+              "members": {
+                "@": "Scan",
+                "label": "View"
+              },
+              "order": null,
+              "prop": null
+            },
+            "labels": [
+              "View"
+            ],
+            "op": "groupby"
+          }
+        }
+      }
+    ],
+    "exit_code": 0,
+    "status": "answered",
+    "timings": {
+      "plan_ms": 14424.508,
+      "specialists": [
+        {
+          "sub_question": "q1",
+          "source": "capec",
+          "ms": 14.118
+        }
+      ],
+      "synthesis_ms": 6.257,
+      "total_ms": 14487.767
+    },
+    "registry_model": "gemma4-31b",
+    "drafter_used": "TypedDrafter",
+    "typed": [
+      {
+        "mode": "lazy",
+        "served_model": "gemma4-31b/106",
+        "model_calls": 2,
+        "catalog_calls": [
+          {
+            "name": "describe",
+            "args": {
+              "graph": "capec",
+              "target": "View"
+            },
+            "ok": true
+          }
+        ],
+        "prompt_tokens": 6375,
+        "completion_tokens": 812,
+        "emitted": true,
+        "parse_error": null,
+        "first_steps": 1,
+        "first_refused": 0,
+        "first_fixes": 0,
+        "valid_first": true,
+        "valid_first_raw": true,
+        "repair_used": false,
+        "fixed_by_repair": false,
+        "still_refused": 0,
+        "final_steps": 1,
+        "coercions": [],
+        "refusals": [],
+        "plan_problems": [],
+        "replies": [
+          {
+            "status": "ok",
+            "finish_reason": "tool_calls",
+            "calls": [
+              "describe"
+            ],
+            "text_chars": 0,
+            "repairs": []
+          },
+          {
+            "status": "ok",
+            "finish_reason": "stop",
+            "calls": [],
+            "text_chars": 418,
+            "repairs": []
+          }
+        ],
+        "error": null,
+        "fallback": null,
+        "seconds": 14.411,
+        "n_catalog_calls": 1,
+        "fixed_by_coercion": false
+      }
+    ],
+    "seams": {
+      "planner_llm": true,
+      "drafter": "TypedDrafter",
+      "specialist_llm": false,
+      "synthesis_llm": false,
+      "generic_only": "true"
+    },
+    "wall_s": 14.491,
+    "algebra_results": [
+      {
+        "step": "q1",
+        "kind": "groupby",
+        "value": null,
+        "ids": [
+          "CAPEC-703"
+        ],
+        "rows": [
+          {
+            "id": "CAPEC-703",
+            "name": "Industrial Control System (ICS) Patterns",
+            "value": 46
+          }
+        ],
+        "total": 1,
+        "complete": true,
+        "info": {}
+      }
+    ]
+  },
+  "evidence_volume": {
+    "results": 1,
+    "records": 1,
+    "related": 0
+  }
+}

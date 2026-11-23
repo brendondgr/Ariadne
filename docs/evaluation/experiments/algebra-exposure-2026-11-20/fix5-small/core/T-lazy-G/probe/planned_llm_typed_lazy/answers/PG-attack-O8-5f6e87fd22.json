@@ -1,0 +1,665 @@
+{
+  "id": "PG-attack-O8-5f6e87fd22",
+  "kind": "attack",
+  "tier": "algebra-probe",
+  "category": "PG-attack",
+  "question": "What is the shortest chain of connections, following any kind of link in either direction, between technique T1056 (Input Capture) and sub-technique T1021.007 (Cloud Services)?",
+  "gold": {
+    "assertions": {
+      "min_records": 0,
+      "must_include_ids": [],
+      "must_include_related": []
+    },
+    "ex_gold": {
+      "pool": "algebra",
+      "scheme": "attack",
+      "kind": "set",
+      "expected": [
+        "M1026",
+        "T1021.007",
+        "T1056",
+        "T1056.003"
+      ]
+    }
+  },
+  "answer": {
+    "headline": "Gathered 4 record(s) from 2 source(s); 1 cross-source correlation(s) on shared identifiers.",
+    "narrative": "Found 2 record(s) in MITRE ATT&CK including T1021.007, T1056. T1021.007 (Cloud Services) has 1 technique: T1021. T1056 (Input Capture) has 4 sub-techniques: T1056.002, T1056.003, T1056.004, T1056.001. Found 2 CAPEC record(s) for CAPEC-569, CAPEC-654; ATT&CK mappings: T1056. CAPEC-569 (Collect Data as Provided by Users) has Abstraction: Standard; Status: Draft. CAPEC-654 (Credential Prompt Impersonation) has Abstraction: Detailed; Likelihood_Of_Attack: Medium; Status: Stable; Typical_Severity: High. CAPEC-654 (Credential Prompt Impersonation) Likelihood Of Attack: Medium. CAPEC-569 (Collect Data as Provided by Users) has 1 ATT&CK mapping: T1056. CAPEC-654 (Credential Prompt Impersonation) has 1 ATT&CK mapping: T1056. 1 identifier are corroborated across both CAPEC and ATT&CK (T1056).",
+    "composer": "deterministic",
+    "fallback_reason": null,
+    "claims": [
+      {
+        "text": "Found 2 record(s) in MITRE ATT&CK including T1021.007, T1056.",
+        "kind": "fact",
+        "entity_ids": [
+          "T1021.007",
+          "T1056"
+        ],
+        "citations": [
+          {
+            "source": "attack",
+            "primary_id": "T1021.007"
+          },
+          {
+            "source": "attack",
+            "primary_id": "T1056"
+          }
+        ]
+      },
+      {
+        "text": "T1021.007 (Cloud Services) has 1 technique: T1021.",
+        "kind": "enumeration",
+        "entity_ids": [
+          "T1021"
+        ],
+        "citations": [
+          {
+            "source": "attack",
+            "primary_id": "T1021.007"
+          }
+        ]
+      },
+      {
+        "text": "T1056 (Input Capture) has 4 sub-techniques: T1056.002, T1056.003, T1056.004, T1056.001.",
+        "kind": "enumeration",
+        "entity_ids": [
+          "T1056.002",
+          "T1056.003",
+          "T1056.004",
+          "T1056.001"
+        ],
+        "citations": [
+          {
+            "source": "attack",
+            "primary_id": "T1056"
+          }
+        ]
+      },
+      {
+        "text": "Found 2 CAPEC record(s) for CAPEC-569, CAPEC-654; ATT&CK mappings: T1056.",
+        "kind": "fact",
+        "entity_ids": [
+          "CAPEC-569",
+          "CAPEC-654"
+        ],
+        "citations": [
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-569"
+          },
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-654"
+          }
+        ]
+      },
+      {
+        "text": "CAPEC-569 (Collect Data as Provided by Users) has Abstraction: Standard; Status: Draft.",
+        "kind": "fact",
+        "entity_ids": [
+          "CAPEC-569"
+        ],
+        "citations": [
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-569"
+          }
+        ]
+      },
+      {
+        "text": "CAPEC-654 (Credential Prompt Impersonation) has Abstraction: Detailed; Likelihood_Of_Attack: Medium; Status: Stable; Typical_Severity: High.",
+        "kind": "fact",
+        "entity_ids": [
+          "CAPEC-654"
+        ],
+        "citations": [
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-654"
+          }
+        ]
+      },
+      {
+        "text": "CAPEC-654 (Credential Prompt Impersonation) Likelihood Of Attack: Medium.",
+        "kind": "fact",
+        "entity_ids": [
+          "CAPEC-654"
+        ],
+        "citations": [
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-654"
+          }
+        ]
+      },
+      {
+        "text": "CAPEC-569 (Collect Data as Provided by Users) has 1 ATT&CK mapping: T1056.",
+        "kind": "enumeration",
+        "entity_ids": [
+          "T1056"
+        ],
+        "citations": [
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-569"
+          }
+        ]
+      },
+      {
+        "text": "CAPEC-654 (Credential Prompt Impersonation) has 1 ATT&CK mapping: T1056.",
+        "kind": "enumeration",
+        "entity_ids": [
+          "T1056"
+        ],
+        "citations": [
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-654"
+          }
+        ]
+      },
+      {
+        "text": "The identifier T1056 is corroborated across attack and capec (3 record(s) share it).",
+        "kind": "correlation",
+        "entity_ids": [
+          "T1056"
+        ],
+        "citations": [
+          {
+            "source": "attack",
+            "primary_id": "T1056"
+          },
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-569"
+          },
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-654"
+          }
+        ]
+      }
+    ],
+    "abstentions": [],
+    "notes": []
+  },
+  "logic_flow": {
+    "task": {
+      "sub_question_id": "PG-attack-O8-5f6e87fd22",
+      "source": "attack",
+      "text": "What is the shortest chain of connections, following any kind of link in either direction, between technique T1056 (Input Capture) and sub-technique T1021.007 (Cloud Services)?",
+      "entities": [
+        "Technique",
+        "SubTechnique"
+      ],
+      "limits": {
+        "max_traversal_depth": 3,
+        "max_result_rows": 20000,
+        "query_timeout_ms": 60000
+      },
+      "join_key": null,
+      "seed_ids": [
+        "T1056",
+        "T1021.007"
+      ],
+      "rationale": "algebra probe set (Era 2 Step 9 Phase G)"
+    },
+    "results": [
+      {
+        "source": "attack",
+        "sub_question_id": "q1",
+        "sub_question": "In attack, identify HAS_TECHNIQUE, SubTechnique, Technique relevant to: What is the shortest chain of connections, following any kind of link in either direction, between technique T1056 (Input Capture) and sub-technique T1021.007 (Cloud Services)?",
+        "query": "MATCH (n) WHERE coalesce(n.attack_id, n.id) IN $ids OPTIONAL MATCH (n)<-[:HAS_SUBTECHNIQUE]-(m0) WHERE n:SubTechnique OR NOT (n:SubTechnique OR n:Technique) WITH n, collect(DISTINCT {m: m0, r: 'HAS_SUBTECHNIQUE'}) AS h0 OPTIONAL MATCH (n)-[:HAS_SUBTECHNIQUE]->(m1) WHERE n:Technique OR NOT (n:SubTechnique OR n:Technique) WITH n, h0, collect(DISTINCT {m: m1, r: 'HAS_SUBTECHNIQUE'}) AS h1 WITH n, h0 + h1 AS hops UNWIND (CASE WHEN size(hops) = 0 THEN [{m: null, r: null}] ELSE hops END) AS hop RETURN coalesce(n.attack_id, n.id) AS anchor_id, n.name AS anchor_name, labels(n)[0] AS anchor_label, coalesce(hop.m.attack_id, hop.m.id) AS neighbour_id, hop.m.name AS neighbour_name, labels(hop.m)[0] AS neighbour_label, hop.r AS rel_type, coalesce(hop.via.attack_id, hop.via.id) AS via_id LIMIT 1000",
+        "ok": true,
+        "partial": false,
+        "error": null,
+        "summary": "Found 2 record(s) in MITRE ATT&CK including T1021.007, T1056.",
+        "traces": [
+          {
+            "step": "intake",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "source": "attack",
+              "card": "attack"
+            }
+          },
+          {
+            "step": "resolve",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "labels": [
+                "SubTechnique",
+                "Technique"
+              ],
+              "relationships": [
+                "HAS_TECHNIQUE"
+              ],
+              "seed_ids": [
+                "T1056",
+                "T1021.007"
+              ],
+              "join_key": "attack-technique-id"
+            }
+          },
+          {
+            "step": "gate",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "attempt": 1,
+              "template": "generic_chain",
+              "query": "MATCH (n) WHERE coalesce(n.attack_id, n.id) IN $ids OPTIONAL MATCH (n)<-[:HAS_SUBTECHNIQUE]-(m0) WHERE n:SubTechnique OR NOT (n:SubTechnique OR n:Technique) WITH n, collect(DISTINCT {m: m0, r: 'HAS_SUBTECHNIQUE'}) AS h0 OPTIONAL MATCH (n)-[:HAS_SUBTECHNIQUE]->(m1) WHERE n:Technique OR NOT (n:SubTechnique OR n:Technique) WITH n, h0, collect(DISTINCT {m: m1, r: 'HAS_SUBTECHNIQUE'}) AS h1 WITH n, h0 + h1 AS hops UNWIND (CASE WHEN size(hops) = 0 THEN [{m: null, r: null}] ELSE hops END) AS hop RETURN coalesce(n.attack_id, n.id) AS anchor_id, n.name AS anchor_name, labels(n)[0] AS anchor_label, coalesce(hop.m.attack_id, hop.m.id) AS neighbour_id, hop.m.name AS neighbour_name, labels(hop.m)[0] AS neighbour_label, hop.r AS rel_type, coalesce(hop.via.attack_id, hop.via.id) AS via_id LIMIT 1000",
+              "injected": [
+                "LIMIT 1000 appended (none present)"
+              ],
+              "timing_ms": 2.011
+            }
+          },
+          {
+            "step": "execute",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "row_count": 7,
+              "timing_ms": 7.1,
+              "row_ceiling": 1000,
+              "truncated": false
+            }
+          },
+          {
+            "step": "assess",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "row_count": 7,
+              "timing_ms": 0.01
+            }
+          },
+          {
+            "step": "normalize",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "record_count": 2,
+              "timing_ms": 2.911
+            }
+          }
+        ],
+        "records": [
+          {
+            "primary_id": "T1021.007",
+            "name": "Cloud Services",
+            "label": "SubTechnique",
+            "description": "",
+            "properties": {},
+            "facets": [],
+            "join_values": [
+              "T1021.007"
+            ],
+            "related": [
+              {
+                "id": "T1021",
+                "name": "Remote Services",
+                "label": "Technique",
+                "type": "HAS_SUBTECHNIQUE",
+                "description": "Adversaries may use [Valid Accounts](https://attack.mitre.org/techniques/T1078) to log into a service that accepts remote connections, such as telnet, SSH, and VNC. The adversary may then perform actions as the logged-on user.\n\nIn an enterprise environment, servers and workstations can be organized into domains. Domains provide centralized identity management, allowing users to login using one set of credentials across the entire network. If an adversary is able to obtain a set of valid domain credentials, they could login to many different machines using remote access protocols such as secure shell (SSH) or remote desktop protocol (RDP).(Citation: SSH Secure Shell)(Citation: TechNet Remote Desktop Services) They could also login to accessible SaaS or IaaS services, such as those that federate their identities to the domain, or management platforms for internal virtualization environments such as VMware vCenter. \n\nLegitimate applications (such as [Software Deployment Tools](https://attack.mitre.org/techniques/T1072) and other administrative programs) may utilize [Remote Services](https://attack.mitre.org/techniques/T1021) to access remote hosts. For example, Apple Remote Desktop (ARD) on macOS is native software used for remote management. ARD leverages a blend of protocols, including [VNC](https://attack.mitre.org/techniques/T1021/005) to send the screen and control buffers and [SSH](https://attack.mitre.org/techniques/T1021/004) for secure file transfer.(Citation: Remote Management MDM macOS)(Citation: Kickstart Apple Remote Desktop commands)(Citation: Apple Remote Desktop Admin Guide 3.3) Adversaries can abuse applications such as ARD to gain remote code execution and perform lateral movement. In versions of macOS prior to 10.14, an adversary can escalate an SSH session to an ARD session which enables an adversary to accept TCC (Transparency, Consent, and Control) prompts without user interaction and gain access to data.(Citation: FireEye 2019 Apple Remote Desktop)(Citation: Lockboxx ARD 2019)(Citation: Kickstart Apple Remote Desktop commands)"
+              }
+            ]
+          },
+          {
+            "primary_id": "T1056",
+            "name": "Input Capture",
+            "label": "Technique",
+            "description": "",
+            "properties": {},
+            "facets": [],
+            "join_values": [
+              "T1056"
+            ],
+            "related": [
+              {
+                "id": "T1056.004",
+                "name": "Credential API Hooking",
+                "label": "SubTechnique",
+                "type": "HAS_SUBTECHNIQUE",
+                "description": "Adversaries may hook into Windows application programming interface (API) functions and Linux system functions to collect user credentials. Malicious hooking mechanisms may capture API or function calls that include parameters that reveal user authentication credentials.(Citation: Microsoft TrojanSpy:Win32/Ursnif.gen!I Sept 2017) Unlike [Keylogging](https://attack.mitre.org/techniques/T1056/001), this technique focuses specifically on API functions that include parameters that reveal user credentials. \n\nIn Windows, hooking involves redirecting calls to these functions and can be implemented via:\n\n* **Hooks procedures**, which intercept and execute designated code in response to events such as messages, keystrokes, and mouse inputs.(Citation: Microsoft Hook Overview)(Citation: Elastic Process Injection July 2017)\n* **Import address table (IAT) hooking**, which use modifications to a process’s IAT, where pointers to imported API functions are stored.(Citation: Elastic Process Injection July 2017)(Citation: Adlice Software IAT Hooks Oct 2014)(Citation: MWRInfoSecurity Dynamic Hooking 2015)\n* **Inline hooking**, which overwrites the first bytes in an API function to redirect code flow.(Citation: Elastic Process Injection July 2017)(Citation: HighTech Bridge Inline Hooking Sept 2011)(Citation: MWRInfoSecurity Dynamic Hooking 2015)\n\nIn Linux and macOS, adversaries may hook into system functions via the `LD_PRELOAD` (Linux) or `DYLD_INSERT_LIBRARIES` (macOS) environment variables, which enables loading shared libraries into a program’s address space. For example, an adversary may capture credentials by hooking into the `libc read` function leveraged by SSH or SCP.(Citation: Intezer Symbiote 2022)"
+              },
+              {
+                "id": "T1056.002",
+                "name": "GUI Input Capture",
+                "label": "SubTechnique",
+                "type": "HAS_SUBTECHNIQUE",
+                "description": "Adversaries may mimic common operating system GUI components to prompt users for credentials with a seemingly legitimate prompt. When programs are executed that need additional privileges than are present in the current user context, it is common for the operating system to prompt the user for proper credentials to authorize the elevated privileges for the task (ex: [Bypass User Account Control](https://attack.mitre.org/techniques/T1548/002)).\n\nAdversaries may mimic this functionality to prompt users for credentials with a seemingly legitimate prompt for a number of reasons that mimic normal usage, such as a fake installer requiring additional access or a fake malware removal suite.(Citation: OSX Malware Exploits MacKeeper) This type of prompt can be used to collect credentials via various languages such as [AppleScript](https://attack.mitre.org/techniques/T1059/002)(Citation: LogRhythm Do You Trust Oct 2014)(Citation: OSX Keydnap malware)(Citation: Spoofing credential dialogs) and [PowerShell](https://attack.mitre.org/techniques/T1059/001).(Citation: LogRhythm Do You Trust Oct 2014)(Citation: Enigma Phishing for Credentials Jan 2015)(Citation: Spoofing credential dialogs) On Linux systems adversaries may launch dialog boxes prompting users for credentials from malicious shell scripts or the command line (i.e. [Unix Shell](https://attack.mitre.org/techniques/T1059/004)).(Citation: Spoofing credential dialogs)\n\nAdversaries may also mimic common software authentication requests, such as those from browsers or email clients. This may also be paired with user activity monitoring (i.e., [Browser Information Discovery](https://attack.mitre.org/techniques/T1217) and/or [Application Window Discovery](https://attack.mitre.org/techniques/T1010)) to spoof prompts when users are naturally accessing sensitive sites/data."
+              },
+              {
+                "id": "T1056.003",
+                "name": "Web Portal Capture",
+                "label": "SubTechnique",
+                "type": "HAS_SUBTECHNIQUE",
+                "description": "Adversaries may install code on externally facing portals, such as a VPN login page, to capture and transmit credentials of users who attempt to log into the service. For example, a compromised login page may log provided user credentials before logging the user in to the service.\n\nThis variation on input capture may be conducted post-compromise using legitimate administrative access as a backup measure to maintain network access through [External Remote Services](https://attack.mitre.org/techniques/T1133) and [Valid Accounts](https://attack.mitre.org/techniques/T1078) or as part of the initial compromise by exploitation of the externally facing web service.(Citation: Volexity Virtual Private Keylogging)"
+              },
+              {
+                "id": "T1056.001",
+                "name": "Keylogging",
+                "label": "SubTechnique",
+                "type": "HAS_SUBTECHNIQUE",
+                "description": "Adversaries may log user keystrokes to intercept credentials as the user types them. Keylogging is likely to be used to acquire credentials for new access opportunities when [OS Credential Dumping](https://attack.mitre.org/techniques/T1003) efforts are not effective, and may require an adversary to intercept keystrokes on a system for a substantial period of time before credentials can be successfully captured. In order to increase the likelihood of capturing credentials quickly, an adversary may also perform actions such as clearing browser cookies to force users to reauthenticate to systems.(Citation: Talos Kimsuky Nov 2021)\n\nKeylogging is the most prevalent type of input capture, with many different ways of intercepting keystrokes.(Citation: Adventures of a Keystroke) Some methods include:\n\n* Hooking API callbacks used for processing keystrokes. Unlike [Credential API Hooking](https://attack.mitre.org/techniques/T1056/004), this focuses solely on API functions intended for processing keystroke data.\n* Reading raw keystroke data from the hardware buffer.\n* Windows Registry modifications.\n* Custom drivers.\n* [Modify System Image](https://attack.mitre.org/techniques/T1601) may provide adversaries with hooks into the operating system of network devices to read raw keystrokes for login sessions.(Citation: Cisco Blog Legacy Device Attacks) "
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "source": "capec",
+        "sub_question_id": "q2",
+        "sub_question": "In capec, identify AttackPattern, CanFollow, CanPrecede, TaxonomyEntry relevant to: What is the shortest chain of connections, following any kind of link in either direction, between technique T1056 (Input Capture) and sub-technique T1021.007 (Cloud Services)?",
+        "query": "g.V().hasLabel(\"TaxonomyEntry\").has(\"entry_id\", within(entryIds)).as(\"tax\").in(\"MAPS_TO\").hasLabel(\"AttackPattern\").as(\"ap\").select(\"ap\",\"tax\").by(elementMap()).limit(1000)",
+        "ok": true,
+        "partial": false,
+        "error": null,
+        "summary": "Found 2 CAPEC record(s) for CAPEC-569, CAPEC-654; ATT&CK mappings: T1056.",
+        "traces": [
+          {
+            "step": "intake",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "source": "capec",
+              "card": "capec"
+            }
+          },
+          {
+            "step": "resolve",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "labels": [
+                "AttackPattern",
+                "TaxonomyEntry"
+              ],
+              "relationships": [
+                "CanFollow",
+                "CanPrecede"
+              ],
+              "seed_ids": [
+                "T1021.007",
+                "T1056"
+              ],
+              "join_key": "attack-technique-id"
+            }
+          },
+          {
+            "step": "gate",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "attempt": 1,
+              "template": "generic_bridge",
+              "query": "g.V().hasLabel(\"TaxonomyEntry\").has(\"entry_id\", within(entryIds)).as(\"tax\").in(\"MAPS_TO\").hasLabel(\"AttackPattern\").as(\"ap\").select(\"ap\",\"tax\").by(elementMap()).limit(1000)",
+              "injected": [],
+              "timing_ms": 0.3
+            }
+          },
+          {
+            "step": "execute",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "row_count": 2,
+              "timing_ms": 6.2,
+              "row_ceiling": 1000,
+              "truncated": false
+            }
+          },
+          {
+            "step": "assess",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "row_count": 2,
+              "timing_ms": 0.005
+            }
+          },
+          {
+            "step": "normalize",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "record_count": 2,
+              "timing_ms": 0.08
+            }
+          }
+        ],
+        "records": [
+          {
+            "primary_id": "CAPEC-569",
+            "name": "Collect Data as Provided by Users",
+            "label": "AttackPattern",
+            "description": "An attacker leverages a tool, device, or program to obtain specific information as provided by a user of the target system. This information is often needed by the attacker to launch a follow-on attack. This attack is different than Social Engineering as the adversary is not tricking or deceiving the user. Instead the adversary is putting a mechanism in place that captures the information that a user legitimately enters into a system. Deploying a keylogger, performing a UAC prompt, or wrapping the Windows default credential provider are all examples of such interactions.",
+            "properties": {
+              "Status": "Draft",
+              "name": "Collect Data as Provided by Users",
+              "description": "An attacker leverages a tool, device, or program to obtain specific information as provided by a user of the target system. This information is often needed by the attacker to launch a follow-on attack. This attack is different than Social Engineering as the adversary is not tricking or deceiving the user. Instead the adversary is putting a mechanism in place that captures the information that a user legitimately enters into a system. Deploying a keylogger, performing a UAC prompt, or wrapping the Windows default credential provider are all examples of such interactions.",
+              "id": "capec:attack-pattern:569",
+              "Abstraction": "Standard"
+            },
+            "facets": [],
+            "join_values": [
+              "T1056"
+            ],
+            "related": [
+              {
+                "id": "T1056",
+                "name": "Input Capture",
+                "label": "TaxonomyEntry",
+                "type": "MAPS_TO",
+                "entry_id": "1056",
+                "taxonomy_name": "ATTACK"
+              }
+            ]
+          },
+          {
+            "primary_id": "CAPEC-654",
+            "name": "Credential Prompt Impersonation",
+            "label": "AttackPattern",
+            "description": "An adversary, through a previously installed malicious application, impersonates a credential prompt in an attempt to steal a user's credentials.",
+            "properties": {
+              "Status": "Stable",
+              "Likelihood_Of_Attack": "Medium",
+              "Typical_Severity": "High",
+              "name": "Credential Prompt Impersonation",
+              "description": "An adversary, through a previously installed malicious application, impersonates a credential prompt in an attempt to steal a user's credentials.",
+              "id": "capec:attack-pattern:654",
+              "Abstraction": "Detailed"
+            },
+            "facets": [],
+            "join_values": [
+              "T1056"
+            ],
+            "related": [
+              {
+                "id": "T1056",
+                "name": "Input Capture",
+                "label": "TaxonomyEntry",
+                "type": "MAPS_TO",
+                "entry_id": "1056",
+                "taxonomy_name": "ATTACK"
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "deterministic_scores": {
+    "correlation": null,
+    "mapping_recall": null,
+    "coverage": null,
+    "provenance": {
+      "citations": 14,
+      "compliant": 14,
+      "citation_provenance_rate": 1.0,
+      "abstention_proof_ok": true,
+      "fully_provenanced": true
+    },
+    "inspectability": {
+      "citation_coverage": 1.0,
+      "traceability": 1.0,
+      "abstention_proofs": 1.0,
+      "inspectability": 1.0
+    }
+  },
+  "arm": "planned_llm_typed_lazy",
+  "run_meta": {
+    "planner": "llm-typed-lazy",
+    "synthesis": "deterministic",
+    "use_llm": true,
+    "llm_synthesis": false,
+    "llm_specialist": false,
+    "rewrite": null,
+    "observed_plan": [
+      {
+        "sub_question_id": "q1",
+        "source": "attack",
+        "text": "In attack, identify HAS_TECHNIQUE, SubTechnique, Technique relevant to: What is the shortest chain of connections, following any kind of link in either direction, between technique T1056 (Input Capture) and sub-technique T1021.007 (Cloud Services)?",
+        "entities": [
+          "HAS_TECHNIQUE",
+          "SubTechnique",
+          "Technique"
+        ],
+        "seed_ids": [],
+        "depends_on": null,
+        "limits": {
+          "max_traversal_depth": 3,
+          "max_result_rows": 1000,
+          "query_timeout_ms": 5000
+        }
+      },
+      {
+        "sub_question_id": "q2",
+        "source": "capec",
+        "text": "In capec, identify AttackPattern, CanFollow, CanPrecede, TaxonomyEntry relevant to: What is the shortest chain of connections, following any kind of link in either direction, between technique T1056 (Input Capture) and sub-technique T1021.007 (Cloud Services)?",
+        "entities": [
+          "AttackPattern",
+          "CanFollow",
+          "CanPrecede",
+          "TaxonomyEntry"
+        ],
+        "seed_ids": [],
+        "depends_on": null,
+        "limits": {
+          "max_traversal_depth": 3,
+          "max_result_rows": 1000,
+          "query_timeout_ms": 5000
+        }
+      }
+    ],
+    "exit_code": 0,
+    "status": "answered",
+    "timings": {
+      "plan_ms": 119061.524,
+      "specialists": [
+        {
+          "sub_question": "q1",
+          "source": "attack",
+          "ms": 16.61
+        },
+        {
+          "sub_question": "q2",
+          "source": "capec",
+          "ms": 13.091
+        }
+      ],
+      "synthesis_ms": 11.342,
+      "total_ms": 119152.505
+    },
+    "registry_model": "gemma4-31b",
+    "drafter_used": "DeterministicDrafter",
+    "typed": [
+      {
+        "mode": "lazy",
+        "served_model": "gemma4-31b/106",
+        "model_calls": 2,
+        "catalog_calls": [
+          {
+            "name": "resolve_entity",
+            "args": {
+              "graph": "attack",
+              "text": "T1056"
+            },
+            "ok": true
+          },
+          {
+            "name": "resolve_entity",
+            "args": {
+              "graph": "attack",
+              "text": "T1021.007"
+            },
+            "ok": true
+          }
+        ],
+        "prompt_tokens": 6083,
+        "completion_tokens": 6191,
+        "emitted": true,
+        "parse_error": null,
+        "first_steps": 0,
+        "first_refused": 0,
+        "first_fixes": 0,
+        "valid_first": false,
+        "valid_first_raw": false,
+        "repair_used": false,
+        "fixed_by_repair": false,
+        "still_refused": 0,
+        "final_steps": 0,
+        "coercions": [],
+        "refusals": [],
+        "plan_problems": [],
+        "replies": [
+          {
+            "status": "ok",
+            "finish_reason": "tool_calls",
+            "calls": [
+              "resolve_entity",
+              "resolve_entity"
+            ],
+            "text_chars": 0,
+            "repairs": [
+              {
+                "kind": "args_closed_truncated",
+                "detail": "34 chars",
+                "call_id": "chatcmpl-tool-9a3ec24c158c8eb4"
+              }
+            ]
+          },
+          {
+            "status": "ok",
+            "finish_reason": "stop",
+            "calls": [],
+            "text_chars": 495,
+            "repairs": []
+          }
+        ],
+        "error": null,
+        "fallback": "floor",
+        "seconds": 119.042,
+        "n_catalog_calls": 2,
+        "fixed_by_coercion": false
+      }
+    ],
+    "seams": {
+      "planner_llm": true,
+      "drafter": "TypedDrafter",
+      "specialist_llm": false,
+      "synthesis_llm": false,
+      "generic_only": "true"
+    },
+    "wall_s": 119.157
+  },
+  "evidence_volume": {
+    "results": 2,
+    "records": 4,
+    "related": 7
+  }
+}

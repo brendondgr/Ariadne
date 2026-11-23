@@ -1,0 +1,380 @@
+{
+  "id": "PG-capec-O3-82b4e0b02b",
+  "kind": "capec",
+  "tier": "algebra-probe",
+  "category": "PG-capec",
+  "question": "Which attack pattern lists the most required skills? If there is a tie, name every one tied.",
+  "gold": {
+    "assertions": {
+      "min_records": 0,
+      "must_include_ids": [],
+      "must_include_related": []
+    },
+    "ex_gold": {
+      "pool": "algebra",
+      "scheme": "capec",
+      "kind": "set",
+      "expected": [
+        "CAPEC-638"
+      ]
+    }
+  },
+  "answer": {
+    "headline": "Gathered 1 record(s) from 1 source(s).",
+    "narrative": "Found 1 CAPEC record(s): CAPEC-638. CAPEC-638 (Altered Component Firmware) has value: 4. Ranked by the number of REQUIRES_SKILL links (desc; ties at the cut kept): Altered Component Firmware (CAPEC-638): 4.",
+    "composer": "deterministic",
+    "fallback_reason": null,
+    "claims": [
+      {
+        "text": "Found 1 CAPEC record(s): CAPEC-638.",
+        "kind": "fact",
+        "entity_ids": [
+          "CAPEC-638"
+        ],
+        "citations": [
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-638"
+          }
+        ]
+      },
+      {
+        "text": "CAPEC-638 (Altered Component Firmware) has value: 4.",
+        "kind": "fact",
+        "entity_ids": [
+          "CAPEC-638"
+        ],
+        "citations": [
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-638"
+          }
+        ]
+      },
+      {
+        "text": "Ranked by the number of REQUIRES_SKILL links (desc; ties at the cut kept): Altered Component Firmware (CAPEC-638): 4.",
+        "kind": "fact",
+        "entity_ids": [
+          "CAPEC-638"
+        ],
+        "citations": [
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-638"
+          }
+        ]
+      }
+    ],
+    "abstentions": [],
+    "notes": []
+  },
+  "logic_flow": {
+    "task": {
+      "sub_question_id": "PG-capec-O3-82b4e0b02b",
+      "source": "capec",
+      "text": "Which attack pattern lists the most required skills? If there is a tie, name every one tied.",
+      "entities": [
+        "AttackPattern",
+        "REQUIRES_SKILL",
+        "Skill"
+      ],
+      "limits": {
+        "max_traversal_depth": 3,
+        "max_result_rows": 20000,
+        "query_timeout_ms": 60000
+      },
+      "join_key": null,
+      "seed_ids": [],
+      "rationale": "algebra probe set (Era 2 Step 9 Phase G)"
+    },
+    "results": [
+      {
+        "source": "capec",
+        "sub_question_id": "q1",
+        "sub_question": "",
+        "query": "g.V().hasLabel('AttackPattern').project('id', 'name', 'value').by('id').by(__.coalesce(__.values('name'), __.constant(null))).by(__.as('s1').out('REQUIRES_SKILL').hasLabel('Skill').where(neq('s1')).dedup().count()).order().by(__.select('id')).fold().project('rows').by(__.identity())",
+        "ok": true,
+        "partial": false,
+        "error": null,
+        "summary": "Found 1 CAPEC record(s): CAPEC-638.",
+        "traces": [
+          {
+            "step": "intake",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "source": "capec",
+              "card": "capec"
+            }
+          },
+          {
+            "step": "resolve",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "labels": [
+                "AttackPattern",
+                "Skill"
+              ],
+              "relationships": [
+                "REQUIRES_SKILL"
+              ],
+              "seed_ids": [],
+              "join_key": null
+            }
+          },
+          {
+            "step": "gate",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "attempt": 1,
+              "template": "algebra",
+              "query": "g.V().hasLabel('AttackPattern').project('id', 'name', 'value').by('id').by(__.coalesce(__.values('name'), __.constant(null))).by(__.as('s1').out('REQUIRES_SKILL').hasLabel('Skill').where(neq('s1')).dedup().count()).order().by(__.select('id')).fold().project('rows').by(__.identity())",
+              "injected": [],
+              "note": "compiled by the operator algebra (validated against the card; read-only by construction)",
+              "id_map": {}
+            }
+          },
+          {
+            "step": "execute",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "row_count": 1
+            }
+          },
+          {
+            "step": "algebra",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "result": {
+                "step": "q1",
+                "kind": "rank",
+                "value": null,
+                "ids": [
+                  "CAPEC-638"
+                ],
+                "rows": [
+                  {
+                    "id": "CAPEC-638",
+                    "name": "Altered Component Firmware",
+                    "value": 4
+                  }
+                ],
+                "total": 1,
+                "complete": true,
+                "info": {}
+              },
+              "op": "rank",
+              "ir": {
+                "@": "Rank",
+                "by_walk": [
+                  {
+                    "@": "Hop",
+                    "direction": "out",
+                    "edge_conds": [],
+                    "relation": "REQUIRES_SKILL",
+                    "target": "Skill"
+                  }
+                ],
+                "k": 1,
+                "of": {
+                  "@": "Scan",
+                  "label": "AttackPattern"
+                },
+                "order": "desc",
+                "prop": null
+              },
+              "property": null,
+              "order": "desc",
+              "by_path": [
+                "REQUIRES_SKILL"
+              ]
+            }
+          }
+        ],
+        "records": [
+          {
+            "primary_id": "CAPEC-638",
+            "name": "Altered Component Firmware",
+            "label": "AttackPattern",
+            "description": "",
+            "properties": {
+              "value": 4
+            },
+            "facets": [],
+            "join_values": [],
+            "related": []
+          }
+        ]
+      }
+    ]
+  },
+  "deterministic_scores": {
+    "correlation": null,
+    "mapping_recall": null,
+    "coverage": null,
+    "provenance": {
+      "citations": 3,
+      "compliant": 3,
+      "citation_provenance_rate": 1.0,
+      "abstention_proof_ok": true,
+      "fully_provenanced": true
+    },
+    "inspectability": {
+      "citation_coverage": 1.0,
+      "traceability": 1.0,
+      "abstention_proofs": 1.0,
+      "inspectability": 1.0
+    }
+  },
+  "arm": "planned_llm_typed_lazy",
+  "run_meta": {
+    "planner": "llm-typed-lazy",
+    "synthesis": "deterministic",
+    "use_llm": true,
+    "llm_synthesis": false,
+    "llm_specialist": false,
+    "rewrite": null,
+    "observed_plan": [
+      {
+        "sub_question_id": "q1",
+        "source": "capec",
+        "text": "",
+        "entities": [
+          "AttackPattern",
+          "REQUIRES_SKILL",
+          "Skill"
+        ],
+        "seed_ids": [],
+        "depends_on": null,
+        "limits": {
+          "max_traversal_depth": 3,
+          "max_result_rows": 1000,
+          "query_timeout_ms": 5000
+        },
+        "step": {
+          "kind": "algebra",
+          "anchor_label": "AttackPattern",
+          "anchor_ids": [],
+          "hops": [],
+          "depth": 1,
+          "algebra": {
+            "ir": {
+              "@": "Rank",
+              "by_walk": [
+                {
+                  "@": "Hop",
+                  "direction": "out",
+                  "edge_conds": [],
+                  "relation": "REQUIRES_SKILL",
+                  "target": "Skill"
+                }
+              ],
+              "k": 1,
+              "of": {
+                "@": "Scan",
+                "label": "AttackPattern"
+              },
+              "order": "desc",
+              "prop": null
+            },
+            "labels": [
+              "AttackPattern"
+            ],
+            "op": "rank"
+          }
+        }
+      }
+    ],
+    "exit_code": 0,
+    "status": "answered",
+    "timings": {
+      "plan_ms": 12424.254,
+      "specialists": [
+        {
+          "sub_question": "q1",
+          "source": "capec",
+          "ms": 21.55
+        }
+      ],
+      "synthesis_ms": 5.766,
+      "total_ms": 12494.351
+    },
+    "registry_model": "gemma4-31b",
+    "drafter_used": "TypedDrafter",
+    "typed": [
+      {
+        "mode": "lazy",
+        "served_model": "gemma4-31b/106",
+        "model_calls": 1,
+        "catalog_calls": [],
+        "prompt_tokens": 2934,
+        "completion_tokens": 696,
+        "emitted": true,
+        "parse_error": null,
+        "first_steps": 1,
+        "first_refused": 0,
+        "first_fixes": 0,
+        "valid_first": true,
+        "valid_first_raw": true,
+        "repair_used": false,
+        "fixed_by_repair": false,
+        "still_refused": 0,
+        "final_steps": 1,
+        "coercions": [],
+        "refusals": [],
+        "plan_problems": [],
+        "replies": [
+          {
+            "status": "ok",
+            "finish_reason": "stop",
+            "calls": [],
+            "text_chars": 377,
+            "repairs": []
+          }
+        ],
+        "error": null,
+        "fallback": null,
+        "seconds": 12.41,
+        "n_catalog_calls": 0,
+        "fixed_by_coercion": false
+      }
+    ],
+    "seams": {
+      "planner_llm": true,
+      "drafter": "TypedDrafter",
+      "specialist_llm": false,
+      "synthesis_llm": false,
+      "generic_only": "true"
+    },
+    "wall_s": 12.497,
+    "algebra_results": [
+      {
+        "step": "q1",
+        "kind": "rank",
+        "value": null,
+        "ids": [
+          "CAPEC-638"
+        ],
+        "rows": [
+          {
+            "id": "CAPEC-638",
+            "name": "Altered Component Firmware",
+            "value": 4
+          }
+        ],
+        "total": 1,
+        "complete": true,
+        "info": {}
+      }
+    ]
+  },
+  "evidence_volume": {
+    "results": 1,
+    "records": 1,
+    "related": 0
+  }
+}

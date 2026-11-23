@@ -1,0 +1,231 @@
+{
+  "id": "PG-capec-O4-dc2e6a2ede",
+  "kind": "capec",
+  "tier": "algebra-probe",
+  "category": "PG-capec",
+  "question": "Is category CAPEC-689 (Disposal) directly connected to view CAPEC-703 (Industrial Control System (ICS) Patterns) in CAPEC, and if it is, what is the nature of that connection?",
+  "gold": {
+    "assertions": {
+      "min_records": 0,
+      "must_include_ids": [],
+      "must_include_related": []
+    },
+    "ex_gold": {
+      "pool": "algebra",
+      "scheme": "capec",
+      "kind": "value",
+      "expected": [],
+      "value": false
+    }
+  },
+  "answer": {
+    "headline": "No records were returned by the routed specialists; 1 question(s) the sources don't establish.",
+    "narrative": "I couldn't find 'CAPEC' or 'Disposal' or 'Industrial Control System' or 'Patterns' in the live capec graph. Check the name, or tell me the entity's catalogue id and I'll look it up.",
+    "composer": "deterministic",
+    "fallback_reason": null,
+    "claims": [],
+    "abstentions": [
+      {
+        "source": "capec",
+        "statement": "The capec source doesn't establish this — the executed query ran cleanly and returned no matching records for: In capec, identify AttackPattern, Category, IN_VIEW, View relevant to: Is category CAPEC-689 (Disposal) directly connected to view CAPEC-703 (Industrial Control System (ICS) Patterns) in CAPEC, and if it is, what is the nature of that connection?",
+        "query": "g.V().has(\"id\", within(ids)).as(\"ap\").union(__.or(__.hasLabel(\"AttackPattern\"), __.not(__.hasLabel(\"AttackPattern\", \"Category\", \"View\"))).out(\"MEMBER_OF\"), __.or(__.hasLabel(\"AttackPattern\"), __.not(__.hasLabel(\"AttackPattern\", \"Category\", \"View\"))).out(\"MEMBER_OF\").out(\"IN_VIEW\")).as(\"nbr\").select(\"ap\",\"nbr\").by(elementMap()).limit(1000)"
+      }
+    ],
+    "notes": []
+  },
+  "logic_flow": {
+    "task": {
+      "sub_question_id": "PG-capec-O4-dc2e6a2ede",
+      "source": "capec",
+      "text": "Is category CAPEC-689 (Disposal) directly connected to view CAPEC-703 (Industrial Control System (ICS) Patterns) in CAPEC, and if it is, what is the nature of that connection?",
+      "entities": [
+        "Category",
+        "IN_VIEW",
+        "View"
+      ],
+      "limits": {
+        "max_traversal_depth": 3,
+        "max_result_rows": 20000,
+        "query_timeout_ms": 60000
+      },
+      "join_key": null,
+      "seed_ids": [
+        "CAPEC-689",
+        "CAPEC-703"
+      ],
+      "rationale": "algebra probe set (Era 2 Step 9 Phase G)"
+    },
+    "results": [
+      {
+        "source": "capec",
+        "sub_question_id": "q1",
+        "sub_question": "In capec, identify AttackPattern, Category, IN_VIEW, View relevant to: Is category CAPEC-689 (Disposal) directly connected to view CAPEC-703 (Industrial Control System (ICS) Patterns) in CAPEC, and if it is, what is the nature of that connection?",
+        "query": "g.V().has(\"id\", within(ids)).as(\"ap\").union(__.or(__.hasLabel(\"AttackPattern\"), __.not(__.hasLabel(\"AttackPattern\", \"Category\", \"View\"))).out(\"MEMBER_OF\"), __.or(__.hasLabel(\"AttackPattern\"), __.not(__.hasLabel(\"AttackPattern\", \"Category\", \"View\"))).out(\"MEMBER_OF\").out(\"IN_VIEW\")).as(\"nbr\").select(\"ap\",\"nbr\").by(elementMap()).limit(1000)",
+        "ok": true,
+        "partial": false,
+        "error": null,
+        "summary": "No CAPEC records found.",
+        "traces": [
+          {
+            "step": "intake",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "source": "capec",
+              "card": "capec"
+            }
+          },
+          {
+            "step": "resolve",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "labels": [
+                "AttackPattern",
+                "Category",
+                "View"
+              ],
+              "relationships": [
+                "IN_VIEW"
+              ],
+              "seed_ids": [
+                "CAPEC-689",
+                "CAPEC-703"
+              ],
+              "join_key": null
+            }
+          },
+          {
+            "step": "gate",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "attempt": 1,
+              "template": "generic_walk",
+              "query": "g.V().has(\"id\", within(ids)).as(\"ap\").union(__.or(__.hasLabel(\"AttackPattern\"), __.not(__.hasLabel(\"AttackPattern\", \"Category\", \"View\"))).out(\"MEMBER_OF\"), __.or(__.hasLabel(\"AttackPattern\"), __.not(__.hasLabel(\"AttackPattern\", \"Category\", \"View\"))).out(\"MEMBER_OF\").out(\"IN_VIEW\")).as(\"nbr\").select(\"ap\",\"nbr\").by(elementMap()).limit(1000)",
+              "injected": [],
+              "timing_ms": 1.695
+            }
+          },
+          {
+            "step": "execute",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "row_count": 0,
+              "timing_ms": 14.4,
+              "row_ceiling": 1000,
+              "truncated": false
+            }
+          },
+          {
+            "step": "assess",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "row_count": 0,
+              "empty_with_seeds": [
+                "CAPEC-689",
+                "CAPEC-703"
+              ],
+              "timing_ms": 0.008
+            }
+          },
+          {
+            "step": "normalize",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "record_count": 0,
+              "timing_ms": 0.004
+            }
+          }
+        ],
+        "records": []
+      }
+    ]
+  },
+  "deterministic_scores": {
+    "correlation": null,
+    "mapping_recall": null,
+    "coverage": null,
+    "provenance": {
+      "citations": 0,
+      "compliant": 0,
+      "citation_provenance_rate": 1.0,
+      "abstention_proof_ok": true,
+      "fully_provenanced": true
+    },
+    "inspectability": {
+      "citation_coverage": 1.0,
+      "traceability": 1.0,
+      "abstention_proofs": 1.0,
+      "inspectability": 1.0
+    }
+  },
+  "arm": "planned_llm_typed_lazy",
+  "run_meta": {
+    "planner": "llm-typed-lazy",
+    "synthesis": "deterministic",
+    "use_llm": true,
+    "llm_synthesis": false,
+    "llm_specialist": false,
+    "rewrite": null,
+    "observed_plan": [
+      {
+        "sub_question_id": "q1",
+        "source": "capec",
+        "text": "In capec, identify AttackPattern, Category, IN_VIEW, View relevant to: Is category CAPEC-689 (Disposal) directly connected to view CAPEC-703 (Industrial Control System (ICS) Patterns) in CAPEC, and if it is, what is the nature of that connection?",
+        "entities": [
+          "AttackPattern",
+          "Category",
+          "IN_VIEW",
+          "View"
+        ],
+        "seed_ids": [],
+        "depends_on": null,
+        "limits": {
+          "max_traversal_depth": 3,
+          "max_result_rows": 1000,
+          "query_timeout_ms": 5000
+        }
+      }
+    ],
+    "exit_code": 0,
+    "status": "answered",
+    "timings": {
+      "plan_ms": 358657.5,
+      "specialists": [
+        {
+          "sub_question": "q1",
+          "source": "capec",
+          "ms": 20.387
+        }
+      ],
+      "synthesis_ms": 5.597,
+      "total_ms": 358723.064
+    },
+    "registry_model": "gemma4-31b",
+    "drafter_used": "DeterministicDrafter",
+    "typed": [
+      {
+        "mode": "lazy",
+        "fallback": "unavailable",
+        "error": "no plan JSON after the repair turn (empty model response)"
+      }
+    ],
+    "seams": {
+      "planner_llm": true,
+      "drafter": "TypedDrafter",
+      "specialist_llm": false,
+      "synthesis_llm": false,
+      "generic_only": "true"
+    },
+    "wall_s": 358.726
+  },
+  "evidence_volume": {
+    "results": 1,
+    "records": 0,
+    "related": 0
+  }
+}

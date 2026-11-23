@@ -1,0 +1,505 @@
+{
+  "id": "PG-capec-O8-afe0bf2d4c",
+  "kind": "capec",
+  "tier": "algebra-probe",
+  "category": "PG-capec",
+  "question": "Which attack patterns are descendants of CAPEC-173 (Action Spoofing), following child links downward up to 6 levels?",
+  "gold": {
+    "assertions": {
+      "min_records": 0,
+      "must_include_ids": [],
+      "must_include_related": []
+    },
+    "ex_gold": {
+      "pool": "algebra",
+      "scheme": "capec",
+      "kind": "set",
+      "expected": [
+        "CAPEC-103",
+        "CAPEC-181",
+        "CAPEC-222",
+        "CAPEC-501",
+        "CAPEC-504",
+        "CAPEC-506",
+        "CAPEC-587",
+        "CAPEC-654"
+      ]
+    }
+  },
+  "answer": {
+    "headline": "Gathered 1 record(s) from 1 source(s).",
+    "narrative": "Found 1 CAPEC record(s): CAPEC-173. CAPEC-173 (Action Spoofing): An adversary is able to disguise one action for another and therefore trick a user into initiating one type of action when they intend to initiate a different action. For example, a user might be led to believe that clicking a button will submit a query, but in fact it downloads software. Adversaries may perform this attack through social means, such as by simply convincing a victim to perform the action or relying on a user's natural inclination to do so, or through technical means, such as a clickjacking attack where a user sees one interface but is actually interacting with a second, invisible, interface. CAPEC-173 (Action Spoofing) has Abstraction: Meta; Likelihood_Of_Attack: High; Status: Stable; Typical_Severity: Very High. CAPEC-173 (Action Spoofing) has 8 ChildOf parents: CAPEC-103, CAPEC-504, CAPEC-506, CAPEC-501, CAPEC-222, CAPEC-181, CAPEC-587, CAPEC-654.",
+    "composer": "deterministic",
+    "fallback_reason": null,
+    "claims": [
+      {
+        "text": "Found 1 CAPEC record(s): CAPEC-173.",
+        "kind": "fact",
+        "entity_ids": [
+          "CAPEC-173"
+        ],
+        "citations": [
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-173"
+          }
+        ]
+      },
+      {
+        "text": "CAPEC-173 (Action Spoofing): An adversary is able to disguise one action for another and therefore trick a user into initiating one type of action when they intend to initiate a different action. For example, a user might be led to believe that clicking a button will submit a query, but in fact it downloads software. Adversaries may perform this attack through social means, such as by simply convincing a victim to perform the action or relying on a user's natural inclination to do so, or through technical means, such as a clickjacking attack where a user sees one interface but is actually interacting with a second, invisible, interface.",
+        "kind": "fact",
+        "entity_ids": [
+          "CAPEC-173"
+        ],
+        "citations": [
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-173"
+          }
+        ]
+      },
+      {
+        "text": "CAPEC-173 (Action Spoofing) has Abstraction: Meta; Likelihood_Of_Attack: High; Status: Stable; Typical_Severity: Very High.",
+        "kind": "fact",
+        "entity_ids": [
+          "CAPEC-173"
+        ],
+        "citations": [
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-173"
+          }
+        ]
+      },
+      {
+        "text": "CAPEC-173 (Action Spoofing) has 8 ChildOf parents: CAPEC-103, CAPEC-504, CAPEC-506, CAPEC-501, CAPEC-222, CAPEC-181, CAPEC-587, CAPEC-654.",
+        "kind": "enumeration",
+        "entity_ids": [
+          "CAPEC-103",
+          "CAPEC-504",
+          "CAPEC-506",
+          "CAPEC-501",
+          "CAPEC-222",
+          "CAPEC-181",
+          "CAPEC-587",
+          "CAPEC-654"
+        ],
+        "citations": [
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-173"
+          }
+        ]
+      }
+    ],
+    "abstentions": [],
+    "notes": []
+  },
+  "logic_flow": {
+    "task": {
+      "sub_question_id": "PG-capec-O8-afe0bf2d4c",
+      "source": "capec",
+      "text": "Which attack patterns are descendants of CAPEC-173 (Action Spoofing), following child links downward up to 6 levels?",
+      "entities": [
+        "AttackPattern",
+        "ChildOf"
+      ],
+      "limits": {
+        "max_traversal_depth": 3,
+        "max_result_rows": 20000,
+        "query_timeout_ms": 60000
+      },
+      "join_key": null,
+      "seed_ids": [
+        "CAPEC-173"
+      ],
+      "rationale": "algebra probe set (Era 2 Step 9 Phase G)"
+    },
+    "results": [
+      {
+        "source": "capec",
+        "sub_question_id": "q1",
+        "sub_question": "",
+        "query": "g.V().has(\"id\", within(ids)).as(\"ap\").union(__.repeat(__.in(\"CHILD_OF\")).times(3).emit().hasLabel(\"AttackPattern\")).as(\"nbr\").select(\"ap\",\"nbr\").by(elementMap()).limit(1000)",
+        "ok": true,
+        "partial": false,
+        "error": null,
+        "summary": "Found 1 CAPEC record(s): CAPEC-173.",
+        "traces": [
+          {
+            "step": "intake",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "source": "capec",
+              "card": "capec"
+            }
+          },
+          {
+            "step": "resolve",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "labels": [
+                "AttackPattern"
+              ],
+              "relationships": [
+                "ChildOf"
+              ],
+              "seed_ids": [
+                "CAPEC-173"
+              ],
+              "join_key": null
+            }
+          },
+          {
+            "step": "gate",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "attempt": 1,
+              "template": "typed_step",
+              "query": "g.V().has(\"id\", within(ids)).as(\"ap\").union(__.repeat(__.in(\"CHILD_OF\")).times(3).emit().hasLabel(\"AttackPattern\")).as(\"nbr\").select(\"ap\",\"nbr\").by(elementMap()).limit(1000)",
+              "injected": [],
+              "timing_ms": 0.438
+            }
+          },
+          {
+            "step": "execute",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "row_count": 8,
+              "timing_ms": 8.7,
+              "row_ceiling": 1000,
+              "truncated": false
+            }
+          },
+          {
+            "step": "assess",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "row_count": 8,
+              "timing_ms": 0.007
+            }
+          },
+          {
+            "step": "normalize",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "record_count": 1,
+              "timing_ms": 0.123
+            }
+          }
+        ],
+        "records": [
+          {
+            "primary_id": "CAPEC-173",
+            "name": "Action Spoofing",
+            "label": "AttackPattern",
+            "description": "An adversary is able to disguise one action for another and therefore trick a user into initiating one type of action when they intend to initiate a different action. For example, a user might be led to believe that clicking a button will submit a query, but in fact it downloads software. Adversaries may perform this attack through social means, such as by simply convincing a victim to perform the action or relying on a user's natural inclination to do so, or through technical means, such as a clickjacking attack where a user sees one interface but is actually interacting with a second, invisible, interface.",
+            "properties": {
+              "Status": "Stable",
+              "Likelihood_Of_Attack": "High",
+              "Typical_Severity": "Very High",
+              "name": "Action Spoofing",
+              "description": "An adversary is able to disguise one action for another and therefore trick a user into initiating one type of action when they intend to initiate a different action. For example, a user might be led to believe that clicking a button will submit a query, but in fact it downloads software. Adversaries may perform this attack through social means, such as by simply convincing a victim to perform the action or relying on a user's natural inclination to do so, or through technical means, such as a clickjacking attack where a user sees one interface but is actually interacting with a second, invisible, interface.",
+              "id": "capec:attack-pattern:173",
+              "Abstraction": "Meta"
+            },
+            "facets": [],
+            "join_values": [],
+            "related": [
+              {
+                "id": "CAPEC-103",
+                "name": "Clickjacking",
+                "label": "AttackPattern",
+                "type": "CHILD_OF",
+                "Status": "Draft",
+                "Likelihood_Of_Attack": "Medium",
+                "Typical_Severity": "High",
+                "description": "An adversary tricks a victim into unknowingly initiating some action in one system while interacting with the UI from a seemingly completely different, usually an adversary controlled or intended, system.",
+                "Abstraction": "Standard"
+              },
+              {
+                "id": "CAPEC-504",
+                "name": "Task Impersonation",
+                "label": "AttackPattern",
+                "type": "CHILD_OF",
+                "Status": "Stable",
+                "Likelihood_Of_Attack": "Medium",
+                "Typical_Severity": "High",
+                "description": "An adversary, through a previously installed malicious application, impersonates an expected or routine task in an attempt to steal sensitive information or leverage a user's privileges.",
+                "Abstraction": "Standard"
+              },
+              {
+                "id": "CAPEC-506",
+                "name": "Tapjacking",
+                "label": "AttackPattern",
+                "type": "CHILD_OF",
+                "Status": "Draft",
+                "Likelihood_Of_Attack": "Low",
+                "Typical_Severity": "Low",
+                "description": "An adversary, through a previously installed malicious application, displays an interface that misleads the user and convinces them to tap on an attacker desired location on the screen. This is often accomplished by overlaying one screen on top of another while giving the appearance of a single interface. There are two main techniques used to accomplish this. The first is to leverage transparent properties that allow taps on the screen to pass through the visible application to an application running in the background. The second is to strategically place a small object (e.g., a button or text field) on top of the visible screen and make it appear to be a part of the underlying application. In both cases, the user is convinced to tap on the screen but does not realize the application that they are interacting with.",
+                "Abstraction": "Standard"
+              },
+              {
+                "id": "CAPEC-501",
+                "name": "Android Activity Hijack",
+                "label": "AttackPattern",
+                "type": "CHILD_OF",
+                "Status": "Draft",
+                "Typical_Severity": "Medium",
+                "description": "An adversary intercepts an implicit intent sent to launch a Android-based trusted activity and instead launches a counterfeit activity in its place. The malicious activity is then used to mimic the trusted activity's user interface and prompt the target to enter sensitive data as if they were interacting with the trusted activity.",
+                "Abstraction": "Detailed"
+              },
+              {
+                "id": "CAPEC-222",
+                "name": "iFrame Overlay",
+                "label": "AttackPattern",
+                "type": "CHILD_OF",
+                "Status": "Draft",
+                "Likelihood_Of_Attack": "Medium",
+                "Typical_Severity": "High",
+                "description": "In an iFrame overlay attack the victim is tricked into unknowingly initiating some action in one system while interacting with the UI from seemingly completely different system.",
+                "Abstraction": "Detailed"
+              },
+              {
+                "id": "CAPEC-181",
+                "name": "Flash File Overlay",
+                "label": "AttackPattern",
+                "type": "CHILD_OF",
+                "Status": "Draft",
+                "Typical_Severity": "Medium",
+                "description": "An attacker creates a transparent overlay using flash in order to intercept user actions for the purpose of performing a clickjacking attack. In this technique, the Flash file provides a transparent overlay over HTML content. Because the Flash application is on top of the content, user actions, such as clicks, are caught by the Flash application rather than the underlying HTML. The action is then interpreted by the overlay to perform the actions the attacker wishes.",
+                "Abstraction": "Detailed"
+              },
+              {
+                "id": "CAPEC-587",
+                "name": "Cross Frame Scripting (XFS)",
+                "label": "AttackPattern",
+                "type": "CHILD_OF",
+                "Status": "Draft",
+                "Typical_Severity": "High",
+                "description": "This attack pattern combines malicious Javascript and a legitimate webpage loaded into a concealed iframe. The malicious Javascript is then able to interact with a legitimate webpage in a manner that is unknown to the user. This attack usually leverages some element of social engineering in that an attacker must convinces a user to visit a web page that the attacker controls.",
+                "Abstraction": "Detailed"
+              },
+              {
+                "id": "CAPEC-654",
+                "name": "Credential Prompt Impersonation",
+                "label": "AttackPattern",
+                "type": "CHILD_OF",
+                "Status": "Stable",
+                "Likelihood_Of_Attack": "Medium",
+                "Typical_Severity": "High",
+                "description": "An adversary, through a previously installed malicious application, impersonates a credential prompt in an attempt to steal a user's credentials.",
+                "Abstraction": "Detailed"
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "deterministic_scores": {
+    "correlation": null,
+    "mapping_recall": null,
+    "coverage": null,
+    "provenance": {
+      "citations": 4,
+      "compliant": 4,
+      "citation_provenance_rate": 1.0,
+      "abstention_proof_ok": true,
+      "fully_provenanced": true
+    },
+    "inspectability": {
+      "citation_coverage": 1.0,
+      "traceability": 1.0,
+      "abstention_proofs": 1.0,
+      "inspectability": 1.0
+    }
+  },
+  "arm": "planned_llm_typed_full",
+  "run_meta": {
+    "planner": "llm-typed-full",
+    "synthesis": "deterministic",
+    "use_llm": true,
+    "llm_synthesis": false,
+    "llm_specialist": false,
+    "rewrite": null,
+    "observed_plan": [
+      {
+        "sub_question_id": "q1",
+        "source": "capec",
+        "text": "",
+        "entities": [
+          "AttackPattern",
+          "ChildOf"
+        ],
+        "seed_ids": [
+          "CAPEC-173"
+        ],
+        "depends_on": null,
+        "limits": {
+          "max_traversal_depth": 3,
+          "max_result_rows": 1000,
+          "query_timeout_ms": 5000
+        },
+        "step": {
+          "kind": "expand",
+          "anchor_label": "AttackPattern",
+          "anchor_ids": [
+            "CAPEC-173"
+          ],
+          "hops": [
+            {
+              "relation": "ChildOf",
+              "direction": "in",
+              "target_label": "AttackPattern"
+            }
+          ],
+          "depth": 3
+        }
+      }
+    ],
+    "exit_code": 0,
+    "status": "answered",
+    "timings": {
+      "plan_ms": 29776.28,
+      "specialists": [
+        {
+          "sub_question": "q1",
+          "source": "capec",
+          "ms": 10.29
+        }
+      ],
+      "synthesis_ms": 7.726,
+      "total_ms": 29838.681
+    },
+    "registry_model": "qwen38-27b",
+    "drafter_used": "TypedDrafter",
+    "typed": [
+      {
+        "mode": "full",
+        "served_model": "qwen38-27b/248046",
+        "model_calls": 5,
+        "catalog_calls": [
+          {
+            "name": "resolve_entity",
+            "args": {
+              "text": "CAPEC-173",
+              "label": "AttackPattern",
+              "graph": "capec"
+            },
+            "ok": true
+          },
+          {
+            "name": "describe",
+            "args": {
+              "target": "ChildOf",
+              "graph": "capec"
+            },
+            "ok": true
+          },
+          {
+            "name": "describe",
+            "args": {
+              "target": "CAPEC-173",
+              "graph": "capec"
+            },
+            "ok": false
+          },
+          {
+            "name": "describe",
+            "args": {
+              "target": "ChildOf",
+              "graph": "capec"
+            },
+            "ok": false
+          }
+        ],
+        "prompt_tokens": 36328,
+        "completion_tokens": 1522,
+        "emitted": true,
+        "parse_error": null,
+        "first_steps": 1,
+        "first_refused": 0,
+        "first_fixes": 0,
+        "valid_first": true,
+        "valid_first_raw": true,
+        "repair_used": false,
+        "fixed_by_repair": false,
+        "still_refused": 0,
+        "final_steps": 1,
+        "coercions": [],
+        "refusals": [],
+        "plan_problems": [],
+        "replies": [
+          {
+            "status": "ok",
+            "finish_reason": "tool_calls",
+            "calls": [
+              "resolve_entity"
+            ],
+            "text_chars": 0,
+            "repairs": []
+          },
+          {
+            "status": "ok",
+            "finish_reason": "tool_calls",
+            "calls": [
+              "describe"
+            ],
+            "text_chars": 236,
+            "repairs": []
+          },
+          {
+            "status": "ok",
+            "finish_reason": "tool_calls",
+            "calls": [
+              "describe"
+            ],
+            "text_chars": 115,
+            "repairs": []
+          },
+          {
+            "status": "ok",
+            "finish_reason": "tool_calls",
+            "calls": [
+              "describe"
+            ],
+            "text_chars": 228,
+            "repairs": []
+          },
+          {
+            "status": "ok",
+            "finish_reason": "stop",
+            "calls": [],
+            "text_chars": 368,
+            "repairs": []
+          }
+        ],
+        "error": null,
+        "fallback": null,
+        "seconds": 29.763,
+        "n_catalog_calls": 4,
+        "fixed_by_coercion": false
+      }
+    ],
+    "seams": {
+      "planner_llm": true,
+      "drafter": "TypedDrafter",
+      "specialist_llm": false,
+      "synthesis_llm": false,
+      "generic_only": "true"
+    },
+    "wall_s": 29.842
+  },
+  "evidence_volume": {
+    "results": 1,
+    "records": 1,
+    "related": 8
+  }
+}

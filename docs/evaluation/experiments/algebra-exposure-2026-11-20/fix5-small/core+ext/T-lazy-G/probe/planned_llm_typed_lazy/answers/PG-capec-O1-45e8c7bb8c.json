@@ -1,0 +1,638 @@
+{
+  "id": "PG-capec-O1-45e8c7bb8c",
+  "kind": "capec",
+  "tier": "algebra-probe",
+  "category": "PG-capec",
+  "question": "Which attack patterns that exploit weakness CWE-94 are at an abstraction level other than 'Standard'?",
+  "gold": {
+    "assertions": {
+      "min_records": 0,
+      "must_include_ids": [],
+      "must_include_related": []
+    },
+    "ex_gold": {
+      "pool": "algebra",
+      "scheme": "capec",
+      "kind": "set",
+      "expected": [
+        "CAPEC-242",
+        "CAPEC-35"
+      ]
+    }
+  },
+  "answer": {
+    "headline": "Gathered 3 record(s) from 1 source(s).",
+    "narrative": "Found 1 CAPEC record(s): cwe:94. cwe:94 (CWE-94) has cwe_id: 94. cwe:94 (CWE-94) has 3 attack patterns: CAPEC-242, CAPEC-35, CAPEC-77. Found 2 CAPEC record(s): CAPEC-242, CAPEC-35. 2 entities match.",
+    "composer": "deterministic",
+    "fallback_reason": null,
+    "claims": [
+      {
+        "text": "Found 1 CAPEC record(s): cwe:94.",
+        "kind": "fact",
+        "entity_ids": [
+          "cwe:94"
+        ],
+        "citations": [
+          {
+            "source": "capec",
+            "primary_id": "cwe:94"
+          }
+        ]
+      },
+      {
+        "text": "cwe:94 (CWE-94) has cwe_id: 94.",
+        "kind": "fact",
+        "entity_ids": [
+          "cwe:94"
+        ],
+        "citations": [
+          {
+            "source": "capec",
+            "primary_id": "cwe:94"
+          }
+        ]
+      },
+      {
+        "text": "cwe:94 (CWE-94) has 3 attack patterns: CAPEC-242, CAPEC-35, CAPEC-77.",
+        "kind": "enumeration",
+        "entity_ids": [
+          "CAPEC-242",
+          "CAPEC-35",
+          "CAPEC-77"
+        ],
+        "citations": [
+          {
+            "source": "capec",
+            "primary_id": "cwe:94"
+          }
+        ]
+      },
+      {
+        "text": "Found 2 CAPEC record(s): CAPEC-242, CAPEC-35.",
+        "kind": "fact",
+        "entity_ids": [
+          "CAPEC-242",
+          "CAPEC-35"
+        ],
+        "citations": [
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-242"
+          },
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-35"
+          }
+        ]
+      },
+      {
+        "text": "2 entities match.",
+        "kind": "fact",
+        "entity_ids": [
+          "CAPEC-242",
+          "CAPEC-35"
+        ],
+        "citations": [
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-242"
+          },
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-35"
+          }
+        ]
+      }
+    ],
+    "abstentions": [],
+    "notes": []
+  },
+  "logic_flow": {
+    "task": {
+      "sub_question_id": "PG-capec-O1-45e8c7bb8c",
+      "source": "capec",
+      "text": "Which attack patterns that exploit weakness CWE-94 are at an abstraction level other than 'Standard'?",
+      "entities": [
+        "Weakness",
+        "EXPLOITS_WEAKNESS",
+        "AttackPattern"
+      ],
+      "limits": {
+        "max_traversal_depth": 3,
+        "max_result_rows": 20000,
+        "query_timeout_ms": 60000
+      },
+      "join_key": null,
+      "seed_ids": [
+        "CWE-94"
+      ],
+      "rationale": "algebra probe set (Era 2 Step 9 Phase G)"
+    },
+    "results": [
+      {
+        "source": "capec",
+        "sub_question_id": "q1",
+        "sub_question": "",
+        "query": "g.V().has(\"id\", within(ids)).as(\"ap\").union(__.in(\"EXPLOITS_WEAKNESS\").hasLabel(\"AttackPattern\")).as(\"nbr\").select(\"ap\",\"nbr\").by(elementMap()).limit(1000)",
+        "ok": true,
+        "partial": false,
+        "error": null,
+        "summary": "Found 1 CAPEC record(s): cwe:94.",
+        "traces": [
+          {
+            "step": "intake",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "source": "capec",
+              "card": "capec"
+            }
+          },
+          {
+            "step": "resolve",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "labels": [
+                "Weakness",
+                "AttackPattern"
+              ],
+              "relationships": [
+                "EXPLOITS_WEAKNESS"
+              ],
+              "seed_ids": [
+                "CWE-94"
+              ],
+              "join_key": null
+            }
+          },
+          {
+            "step": "gate",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "attempt": 1,
+              "template": "typed_step",
+              "query": "g.V().has(\"id\", within(ids)).as(\"ap\").union(__.in(\"EXPLOITS_WEAKNESS\").hasLabel(\"AttackPattern\")).as(\"nbr\").select(\"ap\",\"nbr\").by(elementMap()).limit(1000)",
+              "injected": [],
+              "timing_ms": 0.38
+            }
+          },
+          {
+            "step": "execute",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "row_count": 3,
+              "timing_ms": 8.0,
+              "row_ceiling": 1000,
+              "truncated": false
+            }
+          },
+          {
+            "step": "assess",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "row_count": 3,
+              "timing_ms": 0.011
+            }
+          },
+          {
+            "step": "normalize",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "record_count": 1,
+              "timing_ms": 0.133
+            }
+          }
+        ],
+        "records": [
+          {
+            "primary_id": "cwe:94",
+            "name": "CWE-94",
+            "label": "Weakness",
+            "description": "",
+            "properties": {
+              "cwe_id": "94",
+              "name": "CWE-94",
+              "id": "cwe:94"
+            },
+            "facets": [],
+            "join_values": [],
+            "related": [
+              {
+                "id": "CAPEC-242",
+                "name": "Code Injection",
+                "label": "AttackPattern",
+                "type": "EXPLOITS_WEAKNESS",
+                "Status": "Stable",
+                "Likelihood_Of_Attack": "High",
+                "Typical_Severity": "High",
+                "description": "An adversary exploits a weakness in input validation on the target to inject new code into that which is currently executing. This differs from code inclusion in that code inclusion involves the addition or replacement of a reference to a code file, which is subsequently loaded by the target and used as part of the code of some application.",
+                "Abstraction": "Meta"
+              },
+              {
+                "id": "CAPEC-35",
+                "name": "Leverage Executable Code in Non-Executable Files",
+                "label": "AttackPattern",
+                "type": "EXPLOITS_WEAKNESS",
+                "Status": "Draft",
+                "Likelihood_Of_Attack": "High",
+                "Typical_Severity": "Very High",
+                "description": "An attack of this type exploits a system's trust in configuration and resource files. When the executable loads the resource (such as an image file or configuration file) the attacker has modified the file to either execute malicious code directly or manipulate the target process (e.g. application server) to execute based on the malicious configuration parameters. Since systems are increasingly interrelated mashing up resources from local and remote sources the possibility of this attack occurring is high.",
+                "Abstraction": "Detailed"
+              },
+              {
+                "id": "CAPEC-77",
+                "name": "Manipulating User-Controlled Variables",
+                "label": "AttackPattern",
+                "type": "EXPLOITS_WEAKNESS",
+                "Status": "Draft",
+                "Likelihood_Of_Attack": "High",
+                "Typical_Severity": "Very High",
+                "description": "This attack targets user controlled variables (DEBUG=1, PHP Globals, and So Forth). An adversary can override variables leveraging user-supplied, untrusted query variables directly used on the application server without any data sanitization. In extreme cases, the adversary can change variables controlling the business logic of the application. For instance, in languages like PHP, a number of poorly set default configurations may allow the user to override variables.",
+                "Abstraction": "Standard"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "source": "capec",
+        "sub_question_id": "q2",
+        "sub_question": "",
+        "query": "g.V().has('id', within(p0)).hasLabel('AttackPattern').dedup().has('Abstraction', neq(p1)).order().by('id').fold().project('total', 'rows').by(__.count(local)).by(__.unfold().limit(1000).project('id', 'name').by('id').by(__.coalesce(__.values('name'), __.constant(null))).fold())",
+        "ok": true,
+        "partial": false,
+        "error": null,
+        "summary": "Found 2 CAPEC record(s): CAPEC-242, CAPEC-35.",
+        "traces": [
+          {
+            "step": "intake",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "source": "capec",
+              "card": "capec"
+            }
+          },
+          {
+            "step": "resolve",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "labels": [
+                "AttackPattern"
+              ],
+              "relationships": [],
+              "seed_ids": [
+                "CAPEC-242",
+                "CAPEC-35",
+                "CAPEC-77"
+              ],
+              "join_key": null
+            }
+          },
+          {
+            "step": "gate",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "attempt": 1,
+              "template": "algebra",
+              "query": "g.V().has('id', within(p0)).hasLabel('AttackPattern').dedup().has('Abstraction', neq(p1)).order().by('id').fold().project('total', 'rows').by(__.count(local)).by(__.unfold().limit(1000).project('id', 'name').by('id').by(__.coalesce(__.values('name'), __.constant(null))).fold())",
+              "injected": [],
+              "note": "compiled by the operator algebra (validated against the card; read-only by construction)",
+              "id_map": {
+                "CAPEC-242": [
+                  "capec:attack-pattern:242"
+                ],
+                "CAPEC-35": [
+                  "capec:attack-pattern:35"
+                ],
+                "CAPEC-77": [
+                  "capec:attack-pattern:77"
+                ]
+              }
+            }
+          },
+          {
+            "step": "execute",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "row_count": 2
+            }
+          },
+          {
+            "step": "algebra",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "result": {
+                "step": "q2",
+                "kind": "nodes",
+                "value": null,
+                "ids": [
+                  "CAPEC-242",
+                  "CAPEC-35"
+                ],
+                "rows": [
+                  {
+                    "id": "CAPEC-242",
+                    "name": "Code Injection"
+                  },
+                  {
+                    "id": "CAPEC-35",
+                    "name": "Leverage Executable Code in Non-Executable Files"
+                  }
+                ],
+                "total": 2,
+                "complete": true,
+                "info": {}
+              },
+              "op": "filter",
+              "ir": {
+                "@": "Nodes",
+                "of": {
+                  "@": "Where",
+                  "conds": [
+                    {
+                      "@": "Cond",
+                      "cmp": null,
+                      "op": "<>",
+                      "prop": "Abstraction",
+                      "value": "Standard"
+                    }
+                  ],
+                  "of": {
+                    "@": "FromStep",
+                    "labels": [
+                      "AttackPattern"
+                    ],
+                    "step": "q1"
+                  }
+                },
+                "props": []
+              }
+            }
+          }
+        ],
+        "records": [
+          {
+            "primary_id": "CAPEC-242",
+            "name": "Code Injection",
+            "label": "AttackPattern",
+            "description": "",
+            "properties": {},
+            "facets": [],
+            "join_values": [],
+            "related": []
+          },
+          {
+            "primary_id": "CAPEC-35",
+            "name": "Leverage Executable Code in Non-Executable Files",
+            "label": "AttackPattern",
+            "description": "",
+            "properties": {},
+            "facets": [],
+            "join_values": [],
+            "related": []
+          }
+        ]
+      }
+    ]
+  },
+  "deterministic_scores": {
+    "correlation": null,
+    "mapping_recall": null,
+    "coverage": null,
+    "provenance": {
+      "citations": 7,
+      "compliant": 7,
+      "citation_provenance_rate": 1.0,
+      "abstention_proof_ok": true,
+      "fully_provenanced": true
+    },
+    "inspectability": {
+      "citation_coverage": 1.0,
+      "traceability": 1.0,
+      "abstention_proofs": 1.0,
+      "inspectability": 1.0
+    }
+  },
+  "arm": "planned_llm_typed_lazy",
+  "run_meta": {
+    "planner": "llm-typed-lazy",
+    "synthesis": "deterministic",
+    "use_llm": true,
+    "llm_synthesis": false,
+    "llm_specialist": false,
+    "rewrite": null,
+    "observed_plan": [
+      {
+        "sub_question_id": "q1",
+        "source": "capec",
+        "text": "",
+        "entities": [
+          "Weakness",
+          "EXPLOITS_WEAKNESS",
+          "AttackPattern"
+        ],
+        "seed_ids": [
+          "CWE-94"
+        ],
+        "depends_on": null,
+        "limits": {
+          "max_traversal_depth": 3,
+          "max_result_rows": 1000,
+          "query_timeout_ms": 5000
+        },
+        "step": {
+          "kind": "expand",
+          "anchor_label": "Weakness",
+          "anchor_ids": [
+            "CWE-94"
+          ],
+          "hops": [
+            {
+              "relation": "EXPLOITS_WEAKNESS",
+              "direction": "in",
+              "target_label": "AttackPattern"
+            }
+          ],
+          "depth": 1
+        }
+      },
+      {
+        "sub_question_id": "q2",
+        "source": "capec",
+        "text": "",
+        "entities": [
+          "AttackPattern"
+        ],
+        "seed_ids": [],
+        "depends_on": null,
+        "limits": {
+          "max_traversal_depth": 3,
+          "max_result_rows": 1000,
+          "query_timeout_ms": 5000
+        },
+        "step": {
+          "kind": "algebra",
+          "anchor_label": "AttackPattern",
+          "anchor_ids": [],
+          "hops": [],
+          "depth": 1,
+          "algebra": {
+            "ir": {
+              "@": "Nodes",
+              "of": {
+                "@": "Where",
+                "conds": [
+                  {
+                    "@": "Cond",
+                    "cmp": null,
+                    "op": "<>",
+                    "prop": "Abstraction",
+                    "value": "Standard"
+                  }
+                ],
+                "of": {
+                  "@": "FromStep",
+                  "labels": [
+                    "AttackPattern"
+                  ],
+                  "step": "q1"
+                }
+              },
+              "props": []
+            },
+            "labels": [
+              "AttackPattern"
+            ],
+            "op": "filter"
+          },
+          "from_step": "q1"
+        }
+      }
+    ],
+    "exit_code": 0,
+    "status": "answered",
+    "timings": {
+      "plan_ms": 35163.552,
+      "specialists": [
+        {
+          "sub_question": "q1",
+          "source": "capec",
+          "ms": 9.93
+        },
+        {
+          "sub_question": "q2",
+          "source": "capec",
+          "ms": 19.8
+        }
+      ],
+      "synthesis_ms": 6.592,
+      "total_ms": 35240.87
+    },
+    "registry_model": "gemma4-31b",
+    "drafter_used": "TypedDrafter",
+    "typed": [
+      {
+        "mode": "lazy",
+        "served_model": "gemma4-31b/106",
+        "model_calls": 2,
+        "catalog_calls": [
+          {
+            "name": "resolve_entity",
+            "args": {
+              "graph": "capec",
+              "label": "Weakness",
+              "text": "CWE-94"
+            },
+            "ok": true
+          }
+        ],
+        "prompt_tokens": 6272,
+        "completion_tokens": 1942,
+        "emitted": true,
+        "parse_error": null,
+        "first_steps": 2,
+        "first_refused": 0,
+        "first_fixes": 0,
+        "valid_first": true,
+        "valid_first_raw": true,
+        "repair_used": false,
+        "fixed_by_repair": false,
+        "still_refused": 0,
+        "final_steps": 2,
+        "coercions": [],
+        "refusals": [],
+        "plan_problems": [],
+        "replies": [
+          {
+            "status": "ok",
+            "finish_reason": "tool_calls",
+            "calls": [
+              "resolve_entity"
+            ],
+            "text_chars": 0,
+            "repairs": []
+          },
+          {
+            "status": "ok",
+            "finish_reason": "stop",
+            "calls": [],
+            "text_chars": 645,
+            "repairs": []
+          }
+        ],
+        "error": null,
+        "fallback": null,
+        "seconds": 35.153,
+        "n_catalog_calls": 1,
+        "fixed_by_coercion": false
+      }
+    ],
+    "seams": {
+      "planner_llm": true,
+      "drafter": "TypedDrafter",
+      "specialist_llm": false,
+      "synthesis_llm": false,
+      "generic_only": "true"
+    },
+    "wall_s": 35.244,
+    "algebra_results": [
+      {
+        "step": "q2",
+        "kind": "nodes",
+        "value": null,
+        "ids": [
+          "CAPEC-242",
+          "CAPEC-35"
+        ],
+        "rows": [
+          {
+            "id": "CAPEC-242",
+            "name": "Code Injection"
+          },
+          {
+            "id": "CAPEC-35",
+            "name": "Leverage Executable Code in Non-Executable Files"
+          }
+        ],
+        "total": 2,
+        "complete": true,
+        "info": {}
+      }
+    ]
+  },
+  "evidence_volume": {
+    "results": 2,
+    "records": 3,
+    "related": 3
+  }
+}

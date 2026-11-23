@@ -1,0 +1,379 @@
+{
+  "id": "D2-HAS_CONSEQUENCE-CAPEC-295-7f7f0a::formal",
+  "kind": "capec",
+  "tier": "medium",
+  "category": "D2-HAS_CONSEQUENCE",
+  "question": "Which consequences can Timestamp Request (CAPEC-295) have?",
+  "gold": {
+    "assertions": {
+      "min_records": 1,
+      "must_include_ids": [
+        "CAPEC-295"
+      ],
+      "must_include_related": [
+        "Confidentiality Other"
+      ]
+    },
+    "ex_gold": {
+      "pool": "neighbors",
+      "expected": [
+        "Confidentiality Other"
+      ],
+      "scheme": "capec",
+      "kind": "text_set"
+    }
+  },
+  "answer": {
+    "headline": "Gathered 1 record(s) from 1 source(s).",
+    "narrative": "Found 1 CAPEC record(s): CAPEC-295. CAPEC-295 (Timestamp Request): This pattern of attack leverages standard requests to learn the exact time associated with a target system. An adversary may be able to use the timestamp returned from the target to attack time-based security algorithms, such as random number generators, or time-based authentication mechanisms. CAPEC-295 (Timestamp Request) has Abstraction: Detailed; Status: Stable; Typical_Severity: Low. CAPEC-295 (Timestamp Request) has 1 consequence, named only as text: “Other Confidentiality”.",
+    "composer": "deterministic",
+    "fallback_reason": null,
+    "claims": [
+      {
+        "text": "Found 1 CAPEC record(s): CAPEC-295.",
+        "kind": "fact",
+        "entity_ids": [
+          "CAPEC-295"
+        ],
+        "citations": [
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-295"
+          }
+        ]
+      },
+      {
+        "text": "CAPEC-295 (Timestamp Request): This pattern of attack leverages standard requests to learn the exact time associated with a target system. An adversary may be able to use the timestamp returned from the target to attack time-based security algorithms, such as random number generators, or time-based authentication mechanisms.",
+        "kind": "fact",
+        "entity_ids": [
+          "CAPEC-295"
+        ],
+        "citations": [
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-295"
+          }
+        ]
+      },
+      {
+        "text": "CAPEC-295 (Timestamp Request) has Abstraction: Detailed; Status: Stable; Typical_Severity: Low.",
+        "kind": "fact",
+        "entity_ids": [
+          "CAPEC-295"
+        ],
+        "citations": [
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-295"
+          }
+        ]
+      },
+      {
+        "text": "CAPEC-295 (Timestamp Request) has 1 consequence, named only as text: “Other Confidentiality”.",
+        "kind": "enumeration",
+        "entity_ids": [
+          "capec:attack-pattern:295:consequence:1"
+        ],
+        "citations": [
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-295"
+          }
+        ]
+      }
+    ],
+    "abstentions": [],
+    "notes": []
+  },
+  "logic_flow": {
+    "task": {
+      "sub_question_id": "q1",
+      "source": "capec",
+      "text": "Which consequences can Timestamp Request (CAPEC-295) have?",
+      "entities": [
+        "AttackPattern",
+        "HAS_CONSEQUENCE",
+        "Consequence"
+      ],
+      "limits": {
+        "max_traversal_depth": 3,
+        "max_result_rows": 20000,
+        "query_timeout_ms": 5000
+      },
+      "join_key": null,
+      "seed_ids": [
+        "CAPEC-295"
+      ],
+      "rationale": "generated from the schema census"
+    },
+    "results": [
+      {
+        "source": "capec",
+        "sub_question_id": "q1",
+        "sub_question": "",
+        "query": "g.V().has(\"id\", within(ids)).as(\"ap\").union(__.out(\"HAS_CONSEQUENCE\").hasLabel(\"Consequence\")).as(\"nbr\").select(\"ap\",\"nbr\").by(elementMap()).limit(1000)",
+        "ok": true,
+        "partial": false,
+        "error": null,
+        "summary": "Found 1 CAPEC record(s): CAPEC-295.",
+        "traces": [
+          {
+            "step": "intake",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "source": "capec",
+              "card": "capec"
+            }
+          },
+          {
+            "step": "resolve",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "labels": [
+                "AttackPattern",
+                "Consequence"
+              ],
+              "relationships": [
+                "HAS_CONSEQUENCE"
+              ],
+              "seed_ids": [
+                "CAPEC-295"
+              ],
+              "join_key": null
+            }
+          },
+          {
+            "step": "gate",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "attempt": 1,
+              "template": "typed_step",
+              "query": "g.V().has(\"id\", within(ids)).as(\"ap\").union(__.out(\"HAS_CONSEQUENCE\").hasLabel(\"Consequence\")).as(\"nbr\").select(\"ap\",\"nbr\").by(elementMap()).limit(1000)",
+              "injected": [],
+              "timing_ms": 0.421
+            }
+          },
+          {
+            "step": "execute",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "row_count": 1,
+              "timing_ms": 7.4,
+              "row_ceiling": 1000,
+              "truncated": false
+            }
+          },
+          {
+            "step": "assess",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "row_count": 1,
+              "timing_ms": 0.008
+            }
+          },
+          {
+            "step": "normalize",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "record_count": 1,
+              "timing_ms": 0.098
+            }
+          }
+        ],
+        "records": [
+          {
+            "primary_id": "CAPEC-295",
+            "name": "Timestamp Request",
+            "label": "AttackPattern",
+            "description": "This pattern of attack leverages standard requests to learn the exact time associated with a target system. An adversary may be able to use the timestamp returned from the target to attack time-based security algorithms, such as random number generators, or time-based authentication mechanisms.",
+            "properties": {
+              "Status": "Stable",
+              "Typical_Severity": "Low",
+              "name": "Timestamp Request",
+              "description": "This pattern of attack leverages standard requests to learn the exact time associated with a target system. An adversary may be able to use the timestamp returned from the target to attack time-based security algorithms, such as random number generators, or time-based authentication mechanisms.",
+              "id": "capec:attack-pattern:295",
+              "Abstraction": "Detailed"
+            },
+            "facets": [],
+            "join_values": [],
+            "related": [
+              {
+                "id": "capec:attack-pattern:295:consequence:1",
+                "name": "capec:attack-pattern:295:consequence:1",
+                "label": "Consequence",
+                "type": "HAS_CONSEQUENCE",
+                "impacts": [
+                  "Other"
+                ],
+                "scopes": [
+                  "Confidentiality"
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "deterministic_scores": {
+    "correlation": null,
+    "mapping_recall": null,
+    "coverage": {
+      "gold": 2,
+      "found": 1,
+      "coverage": 0.5,
+      "missing": [
+        "Confidentiality Other"
+      ]
+    },
+    "provenance": {
+      "citations": 4,
+      "compliant": 4,
+      "citation_provenance_rate": 1.0,
+      "abstention_proof_ok": true,
+      "fully_provenanced": true
+    },
+    "inspectability": {
+      "citation_coverage": 1.0,
+      "traceability": 1.0,
+      "abstention_proofs": 1.0,
+      "inspectability": 1.0
+    }
+  },
+  "arm": "planned_llm_typed_lazy",
+  "run_meta": {
+    "planner": "llm-typed-lazy",
+    "synthesis": "deterministic",
+    "use_llm": true,
+    "llm_synthesis": false,
+    "llm_specialist": false,
+    "rewrite": null,
+    "observed_plan": [
+      {
+        "sub_question_id": "q1",
+        "source": "capec",
+        "text": "",
+        "entities": [
+          "AttackPattern",
+          "HAS_CONSEQUENCE",
+          "Consequence"
+        ],
+        "seed_ids": [
+          "CAPEC-295"
+        ],
+        "depends_on": null,
+        "limits": {
+          "max_traversal_depth": 3,
+          "max_result_rows": 1000,
+          "query_timeout_ms": 5000
+        },
+        "step": {
+          "kind": "expand",
+          "anchor_label": "AttackPattern",
+          "anchor_ids": [
+            "CAPEC-295"
+          ],
+          "hops": [
+            {
+              "relation": "HAS_CONSEQUENCE",
+              "direction": "out",
+              "target_label": "Consequence"
+            }
+          ],
+          "depth": 1
+        }
+      }
+    ],
+    "exit_code": 0,
+    "status": "answered",
+    "timings": {
+      "plan_ms": 7047.784,
+      "specialists": [
+        {
+          "sub_question": "q1",
+          "source": "capec",
+          "ms": 9.295
+        }
+      ],
+      "synthesis_ms": 7.189,
+      "total_ms": 7109.605
+    },
+    "registry_model": "gemma4-31b",
+    "drafter_used": "TypedDrafter",
+    "typed": [
+      {
+        "mode": "lazy",
+        "served_model": "gemma4-31b/106",
+        "model_calls": 2,
+        "catalog_calls": [
+          {
+            "name": "resolve_entity",
+            "args": {
+              "graph": "capec",
+              "text": "Timestamp Request"
+            },
+            "ok": true
+          }
+        ],
+        "prompt_tokens": 6248,
+        "completion_tokens": 424,
+        "emitted": true,
+        "parse_error": null,
+        "first_steps": 1,
+        "first_refused": 0,
+        "first_fixes": 0,
+        "valid_first": true,
+        "valid_first_raw": true,
+        "repair_used": false,
+        "fixed_by_repair": false,
+        "still_refused": 0,
+        "final_steps": 1,
+        "coercions": [],
+        "refusals": [],
+        "plan_problems": [],
+        "replies": [
+          {
+            "status": "ok",
+            "finish_reason": "tool_calls",
+            "calls": [
+              "resolve_entity"
+            ],
+            "text_chars": 0,
+            "repairs": []
+          },
+          {
+            "status": "ok",
+            "finish_reason": "stop",
+            "calls": [],
+            "text_chars": 399,
+            "repairs": []
+          }
+        ],
+        "error": null,
+        "fallback": null,
+        "seconds": 7.036,
+        "n_catalog_calls": 1,
+        "fixed_by_coercion": false
+      }
+    ],
+    "seams": {
+      "planner_llm": true,
+      "drafter": "TypedDrafter",
+      "specialist_llm": false,
+      "synthesis_llm": false,
+      "generic_only": "true"
+    },
+    "wall_s": 7.112
+  },
+  "evidence_volume": {
+    "results": 1,
+    "records": 1,
+    "related": 1
+  }
+}

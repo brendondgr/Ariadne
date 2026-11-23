@@ -1,0 +1,485 @@
+{
+  "id": "PG-attack-O6-0e7d1a340c",
+  "kind": "attack",
+  "tier": "algebra-probe",
+  "category": "PG-attack",
+  "question": "Among the software that group G0009 (Deep Panda) uses, which ones use more than 5 techniques (not counting sub-techniques)?",
+  "gold": {
+    "assertions": {
+      "min_records": 0,
+      "must_include_ids": [],
+      "must_include_related": []
+    },
+    "ex_gold": {
+      "pool": "algebra",
+      "scheme": "attack",
+      "kind": "set",
+      "expected": [
+        "S0021",
+        "S0039"
+      ]
+    }
+  },
+  "answer": {
+    "headline": "Gathered 1 record(s) from 1 source(s).",
+    "narrative": "Found 1 record in MITRE ATT&CK: Deep Panda (G0009). G0009 (Deep Panda) has value: 7. 1 member(s), with their count: Deep Panda (G0009): 7.",
+    "composer": "deterministic",
+    "fallback_reason": null,
+    "claims": [
+      {
+        "text": "Found 1 record in MITRE ATT&CK: Deep Panda (G0009).",
+        "kind": "fact",
+        "entity_ids": [
+          "G0009"
+        ],
+        "citations": [
+          {
+            "source": "attack",
+            "primary_id": "G0009"
+          }
+        ]
+      },
+      {
+        "text": "G0009 (Deep Panda) has value: 7.",
+        "kind": "fact",
+        "entity_ids": [
+          "G0009"
+        ],
+        "citations": [
+          {
+            "source": "attack",
+            "primary_id": "G0009"
+          }
+        ]
+      },
+      {
+        "text": "1 member(s), with their count: Deep Panda (G0009): 7.",
+        "kind": "fact",
+        "entity_ids": [
+          "G0009"
+        ],
+        "citations": [
+          {
+            "source": "attack",
+            "primary_id": "G0009"
+          }
+        ]
+      }
+    ],
+    "abstentions": [],
+    "notes": []
+  },
+  "logic_flow": {
+    "task": {
+      "sub_question_id": "PG-attack-O6-0e7d1a340c",
+      "source": "attack",
+      "text": "Among the software that group G0009 (Deep Panda) uses, which ones use more than 5 techniques (not counting sub-techniques)?",
+      "entities": [
+        "Group",
+        "USES",
+        "Software",
+        "Technique"
+      ],
+      "limits": {
+        "max_traversal_depth": 3,
+        "max_result_rows": 20000,
+        "query_timeout_ms": 60000
+      },
+      "join_key": null,
+      "seed_ids": [
+        "G0009"
+      ],
+      "rationale": "algebra probe set (Era 2 Step 9 Phase G)"
+    },
+    "results": [
+      {
+        "source": "attack",
+        "sub_question_id": "q1",
+        "sub_question": "",
+        "query": "MATCH (v1:Group) WHERE v1.id IN $p0 WITH DISTINCT v1 CALL { WITH v1 OPTIONAL MATCH (v1)-[r3:USES]->(m2:Software) WHERE v1 <> m2 WITH DISTINCT m2 RETURN count(m2) AS value } WITH v1, value ORDER BY v1.id WITH collect({id: v1.id, name: v1.name, value: value}) AS rows CALL { MATCH (a4:Group) WHERE a4.id IN $p0 RETURN collect(DISTINCT a4.id) AS f5 } RETURN rows, [f5] AS found",
+        "ok": true,
+        "partial": false,
+        "error": null,
+        "summary": "Found 1 record in MITRE ATT&CK: Deep Panda (G0009).",
+        "traces": [
+          {
+            "step": "intake",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "source": "attack",
+              "card": "attack"
+            }
+          },
+          {
+            "step": "resolve",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "labels": [
+                "Group",
+                "Software"
+              ],
+              "relationships": [
+                "USES"
+              ],
+              "seed_ids": [
+                "G0009"
+              ],
+              "join_key": null
+            }
+          },
+          {
+            "step": "gate",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "attempt": 1,
+              "template": "algebra",
+              "query": "MATCH (v1:Group) WHERE v1.id IN $p0 WITH DISTINCT v1 CALL { WITH v1 OPTIONAL MATCH (v1)-[r3:USES]->(m2:Software) WHERE v1 <> m2 WITH DISTINCT m2 RETURN count(m2) AS value } WITH v1, value ORDER BY v1.id WITH collect({id: v1.id, name: v1.name, value: value}) AS rows CALL { MATCH (a4:Group) WHERE a4.id IN $p0 RETURN collect(DISTINCT a4.id) AS f5 } RETURN rows, [f5] AS found",
+              "injected": [],
+              "note": "compiled by the operator algebra (validated against the card; read-only by construction)",
+              "id_map": {
+                "G0009": [
+                  "intrusion-set--a653431d-6a5e-4600-8ad3-609b5af57064"
+                ]
+              }
+            }
+          },
+          {
+            "step": "execute",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "row_count": 1
+            }
+          },
+          {
+            "step": "algebra",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "result": {
+                "step": "q1",
+                "kind": "groupby",
+                "value": null,
+                "ids": [
+                  "G0009"
+                ],
+                "rows": [
+                  {
+                    "id": "G0009",
+                    "name": "Deep Panda",
+                    "value": 7
+                  }
+                ],
+                "total": 1,
+                "complete": true,
+                "info": {
+                  "anchor_not_found": []
+                }
+              },
+              "op": "groupby",
+              "ir": {
+                "@": "GroupBy",
+                "end_conds": [],
+                "fn": "count",
+                "having": [
+                  ">",
+                  5
+                ],
+                "hops": [
+                  {
+                    "@": "Hop",
+                    "direction": "out",
+                    "edge_conds": [],
+                    "relation": "USES",
+                    "target": "Software"
+                  }
+                ],
+                "k": null,
+                "members": {
+                  "@": "Anchors",
+                  "ids": [
+                    "G0009"
+                  ],
+                  "label": "Group"
+                },
+                "order": null,
+                "prop": null
+              },
+              "fn": "count",
+              "property": null,
+              "order": null
+            }
+          }
+        ],
+        "records": [
+          {
+            "primary_id": "G0009",
+            "name": "Deep Panda",
+            "label": "Group",
+            "description": "",
+            "properties": {
+              "value": 7
+            },
+            "facets": [],
+            "join_values": [],
+            "related": []
+          }
+        ]
+      }
+    ]
+  },
+  "deterministic_scores": {
+    "correlation": null,
+    "mapping_recall": null,
+    "coverage": null,
+    "provenance": {
+      "citations": 3,
+      "compliant": 3,
+      "citation_provenance_rate": 1.0,
+      "abstention_proof_ok": true,
+      "fully_provenanced": true
+    },
+    "inspectability": {
+      "citation_coverage": 1.0,
+      "traceability": 1.0,
+      "abstention_proofs": 1.0,
+      "inspectability": 1.0
+    }
+  },
+  "arm": "planned_llm_typed_full",
+  "run_meta": {
+    "planner": "llm-typed-full",
+    "synthesis": "deterministic",
+    "use_llm": true,
+    "llm_synthesis": false,
+    "llm_specialist": false,
+    "rewrite": null,
+    "observed_plan": [
+      {
+        "sub_question_id": "q1",
+        "source": "attack",
+        "text": "",
+        "entities": [
+          "Group",
+          "USES",
+          "Software"
+        ],
+        "seed_ids": [
+          "G0009"
+        ],
+        "depends_on": null,
+        "limits": {
+          "max_traversal_depth": 3,
+          "max_result_rows": 1000,
+          "query_timeout_ms": 5000
+        },
+        "step": {
+          "kind": "algebra",
+          "anchor_label": "Group",
+          "anchor_ids": [
+            "G0009"
+          ],
+          "hops": [],
+          "depth": 1,
+          "algebra": {
+            "ir": {
+              "@": "GroupBy",
+              "end_conds": [],
+              "fn": "count",
+              "having": [
+                ">",
+                5
+              ],
+              "hops": [
+                {
+                  "@": "Hop",
+                  "direction": "out",
+                  "edge_conds": [],
+                  "relation": "USES",
+                  "target": "Software"
+                }
+              ],
+              "k": null,
+              "members": {
+                "@": "Anchors",
+                "ids": [
+                  "G0009"
+                ],
+                "label": "Group"
+              },
+              "order": null,
+              "prop": null
+            },
+            "labels": [
+              "Group"
+            ],
+            "op": "groupby"
+          }
+        }
+      }
+    ],
+    "exit_code": 0,
+    "status": "answered",
+    "timings": {
+      "plan_ms": 47660.097,
+      "specialists": [
+        {
+          "sub_question": "q1",
+          "source": "attack",
+          "ms": 22.929
+        }
+      ],
+      "synthesis_ms": 8.705,
+      "total_ms": 47736.398
+    },
+    "registry_model": "qwen38-27b",
+    "drafter_used": "TypedDrafter",
+    "typed": [
+      {
+        "mode": "full",
+        "served_model": "qwen38-27b/248046",
+        "model_calls": 5,
+        "catalog_calls": [
+          {
+            "name": "resolve_entity",
+            "args": {
+              "text": "G0009",
+              "label": "Group",
+              "graph": "attack"
+            },
+            "ok": true
+          },
+          {
+            "name": "describe",
+            "args": {
+              "target": "G0009",
+              "graph": "attack"
+            },
+            "ok": false
+          },
+          {
+            "name": "resolve_entity",
+            "args": {
+              "text": "Deep Panda",
+              "label": "Group",
+              "graph": "attack"
+            },
+            "ok": true
+          },
+          {
+            "name": "describe",
+            "args": {
+              "target": "USES",
+              "graph": "attack"
+            },
+            "ok": true
+          }
+        ],
+        "prompt_tokens": 36688,
+        "completion_tokens": 1818,
+        "emitted": true,
+        "parse_error": null,
+        "first_steps": 1,
+        "first_refused": 0,
+        "first_fixes": 0,
+        "valid_first": true,
+        "valid_first_raw": true,
+        "repair_used": false,
+        "fixed_by_repair": false,
+        "still_refused": 0,
+        "final_steps": 1,
+        "coercions": [],
+        "refusals": [],
+        "plan_problems": [],
+        "replies": [
+          {
+            "status": "ok",
+            "finish_reason": "tool_calls",
+            "calls": [
+              "resolve_entity"
+            ],
+            "text_chars": 0,
+            "repairs": []
+          },
+          {
+            "status": "ok",
+            "finish_reason": "tool_calls",
+            "calls": [
+              "describe"
+            ],
+            "text_chars": 0,
+            "repairs": []
+          },
+          {
+            "status": "ok",
+            "finish_reason": "tool_calls",
+            "calls": [
+              "resolve_entity"
+            ],
+            "text_chars": 219,
+            "repairs": []
+          },
+          {
+            "status": "ok",
+            "finish_reason": "tool_calls",
+            "calls": [
+              "describe"
+            ],
+            "text_chars": 179,
+            "repairs": []
+          },
+          {
+            "status": "ok",
+            "finish_reason": "stop",
+            "calls": [],
+            "text_chars": 644,
+            "repairs": []
+          }
+        ],
+        "error": null,
+        "fallback": null,
+        "seconds": 47.648,
+        "n_catalog_calls": 4,
+        "fixed_by_coercion": false
+      }
+    ],
+    "seams": {
+      "planner_llm": true,
+      "drafter": "TypedDrafter",
+      "specialist_llm": false,
+      "synthesis_llm": false,
+      "generic_only": "true"
+    },
+    "wall_s": 47.741,
+    "algebra_results": [
+      {
+        "step": "q1",
+        "kind": "groupby",
+        "value": null,
+        "ids": [
+          "G0009"
+        ],
+        "rows": [
+          {
+            "id": "G0009",
+            "name": "Deep Panda",
+            "value": 7
+          }
+        ],
+        "total": 1,
+        "complete": true,
+        "info": {
+          "anchor_not_found": []
+        }
+      }
+    ]
+  },
+  "evidence_volume": {
+    "results": 1,
+    "records": 1,
+    "related": 0
+  }
+}
